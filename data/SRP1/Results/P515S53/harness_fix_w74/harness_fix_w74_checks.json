@@ -1,0 +1,441 @@
+{
+ "task": "P5.15 Addendum 44 W74 item 1 -- harness fixes, zero-solve checks",
+ "utc": "2026-09-25T08:45:28.412318+00:00",
+ "git_head": "5fc92a8d0ec181579418d5c026bbbf579aad2788",
+ "harness_sha256": "cf20288765e0c4802c49d2d3850482947784dedca8c54b2b7ccf24337615fa64",
+ "pre_w74_harness_sha256": "5c67acc27d2e56c8783fc93705cd5de7201cf0800a969281ae8ebbb5c8a50589",
+ "script_sha256": "24fb2525cf26f53d11cd5f6f56bcd9a07bcdb2009d22ef9c1b4065b69a8c115e",
+ "sections": {
+  "V1_evaluation_key": {
+   "checks": {
+    "evaluation_key_source_identical": true,
+    "changed_top_level_names_exactly_declared": true,
+    "added_top_level_names_exactly_declared": true,
+    "no_top_level_name_removed": true,
+    "spec_file_sha8_matches_name": true,
+    "six_cells_eval_keys_equal_committed": true
+   },
+   "changed_top_level": [
+    "_atomic_write_json",
+    "_child_real",
+    "_write_once_json",
+    "_write_once_json_compact",
+    "alpha_row_run_hooks",
+    "evaluate",
+    "write_response_terminal"
+   ],
+   "added_top_level": [
+    "HEARTBEAT_FILE",
+    "_json_default",
+    "heartbeat_file_name"
+   ],
+   "removed_top_level": [],
+   "spec": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/campaign_spec_s53_alpha_row_v25_70965374.json",
+   "spec_sha256": "7096537486c86a7101e7948fe1931085e29b43b9700b62748799e368f8305570",
+   "cells": {
+    "x0_a0p00": {
+     "eval_dir": "b123cd978794d690_x0_a0p00",
+     "record_verified_against_pair_manifest": true,
+     "candidate_key_recomputed": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "candidate_key_spec": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "eval_key_recomputed": "b123cd978794d6909ba55f9677fcada90e01be9d3a579c67db4b0145a6e552b8",
+     "eval_key_spec": "b123cd978794d6909ba55f9677fcada90e01be9d3a579c67db4b0145a6e552b8",
+     "eval_key_record": "b123cd978794d6909ba55f9677fcada90e01be9d3a579c67db4b0145a6e552b8",
+     "match": true
+    },
+    "x0_a0p10": {
+     "eval_dir": "7516903c91153a29_x0_a0p10",
+     "record_verified_against_pair_manifest": true,
+     "candidate_key_recomputed": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "candidate_key_spec": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "eval_key_recomputed": "7516903c91153a29ad110e952d3d40640702dd183f16bffb5ae13781c7d74f62",
+     "eval_key_spec": "7516903c91153a29ad110e952d3d40640702dd183f16bffb5ae13781c7d74f62",
+     "eval_key_record": "7516903c91153a29ad110e952d3d40640702dd183f16bffb5ae13781c7d74f62",
+     "match": true
+    },
+    "x0_a0p25": {
+     "eval_dir": "62b46280a65f7744_x0_a0p25",
+     "record_verified_against_pair_manifest": true,
+     "candidate_key_recomputed": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "candidate_key_spec": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "eval_key_recomputed": "62b46280a65f77447cec6d0cb742312346e1aa48532ed5570fea0acb3f5ae7cb",
+     "eval_key_spec": "62b46280a65f77447cec6d0cb742312346e1aa48532ed5570fea0acb3f5ae7cb",
+     "eval_key_record": "62b46280a65f77447cec6d0cb742312346e1aa48532ed5570fea0acb3f5ae7cb",
+     "match": true
+    },
+    "x0_a0p50": {
+     "eval_dir": "7d53b6f21b686a44_x0_a0p50",
+     "record_verified_against_pair_manifest": true,
+     "candidate_key_recomputed": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "candidate_key_spec": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "eval_key_recomputed": "7d53b6f21b686a44db69f0901e03c870d14e15d00bfaaa6a5379822890918a94",
+     "eval_key_spec": "7d53b6f21b686a44db69f0901e03c870d14e15d00bfaaa6a5379822890918a94",
+     "eval_key_record": "7d53b6f21b686a44db69f0901e03c870d14e15d00bfaaa6a5379822890918a94",
+     "match": true
+    },
+    "x0_a1p00": {
+     "eval_dir": "1bb2d63a07273887_x0_a1p00",
+     "record_verified_against_pair_manifest": true,
+     "candidate_key_recomputed": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "candidate_key_spec": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "eval_key_recomputed": "1bb2d63a07273887ccdd4a8278e97c61a949df8b5480f7dee8d13c9c367a2a0a",
+     "eval_key_spec": "1bb2d63a07273887ccdd4a8278e97c61a949df8b5480f7dee8d13c9c367a2a0a",
+     "eval_key_record": "1bb2d63a07273887ccdd4a8278e97c61a949df8b5480f7dee8d13c9c367a2a0a",
+     "match": true
+    },
+    "n7_4h_e1_a0p50": {
+     "eval_dir": "711fce9aa74d6878_n7_4h_e1_a0p50",
+     "record_verified_against_pair_manifest": true,
+     "candidate_key_recomputed": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+     "candidate_key_spec": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+     "eval_key_recomputed": "711fce9aa74d687892b994e332472c7d59745ef74ce9030abc12d54a9aaf83b4",
+     "eval_key_spec": "711fce9aa74d687892b994e332472c7d59745ef74ce9030abc12d54a9aaf83b4",
+     "eval_key_record": "711fce9aa74d687892b994e332472c7d59745ef74ce9030abc12d54a9aaf83b4",
+     "match": true
+    }
+   }
+  },
+  "V2_field_tuples": {
+   "checks": {
+    "PER_CYCLE_TRAJECTORY_FIELDS_unchanged": true,
+    "PER_CYCLE_RESPONSE_FIELDS_unchanged": true,
+    "PER_CYCLE_RECORD_FIELDS_unchanged": true,
+    "RECORD_TRAJECTORY_FIELDS_unchanged": true,
+    "committed_per_cycle_record_key_order_equals_fields": true
+   },
+   "lengths": {
+    "PER_CYCLE_TRAJECTORY_FIELDS": 29,
+    "PER_CYCLE_RESPONSE_FIELDS": 22,
+    "PER_CYCLE_RECORD_FIELDS": 51,
+    "RECORD_TRAJECTORY_FIELDS": 29
+   },
+   "per_cycle_record": {
+    "x0_a0p00": {
+     "n_distinct_key_orders": 1,
+     "equals_PER_CYCLE_RECORD_FIELDS": true
+    },
+    "x0_a0p10": {
+     "n_distinct_key_orders": 1,
+     "equals_PER_CYCLE_RECORD_FIELDS": true
+    },
+    "x0_a0p25": {
+     "n_distinct_key_orders": 1,
+     "equals_PER_CYCLE_RECORD_FIELDS": true
+    },
+    "x0_a0p50": {
+     "n_distinct_key_orders": 1,
+     "equals_PER_CYCLE_RECORD_FIELDS": true
+    },
+    "x0_a1p00": {
+     "n_distinct_key_orders": 1,
+     "equals_PER_CYCLE_RECORD_FIELDS": true
+    },
+    "n7_4h_e1_a0p50": {
+     "n_distinct_key_orders": 1,
+     "equals_PER_CYCLE_RECORD_FIELDS": true
+    }
+   }
+  },
+  "V3_heartbeat_collision": {
+   "monkeypatched_in_this_process": {
+    "HEARTBEAT_EVERY_S": 0.0,
+    "POLL_S": 0.5
+   },
+   "tagged": {
+    "checks": {
+     "pair_1_stub_ok": true,
+     "pair_2_stub_ok": true,
+     "periodic_writer_ran_in_both_pairs": true,
+     "pair_1_end_state_survives_pair_2_byte_identical": true,
+     "pair_1_end_state_content": true,
+     "pair_2_end_state_content": true,
+     "distinct_files": true,
+     "no_shared_legacy_file_written_by_tagged_calls": true,
+     "last_batch_info_names_the_file": true,
+     "reused_tag_refused": true,
+     "reused_tag_refused_before_launch": true,
+     "pair_1_file_unchanged_after_refusal": true
+    },
+    "root_listing": [
+     "campaign_heartbeat_pair_1.json",
+     "campaign_heartbeat_pair_2.json",
+     "campaign_spec_w74v3t_ca819297.json",
+     "evals"
+    ],
+    "pair_1_file": "data/SRP1/Results/P515S53/harness_fix_w74/v3_tagged_root/campaign_heartbeat_pair_1.json",
+    "pair_1_sha256_after_pair_1": "12ff5fe15f7100bd2af01cb66cf82b2f75bf208c86fe65350f3b7d618107d771",
+    "pair_1_sha256_after_pair_2": "12ff5fe15f7100bd2af01cb66cf82b2f75bf208c86fe65350f3b7d618107d771",
+    "pair_1_content_after_pair_2": {
+     "utc": "2026-09-25T08:45:18.725677+00:00",
+     "parent_pid": 14296,
+     "running": [],
+     "pending": [],
+     "done": [
+      "p1"
+     ],
+     "heartbeat_tag": "pair_1"
+    },
+    "pair_2_content": {
+     "utc": "2026-09-25T08:45:21.284056+00:00",
+     "parent_pid": 14296,
+     "running": [],
+     "pending": [],
+     "done": [
+      "p2"
+     ],
+     "heartbeat_tag": "pair_2"
+    },
+    "periodic_heartbeats_logged": {
+     "pair_1": 5,
+     "pair_2": 5
+    },
+    "reuse_refusal": {
+     "raised": true,
+     "type": "RuntimeError",
+     "message": "per-wave campaign heartbeat already exists (write-once per tag, never reusable): /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S53/harness_fix_w74/v3_tagged_root/campaign_heartbeat_pair_1.json"
+    },
+    "batch_info": {
+     "pair_1": {
+      "max_concurrent_observed": 1,
+      "timeline": [
+       {
+        "event": "start",
+        "label": "p1",
+        "pid": 14305,
+        "t": 1790325916.1756642
+       },
+       {
+        "event": "end",
+        "label": "p1",
+        "pid": 14305,
+        "t": 1790325918.7229598,
+        "exit_code": 0
+       }
+      ],
+      "heartbeat_file": "data/SRP1/Results/P515S53/harness_fix_w74/v3_tagged_root/campaign_heartbeat_pair_1.json"
+     },
+     "pair_2": {
+      "max_concurrent_observed": 1,
+      "timeline": [
+       {
+        "event": "start",
+        "label": "p2",
+        "pid": 14310,
+        "t": 1790325918.733341
+       },
+       {
+        "event": "end",
+        "label": "p2",
+        "pid": 14310,
+        "t": 1790325921.2802691,
+        "exit_code": 0
+       }
+      ],
+      "heartbeat_file": "data/SRP1/Results/P515S53/harness_fix_w74/v3_tagged_root/campaign_heartbeat_pair_2.json"
+     }
+    }
+   },
+   "untagged": {
+    "checks": {
+     "untagged_file_name_is_pre_w74": true,
+     "untagged_payload_keys_exactly_pre_w74": true,
+     "untagged_batch_info_keys_pre_w74": true,
+     "negative_control_second_untagged_launch_overwrites_first": true
+    },
+    "root_listing": [
+     "campaign_heartbeat.json",
+     "campaign_spec_w74v3u_9d6a7bc7.json",
+     "evals"
+    ],
+    "after_u1": {
+     "utc": "2026-09-25T08:45:23.916648+00:00",
+     "parent_pid": 14296,
+     "running": [],
+     "pending": [],
+     "done": [
+      "u1"
+     ]
+    },
+    "after_u2": {
+     "utc": "2026-09-25T08:45:26.472952+00:00",
+     "parent_pid": 14296,
+     "running": [],
+     "pending": [],
+     "done": [
+      "u2"
+     ]
+    }
+   },
+   "checks": {
+    "tagged_pair_1_stub_ok": true,
+    "tagged_pair_2_stub_ok": true,
+    "tagged_periodic_writer_ran_in_both_pairs": true,
+    "tagged_pair_1_end_state_survives_pair_2_byte_identical": true,
+    "tagged_pair_1_end_state_content": true,
+    "tagged_pair_2_end_state_content": true,
+    "tagged_distinct_files": true,
+    "tagged_no_shared_legacy_file_written_by_tagged_calls": true,
+    "tagged_last_batch_info_names_the_file": true,
+    "tagged_reused_tag_refused": true,
+    "tagged_reused_tag_refused_before_launch": true,
+    "tagged_pair_1_file_unchanged_after_refusal": true,
+    "untagged_untagged_file_name_is_pre_w74": true,
+    "untagged_untagged_payload_keys_exactly_pre_w74": true,
+    "untagged_untagged_batch_info_keys_pre_w74": true,
+    "untagged_negative_control_second_untagged_launch_overwrites_first": true
+   }
+  },
+  "V4_boolean_flags": {
+   "checks": {
+    "input_verified_against_pair_1_manifest": true,
+    "committed_value_is_the_string": true,
+    "gate_expression_yields_numpy_bool": true,
+    "numpy_bool_is_not_a_python_bool": true,
+    "negative_control_pre_w74_hook_writes_string": true,
+    "every_writer_writes_real_bool_strict_is_True": true,
+    "floats_unaffected": true,
+    "python_bool_unchanged": true,
+    "other_types_still_str": true
+   },
+   "input": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/evals/7d53b6f21b686a44_x0_a0p50/post_certification.json",
+   "input_sha256": "222e203947cf0454f9fbf986260a97b53544c45390bc7e5bf3e04af02078de1e",
+   "threshold_pct": 0.1,
+   "relative_type": "float64",
+   "gate_pass_type": "numpy.bool",
+   "per_writer": {
+    "_write_once_json": {
+     "pass_type": "bool",
+     "pass_is_True": true,
+     "fail_case_is_False": true,
+     "float_unchanged": true
+    },
+    "_atomic_write_json": {
+     "pass_type": "bool",
+     "pass_is_True": true,
+     "fail_case_is_False": true,
+     "float_unchanged": true
+    },
+    "_write_once_json_compact": {
+     "pass_type": "bool",
+     "pass_is_True": true,
+     "fail_case_is_False": true,
+     "float_unchanged": true
+    },
+    "jsonl_line_with__json_default": {
+     "pass_type": "bool",
+     "pass_is_True": true,
+     "fail_case_is_False": true,
+     "float_unchanged": true
+    }
+   },
+   "pre_w74_serialization": {
+    "pass": "True",
+    "fail_case": "False"
+   }
+  },
+  "V5_search_scope": {
+   "checks": {
+    "every_artifact_hook_is__json_default_except_hash_inputs": true,
+    "no_literal_bool_strings_outside_docstrings": true,
+    "harness_written_stringified_flags_found_only_gate_pass": true
+   },
+   "default_hooks": [
+    {
+     "line": 1089,
+     "hook": "str"
+    },
+    {
+     "line": 374,
+     "hook": "_json_default"
+    },
+    {
+     "line": 382,
+     "hook": "_json_default"
+    },
+    {
+     "line": 4100,
+     "hook": "str"
+    },
+    {
+     "line": 4179,
+     "hook": "_json_default"
+    },
+    {
+     "line": 4206,
+     "hook": "_json_default"
+    },
+    {
+     "line": 4654,
+     "hook": "_json_default"
+    },
+    {
+     "line": 3645,
+     "hook": "_json_default"
+    }
+   ],
+   "hash_input_hook_lines_left_as_str": [
+    1089,
+    4100
+   ],
+   "literal_bool_string_lines": [],
+   "committed_alpha_row_stringified_booleans": [
+    {
+     "file": "boyd_terminal.json",
+     "json_path": ".system_cost_vs_s31c_s32_s33e2_s34.s31c.terminal.determinate_at_gt_error_bar",
+     "n_values": 5,
+     "n_files": 5,
+     "writer": "p515_g_g1_g4_admm_gates.py (default=str writers; not the campaign harness)"
+    },
+    {
+     "file": "boyd_terminal.json",
+     "json_path": ".system_cost_vs_s31c_s32_s33e2_s34.s32.terminal.determinate_at_gt_error_bar",
+     "n_values": 5,
+     "n_files": 5,
+     "writer": "p515_g_g1_g4_admm_gates.py (default=str writers; not the campaign harness)"
+    },
+    {
+     "file": "boyd_terminal.json",
+     "json_path": ".system_cost_vs_s31c_s32_s33e2_s34.s33e2.terminal.determinate_at_gt_error_bar",
+     "n_values": 5,
+     "n_files": 5,
+     "writer": "p515_g_g1_g4_admm_gates.py (default=str writers; not the campaign harness)"
+    },
+    {
+     "file": "boyd_terminal.json",
+     "json_path": ".system_cost_vs_s31c_s32_s33e2_s34.s34.terminal.determinate_at_gt_error_bar",
+     "n_values": 5,
+     "n_files": 5,
+     "writer": "p515_g_g1_g4_admm_gates.py (default=str writers; not the campaign harness)"
+    },
+    {
+     "file": "g_s39_D.json",
+     "json_path": ".cycle_trajectory[].objective_convergence",
+     "n_values": 347,
+     "n_files": 5,
+     "writer": "p515_g_g1_g4_admm_gates.py (default=str writers; not the campaign harness)"
+    },
+    {
+     "file": "post_certification.json",
+     "json_path": ".hull_polish_full.gate.pass",
+     "n_values": 5,
+     "n_files": 5,
+     "writer": "p515_s44_campaign_harness.py"
+    }
+   ],
+   "scanned": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25 recursively (all .json / .jsonl), excluding esso_capture/ and planning_read/"
+  }
+ },
+ "errors": {},
+ "failing": [],
+ "pass": true,
+ "guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "wall_s": 20.904226064682007
+}

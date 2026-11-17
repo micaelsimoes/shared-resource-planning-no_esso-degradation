@@ -1,0 +1,237 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 15",
+  "Addendum 16 item 1"
+ ],
+ "balancing_rule_3_3a": {
+  "clamp": [
+   0.0001,
+   10000.0
+  ],
+  "decrease": "dual_ratio_balance > (residual_balance_ratio_pf_decrease 3.0 for PF, 5.0 otherwise) * primal_ratio -> rho /= 1.5",
+  "failure_hold": "kept: held after a failed local solve",
+  "freeze": "rho adaptation permitted at the end of cycles 1..30 only; from cycle 31 every channel is held with action 'held (frozen after cycle 30)'; freeze cycle in the case file (penalty_update.freeze_after_cycle = 30)",
+  "freeze_clause": "removed (unchanged from v2); distinct from the cycle-30 freeze above",
+  "increase": "primal_ratio > residual_balance_ratio (5.0) * dual_ratio_balance -> rho *= 1.5",
+  "lambda": "unscaled multipliers; rho rescaling leaves lambda and z unchanged",
+  "ratios": "primal_ratio = r_c / eps_pri_c; dual_ratio_balance = s_rho_part_c / eps_dual_c (rho-dependent part of s only; the TSO proximal part gamma*dz is excluded from the balancing ratio). The stopping test is unchanged and uses the full s."
+ },
+ "cap": 500,
+ "capture_additions": [
+  "unconditional per-cycle [RECOURSE JUMP] block decomposition (Z4 found it stops at cycle 62, making late-cycle block localisation unrecoverable)",
+  "per-entry ESS z and x on a recorded stride (s33e2 had to reconstruct the drift from the ESSO captures)",
+  "EFC/day per cycle per node",
+  "al_scale_esso, sigma, S_ref, initial rho and the freeze state recorded in boyd_terminal.json"
+ ],
+ "capture_requirements": {
+  "efc": "per cycle, per node, per cohort-year",
+  "floor_multiplier": "the harness must identify, before any solve, which rows of energy_storage_capacity_degradation are the soh_min floor rows (by construction order or expression inspection) and assert a capture path for their duals per ESSO solve; the per-period esso_capture dual list alone does not distinguish them"
+ },
+ "change_from_v1": {
+  "mapping_diagnostic": "e788a771 (WORKER_REPORT_S32_MAPPING_DIAG.md): V/PF Boyd mapping consistent with the dual update to machine precision; ||y|| at cycle 1 includes one pre-loop lambda update performed by the initialization call to _update_interface_power_flow_variables (update_tn=True). Pre-existing behaviour, identical in s31c; recorded, not changed.",
+  "what": "balancing dual ratio uses s_rho_part instead of full s; stopping rule unchanged",
+  "why": [
+   "Residual balancing adjusts rho because rho trades r against s; the proximal component gamma*||dz|| does not scale with rho, so once rho < gamma a decrease barely lowers the balancing ratio and the rule can walk rho toward the clamp (Advisor concern C3).",
+   "Preflight evidence (commit 7305a476, cycle 1, rho = gamma = 1): PF dual ratio 7734.2 vs decrease threshold 3 x 2541.6 = 7624.8 -> decreased; with the rho part only 5468.9 -> held. V 178.13 vs 5 x 31.34 = 156.69 -> decreased; rho part only 125.96 -> held. Both v1 decisions were decided by the proximal part.",
+   "The configured P5.9-B/AB1 mechanism (Addendum 9 3.3(a) \"as configured\") never included the proximal term in its dual measure."
+  ]
+ },
+ "change_from_v2": {
+  "what": [
+   "gamma_c = tau*rho_c (was fixed 1)",
+   "rho adaptation frozen after cycle 30 (was unlimited)",
+   "minimum_consecutive_converged_cycles 3 (was 1)",
+   "eps_abs confirmed 1e-5 by E4",
+   "additional capture fields"
+  ],
+  "why": "Addendum 14 decisions after P5_15_S32_BOYD_GATE_REPORT.md: fixed gamma turned the TSO update into a proximal-gradient drift once balancing lowered rho, and fed the rho collapse; ADMM requires an eventually constant rho"
+ },
+ "changes_from_v3": {
+  "a_D5_esso_scaling": {
+   "authorized": "Addendum 15 item 5(a): ESSO objective on the same sigma convention as the networks",
+   "flagged_for_author": "deviation in FORM from the literal wording, not in substance; stated in the gate report",
+   "implemented_as": "multiply the ESSO AL terms (dual and rho/2) by a fixed recorded constant al_scale_esso = sigma / w_ref, w_ref = median TSO/DSO block weight; the ESSO base objective expression is NOT divided",
+   "preflight_gate": "one ESSO solve before the gate: mu_final, s_obj, complementarity ratio and spurious throughput must not worsen versus the s33e2 baseline; if they worsen, STOP and report (eps or ESSO tol must be revisited first, Addendum 15 item 2)",
+   "why_this_form": "argmin-identical (the two differ by an overall positive factor) but numerically safe: dividing the ESSO base by ~2e5 would shrink PENALTY_ESSO_SLACK (1e3), which ENFORCES the storage dynamics and feeds get_feasibility_violation, to ~5e-3 against AL terms of order rho, letting the ESSO buy consensus by violating its own energy balance; it would also weaken the barrier-leak identity min(pch,pdch) = mu/(s_obj*eps) that EFC/day - the gate diagnostic - depends on"
+  },
+  "b_sigma_fixed": {
+   "placement": "unchanged: effective_scale = sigma / block_weight per block; obj = objective.expr / effective_scale",
+   "source": "case file admm.objective_scale (new key, per case study); _compute_common_admm_objective_scale stays wired and its computed value is asserted within a factor 3 of the fixed constant, failing loudly outside the calibration range",
+   "value_srp1": 93635360.0,
+   "why_per_block": "dividing by the block weight is what makes each block economics-to-penalty ratio comparable; dropping it makes stiffness inversely proportional to block weight"
+  },
+  "c_rho_policy": {
+   "freeze": "per channel: freeze once rho has not changed for 10 consecutive cycles AND balancing has acted at least once on that channel; a channel frozen at the clamp (1e-4 or 1e4) is a GATE FAILURE, recorded as rho_at_clamp; global backstop: all channels frozen from cycle 60 regardless",
+   "gamma": "unchanged from v3: gamma_c = tau*rho_c, tau = 1, read from the model in force",
+   "initial_rho": {
+    "ess": 0.05,
+    "pf": 0.198,
+    "v": 0.0077
+   },
+   "provenance": "V and PF: the values their own balancing settled on by cycle 30 in s33e2. ESS: Planner-derived from the measured arbitrage gradient (dz = g/(rho*a^2); target coordinate |p|/(2*S_ref) ~ 0.065 for EFC/day ~ 1; cycles-to-target ~ 478*rho gives ~24 cycles at 0.05); defensible range 0.03-0.10. NO committed prior source for 0.05 - it is a Planner choice recorded here before the run."
+  },
+  "d_ess_reference_rating": {
+   "S_ref_mva": 2.5,
+   "call_sites": "ALL of shared_resources_planning.py 4051 (TSO AL), 4170 (DSO AL), 4243 (ESSO AL), 4400 (previous-iterate), 5292/5298/5302 (legacy metrics), 5643/5646/5648 (Boyd metrics), 6596/6603/6607 (consensus and dual update) - applying it at a subset would put the three copies on different normalizations",
+   "case_file": "new optional key admm.shared_ess_reference_rating_mva; absent means current per-agent behaviour, so other case studies are unchanged",
+   "justification": "candidate-independent curvature and cross-candidate comparability of the ESS residual; NOT a remedy for the drift",
+   "replaces": "per-agent 2*max(S, shared_ess_normalization_floor_mva)"
+  }
+ },
+ "changes_from_v4": {
+  "cap": "500 (was 150)",
+  "everything_else": "identical to v4: D5 as argmin-identical ESSO AL scaling, sigma fixed 9.363536e7, S_ref 2.5 MVA, gamma = tau*rho, Boyd eps_abs 1e-5 / eps_rel 1e-4, 3 consecutive cycles, capture additions",
+  "initial_rho_ess": "0.1125 for every network and the ESSO (was 0.05); the value balancing itself selected in s34 (Addendum 16). V 0.0077 and PF 0.198 unchanged; balancing on; freeze after 10 unchanged cycles with the cycle-60 backstop, unchanged"
+ },
+ "diagnostics_and_benchmarks": {
+  "cycle_30_early_read": "boyd_ess_norm_z, boyd_ess_r/s, rho_ess, per-node ESSO throughput, and cos(step_k, step_k-1). Addendum 15 predicts equilibrium by ~50 cycles, so by cycle 30 storage should be at tens of percent of rating with cos falling below 1. Storage at 1-2 % of rating with cos = 1.000 means the prediction has already failed and the run is read then, not at 150.",
+  "efc_reference": {
+   "EFC_star_2025_max_across_nodes": 1.852,
+   "EFC_star_efficiency_1": [
+    2.15,
+    2.475
+   ],
+   "EFC_star_range_all_cells": [
+    0.7964,
+    1.852
+   ],
+   "reading": "EFC/day is read against EFC*, never against the retired 1.1. EFC* exceeds the SoH-binding threshold, so an equilibrium near 1.46 with the SoH constraint active is the expected success case; s33e2 terminal was 0.067 = 3.6 % of EFC*",
+   "soh_binding_threshold": 1.4612,
+   "source": "data/SRP1/Results/P515S34/EFC_benchmark/efc_benchmark_results.json (commit d1b8cf9c), zero production solves"
+  },
+  "s_ref_prediction": "recorded SEPARATELY from the pass test: at matched conditions S_ref 2.5 vs 2*max(S,0.10) multiplies a = 1/(2S) by 0.3875, and with s ~ ||g||/a the ESS dual ratio should rise x2.58 (3.245 -> ~8.4) while eps_dual moves <1 % (it is 99.9 % the sqrt(n)*eps_abs floor). x1.0 would mean the residual is not gradient-limited; x0.39 would mean the mechanism is misidentified.",
+  "storage_response_falsifier": "per-entry ESS step at matched rho_ess and matched normalization, before (s33e2) vs after (s34). Addendum 15 attributes the slow motion to coordination stiffness of order sigma; removing it should raise the step by orders of magnitude. If the step rises by less than 3x AND cos(step_k, step_k-1) stays at 1.000, the stiffness reading fails on its own terms and must be recorded as such."
+ },
+ "gamma_policy": {
+  "citation": "Deng, W. and Yin, Z. (2016), On the global and linear convergence of the generalized alternating direction method of multipliers, Journal of Scientific Computing 66, 889-916",
+  "definition": "gamma_c = tau * rho_c per channel c in {v, pf, ess}, tau = 1 (case file proximal_regularization.tso.tau)",
+  "fallback": "gamma = 0 only if this gate fails; NOT run automatically - stop for review",
+  "implementation_requirement": "TSO prox_gamma_v/pf/ess become mutable Params (they are immutable today, shared_resources_planning.py update_transmission_model_to_admm); get_admm_boyd_residual_metrics reads gamma from the model, not from the case-file constant",
+  "initialization": "gamma_c = tau * initial rho_c (case file rho 1.0, so gamma 1.0) at model construction",
+  "role": "stabiliser, not method: at a fixed point the proximal term vanishes, so the solved problem is unchanged",
+  "update": "whenever the residual-balancing update changes rho_c (TSO, DSO, ESSO common factor), the TSO prox_gamma_c Param is set to tau * the new TSO rho_c before the next solve; the proximal term remains centred at the previous successful TSO iterate (unchanged)"
+ },
+ "gates": {
+  "G_reference": "Boyd stop within 500 and no clamp freeze",
+  "on_cap": "stop for review with the rho, gamma, residual, EFC and floor-multiplier trajectories; do not extend the cap"
+ },
+ "initial_rho": "case file data/SRP1/SRP1_params.json admm.rho (1.0 on every network and channel); the harness MUST NOT apply p514_n_instrumented_cstar.RHO",
+ "instance": {
+  "assignment": "uniform across active nodes 5, 7, 9",
+  "candidate": "C*",
+  "e_mwh": 3.875,
+  "s_mva": 0.96875,
+  "year": 2025
+ },
+ "known_concerns": [
+  "rho_ess = 0.05 is a Planner choice with no committed prior source; the ESS residual is rho-invariant so rho is a rate lever only, and a low start risks flipping the ESS PRIMAL test which currently passes at 0.119",
+  "D5 implemented as an AL scaling rather than an objective division (argmin-identical); flagged for author confirmation",
+  "EFC* (1.852) exceeds the SoH-binding threshold (1.4612)",
+  "Z4: the ~20-cycle cost mode is pre-existing (present in s32 without any freeze) and decaying; not blocking",
+  "the destination question (where storage settles) remains unmeasured under the corrected formulation - that is what this gate measures"
+ ],
+ "known_concerns_not_fixed_here": [
+  "D5 ESSO objective not on the sigma convention - 3.4 scope; E1 (commit 254048f4, see record 90c5da2c) found no practical effect at the s32 terminal (ESSO base objective ~ -5.7e-3, tolerance artifact)",
+  "pre-loop initialization performs one V/PF lambda update (pre-existing, same in s31c and s32)",
+  "E3 (fixed rho) only if this gate fails; not run automatically"
+ ],
+ "output_root": "data/SRP1/Results/P515S35_REF_run (new)",
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S34/frozen_s34_spec_v4_966940a7.json",
+  "sha256": "966940a789db3093a57d5fdc23be8ccb172b762bf02d0cd09eeaaf0f52f544e9"
+ },
+ "predictions": {
+  "failures": "network failures of the same order per cycle as s34 (~0.9 per cycle), all recovered",
+  "recorded_in_advance": [
+   "EFC/day rises monotonically toward the SoH-binding threshold and settles at it with the floor active on the binding cohort-year",
+   "the storage dual residual collapses once the floor binds, because the linear arbitrage gradient is then absorbed by the floor multiplier",
+   "the floor multiplier is strictly positive on the binding rows at termination"
+  ],
+  "stop_cycle": "UNCERTAIN, stated honestly: extrapolating s34 measured rates, EFC reaches the threshold near cycle ~440 while the storage dual residual would reach 1.0 near ~550, beyond the cap; the stop inside 500 therefore depends on the residual collapsing when the floor binds. A cap outcome with EFC at the threshold and the residual falling is a distinct result from a cap outcome with EFC still rising."
+ },
+ "production_defaults_in_force": "ESSO eps 1e-5, tol 1e-10/1e-9, recovery policy with tier 2, row 3-prime settlement and signed interface (2783c223), cold start",
+ "reference_trajectory": {
+  "commit": "8551412b",
+  "extraction": "data/SRP1/Results/P515S32/s31c_rho_residual_extraction.json (commit 9cbfb4d1)",
+  "run": "data/SRP1/Results/P515S31C_run"
+ },
+ "report_per_cycle_channel": [
+  "r",
+  "s",
+  "s_rho_part",
+  "s_proximal_part",
+  "eps_pri",
+  "eps_dual",
+  "norm_x",
+  "norm_z",
+  "norm_y",
+  "primal_ratio",
+  "dual_ratio",
+  "action",
+  "rho_before",
+  "rho_after",
+  "legacy normalized max/mean ratios (for s31c comparison)",
+  "gap_proxy_G_over_Q (diagnostic)",
+  "objective_change_abs",
+  "objective_tolerance",
+  "recourse",
+  "gross_operational_cost",
+  "gamma_before",
+  "gamma_after",
+  "freeze_active"
+ ],
+ "report_terminal": [
+  "cycles",
+  "stopped_by (boyd | cap)",
+  "binding test per channel and ratio to threshold",
+  "rho trajectory per channel",
+  "system cost vs s31c at matched cycles and at terminal point, with terminal steps (bar valid only if both settled; s31c did not)",
+  "network failures by tier",
+  "cancellation residual T_TSO + sum T_DSO",
+  "per-DSO settlement and flexibility volumes",
+  "D rows",
+  "consecutive converged cycles at stop and the cycle each began",
+  "gamma trajectory per channel",
+  "per-entry terminal interface V: TSO and DSO copies per node/year/day/period (pu), and distance to the TSO node bounds",
+  "system cost vs s31c AND s32 at matched cycles (1, 2, 3, 5, 10, 18, 20, 30, 40, 50, 60, 70, 80, 90, 100, 125, 150 where available)",
+  "E4 noise floor delta_c alongside the terminal per-entry steps",
+  "cycle at which all three channels first pass with 3 consecutive cycles (the stop cycle)",
+  "terminal EFC/day per node and per cohort-year, with margin and fraction versus 1.4612",
+  "SoH floor multiplier per (node, y_inv, y): dual of the floor row specifically, NOT the SoH-recursion equality rows of the same ConstraintList; plus the terminal SoH and whether the row is active (SoH within 1e-6 of soh_min)",
+  "system cost at matched cycles vs s34, s33e2, s32, s31c; bars valid only if both runs settled"
+ ],
+ "role": "Reference endpoint every later oracle is judged against (Addendum 16). Not an optimisation of the method: no other parameter changes.",
+ "stage": "P5.15 Step 3.2-3.4 run 1 - reference equilibrium (s35ref) - frozen specification v5",
+ "stopping_rule": {
+  "definition": "unchanged from v3: Boyd per channel, all three channels, 3 consecutive converged cycles, eps_abs 1e-5, eps_rel 1e-4",
+  "eps_abs": 1e-05,
+  "eps_abs_derivation": {
+   "delta_c": {
+    "ESS": 6.603706009759045e-08,
+    "PF": 1.2525028627568471e-08,
+    "V": 1.04294014501525e-14
+   },
+   "limitation": "fixed-input local-solver repeatability and tolerance sensitivity at cycle-7 TSO and DSO blocks; ESSO and cross-cycle ADMM effects not measured",
+   "rule": "max(1e-5, 3 * max_c delta_c) rounded up to 1eK/3eK = max(1e-5, 1.98e-7) = 1e-5",
+   "source": "E4 noise floor, data/SRP1/Results/P515S33/E4/e4_noise_floor_results.json (commit 24f808d7) under frozen spec data/SRP1/Results/P515S33/frozen_e4_noise_floor_spec_v1_35f54dfe.json"
+  },
+  "eps_dual": "sqrt(n) * eps_abs + eps_rel * ||y||, y in model units (V: lambda/v_base; PF: lambda/s_base; ESS: as stored)",
+  "eps_justification": "eps_rel matches the s31c objective relative tolerance (1e-4) and the ~1e-4 relative accuracy needed for the 0.37 % storage ranking signal; eps_abs 1e-5 RMS normalized is comparable to the relative term for PF and above local-solve feasibility noise. Advisor-derived, not tuned; provisional until sigma is fixed in 3.4.",
+  "eps_pri": "sqrt(p) * eps_abs + eps_rel * max(||x||, ||z||)",
+  "eps_rel": 0.0001,
+  "mapping_ess": "unchanged from v2, TSO proximal block uses gamma_ess in force",
+  "mapping_v_pf": "unchanged from v2, with gamma the value IN FORCE at the cycle TSO solve: s = sqrt(rho_c^2 + gamma_c^2) * (z_TSO^k - z_TSO^(k-1)); s_rho_part = rho_c * dz; s_proximal_part = gamma_c * dz; rho_c and gamma_c read from the TSO model Params before the end-of-cycle penalty update",
+  "norms": "Euclidean over all normalized entries (nodes x years x days x periods [x p,q] [x agents]); no probability or annualization weights",
+  "objective_change_test": "diagnostic only: |dQ| vs max(1e3, 1e-4 * scale) as in s31c, reported per cycle with its rule-ten ratio; not a stopping criterion"
+ },
+ "success_definition": {
+  "addendum_16": "equilibrium at the SoH threshold with the degradation constraint active; the floor multiplier (shadow price of degradation) reported as a result",
+  "reference_established_iff": "Boyd stop on all three channels with 3 consecutive converged cycles within 500 cycles, and no channel frozen at a rho clamp",
+  "reported_not_gated": [
+   "EFC/day vs the SoH-binding threshold 1.4612 (and vs EFC* 1.8520)",
+   "whether the SoH floor (es_soh_per_unit_cumul >= soh_min = 0.50, shared_energy_storage_data.py:676) is active per node, cohort and year, with the multiplier value, sign convention and units stated",
+   "system cost",
+   "network failures by tier"
+  ]
+ }
+}

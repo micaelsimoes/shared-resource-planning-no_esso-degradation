@@ -1,0 +1,79 @@
+{
+ "schema": "p515_s44_scale_measurement_v1",
+ "label": "paper_build",
+ "instance": "paper",
+ "launch": "launch.json",
+ "build_child": {
+  "mode": "build",
+  "command": [
+   "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+   "-u",
+   "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_scale_measurement.py",
+   "--child",
+   "build",
+   "--label",
+   "paper_build"
+  ],
+  "exit_code": 97,
+  "raw_returncode": 97,
+  "wall_s": 408.3823401927948,
+  "parent_observed_peak": {
+   "measure": 25826708704,
+   "rss_tree": 18931843072
+  },
+  "wait4_rusage": {
+   "ru_utime": 389.052642,
+   "ru_stime": 18.394379,
+   "ru_maxrss": 19001098240,
+   "ru_minflt": 5817523,
+   "ru_majflt": 338,
+   "ru_nvcsw": 3671,
+   "ru_nivcsw": 50148
+  },
+  "thread_caps_in_child_env": {
+   "OMP_NUM_THREADS": "1",
+   "MKL_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": "1",
+   "VECLIB_MAXIMUM_THREADS": "1",
+   "NUMEXPR_NUM_THREADS": "1"
+  }
+ },
+ "build_status": "watchdog_abort",
+ "build_abort": {
+  "cause": "process-tree memory above 24.00 GiB (25769803776 bytes)",
+  "stage_at_abort": "pristine clones kept by the ADMM loop (tso_pristine_base, dso_pristine_base)",
+  "rss_reached": {
+   "t": 407.26,
+   "stage": "pristine clones kept by the ADMM loop (tso_pristine_base, dso_pristine_base)",
+   "rss_self": 10927439872,
+   "rss_children": 0,
+   "n_children": 0,
+   "rss_tree": 10927439872,
+   "footprint_self": 25824742624,
+   "measure": 25824742624,
+   "sys_available": 10166927360,
+   "sys_used_pct": 70.4,
+   "swap_used": 262144
+  },
+  "elapsed_s": 407.267,
+  "peak_so_far": {
+   "measure": 25824742624,
+   "rss_tree": 18986106880,
+   "rss_self": 18986106880,
+   "footprint_self": 25824742624,
+   "stage_at_peak_measure": "pristine clones kept by the ADMM loop (tso_pristine_base, dso_pristine_base)",
+   "t_at_peak_measure": 407.26
+  }
+ },
+ "parent_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "exit_code": 97,
+ "ended_utc": "2026-09-19T16:06:30.986025+00:00"
+}

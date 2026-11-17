@@ -1,0 +1,64 @@
+{
+  "defaults_before_read": {
+    "recovery_enabled": true,
+    "recovery_tier2_enabled": true
+  },
+  "case33_1_like_after_read": {
+    "recovery_options": null,
+    "recovery_enabled": true,
+    "recovery_tier2_enabled": true
+  },
+  "explicit_disabled_after_read": {
+    "recovery_enabled": false,
+    "recovery_tier2_enabled": false
+  },
+  "case33_1_now_eligible_maxIterations": true,
+  "disabled_flag_blocks_eligibility": false,
+  "optimal_termination_not_eligible": false,
+  "esso_eligible_with_no_recovery_options": true,
+  "esso_master_problem_never_eligible": false,
+  "set_recovery_policy_before": {
+    "TSO": [
+      true,
+      true
+    ],
+    "5": [
+      true,
+      true
+    ],
+    "7": [
+      true,
+      true
+    ],
+    "9": [
+      true,
+      true
+    ],
+    "ESSO": [
+      true,
+      true
+    ]
+  },
+  "set_recovery_policy_after": {
+    "TSO": [
+      true,
+      false
+    ],
+    "DSO5(case33_1)": [
+      false,
+      false
+    ],
+    "DSO7(case33_2)": [
+      true,
+      false
+    ],
+    "DSO9(case33_3)": [
+      true,
+      false
+    ],
+    "ESSO": [
+      true,
+      false
+    ]
+  }
+}

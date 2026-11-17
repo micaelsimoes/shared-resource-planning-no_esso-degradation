@@ -1,0 +1,34 @@
+13:10:51 [W51-gate] P5.15 Addendum 40 ruling 2 W51 -- SRP1 two-cycle bitwise identity: row 18 inactive at the initialisation solve is inert at one scenario, vs committed baseline C* and the committed W48 arm
+13:10:51 [W51-gate] committed W48 arm pinned: data/SRP1/Results/P515S52/srp1_bitwise_gate/arm (manifest sha256 9a5d6b78bfdb4738e83389878eba3236b298a4e5e5b05308a48b44ebe094ba69)
+13:10:51 [W51-gate] W51 presence checks: 21/21 true
+13:10:51 [W51-gate] DECLARED BEFORE THE RUN: 51 solves/cycle, base 153 (cap 2 + initialisation), per-event reconciled; W51 counter: exactly 36 calls of each new function, 0 acting
+13:10:51 [W35-gate] P5.15 Addendum 40 ruling 2 W51 -- SRP1 two-cycle bitwise identity: row 18 inactive at the initialisation solve is inert at one scenario, vs committed baseline C* and the committed W48 arm
+13:10:51 [W35-gate] git HEAD 2020293644e2750a1dde639f16abc10700e4f05f; output root data/SRP1/Results/P515S53/srp1_bitwise_gate_r3
+13:10:51 [W35-gate] preconditions passed; capture-path checklist 47 items, all true; W35 presence checks 57 items, all true
+13:10:51 [W35-gate] DECLARED BEFORE THE RUN: 51 solves/cycle; base 153 (cap 2 + initialization); gate on observed == base + every attempted retry (recovered or not) and GUARD.verify(that) exactly
+13:10:51 [W35-gate] legacy run lock acquired (.p515_g_gate.lock)
+Traceback (most recent call last):
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s53_srp1_bitwise_gate.py", line 436, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s53_srp1_bitwise_gate.py", line 348, in main
+    status = S51G.main()   # W39 gate 1 as committed (-> W35 gate main); exits 1 on a precondition refusal
+             ^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s51_srp1_bitwise_gate.py", line 201, in main
+    status = W35G.main()
+             ^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s50_generalization_gate.py", line 216, in main
+    report, summary = W10.run_arm(ARM, 'on', arm_dir, counters, expected_counts)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s53_srp1_bitwise_gate.py", line 335, in run_arm_then_disarm_counter
+    return run_arm(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s45_snapshot_off_two_cycle_gate.py", line 539, in run_arm
+    report, report_path = G.run_admm_arm(
+                          ^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_g_g1_g4_admm_gates.py", line 1250, in run_admm_arm
+    planning, sed, candidate = _construct_arm_planning(
+                               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_g_g1_g4_admm_gates.py", line 1095, in _construct_arm_planning
+    raise RuntimeError(
+RuntimeError: refusing to start: eval dir already exists (network logs append): /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s44_s45_w10_snapoff_s53w51gate_578636daa6d6360d_run

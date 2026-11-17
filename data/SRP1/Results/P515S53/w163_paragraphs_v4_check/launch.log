@@ -1,0 +1,65 @@
+10:08:12 [W163] script p515_s53_w163_paragraphs_v4_check.py sha256 f9bc979f6711a330810d994fa74e6e91c015b9d78a356d1fbad5d58e15cbe4ae committed clean True; 72 inputs committed clean; paragraphs_v4 9ed77949, paragraphs_v3 62d26e27, frozen JSON 590088fe, v6 spec 96c23404, W162 JSON 3e14aa7c verified
+10:08:13 [W163] v3 -> v4: changed v3 lines [1, 3, 14, 17, 29, 30, 43, 44, 87, 90, 91, 114, 121, 122, 123] (declared [1, 3, 14, 17, 29, 30, 43, 44, 87, 90, 91, 114, 121, 122, 123]); tokens via changed map 14, dropped [['X1', 1, '66', 0], ['UNCHECKED', 87, '10⁻⁵', 0]], unmapped []
+10:08:13 [W163] tokens: 162 (149 in scope, 13 non-manuscript); every token assigned True (unassigned 0, stale 0)
+10:08:13 [W163] W161 carry-over: 164 re-derived, same counterpart as committed True; verbatim 28, rewritten in v3 15, not in v4 121
+10:08:13 [W163] checks in v4: 118 -- match 116, MISMATCH 0 [], approximate 1 ['N63'], no table counterpart 1 ['S2a']; W162 kept 65, rebuilt ['N4', 'N5', 'N25', 'N36', 'N57', 'N60', 'N61', 'N64'], new ['N74', 'N75', 'X5', 'X6', 'X7']; X {'X1': 'match', 'X2': 'match', 'X3': 'match', 'X4': 'match', 'X5': 'match', 'X6': 'match', 'X7': 'match'}
+10:08:13 [W163] unchanged checks reproduce W162: True []
+10:08:13 [W163]   W162 non-match S2a: v3 'no table counterpart' -> v4 'no table counterpart' (written '+0.18', counterpart None)
+10:08:13 [W163]   W162 non-match N36: v3 'approximate' -> v4 'match' (written '3', counterpart '3 (3.36)')
+10:08:13 [W163]   W162 non-match N60: v3 'MISMATCH' -> v4 'match' (written '10⁻⁴ (distribution subproblems)', counterpart '0.0001')
+10:08:13 [W163]   W162 non-match N63: v3 'approximate' -> v4 'approximate' (written '≈ 1.1 × 10⁻⁶ relative, with the same sign', counterpart 'c_star -1.200e-06, n7_4h_e1 -1.036e-06, x0 -1.116e-06; mean -1.117e-06')
+10:08:13 [W163]   W162 non-match N64: v3 'MISMATCH' -> v4 'match' (written '≈ 7.8', counterpart '7.8')
+10:08:13 [W163]   W162 non-match D4: v3 'OBSERVATION: the code requires a successful solve, not the 10× clean classification' -> v4 'consistent: the code requires a successful solve (status ok, termination optimal / locallyOptimal / globallyOptimal), as v4 now says' (written None, counterpart None)
+10:08:13 [W163]   W162 non-match D5: v3 'INCONSISTENT with the code: the veto covers the certifying window; 4 certificates read a non-clean cycle outside it' -> v4 'window scope CONSISTENT with the veto; "read only for the turning points and the swing history" is INCOMPLETE: before the window the test also reads oscillatory: window_inside_run (k0: the absence of a Boyd lapse (Q None or not boyd_k) over [k0, k]); monotone: lo_ge_k0_plus_K_EXCL (k0: the absence of a Boyd lapse over [k0, k]), no_sign_change_in_window (the steps over [lo, k] AND the sign of the last non-zero step before lo (cycles j - 1, j, j the last c in [k0 + K_EXCL, lo - 1] with |dQ_c| >= EPS0): a sign change at the first non-zero step of the window is judged against it), steps_decreasing ([lo - 1, k] (dQ_lo = Q_lo - Q_(lo-1)))' (written None, counterpart None)
+10:08:13 [W163]   W162 non-match D6: v3 'figures match s (N4, N5); ANCHOR differs: s is measured from the old certificate N = k0 + 9, not from the first residual pass k0' -> v4 'consistent: x0 certified at 132 and the unit at 112, both by the residual rule (10 consecutive cycles passing the residual test with successful local solves, from 123 / 103); s (N4, N5) is measured from those certificates' (written None, counterpart None)
+10:08:13 [W163]   N63 approximate: written '≈ 1.1 × 10⁻⁶ relative, with the same sign', counterpart 'c_star -1.200e-06, n7_4h_e1 -1.036e-06, x0 -1.116e-06; mean -1.117e-06' -- range 1.04–1.20 × 10⁻⁶ (one decimal: 1.0 / 1.1 / 1.2), mean 1.12; all negative
+10:08:13 [W163]   N4 match: written '15' -> '15'
+10:08:13 [W163]   N5 match: written '21' -> '21'
+10:08:13 [W163]   N25 match: written '0.9' -> 'max 0.882 τ'
+10:08:13 [W163]   N36 match: written '3' -> '3 (3.36)'
+10:08:13 [W163]   N57 match: written '32 GiB' -> '32 GiB'
+10:08:13 [W163]   N60 match: written '10⁻⁴ (distribution subproblems)' -> '0.0001'
+10:08:13 [W163]   N61 match: written '10⁻⁶ (both)' -> '1e-06'
+10:08:13 [W163]   N64 match: written '≈ 7.8' -> '7.8'
+10:08:13 [W163]   N74 match: written '5 × 10⁻⁴ (transmission subproblem)' -> 'parent_of_tail_commit 0.0005, w86_campaign_git_head 0.0005, HEAD 0.0005'
+10:08:13 [W163]   N75 match: written 'solve successfully (optimal or locally optimal)' -> 'status ok and optimal/locallyOptimal/globallyOptimal'
+10:08:13 [W163]   X5 match: written 'paragraphs_v3.md (sha256 62d26e27..., cb0a0bc6); the W162 figure check (d1f3e186)' -> '{"62d26e27": true, "cb0a0bc6": true, "d1f3e186": true}'
+10:08:13 [W163]   X6 match: written '7.8, 15, 21, 5, 3, 0.9, 32' -> 'all present'
+10:08:13 [W163]   X7 match: written '2026-10-07' -> '2026-10-07'
+10:08:13 [W163]   UNCHECKED line 1 '6' [non-manuscript] title "Step 6" (stage label)
+10:08:13 [W163]   UNCHECKED line 23 '1' [enumerator] list item 1
+10:08:13 [W163]   UNCHECKED line 25 '2' [enumerator] list item 2
+10:08:13 [W163]   UNCHECKED line 27 '3' [enumerator] list item 3
+10:08:13 [W163]   UNCHECKED line 29 '4' [enumerator] list item 4
+10:08:13 [W163]   UNCHECKED line 30 '5' [enumerator] list item 5
+10:08:13 [W163]   UNCHECKED line 56 'one' [not a figure] pronoun ("An evaluation without one")
+10:08:13 [W163]   UNCHECKED line 72 '0' [notation] λ ∈ [0, c_flex]: the lower end of the set-valued interface price; no table carries it
+10:08:13 [W163]   UNCHECKED line 76 'one' [not a figure] "they share one fingerprint": the three bullets that follow are each checked (L1-L6)
+10:08:13 [W163]   UNCHECKED line 105 'one' [NO SOURCE FOUND] "one machine": no evaluation record carries a host identifier (launch.json keys: command, cwd, thread caps, pids, utc, spec sha, label, key; W159 uname is a read at 2026-10-06)
+10:08:13 [W163]   UNCHECKED line 122 'Two' [structural] "Two effects": the count of the two bullets that follow (each checked: N60-N65, N74)
+10:08:13 [W163]   UNCHECKED line 134 '1' [enumerator] sentence 1
+10:08:13 [W163]   UNCHECKED line 136 '2' [enumerator] sentence 2
+10:08:13 [W163]   UNCHECKED line 139 '3' [enumerator] sentence 3
+10:08:13 [W163]   UNCHECKED line 141 '4' [enumerator] sentence 4
+10:08:13 [W163]   D1: consistent
+10:08:13 [W163]   D2: consistent
+10:08:13 [W163]   D3: consistent
+10:08:13 [W163]   D4: consistent: the code requires a successful solve (status ok, termination optimal / locallyOptimal / globallyOptimal), as v4 now says
+10:08:13 [W163]   D5: window scope CONSISTENT with the veto; "read only for the turning points and the swing history" is INCOMPLETE: before the window the test also reads oscillatory: window_inside_run (k0: the absence of a Boyd lapse (Q None or not boyd_k) over [k0, k]); monotone: lo_ge_k0_plus_K_EXCL (k0: the absence of a Boyd lapse over [k0, k]), no_sign_change_in_window (the steps over [lo, k] AND the sign of the last non-zero step before lo (cycles j - 1, j, j the last c in [k0 + K_EXCL, lo - 1] with |dQ_c| >= EPS0): a sign change at the first non-zero step of the window is judged against it), steps_decreasing ([lo - 1, k] (dQ_lo = Q_lo - Q_(lo-1)))
+10:08:13 [W163]   D6: consistent: x0 certified at 132 and the unit at 112, both by the residual rule (10 consecutive cycles passing the residual test with successful local solves, from 123 / 103); s (N4, N5) is measured from those certificates
+10:08:13 [W163] check paragraphs_v4_sha_pinned: True
+10:08:13 [W163] check paragraphs_v3_sha_pinned: True
+10:08:13 [W163] check frozen_json_unchanged: True
+10:08:13 [W163] check v3_to_v4_changed_lines_as_declared: True
+10:08:13 [W163] check changed_token_map_on_changed_lines_only: True
+10:08:13 [W163] check every_w162_token_remapped: True
+10:08:13 [W163] check w161_counterparts_rederived_equal_to_committed: True
+10:08:13 [W163] check w161_count_164: True
+10:08:13 [W163] check w161_evaluator_self_test_on_v1: True
+10:08:13 [W163] check w162_evaluator_self_test_on_v2_values: True
+10:08:13 [W163] check unchanged_checks_reproduce_w162: True
+10:08:13 [W163] check every_token_assigned_no_stale_assignment: True
+10:08:13 [W163] check every_v4_fragment_found: True
+10:08:13 [W163] check every_carried_check_names_its_tokens: True
+10:08:13 [W163] wrote data/SRP1/Results/P515S53/w163_paragraphs_v4_check/w163_paragraphs_v4_figure_check.json 34f53a2c, data/SRP1/Results/P515S53/w163_paragraphs_v4_check/w163_paragraphs_v4_figure_check.md 1b51e9ec, data/SRP1/Results/P515S53/w163_paragraphs_v4_check/manifest_sha256.json cce0dd8b
+10:08:13 [W163] guards [('w163_paragraphs_v4_check', 0, 0, []), ('w162_paragraphs_v3_check', 0, 0, []), ('w161_paragraphs_v2', 0, 0, []), ('w160_step6_freeze_export', 0, 0, []), ('w157_step6_tables', 0, 0, []), ('w145_banded_fit', 0, 0, []), ('w142_checks', 0, 0, []), ('w139_checks', 0, 0, []), ('w137_checks', 0, 0, []), ('w132_checks', 0, 0, []), ('w118_checks', 0, 0, []), ('w105_checks_imported', 0, 0, []), ('w101_checks_imported', 0, 0, []), ('w98_checks_imported', 0, 0, []), ('w112_imported', 0, 0, []), ('w141_swing_variants', 0, 0, []), ('w139_v5_from_records', 0, 0, []), ('w131_imported', 0, 0, []), ('w137_ra_imported', 0, 0, []), ('alpha_row_launcher', 0, 0, []), ('w86_launcher', 0, 0, []), ('w87', 0, 0, []), ('w88', 0, 0, []), ('w89_step1', 0, 0, []), ('w89_3x3_launcher', 0, 0, []), ('w90_3x3_parent', 0, 0, []), ('w98_parent', 0, 0, []), ('w101_parent', 0, 0, []), ('w118_parent', 0, 0, []), ('w132_parent', 0, 0, []), ('w137_parent', 0, 0, []), ('w139_parent', 0, 0, []), ('w142_parent', 0, 0, [])]; pickle ok True; exit 0; wall 7.7 s

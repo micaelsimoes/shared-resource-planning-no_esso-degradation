@@ -1,0 +1,504 @@
+{
+ "schema": "p515_s45_snapshot_switch_checks_v1",
+ "stage": "P5.15 Addendum 27 item 5(a) -- switchable pristine snapshot clones (zero-solve checks)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 27 item 5(a)",
+  "paper-scale bounded task item (a)",
+  "data/SRP1/Results/P515S44/scale_measurement/paper_build/watchdog_abort_build.json (motivation)"
+ ],
+ "started_utc": "2026-09-19T21:40:51.284426+00:00",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "argv": [
+  "p515_s45_snapshot_switch_checks.py",
+  "r2"
+ ],
+ "cwd": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation",
+ "git_head": "750f96def880fd2fd437ff76b565d2be209daa2a",
+ "git_tracked_changes": [
+  "M PLANNER_BRIEF_2026-09-13.md",
+  " M admm_parameters.py",
+  " M p515_s44_scale_measurement.py",
+  " M shared_resources_planning.py"
+ ],
+ "eval_id": "s45_snapshot_switch_20260919T214051Z",
+ "memory_evidence": {
+  "source": "data/SRP1/Results/P515S44/scale_measurement/paper_build/watchdog_abort_build.json + rss_samples_build.jsonl",
+  "stage_at_abort": "pristine clones kept by the ADMM loop (tso_pristine_base, dso_pristine_base)",
+  "last_pre_stage_footprint_bytes": 19645758080,
+  "abort_measure_bytes": 25824742624,
+  "delta_bytes": 6178984544,
+  "delta_gib": 5.755,
+  "note": "the clone stage did NOT complete, so the delta is a LOWER bound on the saving"
+ },
+ "check_iii_validation": {
+  "legal_modes": [
+   "lightweight",
+   "legacy_clone",
+   "off"
+  ],
+  "off_is_legal": true,
+  "cases": [
+   {
+    "case": "defaults (lightweight/lightweight)",
+    "expect_raise": false,
+    "tso_mode": "lightweight",
+    "dso_mode": "lightweight",
+    "persistent_workers": {
+     "enabled": false,
+     "num_workers": 8
+    },
+    "resolved_modes": [
+     "lightweight",
+     "lightweight"
+    ],
+    "raised": false,
+    "error": null,
+    "as_expected": true
+   },
+   {
+    "case": "legacy_clone/legacy_clone",
+    "expect_raise": false,
+    "tso_mode": "legacy_clone",
+    "dso_mode": "legacy_clone",
+    "persistent_workers": {
+     "enabled": false,
+     "num_workers": 8
+    },
+    "resolved_modes": [
+     "legacy_clone",
+     "legacy_clone"
+    ],
+    "raised": false,
+    "error": null,
+    "as_expected": true
+   },
+   {
+    "case": "off/off",
+    "expect_raise": false,
+    "tso_mode": "off",
+    "dso_mode": "off",
+    "persistent_workers": {
+     "enabled": false,
+     "num_workers": 8
+    },
+    "resolved_modes": [
+     "off",
+     "off"
+    ],
+    "raised": false,
+    "error": null,
+    "as_expected": true
+   },
+   {
+    "case": "invalid TSO mode",
+    "expect_raise": true,
+    "tso_mode": "nonsense",
+    "dso_mode": "lightweight",
+    "persistent_workers": {
+     "enabled": false,
+     "num_workers": 8
+    },
+    "raised": true,
+    "error": "ValueError: admm_parameters.tso_snapshot_capture_mode = 'nonsense' is not a legal snapshot capture mode; legal values are ('lightweight', 'legacy_clone', 'off')",
+    "as_expected": true
+   },
+   {
+    "case": "invalid DSO mode",
+    "expect_raise": true,
+    "tso_mode": "lightweight",
+    "dso_mode": "",
+    "persistent_workers": {
+     "enabled": false,
+     "num_workers": 8
+    },
+    "raised": true,
+    "error": "ValueError: admm_parameters.dso_snapshot_capture_mode = '' is not a legal snapshot capture mode; legal values are ('lightweight', 'legacy_clone', 'off')",
+    "as_expected": true
+   },
+   {
+    "case": "TSO off + persistent workers enabled",
+    "expect_raise": true,
+    "tso_mode": "off",
+    "dso_mode": "lightweight",
+    "persistent_workers": {
+     "enabled": true,
+     "num_workers": 8
+    },
+    "raised": true,
+    "error": "ValueError: admm_parameters.tso_snapshot_capture_mode = 'off' is not supported with persistent_workers enabled: the persistent-worker path clones the block being solved on every solve, so snapshot capture cannot be switched off there",
+    "as_expected": true
+   },
+   {
+    "case": "DSO off + persistent workers enabled",
+    "expect_raise": true,
+    "tso_mode": "lightweight",
+    "dso_mode": "off",
+    "persistent_workers": {
+     "enabled": true,
+     "num_workers": 8
+    },
+    "raised": true,
+    "error": "ValueError: admm_parameters.dso_snapshot_capture_mode = 'off' is not supported with persistent_workers enabled: the persistent-worker path clones the block being solved on every solve, so snapshot capture cannot be switched off there",
+    "as_expected": true
+   },
+   {
+    "case": "legacy_clone + persistent workers enabled (still legal)",
+    "expect_raise": false,
+    "tso_mode": "legacy_clone",
+    "dso_mode": "lightweight",
+    "persistent_workers": {
+     "enabled": true,
+     "num_workers": 8
+    },
+    "resolved_modes": [
+     "legacy_clone",
+     "lightweight"
+    ],
+    "raised": false,
+    "error": null,
+    "as_expected": true
+   }
+  ],
+  "default_tso_mode": "lightweight",
+  "default_dso_mode": "lightweight",
+  "defaults_are_lightweight": true,
+  "build_bases_off_returns_none_none": true,
+  "build_bases_invalid_raises": true,
+  "build_bases_invalid_error": "ValueError: admm_parameters.dso_snapshot_capture_mode = 'nope' is not a legal snapshot capture mode; legal values are ('lightweight', 'legacy_clone', 'off')",
+  "pass": true
+ },
+ "check_v_scale_script": {
+  "apply_off": {
+   "requested": "off",
+   "tso_mode_before": "lightweight",
+   "dso_mode_before": "lightweight",
+   "tso_mode_after": "off",
+   "dso_mode_after": "off",
+   "expected": [
+    "off",
+    "off"
+   ],
+   "took_effect": true,
+   "persistent_workers_enabled": false
+  },
+  "apply_off_sets_both": true,
+  "apply_off_recorded": true,
+  "apply_on": {
+   "requested": "on",
+   "tso_mode_before": "lightweight",
+   "dso_mode_before": "lightweight",
+   "tso_mode_after": "lightweight",
+   "dso_mode_after": "lightweight",
+   "expected": [
+    "lightweight",
+    "lightweight"
+   ],
+   "took_effect": true,
+   "persistent_workers_enabled": false
+  },
+  "apply_on_changes_nothing": true,
+  "hook_inner_calls": [
+   {
+    "tso_mode_seen_by_inner": "lightweight"
+   }
+  ],
+  "hook_inner_ran_once": true,
+  "hook_sets_both_modes": true,
+  "hook_report_entry": {
+   "requested": "off",
+   "tso_mode_before": "lightweight",
+   "dso_mode_before": "lightweight",
+   "tso_mode_after": "off",
+   "dso_mode_after": "off",
+   "expected": [
+    "off",
+    "off"
+   ],
+   "took_effect": true,
+   "persistent_workers_enabled": false
+  },
+  "hook_records_into_report": true,
+  "hook_records_into_child_record": true,
+  "refusing_params_raises": true,
+  "refusing_params_error": "RuntimeError: --snapshots off: capture modes did not take effect: {'requested': 'off', 'tso_mode_before': 'lightweight', 'dso_mode_before': 'lightweight', 'tso_mode_after': 'lightweight', 'dso_mode_after': 'lightweight', 'expected': ['off', 'off'], 'took_effect': False, 'persistent_workers_enabled': False}",
+  "cli": {
+   "flag_declared": true,
+   "choices_on_off": true,
+   "default_on": true,
+   "build_child_reads_launch": true,
+   "cycle_child_reads_launch": true,
+   "build_child_calls_production_helper": true
+  },
+  "pass": true
+ },
+ "dispatch": {
+  "state_build_wall_s": 16.97,
+  "results_dir_before_redirect": {
+   "planning": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results",
+   "tso": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results",
+   "dso": {
+    "5": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results",
+    "7": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results",
+    "9": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results"
+   }
+  },
+  "frozen_dir": "data/SRP1/Results/P515S45/snapshot_switch_checks_r2/planning_results/FrozenSMOPF",
+  "sess_capacities_source": "shared_ess_data.get_updated_capacities (production)",
+  "block_counts": {
+   "tso": 12,
+   "dso_node7": 12,
+   "dso_nodes": [
+    5,
+    7,
+    9
+   ]
+  },
+  "simulated_failures": {
+   "tso_block": [
+    "2025",
+    "Spring"
+   ],
+   "tso_key": "case9|2025|Spring",
+   "dso_node7_block": [
+    "2025",
+    "Spring"
+   ],
+   "dso_key": "case33_2|2025|Spring"
+  },
+  "comparators": {
+   "tso": [
+    "2025",
+    "Summer"
+   ],
+   "dso_node7": [
+    "2025",
+    "Autumn"
+   ],
+   "cycle": 7
+  },
+  "tso_comparator_present": true,
+  "dso_comparator_present": true,
+  "expected": {
+   "lightweight": {
+    "pristine_clone_calls": 24,
+    "tso_capture_calls": 12,
+    "dso_capture_calls": 12,
+    "tso_clone_calls": 2,
+    "dso_clone_calls": 2,
+    "note": "one capture per block per cycle; two on-demand rebuild clones per agent = one for the simulated failure + one for the cycle-7 comparator"
+   },
+   "off": {
+    "pristine_clone_calls": 0,
+    "tso_capture_calls": 0,
+    "dso_capture_calls": 0,
+    "tso_clone_calls": 0,
+    "dso_clone_calls": 0,
+    "note": "no pristine base, no per-cycle capture, no clone anywhere"
+   },
+   "legacy_clone": {
+    "pristine_clone_calls": 0,
+    "tso_capture_calls": 0,
+    "dso_capture_calls": 0,
+    "tso_clone_calls": 12,
+    "dso_clone_calls": 12,
+    "note": "pre-Step-3.6: NetworkData.optimize clones every TSO block and every node-7 DSO block on every cycle (both callbacks wired); nodes 5 and 9 pass None/None and never clone"
+   }
+  },
+  "arm_lightweight": {
+   "arm": "lightweight",
+   "mode": "lightweight",
+   "cycle": 7,
+   "admm_params_digest_excluding_modes": "069cca39c69336d509976407a6a63449bfa12b948d59f770f6fca781026c3eab",
+   "pristine_bases": {
+    "tso_is_none": false,
+    "dso_is_none": false,
+    "tso_blocks": 12,
+    "dso_blocks": 12,
+    "clone_calls": 24,
+    "wall_s": 3.95
+   },
+   "tso": {
+    "clone_calls": 2,
+    "capture_calls": 12
+   },
+   "dso": {
+    "clone_calls": 2,
+    "capture_calls": 12
+   },
+   "stdout_log": "data/SRP1/Results/P515S45/snapshot_switch_checks_r2/arm_stdout_lightweight.log",
+   "stdout_markers": {
+    "tso_off_warning": false,
+    "dso_off_warning": false,
+    "tso_comparator_skipped": false,
+    "dso_comparator_skipped": false,
+    "saved_presolve_block_lines": 4,
+    "marker_lines": 0,
+    "tso_fail_block_named": true,
+    "dso_fail_block_named": true
+   },
+   "frozen_dir_new_files": [
+    "failure_TSO_case9_2025_Spring_cycle7.pkl",
+    "frozen_DSO_node7_case33_2_2025_Spring_cycle7.pkl",
+    "matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+    "matched_success_TSO_case9_2025_Summer_cycle7.pkl"
+   ],
+   "new_pkl": [
+    "failure_TSO_case9_2025_Spring_cycle7.pkl",
+    "frozen_DSO_node7_case33_2_2025_Spring_cycle7.pkl",
+    "matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+    "matched_success_TSO_case9_2025_Summer_cycle7.pkl"
+   ],
+   "new_json_markers": [],
+   "scan_frozen_snapshots_count": 4,
+   "scan_frozen_snapshots_files": [
+    "failure_TSO_case9_2025_Spring_cycle7.pkl",
+    "frozen_DSO_node7_case33_2_2025_Spring_cycle7.pkl",
+    "matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+    "matched_success_TSO_case9_2025_Summer_cycle7.pkl"
+   ],
+   "probe": {
+    "blocks_seen": 48
+   }
+  },
+  "arm_off": {
+   "arm": "off",
+   "mode": "off",
+   "cycle": 7,
+   "admm_params_digest_excluding_modes": "069cca39c69336d509976407a6a63449bfa12b948d59f770f6fca781026c3eab",
+   "pristine_bases": {
+    "tso_is_none": true,
+    "dso_is_none": true,
+    "tso_blocks": null,
+    "dso_blocks": null,
+    "clone_calls": 0,
+    "wall_s": 0.0
+   },
+   "tso": {
+    "clone_calls": 0,
+    "capture_calls": 0
+   },
+   "dso": {
+    "clone_calls": 0,
+    "capture_calls": 0
+   },
+   "stdout_log": "data/SRP1/Results/P515S45/snapshot_switch_checks_r2/arm_stdout_off.log",
+   "stdout_markers": {
+    "tso_off_warning": true,
+    "dso_off_warning": true,
+    "tso_comparator_skipped": true,
+    "dso_comparator_skipped": true,
+    "saved_presolve_block_lines": 0,
+    "marker_lines": 2,
+    "tso_fail_block_named": true,
+    "dso_fail_block_named": true
+   },
+   "frozen_dir_new_files": [
+    "snapshot_skipped_failure_DSO_node7_case33_2_2025_Spring_cycle7.json",
+    "snapshot_skipped_failure_TSO_case9_2025_Spring_cycle7.json"
+   ],
+   "new_pkl": [],
+   "new_json_markers": [
+    "snapshot_skipped_failure_DSO_node7_case33_2_2025_Spring_cycle7.json",
+    "snapshot_skipped_failure_TSO_case9_2025_Spring_cycle7.json"
+   ],
+   "scan_frozen_snapshots_count": 0,
+   "scan_frozen_snapshots_files": [],
+   "probe": {
+    "blocks_seen": 48
+   }
+  },
+  "arm_legacy_clone": {
+   "arm": "legacy_clone",
+   "mode": "legacy_clone",
+   "cycle": 7,
+   "admm_params_digest_excluding_modes": "069cca39c69336d509976407a6a63449bfa12b948d59f770f6fca781026c3eab",
+   "pristine_bases": {
+    "tso_is_none": true,
+    "dso_is_none": true,
+    "tso_blocks": null,
+    "dso_blocks": null,
+    "clone_calls": 0,
+    "wall_s": 0.0
+   },
+   "tso": {
+    "clone_calls": 12,
+    "capture_calls": 0
+   },
+   "dso": {
+    "clone_calls": 12,
+    "capture_calls": 0
+   },
+   "stdout_log": "data/SRP1/Results/P515S45/snapshot_switch_checks_r2/arm_stdout_legacy_clone.log",
+   "stdout_markers": {
+    "tso_off_warning": false,
+    "dso_off_warning": false,
+    "tso_comparator_skipped": false,
+    "dso_comparator_skipped": false,
+    "saved_presolve_block_lines": 4,
+    "marker_lines": 0,
+    "tso_fail_block_named": true,
+    "dso_fail_block_named": true
+   },
+   "frozen_dir_new_files": [
+    "failure_TSO_case9_2025_Spring_cycle7.pkl",
+    "frozen_DSO_node7_case33_2_2025_Spring_cycle7.pkl",
+    "matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+    "matched_success_TSO_case9_2025_Summer_cycle7.pkl"
+   ],
+   "new_pkl": [
+    "failure_TSO_case9_2025_Spring_cycle7.pkl",
+    "frozen_DSO_node7_case33_2_2025_Spring_cycle7.pkl",
+    "matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+    "matched_success_TSO_case9_2025_Summer_cycle7.pkl"
+   ],
+   "new_json_markers": [],
+   "scan_frozen_snapshots_count": 4,
+   "scan_frozen_snapshots_files": [
+    "failure_TSO_case9_2025_Spring_cycle7.pkl",
+    "frozen_DSO_node7_case33_2_2025_Spring_cycle7.pkl",
+    "matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+    "matched_success_TSO_case9_2025_Summer_cycle7.pkl"
+   ],
+   "probe": {
+    "blocks_seen": 48
+   }
+  },
+  "check_i_off_pass": true,
+  "check_ii_lightweight_pass": true,
+  "check_iib_legacy_clone_regression_pass": true,
+  "check_iv": {
+   "blocks_compared": 48,
+   "blocks_compared_off_arm": 48,
+   "block_state_digest_diffs": [],
+   "block_state_digest_diffs_lightweight_vs_legacy_clone": [],
+   "network_params_digest_diffs": [],
+   "admm_params_digest_lightweight": "069cca39c69336d509976407a6a63449bfa12b948d59f770f6fca781026c3eab",
+   "admm_params_digest_off": "069cca39c69336d509976407a6a63449bfa12b948d59f770f6fca781026c3eab",
+   "admm_params_identical_excluding_modes": true,
+   "what_is_digested": "network.capture_block_mutable_state of the block as Network.run_smopf receives it: every mutable Param value, every Var (value, raw lb, raw ub, fixed), every Constraint/Objective active flag, the ipopt_zL_in/ipopt_zU_in/dual suffixes"
+  },
+  "check_iv_pass": true
+ },
+ "guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "gates": {
+  "check_i_off": true,
+  "check_ii_lightweight": true,
+  "check_iib_legacy_clone_regression": true,
+  "check_iii_validation": true,
+  "check_iv_configuration_identical": true,
+  "check_v_scale_script": true,
+  "zero_solves": true
+ },
+ "status": "PASS",
+ "wall_s": 34.0,
+ "ended_utc": "2026-09-19T21:41:25.284400+00:00"
+}

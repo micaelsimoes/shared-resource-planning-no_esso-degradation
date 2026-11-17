@@ -1,0 +1,1062 @@
+{
+ "stage": "P5.15 Addendum 46 ruling 7, W84 items 2-3 -- campaign harness: per-evaluation floor-status / tail-state persistence (Q2) and the tail-enabled checklist assertion (Q3); evaluation_key unchanged",
+ "utc": "2026-09-25T14:15:42.986705+00:00",
+ "git_head": "84e45402a803578ae85f151e239547016000c005",
+ "base_commit": "eb8cf81f",
+ "script_sha256": "e8387469c4ff1655a46298006c4ec0f3c46851976339c05238b4e22eb9f1b83b",
+ "harness_sha256": "e75b39e1cf3b11967672e405cd384c6d3c3027f61f4248a8e66b32c4bc1c9e02",
+ "production_sha256": {
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0",
+  "admm_parameters.py": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+  "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+  "solver_parameters.py": "2801ef16853d7e63752d646c4c8a789a17a6731959060112c48f9457074c8b65"
+ },
+ "scratch_dir_note": "scratch outputs (frozen scratch specs, persisted sidecars, planning logs dir) are outside the repository and not preserved; every value checked is recorded here",
+ "K1_K2": {
+  "base_commit": "eb8cf81f",
+  "n_hunks": 18,
+  "hunk_headers": [
+   "@@ -194,0 +195,17 @@ Zero solves throughout. `evaluation_key` is unchanged; every other evaluation ru",
+   "@@ -276,0 +294,6 @@ MULTISCENARIO_IDENTITY_REL_TOL = 1e-9   # declared before any run: relative tole",
+   "@@ -657,0 +681,19 @@ def validate_interface_deviation_premium(value):",
+   "@@ -959,0 +1002,3 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration,",
+   "@@ -992,0 +1038,2 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration,",
+   "@@ -1084,0 +1132,2 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration,",
+   "@@ -1752,0 +1802,76 @@ def assert_record_capture_paths():",
+   "@@ -2410,0 +2536,2 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves",
+   "@@ -2463,0 +2591,4 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves",
+   "@@ -4414,0 +4546,76 @@ def write_operational_workbook(planning, models, optimization_results, primal_ev",
+   "@@ -4427,0 +4635,5 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps,",
+   "@@ -4510 +4722,2 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps,",
+   "@@ -4519,0 +4733,9 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps,",
+   "@@ -4731,0 +4954,5 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps,",
+   "@@ -4766,0 +4994,3 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps,",
+   "@@ -4768 +4998,2 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps,",
+   "@@ -4808,0 +5040,4 @@ def main_child(argv):",
+   "@@ -4826,0 +5062,3 @@ def main_child(argv):"
+  ],
+  "base_line_spans": {
+   "evaluation_key": [
+    734,
+    821
+   ],
+   "candidate_key": [
+    437,
+    440
+   ],
+   "canonical_candidate": [
+    400,
+    434
+   ],
+   "eval_ids": [
+    461,
+    463
+   ],
+   "eval_dir_name": [
+    920,
+    921
+   ],
+   "_entry_eval_key": [
+    1270,
+    1271
+   ],
+   "effective_anderson_acceleration": [
+    525,
+    533
+   ],
+   "validate_model_variant": [
+    536,
+    572
+   ],
+   "validate_ess_ageing_baseline": [
+    667,
+    706
+   ],
+   "flex_price_multiplier_in_key": [
+    589,
+    593
+   ],
+   "validate_derived_instance": [
+    603,
+    630
+   ],
+   "derived_instance_identity": [
+    633,
+    635
+   ],
+   "validate_interface_deviation_premium": [
+    638,
+    655
+   ],
+   "validate_overrides": [
+    469,
+    493
+   ],
+   "validate_flex_price_multiplier": [
+    575,
+    586
+   ],
+   "validate_case_file_anderson_acceleration": [
+    499,
+    522
+   ],
+   "_sanitize_id": [
+    390,
+    394
+   ]
+  },
+  "hunks_touching_key_functions": {
+   "evaluation_key": [],
+   "candidate_key": [],
+   "canonical_candidate": [],
+   "eval_ids": [],
+   "eval_dir_name": [],
+   "_entry_eval_key": [],
+   "effective_anderson_acceleration": [],
+   "validate_model_variant": [],
+   "validate_ess_ageing_baseline": [],
+   "flex_price_multiplier_in_key": [],
+   "validate_derived_instance": [],
+   "derived_instance_identity": [],
+   "validate_interface_deviation_premium": [],
+   "validate_overrides": [],
+   "validate_flex_price_multiplier": [],
+   "validate_case_file_anderson_acceleration": [],
+   "_sanitize_id": []
+  },
+  "k1_no_hunk_touches_a_key_function": true,
+  "source_identical_to_base": {
+   "evaluation_key": true,
+   "candidate_key": true,
+   "canonical_candidate": true,
+   "eval_ids": true,
+   "eval_dir_name": true,
+   "_entry_eval_key": true,
+   "effective_anderson_acceleration": true,
+   "validate_model_variant": true,
+   "validate_ess_ageing_baseline": true,
+   "flex_price_multiplier_in_key": true,
+   "validate_derived_instance": true,
+   "derived_instance_identity": true,
+   "validate_interface_deviation_premium": true,
+   "validate_overrides": true,
+   "validate_flex_price_multiplier": true,
+   "validate_case_file_anderson_acceleration": true,
+   "_sanitize_id": true
+  },
+  "live_module_is_the_file": {
+   "evaluation_key": true,
+   "candidate_key": true,
+   "canonical_candidate": true,
+   "eval_ids": true,
+   "eval_dir_name": true,
+   "_entry_eval_key": true,
+   "effective_anderson_acceleration": true,
+   "validate_model_variant": true,
+   "validate_ess_ageing_baseline": true,
+   "flex_price_multiplier_in_key": true,
+   "validate_derived_instance": true,
+   "derived_instance_identity": true,
+   "validate_interface_deviation_premium": true,
+   "validate_overrides": true,
+   "validate_flex_price_multiplier": true,
+   "validate_case_file_anderson_acceleration": true,
+   "_sanitize_id": true
+  },
+  "k2_sources_identical": true
+ },
+ "K3": {
+  "n_specs": 50,
+  "n_entries": 7016,
+  "n_mismatches": 0,
+  "mismatches": [],
+  "per_spec": {
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/campaign_spec_s44_aa_variant_f90618e8.json": {
+    "sha256": "f90618e8d00299969a7e35c48850e0316b3a2f15436763d66bf1306afb392186",
+    "n_entries": 2,
+    "n_ok": 2,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/campaign_spec_s44_aa_variant_smoke_e3f83174.json": {
+    "sha256": "e3f83174b2f784e0ed4dccae61ba27e414a8c9cbe9495b3b7723a5f2512abeed",
+    "n_entries": 2,
+    "n_ok": 2,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/campaign_s44_gate/campaign_spec_s44_gate_4047b4e3.json": {
+    "sha256": "4047b4e3f1852c3616a80ad26f2d43f2aa4b333847e447fb5b9323fb3bce7f33",
+    "n_entries": 3,
+    "n_ok": 3,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/campaign_s44_selection_aa/campaign_spec_s44_selection_aa_4135c8d4.json": {
+    "sha256": "4135c8d44f4e067ec80e1f4516690aff16e565e1da7c60ace618d3e237668926",
+    "n_entries": 3,
+    "n_ok": 3,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/harness_checks/c2_spec_root/campaign_spec_c2_f24bc344.json": {
+    "sha256": "f24bc344e28621c32fe62e3ca6c235d898d14ecc2c9a165f0949fbbc88adcc55",
+    "n_entries": 2,
+    "n_ok": 2,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/harness_checks/c4_fail_campaign/campaign_spec_c4f_92ac6360.json": {
+    "sha256": "92ac6360a18aae4bcb7941cad64f61dbf604e8141fad77c0df420c9d9b9fdd0b",
+    "n_entries": 1,
+    "n_ok": 1,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/harness_checks/c4_foreign_lock_campaign/campaign_spec_c4l_1ce4890b.json": {
+    "sha256": "1ce4890b44912a97aa84ae32873ac898c323c53d56d25216cd26da7f88ae008a",
+    "n_entries": 1,
+    "n_ok": 1,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/harness_checks/c4_nonstub_spec_campaign/campaign_spec_c4n_59849c27.json": {
+    "sha256": "59849c27fe1df4cda350c8bd1334eb6a245a0c1bc61827c21fd6cffd900bfdaf",
+    "n_entries": 1,
+    "n_ok": 1,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/harness_checks/c4_stub_campaign/campaign_spec_c4_cf3b201c.json": {
+    "sha256": "cf3b201c5faf9233018c47bfe69ad82be913613855a18e20b267d4b577389e62",
+    "n_entries": 4,
+    "n_ok": 4,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/harness_checks_r2/c2_spec_root/campaign_spec_c2_04e91893.json": {
+    "sha256": "04e9189372edc5b7e53b00de06e43ac5aa3330892475d306b4c5a87e971615d9",
+    "n_entries": 2,
+    "n_ok": 2,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/harness_checks_r2/c4_fail_campaign/campaign_spec_c4f_b96c62d6.json": {
+    "sha256": "b96c62d638605f85bbf80847f2ac6c7a300c61fbecd8ea95c700a7c250c0f177",
+    "n_entries": 1,
+    "n_ok": 1,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/harness_checks_r2/c4_foreign_lock_campaign/campaign_spec_c4l_800e7da8.json": {
+    "sha256": "800e7da894c94b9aae57c9e36ac2d10acf09ed774b2d7de12a56f5e226d32431",
+    "n_entries": 1,
+    "n_ok": 1,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/harness_checks_r2/c4_nonstub_spec_campaign/campaign_spec_c4n_34c6cffc.json": {
+    "sha256": "34c6cffcfea7cae9032a5fdf3127121d02425499d9c37f7750d5d4b897d1a024",
+    "n_entries": 1,
+    "n_ok": 1,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/harness_checks_r2/c4_stub_campaign/campaign_spec_c4_0bca1b39.json": {
+    "sha256": "0bca1b395c39fcdc2d0628ae7107927efd4c0753466499c23f88922b3f77bed8",
+    "n_entries": 4,
+    "n_ok": 4,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/harness_checks_r3/c2_spec_root/campaign_spec_c2_1ea09b7b.json": {
+    "sha256": "1ea09b7b6a20c863150c68f4f405ecb78f01a0def8c33640913f387bb0167a16",
+    "n_entries": 2,
+    "n_ok": 2,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/harness_checks_r3/c4_fail_campaign/campaign_spec_c4f_0f059fc1.json": {
+    "sha256": "0f059fc1c7b154502ab40a2e20e2966f479e5b4139cdf05641605e8d84cb5628",
+    "n_entries": 1,
+    "n_ok": 1,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/harness_checks_r3/c4_foreign_lock_campaign/campaign_spec_c4l_3029ea43.json": {
+    "sha256": "3029ea43d2c5eaa78ca6b2d4643d48e0582af773c2a4fce55258676bc0531ad4",
+    "n_entries": 1,
+    "n_ok": 1,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/harness_checks_r3/c4_nonstub_spec_campaign/campaign_spec_c4n_8ca5f6d7.json": {
+    "sha256": "8ca5f6d7174e6882496b0b3f276e61cada1c1c639211584d4dc882cff4cb95b5",
+    "n_entries": 1,
+    "n_ok": 1,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/harness_checks_r3/c4_stub_campaign/campaign_spec_c4_83da5ad0.json": {
+    "sha256": "83da5ad0695451c0f312247e96c054e7bb15d63c05ff99679393443f5f8fd5a1",
+    "n_entries": 4,
+    "n_ok": 4,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/harness_checks_r3/c8_spec_root/campaign_spec_c8_d6300da7.json": {
+    "sha256": "d6300da794984cc43249c42ccff093b9b830468f91f706d08b36dde9d31f3411",
+    "n_entries": 3,
+    "n_ok": 3,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/harness_checks_r3/c9_stub_campaign/campaign_spec_c9_276119b8.json": {
+    "sha256": "276119b84981b3c306d53fe1f10c1f8d598048f6787f2d54ba8c69066a146099",
+    "n_entries": 2,
+    "n_ok": 2,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S44/selection_aa_dry_run/campaign_spec_s44_selection_aa_075e33ef.json": {
+    "sha256": "075e33ef941f6c797f09ffa4ac503a07cc09f0228bf9d8312f32d0eafaeb46b9",
+    "n_entries": 3,
+    "n_ok": 3,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S45/campaign_s45_a0/campaign_spec_s45_a0_25a05347.json": {
+    "sha256": "25a0534754bccf1c902a548084d214ed7cdf9227af6b98c05b5485ac866fc061",
+    "n_entries": 8,
+    "n_ok": 8,
+    "declares": [
+     "case_file_anderson_acceleration"
+    ]
+   },
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_spec_s45_a0_c7_9d08ad2f.json": {
+    "sha256": "9d08ad2f144b67ea97dae8dc25d91288fc86a77dd52c7f53276a52c5f00f8b34",
+    "n_entries": 8,
+    "n_ok": 8,
+    "declares": [
+     "case_file_anderson_acceleration"
+    ]
+   },
+   "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_spec_s45_a1a_c71f52ee.json": {
+    "sha256": "c71f52ee535aff607927f83f52783993198b90a8ff44f5426f92e66dc160b851",
+    "n_entries": 30,
+    "n_ok": 30,
+    "declares": [
+     "case_file_anderson_acceleration"
+    ]
+   },
+   "data/SRP1/Results/P515S45/campaign_s45_a1b/campaign_spec_s45_a1b_bd3040a9.json": {
+    "sha256": "bd3040a9e3ac51fd8fa305e2e1bccaf8eb08811d57b4e499e1a12c0dfa8fd789",
+    "n_entries": 20,
+    "n_ok": 20,
+    "declares": [
+     "case_file_anderson_acceleration"
+    ]
+   },
+   "data/SRP1/Results/P515S45/campaign_s45_a2/campaign_spec_s45_a2_d5b52f30.json": {
+    "sha256": "d5b52f302e7610345445ad12d86a6d015cd00690d85299a805afffc295d67b29",
+    "n_entries": 5,
+    "n_ok": 5,
+    "declares": [
+     "case_file_anderson_acceleration"
+    ]
+   },
+   "data/SRP1/Results/P515S45/campaign_s45_a3/campaign_spec_s45_a3_4f733b9d.json": {
+    "sha256": "4f733b9de200584ac0403f4bebaf4feab0a86995a65e77014d90e1fc21d59004",
+    "n_entries": 5,
+    "n_ok": 5,
+    "declares": [
+     "case_file_anderson_acceleration"
+    ]
+   },
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/campaign_spec_s45_reverify_aa_c_star_4a214b99.json": {
+    "sha256": "4a214b99df34e58791d31d842f2ad6c5293f83e82064d52320934b6d32b6e58d",
+    "n_entries": 1,
+    "n_ok": 1,
+    "declares": [
+     "case_file_anderson_acceleration"
+    ]
+   },
+   "data/SRP1/Results/P515S46/campaign_s46_ageing/campaign_spec_s46_ageing_6544c17e.json": {
+    "sha256": "6544c17e5231db41db401c4dc768472142a4fe878d86b2a33b1ff33990963f45",
+    "n_entries": 5,
+    "n_ok": 5,
+    "declares": [
+     "case_file_anderson_acceleration"
+    ]
+   },
+   "data/SRP1/Results/P515S47/campaign_s47_a1a_baseline/campaign_spec_s47_a1a_baseline_add4ebd8.json": {
+    "sha256": "add4ebd850ae46764307e15644470ddcf49ab7af4ec10d8233ad2ffd535b580f",
+    "n_entries": 30,
+    "n_ok": 30,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json": {
+    "sha256": "8cfa264e7ab0d92ac0832657c9b328d70b45851ba92f4623384d11fddb334185",
+    "n_entries": 1705,
+    "n_ok": 1705,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S47/campaign_s47_recert/campaign_spec_s47_recert_902f93aa.json": {
+    "sha256": "902f93aa22093455daa50927bdfa28bc885b2c5491151d211dc943bb3de86ee4",
+    "n_entries": 2,
+    "n_ok": 2,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S48/x0_capture/campaign_spec_s48_x0_capture_4a50c0e2.json": {
+    "sha256": "4a50c0e2277d937409f7471f8361268fea6e36254c1e21bdcf1e6ab8b1dd6a61",
+    "n_entries": 1,
+    "n_ok": 1,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/campaign_spec_s49_flex_ladder_2203f6c1.json": {
+    "sha256": "2203f6c1759a8419e566bc4536ef76d2ab44bb4b3ca72f7786638341f7cd899e",
+    "n_entries": 6,
+    "n_ok": 6,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S50/campaign_s50_marginal/campaign_spec_s50_marginal_fa4b30ee.json": {
+    "sha256": "fa4b30eee63d9b137df559379ed5cdd13a1b93e2a7b5622fd681b643618cb8a0",
+    "n_entries": 2,
+    "n_ok": 2,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S51/campaign_s51_f2_ladder/campaign_spec_s51_f2_ladder_c4455767.json": {
+    "sha256": "c4455767d58955c523eef59973f54442daac70a0dd7da59e2ef9bd46784fe87e",
+    "n_entries": 3,
+    "n_ok": 3,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_spec_s51_f2_phase_b_5ce295e1.json": {
+    "sha256": "5ce295e17c5165ea2148d1240c918ebca05b8aafbeeb22e2ebfc03f9bf120094",
+    "n_entries": 1705,
+    "n_ok": 1705,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S52/campaign_s52_pilot/campaign_spec_s52_pilot_b62dc2b5.json": {
+    "sha256": "b62dc2b5cd57eacdfd267d583f09e2d61b646006df09836c26d57f71e5499523",
+    "n_entries": 2,
+    "n_ok": 2,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "derived_instance",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/campaign_spec_s52_pilot_nopersist_08790b4d.json": {
+    "sha256": "08790b4db71a8161ac968479f3547f7908942a910dc387e33b93018161e45f54",
+    "n_entries": 2,
+    "n_ok": 2,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "derived_instance",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S52/campaign_s52_pilot_repro/campaign_spec_s52_pilot_repro_444ee0d0.json": {
+    "sha256": "444ee0d014dbeb63b73e268931e7597ec9fb18a43d6301e30e12b660f85391a7",
+    "n_entries": 1,
+    "n_ok": 1,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "derived_instance",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S52/campaign_s52_pilot_repro_nopersist/campaign_spec_s52_pilot_repro_nopersist_2d0fccd5.json": {
+    "sha256": "2d0fccd5414e1a33a9ee9e3e66012784e13255d492fabc9021a7cbcad8f30568",
+    "n_entries": 1,
+    "n_ok": 1,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "derived_instance",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row/campaign_spec_s53_alpha_row_870f3af8.json": {
+    "sha256": "870f3af8cff8c9bb41ecdcaa368f6044723abc557e1ab8dcfea347902fce9266",
+    "n_entries": 6,
+    "n_ok": 6,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "derived_instance",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_smoke/campaign_spec_s53_alpha_row_smoke_44bc7931.json": {
+    "sha256": "44bc79315915589a2729af1f1fd0ef83bc143e7d1e96222f5b31baca03baf648",
+    "n_entries": 1,
+    "n_ok": 1,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "derived_instance",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_smoke_r2/campaign_spec_s53_alpha_row_smoke_r2_c28eaa4d.json": {
+    "sha256": "c28eaa4d3846ab97393922e7734cba58ddd13aee71fe8627be3cb6381f8a1c07",
+    "n_entries": 1,
+    "n_ok": 1,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "derived_instance",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/campaign_spec_s53_alpha_row_v25_70965374.json": {
+    "sha256": "7096537486c86a7101e7948fe1931085e29b43b9700b62748799e368f8305570",
+    "n_entries": 6,
+    "n_ok": 6,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "derived_instance",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S53/campaign_s53_f2_certificate/campaign_spec_s53_f2_certificate_3b9d6df9.json": {
+    "sha256": "3b9d6df9b14013744d89702fee1917cdb8febf24901be3bd7a533d64de142725",
+    "n_entries": 1705,
+    "n_ok": 1705,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_spec_s53_f2_certificate_r1_803571c0.json": {
+    "sha256": "803571c0efcf828eb9716d6c6255909da91d882a57a7bd4e053805f96f88027f",
+    "n_entries": 1705,
+    "n_ok": 1705,
+    "declares": [
+     "case_file_anderson_acceleration",
+     "ess_ageing_baseline"
+    ]
+   },
+   "data/SRP1/Results/P515S53/harness_fix_w74/v3_tagged_root/campaign_spec_w74v3t_ca819297.json": {
+    "sha256": "ca8192973b5934caa0914eea4514e6033a899de3b5d4286737849c74cbe6a07c",
+    "n_entries": 3,
+    "n_ok": 3,
+    "declares": []
+   },
+   "data/SRP1/Results/P515S53/harness_fix_w74/v3_untagged_root/campaign_spec_w74v3u_9d6a7bc7.json": {
+    "sha256": "9d6a7bc736019ac5c619138c5949cf5743812a89dda26feeedace2c45f02ddcd",
+    "n_entries": 2,
+    "n_ok": 2,
+    "declares": []
+   }
+  },
+  "k3_every_committed_key_recomputed_equal": true
+ },
+ "K4": {
+  "results": {
+   "undeclared": {
+    "candidates_identical_to_committed": true,
+    "eval_keys": {
+     "c_star": "070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb",
+     "n7_4h_e1": "bd504ecf5a288d447e53ef6f7e8090b017d15549b257aa095ff4f95890a06e42"
+    },
+    "configuration_keys_differing_from_committed": [],
+    "differing_values": {},
+    "has_convergence_depth_tail": false,
+    "convergence_depth_tail": null
+   },
+   "declared_on": {
+    "candidates_identical_to_committed": true,
+    "eval_keys": {
+     "c_star": "070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb",
+     "n7_4h_e1": "bd504ecf5a288d447e53ef6f7e8090b017d15549b257aa095ff4f95890a06e42"
+    },
+    "configuration_keys_differing_from_committed": [
+     "convergence_depth_tail"
+    ],
+    "differing_values": {
+     "convergence_depth_tail": {
+      "committed": null,
+      "frozen_now": {
+       "enabled": true,
+       "compl_inf_tol": 1e-06
+      }
+     }
+    },
+    "has_convergence_depth_tail": true,
+    "convergence_depth_tail": {
+     "enabled": true,
+     "compl_inf_tol": 1e-06
+    }
+   }
+  },
+  "allowed_provenance_drift": [
+   "case_file_last_commit",
+   "ess_params_file"
+  ],
+  "k4a_undeclared_reproduces_the_committed_spec": true,
+  "k4b_declared_adds_only_the_declaration_and_keeps_the_keys": true,
+  "consequence_recorded": "the tail declaration is NOT in evaluation_key: a tail-enabled C* evaluation under the s47_recert declarations has eval_key 070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb -- the committed s47_recert C* eval_key"
+ },
+ "R": {
+  "w83_inputs_match_committed_manifest": {
+   "data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate/w83_network_ipopt_solve_records.jsonl": true,
+   "data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate/w83_tail_state.json": true
+  },
+  "r1": {
+   "log": "data/SRP1/Results/P56A/evals/p515s44_s45_w10_snapoff_s53w83tailgate_578636daa6d6360d_run/logs/optim_log_case9_2025_Spring.log",
+   "log_sha256_now": "88a8d812db5e0fe41b1170f1d8d27b89ee887e3a118a62ef173218fb2c51607b",
+   "log_sha256_committed_record": "88a8d812db5e0fe41b1170f1d8d27b89ee887e3a118a62ef173218fb2c51607b",
+   "segment_bytes": [
+    0,
+    129497
+   ],
+   "n_drained": 1,
+   "options_passed": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "compl_inf_tol": 0.0005,
+    "bound_push": 1e-06,
+    "bound_frac": 1e-06,
+    "slack_bound_frac": 1e-06,
+    "slack_bound_push": 1e-06,
+    "output_file": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w84_checks_run/P56A_evals/w84_hookcheck_run/logs/optim_log_case9_2025_Spring.log",
+    "file_append": "yes",
+    "file_print_level": 6
+   },
+   "records_roundtrip_equal": true,
+   "tail_state_roundtrip_equal": true,
+   "reproduces_committed_w83_record": {},
+   "summary": {
+    "status": "written",
+    "network_ipopt_solve_records_path": "../../../../private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w84_checks_run/r1_eval/network_ipopt_solve_records.jsonl",
+    "network_ipopt_solve_records_sha256": "6b2a4d46dc79ea524f325919082fc9462789a98686827af92359316d16363cf3",
+    "state_carried_records": true,
+    "n_records": 1,
+    "records_per_round": {
+     "0": 1
+    },
+    "floor_status_tally": {
+     "TSO|at": 1
+    },
+    "exit_tally": {
+     "Optimal Solution Found.": 1
+    },
+    "n_parse_problems": 0,
+    "stale_network_ipopt_solve_records_discarded": 0,
+    "convergence_depth_tail_state_path": "../../../../private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w84_checks_run/r1_eval/convergence_depth_tail_state.json",
+    "convergence_depth_tail_state_sha256": "a56adf2d0ec0fc753830f82b63e4de41e104ed13ef5c825eb86bcfa848bfe7a4",
+    "state_carried_tail_state": true
+   },
+   "holds": true
+  },
+  "r2": {
+   "n_records": 144,
+   "records_roundtrip_equal": true,
+   "tail_state_roundtrip_equal": true,
+   "records_file_sha256": "91080eac1ff3c814648a6968f96d2f9dc850df48eccf9040f65379b15cd70d75",
+   "committed_w83_records_sha256": "91080eac1ff3c814648a6968f96d2f9dc850df48eccf9040f65379b15cd70d75",
+   "records_file_byte_identical_to_committed": true,
+   "summary": {
+    "status": "written",
+    "network_ipopt_solve_records_path": "../../../../private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w84_checks_run/r2_eval/network_ipopt_solve_records.jsonl",
+    "network_ipopt_solve_records_sha256": "91080eac1ff3c814648a6968f96d2f9dc850df48eccf9040f65379b15cd70d75",
+    "state_carried_records": true,
+    "n_records": 144,
+    "records_per_round": {
+     "0": 48,
+     "1": 48,
+     "2": 48
+    },
+    "floor_status_tally": {
+     "DSO|at": 108,
+     "TSO|at": 36
+    },
+    "exit_tally": {
+     "Optimal Solution Found.": 143,
+     "Solved To Acceptable Level.": 1
+    },
+    "n_parse_problems": 0,
+    "stale_network_ipopt_solve_records_discarded": null,
+    "convergence_depth_tail_state_path": "../../../../private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w84_checks_run/r2_eval/convergence_depth_tail_state.json",
+    "convergence_depth_tail_state_sha256": "6219e2952ef3079a3fcfb61a2085db70d13279180695315f9f7c53e66cae7c5e",
+    "state_carried_tail_state": true
+   },
+   "holds": true
+  },
+  "r3": {
+   "summary": {
+    "status": "written",
+    "network_ipopt_solve_records_path": "../../../../private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w84_checks_run/r3_eval/network_ipopt_solve_records.jsonl",
+    "network_ipopt_solve_records_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "state_carried_records": true,
+    "n_records": 0,
+    "records_per_round": {},
+    "floor_status_tally": {},
+    "exit_tally": {},
+    "n_parse_problems": 0,
+    "stale_network_ipopt_solve_records_discarded": 0,
+    "convergence_depth_tail_state_path": "../../../../private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w84_checks_run/r3_eval/convergence_depth_tail_state.json",
+    "convergence_depth_tail_state_sha256": "2c85716bf5e45d26bc43e009c0874cb4bd153f8bab8ab3a24933bed9d85e9fd9",
+    "state_carried_tail_state": true
+   },
+   "records_loaded": [],
+   "tail_loaded": {
+    "enabled": false
+   },
+   "holds": true
+  },
+  "r4": {
+   "second_persist_raises": "RuntimeError: refusing to overwrite existing artifact: /private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w84_checks_run/r3_eval/network_ipopt_solve_records.jsonl",
+   "holds": true
+  },
+  "r5": {
+   "recount_rounds": {
+    "0": 48,
+    "1": 48,
+    "2": 48
+   },
+   "recount_tally": {
+    "TSO|at": 36,
+    "DSO|at": 108
+   },
+   "holds": true
+  }
+ },
+ "C1": {
+  "undeclared": {
+   "tail_enabled_for_this_run": false,
+   "compl_inf_tol_tail": null,
+   "source": "not declared -> production default (ADMMParameters.convergence_depth_tail, OFF)",
+   "checks_all": true,
+   "n_checks": 8
+  },
+  "declared_none": {
+   "tail_enabled_for_this_run": false,
+   "compl_inf_tol_tail": null,
+   "source": "not declared -> production default (ADMMParameters.convergence_depth_tail, OFF)",
+   "checks_all": true,
+   "n_checks": 8
+  },
+  "declared_on": {
+   "tail_enabled_for_this_run": true,
+   "compl_inf_tol_tail": 1e-06,
+   "source": "campaign spec configuration.convergence_depth_tail",
+   "checks_all": true,
+   "n_checks": 8
+  },
+  "declared_off": {
+   "tail_enabled_for_this_run": false,
+   "compl_inf_tol_tail": null,
+   "source": "campaign spec configuration.convergence_depth_tail",
+   "checks_all": true,
+   "n_checks": 8
+  },
+  "invalid_refused": {
+   "int_tol": "ValueError: convergence_depth_tail.compl_inf_tol must be a positive finite float, got 1",
+   "bool_tol": "ValueError: convergence_depth_tail.compl_inf_tol must be a positive finite float, got True",
+   "negative_tol": "ValueError: convergence_depth_tail.compl_inf_tol must be a positive finite float, got -1e-06",
+   "nan_tol": "ValueError: convergence_depth_tail.compl_inf_tol must be a positive finite float, got nan",
+   "string_enabled": "ValueError: convergence_depth_tail.enabled must be a bool, got 'yes'",
+   "extra_key": "ValueError: convergence_depth_tail must be a dict with exactly ['compl_inf_tol', 'enabled'], got {'enabled': True, 'compl_inf_tol': 1e-06, 'cycles': 9}",
+   "missing_key": "ValueError: convergence_depth_tail must be a dict with exactly ['compl_inf_tol', 'enabled'], got {'enabled': True}",
+   "not_a_dict": "ValueError: convergence_depth_tail must be a dict with exactly ['compl_inf_tol', 'enabled'], got True"
+  },
+  "negative_control_missing_capture_path_raises": "AssertionError: RULE ELEVEN (W84): convergence-depth capture paths missing: ['production_both_returns_carry_the_records', 'production_both_returns_carry_the_tail_state', 'production_records_drained_at_initialisation', 'production_records_drained_every_cycle']",
+  "holds": true
+ },
+ "C2": {
+  "default_before": {
+   "enabled": false,
+   "compl_inf_tol": 1e-06
+  },
+  "undeclared": {
+   "applied": {
+    "declared": null,
+    "source": "not declared -> production default (ADMMParameters.convergence_depth_tail)",
+    "before": {
+     "enabled": false,
+     "compl_inf_tol": 1e-06
+    },
+    "after": {
+     "enabled": false,
+     "compl_inf_tol": 1e-06
+    },
+    "enabled_in_force": false,
+    "expected_enabled": false,
+    "dict_in_force_equals_declaration": null,
+    "ok": true
+   },
+   "report_checklist": {
+    "declared": null,
+    "source": "not declared -> production default (ADMMParameters.convergence_depth_tail)",
+    "before": {
+     "enabled": false,
+     "compl_inf_tol": 1e-06
+    },
+    "after": {
+     "enabled": false,
+     "compl_inf_tol": 1e-06
+    },
+    "enabled_in_force": false,
+    "expected_enabled": false,
+    "dict_in_force_equals_declaration": null,
+    "ok": true
+   },
+   "dict_in_force_after": {
+    "enabled": false,
+    "compl_inf_tol": 1e-06
+   },
+   "enabled_helper_after": false
+  },
+  "declared_on": {
+   "applied": {
+    "declared": {
+     "enabled": true,
+     "compl_inf_tol": 1e-06
+    },
+    "source": "campaign spec configuration.convergence_depth_tail",
+    "before": {
+     "enabled": false,
+     "compl_inf_tol": 1e-06
+    },
+    "after": {
+     "enabled": true,
+     "compl_inf_tol": 1e-06
+    },
+    "enabled_in_force": true,
+    "expected_enabled": true,
+    "dict_in_force_equals_declaration": true,
+    "ok": true
+   },
+   "report_checklist": {
+    "declared": {
+     "enabled": true,
+     "compl_inf_tol": 1e-06
+    },
+    "source": "campaign spec configuration.convergence_depth_tail",
+    "before": {
+     "enabled": false,
+     "compl_inf_tol": 1e-06
+    },
+    "after": {
+     "enabled": true,
+     "compl_inf_tol": 1e-06
+    },
+    "enabled_in_force": true,
+    "expected_enabled": true,
+    "dict_in_force_equals_declaration": true,
+    "ok": true
+   },
+   "dict_in_force_after": {
+    "enabled": true,
+    "compl_inf_tol": 1e-06
+   },
+   "enabled_helper_after": true
+  },
+  "declared_off": {
+   "applied": {
+    "declared": {
+     "enabled": false,
+     "compl_inf_tol": 1e-06
+    },
+    "source": "campaign spec configuration.convergence_depth_tail",
+    "before": {
+     "enabled": false,
+     "compl_inf_tol": 1e-06
+    },
+    "after": {
+     "enabled": false,
+     "compl_inf_tol": 1e-06
+    },
+    "enabled_in_force": false,
+    "expected_enabled": false,
+    "dict_in_force_equals_declaration": true,
+    "ok": true
+   },
+   "report_checklist": {
+    "declared": {
+     "enabled": false,
+     "compl_inf_tol": 1e-06
+    },
+    "source": "campaign spec configuration.convergence_depth_tail",
+    "before": {
+     "enabled": false,
+     "compl_inf_tol": 1e-06
+    },
+    "after": {
+     "enabled": false,
+     "compl_inf_tol": 1e-06
+    },
+    "enabled_in_force": false,
+    "expected_enabled": false,
+    "dict_in_force_equals_declaration": true,
+    "ok": true
+   },
+   "dict_in_force_after": {
+    "enabled": false,
+    "compl_inf_tol": 1e-06
+   },
+   "enabled_helper_after": false
+  },
+  "negative_control_on_without_declaration_raises": "RuntimeError: convergence-depth tail in force does not match the declaration (W84): {'declared': None, 'source': 'not declared -> production default (ADMMParameters.convergence_depth_tail)', 'before': {'enabled': True, 'compl_inf_tol': 1e-06}, 'after': {'enabled': True, 'compl_inf_tol': 1e-06}, 'enabled_in_force'",
+  "invalid_declaration_refused_at_factory": "ValueError: convergence_depth_tail.compl_inf_tol must be a positive finite float, got 1",
+  "holds": true
+ },
+ "C3": {
+  "expected_on_returned_on": {
+   "check": {
+    "expected_enabled": true,
+    "enabled_in_state": true,
+    "expected_compl_inf_tol_tail": 1e-06,
+    "compl_inf_tol_tail_in_state": 1e-06,
+    "match": true,
+    "n_cycles_recorded": 2,
+    "cycles_tail_active": [
+     2
+    ],
+    "n_cycles_acted": 1,
+    "restore_at_exit_acted": true
+   },
+   "expected_match": true,
+   "as_expected": true
+  },
+  "expected_off_returned_off": {
+   "check": {
+    "expected_enabled": false,
+    "enabled_in_state": false,
+    "expected_compl_inf_tol_tail": null,
+    "compl_inf_tol_tail_in_state": null,
+    "match": true,
+    "n_cycles_recorded": 0,
+    "cycles_tail_active": [],
+    "n_cycles_acted": 0,
+    "restore_at_exit_acted": null
+   },
+   "expected_match": true,
+   "as_expected": true
+  },
+  "expected_on_returned_off_forgotten_enable": {
+   "check": {
+    "expected_enabled": true,
+    "enabled_in_state": false,
+    "expected_compl_inf_tol_tail": 1e-06,
+    "compl_inf_tol_tail_in_state": null,
+    "match": false,
+    "n_cycles_recorded": 0,
+    "cycles_tail_active": [],
+    "n_cycles_acted": 0,
+    "restore_at_exit_acted": null
+   },
+   "expected_match": false,
+   "as_expected": true
+  },
+  "expected_off_returned_on": {
+   "check": {
+    "expected_enabled": false,
+    "enabled_in_state": true,
+    "expected_compl_inf_tol_tail": null,
+    "compl_inf_tol_tail_in_state": 1e-06,
+    "match": false,
+    "n_cycles_recorded": 2,
+    "cycles_tail_active": [
+     2
+    ],
+    "n_cycles_acted": 1,
+    "restore_at_exit_acted": true
+   },
+   "expected_match": false,
+   "as_expected": true
+  },
+  "expected_on_returned_wrong_value": {
+   "check": {
+    "expected_enabled": true,
+    "enabled_in_state": true,
+    "expected_compl_inf_tol_tail": 1e-06,
+    "compl_inf_tol_tail_in_state": 1e-05,
+    "match": false,
+    "n_cycles_recorded": 2,
+    "cycles_tail_active": [
+     2
+    ],
+    "n_cycles_acted": 1,
+    "restore_at_exit_acted": true
+   },
+   "expected_match": false,
+   "as_expected": true
+  },
+  "expected_off_no_tail_state": {
+   "check": {
+    "expected_enabled": false,
+    "enabled_in_state": null,
+    "expected_compl_inf_tol_tail": null,
+    "compl_inf_tol_tail_in_state": null,
+    "match": false,
+    "n_cycles_recorded": 0,
+    "cycles_tail_active": [],
+    "n_cycles_acted": 0,
+    "restore_at_exit_acted": null
+   },
+   "expected_match": false,
+   "as_expected": true
+  },
+  "expected_on_no_state": {
+   "check": {
+    "expected_enabled": true,
+    "enabled_in_state": null,
+    "expected_compl_inf_tol_tail": 1e-06,
+    "compl_inf_tol_tail_in_state": null,
+    "match": false,
+    "n_cycles_recorded": 0,
+    "cycles_tail_active": [],
+    "n_cycles_acted": 0,
+    "restore_at_exit_acted": null
+   },
+   "expected_match": false,
+   "as_expected": true
+  },
+  "on_case_cycles_active": [
+   2
+  ],
+  "holds": true
+ },
+ "C4": {
+  "checks": {
+   "checklist_asserted_before_the_run": true,
+   "sidecars_refused_if_present_before_the_run": true,
+   "persisted_first_in_the_post_run_hook_before_the_terminal_phase": true,
+   "record_carries_the_four_fields": true,
+   "outcome_flags_the_error": true,
+   "main_child_exits_2_on_it": true,
+   "error_record_carries_the_checklist": true,
+   "hook_applies_after_the_d_checks_and_overrides": true,
+   "w47_presence_strings_kept": true,
+   "admm_default_unchanged_off": true,
+   "production_files_unchanged_vs_base": true
+  },
+  "holds": true
+ },
+ "items": {
+  "K1_no_diff_hunk_in_evaluation_key_or_its_helpers": true,
+  "K2_key_function_sources_identical_to_base": true,
+  "K3_every_committed_eval_key_recomputed_equal": true,
+  "K4a_undeclared_freeze_reproduces_s47_recert": true,
+  "K4b_declared_freeze_adds_only_the_declaration": true,
+  "R1_production_made_records_roundtrip": true,
+  "R2_committed_w83_records_roundtrip_byte_identical": true,
+  "R3_tail_off_state_roundtrip": true,
+  "R4_write_once": true,
+  "R5_summary_is_a_recount": true,
+  "C1_checklist_records_enabled_and_disabled_and_fires": true,
+  "C2_hook_applies_reads_back_and_refuses": true,
+  "C3_post_run_state_check_both_states": true,
+  "C4_wiring": true
+ },
+ "all_hold": true,
+ "wall_s": 14.915397882461548
+}

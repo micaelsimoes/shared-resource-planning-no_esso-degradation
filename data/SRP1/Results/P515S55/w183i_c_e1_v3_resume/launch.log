@@ -1,0 +1,123 @@
+09:09:15 [W183i-c] item 1a: the seeds phase split in batches of its own size ...
+09:09:17 [W183i-c]   seeds seven_at_1: 7 launches; ok=True
+09:09:18 [W183i-c]   seeds seven_at_4: 2 launches; ok=True
+09:09:18 [W183i-c]   seeds batch_root_four_at_4: 1 launches; ok=True
+09:09:18 [W183i-c] item 1b: search phases, split at every batch / evaluating-poll boundary vs the in-process loop ...
+09:09:30 [W183i-c] advance_chain_A_c1 [batch]: 25 launches, 25 batches, 3 polls, poll_failure_at_unit_mesh; byte-equal ok=True
+09:09:31 [W183i-c] advance_chain_A_c1 [poll]: 3 launches, 25 batches, 3 polls, poll_failure_at_unit_mesh; byte-equal ok=True
+09:09:33 [W183i-c] A7_per_poll_N_alias_c1 [batch]: 2 launches, 2 batches, 1 polls, STOP_FOR_REVIEW_barrier_rule; byte-equal ok=True
+09:09:34 [W183i-c] A7_per_poll_N_alias_c1 [poll]: 1 launches, 2 batches, 1 polls, STOP_FOR_REVIEW_barrier_rule; byte-equal ok=True
+09:09:39 [W183i-c] A7_overall_A_c1 [batch]: 20 launches, 20 batches, 3 polls, STOP_FOR_REVIEW_barrier_rule; byte-equal ok=True
+09:09:40 [W183i-c] A7_overall_A_c1 [poll]: 3 launches, 20 batches, 3 polls, STOP_FOR_REVIEW_barrier_rule; byte-equal ok=True
+09:09:43 [W183i-c] move_to_storage_advance_A_c4 [batch]: 5 launches, 5 batches, 3 polls, evaluation_budget_exhausted; byte-equal ok=True
+09:09:44 [W183i-c] move_to_storage_advance_A_c4 [poll]: 2 launches, 5 batches, 3 polls, evaluation_budget_exhausted; byte-equal ok=True
+09:09:48 [W183i-c] budget_q_hash_N_c4 [batch]: 8 launches, 8 batches, 3 polls, evaluation_budget_exhausted; byte-equal ok=True
+09:09:49 [W183i-c] budget_q_hash_N_c4 [poll]: 2 launches, 8 batches, 3 polls, evaluation_budget_exhausted; byte-equal ok=True
+09:09:49 [W183i-c] items 2-3: planted foreign records and tampered state ...
+09:09:51 [W183i-c]   wrong_root: a point whose eval dir lies in a sibling root (identical bytes there): refused ok=True refusals=["launch 9: point y2025__n7_p0.75_e1.5_A_2x refused: ['eval_dir_inside_the_phase_root', 'eval_dir_is_the_spec_en"]
+09:09:51 [W183i-c]   wrong_key: a point whose eval key is not its key under the arm's model: refused ok=True refusals=["launch 9: point y2025__n7_p0.75_e1.5_A_2x refused: ['eval_key_recomputes_under_the_arms_model', 'eval_key_equa"]
+09:09:51 [W183i-c]   hash_mismatch: an evaluation record whose bytes no longer match its launch manifest: refused ok=True refusals=["launch 9: point y2025__n7_p0.75_e1.5_A_2x refused: ['record_file_hashed_in_this_launchs_manifest', 'point_rede", "launch 9 refused: ['every_manifest_hash_holds']"]
+09:09:51 [W183i-c]   other_arm: a record of the other arm (its own label), files and manifest made consistent: refused ok=True refusals=["launch 9: point y2025__n5_p0.5_e1__n7_p0.25_e0.5_N_2x refused: ['label_in_the_spec', 'point_model_is_the_arms_", "launch 9 refused: ['manifest_lists_exactly_this_launchs_files']"]
+09:09:51 [W183i-c]   other_arm_relabelled: a record of the other arm under this arm's label of the same candidate: refused ok=True refusals=["launch 9: point y2025__n5_p0.5_e1__n7_p0.25_e0.5_A_2x refused: ['point_model_is_the_arms_model', 'eval_dir_is_", "launch 9 refused: ['manifest_lists_exactly_this_launchs_files']"]
+09:09:52 [W183i-c]   unlisted: an eval dir (copied from the reference run) that no launch manifest lists: refused ok=True refusals=["records: 4 file(s) in the phase root that no launch manifest lists (foreign): ['../../../../private/tmp/claude"]
+09:09:52 [W183i-c]   foreign_launch_record: the last launch record names another E1 root: refused ok=True refusals=["launch 9 refused: ['e1_root_is_this_root']"]
+09:09:52 [W183i-c]   k_next +1: refused ok=True refusals=['resume state disagrees with the records: k_next_equals_the_last_launch_record']
+09:09:52 [W183i-c]   budget: n_new +1: refused ok=True refusals=['resume state disagrees with the records: n_new_equals_the_last_launch_record']
+09:09:53 [W183i-c]   barrier count: n_barrier_new +1: refused ok=True refusals=['resume state disagrees with the records: n_barrier_new_equals_the_last_launch_record']
+09:09:53 [W183i-c]   barrier count: n_barrier_new -1 (floored at 0 -> +1 if 0): refused ok=True refusals=['resume state disagrees with the records: n_barrier_new_equals_the_last_launch_record']
+09:09:53 [W183i-c]   incumbent label: refused ok=True refusals=['resume state disagrees with the records: incumbent_equals_the_last_launch_record']
+09:09:54 [W183i-c]   incumbent F -1 EUR: refused ok=True refusals=['resume state disagrees with the records: incumbent_equals_the_last_launch_record']
+09:09:54 [W183i-c]   poll in progress: batches_done dropped: refused ok=True refusals=['resume state disagrees with the records: poll_in_progress_equals_the_last_launch_record']
+09:09:54 [W183i-c]   a persisted poll record (n_cache_hits +1; manifests re-hashed, chain re-linked): refused ok=True refusals=['resume state disagrees with the records: replayed_polls_byte_equal_the_persisted_polls']
+09:09:54 [W183i-c]   k_next +1 WITHOUT re-hashing the manifest: refused ok=True refusals=["launch 9 refused: ['manifest_lists_the_launch_record_and_its_hash_holds', 'every_manifest_hash_holds']"]
+09:09:57 [W183i-c]   k_next +1: refused ok=True refusals=['resume state disagrees with the records: k_next_equals_the_last_launch_record']
+09:09:57 [W183i-c]   budget: n_new +1: refused ok=True refusals=['resume state disagrees with the records: n_new_equals_the_last_launch_record']
+09:09:57 [W183i-c]   barrier count: n_barrier_new +1: refused ok=True refusals=['resume state disagrees with the records: n_barrier_new_equals_the_last_launch_record']
+09:09:58 [W183i-c]   barrier count: n_barrier_new -1 (floored at 0 -> +1 if 0): refused ok=True refusals=['resume state disagrees with the records: n_barrier_new_equals_the_last_launch_record']
+09:09:58 [W183i-c]   incumbent label: refused ok=True refusals=['resume state disagrees with the records: incumbent_equals_the_last_launch_record']
+09:09:58 [W183i-c]   incumbent F -1 EUR: refused ok=True refusals=['resume state disagrees with the records: incumbent_equals_the_last_launch_record']
+09:09:59 [W183i-c]   poll in progress: batches_done dropped: refused ok=True refusals=['resume state disagrees with the records: poll_in_progress_equals_the_last_launch_record']
+09:09:59 [W183i-c]   a persisted poll record (n_cache_hits +1; manifests re-hashed, chain re-linked): refused ok=True refusals=['resume state disagrees with the records: replayed_polls_byte_equal_the_persisted_polls']
+09:09:59 [W183i-c]   k_next +1 WITHOUT re-hashing the manifest: refused ok=True refusals=["launch 14 refused: ['manifest_lists_the_launch_record_and_its_hash_holds', 'every_manifest_hash_holds']"]
+09:10:00 [W183i-c]   seeds: n_evaluated +1: refused ok=True refusals=['resume state disagrees with the records: n_evaluated_equals_the_last_launch_record']
+09:10:00 [W183i-c]   seeds: labels_evaluated reordered: refused ok=True refusals=['resume state disagrees with the records: labels_evaluated_equal_the_last_launch_record']
+09:10:00 [W183i-c]   seeds: n_not_certified +1: refused ok=True refusals=['resume state disagrees with the records: n_not_certified_equals_the_last_launch_record']
+09:10:08 [W183i-c] item 4: the W183g (b) gate checks on v3 ...
+09:10:08 [W183g-b] seed case x0_A: imported evaluation_budget_exhausted (3 polls); off == imported True; on evaluation_budget_exhausted (3 polls, ks [0, 1, 2]), on-vs-imported ok True
+09:10:08 [W183i-c]   W183g(b) seed case x0_A on v3: k 0 size 14 skipped []
+09:10:09 [W183g-b] seed case unit_A: imported STOP_FOR_REVIEW_completion_cap (1 polls); off == imported True; on poll_failure_at_unit_mesh (1 polls, ks [2]), on-vs-imported ok True
+09:10:09 [W183i-c]   W183g(b) seed case unit_A on v3: k 2 size 8 skipped [0, 1]
+09:10:09 [W183g-b] seed case n7_05_2_A: imported STOP_FOR_REVIEW_completion_cap (1 polls); off == imported True; on poll_failure_at_unit_mesh (3 polls, ks [2, 3, 12]), on-vs-imported ok True
+09:10:10 [W183i-c]   W183g(b) seed case n7_05_2_A on v3: k 2 size 9 skipped [0, 1]
+09:10:10 [W183g-b] seed case hist_inc_A: imported STOP_FOR_REVIEW_completion_cap (1 polls); off == imported True; on poll_failure_at_unit_mesh (4 polls, ks [1, 2, 3, 4]), on-vs-imported ok True
+09:10:11 [W183i-c]   W183g(b) seed case hist_inc_A on v3: k 1 size 8 skipped [0]
+09:10:11 [W183g-b] seed case x0_N: imported evaluation_budget_exhausted (3 polls); off == imported True; on evaluation_budget_exhausted (3 polls, ks [0, 1, 2]), on-vs-imported ok True
+09:10:11 [W183i-c]   W183g(b) seed case x0_N on v3: k 0 size 14 skipped []
+09:10:11 [W183g-b] seed case unit_N: imported STOP_FOR_REVIEW_completion_cap (1 polls); off == imported True; on poll_failure_at_unit_mesh (1 polls, ks [2]), on-vs-imported ok True
+09:10:12 [W183i-c]   W183g(b) seed case unit_N on v3: k 2 size 8 skipped [0, 1]
+09:10:12 [W183g-b] seed case n7_05_2_N: imported STOP_FOR_REVIEW_completion_cap (1 polls); off == imported True; on poll_failure_at_unit_mesh (3 polls, ks [2, 3, 12]), on-vs-imported ok True
+09:10:13 [W183i-c]   W183g(b) seed case n7_05_2_N on v3: k 2 size 9 skipped [0, 1]
+09:10:13 [W183g-b] seed case hist_inc_N: imported STOP_FOR_REVIEW_completion_cap (1 polls); off == imported True; on poll_failure_at_unit_mesh (4 polls, ks [1, 2, 3, 4]), on-vs-imported ok True
+09:10:13 [W183i-c]   W183g(b) seed case hist_inc_N on v3: k 1 size 8 skipped [0]
+09:10:18 [W183g-b] A7_per_poll: imported STOP_FOR_REVIEW_barrier_rule (1 polls); off == imported True; on STOP_FOR_REVIEW_barrier_rule (1 polls, ks [0]), on-vs-imported ok True
+09:10:18 [W183g-b] A7_overall: imported STOP_FOR_REVIEW_barrier_rule (3 polls); off == imported True; on STOP_FOR_REVIEW_barrier_rule (3 polls, ks [0, 1, 2]), on-vs-imported ok True
+09:10:19 [W183g-b] accepted_point_moves_incumbent_to_storage: imported STOP_FOR_REVIEW_completion_cap (2 polls); off == imported True; on evaluation_budget_exhausted (3 polls, ks [0, 2, 3]), on-vs-imported ok True
+09:10:19 [W183g-b] budget_zero_x0: imported evaluation_budget_exhausted (1 polls); off == imported True; on evaluation_budget_exhausted (1 polls, ks [0]), on-vs-imported ok True
+09:10:19 [W183g-b] budget_5_unit: imported STOP_FOR_REVIEW_completion_cap (1 polls); off == imported True; on evaluation_budget_exhausted (1 polls, ks [2]), on-vs-imported ok True
+09:10:19 [W183g-b] max_polls_1_x0: imported max_polls_reached (1 polls); off == imported True; on max_polls_reached (1 polls, ks [0]), on-vs-imported ok True
+09:10:19 [W183g-b] max_polls_1_unit: imported STOP_FOR_REVIEW_completion_cap (1 polls); off == imported True; on max_polls_reached (1 polls, ks [2]), on-vs-imported ok True
+09:10:20 [W183g-b] window_exhaustion_iii_production_window_10: imported STOP_FOR_REVIEW_completion_cap (1 polls); off == imported True; on STOP_FOR_REVIEW_completion_cap (1 polls, ks [0]), on-vs-imported ok True
+09:10:20 [W183i-c] source diff: {'-signature': 3, '+signature': 4, '+k_next_state': 2, '+resume_hook': 3, '-k_next_state': 1, '+inserted_block': 23, '+inserted_block:k_next_state': 1}; uncategorised 0
+09:10:20 [W183i-c] item 5: the launcher dry run in-process ...
+09:10:28 [W183b-E1] dry run: key table (8 seed x model rows):
+09:10:28 [W183b-E1]   x0_A_2x          evaluate eval 5f6b784127e0eb2b  holders 0
+09:10:28 [W183b-E1]   x0_N_2x          alias    eval c15eea6214da5f31 -> 5f6b784127e0eb2b holders 0
+09:10:28 [W183b-E1]   unit_A_2x        evaluate eval bde9355eba3e0929  holders 0
+09:10:28 [W183b-E1]   unit_N_2x        evaluate eval 057f9a6f427ac78e  holders 0
+09:10:28 [W183b-E1]   n7_05_2_A_2x     evaluate eval 933a529742ce7b62  holders 0
+09:10:28 [W183b-E1]   n7_05_2_N_2x     evaluate eval e9f793f691d22c62  holders 0
+09:10:28 [W183b-E1]   hist_inc_A_2x    evaluate eval c4dea62e18c62f41  holders 0
+09:10:28 [W183b-E1]   hist_inc_N_2x    evaluate eval c011496da24c4670  holders 0
+09:10:28 [W183b-E1] prediction 7 distinct seed keys: observed 7 (HELD); aliases 1
+09:10:28 [W183b-E1]   row 35 h_74eda68d: base bde9355eba3e0929 vs launcher bde9355eba3e0929 equal=True differing=[]
+09:10:28 [W183b-E1]   row 40 ref:5ca4f86c (issuing run: W118 r2 re-se: base c4dea62e18c62f41 vs launcher c4dea62e18c62f41 equal=True differing=[]
+09:10:28 [W183b-E1]   row 40 ref:5ca4f86c (the original s51 F2 Phase : base 5ca4f86c3406c042 vs launcher c4dea62e18c62f41 equal=False differing=['convergence_depth_tail_in_key']
+09:10:28 [W183b-E1]   row 54 e_no_ageing: base 054976fb6f0c6adb vs launcher 057f9a6f427ac78e equal=False differing=['flex_price_multiplier_in_key']
+09:10:28 [W183b-E1]   first poll if x0_A         were the incumbent: distinct 3 completion True (14) over cap False new 14
+09:10:28 [W183b-E1]   first poll if unit_A       were the incumbent: distinct 6 completion True (31) over cap True new None
+09:10:28 [W183b-E1]   first poll if n7_05_2_A    were the incumbent: distinct 6 completion True (34) over cap True new None
+09:10:28 [W183b-E1]   first poll if hist_inc_A   were the incumbent: distinct 7 completion True (61) over cap True new None
+09:10:28 [W183b-E1]   first poll if x0_N         were the incumbent: distinct 3 completion True (14) over cap False new 14
+09:10:28 [W183b-E1]   first poll if unit_N       were the incumbent: distinct 6 completion True (31) over cap True new None
+09:10:28 [W183b-E1]   first poll if n7_05_2_N    were the incumbent: distinct 6 completion True (34) over cap True new None
+09:10:28 [W183b-E1]   first poll if hist_inc_N   were the incumbent: distinct 7 completion True (61) over cap True new None
+09:10:28 [W183b-E1] G0 accepted for the dry run: True; artifact production equals current: True
+09:10:28 [W183b-E1] guards True solve [('__main__.GATE_GUARD', {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}), ('p515_s47_phase_b_record.PARENT_GUARD', {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}), ('p515_s49_flex_ladder_campaign.PARENT_GUARD', {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}), ('p515_s50_marginal_campaign.PARENT_GUARD', {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}), ('p515_s51_f2_ladder_campaign.PARENT_GUARD', {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}), ('p515_s51_f2_phase_b.PARENT_GUARD', {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}), ('p515_s53_f2_certificate.PARENT_GUARD', {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}), ('p515_s55_e1_launcher.PARENT_GUARD', {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}), ('p515_s55_w183g_b_e1_v2_dryrun.GATE_GUARD', {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0})]
+09:10:28 [W183b-E1] wrote data/SRP1/Results/P515S55/w183i_c_e1_v3_resume/launcher_dry_run/e1_launcher_v3_dryrun.json sha256 1256f63b04f5aec01e9b062c13a5ae7c89ba778a2268db1ec530d2504f40448b; failing assertions []
+usage: p515_s55_e1_launcher.py [-h] (--dry-run | --freeze | --run) --root ROOT
+                               [--phase {seeds,search_N,search_A}]
+                               [--concurrency CONCURRENCY]
+                               [--spec-sha256 SPEC_SHA256] [--seeds SEEDS]
+                               --g0-artifact G0_ARTIFACT --g0-sha256 G0_SHA256
+                               [--scratch SCRATCH] [--allow-uncommitted]
+                               [--resumable] [--launch-unit {batch,poll}]
+p515_s55_e1_launcher.py: error: --resumable / --launch-unit are --run options
+usage: p515_s55_e1_launcher.py [-h] (--dry-run | --freeze | --run) --root ROOT
+                               [--phase {seeds,search_N,search_A}]
+                               [--concurrency CONCURRENCY]
+                               [--spec-sha256 SPEC_SHA256] [--seeds SEEDS]
+                               --g0-artifact G0_ARTIFACT --g0-sha256 G0_SHA256
+                               [--scratch SCRATCH] [--allow-uncommitted]
+                               [--resumable] [--launch-unit {batch,poll}]
+p515_s55_e1_launcher.py: error: --launch-unit needs --resumable
+usage: p515_s55_e1_launcher.py [-h] (--dry-run | --freeze | --run) --root ROOT
+                               [--phase {seeds,search_N,search_A}]
+                               [--concurrency CONCURRENCY]
+                               [--spec-sha256 SPEC_SHA256] [--seeds SEEDS]
+                               --g0-artifact G0_ARTIFACT --g0-sha256 G0_SHA256
+                               [--scratch SCRATCH] [--allow-uncommitted]
+                               [--resumable] [--launch-unit {batch,poll}]
+p515_s55_e1_launcher.py: error: argument --launch-unit: invalid choice: 'cycle' (choose from 'batch', 'poll')
+09:10:30 [W183i-c] checks by item: {'provenance': 7, 'item1_seeds': 30, 'item1_search': 149, 'item2': 7, 'item3': 24, 'item4': 198, 'item5': 30, 'guards': 2}; failing: []
+09:10:30 [W183i-c] GATE_PASS=True (447/447); wrote data/SRP1/Results/P515S55/w183i_c_e1_v3_resume/w183i_c_e1_v3_resume_gate.json sha256 201771e6ffe14e034e5cf94d1f2396824989ca8144dffb2abf0791e7ac9c2ff5
+09:10:30 [W183i-c] guards: all_zero=True gate_guard={'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} pickle={'load': 0, 'loads': 0} build={'ConcreteModel.__init__': 0}

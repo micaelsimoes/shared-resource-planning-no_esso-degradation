@@ -1,0 +1,853 @@
+# p516_d0_t01b parent start 2026-10-31T10:27:06+0000 interpreter /opt/anaconda3/envs/opf_env_py311/bin/python
+[write] predictions.json
+[capture] 20 required quantities -> writers present for ['coupling.json', 'identities.json', 'inventory.json', 'lp/index.json', 'objective_identity.json', 'predictions.json']
+[inputs] x0       certified_models.pkl     d816bb4b1ade4b44ad4a77872443fe2668986663c524fc4239815d4657974e21 match=True
+[inputs] x0       esso_models_s39_D.pkl    15f384090089e123a295d8a3f5d0d6b2dc4e953effed55b28eae456a38529d8d match=True
+[inputs] unit_n7  certified_models.pkl     fe06ca485003b4fc9c0fd9788279bd287dd813d659179b311885e8ab03efda04 match=True
+[inputs] unit_n7  esso_models_s39_D.pkl    95f7b38a6ec21833f7b5521ec8332d8022ef6801b4095d1410225438b2cedfc9 match=True
+[INFO] Scenario random seed: 2026
+[INFO] Reading MARKET DATA from file(s)...
+[INFO] 	 - Generating market scenarios...
+[INFO] 	 - Plotting market scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading TRANSMISSION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Scenario checksum: 5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358
+[INFO] Reading SHARED ESS DATA from file(s)...
+[INFO] Reading PLANNING PARAMETERS from file...
+[planning] read in 9.0 s; years [2025, 2030, 2035] days ['Spring', 'Summer', 'Autumn', 'Winter']; ESSO years [2025, 2030, 2035] days ['Spring', 'Summer', 'Autumn', 'Winter']; S_ref 2.5 MVA
+
+========== cell x0 (data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/5cfe69a615ae3708_x0) ==========
+[record] x0: gross 653858731.5686293; certified cycle 132; eps_pri v/pf/ess [0.003425900338570713, 0.0013749385943095764, 0.00072]
+[load] x0: 3 years x 4 days, DSO nodes [5, 7, 9], ESSO nodes [5, 7, 9]; groups processed 12
+[capture] x0: 12 group pickles + ESSO; 28.1 s
+[gross] x0: production recomputed 653858731.5686293 recorded 653858731.5686293 rel 0.000e+00; per-block sum 653858731.5686294
+[mismatch] x0: ess_p_dso_esso max 7.872e-25 MW; ess_p_tso_dso max 0.000e+00 MW; ess_p_tso_esso max 7.872e-25 MW; ess_q_dso_esso max 0.000e+00 Mvar; ess_q_tso_dso max 0.000e+00 Mvar; ess_q_tso_esso max 0.000e+00 Mvar; pf_p max 2.147e-02 MW; pf_q max 3.094e-04 Mvar; v_W max 4.361e+00 kV^2
+[boyd] x0: r_v 3.0433066250961695e-05 vs 3.0433066250961695e-05; r_pf 0.00032627614031998975 vs 0.00032627614031998975
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Spring rated TSO: achieved 6.600000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Spring rated DSO5: achieved 8.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Spring rated DSO7: achieved 1.500000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Spring rated DSO9: achieved 1.300000e+01 <= 0.0e+00
+[group] x0 2025_Spring rated: same-point max 0.0e+00; ef max 4.789e-10 (over-gate 102, >1e-10 2); cones 6.2e-16; coupling diff max 2.6e-11; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Spring available TSO: achieved 6.600000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Spring available DSO5: achieved 8.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Spring available DSO7: achieved 1.500000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Spring available DSO9: achieved 1.300000e+01 <= 0.0e+00
+[group] x0 2025_Spring available: same-point max 0.0e+00; ef max 4.789e-10 (over-gate 102, >1e-10 2); cones 6.2e-16; coupling diff max 2.6e-11; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+[group] x0 2025_Spring done in 20.6 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Summer rated DSO5: achieved 1.000000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Summer rated DSO7: achieved 1.500000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Summer rated DSO9: achieved 9.000000e+00 <= 0.0e+00
+[group] x0 2025_Summer rated: same-point max 0.0e+00; ef max 1.830e-10 (over-gate 34, >1e-10 3); cones 7.3e-16; coupling diff max 2.5e-11; obj rel 1.8e-16; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Summer available DSO5: achieved 1.000000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Summer available DSO7: achieved 1.500000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Summer available DSO9: achieved 9.000000e+00 <= 0.0e+00
+[group] x0 2025_Summer available: same-point max 0.0e+00; ef max 1.830e-10 (over-gate 34, >1e-10 3); cones 7.3e-16; coupling diff max 2.5e-11; obj rel 1.8e-16; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+[group] x0 2025_Summer done in 21.2 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Autumn rated TSO: achieved 8.500000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Autumn rated DSO7: achieved 1.100000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Autumn rated DSO9: achieved 4.000000e+00 <= 0.0e+00
+[gate FAIL] envelope-rewrite |Delta| at ef x0 2025_Autumn rated DSO9: achieved 6.110230e-09 <= 1.0e-09
+[group] x0 2025_Autumn rated: same-point max 0.0e+00; ef max 5.821e-10 (over-gate 100, >1e-10 7); cones 6.3e-16; coupling diff max 2.5e-11; obj rel 1.9e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Autumn available TSO: achieved 8.500000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Autumn available DSO7: achieved 1.100000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Autumn available DSO9: achieved 4.000000e+00 <= 0.0e+00
+[gate FAIL] envelope-rewrite |Delta| at ef x0 2025_Autumn available DSO9: achieved 6.110230e-09 <= 1.0e-09
+[group] x0 2025_Autumn available: same-point max 0.0e+00; ef max 5.821e-10 (over-gate 100, >1e-10 7); cones 6.3e-16; coupling diff max 2.5e-11; obj rel 1.9e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+[group] x0 2025_Autumn done in 23.5 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Winter rated TSO: achieved 1.600000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Winter rated DSO5: achieved 3.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Winter rated DSO7: achieved 2.700000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Winter rated DSO9: achieved 1.800000e+01 <= 0.0e+00
+[group] x0 2025_Winter rated: same-point max 0.0e+00; ef max 3.831e-10 (over-gate 64, >1e-10 8); cones 6.0e-16; coupling diff max 2.4e-11; obj rel 1.8e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Winter available TSO: achieved 1.600000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Winter available DSO5: achieved 3.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Winter available DSO7: achieved 2.700000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2025_Winter available DSO9: achieved 1.800000e+01 <= 0.0e+00
+[group] x0 2025_Winter available: same-point max 0.0e+00; ef max 3.831e-10 (over-gate 64, >1e-10 8); cones 6.0e-16; coupling diff max 2.4e-11; obj rel 1.8e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+[group] x0 2025_Winter done in 21.9 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Spring rated TSO: achieved 4.500000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Spring rated DSO5: achieved 1.200000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Spring rated DSO7: achieved 3.700000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Spring rated DSO9: achieved 6.100000e+01 <= 0.0e+00
+[group] x0 2030_Spring rated: same-point max 0.0e+00; ef max 6.735e-10 (over-gate 155, >1e-10 18); cones 6.4e-16; coupling diff max 2.8e-11; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Spring available TSO: achieved 4.500000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Spring available DSO5: achieved 1.200000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Spring available DSO7: achieved 3.700000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Spring available DSO9: achieved 6.100000e+01 <= 0.0e+00
+[group] x0 2030_Spring available: same-point max 0.0e+00; ef max 6.735e-10 (over-gate 155, >1e-10 18); cones 6.4e-16; coupling diff max 2.8e-11; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+[group] x0 2030_Spring done in 18.6 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Summer rated DSO5: achieved 3.500000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Summer rated DSO7: achieved 3.200000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Summer rated DSO9: achieved 1.400000e+01 <= 0.0e+00
+[group] x0 2030_Summer rated: same-point max 0.0e+00; ef max 1.221e-09 (over-gate 81, >1e-10 13); cones 6.5e-16; coupling diff max 2.4e-11; obj rel 1.2e-16; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Summer available DSO5: achieved 3.500000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Summer available DSO7: achieved 3.200000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Summer available DSO9: achieved 1.400000e+01 <= 0.0e+00
+[group] x0 2030_Summer available: same-point max 0.0e+00; ef max 1.221e-09 (over-gate 81, >1e-10 13); cones 6.5e-16; coupling diff max 2.4e-11; obj rel 1.2e-16; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+[group] x0 2030_Summer done in 20.1 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Autumn rated DSO5: achieved 4.200000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Autumn rated DSO7: achieved 3.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Autumn rated DSO9: achieved 2.500000e+01 <= 0.0e+00
+[group] x0 2030_Autumn rated: same-point max 0.0e+00; ef max 9.178e-10 (over-gate 70, >1e-10 5); cones 6.9e-16; coupling diff max 2.5e-11; obj rel 1.4e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Autumn available DSO5: achieved 4.200000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Autumn available DSO7: achieved 3.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Autumn available DSO9: achieved 2.500000e+01 <= 0.0e+00
+[group] x0 2030_Autumn available: same-point max 0.0e+00; ef max 9.178e-10 (over-gate 70, >1e-10 5); cones 6.9e-16; coupling diff max 2.5e-11; obj rel 1.4e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+[group] x0 2030_Autumn done in 21.4 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Winter rated TSO: achieved 4.000000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Winter rated DSO5: achieved 1.700000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Winter rated DSO7: achieved 1.600000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Winter rated DSO9: achieved 2.600000e+01 <= 0.0e+00
+[group] x0 2030_Winter rated: same-point max 0.0e+00; ef max 2.083e-09 (over-gate 99, >1e-10 14); cones 6.3e-16; coupling diff max 2.5e-11; obj rel 1.9e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Winter available TSO: achieved 4.000000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Winter available DSO5: achieved 1.700000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Winter available DSO7: achieved 1.600000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2030_Winter available DSO9: achieved 2.600000e+01 <= 0.0e+00
+[group] x0 2030_Winter available: same-point max 0.0e+00; ef max 2.083e-09 (over-gate 99, >1e-10 14); cones 6.3e-16; coupling diff max 2.5e-11; obj rel 1.9e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+[group] x0 2030_Winter done in 20.6 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Spring rated TSO: achieved 1.900000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Spring rated DSO5: achieved 9.800000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Spring rated DSO7: achieved 8.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Spring rated DSO9: achieved 2.500000e+01 <= 0.0e+00
+[group] x0 2035_Spring rated: same-point max 0.0e+00; ef max 1.080e-09 (over-gate 150, >1e-10 26); cones 6.0e-16; coupling diff max 2.4e-11; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Spring available TSO: achieved 1.900000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Spring available DSO5: achieved 9.800000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Spring available DSO7: achieved 8.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Spring available DSO9: achieved 2.500000e+01 <= 0.0e+00
+[group] x0 2035_Spring available: same-point max 0.0e+00; ef max 1.080e-09 (over-gate 150, >1e-10 26); cones 6.0e-16; coupling diff max 2.4e-11; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+[group] x0 2035_Spring done in 19.2 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Summer rated DSO5: achieved 2.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Summer rated DSO7: achieved 2.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Summer rated DSO9: achieved 4.000000e+00 <= 0.0e+00
+[group] x0 2035_Summer rated: same-point max 0.0e+00; ef max 1.376e-10 (over-gate 8, >1e-10 1); cones 6.7e-16; coupling diff max 2.7e-11; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Summer available DSO5: achieved 2.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Summer available DSO7: achieved 2.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Summer available DSO9: achieved 4.000000e+00 <= 0.0e+00
+[group] x0 2035_Summer available: same-point max 0.0e+00; ef max 1.376e-10 (over-gate 8, >1e-10 1); cones 6.7e-16; coupling diff max 2.7e-11; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+[group] x0 2035_Summer done in 19.4 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Autumn rated DSO7: achieved 8.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Autumn rated DSO9: achieved 3.200000e+01 <= 0.0e+00
+[group] x0 2035_Autumn rated: same-point max 0.0e+00; ef max 4.716e-10 (over-gate 40, >1e-10 11); cones 6.7e-16; coupling diff max 2.6e-11; obj rel 1.1e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Autumn available DSO7: achieved 8.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Autumn available DSO9: achieved 3.200000e+01 <= 0.0e+00
+[group] x0 2035_Autumn available: same-point max 0.0e+00; ef max 4.716e-10 (over-gate 40, >1e-10 11); cones 6.7e-16; coupling diff max 2.6e-11; obj rel 1.1e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+[group] x0 2035_Autumn done in 20.7 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Winter rated TSO: achieved 8.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Winter rated DSO5: achieved 1.500000e+01 <= 0.0e+00
+[gate FAIL] envelope-rewrite |Delta| at ef x0 2035_Winter rated DSO5: achieved 5.414431e-09 <= 1.0e-09
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Winter rated DSO9: achieved 2.000000e+00 <= 0.0e+00
+[group] x0 2035_Winter rated: same-point max 0.0e+00; ef max 5.747e-10 (over-gate 25, >1e-10 3); cones 6.6e-16; coupling diff max 2.7e-11; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Winter available TSO: achieved 8.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Winter available DSO5: achieved 1.500000e+01 <= 0.0e+00
+[gate FAIL] envelope-rewrite |Delta| at ef x0 2035_Winter available DSO5: achieved 5.414431e-09 <= 1.0e-09
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) x0 2035_Winter available DSO9: achieved 2.000000e+00 <= 0.0e+00
+[group] x0 2035_Winter available: same-point max 0.0e+00; ef max 5.747e-10 (over-gate 25, >1e-10 3); cones 6.6e-16; coupling diff max 2.7e-11; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+[group] x0 2035_Winter done in 20.7 s
+[cell] x0 done in 281.1 s
+
+========== cell unit_n7 (data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1) ==========
+[record] unit_n7: gross 653599356.2420883; certified cycle 112; eps_pri v/pf/ess [0.003426385042566591, 0.0013748572215242943, 0.0007900562255076348]
+[load] unit_n7: 3 years x 4 days, DSO nodes [5, 7, 9], ESSO nodes [5, 7, 9]; groups processed 12
+[capture] unit_n7: 12 group pickles + ESSO; 33.1 s
+[gross] unit_n7: production recomputed 653599356.2420883 recorded 653599356.2420883 rel 0.000e+00; per-block sum 653599356.242088
+[mismatch] unit_n7: ess_p_dso_esso max 5.490e-04 MW; ess_p_tso_dso max 5.490e-04 MW; ess_p_tso_esso max 5.138e-04 MW; ess_q_dso_esso max 1.155e-05 Mvar; ess_q_tso_dso max 9.902e-06 Mvar; ess_q_tso_esso max 2.146e-05 Mvar; pf_p max 2.479e-02 MW; pf_q max 3.029e-04 Mvar; v_W max 1.730e+00 kV^2
+[boyd] unit_n7: r_v 2.4167484796057615e-05 vs 2.4167484796057598e-05; r_pf 0.00047591598759931747 vs 0.0004759159875993174
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Spring rated DSO5: achieved 6.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Spring rated DSO7: achieved 1.800000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Spring rated DSO9: achieved 2.300000e+01 <= 0.0e+00
+[group] unit_n7 2025_Spring rated: same-point max 0.0e+00; ef max 3.831e-10 (over-gate 47, >1e-10 3); cones 7.1e-16; coupling diff max 1.9e-11; obj rel 1.2e-16; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Spring available DSO5: achieved 6.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Spring available DSO7: achieved 1.800000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Spring available DSO9: achieved 2.300000e+01 <= 0.0e+00
+[group] unit_n7 2025_Spring available: same-point max 0.0e+00; ef max 3.831e-10 (over-gate 47, >1e-10 3); cones 7.1e-16; coupling diff max 1.9e-11; obj rel 1.2e-16; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+[group] unit_n7 2025_Spring done in 20.9 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Summer rated DSO5: achieved 9.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Summer rated DSO7: achieved 6.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Summer rated DSO9: achieved 9.000000e+00 <= 0.0e+00
+[group] unit_n7 2025_Summer rated: same-point max 0.0e+00; ef max 1.356e-10 (over-gate 24, >1e-10 2); cones 6.4e-16; coupling diff max 2.6e-11; obj rel 1.8e-16; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Summer available DSO5: achieved 9.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Summer available DSO7: achieved 6.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Summer available DSO9: achieved 9.000000e+00 <= 0.0e+00
+[group] unit_n7 2025_Summer available: same-point max 0.0e+00; ef max 1.356e-10 (over-gate 24, >1e-10 2); cones 6.4e-16; coupling diff max 2.6e-11; obj rel 1.8e-16; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+[group] unit_n7 2025_Summer done in 19.0 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Autumn rated TSO: achieved 2.400000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Autumn rated DSO7: achieved 4.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Autumn rated DSO9: achieved 4.000000e+00 <= 0.0e+00
+[gate FAIL] envelope-rewrite |Delta| at ef unit_n7 2025_Autumn rated DSO9: achieved 6.161176e-09 <= 1.0e-09
+[group] unit_n7 2025_Autumn rated: same-point max 0.0e+00; ef max 5.220e-11 (over-gate 32, >1e-10 0); cones 7.1e-16; coupling diff max 2.3e-11; obj rel 1.9e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Autumn available TSO: achieved 2.400000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Autumn available DSO7: achieved 4.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Autumn available DSO9: achieved 4.000000e+00 <= 0.0e+00
+[gate FAIL] envelope-rewrite |Delta| at ef unit_n7 2025_Autumn available DSO9: achieved 6.161176e-09 <= 1.0e-09
+[group] unit_n7 2025_Autumn available: same-point max 0.0e+00; ef max 5.220e-11 (over-gate 32, >1e-10 0); cones 7.1e-16; coupling diff max 2.3e-11; obj rel 1.9e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+[group] unit_n7 2025_Autumn done in 20.7 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Winter rated DSO7: achieved 2.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Winter rated DSO9: achieved 1.500000e+01 <= 0.0e+00
+[group] unit_n7 2025_Winter rated: same-point max 0.0e+00; ef max 3.813e-10 (over-gate 17, >1e-10 3); cones 5.9e-16; coupling diff max 2.7e-11; obj rel 1.8e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Winter available DSO7: achieved 2.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2025_Winter available DSO9: achieved 1.500000e+01 <= 0.0e+00
+[group] unit_n7 2025_Winter available: same-point max 0.0e+00; ef max 3.813e-10 (over-gate 17, >1e-10 3); cones 5.9e-16; coupling diff max 2.7e-11; obj rel 1.8e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+[group] unit_n7 2025_Winter done in 21.0 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Spring rated DSO5: achieved 1.900000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Spring rated DSO7: achieved 1.900000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Spring rated DSO9: achieved 4.600000e+01 <= 0.0e+00
+[group] unit_n7 2030_Spring rated: same-point max 0.0e+00; ef max 5.029e-10 (over-gate 84, >1e-10 15); cones 6.9e-16; coupling diff max 2.1e-11; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Spring available DSO5: achieved 1.900000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Spring available DSO7: achieved 1.900000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Spring available DSO9: achieved 4.600000e+01 <= 0.0e+00
+[group] unit_n7 2030_Spring available: same-point max 0.0e+00; ef max 5.029e-10 (over-gate 84, >1e-10 15); cones 6.9e-16; coupling diff max 2.1e-11; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+[group] unit_n7 2030_Spring done in 18.6 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Summer rated DSO5: achieved 5.000000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Summer rated DSO7: achieved 5.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Summer rated DSO9: achieved 1.600000e+01 <= 0.0e+00
+[group] unit_n7 2030_Summer rated: same-point max 0.0e+00; ef max 4.771e-10 (over-gate 71, >1e-10 8); cones 6.9e-16; coupling diff max 2.8e-11; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Summer available DSO5: achieved 5.000000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Summer available DSO7: achieved 5.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Summer available DSO9: achieved 1.600000e+01 <= 0.0e+00
+[group] unit_n7 2030_Summer available: same-point max 0.0e+00; ef max 4.771e-10 (over-gate 71, >1e-10 8); cones 6.9e-16; coupling diff max 2.8e-11; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+[group] unit_n7 2030_Summer done in 19.7 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Autumn rated DSO5: achieved 2.200000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Autumn rated DSO7: achieved 2.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Autumn rated DSO9: achieved 2.200000e+01 <= 0.0e+00
+[group] unit_n7 2030_Autumn rated: same-point max 0.0e+00; ef max 5.612e-10 (over-gate 46, >1e-10 3); cones 6.7e-16; coupling diff max 2.8e-11; obj rel 5.6e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Autumn available DSO5: achieved 2.200000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Autumn available DSO7: achieved 2.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Autumn available DSO9: achieved 2.200000e+01 <= 0.0e+00
+[group] unit_n7 2030_Autumn available: same-point max 0.0e+00; ef max 5.612e-10 (over-gate 46, >1e-10 3); cones 6.7e-16; coupling diff max 2.8e-11; obj rel 5.6e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+[group] unit_n7 2030_Autumn done in 20.7 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Winter rated DSO5: achieved 1.100000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Winter rated DSO7: achieved 1.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Winter rated DSO9: achieved 4.000000e+01 <= 0.0e+00
+[group] unit_n7 2030_Winter rated: same-point max 0.0e+00; ef max 2.059e-09 (over-gate 52, >1e-10 7); cones 6.6e-16; coupling diff max 2.6e-11; obj rel 1.9e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Winter available DSO5: achieved 1.100000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Winter available DSO7: achieved 1.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2030_Winter available DSO9: achieved 4.000000e+01 <= 0.0e+00
+[group] unit_n7 2030_Winter available: same-point max 0.0e+00; ef max 2.059e-09 (over-gate 52, >1e-10 7); cones 6.6e-16; coupling diff max 2.6e-11; obj rel 1.9e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+[group] unit_n7 2030_Winter done in 21.4 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Spring rated TSO: achieved 5.100000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Spring rated DSO5: achieved 1.000000e+02 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Spring rated DSO9: achieved 2.300000e+01 <= 0.0e+00
+[gate FAIL] envelope-rewrite |Delta| at ef unit_n7 2035_Spring rated DSO9: achieved 5.218843e-09 <= 1.0e-09
+[group] unit_n7 2035_Spring rated: same-point max 0.0e+00; ef max 1.089e-09 (over-gate 174, >1e-10 20); cones 6.2e-16; coupling diff max 2.7e-11; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Spring available TSO: achieved 5.100000e+01 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Spring available DSO5: achieved 1.000000e+02 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Spring available DSO9: achieved 2.300000e+01 <= 0.0e+00
+[gate FAIL] envelope-rewrite |Delta| at ef unit_n7 2035_Spring available DSO9: achieved 5.218843e-09 <= 1.0e-09
+[group] unit_n7 2035_Spring available: same-point max 0.0e+00; ef max 1.089e-09 (over-gate 174, >1e-10 20); cones 6.2e-16; coupling diff max 2.7e-11; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+[group] unit_n7 2035_Spring done in 20.1 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Summer rated DSO7: achieved 2.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Summer rated DSO9: achieved 1.000000e+01 <= 0.0e+00
+[group] unit_n7 2035_Summer rated: same-point max 0.0e+00; ef max 4.260e-10 (over-gate 12, >1e-10 2); cones 6.3e-16; coupling diff max 2.7e-11; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Summer available DSO7: achieved 2.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Summer available DSO9: achieved 1.000000e+01 <= 0.0e+00
+[group] unit_n7 2035_Summer available: same-point max 0.0e+00; ef max 4.260e-10 (over-gate 12, >1e-10 2); cones 6.3e-16; coupling diff max 2.7e-11; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+[group] unit_n7 2035_Summer done in 18.7 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Autumn rated DSO9: achieved 2.200000e+01 <= 0.0e+00
+[group] unit_n7 2035_Autumn rated: same-point max 0.0e+00; ef max 2.961e-10 (over-gate 22, >1e-10 6); cones 6.8e-16; coupling diff max 2.4e-11; obj rel 4.6e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Autumn available DSO9: achieved 2.200000e+01 <= 0.0e+00
+[group] unit_n7 2035_Autumn available: same-point max 0.0e+00; ef max 2.961e-10 (over-gate 22, >1e-10 6); cones 6.8e-16; coupling diff max 2.4e-11; obj rel 4.6e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+[group] unit_n7 2035_Autumn done in 20.0 s
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Winter rated DSO5: achieved 2.600000e+01 <= 0.0e+00
+[gate FAIL] envelope-rewrite |Delta| at ef unit_n7 2035_Winter rated DSO5: achieved 2.439966e-09 <= 1.0e-09
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Winter rated DSO7: achieved 7.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Winter rated DSO9: achieved 1.000000e+00 <= 0.0e+00
+[group] unit_n7 2035_Winter rated: same-point max 0.0e+00; ef max 4.789e-10 (over-gate 34, >1e-10 4); cones 6.8e-16; coupling diff max 2.4e-11; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Winter available DSO5: achieved 2.600000e+01 <= 0.0e+00
+[gate FAIL] envelope-rewrite |Delta| at ef unit_n7 2035_Winter available DSO5: achieved 2.439966e-09 <= 1.0e-09
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Winter available DSO7: achieved 7.000000e+00 <= 0.0e+00
+[gate FAIL] mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count) unit_n7 2035_Winter available DSO9: achieved 1.000000e+00 <= 0.0e+00
+[group] unit_n7 2035_Winter available: same-point max 0.0e+00; ef max 4.789e-10 (over-gate 34, >1e-10 4); cones 6.8e-16; coupling diff max 2.4e-11; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+[group] unit_n7 2035_Winter done in 20.0 s
+[cell] unit_n7 done in 279.9 s
+[write] inventory.json
+[write] identities.json
+[write] coupling.json
+[write] objective_identity.json
+[write] lp/index.json
+[summary] gates: 2216 rows, all pass: False; failed gate kinds: ['envelope-rewrite |Delta| at ef', 'mapped-point (ef) rows over max(1e-12, 8 eps sum|terms|) (count)']
+[summary] stops: 88 (['retained-row Delta > 1e-10 (mapped point ef)'])
+[prediction] Q1: held=True
+[prediction] Q2: held=True
+[prediction] Q3: held=True
+[prediction] Q4: held=True
+[prediction] Q5: held=True
+[summary] guard counts {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}; process launches 0; solver libraries imported: []; repo writes outside OUT_DIR: 0; wall 573.7 s
+# child exit code 3; wall 574.3 s

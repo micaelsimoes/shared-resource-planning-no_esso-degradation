@@ -1,0 +1,1336 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 38 (F2, the demonstration case)",
+  "data/SRP1/Results/P515S51/frozen_s51_spec_v21_13cb828c.json F2",
+  "Planner task W38 (3 evaluations: node 7 4 h E in {3, 4, 5} MWh at 2025, m = 2, concurrency 3, one wave, cap 500, 10 cycles, AA-on case file, baseline ageing declared, no post-certification, stop rule as a1a; x = 0 and E = 1 pinned from the committed ladder dc468ab4 and E = 2 from the committed marginal test 0e36ec0a, not re-run)",
+  "2e82a23f (harness override + zero-solve checks), 51e74279 (two-cycle bitwise gate at m = 1.0), 812ee116 / 55ff2cca / dc468ab4 (the flexibility-price ladder launcher, spec and results), 2389d79b / 0e36ec0a (the marginal-MWh launcher and results)"
+ ],
+ "bar_window_cycles": 10,
+ "campaign_id": "s51_f2_ladder",
+ "candidates": [
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.75,
+      3.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "f3aa335e6c1eda69_n7_4h_e3_m2",
+   "eval_key": "f3aa335e6c1eda6950712aec00aff122d4578760f0dd02ff64996b95998eaace",
+   "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+   "flex_price_multiplier": 2.0,
+   "key": "fb21d822e145ba68c8c65c3fbb9793ddfcb038df172f0f2f08956998c8d81aac",
+   "label": "n7_4h_e3_m2",
+   "overrides": {},
+   "post_certification": null,
+   "working_dir_ids": {
+    "precheck": "p515s44_s51_f2_ladder_f3aa335e6c1eda69_precheck",
+    "run": "p515s44_s51_f2_ladder_f3aa335e6c1eda69_run"
+   }
+  },
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      1.0,
+      4.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "a11d79663bf5a954_n7_4h_e4_m2",
+   "eval_key": "a11d79663bf5a95496b784a56251c738bdc5af261be2b3346f777713ad2fcdc9",
+   "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+   "flex_price_multiplier": 2.0,
+   "key": "11725e45371a0c7fbd6553b61784bdcd628dedbceb4df0547b11ff2538c32321",
+   "label": "n7_4h_e4_m2",
+   "overrides": {},
+   "post_certification": null,
+   "working_dir_ids": {
+    "precheck": "p515s44_s51_f2_ladder_a11d79663bf5a954_precheck",
+    "run": "p515s44_s51_f2_ladder_a11d79663bf5a954_run"
+   }
+  },
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      1.25,
+      5.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "5f3cccb4cad36ee5_n7_4h_e5_m2",
+   "eval_key": "5f3cccb4cad36ee541b292d66f3899e9aebd7edcb512ba42b5b4744b3e80d336",
+   "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+   "flex_price_multiplier": 2.0,
+   "key": "cab98853bb31f72fbdfc273a6d84b2ba8edbf5d451ec1cebb2529a1c6aaaf823",
+   "label": "n7_4h_e5_m2",
+   "overrides": {},
+   "post_certification": null,
+   "working_dir_ids": {
+    "precheck": "p515s44_s51_f2_ladder_5f3cccb4cad36ee5_precheck",
+    "run": "p515s44_s51_f2_ladder_5f3cccb4cad36ee5_run"
+   }
+  }
+ ],
+ "cap": 500,
+ "concurrency": 3,
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ess_params_file": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "full_diagnostics_in_rows": true,
+  "name": "F2 demonstration case -- MODEL VARIANT \u2014 flexibility price \u00d7 m (m = 2) under BASELINE (C2 + phi_cal 0.985 + soh_min 0.70): the node-7 4 h capacity ladder at 2025, rungs E = [3, 4, 5] MWh (E = 1, 2 and x = 0 pinned from committed campaigns); the case file (AA keep_memory in data/SRP1/SRP1_params.json) with the ESS ageing parameters declared",
+  "note": "no overrides; no ageing model variant; no post-certification; the flexibility-price multiplier is applied per entry in the child configuration hook and read back from probe DSO blocks (pre-run) and the run's own DSO models (post-run); num_max_iters := cap; x = 0, E = 1 and E = 2 at m = 2 are NOT evaluated -- they are pinned from the committed ladder (dc468ab4) and marginal test (0e36ec0a)",
+  "overrides": {}
+ },
+ "extra": {
+  "I_by_rung_eur": {
+   "1": 317957.0085035586,
+   "2": 635914.0170071172,
+   "3": 953871.0255106756,
+   "4": 1271828.0340142343,
+   "5": 1589785.0425177924
+  },
+  "I_per_mwh_energy_at_4h_eur": 317957.0085035586,
+  "I_source": {
+   "field": "candidates.<label>.I_new_eur, matched by candidate_key",
+   "path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+   "sha256": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b"
+  },
+  "a0_spec": {
+   "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_spec_s45_a0_c7_9d08ad2f.json",
+   "sha256": "9d08ad2f144b67ea97dae8dc25d91288fc86a77dd52c7f53276a52c5f00f8b34"
+  },
+  "bar_definition": "record.bar = max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (harness W5)",
+  "budget_corner": {
+   "budget_eur": 1000000.0,
+   "checks": {
+    "agrees_with_w2_frontier_I_per_rung": true,
+    "agrees_with_w2_frontier_largest_e": true,
+    "feasibility_flags_agree": true,
+    "ladder_has_5_points": true
+   },
+   "corner": {
+    "I_eur": 953871.0255106756,
+    "budget_feasible": true,
+    "candidate_key": "fb21d822e145ba68c8c65c3fbb9793ddfcb038df172f0f2f08956998c8d81aac",
+    "e_mwh": 3.0,
+    "labels": [
+     "n7_4h_e3"
+    ],
+    "s_mva": 0.75,
+    "slack_eur": 46128.97448932438,
+    "w2_budget_feasible_new": true
+   },
+   "corner_I_eur": 953871.0255106756,
+   "corner_e_mwh": 3.0,
+   "corner_slack_eur": 46128.97448932438,
+   "ladder": [
+    {
+     "I_eur": 317957.0085035586,
+     "budget_feasible": true,
+     "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+     "e_mwh": 1.0,
+     "labels": [
+      "n7_4h_e1",
+      "n7_p0.25_e1.0"
+     ],
+     "s_mva": 0.25,
+     "slack_eur": 682042.9914964414,
+     "w2_budget_feasible_new": true
+    },
+    {
+     "I_eur": 635914.0170071172,
+     "budget_feasible": true,
+     "candidate_key": "cc4eb5df385852e67c612ab21d74526d90a2c66f5c7c934889ce4f67731c4ffe",
+     "e_mwh": 2.0,
+     "labels": [
+      "n7_4h_e2"
+     ],
+     "s_mva": 0.5,
+     "slack_eur": 364085.98299288284,
+     "w2_budget_feasible_new": true
+    },
+    {
+     "I_eur": 953871.0255106756,
+     "budget_feasible": true,
+     "candidate_key": "fb21d822e145ba68c8c65c3fbb9793ddfcb038df172f0f2f08956998c8d81aac",
+     "e_mwh": 3.0,
+     "labels": [
+      "n7_4h_e3"
+     ],
+     "s_mva": 0.75,
+     "slack_eur": 46128.97448932438,
+     "w2_budget_feasible_new": true
+    },
+    {
+     "I_eur": 1271828.0340142343,
+     "budget_feasible": false,
+     "candidate_key": "11725e45371a0c7fbd6553b61784bdcd628dedbceb4df0547b11ff2538c32321",
+     "e_mwh": 4.0,
+     "labels": [
+      "n7_4h_e4"
+     ],
+     "s_mva": 1.0,
+     "slack_eur": -271828.0340142343,
+     "w2_budget_feasible_new": false
+    },
+    {
+     "I_eur": 1589785.0425177924,
+     "budget_feasible": false,
+     "candidate_key": "cab98853bb31f72fbdfc273a6d84b2ba8edbf5d451ec1cebb2529a1c6aaaf823",
+     "e_mwh": 5.0,
+     "labels": [
+      "n7_4h_e5"
+     ],
+     "s_mva": 1.25,
+     "slack_eur": -589785.0425177924,
+     "w2_budget_feasible_new": false
+    }
+   ],
+   "statement": "under the EUR 1,000,000 budget the node-7 4 h ladder at 2025 is feasible up to 3.0 MWh (I = 953871.0255106756, slack 46128.97448932438); the next rung is infeasible. The BUDGET CORNER is that point, E = 3 MWh, and THIS campaign evaluates it, together with E = 4 and E = 5 (both budget-infeasible, evaluated to trace the ladder up to the max_capacity cap of 5.0 MWh). E = 1 and E = 2 are committed (dc468ab4, 0e36ec0a) and are not re-run.",
+   "statement_as_worded_by_the_s50_marginal_launcher": "under the EUR 1,000,000 budget the node-7 4 h ladder at 2025 is feasible up to 3.0 MWh (I = 953871.0255106756, slack 46128.97448932438); the next rung is infeasible. The budget corner is that point. This campaign evaluates 2 MWh; 1 MWh is committed (dc468ab4); the corner itself is NOT evaluated here.",
+   "w2_frontier_node7_4h_2025_new": {
+    "all_ladder_points_feasible": false,
+    "largest_budget_feasible_e_mwh": 3.0,
+    "points": [
+     {
+      "I_eur": 317957.0085035586,
+      "budget_feasible": true,
+      "e_mwh": 1.0,
+      "label": "n7_4h_e1",
+      "s_mva": 0.25,
+      "slack_eur": 682042.9914964414
+     },
+     {
+      "I_eur": 635914.0170071172,
+      "budget_feasible": true,
+      "e_mwh": 2.0,
+      "label": "n7_4h_e2",
+      "s_mva": 0.5,
+      "slack_eur": 364085.98299288284
+     },
+     {
+      "I_eur": 953871.0255106756,
+      "budget_feasible": true,
+      "e_mwh": 3.0,
+      "label": "n7_4h_e3",
+      "s_mva": 0.75,
+      "slack_eur": 46128.97448932438
+     },
+     {
+      "I_eur": 1271828.0340142343,
+      "budget_feasible": false,
+      "e_mwh": 4.0,
+      "label": "n7_4h_e4",
+      "s_mva": 1.0,
+      "slack_eur": -271828.0340142343
+     },
+     {
+      "I_eur": 1589785.0425177924,
+      "budget_feasible": false,
+      "e_mwh": 5.0,
+      "label": "n7_4h_e5",
+      "s_mva": 1.25,
+      "slack_eur": -589785.0425177924
+     }
+    ]
+   }
+  },
+  "budget_definition": "budget corner = the largest e on the node-7 4 h ladder at 2025 whose I_new_eur <= the master budget (master_facts.budget_eur), recomputed here from the per-candidate W2 table and cross-checked against W2 budget_feasible_frontier[\"node7|4h|2025\"][\"new\"]",
+  "budget_eur": 1000000.0,
+  "campaign_script": "p515_s51_f2_ladder_campaign.py",
+  "campaign_script_sha256": "f64e9c7b44d6fd7044b4db417a0f56a6141f8a2de1824ca9f90041c1f1b18369",
+  "candidate_keys": {
+   "1": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "2": "cc4eb5df385852e67c612ab21d74526d90a2c66f5c7c934889ce4f67731c4ffe",
+   "3": "fb21d822e145ba68c8c65c3fbb9793ddfcb038df172f0f2f08956998c8d81aac",
+   "4": "11725e45371a0c7fbd6553b61784bdcd628dedbceb4df0547b11ff2538c32321",
+   "5": "cab98853bb31f72fbdfc273a6d84b2ba8edbf5d451ec1cebb2529a1c6aaaf823"
+  },
+  "delta_I_by_rung_eur": {
+   "1": 317957.0085035586,
+   "2": 317957.0085035586,
+   "3": 317957.00850355846,
+   "4": 317957.0085035587,
+   "5": 317957.0085035581
+  },
+  "duration_h": 4.0,
+  "energy_to_power_ratio_bounds": [
+   2.0,
+   10.0
+  ],
+  "energy_unit_cost_2025_eur_per_mwh": 253877.6774385931,
+  "ess_params_file": {
+   "commit": "2466401d",
+   "note": "the ageing BASELINE edit of W21 (Addendum 30)",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "evaluated_rungs_mwh": [
+   3,
+   4,
+   5
+  ],
+  "flex_cost_definition": "flexibility cost per DSO = sum over that DSO's 12 blocks of component_levels_terminal.json blocks[\"DSO|<node>|<year>|<day>\"].weighted.flexibility_cost_internal (pe.value(total_flex_cost) x admm_block_weight = num_years x num_days / 1.02^(y - 2025)); priced at m x cost_flex; \"at base price\" = divided by m (the cost is linear in cost_flex); saving = FC(0) - FC(unit)",
+  "flex_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+  "flex_price_multiplier": 2.0,
+  "investment_checks": {
+   "I_e1_is_317957_0085035586": true,
+   "I_e1_unique_in_w2_table": true,
+   "I_e2_is_635914_0170071172": true,
+   "I_e2_unique_in_w2_table": true,
+   "I_e3_unique_in_w2_table": true,
+   "I_e4_unique_in_w2_table": true,
+   "I_e5_unique_in_w2_table": true,
+   "I_linear_in_energy_at_4h": true,
+   "budget_corner_is_3_mwh": true,
+   "budget_is_1e6": true,
+   "budget_ladder_I_matches_by_key": true,
+   "energy_unit_cost_2025_is_253877_6774385931": true,
+   "every_rung_within_max_capacity": true,
+   "ladder_duration_within_ratio_bounds": true,
+   "max_capacity_is_5_mwh": true,
+   "ratio_bounds_are_2_to_10": true
+  },
+  "label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ladder_script": {
+   "commit": "812ee116",
+   "path": "p515_s49_flex_ladder_campaign.py",
+   "sha256": "5183831e7804752e91488aff0c419eb871dbfec6a3626c87f511b53a232ebcc5"
+  },
+  "marginal_script": {
+   "commit": "2389d79b",
+   "path": "p515_s50_marginal_campaign.py",
+   "sha256": "0ec4e9e0dd0844d65927a2ede8835e351fe315739e1dc261b2de0b4c7b3c6685"
+  },
+  "max_capacity_mwh": 5.0,
+  "memory_at_freeze_non_gating": {
+   "anonymous_bytes": 7746093056,
+   "available_bytes": 22632546304,
+   "available_gib": 21.078201293945312,
+   "compressor_occupied_bytes": 1490894848,
+   "concurrency": 3,
+   "free_plus_inactive_bytes": 16428072960,
+   "free_plus_inactive_gib": 15.299835205078125,
+   "free_plus_inactive_would_pass_same_threshold": true,
+   "hw_memsize_bytes": 34359738368,
+   "missing_vm_stat_figures": [],
+   "non_reclaimable_bytes": 11727192064,
+   "non_reclaimable_gib": 10.921798706054688,
+   "page_size_bytes": 16384,
+   "pass": true,
+   "per_child_budget_gib": 2.75,
+   "required_bytes": 8858370048,
+   "required_gib": 8.25,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 3 x 2.75 GiB",
+   "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+   "utc": "2026-09-22T20:44:55.101782+00:00",
+   "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+   "vm_stat_pages": {
+    "anonymous_pages": 472784,
+    "file_backed_pages": 1260406,
+    "pages_active": 791611,
+    "pages_free": 72110,
+    "pages_inactive": 930580,
+    "pages_occupied_by_compressor": 90997,
+    "pages_purgeable": 6906,
+    "pages_speculative": 10999,
+    "pages_stored_in_compressor": 211561,
+    "pages_wired_down": 151990
+   },
+   "wired_bytes": 2490204160
+  },
+  "memory_preflight_refusing_at": "--run (non-gating at --freeze)",
+  "memory_preflight_rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 3 x 2.75 GiB",
+  "memory_preflight_rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+  "mode": "full",
+  "model_variant": "none (ageing); flexibility-price multiplier per entry",
+  "objective_convention": "Q(x) = certified_cost = gross_operational_cost (settlement-excluded); value(x) = Q_m(0) - Q_m(x) at m = 2 with Q_m(0) PINNED from the committed ladder (dc468ab4); terminal salvage and net_operational_recourse = gross - salvage reported, excluded. At m = 2 the DSO flexibility cost inside Q is priced at 2 x cost_flex -- a SCENARIO figure, not a baseline figure.",
+  "pinned": {
+   "checks": {
+    "ladder_no_harness_errors": true,
+    "ladder_no_non_certified_points": true,
+    "ladder_no_readback_mismatch": true,
+    "ladder_no_stop_for_review": true,
+    "ladder_spec_sha256_matches_results": true,
+    "marginal_no_harness_errors": true,
+    "marginal_no_non_certified_points": true,
+    "marginal_no_readback_mismatch": true,
+    "marginal_no_stop_for_review": true,
+    "marginal_pinned_the_same_x0": true,
+    "marginal_spec_sha256_matches_results": true,
+    "pinned_e0_Q_expected": true,
+    "pinned_e1_Q_expected": true,
+    "pinned_e1_bar_present": true,
+    "pinned_e1_candidate_key_recomputes": true,
+    "pinned_e1_certified": true,
+    "pinned_e1_cycles": true,
+    "pinned_e1_eval_key_recomputes": true,
+    "pinned_e1_flex_cost_present": true,
+    "pinned_e1_multiplier": true,
+    "pinned_e1_record_Q_matches": true,
+    "pinned_e1_record_bar_matches": true,
+    "pinned_e1_record_cycles_matches": true,
+    "pinned_e1_record_present": true,
+    "pinned_e1_record_sha256_in_campaign_manifest": true,
+    "pinned_e1_record_tracked": true,
+    "pinned_e1_trajectory_hash_in_campaign_manifest": true,
+    "pinned_e2_Q_expected": true,
+    "pinned_e2_bar_present": true,
+    "pinned_e2_candidate_key_recomputes": true,
+    "pinned_e2_certified": true,
+    "pinned_e2_cycles": true,
+    "pinned_e2_eval_key_recomputes": true,
+    "pinned_e2_flex_cost_present": true,
+    "pinned_e2_multiplier": true,
+    "pinned_e2_record_Q_matches": true,
+    "pinned_e2_record_bar_matches": true,
+    "pinned_e2_record_cycles_matches": true,
+    "pinned_e2_record_present": true,
+    "pinned_e2_record_sha256_in_campaign_manifest": true,
+    "pinned_e2_record_tracked": true,
+    "pinned_e2_trajectory_hash_in_campaign_manifest": true,
+    "pinned_x0_bar_expected": true,
+    "pinned_x0_bar_present": true,
+    "pinned_x0_candidate_key_recomputes": true,
+    "pinned_x0_certified": true,
+    "pinned_x0_cycles": true,
+    "pinned_x0_eval_key_recomputes": true,
+    "pinned_x0_flex_cost_present": true,
+    "pinned_x0_multiplier": true,
+    "pinned_x0_record_Q_matches": true,
+    "pinned_x0_record_bar_matches": true,
+    "pinned_x0_record_cycles_matches": true,
+    "pinned_x0_record_present": true,
+    "pinned_x0_record_sha256_in_campaign_manifest": true,
+    "pinned_x0_record_tracked": true,
+    "pinned_x0_trajectory_hash_in_campaign_manifest": true
+   },
+   "committed": {
+    "1": {
+     "campaign_row": {
+      "I_eur": 317957.0085035586,
+      "I_per_full_cycle_eur_per_mwh": 75.06755072999778,
+      "Q_unit": 810649709.6671975,
+      "Q_x0": 811016062.203051,
+      "T_cell_throughput_full_cycle_mwh": 4235.611864401747,
+      "bar_unit": 3550.4890327453613,
+      "bar_x0": 1296.2551001310349,
+      "dso_flexibility_saving_per_dso": {
+       "5": {
+        "at_base_price_eur": 41795.60037487745,
+        "weighted_r2_eur": 83591.2007497549
+       },
+       "7": {
+        "at_base_price_eur": 48777.70140686631,
+        "weighted_r2_eur": 97555.40281373262
+       },
+       "9": {
+        "at_base_price_eur": 43828.30187744647,
+        "weighted_r2_eur": 87656.60375489295
+       }
+      },
+      "dso_flexibility_saving_total_weighted_r2_eur": 268803.2073183805,
+      "m": 2.0,
+      "reading": "pays (value - I > resolution)",
+      "resolution_eur": 4846.744132876396,
+      "resolution_per_full_cycle_eur_per_mwh": 1.1442842942269849,
+      "rule_ten_gross_ratio_unit": 0.008709680073431978,
+      "rule_ten_gross_ratio_x0": 0.005266569918220755,
+      "source": "this campaign",
+      "status_unit": "certified",
+      "status_x0": "certified",
+      "value_eur": 366352.53585350513,
+      "value_minus_I_eur": 48395.527349946555,
+      "value_minus_I_over_resolution": 9.985162414840593,
+      "value_per_full_cycle_eur_per_mwh": 86.49341525660546
+     },
+     "point": {
+      "Q": 810649709.6671975,
+      "bar": 3550.4890327453613,
+      "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+      "certification_cycle": 132,
+      "cycles_run": 132,
+      "eval_dir": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/74eda68d74d990b2_n7_4h_e1_m2",
+      "eval_key": "74eda68d74d990b2126dd10f59280b4ea63a450b7da5e4f7355c9ad97f8f7724",
+      "flex_cost": {
+       "component_levels_sha256": "2be01a7a09fd2ba45c9dce8faf38e6c3bc61b914645afaadde0050776a19b217",
+       "multiplier": 2.0,
+       "per_dso": {
+        "5": {
+         "at_base_price_eur": 33094789.30209097,
+         "n_blocks": 12,
+         "weighted_r2_eur": 66189578.60418194
+        },
+        "7": {
+         "at_base_price_eur": 32328099.739403497,
+         "n_blocks": 12,
+         "weighted_r2_eur": 64656199.478806995
+        },
+        "9": {
+         "at_base_price_eur": 38570826.75743705,
+         "n_blocks": 12,
+         "weighted_r2_eur": 77141653.5148741
+        }
+       },
+       "total_dso_weighted_r2_eur": 207987431.59786302,
+       "tso_weighted_r2_eur": 0.0
+      },
+      "flex_price_multiplier": 2.0,
+      "per_cycle_trajectory": {
+       "n_rows": 132,
+       "n_rows_equals_cycles_run": true,
+       "path": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/74eda68d74d990b2_n7_4h_e1_m2/per_cycle_record.jsonl",
+       "present": true,
+       "sha256": "58fa198d2137aef09743031e475e4abc88595bc36735a94bb7cded81cdf4bd1b"
+      },
+      "rule_ten": {
+       "boyd_terminal_ratio_max_per_channel": {
+        "ess": 0.24894755425217932,
+        "pf": 0.09069268389787209,
+        "v": 0.06615860529121058
+       },
+       "terminal_gross_step_abs": 706.0499622821808,
+       "terminal_gross_step_over_threshold": 0.008709680073431978,
+       "terminal_objective_change_abs_production_net": 706.0499622821808,
+       "terminal_objective_tolerance": 81064.97096671975,
+       "terminal_step_over_threshold_production": 0.008709680073431978
+      },
+      "solve_reconciliation": {
+       "base": 6783,
+       "events_by_class": {
+        "recovered_tier1": 1
+       },
+       "expected": 6784,
+       "holds": true,
+       "n_esso_recovery_events": 0,
+       "observed": 6784,
+       "recovered_only_identity": 6784,
+       "retries_credited": 1,
+       "solves_per_cycle": 51,
+       "supported": true
+      },
+      "status": "certified",
+      "throughput": {
+       "T_cell_throughput_full_cycle_mwh": 4235.611864401747,
+       "eff_ch": 0.97,
+       "eff_dch": 0.96,
+       "esso_capture_file": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/74eda68d74d990b2_n7_4h_e1_m2/esso_capture/s39_D/node7_cycle132.jsonl",
+       "esso_capture_sha256": "c23dc9b893be5a0580467bd7595c36979672e16354d4879a343bee37a610f0c3",
+       "single_cohort_288_rows": true,
+       "weighting": "w_r2 = num_years * num_days / 1.02^(y - 2025) (W25 T4 r2)"
+      }
+     },
+     "results_path": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/campaign_results.json",
+     "source": "committed flexibility-price ladder (dc468ab4)"
+    },
+    "2": {
+     "campaign_row": {
+      "I_eur": 635914.0170071172,
+      "I_per_full_cycle_eur_per_mwh": 74.9209296037877,
+      "I_per_mwh_energy_eur": 317957.0085035586,
+      "Q_unit": 810288986.5544469,
+      "Q_x0": 811016062.203051,
+      "T_cell_throughput_full_cycle_mwh": 8487.802011668686,
+      "bar_unit": 445.81965148448944,
+      "bar_x0": 1296.2551001310349,
+      "dso_flexibility_saving_per_dso": {
+       "5": {
+        "at_base_price_eur": 85164.34528873861,
+        "weighted_r2_eur": 170328.69057747722
+       },
+       "7": {
+        "at_base_price_eur": 92840.2471544072,
+        "weighted_r2_eur": 185680.4943088144
+       },
+       "9": {
+        "at_base_price_eur": 85213.85822955519,
+        "weighted_r2_eur": 170427.71645911038
+       }
+      },
+      "dso_flexibility_saving_total_weighted_r2_eur": 526436.901345402,
+      "energy_mwh": 2.0,
+      "energy_unit_cost_2025_eur_per_mwh": 253877.6774385931,
+      "m": 2.0,
+      "reading": "pays (value - I > resolution)",
+      "resolution_eur": 1742.0747516155243,
+      "resolution_per_full_cycle_eur_per_mwh": 0.20524450843935693,
+      "resolution_per_mwh_energy_eur": 871.0373758077621,
+      "rule_ten_gross_ratio_unit": 0.0014623359263887454,
+      "rule_ten_gross_ratio_x0": 0.005266569918220755,
+      "second_mwh": {
+       "definition": "the marginal (second) MWh = the 2 MWh row minus the committed 1 MWh row at the same m; resolution of the difference = resolution_2mwh + resolution_1mwh (both are differences of iteratively-computed quantities, so the bars add)",
+       "delta_I_eur": 317957.0085035586,
+       "delta_I_per_mwh_energy_eur": 317957.0085035586,
+       "delta_value_eur": 360723.11275053024,
+       "delta_value_minus_delta_I_eur": 42766.10424697166,
+       "delta_value_minus_delta_I_over_resolution": 6.4907087289392775,
+       "delta_value_per_mwh_energy_eur": 360723.11275053024,
+       "energy_unit_cost_2025_eur_per_mwh": 253877.6774385931,
+       "reading": "the second MWh pays",
+       "resolution_of_difference_eur": 6588.8188844919205
+      },
+      "smallest_unit_1mwh": {
+       "I_eur": 317957.0085035586,
+       "I_per_mwh_energy_eur": 317957.0085035586,
+       "Q_unit": 810649709.6671975,
+       "T_cell_throughput_full_cycle_mwh": 4235.611864401747,
+       "bar_unit": 3550.4890327453613,
+       "cycles_run": 132,
+       "energy_mwh": 1.0,
+       "reading": "pays (value - I > resolution)",
+       "resolution_eur": 4846.744132876396,
+       "resolution_per_mwh_energy_eur": 4846.744132876396,
+       "source": "committed ladder (dc468ab4), NOT re-run",
+       "status": "certified",
+       "value_eur": 366352.53585350513,
+       "value_minus_I_eur": 48395.527349946555,
+       "value_per_full_cycle_eur_per_mwh": 86.49341525660546,
+       "value_per_mwh_energy_eur": 366352.53585350513
+      },
+      "source": "this campaign (2 MWh) against the pinned ladder x = 0 and 1 MWh (dc468ab4)",
+      "status_unit": "certified",
+      "status_x0": "certified",
+      "value_eur": 727075.6486040354,
+      "value_minus_I_eur": 91161.63159691822,
+      "value_minus_I_over_resolution": 52.32934551882971,
+      "value_per_full_cycle_eur_per_mwh": 85.66124040175316,
+      "value_per_mwh_energy_eur": 363537.8243020177
+     },
+     "point": {
+      "Q": 810288986.5544469,
+      "bar": 445.81965148448944,
+      "candidate_key": "cc4eb5df385852e67c612ab21d74526d90a2c66f5c7c934889ce4f67731c4ffe",
+      "certification_cycle": 144,
+      "cycles_run": 144,
+      "eval_dir": "data/SRP1/Results/P515S50/campaign_s50_marginal/evals/5a6a88b46bd3a8fe_n7_4h_e2_m2",
+      "eval_key": "5a6a88b46bd3a8fe4b15e4f158f5349ceb22a84259d5ef2e934c9a0b36127d97",
+      "flex_cost": {
+       "component_levels_sha256": "c7c344b6cecb23c4fcbad7bcf5a420442fbf49c76f4e4f519f99d6a8848ef571",
+       "multiplier": 2.0,
+       "per_dso": {
+        "5": {
+         "at_base_price_eur": 33051420.557177108,
+         "n_blocks": 12,
+         "weighted_r2_eur": 66102841.114354216
+        },
+        "7": {
+         "at_base_price_eur": 32284037.193655957,
+         "n_blocks": 12,
+         "weighted_r2_eur": 64568074.38731191
+        },
+        "9": {
+         "at_base_price_eur": 38529441.20108494,
+         "n_blocks": 12,
+         "weighted_r2_eur": 77058882.40216988
+        }
+       },
+       "total_dso_weighted_r2_eur": 207729797.903836,
+       "tso_weighted_r2_eur": 0.0
+      },
+      "flex_price_multiplier": 2.0,
+      "per_cycle_trajectory": {
+       "n_rows": 144,
+       "n_rows_equals_cycles_run": true,
+       "path": "data/SRP1/Results/P515S50/campaign_s50_marginal/evals/5a6a88b46bd3a8fe_n7_4h_e2_m2/per_cycle_record.jsonl",
+       "present": true,
+       "sha256": "f5eda5e1c0aaa10cf160a1cbe2a6994f3a417eb6c41dce8e71d849d491b0baba"
+      },
+      "rule_ten": {
+       "boyd_terminal_ratio_max_per_channel": {
+        "ess": 0.663539117581101,
+        "pf": 0.08965362831759466,
+        "v": 0.07119968994675688
+       },
+       "terminal_gross_step_abs": 118.49148690700531,
+       "terminal_gross_step_over_threshold": 0.0014623359263887454,
+       "terminal_objective_change_abs_production_net": 118.49148690700531,
+       "terminal_objective_tolerance": 81028.91050459338,
+       "terminal_step_over_threshold_production": 0.0014623359263887454
+      },
+      "solve_reconciliation": {
+       "base": 7395,
+       "events_by_class": {
+        "recovered_tier1": 12
+       },
+       "expected": 7407,
+       "holds": true,
+       "n_esso_recovery_events": 0,
+       "observed": 7407,
+       "recovered_only_identity": 7407,
+       "retries_credited": 12,
+       "solves_per_cycle": 51,
+       "supported": true
+      },
+      "status": "certified",
+      "throughput": {
+       "T_cell_throughput_full_cycle_mwh": 8487.802011668686,
+       "eff_ch": 0.97,
+       "eff_dch": 0.96,
+       "esso_capture_file": "data/SRP1/Results/P515S50/campaign_s50_marginal/evals/5a6a88b46bd3a8fe_n7_4h_e2_m2/esso_capture/s39_D/node7_cycle144.jsonl",
+       "esso_capture_sha256": "c540740f7ccd16fb47eec474717ea42420d42ccb50d85cdee8c3c65df0865198",
+       "single_cohort_288_rows": true,
+       "weighting": "w_r2 = num_years * num_days / 1.02^(y - 2025) (W25 T4 r2)"
+      }
+     },
+     "results_path": "data/SRP1/Results/P515S50/campaign_s50_marginal/campaign_results.json",
+     "source": "committed marginal-MWh test (0e36ec0a)"
+    }
+   },
+   "sources": {
+    "ladder": {
+     "campaign": "s49_flex_ladder (spec campaign_spec_s49_flex_ladder_2203f6c1)",
+     "commit": "dc468ab4",
+     "path": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/campaign_results.json",
+     "sha256": "72e31d2ad79086d4cabdfeac4ecdf2bf3076e5f522738d5985d6750e6e293423"
+    },
+    "marginal": {
+     "campaign": "s50_marginal (spec campaign_spec_s50_marginal_fa4b30ee)",
+     "commit": "0e36ec0a",
+     "path": "data/SRP1/Results/P515S50/campaign_s50_marginal/campaign_results.json",
+     "sha256": "a083768d1b5911ea9c45cdf3f67cc3dd09c1190edbea57aa92fd24076631118c"
+    }
+   },
+   "x0": {
+    "Q": 811016062.203051,
+    "bar": 1296.2551001310349,
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "certification_cycle": 134,
+    "cycles_run": 134,
+    "eval_dir": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/50dea31c5780df57_x0_m2",
+    "eval_key": "50dea31c5780df578cb8d6edde46ba68640d8237835b8e4f5481cce1cd2a22cf",
+    "flex_cost": {
+     "component_levels_sha256": "7c503c5cf1ae8f906747250554655b7014e244dc2c063d9ebad6c059860c2160",
+     "multiplier": 2.0,
+     "per_dso": {
+      "5": {
+       "at_base_price_eur": 33136584.902465846,
+       "n_blocks": 12,
+       "weighted_r2_eur": 66273169.80493169
+      },
+      "7": {
+       "at_base_price_eur": 32376877.440810364,
+       "n_blocks": 12,
+       "weighted_r2_eur": 64753754.88162073
+      },
+      "9": {
+       "at_base_price_eur": 38614655.0593145,
+       "n_blocks": 12,
+       "weighted_r2_eur": 77229310.118629
+      }
+     },
+     "total_dso_weighted_r2_eur": 208256234.8051814,
+     "tso_weighted_r2_eur": 0.0
+    },
+    "flex_price_multiplier": 2.0,
+    "per_cycle_trajectory": {
+     "n_rows": 134,
+     "n_rows_equals_cycles_run": true,
+     "path": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/50dea31c5780df57_x0_m2/per_cycle_record.jsonl",
+     "present": true,
+     "sha256": "e214ff3180b54d5f109f340ba3fd22dae2435efb77e4cf6754926c18a8c06eae"
+    },
+    "rule_ten": {
+     "boyd_terminal_ratio_max_per_channel": {
+      "ess": 2.5128601550276134e-21,
+      "pf": 0.08704850316162054,
+      "v": 0.06568050634998686
+     },
+     "terminal_gross_step_abs": 427.1272796392441,
+     "terminal_gross_step_over_threshold": 0.005266569918220755,
+     "terminal_objective_change_abs_production_net": 427.1272796392441,
+     "terminal_objective_tolerance": 81101.6062203051,
+     "terminal_step_over_threshold_production": 0.005266569918220755
+    },
+    "status": "certified"
+   }
+  },
+  "pinned_rows_recomputed": {
+   "1": {
+    "I_eur": 317957.0085035586,
+    "I_per_full_cycle_eur_per_mwh": 75.06755072999778,
+    "I_per_mwh_energy_eur": 317957.0085035586,
+    "Q_unit": 810649709.6671975,
+    "Q_x0": 811016062.203051,
+    "T_cell_throughput_full_cycle_mwh": 4235.611864401747,
+    "bar_unit": 3550.4890327453613,
+    "bar_x0": 1296.2551001310349,
+    "budget": {
+     "I_eur": 317957.0085035586,
+     "at_max_capacity_cap": false,
+     "budget_eur": 1000000.0,
+     "budget_feasible": true,
+     "is_budget_corner": false,
+     "max_capacity_mwh": 5.0,
+     "slack_eur": 682042.9914964414,
+     "w2_budget_feasible_new": true
+    },
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "certification_cycle": 132,
+    "cycles_run": 132,
+    "dso_flexibility_saving_per_dso": {
+     "5": {
+      "at_base_price_eur": 41795.60037487745,
+      "weighted_r2_eur": 83591.2007497549
+     },
+     "7": {
+      "at_base_price_eur": 48777.70140686631,
+      "weighted_r2_eur": 97555.40281373262
+     },
+     "9": {
+      "at_base_price_eur": 43828.30187744647,
+      "weighted_r2_eur": 87656.60375489295
+     }
+    },
+    "dso_flexibility_saving_total_weighted_r2_eur": 268803.2073183805,
+    "e_mwh": 1.0,
+    "energy_unit_cost_2025_eur_per_mwh": 253877.6774385931,
+    "eval_key": "74eda68d74d990b2126dd10f59280b4ea63a450b7da5e4f7355c9ad97f8f7724",
+    "label": "n7_4h_e1_m2",
+    "m": 2.0,
+    "marginal_mwh": {
+     "definition": "the E-th MWh = this rung minus the previous rung at the same m (for E = 1 the previous rung is x = 0, so value_eur and resolution_eur are its own); resolution of the difference = resolution_E + resolution_{E-1} (both are differences of iteratively-computed quantities, so the bars add)",
+     "delta_I_eur": 317957.0085035586,
+     "delta_I_per_mwh_energy_eur": 317957.0085035586,
+     "delta_value_eur": 366352.53585350513,
+     "delta_value_minus_delta_I_eur": 48395.527349946555,
+     "delta_value_minus_delta_I_over_resolution": 9.985162414840593,
+     "delta_value_per_mwh_energy_eur": 366352.53585350513,
+     "energy_unit_cost_2025_eur_per_mwh": 253877.6774385931,
+     "previous_rung_e_mwh": 0.0,
+     "reading": "the first MWh pays",
+     "resolution_of_difference_eur": 4846.744132876396
+    },
+    "per_cycle_trajectory": {
+     "n_rows": 132,
+     "n_rows_equals_cycles_run": true,
+     "path": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/74eda68d74d990b2_n7_4h_e1_m2/per_cycle_record.jsonl",
+     "present": true,
+     "sha256": "58fa198d2137aef09743031e475e4abc88595bc36735a94bb7cded81cdf4bd1b"
+    },
+    "reading": "pays (value - I > resolution)",
+    "resolution_eur": 4846.744132876396,
+    "resolution_per_full_cycle_eur_per_mwh": 1.1442842942269849,
+    "resolution_per_mwh_energy_eur": 4846.744132876396,
+    "rule_ten_gross_ratio_unit": 0.008709680073431978,
+    "rule_ten_gross_ratio_x0": 0.005266569918220755,
+    "s_mva": 0.25,
+    "source": "committed flexibility-price ladder (dc468ab4)",
+    "status_unit": "certified",
+    "status_x0": "certified",
+    "value_eur": 366352.53585350513,
+    "value_minus_I_eur": 48395.527349946555,
+    "value_minus_I_if_budget_feasible": 48395.527349946555,
+    "value_minus_I_over_resolution": 9.985162414840593,
+    "value_per_full_cycle_eur_per_mwh": 86.49341525660546,
+    "value_per_mwh_energy_eur": 366352.53585350513
+   },
+   "2": {
+    "I_eur": 635914.0170071172,
+    "I_per_full_cycle_eur_per_mwh": 74.9209296037877,
+    "I_per_mwh_energy_eur": 317957.0085035586,
+    "Q_unit": 810288986.5544469,
+    "Q_x0": 811016062.203051,
+    "T_cell_throughput_full_cycle_mwh": 8487.802011668686,
+    "bar_unit": 445.81965148448944,
+    "bar_x0": 1296.2551001310349,
+    "budget": {
+     "I_eur": 635914.0170071172,
+     "at_max_capacity_cap": false,
+     "budget_eur": 1000000.0,
+     "budget_feasible": true,
+     "is_budget_corner": false,
+     "max_capacity_mwh": 5.0,
+     "slack_eur": 364085.98299288284,
+     "w2_budget_feasible_new": true
+    },
+    "candidate_key": "cc4eb5df385852e67c612ab21d74526d90a2c66f5c7c934889ce4f67731c4ffe",
+    "certification_cycle": 144,
+    "cycles_run": 144,
+    "dso_flexibility_saving_per_dso": {
+     "5": {
+      "at_base_price_eur": 85164.34528873861,
+      "weighted_r2_eur": 170328.69057747722
+     },
+     "7": {
+      "at_base_price_eur": 92840.2471544072,
+      "weighted_r2_eur": 185680.4943088144
+     },
+     "9": {
+      "at_base_price_eur": 85213.85822955519,
+      "weighted_r2_eur": 170427.71645911038
+     }
+    },
+    "dso_flexibility_saving_total_weighted_r2_eur": 526436.901345402,
+    "e_mwh": 2.0,
+    "energy_unit_cost_2025_eur_per_mwh": 253877.6774385931,
+    "eval_key": "5a6a88b46bd3a8fe4b15e4f158f5349ceb22a84259d5ef2e934c9a0b36127d97",
+    "label": "n7_4h_e2_m2",
+    "m": 2.0,
+    "marginal_mwh": {
+     "definition": "the E-th MWh = this rung minus the previous rung at the same m (for E = 1 the previous rung is x = 0, so value_eur and resolution_eur are its own); resolution of the difference = resolution_E + resolution_{E-1} (both are differences of iteratively-computed quantities, so the bars add)",
+     "delta_I_eur": 317957.0085035586,
+     "delta_I_per_mwh_energy_eur": 317957.0085035586,
+     "delta_value_eur": 360723.11275053024,
+     "delta_value_minus_delta_I_eur": 42766.10424697166,
+     "delta_value_minus_delta_I_over_resolution": 6.4907087289392775,
+     "delta_value_per_mwh_energy_eur": 360723.11275053024,
+     "energy_unit_cost_2025_eur_per_mwh": 253877.6774385931,
+     "previous_rung_e_mwh": 1.0,
+     "reading": "the second MWh pays",
+     "resolution_of_difference_eur": 6588.8188844919205
+    },
+    "per_cycle_trajectory": {
+     "n_rows": 144,
+     "n_rows_equals_cycles_run": true,
+     "path": "data/SRP1/Results/P515S50/campaign_s50_marginal/evals/5a6a88b46bd3a8fe_n7_4h_e2_m2/per_cycle_record.jsonl",
+     "present": true,
+     "sha256": "f5eda5e1c0aaa10cf160a1cbe2a6994f3a417eb6c41dce8e71d849d491b0baba"
+    },
+    "reading": "pays (value - I > resolution)",
+    "resolution_eur": 1742.0747516155243,
+    "resolution_per_full_cycle_eur_per_mwh": 0.20524450843935693,
+    "resolution_per_mwh_energy_eur": 871.0373758077621,
+    "rule_ten_gross_ratio_unit": 0.0014623359263887454,
+    "rule_ten_gross_ratio_x0": 0.005266569918220755,
+    "s_mva": 0.5,
+    "source": "committed marginal-MWh test (0e36ec0a)",
+    "status_unit": "certified",
+    "status_x0": "certified",
+    "value_eur": 727075.6486040354,
+    "value_minus_I_eur": 91161.63159691822,
+    "value_minus_I_if_budget_feasible": 91161.63159691822,
+    "value_minus_I_over_resolution": 52.32934551882971,
+    "value_per_full_cycle_eur_per_mwh": 85.66124040175316,
+    "value_per_mwh_energy_eur": 363537.8243020177
+   }
+  },
+  "pinned_rows_reproduce_committed": {
+   "committed_second_mwh_delta_value_reproduces": true,
+   "committed_second_mwh_resolution_reproduces": true,
+   "pinned_e1_T_reproduces": true,
+   "pinned_e1_reading_reproduces": true,
+   "pinned_e1_resolution_reproduces": true,
+   "pinned_e1_value_minus_I_reproduces": true,
+   "pinned_e1_value_reproduces": true,
+   "pinned_e2_T_reproduces": true,
+   "pinned_e2_reading_reproduces": true,
+   "pinned_e2_resolution_reproduces": true,
+   "pinned_e2_value_minus_I_reproduces": true,
+   "pinned_e2_value_reproduces": true
+  },
+  "pinned_rungs_mwh": [
+   1,
+   2
+  ],
+  "pins": {
+   "a0_spec": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_spec_s45_a0_c7_9d08ad2f.json",
+    "sha256_on_disk": "9d08ad2f144b67ea97dae8dc25d91288fc86a77dd52c7f53276a52c5f00f8b34",
+    "sha256_pinned": "9d08ad2f144b67ea97dae8dc25d91288fc86a77dd52c7f53276a52c5f00f8b34"
+   },
+   "ess_params_file": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "sha256_on_disk": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+    "sha256_pinned": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+   },
+   "investment_cost_results": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+    "sha256_on_disk": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "sha256_pinned": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b"
+   },
+   "ladder_manifest": {
+    "commit": null,
+    "git_clean": true,
+    "git_tracked": true,
+    "path": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/campaign_manifest_sha256.json",
+    "sha256_on_disk": "0e6e92b668ba089f639c26737376c8e7ec7dc8f6b6d32601e687736f70d618aa"
+   },
+   "ladder_results": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/campaign_results.json",
+    "sha256_on_disk": "72e31d2ad79086d4cabdfeac4ecdf2bf3076e5f522738d5985d6750e6e293423",
+    "sha256_pinned": "72e31d2ad79086d4cabdfeac4ecdf2bf3076e5f522738d5985d6750e6e293423"
+   },
+   "ladder_results_commit_in_HEAD": {
+    "commit": "dc468ab4",
+    "in_HEAD": true
+   },
+   "ladder_script": {
+    "commit": "812ee116",
+    "git_clean": true,
+    "git_tracked": true,
+    "path": "p515_s49_flex_ladder_campaign.py",
+    "sha256_on_disk": "5183831e7804752e91488aff0c419eb871dbfec6a3626c87f511b53a232ebcc5"
+   },
+   "ladder_spec": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/campaign_spec_s49_flex_ladder_2203f6c1.json",
+    "sha256_on_disk": "2203f6c1759a8419e566bc4536ef76d2ab44bb4b3ca72f7786638341f7cd899e",
+    "sha256_pinned": "2203f6c1759a8419e566bc4536ef76d2ab44bb4b3ca72f7786638341f7cd899e"
+   },
+   "marginal_manifest": {
+    "commit": null,
+    "git_clean": true,
+    "git_tracked": true,
+    "path": "data/SRP1/Results/P515S50/campaign_s50_marginal/campaign_manifest_sha256.json",
+    "sha256_on_disk": "062f349ec496a6abbbb325091b7b8330b5397fd92781599cd1d99102d7e0c3ee"
+   },
+   "marginal_results": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S50/campaign_s50_marginal/campaign_results.json",
+    "sha256_on_disk": "a083768d1b5911ea9c45cdf3f67cc3dd09c1190edbea57aa92fd24076631118c",
+    "sha256_pinned": "a083768d1b5911ea9c45cdf3f67cc3dd09c1190edbea57aa92fd24076631118c"
+   },
+   "marginal_results_commit_in_HEAD": {
+    "commit": "0e36ec0a",
+    "in_HEAD": true
+   },
+   "marginal_script": {
+    "commit": "2389d79b",
+    "git_clean": true,
+    "git_tracked": true,
+    "path": "p515_s50_marginal_campaign.py",
+    "sha256_on_disk": "0ec4e9e0dd0844d65927a2ede8835e351fe315739e1dc261b2de0b4c7b3c6685"
+   },
+   "marginal_spec": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S50/campaign_s50_marginal/campaign_spec_s50_marginal_fa4b30ee.json",
+    "sha256_on_disk": "fa4b30eee63d9b137df559379ed5cdd13a1b93e2a7b5622fd681b643618cb8a0",
+    "sha256_pinned": "fa4b30eee63d9b137df559379ed5cdd13a1b93e2a7b5622fd681b643618cb8a0"
+   },
+   "spec_v21": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S51/frozen_s51_spec_v21_13cb828c.json",
+    "sha256_on_disk": "13cb828c988dfaa5613675a4d34607ca0f74bcc885fc5fb2397904baf19e0530",
+    "sha256_pinned": "13cb828c988dfaa5613675a4d34607ca0f74bcc885fc5fb2397904baf19e0530"
+   },
+   "w25_results": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S47/tso_marginal_cost/tso_marginal_cost.json",
+    "sha256_on_disk": "5acbd2b32d924b47f23650142076180c420bd0ba201b0a63d4d89f4b671b7a31",
+    "sha256_pinned": "5acbd2b32d924b47f23650142076180c420bd0ba201b0a63d4d89f4b671b7a31"
+   },
+   "w33_checks": {
+    "commit": "2e82a23f",
+    "commit_in_HEAD": true,
+    "expect": "all_ok true",
+    "flag": true,
+    "git_tracked": true,
+    "path": "data/SRP1/Results/P515S49/flex_price_checks/flex_price_checks.json",
+    "sha256": "4521195a0667ef7403dd749be1b371d68fc7fd84390deb6a1cbf06998fed35dd"
+   },
+   "w33_gate": {
+    "commit": "51e74279",
+    "commit_in_HEAD": true,
+    "expect": "gate_pass true",
+    "flag": true,
+    "git_tracked": true,
+    "path": "data/SRP1/Results/P515S49/flex_price_gate/gate.json",
+    "sha256": "f264e337b0ed4882d4f229f74a57e3dd9e91663bd49e293cb3af013bb02987de"
+   }
+  },
+  "points": [
+   {
+    "candidate_key": "fb21d822e145ba68c8c65c3fbb9793ddfcb038df172f0f2f08956998c8d81aac",
+    "energy_mwh": 3.0,
+    "eval_key": "f3aa335e6c1eda6950712aec00aff122d4578760f0dd02ff64996b95998eaace",
+    "flex_price_multiplier": 2.0,
+    "instance": "e3",
+    "investment_year": 2025,
+    "label": "n7_4h_e3_m2",
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.75,
+      3.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "s_mva": 0.75
+   },
+   {
+    "candidate_key": "11725e45371a0c7fbd6553b61784bdcd628dedbceb4df0547b11ff2538c32321",
+    "energy_mwh": 4.0,
+    "eval_key": "a11d79663bf5a95496b784a56251c738bdc5af261be2b3346f777713ad2fcdc9",
+    "flex_price_multiplier": 2.0,
+    "instance": "e4",
+    "investment_year": 2025,
+    "label": "n7_4h_e4_m2",
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      1.0,
+      4.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "s_mva": 1.0
+   },
+   {
+    "candidate_key": "cab98853bb31f72fbdfc273a6d84b2ba8edbf5d451ec1cebb2529a1c6aaaf823",
+    "energy_mwh": 5.0,
+    "eval_key": "5f3cccb4cad36ee541b292d66f3899e9aebd7edcb512ba42b5b4744b3e80d336",
+    "flex_price_multiplier": 2.0,
+    "instance": "e5",
+    "investment_year": 2025,
+    "label": "n7_4h_e5_m2",
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      1.25,
+      5.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "s_mva": 1.25
+   }
+  ],
+  "post_certification": "none",
+  "power_unit_cost_2025_eur_per_mva": 256317.32425986166,
+  "predictions_recorded_before_run": {
+   "planner": [
+    "the ladder's value - I keeps rising with E: predicted +125k to +140k at 3 MWh, +150k to +175k at 4 MWh, +175k to +200k at 5 MWh (from the measured concavity: first MWh 366,353, second 360,723, so ~350-355k per further MWh against 317,957 each)",
+    "under the EUR 1M budget the optimum is the budget corner, 3 MWh (0.75 MVA / 3.0 MWh, I = 953,871, slack 46,129)",
+    "unconstrained, the optimum would be the max_capacity cap (5 MWh), not an interior point - the objective stays affine with a positive margin",
+    "Phase B terminates at the corner with few new evaluations, since the ladder supplies most cached neighbours"
+   ]
+  },
+  "region_note": "regions as a1a (L._region_key: the node+duration ladder): all three evaluated points are ONE region (n7_4h_y2025), so two non-certified points would trigger (a) -- there is no later wave to stop, and the flag is recorded and returned as exit 3",
+  "rule_eleven_fields": [
+   "status",
+   "barrier_cause",
+   "cycles_run",
+   "certification_cycle",
+   "Q",
+   "bar",
+   "rule_ten",
+   "flex_price_multiplier",
+   "flex_price_label",
+   "flex_price_readback",
+   "flex_cost",
+   "throughput",
+   "solve_reconciliation",
+   "wall_time",
+   "peak_rss",
+   "aa_action_counts",
+   "per_cycle_trajectory",
+   "ladder.value_eur",
+   "ladder.I_eur",
+   "ladder.value_minus_I_eur",
+   "ladder.resolution_eur",
+   "ladder.reading",
+   "ladder.value_per_mwh_energy_eur",
+   "ladder.value_per_full_cycle_eur_per_mwh",
+   "ladder.T_cell_throughput_full_cycle_mwh",
+   "ladder.marginal_mwh",
+   "ladder.budget",
+   "ladder.per_cycle_trajectory",
+   "budget_corner"
+  ],
+  "rungs_mwh": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "scenario_label": "FLEXIBILITY-PRICE SCENARIO m = 2 (MODEL VARIANT -- flexibility price x 2); NOT the baseline. Every figure in this stage is a figure of that scenario.",
+  "shared_constants_with_prior_stages": {
+   "active_nodes": true,
+   "cap": true,
+   "case_file_aa": true,
+   "ess_ageing_baseline": true,
+   "flex_label": true,
+   "label": true,
+   "ladder_unit_is_rung_1": true,
+   "m_is_a_ladder_multiplier": true,
+   "marginal_cap": true,
+   "marginal_label": true,
+   "marginal_unit1_is_rung_1": true,
+   "marginal_unit2_is_rung_2": true,
+   "marginal_year": true,
+   "per_child_memory_budget": true,
+   "required_consecutive_cycles": true,
+   "year": true
+  },
+  "solves_per_cycle_from_case_file": 51,
+  "spec_v21": {
+   "item": "F2",
+   "path": "data/SRP1/Results/P515S51/frozen_s51_spec_v21_13cb828c.json",
+   "sha256": "13cb828c988dfaa5613675a4d34607ca0f74bcc885fc5fb2397904baf19e0530"
+  },
+  "spec_v21_item": {
+   "ladder": "node 7, 4 h, E in {1,2,3,4,5} MWh at 2025 - 5 points; the m = 2 rows for E = 1 (ladder dc468ab4) and E = 2 (marginal test 0e36ec0a) are already committed and are NOT re-run; x = 0 at m = 2 is pinned from the ladder",
+   "phase_B": "from the best budget-feasible ladder point, under the EUR 1M budget, own frozen spec, hull polish on the incumbent, the unit-poll completion ruling (A2) in force",
+   "predictions_recorded_before_run": {
+    "planner": [
+     "the ladder's value - I keeps rising with E: predicted +125k to +140k at 3 MWh, +150k to +175k at 4 MWh, +175k to +200k at 5 MWh (from the measured concavity: first MWh 366,353, second 360,723, so ~350-355k per further MWh against 317,957 each)",
+     "under the EUR 1M budget the optimum is the budget corner, 3 MWh (0.75 MVA / 3.0 MWh, I = 953,871, slack 46,129)",
+     "unconstrained, the optimum would be the max_capacity cap (5 MWh), not an interior point - the objective stays affine with a positive margin",
+     "Phase B terminates at the corner with few new evaluations, since the ladder supplies most cached neighbours"
+    ]
+   },
+   "what": "the demonstration case for the planning method, SRP1, flexibility price m = 2 (a flexibility-price scenario, never the baseline), baseline ageing, AA-on"
+  },
+  "stop_rule": "as a1a (Planner task W15, spec v15 execution.barrier): after every wave, STOP (launch no further wave) if (a) 2 or more non-certified points fall in ONE region (node+duration ladder) or (b) 3 or more non-certified points occur overall. A single isolated non-certified point does NOT stop the campaign. Points already running always finish; unlaunched points are recorded as not_launched_stop_rule and campaign_results.json carries STOP_FOR_REVIEW true (exit 3).",
+  "value_definition": "value(x) = Q_m(0) - Q_m(x) at m = 2; value - I with I = I(x) from the pinned W2 table matched by candidate key; resolution = bar_x + bar_x0 (record.bar of each, same m, the x0 bar pinned): |value - I| <= resolution is INDETERMINATE (CLAUDE.md: a difference smaller than the stopping error is not a result; the bar is local and bounds stopping slack only); value per MWh of ENERGY = value / E, compared with the 2025 new energy unit cost 253,877.6774385931 EUR/MWh (I / E = 317,957.0085 EUR/MWh includes the 4 h power component); the TRUE MARGINAL MWh = this rung minus the previous rung, delta value against delta I = 317,957.0085035586 per MWh at 4 h, with resolution_E + resolution_{E-1} as the resolution of that difference; value per full cycle = value / T, T = W25 T4 r2 cell-side full-cycle throughput of THIS cell at m = 2; resolution per cycle = resolution / T.",
+  "w25_reproduction": {
+   "checks": {
+    "w25_T_reproduced_bitwise": true,
+    "w25_esso_capture_hash_in_s2_campaign_manifest": true,
+    "w25_record_is_the_s2_unit": true,
+    "w25_single_cohort_288_rows": true
+   },
+   "w25_committed": {
+    "T_r2": 4296.190012545464,
+    "captured_r2_eur_per_mwh_cycle": 60.38554323662883,
+    "note": "W25 divides the T3 component-sum value (Q(0) - Q(x) to <= 0.01 EUR) by T; this ladder divides Q_m(0) - Q_m(unit); the m = 1 figures differ by that sum residual only",
+    "value_eur_component_sum": 259427.76775533706
+   }
+  },
+  "waves": [
+   [
+    "n7_4h_e3_m2",
+    "n7_4h_e4_m2",
+    "n7_4h_e5_m2"
+   ]
+  ]
+ },
+ "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+ "frozen_utc": "2026-09-22T20:44:55.145256+00:00",
+ "git_head": "a071411725f3dff9c8266e6ad8b86e07ae887d41",
+ "harness": {
+  "path": "p515_s44_campaign_harness.py",
+  "sha256": "5c198bd8b2a4bc87c5297f092c1f03d95c0b82a9fe9eb30afadb8fc768832d6c"
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "nlp_solver_path_env": {
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "source": "environment"
+ },
+ "required_consecutive_cycles": 10,
+ "schema": "p515_s44_campaign_spec_v2",
+ "thread_caps": {
+  "MKL_NUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1"
+ }
+}

@@ -1,0 +1,191 @@
+{
+ "baseline": "C2 (10000, 0.80, 0.80) + phi_cal 0.985 + soh_min 0.70 -- not mixed with C3",
+ "breakeven": {
+  "first_unit_best_node_eur_per_mwh": 200271.12242028507,
+  "first_unit_best_node_label": "n5_4h_e1",
+  "first_unit_best_node_ratio_to_current": 0.7888488836074445,
+  "first_unit_n7_eur_per_mwh": 195348.4366903046,
+  "first_unit_n7_ratio_to_current": 0.7694588932008593,
+  "formulas": {
+   "first": "(V_meas - P*p_cost)/E",
+   "marginal": "b + c/4 - p_cost/4 (SE ignores the b-c covariance)"
+  },
+  "marginal_4h_eur_per_mwh": 182231.10847760626,
+  "marginal_4h_ratio_to_current": 0.7177909862582683,
+  "marginal_4h_se_eur_per_mwh": 2591.348770765749
+ },
+ "closest_ladder_point": {
+  "F_minus_F0_eur": 53606.55501830578,
+  "I_x_eur": 317957.0085035586,
+  "label": "n5_4h_e1",
+  "value_eur": 264350.4534852505
+ },
+ "inputs_sha256": {
+  "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+  "data/SRP1/Results/P515S47/campaign_s47_a1a_baseline/campaign_results.json": "98c57895c46a4302cd64ebccd4f0632eb40ae21ac2845d5a355bac27b56b56ef",
+  "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_results.json": "906f9da353ebe2158c13176c22ea49602d9cdbfab142f7334b7e54e9db1fdb58",
+  "data/SRP1/Results/P515S47/campaign_s47_recert/campaign_results.json": "e48dad43470829ee1d936cdab5e6433cffd688f9439e86e011b84dad74e19a3e"
+ },
+ "node7_fit": {
+  "a": 10378.76349731099,
+  "b": 233135.6450237866,
+  "c": 52699.17807514017,
+  "formula": "value = a + b*E + c*P, OLS; SE = sqrt(diag(sigma^2 (X^T X)^-1)), sigma^2 = RSS/(n-3)",
+  "labels": [
+   "n7_2h_e1",
+   "n7_4h_e1",
+   "n7_2h_e2",
+   "n7_4h_e2",
+   "n7_2h_e3",
+   "n7_4h_e3",
+   "n7_2h_e4",
+   "n7_4h_e4",
+   "n7_2h_e5",
+   "n7_4h_e5"
+  ],
+  "n": 10,
+  "residual_max_abs": 8222.768091615639,
+  "residual_rms": 5286.708528890395,
+  "se": {
+   "a": 4686.166250357589,
+   "b": 2294.161597437013,
+   "c": 4819.810812211472
+  }
+ },
+ "objective_convention": "Q = certified gross_operational_cost (settlement excluded); F = I + Q; value = Q(0) - Q(x)",
+ "phase_b_certificate": {
+  "all_feasible_neighbours_polled": true,
+  "holds": true,
+  "incumbent": "x0",
+  "n_barrier": 0,
+  "n_feasible_neighbours": 14,
+  "n_improvement": 0,
+  "n_indeterminate_unresolved": 0,
+  "n_no_improvement": 14,
+  "statement": "no feasible lattice neighbour of the incumbent improves F: every bound-, rule- and budget-feasible lattice point within l_inf distance 1 of the incumbent in (zP5, zE5, zP7, zE7, zP9, zE9, zY) was polled at the final unit poll and none is a determinate improvement (F(inc) - F(x) > max(bar_x + bar_inc, sigma_Q)); indeterminate neighbours are listed unresolved, barrier neighbours are F = +inf (extreme barrier)"
+ },
+ "phase_b_unit_poll": [
+  {
+   "F_minus_F0_eur": 33459.32584691048,
+   "I_x_eur": 141882.02186349596,
+   "label": "y2030__n9_p0.25_e0.5",
+   "outcome": "no_improvement",
+   "resolution_eur": 18449.663947025518
+  },
+  {
+   "F_minus_F0_eur": 42268.278532743454,
+   "I_x_eur": 141882.02186349596,
+   "label": "y2030__n7_p0.25_e0.5",
+   "outcome": "no_improvement",
+   "resolution_eur": 18449.663947025518
+  },
+  {
+   "F_minus_F0_eur": 43020.47268676758,
+   "I_x_eur": 191018.16978426196,
+   "label": "y2025__n5_p0.25_e0.5",
+   "outcome": "no_improvement",
+   "resolution_eur": 40188.720626711845
+  },
+  {
+   "F_minus_F0_eur": 43675.91406595707,
+   "I_x_eur": 141882.02186349596,
+   "label": "y2030__n5_p0.25_e0.5",
+   "outcome": "no_improvement",
+   "resolution_eur": 18449.663947025518
+  },
+  {
+   "F_minus_F0_eur": 54489.41713190079,
+   "I_x_eur": 191018.16978426196,
+   "label": "y2025__n9_p0.25_e0.5",
+   "outcome": "no_improvement",
+   "resolution_eur": 47205.25432550907
+  },
+  {
+   "F_minus_F0_eur": 57411.39735484123,
+   "I_x_eur": 191018.16978426196,
+   "label": "y2025__n7_p0.25_e0.5",
+   "outcome": "no_improvement",
+   "resolution_eur": 22145.024706721306
+  },
+  {
+   "F_minus_F0_eur": 97071.82376909256,
+   "I_x_eur": 382036.3395685239,
+   "label": "y2025__n5_p0.25_e0.5__n9_p0.25_e0.5",
+   "outcome": "no_improvement",
+   "resolution_eur": 22128.837436795235
+  },
+  {
+   "F_minus_F0_eur": 101828.96571481228,
+   "I_x_eur": 382036.3395685239,
+   "label": "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5",
+   "outcome": "no_improvement",
+   "resolution_eur": 18449.663947025518
+  },
+  {
+   "F_minus_F0_eur": 102829.59660160542,
+   "I_x_eur": 283764.0437269919,
+   "label": "y2030__n7_p0.25_e0.5__n9_p0.25_e0.5",
+   "outcome": "no_improvement",
+   "resolution_eur": 18449.663947025518
+  },
+  {
+   "F_minus_F0_eur": 112016.98084282875,
+   "I_x_eur": 283764.0437269919,
+   "label": "y2030__n5_p0.25_e0.5__n9_p0.25_e0.5",
+   "outcome": "no_improvement",
+   "resolution_eur": 18449.663947025518
+  },
+  {
+   "F_minus_F0_eur": 113662.7636013031,
+   "I_x_eur": 382036.3395685239,
+   "label": "y2025__n7_p0.25_e0.5__n9_p0.25_e0.5",
+   "outcome": "no_improvement",
+   "resolution_eur": 18449.663947025518
+  },
+  {
+   "F_minus_F0_eur": 130638.5022149086,
+   "I_x_eur": 283764.0437269919,
+   "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5",
+   "outcome": "no_improvement",
+   "resolution_eur": 44086.654787778854
+  },
+  {
+   "F_minus_F0_eur": 132203.98239135742,
+   "I_x_eur": 425646.0655904879,
+   "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+   "outcome": "no_improvement",
+   "resolution_eur": 18449.663947025518
+  },
+  {
+   "F_minus_F0_eur": 151806.59216177464,
+   "I_x_eur": 573054.5093527859,
+   "label": "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+   "outcome": "no_improvement",
+   "resolution_eur": 43788.42256844044
+  }
+ ],
+ "script_sha256": "76ead87cacf823f16ae14e8d48cb740f81e37e7f7aad7b638168c9d3859893a0",
+ "solve_profile_guard": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "verify0_failures": []
+ },
+ "stage": "P5.15 Addendum 30 baseline tables (zero solves)",
+ "unit_costs_2025": {
+  "energy_eur_per_mwh": 253877.6774385931,
+  "power_eur_per_mva": 256317.32425986166,
+  "source": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json"
+ },
+ "value_to_cost_note": "h > 4 extrapolates beyond the evaluated 2-4 h range",
+ "value_to_cost_ratio_by_duration": {
+  "10": 0.8529428864194832,
+  "2": 0.679216103772804,
+  "4": 0.7746658603369486,
+  "6": 0.8156476719655551,
+  "8": 0.8384347720642822
+ }
+}

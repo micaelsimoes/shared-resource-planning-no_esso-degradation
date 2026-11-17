@@ -1,0 +1,547 @@
+{
+ "schema": "p515_s52_pilot_instance_v1",
+ "instance_label": "s52_pilot_2x2",
+ "derived_instance_declaration": {
+  "instance_label": "s52_pilot_2x2",
+  "case_path": "data/SRP1/Results/P515S52/pilot_instance/SRP1__s52_pilot_2x2.json",
+  "case_sha256": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949",
+  "scenario_checksum": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563",
+  "source_case_path": "data/SRP1/SRP1.json",
+  "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+  "changes_vs_source": [
+   {
+    "key": "Years",
+    "from": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "to": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    }
+   },
+   {
+    "key": "NumMarketScenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   }
+  ]
+ },
+ "instance": {
+  "case_path": "data/SRP1/Results/P515S52/pilot_instance/SRP1__s52_pilot_2x2.json",
+  "case_sha256": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949",
+  "existed_before": false,
+  "equals_w45_pilot_case_sha256": true,
+  "derive_base": "paper",
+  "derive_overrides": {
+   "num_market_scenarios": 2,
+   "num_operation_scenarios": 2
+  },
+  "changes_vs_source": [
+   {
+    "key": "Years",
+    "from": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "to": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    }
+   },
+   {
+    "key": "NumMarketScenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   }
+  ],
+  "years": {
+   "2025": 3,
+   "2028": 3,
+   "2031": 3,
+   "2034": 3,
+   "2037": 3
+  },
+  "years_expected": true,
+  "source_case_path": "data/SRP1/SRP1.json",
+  "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+  "derive_description": "the paper instance: 5 representative years (2025, 2028, 2031, 2034, 2037; each a 3-year block, sum 15) x 4 days x 5 market x 5 operation scenarios (25 combinations per block)"
+ },
+ "facts": {
+  "scenario_checksum": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563",
+  "scenario_checksum_equals_w45": true,
+  "planning_read_redirected_to": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_freeze/w47_pilot_n158n3pz",
+  "planning_dimensions": {
+   "years": {
+    "2025": 3,
+    "2028": 3,
+    "2031": 3,
+    "2034": 3,
+    "2037": 3
+   },
+   "days": {
+    "Spring": 92,
+    "Summer": 91,
+    "Autumn": 91,
+    "Winter": 91
+   },
+   "num_instants": 24,
+   "random_seed": 2026,
+   "num_market_scenarios": 2,
+   "num_operation_scenarios": {
+    "case9": 2,
+    "case33_1": 2,
+    "case33_2": 2,
+    "case33_3": 2
+   },
+   "active_distribution_network_nodes": [
+    5,
+    7,
+    9
+   ],
+   "scenario_metadata": {
+    "random_seed": 2026,
+    "deterministic_scenarios": true,
+    "market_scenario_checksum": "f96ae5bffa617abbd0d35f53cb32dd07e0ec9ef3dbe1598f63d3f1c931fb45b7",
+    "operational_scenario_checksum": "433864055b30e0adc48616ef032a76609070e8271208ca54967bcc67737f6683",
+    "combined_scenario_checksum": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563"
+   }
+  },
+  "expected_block_counts": {
+   "tso_blocks": 20,
+   "dso_blocks": 60,
+   "network_blocks": 80,
+   "esso_models": 3,
+   "solves_per_cycle": 83
+  },
+  "declared_solve_profile_per_cycle": 83,
+  "block_weights_tso": {
+   "2025|Spring": 276.0,
+   "2025|Summer": 273.0,
+   "2025|Autumn": 273.0,
+   "2025|Winter": 273.0,
+   "2028|Spring": 260.08096433498423,
+   "2028|Summer": 257.2539973313431,
+   "2028|Autumn": 257.2539973313431,
+   "2028|Winter": 257.2539973313431,
+   "2031|Spring": 245.080101483389,
+   "2031|Summer": 242.4161873368304,
+   "2031|Autumn": 242.4161873368304,
+   "2031|Winter": 242.4161873368304,
+   "2034|Spring": 230.94445338085367,
+   "2034|Summer": 228.4341875832357,
+   "2034|Autumn": 228.4341875832357,
+   "2034|Winter": 228.4341875832357,
+   "2037|Spring": 217.62411646053712,
+   "2037|Summer": 215.25863693379213,
+   "2037|Autumn": 215.25863693379213,
+   "2037|Winter": 215.25863693379213
+  },
+  "median_block_weight_production": 242.4161873368304,
+  "case_file_admm": {
+   "objective_scale": 93635360.0,
+   "objective_scale_source": "case_file",
+   "objective_scale_assert_factor": 3.0,
+   "interface_deviation_premium_in_case_file": {
+    "alpha": 0.0,
+    "floor": null,
+    "source": "default"
+   },
+   "anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "tso_snapshot_capture_mode": "lightweight",
+   "dso_snapshot_capture_mode": "lightweight",
+   "parallel_execution": false
+  },
+  "min_hourly_mean_price": 9.81204468708017,
+  "premium_floor_needed": false,
+  "investment_cost": {
+   "x0": {
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "I_x_eur_master_expression": 0.0,
+    "I_x_eur_p56a_transcription": 0.0,
+    "abs_diff": 0.0,
+    "budget_eur": 1000000.0,
+    "budget_slack_eur": 1000000.0,
+    "case_file_budget_eur": 1000000.0
+   },
+   "n7_4h_e1": {
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "I_x_eur_master_expression": 317957.0085035586,
+    "I_x_eur_p56a_transcription": 317957.0085035586,
+    "abs_diff": 0.0,
+    "budget_eur": 1000000.0,
+    "budget_slack_eur": 682042.9914964414,
+    "case_file_budget_eur": 1000000.0,
+    "srp1_w2_table_I_eur": 317957.0085035586,
+    "equals_srp1_w2_table": true
+   }
+  },
+  "investment_cost_note": "I(x) of THIS instance, production master expression (discount to the first year, 2025, and the ESS workbook scenario weights); the SRP1 W2 value is recorded beside it for comparison",
+  "per_block_size": {
+   "blocks_probed": [
+    [
+     "TSO",
+     null,
+     "2025",
+     "Spring"
+    ],
+    [
+     "DSO",
+     7,
+     "2025",
+     "Spring"
+    ]
+   ],
+   "current_code": {
+    "pilot": [
+     {
+      "agent": "TSO",
+      "node": null,
+      "network": "case9",
+      "year": "2025",
+      "day": "Spring",
+      "scenario_combinations": 4,
+      "len_counts_at_build_model": {
+       "var": 14184,
+       "constraint": 10119,
+       "expression": 6086,
+       "param": 875,
+       "objective": 1,
+       "suffix": 0
+      },
+      "deep_counts_at_build_model": {
+       "var_data": 14184,
+       "var_fixed": 624,
+       "var_free": 13560,
+       "constraint_data": 10119,
+       "constraint_active": 10119,
+       "constraint_active_equality": 4899,
+       "constraint_active_inequality": 5220,
+       "objective_active": 1
+      },
+      "build_model_wall_s": 0.19453001022338867
+     },
+     {
+      "agent": "DSO",
+      "node": 7,
+      "network": "case33_2",
+      "year": "2025",
+      "day": "Spring",
+      "scenario_combinations": 4,
+      "len_counts_at_build_model": {
+       "var": 43048,
+       "constraint": 30081,
+       "expression": 16646,
+       "param": 6631,
+       "objective": 1,
+       "suffix": 0
+      },
+      "deep_counts_at_build_model": {
+       "var_data": 43048,
+       "var_fixed": 256,
+       "var_free": 42792,
+       "constraint_data": 30081,
+       "constraint_active": 30081,
+       "constraint_active_equality": 16449,
+       "constraint_active_inequality": 13632,
+       "objective_active": 1
+      },
+      "build_model_wall_s": 0.6063580513000488
+     }
+    ],
+    "srp1": [
+     {
+      "agent": "TSO",
+      "node": null,
+      "network": "case9",
+      "year": "2025",
+      "day": "Spring",
+      "scenario_combinations": 1,
+      "len_counts_at_build_model": {
+       "var": 3546,
+       "constraint": 3018,
+       "expression": 1529,
+       "param": 443,
+       "objective": 1,
+       "suffix": 0
+      },
+      "deep_counts_at_build_model": {
+       "var_data": 3546,
+       "var_fixed": 156,
+       "var_free": 3390,
+       "constraint_data": 3018,
+       "constraint_active": 3018,
+       "constraint_active_equality": 1443,
+       "constraint_active_inequality": 1575,
+       "objective_active": 1
+      },
+      "build_model_wall_s": 0.0899500846862793
+     },
+     {
+      "agent": "DSO",
+      "node": 7,
+      "network": "case33_2",
+      "year": "2025",
+      "day": "Spring",
+      "scenario_combinations": 1,
+      "len_counts_at_build_model": {
+       "var": 10762,
+       "constraint": 7683,
+       "expression": 4169,
+       "param": 1783,
+       "objective": 1,
+       "suffix": 0
+      },
+      "deep_counts_at_build_model": {
+       "var_data": 10762,
+       "var_fixed": 64,
+       "var_free": 10698,
+       "constraint_data": 7683,
+       "constraint_active": 7683,
+       "constraint_active_equality": 4185,
+       "constraint_active_inequality": 3498,
+       "objective_active": 1
+      },
+      "build_model_wall_s": 0.1344470977783203
+     }
+    ],
+    "paper": [
+     {
+      "agent": "TSO",
+      "node": null,
+      "network": "case9",
+      "year": "2025",
+      "day": "Spring",
+      "scenario_combinations": 25,
+      "len_counts_at_build_model": {
+       "var": 88650,
+       "constraint": 59826,
+       "expression": 37985,
+       "param": 2171,
+       "objective": 1,
+       "suffix": 0
+      },
+      "deep_counts_at_build_model": {
+       "var_data": 88650,
+       "var_fixed": 3900,
+       "var_free": 84750,
+       "constraint_data": 59826,
+       "constraint_active": 59826,
+       "constraint_active_equality": 29091,
+       "constraint_active_inequality": 30735,
+       "objective_active": 1
+      },
+      "build_model_wall_s": 1.0554249286651611
+     },
+     {
+      "agent": "DSO",
+      "node": 7,
+      "network": "case33_2",
+      "year": "2025",
+      "day": "Spring",
+      "scenario_combinations": 25,
+      "len_counts_at_build_model": {
+       "var": 269050,
+       "constraint": 186867,
+       "expression": 103985,
+       "param": 39607,
+       "objective": 1,
+       "suffix": 0
+      },
+      "deep_counts_at_build_model": {
+       "var_data": 269050,
+       "var_fixed": 1600,
+       "var_free": 267450,
+       "constraint_data": 186867,
+       "constraint_active": 186867,
+       "constraint_active_equality": 102297,
+       "constraint_active_inequality": 84570,
+       "objective_active": 1
+      },
+      "build_model_wall_s": 3.149618148803711
+     }
+    ]
+   },
+   "ratios": {
+    "TSO|None|2025|Spring": {
+     "vars": {
+      "srp1": 3546,
+      "pilot": 14184,
+      "paper": 88650
+     },
+     "constraints": {
+      "srp1": 3018,
+      "pilot": 10119,
+      "paper": 59826
+     },
+     "pilot_over_srp1_vars": 4.0,
+     "paper_over_pilot_vars": 6.25,
+     "pilot_over_srp1_constraints": 3.352882703777336,
+     "paper_over_pilot_constraints": 5.91224429291432
+    },
+    "DSO|7|2025|Spring": {
+     "vars": {
+      "srp1": 10762,
+      "pilot": 43048,
+      "paper": 269050
+     },
+     "constraints": {
+      "srp1": 7683,
+      "pilot": 30081,
+      "paper": 186867
+     },
+     "pilot_over_srp1_vars": 4.0,
+     "paper_over_pilot_vars": 6.25,
+     "pilot_over_srp1_constraints": 3.9152674736431083,
+     "paper_over_pilot_constraints": 6.212127256407699
+    }
+   },
+   "size_probe_cases": {
+    "srp1": {
+     "derived_to_scratch": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_freeze/w47_case_srp1_vkw8rr07/SRP1__srp1.json",
+     "sha256": "45e8e700a547de22b2c9cd2f9373c4307da30764461e647424eca7eb2d1594b3",
+     "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358"
+    },
+    "paper": {
+     "derived_to_scratch": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_freeze/w47_case_paper_u3fvqbpb/SRP1__paper.json",
+     "sha256": "d726307c1949d91b34b00241fbc713412c689b113222929133eda38d9756ca14",
+     "scenario_checksum": "1e8bdd3e5233442a87fbe44b78281c8ae61b09c09700388fed20ab9684d18aef"
+    }
+   },
+   "committed_pre_addendum38": {
+    "srp1": [
+     {
+      "source": "data/SRP1/Results/P515S44/scale_measurement/srp1_cycle_snapoff_r1/blocks_build.jsonl",
+      "sha256": "2e5c15d820e0ae01445fb02ab9d974dbb837a7feb43e3be921ba187dcf086fb1",
+      "code": "pre-Addendum-38 (the scale measurement, P5.15 Addendum 25/27)",
+      "scenario_combinations": 1,
+      "len_counts_at_build_model": {
+       "var": 3546,
+       "constraint": 3018,
+       "expression": 1527,
+       "param": 443,
+       "objective": 1,
+       "suffix": 0
+      }
+     },
+     {
+      "source": "data/SRP1/Results/P515S44/scale_measurement/srp1_cycle_snapoff_r1/blocks_build.jsonl",
+      "sha256": "2e5c15d820e0ae01445fb02ab9d974dbb837a7feb43e3be921ba187dcf086fb1",
+      "code": "pre-Addendum-38 (the scale measurement, P5.15 Addendum 25/27)",
+      "scenario_combinations": 1,
+      "len_counts_at_build_model": {
+       "var": 10762,
+       "constraint": 7683,
+       "expression": 4167,
+       "param": 1783,
+       "objective": 1,
+       "suffix": 0
+      }
+     }
+    ],
+    "paper": [
+     {
+      "source": "data/SRP1/Results/P515S44/scale_measurement/paper_build/blocks_build.jsonl",
+      "sha256": "c704e398343eef6d3c4ebd95cc3afaadd407eadeeb41a944de6c6799e7e8544a",
+      "code": "pre-Addendum-38 (the scale measurement, P5.15 Addendum 25/27)",
+      "scenario_combinations": 25,
+      "len_counts_at_build_model": {
+       "var": 88650,
+       "constraint": 75450,
+       "expression": 37983,
+       "param": 2171,
+       "objective": 1,
+       "suffix": 0
+      }
+     },
+     {
+      "source": "data/SRP1/Results/P515S44/scale_measurement/paper_build/blocks_build.jsonl",
+      "sha256": "c704e398343eef6d3c4ebd95cc3afaadd407eadeeb41a944de6c6799e7e8544a",
+      "code": "pre-Addendum-38 (the scale measurement, P5.15 Addendum 25/27)",
+      "scenario_combinations": 25,
+      "len_counts_at_build_model": {
+       "var": 269050,
+       "constraint": 192075,
+       "expression": 103983,
+       "param": 39607,
+       "objective": 1,
+       "suffix": 0
+      }
+     }
+    ]
+   },
+   "network_blocks_per_cycle": {
+    "srp1": 48,
+    "pilot": 80,
+    "paper": 80
+   },
+   "scenario_combinations_per_block": {
+    "srp1": 1,
+    "pilot": 4,
+    "paper": 25
+   },
+   "block_x_scenario_units": {
+    "srp1": 48,
+    "pilot": 320,
+    "paper": 2000
+   },
+   "note": "build_model counts (len over constructed component data, as the scale measurement records); the ADMM additions (expected-interface Vars, row 18, AL terms) come after build_model and are not in these counts"
+  }
+ },
+ "written_by": "p515_s52_pilot_campaign.py",
+ "stage_first_frozen": "pilot",
+ "utc": "2026-09-23T20:23:20.348154+00:00"
+}

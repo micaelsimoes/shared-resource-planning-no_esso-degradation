@@ -1,0 +1,168 @@
+{
+  "stage": "P5.15 recovery-policy task -- Part 3 cycle-38 block",
+  "fixture_path": "data/SRP1/Results/P515G3F_r2/results/FrozenSMOPF/frozen_DSO_node7_case33_2_2035_Autumn_cycle38.pkl",
+  "fixture_sha256_before": "4499cf99a4341eb99929f53bdc7cd8ef7bfd2e6edad1dcb9eab93792d9c6fe47",
+  "fixture_sha256_after": "4499cf99a4341eb99929f53bdc7cd8ef7bfd2e6edad1dcb9eab93792d9c6fe47",
+  "fixture_sha256_unchanged": true,
+  "metadata": {
+    "agent": "DSO",
+    "node_id": 7,
+    "network_name": "case33_2",
+    "year": 2035,
+    "day": "Autumn",
+    "cycle": 38,
+    "from_warm_start": true
+  },
+  "pristine_model_digest": "edcaed4efb44e81b1863fef33ab5947316bdf5784394ede5312f1d267f571b8a",
+  "tol_in_force_case33_2": 1e-05,
+  "arms": {
+    "P0": {
+      "description": "warm primary -> tier-1 cold retry (tier2 OFF); reproduction of G3-full",
+      "termination_final": "maxIterations",
+      "status_final": "warning",
+      "wall_seconds": 5.415286064147949,
+      "guard_counts": {
+        "permitted_solve": 2,
+        "permitted_exec": 2,
+        "blocked_solve": 0,
+        "blocked_exec": 0
+      },
+      "primary_summary": {
+        "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/part3_cycle38/logs/p515r_c38_p0/optim_log_case33_2_2035_Autumn.log",
+        "n_iterations": 500,
+        "max_constraint_violation_scaled": 4.6348711713043986e-05,
+        "max_constraint_violation_unscaled": 6.196587529516684e-05,
+        "lg_mu_terminal": -8.0,
+        "objective_scaled": 0.8551109131745734,
+        "objective_unscaled": 855.1109131745734
+      },
+      "recovery_summary": {
+        "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/part3_cycle38/logs/p515r_c38_p0/optim_log_case33_2_2035_Autumn_recovery.log",
+        "n_iterations": 500,
+        "max_constraint_violation_scaled": 4.015386608627152e-05,
+        "max_constraint_violation_unscaled": 5.3683681089683466e-05,
+        "lg_mu_terminal": -8.0,
+        "objective_scaled": 0.8551104933526423,
+        "objective_unscaled": 855.1104933526423
+      },
+      "reproduction_gate_expected": "primary maxIterations, tier-1 recovery maxIterations (from G3-full network_failures_g3_full_node7.jsonl)",
+      "reproduction_gate_pass": true
+    },
+    "P1": {
+      "description": "cold only",
+      "termination_final": "maxIterations",
+      "status_final": "warning",
+      "wall_seconds": 2.765784978866577,
+      "guard_counts": {
+        "permitted_solve": 1,
+        "permitted_exec": 1,
+        "blocked_solve": 0,
+        "blocked_exec": 0
+      },
+      "guard_verify_failures": [],
+      "summary": {
+        "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/part3_cycle38/logs/p515r_c38_p1/optim_log_case33_2_2035_Autumn.log",
+        "n_iterations": 500,
+        "max_constraint_violation_scaled": 4.015386608627152e-05,
+        "max_constraint_violation_unscaled": 5.3683681089683466e-05,
+        "lg_mu_terminal": -8.0,
+        "objective_scaled": 0.8551104933526423,
+        "objective_unscaled": 855.1104933526423
+      }
+    },
+    "P2": {
+      "description": "cold + mu_strategy=adaptive",
+      "termination_final": "optimal",
+      "status_final": "ok",
+      "wall_seconds": 0.5903429985046387,
+      "guard_counts": {
+        "permitted_solve": 1,
+        "permitted_exec": 1,
+        "blocked_solve": 0,
+        "blocked_exec": 0
+      },
+      "guard_verify_failures": [],
+      "summary": {
+        "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/part3_cycle38/logs/p515r_c38_p2/optim_log_case33_2_2035_Autumn.log",
+        "n_iterations": 66,
+        "max_constraint_violation_scaled": 9.854326649947763e-08,
+        "max_constraint_violation_unscaled": 1.3140113591658675e-07,
+        "lg_mu_terminal": -7.2,
+        "objective_scaled": 0.8553691009125476,
+        "objective_unscaled": 855.3691009125475
+      }
+    },
+    "P3": {
+      "description": "cold + tol one decade looser (1e-05 -> 0.0001)",
+      "tol_in_force": 1e-05,
+      "tol_used": 0.0001,
+      "termination_final": "maxIterations",
+      "status_final": "warning",
+      "wall_seconds": 2.7336831092834473,
+      "guard_counts": {
+        "permitted_solve": 1,
+        "permitted_exec": 1,
+        "blocked_solve": 0,
+        "blocked_exec": 0
+      },
+      "guard_verify_failures": [],
+      "summary": {
+        "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/part3_cycle38/logs/p515r_c38_p3/optim_log_case33_2_2035_Autumn.log",
+        "n_iterations": 500,
+        "max_constraint_violation_scaled": 4.015386608627152e-05,
+        "max_constraint_violation_unscaled": 5.3683681089683466e-05,
+        "lg_mu_terminal": -8.0,
+        "objective_scaled": 0.8551104933526423,
+        "objective_unscaled": 855.1104933526423
+      }
+    },
+    "P4": {
+      "description": "new policy: warm primary -> tier 1 -> tier 2",
+      "termination_final": "optimal",
+      "status_final": "ok",
+      "wall_seconds": 5.998789072036743,
+      "guard_counts": {
+        "permitted_solve": 3,
+        "permitted_exec": 3,
+        "blocked_solve": 0,
+        "blocked_exec": 0
+      },
+      "primary_summary": {
+        "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/part3_cycle38/logs/p515r_c38_p4/optim_log_case33_2_2035_Autumn.log",
+        "n_iterations": 500,
+        "max_constraint_violation_scaled": 4.6348711713043986e-05,
+        "max_constraint_violation_unscaled": 6.196587529516684e-05,
+        "lg_mu_terminal": -8.0,
+        "objective_scaled": 0.8551109131745734,
+        "objective_unscaled": 855.1109131745734
+      },
+      "tier1_summary": {
+        "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/part3_cycle38/logs/p515r_c38_p4/optim_log_case33_2_2035_Autumn_recovery.log",
+        "n_iterations": 500,
+        "max_constraint_violation_scaled": 4.015386608627152e-05,
+        "max_constraint_violation_unscaled": 5.3683681089683466e-05,
+        "lg_mu_terminal": -8.0,
+        "objective_scaled": 0.8551104933526423,
+        "objective_unscaled": 855.1104933526423
+      },
+      "tier2_summary": {
+        "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/part3_cycle38/logs/p515r_c38_p4/optim_log_case33_2_2035_Autumn_recovery_tier2.log",
+        "n_iterations": 66,
+        "max_constraint_violation_scaled": 9.854326649947763e-08,
+        "max_constraint_violation_unscaled": 1.3140113591658675e-07,
+        "lg_mu_terminal": -7.2,
+        "objective_scaled": 0.8553691009125476,
+        "objective_unscaled": 855.3691009125475
+      },
+      "tier2_fired": true
+    }
+  },
+  "classification_predeclared": {
+    "intrinsic": "P1, P2 and P3 all fail",
+    "path-dependent": "warm primary fails and any cold arm succeeds",
+    "tolerance-limited": "only P3 succeeds"
+  },
+  "classification_observed": "path-dependent",
+  "tier2_recovers_it": true,
+  "p4_final_termination": "optimal"
+}

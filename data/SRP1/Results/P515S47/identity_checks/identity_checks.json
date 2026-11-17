@@ -1,0 +1,3324 @@
+{
+ "stage": "P5.15 Addendum 30 W21 item 2 -- ESS ageing parameters in the evaluation identity: zero-solve checks",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 30",
+  "data/SRP1/Results/P515S47/frozen_s47_baseline_spec_v17_ff0056b8.json (baseline.identity_requirement, S1)",
+  "Planner task W21 item 2"
+ ],
+ "timestamp_utc": "2026-09-21T14:38:40.937293+00:00",
+ "git_head_at_run": "abf0cb303882b3aa8ccfecf51a152682c29e852e",
+ "script": "p515_s47_identity_checks.py",
+ "script_sha256": "4a0ff875122808ea731716153192a6c57a51d6b8221a873867b5700e7a681217",
+ "harness_sha256": "4f39e80c07459e7ebc186ef5e73b0e630a8e384f53d4ee0bf72bc2ebc9332332",
+ "ess_params_file": {
+  "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+  "sha256": "fdce321ffe1bf0f4b81424cdf081d826c3c81c410a4eb9f3b3561675e26b80f0",
+  "loads_to": {
+   "calendar_life_years": 15,
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.5,
+   "calendar_retention_per_year": 1.0,
+   "calibration": {
+    "status": "ACTIVE",
+    "cycles_n": 10000,
+    "reference_dod_d": 0.8,
+    "eol_retention_r": 0.5
+   }
+  }
+ },
+ "baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+ "baseline_c2_declaration": {
+  "calendar_life_years": 15,
+  "cycle_life_nominal": 10000,
+  "depth_of_discharge_nominal": 0.8,
+  "minimum_soh": 0.7,
+  "calendar_retention_per_year": 0.985,
+  "calibration": {
+   "status": "ACTIVE",
+   "cycles_n": 10000,
+   "reference_dod_d": 0.8,
+   "eol_retention_r": 0.8
+  }
+ },
+ "key_formula": "declared: sha256 of compact sorted JSON {candidate_key, overrides, ess_ageing_baseline[, effective_anderson_acceleration][, model_variant]}; undeclared: unchanged (p515_s44_campaign_harness.evaluation_key)",
+ "checks": {
+  "K1_committed_specs_found": true,
+  "K1_committed_spec_keys_eval_keys_dirs_ids_identical": true,
+  "K1_no_committed_spec_declares_ess_ageing": true,
+  "K1_committed_records_keys_identical": true,
+  "K2_a1a_unit_is_the_committed_c3_key": true,
+  "K2_s46_calfade_variant_is_c2_calfade_soh_min_0p50": true,
+  "K2_baseline_unit_key_differs_from_a1a_c3_key": true,
+  "K2_baseline_unit_key_differs_from_s46_c2_calfade_key": true,
+  "K2_baseline_unit_key_is_not_the_candidate_key": true,
+  "K2_baseline_unit_key_differs_from_every_committed_eval_key": true,
+  "K2_committed_c_star_evaluations_found": true,
+  "K2_baseline_c_star_key_differs_from_every_committed_c_star_key": true,
+  "K2_baseline_c_star_key_differs_from_every_committed_eval_key": true,
+  "K2_declaring_the_current_file_dict_differs_from_undeclared": true,
+  "K2_key_is_dict_order_independent": true,
+  "K2_key_is_content_sensitive": true,
+  "K2_declared_key_without_aa_declaration_is_not_the_candidate_key": true,
+  "K3_validation_refuses_every_malformed_declaration": true,
+  "K3_validation_accepts_the_baseline_unchanged": true,
+  "K3_none_is_no_declaration": true,
+  "K4_declared_freeze_records_declaration_and_label": true,
+  "K4_declared_freeze_pins_the_file": true,
+  "K4_declared_entry_eval_key_recomputes": true,
+  "K4_declared_entry_keeps_entry_format": true,
+  "K4_undeclared_fixture_has_none_of_the_new_keys": true,
+  "K4_undeclared_fixture_eval_key_is_the_pre_w21_key": true,
+  "K4_freeze_refuses_every_bad_configuration": true,
+  "K4_refused_freezes_left_no_directory": true,
+  "K5_matching_declaration_passes_the_hook": true,
+  "K5_readback_from_probe_models_matches_the_declaration": true,
+  "K5_probe_floor_rows_identical_to_precheck": true,
+  "K5_rule_eleven_entry_written": true,
+  "K5_mismatching_declaration_raises_before_any_solve": true,
+  "K5_wrong_sha256_pin_raises_before_any_solve": true,
+  "guard_zero_solves_verified": true
+ },
+ "all_ok": true,
+ "detail": {
+  "K1": {
+   "scope": {
+    "searched": "git ls-files -- data/SRP1/Results/P515S44 data/SRP1/Results/P515S45 data/SRP1/Results/P515S46",
+    "included": [
+     "campaign_spec_*.json",
+     "evaluation_record.json"
+    ],
+    "excluded": [
+     "frozen_s4x_*_spec_*.json (Planner specs: no candidate / eval keys)",
+     "uncommitted campaign roots",
+     "campaign specs outside P515S44-S46 (none tracked: git ls-files data/SRP1/Results | grep campaign_spec_)"
+    ],
+    "n_campaign_specs": 30,
+    "n_spec_entries": 127,
+    "n_evaluation_records": 100,
+    "n_record_eval_keys_recomputed": 81
+   },
+   "per_spec": {
+    "data/SRP1/Results/P515S44/campaign_s44_aa_variant/campaign_spec_s44_aa_variant_f90618e8.json": {
+     "campaign_id": "s44_aa_variant",
+     "sha256": "f90618e8d00299969a7e35c48850e0316b3a2f15436763d66bf1306afb392186",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 2,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "c_star_aa_keep_memory",
+       "recorded_eval_key16": "837fc982565dbba3",
+       "recomputed_eval_key16": "837fc982565dbba3",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "two_c_star_d",
+       "recorded_eval_key16": "4e53fa5560bbfa10",
+       "recomputed_eval_key16": "4e53fa5560bbfa10",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/campaign_spec_s44_aa_variant_smoke_e3f83174.json": {
+     "campaign_id": "s44_aa_variant_smoke",
+     "sha256": "e3f83174b2f784e0ed4dccae61ba27e414a8c9cbe9495b3b7723a5f2512abeed",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 2,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "c_star_aa_keep_memory",
+       "recorded_eval_key16": "837fc982565dbba3",
+       "recomputed_eval_key16": "837fc982565dbba3",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "c_star_d",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_gate/campaign_spec_s44_gate_4047b4e3.json": {
+     "campaign_id": "s44_gate",
+     "sha256": "4047b4e3f1852c3616a80ad26f2d43f2aa4b333847e447fb5b9323fb3bce7f33",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 3,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "c_star",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "paper_plan",
+       "recorded_eval_key16": "d1a02e67107d0bac",
+       "recomputed_eval_key16": "d1a02e67107d0bac",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "node7_empty",
+       "recorded_eval_key16": "e30704e6e4dd3765",
+       "recomputed_eval_key16": "e30704e6e4dd3765",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_selection_aa/campaign_spec_s44_selection_aa_4135c8d4.json": {
+     "campaign_id": "s44_selection_aa",
+     "sha256": "4135c8d44f4e067ec80e1f4516690aff16e565e1da7c60ace618d3e237668926",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 3,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "paper_plan_aa_keep_memory",
+       "recorded_eval_key16": "8e48f3ec8993a283",
+       "recomputed_eval_key16": "8e48f3ec8993a283",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "node7_empty_aa_keep_memory",
+       "recorded_eval_key16": "0796b6dceeb0f95f",
+       "recomputed_eval_key16": "0796b6dceeb0f95f",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "two_c_star_aa_keep_memory",
+       "recorded_eval_key16": "a6ca6c94e033e460",
+       "recomputed_eval_key16": "a6ca6c94e033e460",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks/c2_spec_root/campaign_spec_c2_f24bc344.json": {
+     "campaign_id": "c2",
+     "sha256": "f24bc344e28621c32fe62e3ca6c235d898d14ecc2c9a165f0949fbbc88adcc55",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 2,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "a",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "b",
+       "recorded_eval_key16": "d1a02e67107d0bac",
+       "recomputed_eval_key16": "d1a02e67107d0bac",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks/c4_fail_campaign/campaign_spec_c4f_92ac6360.json": {
+     "campaign_id": "c4f",
+     "sha256": "92ac6360a18aae4bcb7941cad64f61dbf604e8141fad77c0df420c9d9b9fdd0b",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 1,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "fail1",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks/c4_foreign_lock_campaign/campaign_spec_c4l_1ce4890b.json": {
+     "campaign_id": "c4l",
+     "sha256": "1ce4890b44912a97aa84ae32873ac898c323c53d56d25216cd26da7f88ae008a",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 1,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "foreign",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks/c4_nonstub_spec_campaign/campaign_spec_c4n_59849c27.json": {
+     "campaign_id": "c4n",
+     "sha256": "59849c27fe1df4cda350c8bd1334eb6a245a0c1bc61827c21fd6cffd900bfdaf",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 1,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "nonstub",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks/c4_stub_campaign/campaign_spec_c4_cf3b201c.json": {
+     "campaign_id": "c4",
+     "sha256": "cf3b201c5faf9233018c47bfe69ad82be913613855a18e20b267d4b577389e62",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 4,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "s1",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s2",
+       "recorded_eval_key16": "d1a02e67107d0bac",
+       "recomputed_eval_key16": "d1a02e67107d0bac",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s3",
+       "recorded_eval_key16": "e30704e6e4dd3765",
+       "recomputed_eval_key16": "e30704e6e4dd3765",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s4",
+       "recorded_eval_key16": "cc03ce8e9b04c327",
+       "recomputed_eval_key16": "cc03ce8e9b04c327",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r2/c2_spec_root/campaign_spec_c2_04e91893.json": {
+     "campaign_id": "c2",
+     "sha256": "04e9189372edc5b7e53b00de06e43ac5aa3330892475d306b4c5a87e971615d9",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 2,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "a",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "b",
+       "recorded_eval_key16": "d1a02e67107d0bac",
+       "recomputed_eval_key16": "d1a02e67107d0bac",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r2/c4_fail_campaign/campaign_spec_c4f_b96c62d6.json": {
+     "campaign_id": "c4f",
+     "sha256": "b96c62d638605f85bbf80847f2ac6c7a300c61fbecd8ea95c700a7c250c0f177",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 1,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "fail1",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r2/c4_foreign_lock_campaign/campaign_spec_c4l_800e7da8.json": {
+     "campaign_id": "c4l",
+     "sha256": "800e7da894c94b9aae57c9e36ac2d10acf09ed774b2d7de12a56f5e226d32431",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 1,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "foreign",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r2/c4_nonstub_spec_campaign/campaign_spec_c4n_34c6cffc.json": {
+     "campaign_id": "c4n",
+     "sha256": "34c6cffcfea7cae9032a5fdf3127121d02425499d9c37f7750d5d4b897d1a024",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 1,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "nonstub",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r2/c4_stub_campaign/campaign_spec_c4_0bca1b39.json": {
+     "campaign_id": "c4",
+     "sha256": "0bca1b395c39fcdc2d0628ae7107927efd4c0753466499c23f88922b3f77bed8",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 4,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "s1",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s2",
+       "recorded_eval_key16": "d1a02e67107d0bac",
+       "recomputed_eval_key16": "d1a02e67107d0bac",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s3",
+       "recorded_eval_key16": "e30704e6e4dd3765",
+       "recomputed_eval_key16": "e30704e6e4dd3765",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s4",
+       "recorded_eval_key16": "cc03ce8e9b04c327",
+       "recomputed_eval_key16": "cc03ce8e9b04c327",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c2_spec_root/campaign_spec_c2_1ea09b7b.json": {
+     "campaign_id": "c2",
+     "sha256": "1ea09b7b6a20c863150c68f4f405ecb78f01a0def8c33640913f387bb0167a16",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 2,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "a",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "b",
+       "recorded_eval_key16": "d1a02e67107d0bac",
+       "recomputed_eval_key16": "d1a02e67107d0bac",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c4_fail_campaign/campaign_spec_c4f_0f059fc1.json": {
+     "campaign_id": "c4f",
+     "sha256": "0f059fc1c7b154502ab40a2e20e2966f479e5b4139cdf05641605e8d84cb5628",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 1,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "fail1",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c4_foreign_lock_campaign/campaign_spec_c4l_3029ea43.json": {
+     "campaign_id": "c4l",
+     "sha256": "3029ea43d2c5eaa78ca6b2d4643d48e0582af773c2a4fce55258676bc0531ad4",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 1,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "foreign",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c4_nonstub_spec_campaign/campaign_spec_c4n_8ca5f6d7.json": {
+     "campaign_id": "c4n",
+     "sha256": "8ca5f6d7174e6882496b0b3f276e61cada1c1c639211584d4dc882cff4cb95b5",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 1,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "nonstub",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c4_stub_campaign/campaign_spec_c4_83da5ad0.json": {
+     "campaign_id": "c4",
+     "sha256": "83da5ad0695451c0f312247e96c054e7bb15d63c05ff99679393443f5f8fd5a1",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 4,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "s1",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s2",
+       "recorded_eval_key16": "d1a02e67107d0bac",
+       "recomputed_eval_key16": "d1a02e67107d0bac",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s3",
+       "recorded_eval_key16": "e30704e6e4dd3765",
+       "recomputed_eval_key16": "e30704e6e4dd3765",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "s4",
+       "recorded_eval_key16": "cc03ce8e9b04c327",
+       "recomputed_eval_key16": "cc03ce8e9b04c327",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c8_spec_root/campaign_spec_c8_d6300da7.json": {
+     "campaign_id": "c8",
+     "sha256": "d6300da794984cc43249c42ccff093b9b830468f91f706d08b36dde9d31f3411",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 3,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "c_star_d",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "c_star_aa_keep",
+       "recorded_eval_key16": "837fc982565dbba3",
+       "recomputed_eval_key16": "837fc982565dbba3",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "two_c_star_d",
+       "recorded_eval_key16": "4e53fa5560bbfa10",
+       "recomputed_eval_key16": "4e53fa5560bbfa10",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c9_stub_campaign/campaign_spec_c9_276119b8.json": {
+     "campaign_id": "c9",
+     "sha256": "276119b84981b3c306d53fe1f10c1f8d598048f6787f2d54ba8c69066a146099",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 2,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "c_star_d",
+       "recorded_eval_key16": "578636daa6d6360d",
+       "recomputed_eval_key16": "578636daa6d6360d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "c_star_aa_keep",
+       "recorded_eval_key16": "837fc982565dbba3",
+       "recomputed_eval_key16": "837fc982565dbba3",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S44/selection_aa_dry_run/campaign_spec_s44_selection_aa_075e33ef.json": {
+     "campaign_id": "s44_selection_aa",
+     "sha256": "075e33ef941f6c797f09ffa4ac503a07cc09f0228bf9d8312f32d0eafaeb46b9",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 3,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "paper_plan_aa_keep_memory",
+       "recorded_eval_key16": "8e48f3ec8993a283",
+       "recomputed_eval_key16": "8e48f3ec8993a283",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "node7_empty_aa_keep_memory",
+       "recorded_eval_key16": "0796b6dceeb0f95f",
+       "recomputed_eval_key16": "0796b6dceeb0f95f",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "two_c_star_aa_keep_memory",
+       "recorded_eval_key16": "a6ca6c94e033e460",
+       "recomputed_eval_key16": "a6ca6c94e033e460",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a0/campaign_spec_s45_a0_25a05347.json": {
+     "campaign_id": "s45_a0",
+     "sha256": "25a0534754bccf1c902a548084d214ed7cdf9227af6b98c05b5485ac866fc061",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 8,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "x0",
+       "recorded_eval_key16": "7aa017f09989b56d",
+       "recomputed_eval_key16": "7aa017f09989b56d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n5_p0.25_e0.5",
+       "recorded_eval_key16": "dd97e3d0dc598843",
+       "recomputed_eval_key16": "dd97e3d0dc598843",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n5_p0.25_e1.0",
+       "recorded_eval_key16": "b58dfe3fb3e562fd",
+       "recomputed_eval_key16": "b58dfe3fb3e562fd",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_p0.25_e0.5",
+       "recorded_eval_key16": "26a3878f77cfba4f",
+       "recomputed_eval_key16": "26a3878f77cfba4f",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_p0.25_e1.0",
+       "recorded_eval_key16": "7eb1ce62c2509f54",
+       "recomputed_eval_key16": "7eb1ce62c2509f54",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n9_p0.25_e0.5",
+       "recorded_eval_key16": "fba341303944b6f2",
+       "recomputed_eval_key16": "fba341303944b6f2",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n9_p0.25_e1.0",
+       "recorded_eval_key16": "3be858940664d29a",
+       "recomputed_eval_key16": "3be858940664d29a",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "lattice_plan_n7_p1.5_e3.0",
+       "recorded_eval_key16": "d0963078cb50c989",
+       "recomputed_eval_key16": "d0963078cb50c989",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_spec_s45_a0_c7_9d08ad2f.json": {
+     "campaign_id": "s45_a0_c7",
+     "sha256": "9d08ad2f144b67ea97dae8dc25d91288fc86a77dd52c7f53276a52c5f00f8b34",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 8,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "x0",
+       "recorded_eval_key16": "7aa017f09989b56d",
+       "recomputed_eval_key16": "7aa017f09989b56d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n5_p0.25_e0.5",
+       "recorded_eval_key16": "dd97e3d0dc598843",
+       "recomputed_eval_key16": "dd97e3d0dc598843",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n5_p0.25_e1.0",
+       "recorded_eval_key16": "b58dfe3fb3e562fd",
+       "recomputed_eval_key16": "b58dfe3fb3e562fd",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_p0.25_e0.5",
+       "recorded_eval_key16": "26a3878f77cfba4f",
+       "recomputed_eval_key16": "26a3878f77cfba4f",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_p0.25_e1.0",
+       "recorded_eval_key16": "7eb1ce62c2509f54",
+       "recomputed_eval_key16": "7eb1ce62c2509f54",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n9_p0.25_e0.5",
+       "recorded_eval_key16": "fba341303944b6f2",
+       "recomputed_eval_key16": "fba341303944b6f2",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n9_p0.25_e1.0",
+       "recorded_eval_key16": "3be858940664d29a",
+       "recomputed_eval_key16": "3be858940664d29a",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "lattice_plan_n7_p1.5_e3.0",
+       "recorded_eval_key16": "d0963078cb50c989",
+       "recomputed_eval_key16": "d0963078cb50c989",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_spec_s45_a1a_c71f52ee.json": {
+     "campaign_id": "s45_a1a",
+     "sha256": "c71f52ee535aff607927f83f52783993198b90a8ff44f5426f92e66dc160b851",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 30,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "n5_2h_e1",
+       "recorded_eval_key16": "80f2490bcb48991e",
+       "recomputed_eval_key16": "80f2490bcb48991e",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n5_4h_e1",
+       "recorded_eval_key16": "b58dfe3fb3e562fd",
+       "recomputed_eval_key16": "b58dfe3fb3e562fd",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n5_2h_e2",
+       "recorded_eval_key16": "e09ea9b6571a4848",
+       "recomputed_eval_key16": "e09ea9b6571a4848",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n5_4h_e2",
+       "recorded_eval_key16": "9b77039f5ee42cec",
+       "recomputed_eval_key16": "9b77039f5ee42cec",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n5_2h_e3",
+       "recorded_eval_key16": "c7fc0dc56ab4951f",
+       "recomputed_eval_key16": "c7fc0dc56ab4951f",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n5_4h_e3",
+       "recorded_eval_key16": "e3acbedf92088337",
+       "recomputed_eval_key16": "e3acbedf92088337",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n5_2h_e4",
+       "recorded_eval_key16": "5f530b6bf49fe137",
+       "recomputed_eval_key16": "5f530b6bf49fe137",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n5_4h_e4",
+       "recorded_eval_key16": "a90fc9344ad0eb7c",
+       "recomputed_eval_key16": "a90fc9344ad0eb7c",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n5_2h_e5",
+       "recorded_eval_key16": "7c66ddb648ce86a1",
+       "recomputed_eval_key16": "7c66ddb648ce86a1",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n5_4h_e5",
+       "recorded_eval_key16": "47f0ff739d3ddbea",
+       "recomputed_eval_key16": "47f0ff739d3ddbea",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_2h_e1",
+       "recorded_eval_key16": "7c7afed64d16ff89",
+       "recomputed_eval_key16": "7c7afed64d16ff89",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e1",
+       "recorded_eval_key16": "7eb1ce62c2509f54",
+       "recomputed_eval_key16": "7eb1ce62c2509f54",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_2h_e2",
+       "recorded_eval_key16": "311ccaa39ed5ded3",
+       "recomputed_eval_key16": "311ccaa39ed5ded3",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e2",
+       "recorded_eval_key16": "7bf551efdebeeec1",
+       "recomputed_eval_key16": "7bf551efdebeeec1",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_2h_e3",
+       "recorded_eval_key16": "d0963078cb50c989",
+       "recomputed_eval_key16": "d0963078cb50c989",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e3",
+       "recorded_eval_key16": "c83860658163d970",
+       "recomputed_eval_key16": "c83860658163d970",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_2h_e4",
+       "recorded_eval_key16": "a719e99b6208078e",
+       "recomputed_eval_key16": "a719e99b6208078e",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e4",
+       "recorded_eval_key16": "04ad31d9a00099a2",
+       "recomputed_eval_key16": "04ad31d9a00099a2",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_2h_e5",
+       "recorded_eval_key16": "17abdd0fa401951f",
+       "recomputed_eval_key16": "17abdd0fa401951f",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e5",
+       "recorded_eval_key16": "80cf840cf4f80d0b",
+       "recomputed_eval_key16": "80cf840cf4f80d0b",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n9_2h_e1",
+       "recorded_eval_key16": "8b07a41303810662",
+       "recomputed_eval_key16": "8b07a41303810662",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n9_4h_e1",
+       "recorded_eval_key16": "3be858940664d29a",
+       "recomputed_eval_key16": "3be858940664d29a",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n9_2h_e2",
+       "recorded_eval_key16": "ec4ae6c80301fd19",
+       "recomputed_eval_key16": "ec4ae6c80301fd19",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n9_4h_e2",
+       "recorded_eval_key16": "87282a2536866085",
+       "recomputed_eval_key16": "87282a2536866085",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n9_2h_e3",
+       "recorded_eval_key16": "aa43b799f64cbd9d",
+       "recomputed_eval_key16": "aa43b799f64cbd9d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n9_4h_e3",
+       "recorded_eval_key16": "0dffd41717e21056",
+       "recomputed_eval_key16": "0dffd41717e21056",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n9_2h_e4",
+       "recorded_eval_key16": "6ad3641937f6a637",
+       "recomputed_eval_key16": "6ad3641937f6a637",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n9_4h_e4",
+       "recorded_eval_key16": "baeb374612983211",
+       "recomputed_eval_key16": "baeb374612983211",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n9_2h_e5",
+       "recorded_eval_key16": "fef8869bfce3b416",
+       "recomputed_eval_key16": "fef8869bfce3b416",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n9_4h_e5",
+       "recorded_eval_key16": "71c0860a9f5f53a5",
+       "recomputed_eval_key16": "71c0860a9f5f53a5",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/campaign_spec_s45_a1b_bd3040a9.json": {
+     "campaign_id": "s45_a1b",
+     "sha256": "bd3040a9e3ac51fd8fa305e2e1bccaf8eb08811d57b4e499e1a12c0dfa8fd789",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 20,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "n7_2h_e1_y2030",
+       "recorded_eval_key16": "37b5c4999f65749f",
+       "recomputed_eval_key16": "37b5c4999f65749f",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e1_y2030",
+       "recorded_eval_key16": "549476cd276a0350",
+       "recomputed_eval_key16": "549476cd276a0350",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_2h_e2_y2030",
+       "recorded_eval_key16": "cbb9e21a7708feb9",
+       "recomputed_eval_key16": "cbb9e21a7708feb9",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e2_y2030",
+       "recorded_eval_key16": "48749148d0bebd0d",
+       "recomputed_eval_key16": "48749148d0bebd0d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_2h_e3_y2030",
+       "recorded_eval_key16": "0bb38720f1a4426a",
+       "recomputed_eval_key16": "0bb38720f1a4426a",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e3_y2030",
+       "recorded_eval_key16": "b5e6809061d352e3",
+       "recomputed_eval_key16": "b5e6809061d352e3",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_2h_e4_y2030",
+       "recorded_eval_key16": "4fd41116d3aea30b",
+       "recomputed_eval_key16": "4fd41116d3aea30b",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e4_y2030",
+       "recorded_eval_key16": "25c32e351ead53e1",
+       "recomputed_eval_key16": "25c32e351ead53e1",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_2h_e5_y2030",
+       "recorded_eval_key16": "d14d13ec3c38c601",
+       "recomputed_eval_key16": "d14d13ec3c38c601",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e5_y2030",
+       "recorded_eval_key16": "dfe2e8e971318a20",
+       "recomputed_eval_key16": "dfe2e8e971318a20",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_2h_e1_y2035",
+       "recorded_eval_key16": "47dce43c9f4ab0aa",
+       "recomputed_eval_key16": "47dce43c9f4ab0aa",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e1_y2035",
+       "recorded_eval_key16": "dab6a8a2df221ba9",
+       "recomputed_eval_key16": "dab6a8a2df221ba9",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_2h_e2_y2035",
+       "recorded_eval_key16": "8704c8d2b3ff6135",
+       "recomputed_eval_key16": "8704c8d2b3ff6135",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e2_y2035",
+       "recorded_eval_key16": "9abf31d494b664b8",
+       "recomputed_eval_key16": "9abf31d494b664b8",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_2h_e3_y2035",
+       "recorded_eval_key16": "7075078094340ac5",
+       "recomputed_eval_key16": "7075078094340ac5",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e3_y2035",
+       "recorded_eval_key16": "12d566208836c1ee",
+       "recomputed_eval_key16": "12d566208836c1ee",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_2h_e4_y2035",
+       "recorded_eval_key16": "52e05bc14e85c4cd",
+       "recomputed_eval_key16": "52e05bc14e85c4cd",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e4_y2035",
+       "recorded_eval_key16": "69e0758622e1740c",
+       "recomputed_eval_key16": "69e0758622e1740c",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_2h_e5_y2035",
+       "recorded_eval_key16": "4294aae365384186",
+       "recomputed_eval_key16": "4294aae365384186",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e5_y2035",
+       "recorded_eval_key16": "c8e931ae7693719e",
+       "recomputed_eval_key16": "c8e931ae7693719e",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a2/campaign_spec_s45_a2_d5b52f30.json": {
+     "campaign_id": "s45_a2",
+     "sha256": "d5b52f302e7610345445ad12d86a6d015cd00690d85299a805afffc295d67b29",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 5,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "presence_n5_n7",
+       "recorded_eval_key16": "c5ae12a1ce18b5b7",
+       "recomputed_eval_key16": "c5ae12a1ce18b5b7",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "presence_n5_n9",
+       "recorded_eval_key16": "98678e4ebd60579b",
+       "recomputed_eval_key16": "98678e4ebd60579b",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "presence_n7_n9",
+       "recorded_eval_key16": "3be0745fa72df1ac",
+       "recomputed_eval_key16": "3be0745fa72df1ac",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "presence_n5_n7_n9",
+       "recorded_eval_key16": "b571ca1b3ec3bc86",
+       "recomputed_eval_key16": "b571ca1b3ec3bc86",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "lattice_c_star_p1.0_e4.0",
+       "recorded_eval_key16": "eae950d246a4c396",
+       "recomputed_eval_key16": "eae950d246a4c396",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a3/campaign_spec_s45_a3_4f733b9d.json": {
+     "campaign_id": "s45_a3",
+     "sha256": "4f733b9de200584ac0403f4bebaf4feab0a86995a65e77014d90e1fc21d59004",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 5,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "res_n7_p0.5_e1.5_y2025",
+       "recorded_eval_key16": "acd6c3d25096d2fd",
+       "recomputed_eval_key16": "acd6c3d25096d2fd",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "res_n7_p0.75_e1.5_y2025",
+       "recorded_eval_key16": "37275e28d2255a58",
+       "recomputed_eval_key16": "37275e28d2255a58",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "res_n7_p0.75_e2.5_y2025",
+       "recorded_eval_key16": "c606fa793da2a3ff",
+       "recomputed_eval_key16": "c606fa793da2a3ff",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "res_n7_p1_e2.5_y2025",
+       "recorded_eval_key16": "7c99998d824189c7",
+       "recomputed_eval_key16": "7c99998d824189c7",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "res_n7_p1.25_e2.5_y2025",
+       "recorded_eval_key16": "f4affa64172cea44",
+       "recomputed_eval_key16": "f4affa64172cea44",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S45/reverify_aa_c_star/campaign_spec_s45_reverify_aa_c_star_4a214b99.json": {
+     "campaign_id": "s45_reverify_aa_c_star",
+     "sha256": "4a214b99df34e58791d31d842f2ad6c5293f83e82064d52320934b6d32b6e58d",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 1,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "c_star_aa_case_file",
+       "recorded_eval_key16": "3e741dac72c9e1bc",
+       "recomputed_eval_key16": "3e741dac72c9e1bc",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    },
+    "data/SRP1/Results/P515S46/campaign_s46_ageing/campaign_spec_s46_ageing_6544c17e.json": {
+     "campaign_id": "s46_ageing",
+     "sha256": "6544c17e5231db41db401c4dc768472142a4fe878d86b2a33b1ff33990963f45",
+     "declares_ess_ageing_baseline": false,
+     "n_entries": 5,
+     "all_ok": true,
+     "entries": [
+      {
+       "label": "n7_4h_e1_C2",
+       "recorded_eval_key16": "c6b53015fcf65e24",
+       "recomputed_eval_key16": "c6b53015fcf65e24",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e1_C4",
+       "recorded_eval_key16": "65a5da775d1ff5b2",
+       "recomputed_eval_key16": "65a5da775d1ff5b2",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e1_C2_calfade",
+       "recorded_eval_key16": "98e2857016a16d1c",
+       "recomputed_eval_key16": "98e2857016a16d1c",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e1_C3_midblock",
+       "recorded_eval_key16": "ed4a1acc7059784d",
+       "recomputed_eval_key16": "ed4a1acc7059784d",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      },
+      {
+       "label": "n7_4h_e1_no_ageing",
+       "recorded_eval_key16": "06f092d164f13819",
+       "recomputed_eval_key16": "06f092d164f13819",
+       "ok": {
+        "canonical_identical": true,
+        "candidate_key": true,
+        "eval_key_new_argument_omitted": true,
+        "eval_key_new_argument_none": true,
+        "eval_dir": true,
+        "working_dir_ids": true
+       }
+      }
+     ]
+    }
+   },
+   "per_record": {
+    "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/4e53fa5560bbfa10_two_c_star_d/evaluation_record.json": {
+     "label": "two_c_star_d",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/evaluation_record.json": {
+     "label": "c_star_aa_keep_memory",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/evals/578636daa6d6360d_c_star_d/evaluation_record.json": {
+     "label": "c_star_d",
+     "status": "not_certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/evals/837fc982565dbba3_c_star_aa_keep_memory/evaluation_record.json": {
+     "label": "c_star_aa_keep_memory",
+     "status": "not_certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star/evaluation_record.json": {
+     "label": "c_star",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_gate/evals/d1a02e67107d0bac_paper_plan/evaluation_record.json": {
+     "label": "paper_plan",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_gate/evals/e30704e6e4dd3765_node7_empty/evaluation_record.json": {
+     "label": "node7_empty",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/0796b6dceeb0f95f_node7_empty_aa_keep_memory/evaluation_record.json": {
+     "label": "node7_empty_aa_keep_memory",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/8e48f3ec8993a283_paper_plan_aa_keep_memory/evaluation_record.json": {
+     "label": "paper_plan_aa_keep_memory",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/a6ca6c94e033e460_two_c_star_aa_keep_memory/evaluation_record.json": {
+     "label": "two_c_star_aa_keep_memory",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S44/harness_checks/c4_stub_campaign/evals/578636daa6d6360d_s1/evaluation_record.json": {
+     "label": "s1",
+     "status": "stub",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/harness_checks/c4_stub_campaign/evals/cc03ce8e9b04c327_s4/evaluation_record.json": {
+     "label": "s4",
+     "status": "stub",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/harness_checks/c4_stub_campaign/evals/d1a02e67107d0bac_s2/evaluation_record.json": {
+     "label": "s2",
+     "status": "stub",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/harness_checks/c4_stub_campaign/evals/e30704e6e4dd3765_s3/evaluation_record.json": {
+     "label": "s3",
+     "status": "stub",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r2/c4_stub_campaign/evals/578636daa6d6360d_s1/evaluation_record.json": {
+     "label": "s1",
+     "status": "stub",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r2/c4_stub_campaign/evals/cc03ce8e9b04c327_s4/evaluation_record.json": {
+     "label": "s4",
+     "status": "stub",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r2/c4_stub_campaign/evals/d1a02e67107d0bac_s2/evaluation_record.json": {
+     "label": "s2",
+     "status": "stub",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r2/c4_stub_campaign/evals/e30704e6e4dd3765_s3/evaluation_record.json": {
+     "label": "s3",
+     "status": "stub",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c4_stub_campaign/evals/578636daa6d6360d_s1/evaluation_record.json": {
+     "label": "s1",
+     "status": "stub",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c4_stub_campaign/evals/cc03ce8e9b04c327_s4/evaluation_record.json": {
+     "label": "s4",
+     "status": "stub",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c4_stub_campaign/evals/d1a02e67107d0bac_s2/evaluation_record.json": {
+     "label": "s2",
+     "status": "stub",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c4_stub_campaign/evals/e30704e6e4dd3765_s3/evaluation_record.json": {
+     "label": "s3",
+     "status": "stub",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c8_fake_refs/aa_ref/evaluation_record.json": {
+     "label": "c_star",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c8_fake_refs/uncertified/evaluation_record.json": {
+     "label": "c_star",
+     "status": "not_certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c9_stub_campaign/evals/578636daa6d6360d_c_star_d/evaluation_record.json": {
+     "label": "c_star_d",
+     "status": "stub",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S44/harness_checks_r3/c9_stub_campaign/evals/837fc982565dbba3_c_star_aa_keep/evaluation_record.json": {
+     "label": "c_star_aa_keep",
+     "status": "stub",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/26a3878f77cfba4f_n7_p0_25_e0_5/evaluation_record.json": {
+     "label": "n7_p0.25_e0.5",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/3be858940664d29a_n9_p0_25_e1_0/evaluation_record.json": {
+     "label": "n9_p0.25_e1.0",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/evaluation_record.json": {
+     "label": "x0",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7eb1ce62c2509f54_n7_p0_25_e1_0/evaluation_record.json": {
+     "label": "n7_p0.25_e1.0",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/b58dfe3fb3e562fd_n5_p0_25_e1_0/evaluation_record.json": {
+     "label": "n5_p0.25_e1.0",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/d0963078cb50c989_lattice_plan_n7_p1_5_e3_0/evaluation_record.json": {
+     "label": "lattice_plan_n7_p1.5_e3.0",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/dd97e3d0dc598843_n5_p0_25_e0_5/evaluation_record.json": {
+     "label": "n5_p0.25_e0.5",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/fba341303944b6f2_n9_p0_25_e0_5/evaluation_record.json": {
+     "label": "n9_p0.25_e0.5",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/04ad31d9a00099a2_n7_4h_e4/evaluation_record.json": {
+     "label": "n7_4h_e4",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/0dffd41717e21056_n9_4h_e3/evaluation_record.json": {
+     "label": "n9_4h_e3",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/17abdd0fa401951f_n7_2h_e5/evaluation_record.json": {
+     "label": "n7_2h_e5",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/311ccaa39ed5ded3_n7_2h_e2/evaluation_record.json": {
+     "label": "n7_2h_e2",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/3be858940664d29a_n9_4h_e1/evaluation_record.json": {
+     "label": "n9_4h_e1",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/47f0ff739d3ddbea_n5_4h_e5/evaluation_record.json": {
+     "label": "n5_4h_e5",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/5f530b6bf49fe137_n5_2h_e4/evaluation_record.json": {
+     "label": "n5_2h_e4",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/6ad3641937f6a637_n9_2h_e4/evaluation_record.json": {
+     "label": "n9_2h_e4",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/71c0860a9f5f53a5_n9_4h_e5/evaluation_record.json": {
+     "label": "n9_4h_e5",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/7bf551efdebeeec1_n7_4h_e2/evaluation_record.json": {
+     "label": "n7_4h_e2",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/7c66ddb648ce86a1_n5_2h_e5/evaluation_record.json": {
+     "label": "n5_2h_e5",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/7c7afed64d16ff89_n7_2h_e1/evaluation_record.json": {
+     "label": "n7_2h_e1",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/7eb1ce62c2509f54_n7_4h_e1/evaluation_record.json": {
+     "label": "n7_4h_e1",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/80cf840cf4f80d0b_n7_4h_e5/evaluation_record.json": {
+     "label": "n7_4h_e5",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/80f2490bcb48991e_n5_2h_e1/evaluation_record.json": {
+     "label": "n5_2h_e1",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/87282a2536866085_n9_4h_e2/evaluation_record.json": {
+     "label": "n9_4h_e2",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/8b07a41303810662_n9_2h_e1/evaluation_record.json": {
+     "label": "n9_2h_e1",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/9b77039f5ee42cec_n5_4h_e2/evaluation_record.json": {
+     "label": "n5_4h_e2",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/a719e99b6208078e_n7_2h_e4/evaluation_record.json": {
+     "label": "n7_2h_e4",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/a90fc9344ad0eb7c_n5_4h_e4/evaluation_record.json": {
+     "label": "n5_4h_e4",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/aa43b799f64cbd9d_n9_2h_e3/evaluation_record.json": {
+     "label": "n9_2h_e3",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/b58dfe3fb3e562fd_n5_4h_e1/evaluation_record.json": {
+     "label": "n5_4h_e1",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/baeb374612983211_n9_4h_e4/evaluation_record.json": {
+     "label": "n9_4h_e4",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/c7fc0dc56ab4951f_n5_2h_e3/evaluation_record.json": {
+     "label": "n5_2h_e3",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/c83860658163d970_n7_4h_e3/evaluation_record.json": {
+     "label": "n7_4h_e3",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/d0963078cb50c989_n7_2h_e3/evaluation_record.json": {
+     "label": "n7_2h_e3",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/e09ea9b6571a4848_n5_2h_e2/evaluation_record.json": {
+     "label": "n5_2h_e2",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/e3acbedf92088337_n5_4h_e3/evaluation_record.json": {
+     "label": "n5_4h_e3",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/ec4ae6c80301fd19_n9_2h_e2/evaluation_record.json": {
+     "label": "n9_2h_e2",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/fef8869bfce3b416_n9_2h_e5/evaluation_record.json": {
+     "label": "n9_2h_e5",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/0bb38720f1a4426a_n7_2h_e3_y2030/evaluation_record.json": {
+     "label": "n7_2h_e3_y2030",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/12d566208836c1ee_n7_4h_e3_y2035/evaluation_record.json": {
+     "label": "n7_4h_e3_y2035",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/25c32e351ead53e1_n7_4h_e4_y2030/evaluation_record.json": {
+     "label": "n7_4h_e4_y2030",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/37b5c4999f65749f_n7_2h_e1_y2030/evaluation_record.json": {
+     "label": "n7_2h_e1_y2030",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/4294aae365384186_n7_2h_e5_y2035/evaluation_record.json": {
+     "label": "n7_2h_e5_y2035",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/47dce43c9f4ab0aa_n7_2h_e1_y2035/evaluation_record.json": {
+     "label": "n7_2h_e1_y2035",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/48749148d0bebd0d_n7_4h_e2_y2030/evaluation_record.json": {
+     "label": "n7_4h_e2_y2030",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/4fd41116d3aea30b_n7_2h_e4_y2030/evaluation_record.json": {
+     "label": "n7_2h_e4_y2030",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/52e05bc14e85c4cd_n7_2h_e4_y2035/evaluation_record.json": {
+     "label": "n7_2h_e4_y2035",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/549476cd276a0350_n7_4h_e1_y2030/evaluation_record.json": {
+     "label": "n7_4h_e1_y2030",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/69e0758622e1740c_n7_4h_e4_y2035/evaluation_record.json": {
+     "label": "n7_4h_e4_y2035",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/7075078094340ac5_n7_2h_e3_y2035/evaluation_record.json": {
+     "label": "n7_2h_e3_y2035",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/8704c8d2b3ff6135_n7_2h_e2_y2035/evaluation_record.json": {
+     "label": "n7_2h_e2_y2035",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/9abf31d494b664b8_n7_4h_e2_y2035/evaluation_record.json": {
+     "label": "n7_4h_e2_y2035",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/b5e6809061d352e3_n7_4h_e3_y2030/evaluation_record.json": {
+     "label": "n7_4h_e3_y2030",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/c8e931ae7693719e_n7_4h_e5_y2035/evaluation_record.json": {
+     "label": "n7_4h_e5_y2035",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/cbb9e21a7708feb9_n7_2h_e2_y2030/evaluation_record.json": {
+     "label": "n7_2h_e2_y2030",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/d14d13ec3c38c601_n7_2h_e5_y2030/evaluation_record.json": {
+     "label": "n7_2h_e5_y2030",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/dab6a8a2df221ba9_n7_4h_e1_y2035/evaluation_record.json": {
+     "label": "n7_4h_e1_y2035",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/dfe2e8e971318a20_n7_4h_e5_y2030/evaluation_record.json": {
+     "label": "n7_4h_e5_y2030",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a2/evals/3be0745fa72df1ac_presence_n7_n9/evaluation_record.json": {
+     "label": "presence_n7_n9",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a2/evals/98678e4ebd60579b_presence_n5_n9/evaluation_record.json": {
+     "label": "presence_n5_n9",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a2/evals/b571ca1b3ec3bc86_presence_n5_n7_n9/evaluation_record.json": {
+     "label": "presence_n5_n7_n9",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a2/evals/c5ae12a1ce18b5b7_presence_n5_n7/evaluation_record.json": {
+     "label": "presence_n5_n7",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a2/evals/eae950d246a4c396_lattice_c_star_p1_0_e4_0/evaluation_record.json": {
+     "label": "lattice_c_star_p1.0_e4.0",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a3/evals/37275e28d2255a58_res_n7_p0_75_e1_5_y2025/evaluation_record.json": {
+     "label": "res_n7_p0.75_e1.5_y2025",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a3/evals/7c99998d824189c7_res_n7_p1_e2_5_y2025/evaluation_record.json": {
+     "label": "res_n7_p1_e2.5_y2025",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a3/evals/acd6c3d25096d2fd_res_n7_p0_5_e1_5_y2025/evaluation_record.json": {
+     "label": "res_n7_p0.5_e1.5_y2025",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a3/evals/c606fa793da2a3ff_res_n7_p0_75_e2_5_y2025/evaluation_record.json": {
+     "label": "res_n7_p0.75_e2.5_y2025",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/campaign_s45_a3/evals/f4affa64172cea44_res_n7_p1_25_e2_5_y2025/evaluation_record.json": {
+     "label": "res_n7_p1.25_e2.5_y2025",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/evaluation_record.json": {
+     "label": "c_star_aa_case_file",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/06f092d164f13819_n7_4h_e1_no_ageing/evaluation_record.json": {
+     "label": "n7_4h_e1_no_ageing",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/65a5da775d1ff5b2_n7_4h_e1_c4/evaluation_record.json": {
+     "label": "n7_4h_e1_C4",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/98e2857016a16d1c_n7_4h_e1_c2_calfade/evaluation_record.json": {
+     "label": "n7_4h_e1_C2_calfade",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/c6b53015fcf65e24_n7_4h_e1_c2/evaluation_record.json": {
+     "label": "n7_4h_e1_C2",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    },
+    "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/ed4a1acc7059784d_n7_4h_e1_c3_midblock/evaluation_record.json": {
+     "label": "n7_4h_e1_C3_midblock",
+     "status": "certified",
+     "ok": {
+      "candidate_key": true,
+      "no_ess_ageing_declaration": true,
+      "eval_key": true
+     }
+    }
+   }
+  },
+  "K2": {
+   "unit_candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "c_star_candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "baseline_c2_declaration": {
+    "calendar_life_years": 15,
+    "cycle_life_nominal": 10000,
+    "depth_of_discharge_nominal": 0.8,
+    "minimum_soh": 0.7,
+    "calendar_retention_per_year": 0.985,
+    "calibration": {
+     "status": "ACTIVE",
+     "cycles_n": 10000,
+     "reference_dod_d": 0.8,
+     "eol_retention_r": 0.8
+    }
+   },
+   "dict_the_file_loads_to_now": {
+    "calendar_life_years": 15,
+    "cycle_life_nominal": 10000,
+    "depth_of_discharge_nominal": 0.8,
+    "minimum_soh": 0.5,
+    "calendar_retention_per_year": 1.0,
+    "calibration": {
+     "status": "ACTIVE",
+     "cycles_n": 10000,
+     "reference_dod_d": 0.8,
+     "eol_retention_r": 0.5
+    }
+   },
+   "unit_eval_key_baseline_c2": "bd504ecf5a288d447e53ef6f7e8090b017d15549b257aa095ff4f95890a06e42",
+   "unit_eval_key_committed_a1a_c3": "7eb1ce62c2509f54201191ed7220a7e25f06ca8830cb73e5afe2a14101a76b20",
+   "unit_eval_key_committed_s46_c2_calfade": "98e2857016a16d1c09aea36acb06929baed718ffc7c01ca53de1e24d4f3e9cfd",
+   "unit_eval_key_current_file_declared": "718460a187b401dd666a93f39aab16edeb7edd513a8c46a3779e0410f89fbbea",
+   "c_star_eval_key_baseline_c2": "070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb",
+   "committed_c_star_eval_keys": [
+    {
+     "spec": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/campaign_spec_s44_aa_variant_f90618e8.json",
+     "label": "c_star_aa_keep_memory",
+     "eval_key": "837fc982565dbba32241ed21a46da14984395006e3dbb4b03d5f72b9b72c50a7"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/campaign_spec_s44_aa_variant_smoke_e3f83174.json",
+     "label": "c_star_aa_keep_memory",
+     "eval_key": "837fc982565dbba32241ed21a46da14984395006e3dbb4b03d5f72b9b72c50a7"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/campaign_spec_s44_aa_variant_smoke_e3f83174.json",
+     "label": "c_star_d",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/campaign_s44_gate/campaign_spec_s44_gate_4047b4e3.json",
+     "label": "c_star",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks/c2_spec_root/campaign_spec_c2_f24bc344.json",
+     "label": "a",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks/c4_fail_campaign/campaign_spec_c4f_92ac6360.json",
+     "label": "fail1",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks/c4_foreign_lock_campaign/campaign_spec_c4l_1ce4890b.json",
+     "label": "foreign",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks/c4_nonstub_spec_campaign/campaign_spec_c4n_59849c27.json",
+     "label": "nonstub",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks/c4_stub_campaign/campaign_spec_c4_cf3b201c.json",
+     "label": "s1",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks_r2/c2_spec_root/campaign_spec_c2_04e91893.json",
+     "label": "a",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks_r2/c4_fail_campaign/campaign_spec_c4f_b96c62d6.json",
+     "label": "fail1",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks_r2/c4_foreign_lock_campaign/campaign_spec_c4l_800e7da8.json",
+     "label": "foreign",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks_r2/c4_nonstub_spec_campaign/campaign_spec_c4n_34c6cffc.json",
+     "label": "nonstub",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks_r2/c4_stub_campaign/campaign_spec_c4_0bca1b39.json",
+     "label": "s1",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks_r3/c2_spec_root/campaign_spec_c2_1ea09b7b.json",
+     "label": "a",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks_r3/c4_fail_campaign/campaign_spec_c4f_0f059fc1.json",
+     "label": "fail1",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks_r3/c4_foreign_lock_campaign/campaign_spec_c4l_3029ea43.json",
+     "label": "foreign",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks_r3/c4_nonstub_spec_campaign/campaign_spec_c4n_8ca5f6d7.json",
+     "label": "nonstub",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks_r3/c4_stub_campaign/campaign_spec_c4_83da5ad0.json",
+     "label": "s1",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks_r3/c8_spec_root/campaign_spec_c8_d6300da7.json",
+     "label": "c_star_d",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks_r3/c8_spec_root/campaign_spec_c8_d6300da7.json",
+     "label": "c_star_aa_keep",
+     "eval_key": "837fc982565dbba32241ed21a46da14984395006e3dbb4b03d5f72b9b72c50a7"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks_r3/c9_stub_campaign/campaign_spec_c9_276119b8.json",
+     "label": "c_star_d",
+     "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S44/harness_checks_r3/c9_stub_campaign/campaign_spec_c9_276119b8.json",
+     "label": "c_star_aa_keep",
+     "eval_key": "837fc982565dbba32241ed21a46da14984395006e3dbb4b03d5f72b9b72c50a7"
+    },
+    {
+     "spec": "data/SRP1/Results/P515S45/reverify_aa_c_star/campaign_spec_s45_reverify_aa_c_star_4a214b99.json",
+     "label": "c_star_aa_case_file",
+     "eval_key": "3e741dac72c9e1bcccc04ce5cc2e29f91cd639c43620d4efa3e36885915263aa"
+    }
+   ],
+   "n_committed_eval_keys_compared": 79
+  },
+  "K3": {
+   "not_a_dict": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "ess_ageing_baseline must be a dict"
+   },
+   "missing_key": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "ess_ageing_baseline must carry exactly ['calendar_life_years', 'calendar_retention_per_year', 'calibration', 'cycle_life_nominal', 'depth_of_discharge_nominal', 'minimum_soh']: missing=['minimum_soh'] extra=[]"
+   },
+   "extra_key": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "ess_ageing_baseline must carry exactly ['calendar_life_years', 'calendar_retention_per_year', 'calibration', 'cycle_life_nominal', 'depth_of_discharge_nominal', 'minimum_soh']: missing=[] extra=['soh_max']"
+   },
+   "calibration_missing_key": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "ess_ageing_baseline.calibration must carry exactly ['cycles_n', 'eol_retention_r', 'reference_dod_d', 'status']: missing=['eol_retention_r'] extra=[]"
+   },
+   "calibration_extra_key": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "ess_ageing_baseline.calibration must carry exactly ['cycles_n', 'eol_retention_r', 'reference_dod_d', 'status']: missing=[] extra=['k']"
+   },
+   "soh_min_bool": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "ess_ageing_baseline.minimum_soh must be a finite number, got True"
+   },
+   "soh_min_string": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "ess_ageing_baseline.minimum_soh must be a finite number, got '0.7'"
+   },
+   "soh_min_one": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "ess_ageing_baseline.minimum_soh must lie in [0, 1), got 1.0"
+   },
+   "phi_zero": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "ess_ageing_baseline.calendar_retention_per_year must lie in (0, 1], got 0.0"
+   },
+   "phi_above_one": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "ess_ageing_baseline.calendar_retention_per_year must lie in (0, 1], got 1.01"
+   },
+   "phi_nan": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "ess_ageing_baseline.calendar_retention_per_year must be a finite number, got nan"
+   },
+   "r_one": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "ess_ageing_baseline.calibration.eol_retention_r must lie in (0, 1), got 1.0"
+   },
+   "r_none_while_active": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "ess_ageing_baseline.calibration.eol_retention_r must be a finite number, got None"
+   },
+   "status_unknown": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "ess_ageing_baseline.calibration.status must be one of ('ACTIVE', 'DECLARED_NOT_CONSUMED'), got 'ON'"
+   },
+   "calibration_not_dict": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "ess_ageing_baseline.calibration must be a dict"
+   }
+  },
+  "K4": {
+   "declared_fixture": {
+    "configuration": {
+     "name": "fixture",
+     "arm_label": "s39_D",
+     "case_file": "data/SRP1/SRP1_params.json",
+     "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+     "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+     "overrides": {},
+     "apply_rho": false,
+     "full_diagnostics_in_rows": true,
+     "note": null,
+     "case_file_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "ess_ageing_baseline": {
+      "calendar_life_years": 15,
+      "calendar_retention_per_year": 1.0,
+      "cycle_life_nominal": 10000,
+      "depth_of_discharge_nominal": 0.8,
+      "minimum_soh": 0.5,
+      "calibration": {
+       "status": "ACTIVE",
+       "cycles_n": 10000,
+       "reference_dod_d": 0.8,
+       "eol_retention_r": 0.5
+      }
+     },
+     "ess_ageing_baseline_label": "FIXTURE",
+     "ess_params_file": {
+      "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+      "sha256": "fdce321ffe1bf0f4b81424cdf081d826c3c81c410a4eb9f3b3561675e26b80f0",
+      "last_commit": "cb165d4e54e0ed068b4f377cb9ce43e1ae7e98cc"
+     }
+    },
+    "entry": {
+     "label": "unit",
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.25,
+        1.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+     "eval_key": "718460a187b401dd666a93f39aab16edeb7edd513a8c46a3779e0410f89fbbea",
+     "overrides": {},
+     "post_certification": null,
+     "eval_dir": "718460a187b401dd_unit",
+     "working_dir_ids": {
+      "run": "p515s44_w21_fixture_718460a187b401dd_run",
+      "precheck": "p515s44_w21_fixture_718460a187b401dd_precheck"
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     }
+    }
+   },
+   "refusals": {
+    "value_mismatch": {
+     "raised": true,
+     "type": "ValueError",
+     "message": "ess_ageing_baseline declaration does not equal what data/SRP1/SharedESS/SRP1_ESS_Params.json loads to (types included): declared {'calendar_life_years': 15, 'calendar_retention_per_year': 1.0, 'cycle_life_nominal': 10000, 'depth_of_discharge_nominal': 0.8, 'minimum_soh': 0.55, 'calibration': {'status': 'ACTIVE', 'cycles_n': 10000, 'reference_dod_d': 0.8, 'eol_retention_r': 0.5}}, loaded {'calendar_life_years': 15, 'cycle_life_nominal': 10000, 'depth_of_discharge_nominal': 0.8, 'minimum_soh': 0.5, 'calendar_retention_per_year': 1.0, 'calibration': {'status': 'ACTIVE', 'cycles_n': 10000, 'refere",
+     "left_no_directory": true
+    },
+    "type_mismatch_int_vs_float": {
+     "raised": true,
+     "type": "ValueError",
+     "message": "ess_ageing_baseline declaration does not equal what data/SRP1/SharedESS/SRP1_ESS_Params.json loads to (types included): declared {'calendar_life_years': 15, 'calendar_retention_per_year': 1.0, 'cycle_life_nominal': 10000.0, 'depth_of_discharge_nominal': 0.8, 'minimum_soh': 0.5, 'calibration': {'status': 'ACTIVE', 'cycles_n': 10000, 'reference_dod_d': 0.8, 'eol_retention_r': 0.5}}, loaded {'calendar_life_years': 15, 'cycle_life_nominal': 10000, 'depth_of_discharge_nominal': 0.8, 'minimum_soh': 0.5, 'calendar_retention_per_year': 1.0, 'calibration': {'status': 'ACTIVE', 'cycles_n': 10000, 'refer",
+     "left_no_directory": true
+    },
+    "label_without_declaration": {
+     "raised": true,
+     "type": "ValueError",
+     "message": "ess_ageing_baseline_label given without an ess_ageing_baseline declaration",
+     "left_no_directory": true
+    },
+    "declaration_without_label": {
+     "raised": true,
+     "type": "ValueError",
+     "message": "an ess_ageing_baseline declaration needs a non-empty ess_ageing_baseline_label",
+     "left_no_directory": true
+    }
+   }
+  },
+  "K5": {
+   "expected_closed_forms": {
+    "k": 11541.560327111707,
+    "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.5)",
+    "phi_cal_in_model": 1.0,
+    "floor_row_lower": 0.5,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true,
+    "d_row_form": "D * 2kE == 365 n avg"
+   },
+   "node7_readback": {
+    "k": 11541.560327111707,
+    "phi_cal_in_model": 1.0,
+    "floor_row_lower": 0.5,
+    "d_row_form": "D * 2kE == 365 n avg",
+    "available_energy_soh_point": "end",
+    "y_inv": 0,
+    "y0": 0
+   },
+   "per_node_checks": {
+    "5": {
+     "k": true,
+     "n_years_from_d_row_equals_data": true,
+     "phi_cal_in_model": true,
+     "d_row_form": true,
+     "available_energy_soh_point": true,
+     "soh_row_exp_form": true,
+     "floor_row_lower": true
+    },
+    "7": {
+     "k": true,
+     "n_years_from_d_row_equals_data": true,
+     "phi_cal_in_model": true,
+     "d_row_form": true,
+     "available_energy_soh_point": true,
+     "soh_row_exp_form": true,
+     "floor_row_lower": true
+    },
+    "9": {
+     "k": true,
+     "n_years_from_d_row_equals_data": true,
+     "phi_cal_in_model": true,
+     "d_row_form": true,
+     "available_energy_soh_point": true,
+     "soh_row_exp_form": true,
+     "floor_row_lower": true
+    }
+   },
+   "verified_checks": {
+    "pin_path_is_ess_params_file": true,
+    "file_used_by_production_is_pinned_file": true,
+    "file_sha256_equals_pin": true,
+    "loaded_equals_declaration_types_included": true,
+    "every_ess_soh_min_is_declared": true,
+    "every_ess_phi_cal_is_declared": true,
+    "every_ess_cl_eff_is_production_k": true
+   },
+   "k_production": 11541.560327111707,
+   "mismatch_refusal": {
+    "raised": true,
+    "type": "RuntimeError",
+    "message": "ess_ageing_baseline: the loaded shared-ESS ageing parameters are not the declared ones: ['every_ess_phi_cal_is_declared', 'loaded_equals_declaration_types_included']; declared {'calendar_life_years': 15, 'calendar_retention_per_year': 0.97, 'cycle_life_nominal': 10000, 'depth_of_discharge_nominal': 0.8, 'minimum_soh': 0.5, 'calibration': {'status': 'ACTIVE', 'cycles_n': 10000, 'reference_dod_d': 0.8, 'eol_retention_r': 0.5}}, loaded {'calendar_life_years': 15, 'cycle_life_nominal': 10000, 'depth_of_discharge_nominal': 0.8, 'minimum_soh': 0.5, 'calendar_retention_per_year': 1.0, 'calibration': "
+   },
+   "bad_pin_refusal": {
+    "raised": true,
+    "type": "RuntimeError",
+    "message": "ess_ageing_baseline: the loaded shared-ESS ageing parameters are not the declared ones: ['file_sha256_equals_pin']; declared {'calendar_life_years': 15, 'calendar_retention_per_year': 1.0, 'cycle_life_nominal': 10000, 'depth_of_discharge_nominal': 0.8, 'minimum_soh': 0.5, 'calibration': {'status': 'ACTIVE', 'cycles_n': 10000, 'reference_dod_d': 0.8, 'eol_retention_r': 0.5}}, loaded {'calendar_life_years': 15, 'cycle_life_nominal': 10000, 'depth_of_discharge_nominal': 0.8, 'minimum_soh': 0.5, 'calendar_retention_per_year': 1.0, 'calibration': {'status': 'ACTIVE', 'cycles_n': 10000, 'reference_d"
+   }
+  }
+ },
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "wall_clock_s": 13.418145179748535
+}

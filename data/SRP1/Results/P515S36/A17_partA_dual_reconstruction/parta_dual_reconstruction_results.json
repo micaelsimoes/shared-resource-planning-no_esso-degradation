@@ -1,0 +1,151 @@
+{
+ "stage": "P5.15-S36-A17-PARTA",
+ "authority": "Addendum 17 capture-and-reconstruction task (2026-09-16)",
+ "timestamp_utc": "2026-09-16T22:56:44.904195+00:00",
+ "run": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_REF_run",
+ "terminal_cycle": 477,
+ "years_days_ordering": {
+  "years": [
+   2025,
+   2030,
+   2035
+  ],
+  "days": [
+   "Spring",
+   "Summer",
+   "Autumn",
+   "Winter"
+  ],
+  "guard_counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  }
+ },
+ "zero_initial_dual_precondition": {
+  "source_function": "shared_resources_planning.create_admm_variables",
+  "tso_zero_init_literal_found": true,
+  "dso_zero_init_literal_found": true,
+  "esso_zero_init_literal_found": true,
+  "all_found": true
+ },
+ "no_skip_precondition": {
+  "network_failures_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S35_REF_run/network_failures_baseline.jsonl",
+  "n_failure_records": 298,
+  "terminations_seen": [
+   "recovered",
+   "recovered_tier2"
+  ],
+  "all_recovered_or_recovered_tier2": true,
+  "g_baseline_all_cycles_local_solves_ok": true,
+  "g_baseline_cycles_exactly_1_to_terminal": true,
+  "conclusion": "zero cycles skip the dual update in run 1 -- every logged failure was recovered (no `failed`/unrecovered classification exists), and every cycle's own `local_solves_ok` is True"
+ },
+ "update_rule": {
+  "formula": "lambda_agent(c) = lambda_agent(c-1) + rho_agent(c) * a(c) * (x_agent(c) - z(c)); z(c) = [sum_agent(rho_agent(c)*a(c)^2*x_agent(c) + lambda_agent(c-1)*a(c))] / [sum_agent(rho_agent(c)*a(c)^2)]; a(c) = 1/(2*S_ref(c))",
+  "source": "shared_resources_planning.py::_update_shared_energy_storage_variables (comment block \"Shared-ESS consensus ADMM\"), rho read as g_baseline.json cycle row's rho_ess_before (the value in force during that cycle's solves, BEFORE that cycle's own rho adaptation)",
+  "S_ref_values_seen": [
+   2.5
+  ],
+  "rho_min_max_seen": [
+   0.11249999999999989,
+   0.16875000000000007
+  ],
+  "agents_share_one_rho_value_per_cycle": "by construction of `_update_admm_penalties`/`_scale_admm_penalty`: TSO rho_ess, DSO rho_ess and ESSO rho start equal (case-file initial value) and are scaled by the IDENTICAL factor every cycle -- g_baseline.json records ONE scalar rho_ess_before/_after per cycle for this reason"
+ },
+ "n_entries_reconstructed": 1728,
+ "cross_validation_vs_g_baseline_norm_trajectory": {
+  "tso": {
+   "n_cycles_compared": 477,
+   "max_relative_error": 4.448917758679607e-15,
+   "max_abs_error_at_worst_cycle": 2.7755575615628914e-17,
+   "worst_cycle": 313,
+   "passes_1e-9_relative": true
+  },
+  "dso": {
+   "n_cycles_compared": 477,
+   "max_relative_error": 2.7215465212772357e-15,
+   "max_abs_error_at_worst_cycle": 1.474514954580286e-17,
+   "worst_cycle": 434,
+   "passes_1e-9_relative": true
+  },
+  "esso": {
+   "n_cycles_compared": 477,
+   "max_relative_error": 1.4996729696543437e-14,
+   "max_abs_error_at_worst_cycle": 2.190088388420719e-17,
+   "worst_cycle": 313,
+   "passes_1e-9_relative": true
+  }
+ },
+ "cross_validation_vs_esso_captured_terminal_duals": {
+  "reading": "The ESSO model's dual_p_req/dual_q_req Params are SET from dual_vars[\"ess\"][\"esso\"][\"current\"] in update_shared_energy_storages_coordination_model_and_solve, BEFORE that same cycle's shared_ess_data.optimize(...) call, and BEFORE that same cycle's own z/lambda update runs (the update happens later in the cycle, in update_and_check_convergence(update_sess=True)). A Param is never read back and re-set after solving, so the run's pickled terminal-cycle Params hold lambda_esso(T-1), the value one cycle BEHIND the run's own terminal lambda_esso(T) that boyd_ess_norm_y_esso and this script's own lambda_terminal reflect. The CORRECT cross-validation target is therefore lambda_snapshot_before_cycle (T-1), not lambda_terminal (T); both are reported.",
+  "against_lambda_esso_T_minus_1_CORRECT_target": {
+   "n_entries_checked": 1728,
+   "n_entries_at_or_below_noise_floor": 271,
+   "noise_floor": 1e-08,
+   "max_abs_error_unconditional_all_entries": 9.449499559568975e-18,
+   "max_relative_error_naive_all_entries": 4.267058628316617e-07,
+   "worst_entry_naive": {
+    "node_id": 7,
+    "y_idx": 1,
+    "d_idx": 2,
+    "period": 13,
+    "power_type": "p",
+    "reconstructed": 3.7020110429447375e-13,
+    "captured": 3.7020094632755953e-13
+   },
+   "naive_reading": "dominated by entries where the CAPTURED dual is itself at machine-precision (inactive-row KKT-multiplier noise) -- see worst_entry_naive, whose `captured` magnitude is far below any physically meaningful dual. Not the PASS criterion.",
+   "max_relative_error_excluding_below_noise_floor": 3.29571720785648e-10,
+   "worst_entry_excluding_below_noise_floor": {
+    "node_id": 7,
+    "y_idx": 0,
+    "d_idx": 0,
+    "period": 14,
+    "power_type": "p",
+    "reconstructed": 2.1333443081835157e-08,
+    "captured": 2.1333443088866057e-08
+   },
+   "rho_captured_per_node": {
+    "5": 0.16875,
+    "7": 0.16875,
+    "9": 0.16875
+   },
+   "passes_1e-9_relative": "True"
+  },
+  "against_lambda_esso_T_naive_terminal_INFORMATIONAL_ONLY": {
+   "n_entries_checked": 1728,
+   "n_entries_at_or_below_noise_floor": 271,
+   "noise_floor": 1e-08,
+   "max_abs_error_unconditional_all_entries": 1.1926451917755932e-05,
+   "max_relative_error_naive_all_entries": 2836.2018269514674,
+   "worst_entry_naive": {
+    "node_id": 7,
+    "y_idx": 1,
+    "d_idx": 2,
+    "period": 13,
+    "power_type": "p",
+    "reconstructed": -1.0495943993670588e-09,
+    "captured": 3.7020094632755953e-13
+   },
+   "naive_reading": "dominated by entries where the CAPTURED dual is itself at machine-precision (inactive-row KKT-multiplier noise) -- see worst_entry_naive, whose `captured` magnitude is far below any physically meaningful dual. Not the PASS criterion.",
+   "max_relative_error_excluding_below_noise_floor": 3.9145769314966326,
+   "worst_entry_excluding_below_noise_floor": {
+    "node_id": 5,
+    "y_idx": 1,
+    "d_idx": 1,
+    "period": 12,
+    "power_type": "p",
+    "reconstructed": -6.4208775620550685e-06,
+    "captured": 2.2030221582649918e-06
+   },
+   "rho_captured_per_node": {
+    "5": 0.16875,
+    "7": 0.16875,
+    "9": 0.16875
+   },
+   "passes_1e-9_relative": "False"
+  }
+ },
+ "overall_pass_1e-9_relative": "True"
+}

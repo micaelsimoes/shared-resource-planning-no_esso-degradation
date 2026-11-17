@@ -1,0 +1,1543 @@
+{
+ "arm_network_compl_inf_tol": 1e-06,
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 49 (rulings 1-3, consistency convention, resolution, timing)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 49 clarification 2026-09-26 (tie-breaker roles; lambda_t recovery)",
+  "TASKS.md Addendum 49 order",
+  "Planner task W93",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 53 Ruling 4 (coordinated arm reported only as the settled x = 0 value)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 54 Ruling 3 (common-Q gate and lambda_t look on the settled cycle-181 x = 0 models; the gate reference is the settled value)",
+  "Planner task W106",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 55 (option (a): the lambda consensus item gated on the settled cycle-181 models, tolerance 0.05 unchanged; candidate lambda != pi hour; signed curtailment reporting after W109 f6e3533f)",
+  "Planner task W111 (benchmark spec v2)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 56 (curtailment reporting: net primary, positive / negative parts, raw MWh)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 57 Decision 1 ((a) sweep, report-only; (b) no-reverse-flow arms, claim vs the best NRF arm; zero-solve reverse-flow count of the coordinated Q181 solution)",
+  "TASKS.md Addendum 57 order (W116)",
+  "Planner task W116 (benchmark spec v3)",
+  "Planner task W119 (benchmark spec v4: per-block exact solve accounting of the NRF arm and tie-breaker stages; Planner predictions and rulings recorded)",
+  "Planner task W121 (benchmark spec v5: consistency re-evaluation defect found by W120 fixed -- the DN reference-bus setpoint band is not a physical limit; _r2 run ids; the W120 sweeps carried by reference and sha; aborted solve entries reported)"
+ ],
+ "claim": {
+  "bands_eur": {
+   "best_arm_multimodality": 0.004241466522216797,
+   "coordinated_reproducibility_0.011pct": 71926.10724064271,
+   "dso_band_step5": null
+  },
+  "benefit_eur": 90896608.39950395,
+  "benefit_relative": 0.13901248527871937,
+  "best_uncoordinated_arm": "price_taker_NRF",
+  "computed": true,
+  "decomposition": {
+   "passive_NRF_minus_coordinated_eur": 241176216.28393233,
+   "passive_NRF_minus_price_taker_NRF_eur": 150279607.88442838,
+   "price_taker_NRF_minus_coordinated_eur": 90896608.39950395
+  },
+  "definition": "benefit = min(Q_passive_NRF, Q_price_taker_NRF) - Q181 (Addendum 57 Decision 1(b))",
+  "determinate": true,
+  "larger_band_eur": 71926.10724064271,
+  "measures": "dynamic coordination against a static interface limit (no reverse flow)",
+  "objective_convention": "gross_operational_cost, settlement excluded",
+  "q_min_over_starts_note": "each uncoordinated arm's Q is the MINIMUM over its three starts (cold, warm_from_certified, perturbed); this is CONSERVATIVE AGAINST THE COORDINATION CLAIM: the uncoordinated side gets its best local optimum of three, while the coordinated side is one certified cell (W106: the settled cycle-181 cell d110bd1a5977df1e_x0, not re-run; W94 named the W86 cell 5cfe69a615ae3708_x0, now unwired)",
+  "reverse_flow_caveat": "the coordinated solution has reverse-flow interface-hours (see coordinated_reverse_flow_count): part of the measured benefit is the value of allowing reverse flow",
+  "verdict": "coordination beats the best NRF arrangement"
+ },
+ "common_q_gate_status_v2": "PASS",
+ "consistency_nrf": {
+  "nrf_arm_passive_cold_r2": {
+   "max_abs_dv_dn_pu": 0.10000002956607389,
+   "nrf_violations": {
+    "max_excess_pu": 0.0061828062637474136,
+    "n": 29
+   },
+   "pass_effect_eur": -44035.051255226135,
+   "trigger": true
+  },
+  "nrf_arm_passive_perturbed_r2": {
+   "max_abs_dv_dn_pu": 0.1000000296319714,
+   "nrf_violations": {
+    "max_excess_pu": 0.006182806267273288,
+    "n": 29
+   },
+   "pass_effect_eur": -69840.24145638943,
+   "trigger": true
+  },
+  "nrf_arm_passive_warm_from_certified_r2": {
+   "max_abs_dv_dn_pu": 0.10000002956607504,
+   "nrf_violations": {
+    "max_excess_pu": 0.006182806263830751,
+    "n": 29
+   },
+   "pass_effect_eur": -69840.21842646599,
+   "trigger": true
+  },
+  "nrf_arm_price_taker_cold_r2": {
+   "max_abs_dv_dn_pu": 0.09999995374876437,
+   "nrf_violations": {
+    "max_excess_pu": 0.00032080599379107066,
+    "n": 70
+   },
+   "pass_effect_eur": 234.09603083133698,
+   "trigger": true
+  },
+  "nrf_arm_price_taker_perturbed_r2": {
+   "max_abs_dv_dn_pu": 0.09999995375216558,
+   "nrf_violations": {
+    "max_excess_pu": 0.0003208352961690999,
+    "n": 70
+   },
+   "pass_effect_eur": 234.47817158699036,
+   "trigger": true
+  },
+  "nrf_arm_price_taker_warm_from_certified_r2": {
+   "max_abs_dv_dn_pu": 0.09999995076162047,
+   "nrf_violations": {
+    "max_excess_pu": 0.00032069483681473367,
+    "n": 70
+   },
+   "pass_effect_eur": 233.94312953948975,
+   "trigger": true
+  }
+ },
+ "consumed_runs_v4": {
+  "nrf_arm_passive_cold": {
+   "committed_in": "4858b3a57d041b88627b2892302acb39a8550a41",
+   "failure": {
+    "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_passive_cold/failure.json",
+    "sha256": "0d28d7903f05fb867021be7ec6f8d46b020b68cb53fc8b76d7c50a5bc1d0a7b5"
+   },
+   "ipopt_log_dir_eval_id": "p515s53w116_nrf_arm_passive_cold",
+   "ipopt_logs_hash_record": {
+    "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/w120_ipopt_logs_hash_record_sha256.json",
+    "sha256": "66f9c76ad2fc0f63c0823d0af691bbf1aa520de056e2260871144135f40bd285"
+   },
+   "per_solve_record": {
+    "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_passive_cold/per_solve_record.jsonl",
+    "sha256": "a2c08ae977053d8187ee335bca96d32619511ef9855e35c1a4f10a598bbca21e"
+   },
+   "reason": "stopped in phase B: the re-evaluation clone fixed the DN reference e at the TN voltage 1.1 p.u. outside its unrelaxed setpoint bounds [0.9999, 1.0001]; Pyomo NL writer InfeasibleConstraintException before any IPOPT launch (code defect, fixed in W121)",
+   "replaced_by": "nrf_arm_passive_cold_r2"
+  }
+ },
+ "coordinated": {
+  "q": 653873702.1876609,
+  "q_hex": "0x1.37ca913180546p+29",
+  "reproducibility_band_eur": 71926.10724064271,
+  "source": "settled cycle-181 x = 0 cell d110bd1a5977df1e_x0 (not re-run): settling_decision.json Q_k_star; equal (bitwise, checked) to evaluation_record certified_cost, recourse_components.gross_operational_cost and post_certification certified_cost"
+ },
+ "coordinated_cell": {
+  "campaign_manifest": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/campaign_manifest_sha256.json",
+  "campaign_spec_sha256": "d1d5c3bcbdc261d297282382ce4a54263a811059d17230613a1765ee915ebd33",
+  "certification_cycle": 181,
+  "certification_rule": "settling criterion of stage spec v39 (Boyd residuals + three turning points, swings not growing, one-period range <= tau = 4,539.07 EUR); branch oscillatory; band width 4,209.17",
+  "certified_gross": 653873702.1876609,
+  "certified_gross_source": "settling_decision.json Q_k_star; equal (bitwise, checked) to evaluation_record certified_cost, recourse_components.gross_operational_cost and post_certification certified_cost",
+  "certified_models": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/certified_models.pkl",
+   "sha256": "99ab1070b0e61cc7818975ce898069d2060d2668bae67c166b58913e9923c33a"
+  },
+  "child_manifest": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/child_manifest_sha256.json",
+  "esso_models": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/esso_models_s39_D.pkl",
+   "sha256": "118487e1853bbad176f324b1173df8c4198cb6c7709c25d7dce9f94ce4c199fa"
+  },
+  "eval_dir": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0",
+  "eval_key": "d110bd1a5977df1e811a1b3963afc565de6daa65f76dcc096ead3fdc70b08546",
+  "evaluation_record": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/evaluation_record.json",
+  "evidence_commit": "e4b5c9928d96b413c77039c377e5f7a82a6549f5",
+  "interface_duals": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/interface_duals_per_cycle.jsonl",
+   "sha256": "10c986c79eebe9e6d84bbd9c3978b802b2760c00399cb427125a0b797b41e8cb"
+  },
+  "pf_entry_stride": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/pf_entry_stride_s39_D.jsonl",
+   "sha256": "f71147584175a42f7c503e905e8e519841424b5a89bf33724dfce753769f498a"
+  },
+  "post_certification": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/post_certification.json",
+  "res_curtailment_definitional_at_weight_1": 589.425936658749,
+  "settling_decision": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/settling_decision.json",
+  "stage_spec": {
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v39_8a612429.json",
+   "version": 39
+  }
+ },
+ "coordinated_reverse_flow_count": {
+  "per_node": {
+   "5": {
+    "material": {
+     "count": 0,
+     "count_day_weighted": 0.0,
+     "count_probability_weighted": 0.0,
+     "energy_mwh_block_weighted": 0.0,
+     "energy_mwh_day_weighted": 0.0,
+     "energy_mwh_rep_day": 0.0
+    },
+    "strict": {
+     "count": 0,
+     "count_day_weighted": 0.0,
+     "count_probability_weighted": 0.0,
+     "energy_mwh_block_weighted": 0.0,
+     "energy_mwh_day_weighted": 0.0,
+     "energy_mwh_rep_day": 0.0
+    }
+   },
+   "7": {
+    "material": {
+     "count": 4,
+     "count_day_weighted": 1830.0,
+     "count_probability_weighted": 4.0,
+     "energy_mwh_block_weighted": 3308.2989930749104,
+     "energy_mwh_day_weighted": 3308.2989930749104,
+     "energy_mwh_rep_day": 7.2269950710627295
+    },
+    "strict": {
+     "count": 4,
+     "count_day_weighted": 1830.0,
+     "count_probability_weighted": 4.0,
+     "energy_mwh_block_weighted": 3308.2989930749104,
+     "energy_mwh_day_weighted": 3308.2989930749104,
+     "energy_mwh_rep_day": 7.2269950710627295
+    }
+   },
+   "9": {
+    "material": {
+     "count": 0,
+     "count_day_weighted": 0.0,
+     "count_probability_weighted": 0.0,
+     "energy_mwh_block_weighted": 0.0,
+     "energy_mwh_day_weighted": 0.0,
+     "energy_mwh_rep_day": 0.0
+    },
+    "strict": {
+     "count": 0,
+     "count_day_weighted": 0.0,
+     "count_probability_weighted": 0.0,
+     "energy_mwh_block_weighted": 0.0,
+     "energy_mwh_day_weighted": 0.0,
+     "energy_mwh_rep_day": 0.0
+    }
+   }
+  },
+  "source": {
+   "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/w116_zero_solve_checks/reverse_flow_count_q181.json",
+   "sha256": "8706bf286c38bd469aea1e9704686f8de1f74e41db9fb24b985100849de27ce2"
+  },
+  "statement": "part of the measured benefit is the value of allowing reverse flow",
+  "totals": {
+   "material": {
+    "count": 4,
+    "count_day_weighted": 1830.0,
+    "count_probability_weighted": 4.0,
+    "energy_mwh_block_weighted": 3308.2989930749104,
+    "energy_mwh_day_weighted": 3308.2989930749104,
+    "energy_mwh_rep_day": 7.2269950710627295
+   },
+   "strict": {
+    "count": 4,
+    "count_day_weighted": 1830.0,
+    "count_probability_weighted": 4.0,
+    "energy_mwh_block_weighted": 3308.2989930749104,
+    "energy_mwh_day_weighted": 3308.2989930749104,
+    "energy_mwh_rep_day": 7.2269950710627295
+   }
+  },
+  "tso_side_secondary": {
+   "material": 4,
+   "max_abs_dso_minus_tso_mw": 0.00027157182285009185,
+   "strict": 4
+  }
+ },
+ "curtailment_table": {
+  "arms_and_variants_phase_A": {
+   "nrf_arm_passive_cold_r2": {
+    "arm_cost_source": "phase_C_sequential_pass",
+    "by_agent": {
+     "DSO": {
+      "eur_at_1_block_weighted": 173047.34228561347,
+      "mwh_day_weighted": 201188.09245422098,
+      "mwh_rep_day_sum": 441.51823029648784
+     },
+     "TSO": {
+      "eur_at_1_block_weighted": 660246.811858229,
+      "mwh_day_weighted": 781794.6654278582,
+      "mwh_rep_day_sum": 1712.1422789447672
+     }
+    },
+    "eur_at_1_block_weighted": 833294.1541438424,
+    "mwh_day_weighted": 982982.7578820792,
+    "mwh_rep_day_sum": 2153.660509241255,
+    "row_phase": "phase_A",
+    "signed_parts": {
+     "negative_part": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": -48.01663668489682,
+        "mwh_day_weighted": -52.285818341929016,
+        "mwh_rep_day_sum": -0.11474236848947338
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": -18.73033699495358,
+        "mwh_day_weighted": -20.41231096850273,
+        "mwh_rep_day_sum": -0.044796030402855104
+       }
+      },
+      "eur_at_1_block_weighted": -66.7469736798504,
+      "mwh_day_weighted": -72.69812931043174,
+      "mwh_rep_day_sum": -0.1595383988923285
+     },
+     "net": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": 173047.34228561347,
+        "mwh_day_weighted": 201188.09245422098,
+        "mwh_rep_day_sum": 441.51823029648784
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": 660246.811858229,
+        "mwh_day_weighted": 781794.6654278582,
+        "mwh_rep_day_sum": 1712.1422789447672
+       }
+      },
+      "eur_at_1_block_weighted": 833294.1541438424,
+      "mwh_day_weighted": 982982.7578820792,
+      "mwh_rep_day_sum": 2153.660509241255
+     },
+     "positive_part": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": 173095.35892229833,
+        "mwh_day_weighted": 201240.37827256287,
+        "mwh_rep_day_sum": 441.63297266497733
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": 660265.5421952241,
+        "mwh_day_weighted": 781815.0777388266,
+        "mwh_rep_day_sum": 1712.1870749751702
+       }
+      },
+      "eur_at_1_block_weighted": 833360.9011175224,
+      "mwh_day_weighted": 983055.4560113895,
+      "mwh_rep_day_sum": 2153.8200476401475
+     },
+     "primary": "net"
+    }
+   },
+   "nrf_arm_passive_perturbed_r2": {
+    "arm_cost_source": "phase_C_sequential_pass",
+    "by_agent": {
+     "DSO": {
+      "eur_at_1_block_weighted": 173079.4674562444,
+      "mwh_day_weighted": 201227.2528579379,
+      "mwh_rep_day_sum": 441.6042971178439
+     },
+     "TSO": {
+      "eur_at_1_block_weighted": 660199.4007442405,
+      "mwh_day_weighted": 781736.8716844247,
+      "mwh_rep_day_sum": 1712.0152597417857
+     }
+    },
+    "eur_at_1_block_weighted": 833278.8682004849,
+    "mwh_day_weighted": 982964.1245423626,
+    "mwh_rep_day_sum": 2153.6195568596295,
+    "row_phase": "phase_A",
+    "signed_parts": {
+     "negative_part": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": -48.016636502214254,
+        "mwh_day_weighted": -52.285818118637856,
+        "mwh_rep_day_sum": -0.11474236799883761
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": -18.73049655177054,
+        "mwh_day_weighted": -20.412505467368856,
+        "mwh_rep_day_sum": -0.044796453226477254
+       }
+      },
+      "eur_at_1_block_weighted": -66.7471330539848,
+      "mwh_day_weighted": -72.69832358600671,
+      "mwh_rep_day_sum": -0.15953882122531488
+     },
+     "net": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": 173079.4674562444,
+        "mwh_day_weighted": 201227.2528579379,
+        "mwh_rep_day_sum": 441.6042971178439
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": 660199.4007442405,
+        "mwh_day_weighted": 781736.8716844247,
+        "mwh_rep_day_sum": 1712.0152597417857
+       }
+      },
+      "eur_at_1_block_weighted": 833278.8682004849,
+      "mwh_day_weighted": 982964.1245423626,
+      "mwh_rep_day_sum": 2153.6195568596295
+     },
+     "positive_part": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": 173127.48409274657,
+        "mwh_day_weighted": 201279.53867605655,
+        "mwh_rep_day_sum": 441.7190394858427
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": 660218.1312407922,
+        "mwh_day_weighted": 781757.284189892,
+        "mwh_rep_day_sum": 1712.0600561950116
+       }
+      },
+      "eur_at_1_block_weighted": 833345.6153335387,
+      "mwh_day_weighted": 983036.8228659485,
+      "mwh_rep_day_sum": 2153.7790956808544
+     },
+     "primary": "net"
+    }
+   },
+   "nrf_arm_passive_warm_from_certified_r2": {
+    "arm_cost_source": "phase_C_sequential_pass",
+    "by_agent": {
+     "DSO": {
+      "eur_at_1_block_weighted": 173047.34228563862,
+      "mwh_day_weighted": 201188.09245425474,
+      "mwh_rep_day_sum": 441.5182302965624
+     },
+     "TSO": {
+      "eur_at_1_block_weighted": 660246.8890496427,
+      "mwh_day_weighted": 781794.7595736957,
+      "mwh_rep_day_sum": 1712.142483620113
+     }
+    },
+    "eur_at_1_block_weighted": 833294.2313352814,
+    "mwh_day_weighted": 982982.8520279505,
+    "mwh_rep_day_sum": 2153.6607139166754,
+    "row_phase": "phase_A",
+    "signed_parts": {
+     "negative_part": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": -48.01663669477168,
+        "mwh_day_weighted": -52.2858183529645,
+        "mwh_rep_day_sum": -0.1147423685137032
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": -18.73012451909715,
+        "mwh_day_weighted": -20.412051961619845,
+        "mwh_rep_day_sum": -0.04479545651054552
+       }
+      },
+      "eur_at_1_block_weighted": -66.74676121386882,
+      "mwh_day_weighted": -72.69787031458435,
+      "mwh_rep_day_sum": -0.15953782502424874
+     },
+     "net": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": 173047.34228563862,
+        "mwh_day_weighted": 201188.09245425474,
+        "mwh_rep_day_sum": 441.5182302965624
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": 660246.8890496427,
+        "mwh_day_weighted": 781794.7595736957,
+        "mwh_rep_day_sum": 1712.142483620113
+       }
+      },
+      "eur_at_1_block_weighted": 833294.2313352814,
+      "mwh_day_weighted": 982982.8520279505,
+      "mwh_rep_day_sum": 2153.6607139166754
+     },
+     "positive_part": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": 173095.35892233334,
+        "mwh_day_weighted": 201240.37827260766,
+        "mwh_rep_day_sum": 441.63297266507607
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": 660265.6191741618,
+        "mwh_day_weighted": 781815.1716256572,
+        "mwh_rep_day_sum": 1712.1872790766236
+       }
+      },
+      "eur_at_1_block_weighted": 833360.9780964951,
+      "mwh_day_weighted": 983055.5498982649,
+      "mwh_rep_day_sum": 2153.8202517416994
+     },
+     "primary": "net"
+    }
+   },
+   "nrf_arm_price_taker_cold_r2": {
+    "arm_cost_source": "phase_C_sequential_pass",
+    "by_agent": {
+     "DSO": {
+      "eur_at_1_block_weighted": 510.1465482955909,
+      "mwh_day_weighted": 575.9993476597,
+      "mwh_rep_day_sum": 1.2597150892800868
+     },
+     "TSO": {
+      "eur_at_1_block_weighted": 700577.8835834671,
+      "mwh_day_weighted": 806682.4242511855,
+      "mwh_rep_day_sum": 1764.4079140381168
+     }
+    },
+    "eur_at_1_block_weighted": 701088.0301317627,
+    "mwh_day_weighted": 807258.4235988451,
+    "mwh_rep_day_sum": 1765.6676291273968,
+    "row_phase": "phase_A",
+    "signed_parts": {
+     "negative_part": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": -43.31211222531097,
+        "mwh_day_weighted": -47.1698716907636,
+        "mwh_rep_day_sum": -0.10353341673345924
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": -15.795041678462972,
+        "mwh_day_weighted": -17.257296157729634,
+        "mwh_rep_day_sum": -0.037895352979133066
+       }
+      },
+      "eur_at_1_block_weighted": -59.10715390377394,
+      "mwh_day_weighted": -64.42716784849324,
+      "mwh_rep_day_sum": -0.1414287697125923
+     },
+     "net": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": 510.1465482955909,
+        "mwh_day_weighted": 575.9993476597,
+        "mwh_rep_day_sum": 1.2597150892800868
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": 700577.8835834671,
+        "mwh_day_weighted": 806682.4242511855,
+        "mwh_rep_day_sum": 1764.4079140381168
+       }
+      },
+      "eur_at_1_block_weighted": 701088.0301317627,
+      "mwh_day_weighted": 807258.4235988451,
+      "mwh_rep_day_sum": 1765.6676291273968
+     },
+     "positive_part": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": 553.4586605209017,
+        "mwh_day_weighted": 623.1692193504635,
+        "mwh_rep_day_sum": 1.3632485060135466
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": 700593.6786251457,
+        "mwh_day_weighted": 806699.6815473431,
+        "mwh_rep_day_sum": 1764.445809391096
+       }
+      },
+      "eur_at_1_block_weighted": 701147.1372856665,
+      "mwh_day_weighted": 807322.8507666936,
+      "mwh_rep_day_sum": 1765.8090578971096
+     },
+     "primary": "net"
+    }
+   },
+   "nrf_arm_price_taker_perturbed_r2": {
+    "arm_cost_source": "phase_C_sequential_pass",
+    "by_agent": {
+     "DSO": {
+      "eur_at_1_block_weighted": 510.1465482956908,
+      "mwh_day_weighted": 575.9993476598037,
+      "mwh_rep_day_sum": 1.2597150892803124
+     },
+     "TSO": {
+      "eur_at_1_block_weighted": 701116.7439434683,
+      "mwh_day_weighted": 807261.4446894657,
+      "mwh_rep_day_sum": 1765.6735023160995
+     }
+    },
+    "eur_at_1_block_weighted": 701626.8904917641,
+    "mwh_day_weighted": 807837.4440371254,
+    "mwh_rep_day_sum": 1766.9332174053798,
+    "row_phase": "phase_A",
+    "signed_parts": {
+     "negative_part": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": -43.31211222532121,
+        "mwh_day_weighted": -47.169871690774514,
+        "mwh_rep_day_sum": -0.10353341673348303
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": -15.798023733496702,
+        "mwh_day_weighted": -17.260495435887172,
+        "mwh_rep_day_sum": -0.03790232931226752
+       }
+      },
+      "eur_at_1_block_weighted": -59.11013595881791,
+      "mwh_day_weighted": -64.43036712666168,
+      "mwh_rep_day_sum": -0.14143574604575054
+     },
+     "net": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": 510.1465482956908,
+        "mwh_day_weighted": 575.9993476598037,
+        "mwh_rep_day_sum": 1.2597150892803124
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": 701116.7439434683,
+        "mwh_day_weighted": 807261.4446894657,
+        "mwh_rep_day_sum": 1765.6735023160995
+       }
+      },
+      "eur_at_1_block_weighted": 701626.8904917641,
+      "mwh_day_weighted": 807837.4440371254,
+      "mwh_rep_day_sum": 1766.9332174053798
+     },
+     "positive_part": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": 553.4586605210119,
+        "mwh_day_weighted": 623.1692193505784,
+        "mwh_rep_day_sum": 1.363248506013796
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": 701132.5419672017,
+        "mwh_day_weighted": 807278.7051849015,
+        "mwh_rep_day_sum": 1765.7114046454117
+       }
+      },
+      "eur_at_1_block_weighted": 701686.0006277227,
+      "mwh_day_weighted": 807901.874404252,
+      "mwh_rep_day_sum": 1767.0746531514255
+     },
+     "primary": "net"
+    }
+   },
+   "nrf_arm_price_taker_warm_from_certified_r2": {
+    "arm_cost_source": "phase_C_sequential_pass",
+    "by_agent": {
+     "DSO": {
+      "eur_at_1_block_weighted": 510.1465482955346,
+      "mwh_day_weighted": 575.9993476596375,
+      "mwh_rep_day_sum": 1.2597150892799522
+     },
+     "TSO": {
+      "eur_at_1_block_weighted": 701454.1371791488,
+      "mwh_day_weighted": 807649.8725410403,
+      "mwh_rep_day_sum": 1766.5110624497188
+     }
+    },
+    "eur_at_1_block_weighted": 701964.2837274444,
+    "mwh_day_weighted": 808225.8718886999,
+    "mwh_rep_day_sum": 1767.7707775389988,
+    "row_phase": "phase_A",
+    "signed_parts": {
+     "negative_part": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": -43.31211222531046,
+        "mwh_day_weighted": -47.16987169076326,
+        "mwh_rep_day_sum": -0.10353341673345846
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": -15.796112354957259,
+        "mwh_day_weighted": -17.258361474521394,
+        "mwh_rep_day_sum": -0.037897639287288364
+       }
+      },
+      "eur_at_1_block_weighted": -59.108224580267716,
+      "mwh_day_weighted": -64.42823316528465,
+      "mwh_rep_day_sum": -0.14143105602074682
+     },
+     "net": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": 510.1465482955346,
+        "mwh_day_weighted": 575.9993476596375,
+        "mwh_rep_day_sum": 1.2597150892799522
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": 701454.1371791488,
+        "mwh_day_weighted": 807649.8725410403,
+        "mwh_rep_day_sum": 1766.5110624497188
+       }
+      },
+      "eur_at_1_block_weighted": 701964.2837274444,
+      "mwh_day_weighted": 808225.8718886999,
+      "mwh_rep_day_sum": 1767.7707775389988
+     },
+     "positive_part": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": 553.458660520845,
+        "mwh_day_weighted": 623.1692193504008,
+        "mwh_rep_day_sum": 1.363248506013411
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": 701469.9332915038,
+        "mwh_day_weighted": 807667.1309025148,
+        "mwh_rep_day_sum": 1766.548960089006
+       }
+      },
+      "eur_at_1_block_weighted": 702023.3919520247,
+      "mwh_day_weighted": 808290.3001218652,
+      "mwh_rep_day_sum": 1767.9122085950194
+     },
+     "primary": "net"
+    }
+   },
+   "nrf_passive_tie_breaker_0p1_r2": {
+    "arm_cost_source": "phase_A",
+    "by_agent": {
+     "DSO": {
+      "eur_at_1_block_weighted": 172872.3247472323,
+      "mwh_day_weighted": 200695.56593285658,
+      "mwh_rep_day_sum": 440.4357506757447
+     },
+     "TSO": {
+      "eur_at_1_block_weighted": 659819.4141459871,
+      "mwh_day_weighted": 781159.174286087,
+      "mwh_rep_day_sum": 1710.7455957030236
+     }
+    },
+    "eur_at_1_block_weighted": 832691.7388932195,
+    "mwh_day_weighted": 981854.7402189437,
+    "mwh_rep_day_sum": 2151.1813463787685,
+    "row_phase": "phase_A",
+    "signed_parts": {
+     "negative_part": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": -47.36652241868171,
+        "mwh_day_weighted": -51.57595564175095,
+        "mwh_rep_day_sum": -0.11318553905052933
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": -18.730336994948736,
+        "mwh_day_weighted": -20.412310968496975,
+        "mwh_rep_day_sum": -0.04479603040284251
+       }
+      },
+      "eur_at_1_block_weighted": -66.09685941363045,
+      "mwh_day_weighted": -71.98826661024793,
+      "mwh_rep_day_sum": -0.15798156945337183
+     },
+     "net": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": 172872.3247472323,
+        "mwh_day_weighted": 200695.56593285658,
+        "mwh_rep_day_sum": 440.4357506757447
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": 659819.4141459871,
+        "mwh_day_weighted": 781159.174286087,
+        "mwh_rep_day_sum": 1710.7455957030236
+       }
+      },
+      "eur_at_1_block_weighted": 832691.7388932195,
+      "mwh_day_weighted": 981854.7402189437,
+      "mwh_rep_day_sum": 2151.1813463787685
+     },
+     "positive_part": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": 172919.691269651,
+        "mwh_day_weighted": 200747.14188849836,
+        "mwh_rep_day_sum": 440.5489362147954
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": 659838.144482982,
+        "mwh_day_weighted": 781179.5865970557,
+        "mwh_rep_day_sum": 1710.790391733426
+       }
+      },
+      "eur_at_1_block_weighted": 832757.8357526329,
+      "mwh_day_weighted": 981926.728485554,
+      "mwh_rep_day_sum": 2151.3393279482216
+     },
+     "primary": "net"
+    }
+   },
+   "nrf_passive_tie_breaker_10_r2": {
+    "arm_cost_source": "phase_A",
+    "by_agent": {
+     "DSO": {
+      "eur_at_1_block_weighted": 172432.91196807148,
+      "mwh_day_weighted": 200162.636447311,
+      "mwh_rep_day_sum": 439.26448139108584
+     },
+     "TSO": {
+      "eur_at_1_block_weighted": 659618.9270303564,
+      "mwh_day_weighted": 780884.5420462348,
+      "mwh_rep_day_sum": 1710.142007678311
+     }
+    },
+    "eur_at_1_block_weighted": 832051.8389984278,
+    "mwh_day_weighted": 981047.1784935459,
+    "mwh_rep_day_sum": 2149.406489069397,
+    "row_phase": "phase_A",
+    "signed_parts": {
+     "negative_part": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": -48.087916224916434,
+        "mwh_day_weighted": -52.36407905878508,
+        "mwh_rep_day_sum": -0.11491385319782425
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": -18.730496551763302,
+        "mwh_day_weighted": -20.412505467361846,
+        "mwh_rep_day_sum": -0.044796453226461794
+       }
+      },
+      "eur_at_1_block_weighted": -66.81841277667974,
+      "mwh_day_weighted": -72.77658452614693,
+      "mwh_rep_day_sum": -0.15971030642428605
+     },
+     "net": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": 172432.91196807148,
+        "mwh_day_weighted": 200162.636447311,
+        "mwh_rep_day_sum": 439.26448139108584
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": 659618.9270303564,
+        "mwh_day_weighted": 780884.5420462348,
+        "mwh_rep_day_sum": 1710.142007678311
+       }
+      },
+      "eur_at_1_block_weighted": 832051.8389984278,
+      "mwh_day_weighted": 981047.1784935459,
+      "mwh_rep_day_sum": 2149.406489069397
+     },
+     "positive_part": {
+      "by_agent": {
+       "DSO": {
+        "eur_at_1_block_weighted": 172480.99988429638,
+        "mwh_day_weighted": 200215.00052636972,
+        "mwh_rep_day_sum": 439.3793952442836
+       },
+       "TSO": {
+        "eur_at_1_block_weighted": 659637.6575269082,
+        "mwh_day_weighted": 780904.954551702,
+        "mwh_rep_day_sum": 1710.1868041315372
+       }
+      },
+      "eur_at_1_block_weighted": 832118.6574112047,
+      "mwh_day_weighted": 981119.9550780717,
+      "mwh_rep_day_sum": 2149.566199375821
+     },
+     "primary": "net"
+    }
+   }
+  },
+  "convention_status": "net is the primary (production definitional quantity, frozen); positive and negative parts reported beside it; the convention is pending the author (W109, TASKS.md Addendum 55)",
+  "coordinated": {
+   "previous_cycle_132_record_eur_at_1_block_weighted_reported_only": 589.1778397145646,
+   "settled_cycle_181_recomputed_from_models": {
+    "by_agent": {
+     "DSO": {
+      "eur_at_1_block_weighted": 608.6677991851257,
+      "mwh_day_weighted": 681.6614408448545,
+      "mwh_rep_day_sum": 1.4930020979937129
+     },
+     "TSO": {
+      "eur_at_1_block_weighted": -19.241862526376515,
+      "mwh_day_weighted": -21.006826875664466,
+      "mwh_rep_day_sum": -0.04609955859345323
+     }
+    },
+    "eur_at_1_block_weighted": 589.4259366587492,
+    "mwh_day_weighted": 660.65461396919,
+    "mwh_rep_day_sum": 1.4469025394002597
+   },
+   "settled_cycle_181_record_eur_at_1_block_weighted": 589.425936658749,
+   "settled_cycle_181_signed_parts_from_models": {
+    "negative_part": {
+     "by_agent": {
+      "DSO": {
+       "eur_at_1_block_weighted": -42.67056179555638,
+       "mwh_day_weighted": -46.46500918143206,
+       "mwh_rep_day_sum": -0.10199135620900607
+      },
+      "TSO": {
+       "eur_at_1_block_weighted": -19.241862526376515,
+       "mwh_day_weighted": -21.006826875664466,
+       "mwh_rep_day_sum": -0.04609955859345323
+      }
+     },
+     "eur_at_1_block_weighted": -61.912424321932896,
+     "mwh_day_weighted": -67.47183605709652,
+     "mwh_rep_day_sum": -0.14809091480245928
+    },
+    "net": {
+     "by_agent": {
+      "DSO": {
+       "eur_at_1_block_weighted": 608.6677991851257,
+       "mwh_day_weighted": 681.6614408448545,
+       "mwh_rep_day_sum": 1.4930020979937129
+      },
+      "TSO": {
+       "eur_at_1_block_weighted": -19.241862526376515,
+       "mwh_day_weighted": -21.006826875664466,
+       "mwh_rep_day_sum": -0.04609955859345323
+      }
+     },
+     "eur_at_1_block_weighted": 589.4259366587492,
+     "mwh_day_weighted": 660.65461396919,
+     "mwh_rep_day_sum": 1.4469025394002597
+    },
+    "positive_part": {
+     "by_agent": {
+      "DSO": {
+       "eur_at_1_block_weighted": 651.3383609806822,
+       "mwh_day_weighted": 728.1264500262866,
+       "mwh_rep_day_sum": 1.5949934542027189
+      },
+      "TSO": {
+       "eur_at_1_block_weighted": 0.0,
+       "mwh_day_weighted": 0.0,
+       "mwh_rep_day_sum": 0.0
+      }
+     },
+     "eur_at_1_block_weighted": 651.3383609806822,
+     "mwh_day_weighted": 728.1264500262866,
+     "mwh_rep_day_sum": 1.5949934542027189
+    },
+    "primary": "net"
+   }
+  },
+  "signed_parts_definition": "W111 (Addendum 55; W109 f6e3533f: the negative entries are the model, not the helper). Per entry (curtaillable generator g, scenarios s_m/s_o, period p) c = baseMVA x (pg_avail[g,s_o,p] - pg[g,s_m,s_o,p]) [MWh per representative day], the exact term of model_construction_helpers.gen_curtailment_definitional_value (weight 1; zero when params.rg_curt is off); block value = sum over scenarios of omega x sum over entries. NET = production's definitional quantity, taken from uncoordinated_benchmark.curtailment_report UNCHANGED (the primary figure; frozen); POSITIVE PART = entries with c > 0 only; NEGATIVE PART = entries with c < 0 only; each on the same weightings as the net (EUR at 1 EUR/MWh block-weighted = years x days x discount; raw MWh day-weighted = years x days, undiscounted; and the plain sum over representative days), TSO and DSO separately. The helper, the model and Q are unchanged; which figure the manuscript uses is pending the author",
+  "weighting": "eur_at_1_block_weighted = res_curtailment_definitional_at_weight_1 convention (EUR at 1 EUR/MWh, block-weighted: years x days x discount), i.e. weighted MWh-equivalent; raw: mwh_day_weighted (years x days, undiscounted) and mwh_rep_day_sum"
+ },
+ "failed_runs": [],
+ "frozen_benchmark_spec": {
+  "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/frozen_s53_benchmark_spec_v5_bca69f97.json",
+  "sha256": "bca69f97a6e60e92e3a7dc51d6bdc9f71fe463c50a840952d9d6fc78bac7d2c6",
+  "version": 5
+ },
+ "git_head": "5d9230829e16fcb9504e6eb95ed2537b0f8d8f85",
+ "instance": {
+  "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+  "candidate_key_declared": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+  "candidate_key_matches": true,
+  "canonical_candidate": {
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.0,
+     0.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "label": "x0",
+  "problem": "SRP1"
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "lambda_look_prediction_usable_v2": true,
+ "lambda_look_summary_v2": {
+  "by_node": {
+   "5": {
+    "cflex_lt_pi": 272,
+    "coordination_proper_hours": 271,
+    "lambda_neq_pi": 286,
+    "rows": 288
+   },
+   "7": {
+    "cflex_lt_pi": 272,
+    "coordination_proper_hours": 264,
+    "lambda_neq_pi": 277,
+    "rows": 288
+   },
+   "9": {
+    "cflex_lt_pi": 272,
+    "coordination_proper_hours": 272,
+    "lambda_neq_pi": 285,
+    "rows": 288
+   }
+  },
+  "coordination_proper_hours_by_node_hour_of_day": {
+   "5|1": 12,
+   "5|10": 11,
+   "5|11": 12,
+   "5|12": 11,
+   "5|13": 9,
+   "5|14": 8,
+   "5|15": 10,
+   "5|16": 9,
+   "5|17": 10,
+   "5|18": 12,
+   "5|19": 12,
+   "5|2": 12,
+   "5|20": 12,
+   "5|21": 12,
+   "5|22": 12,
+   "5|23": 12,
+   "5|24": 12,
+   "5|3": 12,
+   "5|4": 12,
+   "5|5": 12,
+   "5|6": 12,
+   "5|7": 12,
+   "5|8": 12,
+   "5|9": 11,
+   "7|1": 10,
+   "7|10": 11,
+   "7|11": 12,
+   "7|12": 11,
+   "7|13": 9,
+   "7|14": 8,
+   "7|15": 10,
+   "7|16": 9,
+   "7|17": 10,
+   "7|18": 11,
+   "7|19": 12,
+   "7|2": 12,
+   "7|20": 11,
+   "7|21": 12,
+   "7|22": 12,
+   "7|23": 12,
+   "7|24": 12,
+   "7|3": 11,
+   "7|4": 12,
+   "7|5": 11,
+   "7|6": 11,
+   "7|7": 12,
+   "7|8": 11,
+   "7|9": 12,
+   "9|1": 12,
+   "9|10": 11,
+   "9|11": 12,
+   "9|12": 11,
+   "9|13": 9,
+   "9|14": 8,
+   "9|15": 10,
+   "9|16": 9,
+   "9|17": 10,
+   "9|18": 12,
+   "9|19": 12,
+   "9|2": 12,
+   "9|20": 12,
+   "9|21": 12,
+   "9|22": 12,
+   "9|23": 12,
+   "9|24": 12,
+   "9|3": 12,
+   "9|4": 12,
+   "9|5": 12,
+   "9|6": 12,
+   "9|7": 12,
+   "9|8": 12,
+   "9|9": 12
+  },
+  "coordination_proper_hours_by_node_year": {
+   "5|2025": 89,
+   "5|2030": 91,
+   "5|2035": 91,
+   "7|2025": 86,
+   "7|2030": 90,
+   "7|2035": 88,
+   "9|2025": 90,
+   "9|2030": 91,
+   "9|2035": 91
+  },
+  "coordination_proper_hours_day_weighted_by_node": {
+   "5": 123610.0,
+   "7": 120425.0,
+   "9": 124065.0
+  },
+  "n_coordination_proper_hours": 807,
+  "n_rows": 864,
+  "n_rows_sources_disagree_on_neq": 0
+ },
+ "missing_inputs": [],
+ "module_sha256": {
+  "definitions.py": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "helper_functions.py": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+  "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+  "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+  "p515_s53_w114_passive_infeasibility.py": "16d5a9ed81762c621dad94e3f154dfafad0fb47b5500110e3ffeda885d8d265c",
+  "p515_s53_w116_benchmark_nrf.py": "5dd3214ca7d65380cd8138d05a20949336893790da27166a22801d8b6ca65e43",
+  "p515_s53_w93_uncoordinated_benchmark.py": "342b89cea9058e1b26453fb61bf1830ce7dd9186a3d96f3cf4103f5668f2b071",
+  "p515_s53_w93_uncoordinated_benchmark_checks.py": "c34e14301b518bdd814ca356c2809e4003f32d37ecf2d7ce616b3ac5b1d3e43f",
+  "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+  "p58_rescale.py": "2c9d4f2a7125d4103da0d9cc7bba6d600bf97a3f03805d32955738d71b537cf0",
+  "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+  "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0",
+  "uncoordinated_benchmark.py": "45d1c09db9b687040d57c8b01c1d092f3b53aa120f0e3229d998c435d261e31a"
+ },
+ "nlp_solver_path": {
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "source": ".env"
+ },
+ "no_reverse_flow_definition": {
+  "arm_economies": {
+   "passive": "flexibility fixed at 0; decision tie-breaker 1 EUR/MWh (minimum curtailment the sole term); value-independence at 0.1 and 10",
+   "price_taker": "production local pricing (settlement weight 1), decision tie-breaker 0, under the bound"
+  },
+  "authority": "Addendum 57 Decision 1(b)",
+  "bounded_quantity": "pg_adn[s_m, s_o, p], production's per-scenario DSO interface expression (network.py L444; model_construction_helpers.interface_pf_p_distribution_def L1287-1297 = pg[ref_gen, s_m, s_o, p] - the scenario-free shared-ESS net power at the reference bus); a ROW because pg_adn is an Expression; expected_interface_pf_p[p] = E_s[pg_adn] (the Var the TSO arm is fixed to) inherits the bound",
+  "consistency_reevaluation": "deactivated with the voltage / thermal limit rows (the reference generator is freed there) and evaluated as a hard DN limit (kind no_reverse_flow, excess p.u., under hard_tol) -- a violation at the TN's actual voltage triggers the declared sequential pass, in which the DSO re-solves WITH the rows at that voltage",
+  "not_in": "the coordinated path, production, and the TSO arm (unchanged: interface P/Q fixed, voltages bounded)",
+  "row": "uncoordinated_benchmark.NO_REVERSE_FLOW_ROW = uncoord_no_reverse_flow[s_m, s_o, p]: pg_adn[s_m, s_o, p] >= 0",
+  "sign": "pg_adn > 0 = power from the TN INTO the DN (import); < 0 = reverse flow (export). Source: the DN reference generator is the upstream grid and a generator injects into its bus (compute_node_gen L1425-1433, load convention compute_node_load L1402-1419); the DSO settlement pays +pi_t baseMVA pg_adn (interface_energy_settlement L1729-1756, the cost of importing); the TSO copy pc_adn is the TN load at the ADN bus (interface_pf_p_transmission_def L1241-1262) and the consensus pairs E[pg_adn] with E[pc_adn] (dn_/tn_interface_expected_pf_p_def L2416-2424 / L2473-2475). Checked from the Q181 models by the W116 zero-solve checks (TN energy balance: sum pg_TN - sum pc_adn = TN losses >= 0 every hour)",
+  "where": "every DSO arm block (3 DNs x 3 years x 4 days), every market / operation scenario, every period; 24 rows per block at SRP1; declared per block in the build record and counted by the structural check"
+ },
+ "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (production _get_operational_recourse_components); every block priced for the evaluation with production's ADMM-subproblem pricing and the curtailment tie-breaker at the EVALUATION value 0; salvage reported separately",
+ "passive_tie_breaker_value_independence_nrf": {
+  "nrf_passive_tie_breaker_0p1_r2": {
+   "dso_tie_breaker": 0.1,
+   "interface_schedule_max_abs_difference_vs_1": {
+    "p_mw": 7.338433814396694e-06,
+    "q_mvar": 88.89776927279992,
+    "v_kv": 1.992982561205281e-06
+   },
+   "q_difference_vs_1_eur": -25725.083622694016
+  },
+  "nrf_passive_tie_breaker_10_r2": {
+   "dso_tie_breaker": 10.0,
+   "interface_schedule_max_abs_difference_vs_1": {
+    "p_mw": 3.667316093469708e-06,
+    "q_mvar": 88.8978185717572,
+    "v_kv": 3.3682905495879822e-06
+   },
+   "q_difference_vs_1_eur": -18437.772189736366
+  }
+ },
+ "per_arm_nrf": {
+  "passive": {
+   "arm_cost_source_by_start": {
+    "cold": "phase_C_sequential_pass",
+    "perturbed": "phase_C_sequential_pass",
+    "warm_from_certified": "phase_C_sequential_pass"
+   },
+   "best_start": "perturbed",
+   "multimodality_band_eur": 25804.990407824516,
+   "n_starts": 3,
+   "q_best": 895049918.4715933,
+   "q_by_start": {
+    "cold": 895075723.4620011,
+    "perturbed": 895049918.4715933,
+    "warm_from_certified": 895049918.5052519
+   }
+  },
+  "price_taker": {
+   "arm_cost_source_by_start": {
+    "cold": "phase_C_sequential_pass",
+    "perturbed": "phase_C_sequential_pass",
+    "warm_from_certified": "phase_C_sequential_pass"
+   },
+   "best_start": "warm_from_certified",
+   "multimodality_band_eur": 0.004241466522216797,
+   "n_starts": 3,
+   "q_best": 744770310.5871649,
+   "q_by_start": {
+    "cold": 744770310.5914063,
+    "perturbed": 744770310.5913205,
+    "warm_from_certified": 744770310.5871649
+   }
+  }
+ },
+ "perturbation": {
+  "delta": 0.05,
+  "seed": 20260926
+ },
+ "predictions_scored": {
+  "nrf_arms_feasible_at_every_tso_block": {
+   "nrf_runs_failed": [],
+   "outcome": "held",
+   "prediction": {
+    "planner_prediction": "the NRF arms are feasible at every TSO block, because NRF removes the export mechanism W114/W115 found (Planner task W116)",
+    "scored_by": "report_v3 predictions_scored: held iff no NRF arm or variant run fails",
+    "worker_expectation": "agree. With pg_adn >= 0 at every interface the TN load at each ADN bus is non-negative; the TN has no other load, its generators floor at 0 MW with >= 836 MW headroom (W115), so the TN P balance has a solution at any non-negative import; W114/W115 found zero slack on Q, voltage and thermal rows at the failing blocks (only the P balance bound). Residual risk, not seen in any record: an hour in which all three DNs sit at exactly zero import leaves the TN generating only its losses, with voltage support from generator Q alone -- expected feasible (Pmin 0)"
+   }
+  },
+  "nrf_claim_sign": {
+   "claim": {
+    "benefit_eur": 90896608.39950395,
+    "determinate": true,
+    "verdict": "coordination beats the best NRF arrangement"
+   },
+   "prediction": {
+    "planner_prediction": null,
+    "planner_prediction_note": "no Planner-recorded sign or magnitude found (searched: PLANNER_BRIEF_2026-09-13.md Addendum 57, TASKS.md Addendum 57 order, the W116 task text, P5_15_ADDENDUM54_56_CONSOLIDATED_NOTE.md)",
+    "worker_expectation": {
+     "magnitude": "not predicted",
+     "passive_minus_price_taker_sign": "not predicted (Addendum 49 Ruling 1: not guaranteed)",
+     "reasoning": "(i) each NRF arm point satisfies the interface P/Q consensus by construction (TSO fixed to the DSO schedule) and adds the NRF restriction, so up to the interface-voltage mismatch the consistency step measures it is a feasible point of the coordinated problem, and at the common pricing its Q bounds the coordinated optimum from above; (ii) the coordinated cell is a settled local optimum -- a negative sign needs an arm to reach a better basin, which the three-start band would expose; (iii) mechanism: at 2035 Summer h11-16 the coordinated DSOs import 166-209 MW where the passive DNs export (W114), i.e. coordination moves DN demand into RES-covered TN hours, which neither NRF arm can do (passive: no flexibility; price-taker: prices pi_t, and lambda_t != pi_t on 848/864 rows, W113)",
+     "sign": "positive: min(passive_NRF, price_taker_NRF) - Q181 > 0",
+     "verdict": "coordination beats the best NRF arrangement, determinate (above the larger of the best NRF arm band and 0.011 % x Q181 = 71,926 EUR)"
+    }
+   }
+  },
+  "planner_predictions_w119": {
+   "label": "Planner prediction (W119)",
+   "nrf_arms_feasible_at_every_tso_block": {
+    "nrf_runs_failed": [],
+    "outcome": "held",
+    "prediction": {
+     "carried_from": "v3 predictions_recorded_before_any_run_v3.nrf_arms_feasible_at_every_tso_block.planner_prediction (unchanged)",
+     "label": "Planner prediction (W119)",
+     "prediction": "the NRF arms are feasible at every TSO block, because NRF removes the export mechanism W114/W115 found (Planner task W116)",
+     "scored_by": "report_v3 predictions_scored: held iff no NRF arm or variant run fails"
+    }
+   },
+   "nrf_claim": {
+    "benefit_eur": 90896608.39950395,
+    "determinate": true,
+    "outcome": "held",
+    "prediction": {
+     "label": "Planner prediction (W119)",
+     "magnitude": "not predicted",
+     "scored_by": "report_v3.predictions_scored.planner_predictions_w119.nrf_claim: held iff claim.benefit_eur > 0; the verdict and determinacy stated beside it",
+     "sign": "positive",
+     "statement": "the coordinated Q181 is below min(passive_NRF, price_taker_NRF): benefit = min(Q_passive_NRF, Q_price_taker_NRF) - Q181 > 0"
+    },
+    "verdict": "coordination beats the best NRF arrangement"
+   },
+   "sweep_n_of_12_unconstrained_arms_cold": {
+    "passive": {
+     "certain_block_failing": true,
+     "failing_blocks": [
+      "TSO|-|2035|Summer"
+     ],
+     "h": 6,
+     "n": 1,
+     "n_in_range": true,
+     "outcome": "held",
+     "prediction": {
+      "certain_block": "TSO|-|2035|Summer",
+      "n_range": [
+       1,
+       4
+      ],
+      "of": 12,
+      "statement": "passive n in [1, 4] of 12 blocks (>= 1 certain: 2035 Summer)"
+     }
+    },
+    "price_taker": {
+     "certain_block_failing": true,
+     "failing_blocks": [
+      "TSO|-|2025|Spring",
+      "TSO|-|2025|Summer",
+      "TSO|-|2030|Spring",
+      "TSO|-|2030|Summer",
+      "TSO|-|2030|Winter",
+      "TSO|-|2035|Spring",
+      "TSO|-|2035|Summer",
+      "TSO|-|2035|Autumn"
+     ],
+     "h": 25,
+     "n": 8,
+     "n_in_range": true,
+     "outcome": "held",
+     "prediction": {
+      "certain_block": "TSO|-|2025|Spring",
+      "n_range": [
+       2,
+       8
+      ],
+      "of": 12,
+      "statement": "price-taker n in [2, 8] of 12 blocks (>= 1 certain: 2025 Spring)"
+     }
+    }
+   }
+  },
+  "scoring_note": "outcomes stated beside the frozen predictions; the Planner scores the reasoned ones",
+  "sweep_n_of_12": {
+   "observed": {
+    "passive": {
+     "failing_blocks": [
+      "TSO|-|2035|Summer"
+     ],
+     "h": 6,
+     "n": 1
+    },
+    "price_taker": {
+     "failing_blocks": [
+      "TSO|-|2025|Spring",
+      "TSO|-|2025|Summer",
+      "TSO|-|2030|Spring",
+      "TSO|-|2030|Summer",
+      "TSO|-|2030|Winter",
+      "TSO|-|2035|Spring",
+      "TSO|-|2035|Summer",
+      "TSO|-|2035|Autumn"
+     ],
+     "h": 25,
+     "n": 8
+    }
+   },
+   "prediction": {
+    "expected_launch_counts_from_w113_records": {
+     "passive": {
+      "dso_attempts_recorded": 36,
+      "dso_blocks_recorded": 36,
+      "e3_launches_known": 1,
+      "expected_range": [
+       51,
+       57
+      ],
+      "failing_blocks_recorded": [
+       "TSO|-|2035|Summer"
+      ],
+      "tso_attempts_recorded": 12,
+      "tso_blocks_after_first_failure_unmeasured": 2,
+      "tso_blocks_recorded": 10
+     },
+     "price_taker": {
+      "dso_attempts_recorded": 36,
+      "dso_blocks_recorded": 36,
+      "e3_launches_known": 1,
+      "expected_range": [
+       51,
+       84
+      ],
+      "failing_blocks_recorded": [
+       "TSO|-|2025|Spring"
+      ],
+      "tso_attempts_recorded": 3,
+      "tso_blocks_after_first_failure_unmeasured": 11,
+      "tso_blocks_recorded": 1
+     }
+    },
+    "planner_prediction": null,
+    "planner_prediction_note": "no Planner-recorded n / 12 found (searched: PLANNER_BRIEF_2026-09-13.md Addendum 57, TASKS.md Addendum 57 order, the W116 task text, P5_15_ADDENDUM54_56_CONSOLIDATED_NOTE.md)",
+    "worker_expectation": {
+     "passive": {
+      "central": 1,
+      "h_central": 6,
+      "known_from_records": "W113 cold: TSO 2025 x 4, 2030 x 4 and 2035 Spring solved (accepted); 2035 Summer not, in hours 11-16 (W114 E3: 18 non-zero interface-P slacks = 3 nodes x 6 hours); 2035 Autumn and Winter never solved",
+      "n_range": [
+       1,
+       3
+      ],
+      "reasoning": "the passive export is the midday PV surplus of the 2035 DNs with flexibility fixed at 0; Spring 2035 was accepted, and Autumn / Winter PV is lower than Summer's, so both are expected accepted -- low confidence on Autumn"
+     },
+     "price_taker": {
+      "central": "at least 6",
+      "h_central": "not predicted",
+      "known_from_records": "W113 cold: its FIRST TSO block (2025 Spring) fails, in hours 4-7 (W115 E3: 12 non-zero interface-P slacks = 3 nodes x 4 hours); the other 11 blocks were never solved",
+      "n_range": [
+       1,
+       12
+      ],
+      "reasoning": "the price-taker exports wherever selling at pi_t beats its own flexibility cost (c_flex < pi_t in the large majority of hours, W113 lambda look); its exports are not tied to PV, so they are expected in most blocks -- low confidence"
+     }
+    }
+   }
+  }
+ },
+ "q_min_over_starts_note": "each uncoordinated arm's Q is the MINIMUM over its three starts (cold, warm_from_certified, perturbed); this is CONSERVATIVE AGAINST THE COORDINATION CLAIM: the uncoordinated side gets its best local optimum of three, while the coordinated side is one certified cell (W106: the settled cycle-181 cell d110bd1a5977df1e_x0, not re-run; W94 named the W86 cell 5cfe69a615ae3708_x0, now unwired)",
+ "report_capture_check": {
+  "absent": [],
+  "all_present": true,
+  "n_checked": 74
+ },
+ "run": "report_v3",
+ "script": "p515_s53_w116_benchmark_nrf.py",
+ "script_sha256": "5dd3214ca7d65380cd8138d05a20949336893790da27166a22801d8b6ca65e43",
+ "solve_profile_guard": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "expected": 0,
+  "verified": true,
+  "where": "report end"
+ },
+ "stage": "P5.15 Addendum 57 W116 -- uncoordinated benchmark spec v3: no-reverse-flow arms, the feasibility sweep of the unconstrained arms, the coordinated reverse-flow count; spec v4 (W119): per-block exact solve accounting of the NRF arm and tie-breaker stages; spec v5 (W121): the consistency re-evaluation admits the fixed reference voltage (setpoint bounds cleared), NRF arms and tie-breakers under _r2 run ids, the sweeps carried from W120",
+ "sweep": {
+  "sweep_passive_cold": {
+   "failing_blocks": [
+    "TSO|-|2035|Summer"
+   ],
+   "n_blocks_tn_cannot_accept": 1,
+   "n_hours_tn_cannot_accept": 6,
+   "n_hours_undetermined": 0,
+   "per_block_hours_not_accepted": {
+    "TSO|-|2025|Autumn": [],
+    "TSO|-|2025|Spring": [],
+    "TSO|-|2025|Summer": [],
+    "TSO|-|2025|Winter": [],
+    "TSO|-|2030|Autumn": [],
+    "TSO|-|2030|Spring": [],
+    "TSO|-|2030|Summer": [],
+    "TSO|-|2030|Winter": [],
+    "TSO|-|2035|Autumn": [],
+    "TSO|-|2035|Spring": [],
+    "TSO|-|2035|Summer": [
+     11,
+     12,
+     13,
+     14,
+     15,
+     16
+    ],
+    "TSO|-|2035|Winter": []
+   },
+   "solve_accounting_total": 51,
+   "statement": "without any interface rule the TN cannot accept the DNs' exchange in 1 of 12 blocks (6 hours)"
+  },
+  "sweep_price_taker_cold": {
+   "failing_blocks": [
+    "TSO|-|2025|Spring",
+    "TSO|-|2025|Summer",
+    "TSO|-|2030|Spring",
+    "TSO|-|2030|Summer",
+    "TSO|-|2030|Winter",
+    "TSO|-|2035|Spring",
+    "TSO|-|2035|Summer",
+    "TSO|-|2035|Autumn"
+   ],
+   "n_blocks_tn_cannot_accept": 8,
+   "n_hours_tn_cannot_accept": 25,
+   "n_hours_undetermined": 0,
+   "per_block_hours_not_accepted": {
+    "TSO|-|2025|Autumn": [],
+    "TSO|-|2025|Spring": [
+     4,
+     5,
+     6,
+     7
+    ],
+    "TSO|-|2025|Summer": [
+     5
+    ],
+    "TSO|-|2025|Winter": [],
+    "TSO|-|2030|Autumn": [],
+    "TSO|-|2030|Spring": [
+     4,
+     5,
+     6,
+     7,
+     22
+    ],
+    "TSO|-|2030|Summer": [
+     4,
+     5,
+     22
+    ],
+    "TSO|-|2030|Winter": [
+     18,
+     20
+    ],
+    "TSO|-|2035|Autumn": [
+     21,
+     22
+    ],
+    "TSO|-|2035|Spring": [
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "TSO|-|2035|Summer": [
+     4,
+     5
+    ],
+    "TSO|-|2035|Winter": []
+   },
+   "solve_accounting_total": 72,
+   "statement": "without any interface rule the TN cannot accept the DNs' exchange in 8 of 12 blocks (25 hours)"
+  }
+ },
+ "sweeps_read_from_w120": {
+  "sweep_passive_cold": {
+   "committed_in": "4858b3a57d041b88627b2892302acb39a8550a41",
+   "manifest": {
+    "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/sweep_passive_cold/manifest_sha256.json",
+    "sha256": "cf1c853bb5efb5286f2c3a4f115fc33d42528f13e2d34e2462b9435928ea60bd"
+   },
+   "per_solve_record": {
+    "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/sweep_passive_cold/per_solve_record.jsonl",
+    "sha256": "7706f2617270c58f3f5f5073dc2208c36f2f9d5a97a4673b2995b2e4a953ca22"
+   },
+   "result": {
+    "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/sweep_passive_cold/sweep_passive_cold.json",
+    "sha256": "e89fe20e99210e8477185f7962a15fff8e54f234e0b3207ef737231c7f730b9f"
+   }
+  },
+  "sweep_price_taker_cold": {
+   "committed_in": "4858b3a57d041b88627b2892302acb39a8550a41",
+   "manifest": {
+    "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/sweep_price_taker_cold/manifest_sha256.json",
+    "sha256": "d9128db8be8eb9601cef38d228c261a697ed4f855db71dc2ec2472b4ab13c782"
+   },
+   "per_solve_record": {
+    "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/sweep_price_taker_cold/per_solve_record.jsonl",
+    "sha256": "8e9dde57aeffb56c7776d5ecaea1a0369f43012ab37d8be6265bcfbfadb171d2"
+   },
+   "result": {
+    "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/sweep_price_taker_cold/sweep_price_taker_cold.json",
+    "sha256": "d84d3237fdeb5627e1df2f75599beb4c60456b1fcd2ab4bde66dd47d768bf785"
+   }
+  }
+ },
+ "tie_breaker": {
+  "authority": "Addendum 49 clarification 2026-09-26",
+  "decision": {
+   "passive_dso": 1.0,
+   "price_taker_dso": 0.0,
+   "tso": 0.0
+  },
+  "evaluation": 0.0,
+  "passive_value_independence_variants": [
+   0.1,
+   10.0
+  ]
+ },
+ "tolerances": {
+  "consistency": {
+   "hard_tol_pu2": 1e-06,
+   "soft_excess_tol_pu2": 1e-06,
+   "thermal_tol_pu2": 1e-06
+  },
+  "reverse_flow_material_tol_pu": 1e-06,
+  "sweep_accept_threshold_pu": 1e-06
+ },
+ "tso_coupling_check_v2": {
+  "fixed_minus_penalty_tn_cost_weighted": -9.878473699092865,
+  "tn_cost_weighted_totals": {
+   "certified_coordinated": 445665710.71273184,
+   "fixed_interface": 445666116.86399734,
+   "tracking_penalty": 445666126.74247104
+  }
+ },
+ "utc": "2026-09-28T18:34:11.204098+00:00",
+ "v2_inputs_read_only": {
+  "common_q_gate": {
+   "committed_in": "2ee7a124",
+   "path": "data/SRP1/Results/P515S53/w106_uncoordinated_settled/common_q_gate/common_q_gate.json",
+   "sha256": "8e1a60f6c7e6e4b9e421004782b031a6813930a1a615f7d8a3e5b89bd9767f5e"
+  },
+  "lambda_look": {
+   "committed_in": "2ee7a124",
+   "path": "data/SRP1/Results/P515S53/w106_uncoordinated_settled/lambda_look/lambda_look.json",
+   "sha256": "a80c473835f24d1dd6e3be183ec9dd5e2c946c185d5c43a447d67647b46f53ca"
+  },
+  "tso_coupling_check": {
+   "committed_in": "2ee7a124",
+   "path": "data/SRP1/Results/P515S53/w106_uncoordinated_settled/tso_coupling_check/tso_coupling_check.json",
+   "sha256": "bedf6d0aa22c152ee8391a58cf94406f5dab212611b0bb31f40c6a360d4ca1d5"
+  }
+ }
+}

@@ -1,0 +1,603 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 86 rulings 1-3; W183i order item (b)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 85 ruling 4 (iii), (vi)-(xi), ruling 7, ruling 9; W183g order item (c)",
+  "STEP7_SIMULATION_PLAN_2026-10-25.md sections 3, 4, 5.3, 11-13",
+  "P5_15_W183I_A_ROUTER.md (the Step-7 hooks module 9318ade3, the patched harness d9a944f2)"
+ ],
+ "bar_window_cycles": 10,
+ "campaign_id": "s55_step7_e2_unit_1x_rho2p0",
+ "candidates": [
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "13145d7ed63e9f2d_e2_unit_1x_rho2p0",
+   "eval_key": "13145d7ed63e9f2d092a73a4d1317065f0d5e7cac60ba031363eb1aa8acbb0ae",
+   "key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "label": "e2_unit_1x_rho2p0",
+   "overrides": {},
+   "post_certification": {
+    "hull_polish": false,
+    "persist_certified_models": true,
+    "reference": null
+   },
+   "rho0_scale": 2.0,
+   "rho0_scale_label": "EVALUATION OPTION \u2014 rho0 \u00d7 s (S39 rho0 scaled on every channel and the ESSO)",
+   "settling_resettle": {
+    "N_old": null,
+    "abort_on_replay_divergence": false,
+    "arm": "A",
+    "cap_rule": {
+     "after_first_k0": 109,
+     "ceiling": 300,
+     "formula": "min(k0_run + 109, ceiling) (k0_run: the first residual pass under the version-2 definition)",
+     "kind": "dynamic"
+    },
+    "captures": {
+     "ageing_trajectory_terminal": true,
+     "attempt_tier_and_final_metrics": true,
+     "boyd_full": true,
+     "ess_schedule_movement": true,
+     "exit_clean_by_block": true,
+     "ipopt_exit_by_block": true,
+     "q_decomposition": true,
+     "soh_floor_sidecar": true,
+     "t_sum": true
+    },
+    "cell": "e2_unit_1x_rho2p0",
+    "claim_group": "step7_E2",
+    "expected_blocks": {
+     "dso": 36,
+     "esso": 3,
+     "tso": 12
+    },
+    "first_residual_pass_expected": null,
+    "flex_price_multiplier_expected": null,
+    "floor_row_lower_expected": 0.7,
+    "gate": "none_first_evaluation",
+    "holds_after": "the run first residual pass k0_run (version-2 definition): AA off, tight tail on, rho frozen for every later cycle",
+    "item": "E2",
+    "label": "SRP1 STEP-7 CERTIFIED EVALUATIONS (W183i, Addenda 85-86) -- current production configuration (C2 ageing file with minimum SoH 0.70, tight tail; no model variant: Step-7 arm A by absence); E3 (C_NRF: x = 0 at the baseline price with the no-reverse-flow option) and E2 stage 1 ({x = 0, the node-7 reference unit} x {1x, 2x} x {rho0 x 0.5, x 2.0}), each option keyed and labelled; ungated first evaluations; the certifying regime held after the run's first residual pass (AA off, tight tail on, rho frozen); settling rule v6 until it certifies or the cap; W105 captures, t_sum, the IPOPT exit, attempt tier and final metrics of every block",
+    "model_variant": null,
+    "nrf_option_expected": null,
+    "original_lapses_after_k0": null,
+    "record_all_blocks": true,
+    "replay_reference": null,
+    "rho0_scale_expected": 2.0,
+    "schema": "p515_s55_step7_settling_resettle_v1",
+    "settling_rule": {
+     "class": "settling_criterion_v6.SettlingRuleV6",
+     "clean": {
+      "factor": 10.0,
+      "metric_table": {
+       "complementarity": {
+        "column": "unscaled",
+        "ipopt_meaning": "max-norm of the unscaled complementarity; termination requires <= compl_inf_tol",
+        "log_line": "Complementarity",
+        "option": "compl_inf_tol"
+       },
+       "constraint_violation": {
+        "column": "unscaled",
+        "ipopt_meaning": "max-norm of the unscaled constraint violation; termination requires <= constr_viol_tol",
+        "log_line": "Constraint violation",
+        "option": "constr_viol_tol"
+       },
+       "dual_infeasibility": {
+        "column": "unscaled",
+        "ipopt_meaning": "max-norm of the unscaled dual infeasibility; termination requires <= dual_inf_tol",
+        "log_line": "Dual infeasibility",
+        "option": "dual_inf_tol"
+       },
+       "overall_nlp_error": {
+        "column": "scaled",
+        "ipopt_meaning": "the (scaled) NLP error; successful termination requires it <= tol",
+        "log_line": "Overall NLP error",
+        "option": "tol"
+       }
+      },
+      "rule": "Optimal on any attempt tier, or Acceptable on the primary attempt with every metric <= factor x tolerance",
+      "tolerances": {
+       "esso": {
+        "compl_inf_tol": 0.0001,
+        "constr_viol_tol": 0.0001,
+        "dual_inf_tol": 1.0,
+        "tol": 1e-10
+       },
+       "network": {
+        "compl_inf_tol": 1e-06,
+        "constr_viol_tol": 0.0001,
+        "dual_inf_tol": 1.0,
+        "tol": 1e-05
+       }
+      }
+     },
+     "drift_window": 25,
+     "eps0": 45.39068275,
+     "gap_bound": 2269.5341375000003,
+     "k_excl": 3,
+     "l_mono": 60,
+     "module": "settling_criterion_v6",
+     "n_and_dynamic_cap_keyed_on": "the first residual pass under the version-2 definition",
+     "p_max": 30,
+     "reading": "gamma",
+     "reset_on_non_clean": false,
+     "retry_tier": null,
+     "sub_test_reads": "enumerated in settling_criterion_v6.SUB_TEST_READS; out-of-window reads recorded",
+     "swing_floor": {
+      "F": 453.9068275000001,
+      "carried_by": "data/SRP1/Results/P515S53/w142_resettle_v6/floor_replay/w142_floor_replay.json",
+      "carries": [
+       "A_growth_test_floor",
+       "B_turning_point_floor"
+      ],
+      "formula": "TAU / 10 (Addendum 61 ruling 1)",
+      "growth_test_floor_A": 453.9068275000001,
+      "turning_point_floor_B": 453.9068275000001
+     },
+     "tau": 4539.0682750000005,
+     "version": 6,
+     "veto": "a branch verdict is vetoed at k while a NON-CLEAN cycle lies in its certifying window: oscillatory [k - W + 1, k], monotone [k - L + 1, k]; state unchanged",
+     "veto_reason": "certification_vetoed_non_clean",
+     "w_factor": 1.1,
+     "w_min": 20,
+     "window": "a"
+    }
+   },
+   "working_dir_ids": {
+    "precheck": "p515s44_s55_step7_e2_unit_1x_rho2p0_13145d7ed63e9f2d_precheck",
+    "run": "p515s44_s55_step7_e2_unit_1x_rho2p0_13145d7ed63e9f2d_run"
+   }
+  }
+ ],
+ "cap": 300,
+ "concurrency": 1,
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "convergence_depth_tail": {
+   "compl_inf_tol": 1e-06,
+   "enabled": true
+  },
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ess_params_file": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "full_diagnostics_in_rows": true,
+  "name": "STEP-7 E2 (W183i (b), Addenda 85-86) -- the current production configuration as the W142 extension v6 declares it: the case file (AA keep_memory declared), the ESS ageing baseline BASELINE (C2 + phi_cal 0.985 + soh_min 0.70) declared (minimum SoH 0.70, NOT overridden), the convergence-depth tight tail DECLARED ENABLED (compl_inf_tol 1e-6)",
+  "note": "E2 stage 1: {x = 0, the node-7 reference unit} x {1x, 2x} x {rho0 x 0.5, x 2.0}, certified protocol (Addendum 85 ruling 4 (ix); all eight cells, Addendum 86 ruling 3 (i)); the entry adds the Step-7 settling_resettle declaration (keyed) and persist_certified_models; concurrency 1",
+  "overrides": {}
+ },
+ "extra": {
+  "campaign_script": "p515_s55_step7_launcher.py",
+  "campaign_script_sha256": "3b990d19bbde8e9fb6bf75d2e5447c55116d4a3d4d21c174e53776dffc561757",
+  "cell": "e2_unit_1x_rho2p0",
+  "cell_order": [
+   "e2_x0_1x_rho0p5",
+   "e2_unit_1x_rho0p5",
+   "e2_x0_1x_rho2p0",
+   "e2_unit_1x_rho2p0",
+   "e2_x0_2x_rho0p5",
+   "e2_unit_2x_rho0p5",
+   "e2_x0_2x_rho2p0",
+   "e2_unit_2x_rho2p0"
+  ],
+  "dry_run_scratch_freeze": false,
+  "expected_eval_key": "13145d7ed63e9f2d092a73a4d1317065f0d5e7cac60ba031363eb1aa8acbb0ae",
+  "hooks_module": {
+   "path": "p515_s55_step7_resettle_hooks.py",
+   "sha256": "9318ade3e6d0d5fec25d0c276c4d82fba5bb163c7da61ec10ee6f49aaf2fa1d2"
+  },
+  "memory_preflight_at_freeze_non_gating": {
+   "available_gib": 16.8931884765625,
+   "concurrency": 1,
+   "hw_memsize_gib": 32.0,
+   "page_size": 16384,
+   "pages": {
+    "Anonymous pages": 805752,
+    "Pages free": 4048,
+    "Pages inactive": 942574,
+    "Pages occupied by compressor": 47155,
+    "Pages wired down": 137133
+   },
+   "pass": true,
+   "per_slot_gib": 2.75,
+   "required_gib": 2.75,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x 2.75 GiB (the S47 launcher rule)",
+   "utc": "2026-10-26T09:28:27.601710+00:00"
+  },
+  "model": "A",
+  "objective_convention": "Q = certified gross_operational_cost, contracted interface settlement EXCLUDED (Addendum 83 ruling 2); salvage reported separately; net = gross - terminal salvage",
+  "phase": "e2",
+  "phase_root": "data/SRP1/Results/P515S55/e2_rho",
+  "phase_text": "E2 stage 1: {x = 0, the node-7 reference unit} x {1x, 2x} x {rho0 x 0.5, x 2.0}, certified protocol (Addendum 85 ruling 4 (ix); all eight cells, Addendum 86 ruling 3 (i))",
+  "pins": {
+   "committed_records": {
+    "benchmark_report_v3": {
+     "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/report_v3/report_v3.json",
+     "sha256": "bf6dbf7247a922020c58e7b9502f63539c0bbf048447c3e33bbbf202c152694a"
+    },
+    "c_open_component_levels": {
+     "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/component_levels_terminal.json",
+     "sha256": "033c1e7eac919969c0cdfbfbb8969484b49b2e83b09a36cd171e7c3068a3a3d1"
+    },
+    "c_open_evaluation_record": {
+     "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/evaluation_record.json",
+     "sha256": "c08fa4335c7e266d6d61439fe36d28d56cc7ead31b4956d0f2c6d1fe2b0e8956"
+    },
+    "price_taker_best_arm": {
+     "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_price_taker_warm_from_certified_r2/nrf_arm_price_taker_warm_from_certified_r2.json",
+     "sha256": "b0362c511c8c490bc4f90f8680c62bd6cdf03ab20cf6f19587e65c703ab87c2b"
+    },
+    "step6_tables": {
+     "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+     "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+    },
+    "w182f_records": {
+     "path": "data/SRP1/Results/P515S53/w182f_records/w182f_records.json",
+     "sha256": "405c79c9e146600421a76443692fb23eb69d0d35d90358de14c899d66ddda085"
+    },
+    "w183c_nrf_gates": {
+     "path": "data/SRP1/Results/P515S55/w183c_nrf_gates/w183c_nrf_gates.json",
+     "sha256": "c4747232e3e0e9de87f5588defa6e9f19fa8cdcda51601ff340b61d8b239899a"
+    },
+    "w183f_arm_g": {
+     "path": "data/SRP1/Results/P515S55/w183f_srp1_bitwise_gate/arm/g_s39_D.json",
+     "sha256": "a147a31392e8e4bde56ff582b37448a7fa96d5cc399eb37e5dcab08b592d6318"
+    },
+    "w183f_arm_per_cycle": {
+     "path": "data/SRP1/Results/P515S55/w183f_srp1_bitwise_gate/arm/per_cycle_record.jsonl",
+     "sha256": "f85069053693b1541a331cfa4ff1748c366cc50640940772ae99838aeea1db86"
+    }
+   },
+   "ext_v6_reference_spec": {
+    "path": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/campaign_spec_s53_w142_resettle_ext_v6_e_no_ageing_10f4aa7a.json",
+    "sha256": "10f4aa7a05b5022ecdd347d45aea1070dc1557237ad482e17a0ee1645846d022"
+   },
+   "g0": {
+    "artifact": {
+     "path": "data/SRP1/Results/P515S55/w183_nl_post_w183c_off/w183_nl_digest.json.gz",
+     "sha256": "ca195bd38fe2384493012dcf7127a36a8923d8a5029c2c821b5bb0f47f57ab6a"
+    },
+    "record": {
+     "path": "data/SRP1/Results/P515S55/w183d_g0/g0.json",
+     "sha256": "8cef45d684bc7e5dc8b719fd504b8e7705933597a9ba07f44349650046b2911c"
+    }
+   },
+   "git_head_at_pin": "2a62ee1d3fd4ee91b2d4fccac444b6c44babcec7",
+   "imported_repo_modules_sha256": {
+    "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+    "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+    "p515_s44_campaign_harness.py": "d9a944f220e791b82147f08d0e606126ad454b8b6b2994024f94e106798fb191",
+    "p515_s47_phase_b_record.py": "97f573e52fb574836a72dce8c61b3d5c6b8919aa509e0ffbc04a1a6473ed6c62",
+    "p515_s53_w101_settling_continuation_hooks.py": "05004cf8b475c940ef1d30a225bcad20e257f02c0d34bb5034ee4975d6625f6b",
+    "p515_s53_w105_settling_extension_hooks.py": "1ff61ce96dc25e4ccac3b864c834c54edf2d382525bddd9adce9af71bba84f05",
+    "p515_s53_w118_resettle_hooks.py": "081066cbb4e651517c9dedbb6a51a96d85305fa4710c50d7e9dc67fdc3f06dd7",
+    "p515_s53_w132_resettle_v3_hooks.py": "f0749183b990b5be8afbed26b89da75b7a7e8df45ca46fcef15165ba94b6f9fe",
+    "p515_s53_w135_resettle_ext_hooks.py": "a31ec720d10831ab74a965189b6e3bf04fea8b5c0cc2e654d7bd1a9f0dd8cf29",
+    "p515_s53_w137_resettle_v4_hooks.py": "dd53352897020a51f250e82c5ac90728ce940c507c1baead4d7a96c7e9a42dfc",
+    "p515_s53_w139_resettle_v5_hooks.py": "a46ad444930f66489e456cc2f9388ed97fbbf7465b808f7cbf63087761021576",
+    "p515_s53_w142_resettle_ext_v6_hooks.py": "a0fe14d3c7f532d113af1eff9354502430b14f73374cee22009c7c185eb5d963",
+    "p515_s53_w142_resettle_v6_hooks.py": "19631fb246a4fe81d7a20b3915e38b362a174656ab7403416325057c0925b38e",
+    "p515_s55_step7_launcher.py": "3b990d19bbde8e9fb6bf75d2e5447c55116d4a3d4d21c174e53776dffc561757",
+    "p515_s55_step7_resettle_hooks.py": "9318ade3e6d0d5fec25d0c276c4d82fba5bb163c7da61ec10ee6f49aaf2fa1d2",
+    "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+    "settling_criterion_v2.py": "3db13b0eb7a093f49a7ff014a3c46a5aa013b86da5e5d78c3a19daba476af59e",
+    "settling_criterion_v3.py": "0d78b9228381b9d4af3492c7712f9892d2f012d00e5023407962ff3619b5e965",
+    "settling_criterion_v4.py": "077561ceefa704a0c5512d45d17865609c6775e5ad18332a990ce3f1bb747775",
+    "settling_criterion_v5.py": "5ea29fb303c5f9ac1e6c2fcb869b7c6d044d2d8738298dee67093d70086a976f",
+    "settling_criterion_v6.py": "53f477118d51f5fd843190c0da920f1647618ef41f6a1973988653b10eb66e2d"
+   },
+   "inputs": {
+    "definition": "every tracked file under data/SRP1 outside Results/ and Diagrams/",
+    "sha256": {
+     "data/SRP1/MarketData/SRP1_market_data.xlsx": "f8da8b9a97dbe066f67af5a5f873a9a48ab4666af15020027251840e78a94578",
+     "data/SRP1/SRP1.json": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+     "data/SRP1/SRP1_params.json": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+     "data/SRP1/SharedESS/SRP1_ESS.xlsx": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+     "data/SRP1/SharedESS/SRP1_ESS_Params.json": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+     "data/SRP1/case33_1/case33_1_2025.json": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db",
+     "data/SRP1/case33_1/case33_1_2026.json": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db",
+     "data/SRP1/case33_1/case33_1_2027.json": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db",
+     "data/SRP1/case33_1/case33_1_2028.json": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db",
+     "data/SRP1/case33_1/case33_1_2029.json": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db",
+     "data/SRP1/case33_1/case33_1_2030.json": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e",
+     "data/SRP1/case33_1/case33_1_2031.json": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e",
+     "data/SRP1/case33_1/case33_1_2032.json": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e",
+     "data/SRP1/case33_1/case33_1_2033.json": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e",
+     "data/SRP1/case33_1/case33_1_2034.json": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e",
+     "data/SRP1/case33_1/case33_1_2035.json": "674b2d00809d93afc1c3443d525c899b939f357806282f735d3821bc6d094185",
+     "data/SRP1/case33_1/case33_1_2036.json": "674b2d00809d93afc1c3443d525c899b939f357806282f735d3821bc6d094185",
+     "data/SRP1/case33_1/case33_1_2037.json": "674b2d00809d93afc1c3443d525c899b939f357806282f735d3821bc6d094185",
+     "data/SRP1/case33_1/case33_1_2038.json": "674b2d00809d93afc1c3443d525c899b939f357806282f735d3821bc6d094185",
+     "data/SRP1/case33_1/case33_1_2039.json": "674b2d00809d93afc1c3443d525c899b939f357806282f735d3821bc6d094185",
+     "data/SRP1/case33_1/case33_1_2040.json": "ed84c3da5181fc07a4c1248ace5542b44a8231975ebfd6c57dc40d337b8b1779",
+     "data/SRP1/case33_1/case33_1_2045.json": "73953e2b2f4805120dba794357377e7555490449091cc6a51d85f55b57bf2e61",
+     "data/SRP1/case33_1/case33_1_operational_data.xlsx": "e4ddc6d95cfd6237bb486e2ffca9c42e0efbd30a8b211eca5357502619dccc43",
+     "data/SRP1/case33_1/case33_1_params.json": "8e9e5a536fd1ef2bca5694274a68795d1099884ef23f2134e7db7d3a58c80b8e",
+     "data/SRP1/case33_2/case33_2_2025.json": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8",
+     "data/SRP1/case33_2/case33_2_2026.json": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8",
+     "data/SRP1/case33_2/case33_2_2027.json": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8",
+     "data/SRP1/case33_2/case33_2_2028.json": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8",
+     "data/SRP1/case33_2/case33_2_2029.json": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8",
+     "data/SRP1/case33_2/case33_2_2030.json": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f",
+     "data/SRP1/case33_2/case33_2_2031.json": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f",
+     "data/SRP1/case33_2/case33_2_2032.json": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f",
+     "data/SRP1/case33_2/case33_2_2033.json": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f",
+     "data/SRP1/case33_2/case33_2_2034.json": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f",
+     "data/SRP1/case33_2/case33_2_2035.json": "6888045f33a07f33a515db369dafbca0854f0adb2bdfacdf996158b224185047",
+     "data/SRP1/case33_2/case33_2_2036.json": "6888045f33a07f33a515db369dafbca0854f0adb2bdfacdf996158b224185047",
+     "data/SRP1/case33_2/case33_2_2037.json": "6888045f33a07f33a515db369dafbca0854f0adb2bdfacdf996158b224185047",
+     "data/SRP1/case33_2/case33_2_2038.json": "6888045f33a07f33a515db369dafbca0854f0adb2bdfacdf996158b224185047",
+     "data/SRP1/case33_2/case33_2_2039.json": "6888045f33a07f33a515db369dafbca0854f0adb2bdfacdf996158b224185047",
+     "data/SRP1/case33_2/case33_2_2040.json": "fde37d6b7ccdf6471d41dbc9fd18aa0c15f7c41c54cadd6555332d37a9f2eaef",
+     "data/SRP1/case33_2/case33_2_2045.json": "566368722ec5dcebd2d74a4e966e161f483e111ff4091ac3799f693d0eae43f7",
+     "data/SRP1/case33_2/case33_2_operational_data.xlsx": "44c8893a331899b1668f5af37228eaaf3bbd7e05fa13500f9b78345a15fcd720",
+     "data/SRP1/case33_2/case33_2_params.json": "31b5fedf87b96724dc5676566fd87f1c21dc02ecfb8d2bd9fdf280a9b7be35ff",
+     "data/SRP1/case33_3/case33_3_2025.json": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af",
+     "data/SRP1/case33_3/case33_3_2026.json": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af",
+     "data/SRP1/case33_3/case33_3_2027.json": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af",
+     "data/SRP1/case33_3/case33_3_2028.json": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af",
+     "data/SRP1/case33_3/case33_3_2029.json": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af",
+     "data/SRP1/case33_3/case33_3_2030.json": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b",
+     "data/SRP1/case33_3/case33_3_2031.json": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b",
+     "data/SRP1/case33_3/case33_3_2032.json": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b",
+     "data/SRP1/case33_3/case33_3_2033.json": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b",
+     "data/SRP1/case33_3/case33_3_2034.json": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b",
+     "data/SRP1/case33_3/case33_3_2035.json": "f73ae82b1b240a8d4c41775e17cde951692e37e0f79c557e896d01f6d299da60",
+     "data/SRP1/case33_3/case33_3_2036.json": "f73ae82b1b240a8d4c41775e17cde951692e37e0f79c557e896d01f6d299da60",
+     "data/SRP1/case33_3/case33_3_2037.json": "f73ae82b1b240a8d4c41775e17cde951692e37e0f79c557e896d01f6d299da60",
+     "data/SRP1/case33_3/case33_3_2038.json": "f73ae82b1b240a8d4c41775e17cde951692e37e0f79c557e896d01f6d299da60",
+     "data/SRP1/case33_3/case33_3_2039.json": "f73ae82b1b240a8d4c41775e17cde951692e37e0f79c557e896d01f6d299da60",
+     "data/SRP1/case33_3/case33_3_2040.json": "4d662474e8aa8ea49670e3f9f23baf592864713e51b2c65f3a66bef251238413",
+     "data/SRP1/case33_3/case33_3_2045.json": "0f817788ab8a6558048f3fc81aceee59de69dca04e3ce23c2ef38c898537a289",
+     "data/SRP1/case33_3/case33_3_operational_data.xlsx": "866bcfc7afb24ee9a06277e550acc5a2d73549e81877cc7fc1480f7e5ecd8f45",
+     "data/SRP1/case33_3/case33_3_params.json": "a19bd5b9d18a26deff44dc62a351f2e6c193012c3f7075d12cade4f230760c49",
+     "data/SRP1/case9/case9_2025.json": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f",
+     "data/SRP1/case9/case9_2026.json": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f",
+     "data/SRP1/case9/case9_2027.json": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f",
+     "data/SRP1/case9/case9_2028.json": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f",
+     "data/SRP1/case9/case9_2029.json": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f",
+     "data/SRP1/case9/case9_2030.json": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d",
+     "data/SRP1/case9/case9_2031.json": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d",
+     "data/SRP1/case9/case9_2032.json": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d",
+     "data/SRP1/case9/case9_2033.json": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d",
+     "data/SRP1/case9/case9_2034.json": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d",
+     "data/SRP1/case9/case9_2035.json": "14f53b046f62a56846b4249bebaad526dd8f69c83c79efd602436a9c48c91e0b",
+     "data/SRP1/case9/case9_2036.json": "14f53b046f62a56846b4249bebaad526dd8f69c83c79efd602436a9c48c91e0b",
+     "data/SRP1/case9/case9_2037.json": "14f53b046f62a56846b4249bebaad526dd8f69c83c79efd602436a9c48c91e0b",
+     "data/SRP1/case9/case9_2038.json": "14f53b046f62a56846b4249bebaad526dd8f69c83c79efd602436a9c48c91e0b",
+     "data/SRP1/case9/case9_2039.json": "14f53b046f62a56846b4249bebaad526dd8f69c83c79efd602436a9c48c91e0b",
+     "data/SRP1/case9/case9_2040.json": "841280ca72d5e081ab188c4b58061f0b77d7f10b2e6d6d32f2cae3f5f63dcb71",
+     "data/SRP1/case9/case9_2045.json": "2f0d7d6f946f52c3f42796be8e583480e400990ebbbe1a06d6b253c025885976",
+     "data/SRP1/case9/case9_operational_data.xlsx": "5eab94aa6eb6e661554db947cc2e3ff7d761350de569f8a1f36c6c13d418d6bb",
+     "data/SRP1/case9/case9_params.json": "f3eff0502c606a9076af19969ec3705c2e6204fa4d9172a218345e986dbbf4ab"
+    }
+   },
+   "named_inputs": {
+    "case_file": {
+     "path": "data/SRP1/SRP1_params.json",
+     "sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b"
+    },
+    "cost_file": {
+     "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+     "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6"
+    },
+    "ess_params_file": {
+     "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+     "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+    },
+    "network_params_files": [
+     {
+      "path": "data/SRP1/case9/case9_params.json",
+      "sha256": "f3eff0502c606a9076af19969ec3705c2e6204fa4d9172a218345e986dbbf4ab"
+     },
+     {
+      "path": "data/SRP1/case33_1/case33_1_params.json",
+      "sha256": "8e9e5a536fd1ef2bca5694274a68795d1099884ef23f2134e7db7d3a58c80b8e"
+     },
+     {
+      "path": "data/SRP1/case33_2/case33_2_params.json",
+      "sha256": "31b5fedf87b96724dc5676566fd87f1c21dc02ecfb8d2bd9fdf280a9b7be35ff"
+     },
+     {
+      "path": "data/SRP1/case33_3/case33_3_params.json",
+      "sha256": "a19bd5b9d18a26deff44dc62a351f2e6c193012c3f7075d12cade4f230760c49"
+     }
+    ]
+   },
+   "production": {
+    "definition": "tracked root-level *.py not matching ^p\\d (the W182f / W183-0 definition)",
+    "head": "6f43479ed8ece7a4a5878942ca38952ce1cae1bc",
+    "modules_sha256": {
+     "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+     "admm_parameters.py": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+     "admm_persistent_workers.py": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+     "audit_p3_snapshots.py": "b8649c27a38a741154cb8cc3d14aa02a5ce91a883bbf50e24782237defdf6f6e",
+     "benders_parameters.py": "f74521a4aa4df1bd877b97887c207db98cb7a3b28d541840a41d21fd3c0c7cf7",
+     "branch.py": "f85525f4984ef6e29263b527652abdd1d173558410f06a1bc812f5d65d6adb79",
+     "centralized_coordination.py": "04d2b549ff6f15decae30514606dbef2cb504c687fcc37ffc0fab75867c6eba9",
+     "convex_oracle.py": "a88e255571b836e135ee015a23598c4cc4c60a96872a972ea91cf391e1d42c6f",
+     "debug.py": "9de612d4d0f00ae20460cd206a767779b516a54ec8528d68fb625f5ec44bb1f1",
+     "definitions.py": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+     "energy_storage.py": "a3a06c5d037ba000514e2e1a1138b2acd9c54c1ee728641cd5a2ec1f965aec11",
+     "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+     "generator.py": "4727ff02f7847690cd7a9723d997f88e80f98174b21511881123a038868cb72b",
+     "helper_functions.py": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+     "hierarchical_coordination.py": "7bf34f4ac88e472f23c82dace21065b9ad867fddf8cb2dde7d2de810c05797c4",
+     "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+     "load.py": "ac603d6d9e9489cd67f3372cf46b0e365ae604440722c6209d2bf1d749fa7a69",
+     "main.py": "d7de3a7a383220082f821dd30d396f897a85df5ef193be6c12ac1f7b3367ab75",
+     "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+     "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+     "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+     "network_parameters.py": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92",
+     "node.py": "d5f11f15b732469203a3f7cf8268e95353ae1a9d94ff3f2315d6ec5e2de86725",
+     "planning_parameters.py": "40297471cba1b0281899e7835f272f7a5df4f5e353b6d97838e5a4554c93adf9",
+     "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+     "settling_criterion_v2.py": "3db13b0eb7a093f49a7ff014a3c46a5aa013b86da5e5d78c3a19daba476af59e",
+     "settling_criterion_v3.py": "0d78b9228381b9d4af3492c7712f9892d2f012d00e5023407962ff3619b5e965",
+     "settling_criterion_v4.py": "077561ceefa704a0c5512d45d17865609c6775e5ad18332a990ce3f1bb747775",
+     "settling_criterion_v5.py": "5ea29fb303c5f9ac1e6c2fcb869b7c6d044d2d8738298dee67093d70086a976f",
+     "settling_criterion_v6.py": "53f477118d51f5fd843190c0da920f1647618ef41f6a1973988653b10eb66e2d",
+     "shared_energy_storage.py": "d45c72d0db9a3743f3c26765f124ba7fbec44733ecb0d2d28b83b7e6a451f088",
+     "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+     "shared_energy_storage_parameters.py": "5fe0c4fb876a9c2f1e506e982f2a120c320a3fd4198b870f877d9a310cd390bb",
+     "shared_ess_price_taker.py": "9a55c951530c7223ffc436a0ae86339707f1d12ec96ca03bd23f77442ffc8b9c",
+     "shared_resources_planning.py": "ade9c843bc7c5b6514ab91ecc54f327330a5249709766699ff2f50c8288473d6",
+     "solver_parameters.py": "2801ef16853d7e63752d646c4c8a789a17a6731959060112c48f9457074c8b65",
+     "uncoordinated_benchmark.py": "45d1c09db9b687040d57c8b01c1d092f3b53aa120f0e3229d998c435d261e31a",
+     "validate_vmag_refactor.py": "55022d106a18fe15d794d9691888b1f2584c95a563e06b97741b6cd612306512"
+    }
+   },
+   "run_files_sha256": {
+    "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+    "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+    "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+    "p515_s44_campaign_harness.py": "d9a944f220e791b82147f08d0e606126ad454b8b6b2994024f94e106798fb191",
+    "p515_s47_phase_b_record.py": "97f573e52fb574836a72dce8c61b3d5c6b8919aa509e0ffbc04a1a6473ed6c62",
+    "p515_s53_w101_settling_continuation_hooks.py": "05004cf8b475c940ef1d30a225bcad20e257f02c0d34bb5034ee4975d6625f6b",
+    "p515_s53_w105_settling_extension_hooks.py": "1ff61ce96dc25e4ccac3b864c834c54edf2d382525bddd9adce9af71bba84f05",
+    "p515_s53_w118_resettle_hooks.py": "081066cbb4e651517c9dedbb6a51a96d85305fa4710c50d7e9dc67fdc3f06dd7",
+    "p515_s53_w132_resettle_v3_hooks.py": "f0749183b990b5be8afbed26b89da75b7a7e8df45ca46fcef15165ba94b6f9fe",
+    "p515_s53_w139_resettle_v5_hooks.py": "a46ad444930f66489e456cc2f9388ed97fbbf7465b808f7cbf63087761021576",
+    "p515_s53_w142_resettle_ext_v6_hooks.py": "a0fe14d3c7f532d113af1eff9354502430b14f73374cee22009c7c185eb5d963",
+    "p515_s53_w142_resettle_v6_hooks.py": "19631fb246a4fe81d7a20b3915e38b362a174656ab7403416325057c0925b38e",
+    "p515_s55_step7_launcher.py": "3b990d19bbde8e9fb6bf75d2e5447c55116d4a3d4d21c174e53776dffc561757",
+    "p515_s55_step7_resettle_hooks.py": "9318ade3e6d0d5fec25d0c276c4d82fba5bb163c7da61ec10ee6f49aaf2fa1d2",
+    "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+    "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+    "settling_criterion_v2.py": "3db13b0eb7a093f49a7ff014a3c46a5aa013b86da5e5d78c3a19daba476af59e",
+    "settling_criterion_v3.py": "0d78b9228381b9d4af3492c7712f9892d2f012d00e5023407962ff3619b5e965",
+    "settling_criterion_v4.py": "077561ceefa704a0c5512d45d17865609c6775e5ad18332a990ce3f1bb747775",
+    "settling_criterion_v5.py": "5ea29fb303c5f9ac1e6c2fcb869b7c6d044d2d8738298dee67093d70086a976f",
+    "settling_criterion_v6.py": "53f477118d51f5fd843190c0da920f1647618ef41f6a1973988653b10eb66e2d"
+   },
+   "search_tables": {
+    "investment_cost_w2": {
+     "path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+     "sha256": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b"
+    },
+    "phase_a_tables": {
+     "path": "data/SRP1/Results/P515S45/phase_a_tables/phase_a_tables.json",
+     "sha256": "a2b78541b5c50ad2a185ca3eb3d0f1b38bb388c4866c45628a984c407b4a3995"
+    }
+   },
+   "uncommitted_changes": [],
+   "untracked": []
+  },
+  "pre_launch_assertion_at_freeze": {
+   "base_key": "61c91a566e687413e7744af840ee3dbffa67a696389e62a75470c3045d2d3883",
+   "campaign_id": "s55_step7_e2_unit_1x_rho2p0",
+   "committed_holder_rule": "E3 / E2: refused if held (key collision); screen: reported, never reused (no cost is carried across code states)",
+   "committed_holders_outside_the_stage_roots": [],
+   "eval_dir_name": "13145d7ed63e9f2d_e2_unit_1x_rho2p0",
+   "eval_key": "13145d7ed63e9f2d092a73a4d1317065f0d5e7cac60ba031363eb1aa8acbb0ae",
+   "excluded_roots": [
+    "data/SRP1/Results/P515S55/e3_cnrf",
+    "data/SRP1/Results/P515S55/e2_rho",
+    "data/SRP1/Results/P515S55/e1_screen_1x",
+    "data/SRP1/Results/P515S55/e1_2x/cross"
+   ],
+   "holds": true,
+   "parts": {
+    "base_payload_carries_rho0_scale": true,
+    "e2_key_carries_rho0_scale": true,
+    "e2_key_carries_the_price": true,
+    "eval_key_absent_from_committed_specs_outside_the_stage_roots": true,
+    "harness_base_equals_independent_base": true,
+    "harness_key_equals_independent_payload_key": true,
+    "key_differs_from_base": true,
+    "key_differs_without_rho0_scale": true,
+    "working_dirs_absent": true
+   },
+   "working_dir_ids": {
+    "precheck": "p515s44_s55_step7_e2_unit_1x_rho2p0_13145d7ed63e9f2d_precheck",
+    "run": "p515s44_s55_step7_e2_unit_1x_rho2p0_13145d7ed63e9f2d_run"
+   }
+  },
+  "rho_read_back_rule": "Addendum 86 ruling 2: per E2 cell, per cycle, per channel g in {v, pf, ess}, the recorded rho_g_after equals BITWISE sum([x] * n_g) / n_g in the canonical interpreter; x starts at S39_g x s and is carried across cycles from the recorded actions: increased -> x = min(max(x * 1.5, 1e-4), 1e4); decreased -> x = min(max(x * (1.0 / 1.5), 1e-4), 1e4) (production _scale_admm_penalty: value * factor, factor = 1.0 / decrease_factor); every factor-1 action (held, fixed, exempt (fixed), held after solver failure, held (frozen ...), any of them with \" (exemption lifted)\") keeps x; an unknown action refuses; n_v = n_pf = TSO + DSO blocks, n_ess = TSO + DSO + ESSO models (the record's solve_profile). A cell that does not reproduce bitwise is a harness-fault stop.",
+  "role": "E2 stage 1: the node-7 reference unit at 1x under rho0 x 2.0 (its pair: the x = 0 cell of the same price and scale)",
+  "settling_resettle_schema": "p515_s55_step7_settling_resettle_v1",
+  "solve_claim": {
+   "child": "the harness child; reconciled by the record solve_profile",
+   "parent": "never solves (SolveProfileGuard permitted=(), verify(0))"
+  },
+  "solver": {
+   "expected": "/usr/local/bin/ipopt",
+   "ok": true,
+   "resolved": {
+    "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+    "source": "environment"
+   },
+   "sha256": "b316abbe38cd851d9a9a87a6a1a1714a4334304c9539df1976d2f7101360ff05"
+  },
+  "stage": "P5.15 Addendum 86 ruling 1, W183i (b) -- the Step-7 fixed-plan launcher: E3 (C_NRF), E2 stage 1 (rho0 x s), the 1x unit-neighbourhood screen, the cross-evaluations (declared after W186)",
+  "stage_spec": "frozen_s55_step7_e2_spec_v1_<sha8>.json (frozen AFTER this campaign spec) pins this spec by its sha256 and holds the exact launch command"
+ },
+ "frozen_utc": "2026-10-26T09:28:29.083419+00:00",
+ "git_head": "2a62ee1d3fd4ee91b2d4fccac444b6c44babcec7",
+ "harness": {
+  "path": "p515_s44_campaign_harness.py",
+  "sha256": "d9a944f220e791b82147f08d0e606126ad454b8b6b2994024f94e106798fb191"
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "nlp_solver_path_env": {
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "source": "environment"
+ },
+ "required_consecutive_cycles": 10,
+ "rho0_scale_label": "EVALUATION OPTION \u2014 rho0 \u00d7 s (S39 rho0 scaled on every channel and the ESSO)",
+ "schema": "p515_s44_campaign_spec_v2",
+ "thread_caps": {
+  "MKL_NUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1"
+ }
+}

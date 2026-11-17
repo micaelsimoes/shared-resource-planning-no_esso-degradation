@@ -1,0 +1,463 @@
+{
+ "schema": "p515_s53_row18_structural_nl_probe_v1",
+ "stage": "P5.15 Addendum 40 ruling 2 (W54) -- .nl probe: row 18 structurally inactive at initialisation",
+ "frozen_spec": {
+  "path": "data/SRP1/Results/P515S53/row18_structural/frozen_s53_row18_structural_spec_v1_05934ab0.json",
+  "sha256_pinned": "05934ab0803a6744a5f22106865baafa27eb46f76d4240adbbc53244aac7be04",
+  "sha256_observed": "05934ab0803a6744a5f22106865baafa27eb46f76d4240adbbc53244aac7be04"
+ },
+ "timestamp_utc": "2026-09-24T09:44:46.930706+00:00",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "argv": [
+  "p515_s53_row18_structural_nl_probe.py",
+  "--label",
+  "r1",
+  "--scratch",
+  "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54"
+ ],
+ "pyomo_version": "6.9.5",
+ "script": "p515_s53_row18_structural_nl_probe.py",
+ "script_sha256": "a15cfaefe4978177f97f029e0247bd0a5a1709a5e24864870e5ca4aac12f0e42",
+ "production_sha256": {
+  "shared_resources_planning.py": "4be14a033e0dbd72505a61541f0de702dec72f547e1291eacacab979b6c939d1",
+  "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+  "admm_parameters.py": "2bd733913a99986cf669d13580a41658e15c4320e1a21343a6652a1a13436a1b"
+ },
+ "git_head": "d573e145c559da8d09b2b94ccf10a182e2b0a69a",
+ "git_tracked_changes": [],
+ "capture_path_checklist": {
+  "frozen_spec_sha256_matches": true,
+  "production_init_is_structural": true,
+  "production_families_constant_present": true,
+  "w51_function_is_param_only": true
+ },
+ "w51_function": {
+  "commit": "7a98b25e",
+  "source_sha256": "99ff70648385bce37924b30641a926979536bf4fb761b94047da963f58e6df8e"
+ },
+ "production_init_function_source_sha256": "241a7a30f18402ad16f37b5adb98b829fc826b13961bcbbbd67a3daca4749b92",
+ "instance": {
+  "overrides": {
+   "years": {
+    "2025": 5
+   },
+   "num_market_scenarios": 2,
+   "num_operation_scenarios": 2
+  },
+  "definition": {
+   "description": "the current SRP1 case file unchanged (3 years x 4 days x 1 x 1 scenario)",
+   "years": {
+    "2025": 5
+   },
+   "num_market_scenarios": 2,
+   "num_operation_scenarios": 2
+  },
+  "changes_vs_source": [
+   {
+    "key": "Years",
+    "from": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "to": {
+     "2025": 5
+    }
+   },
+   {
+    "key": "NumMarketScenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   }
+  ],
+  "case_path": "data/SRP1/Results/P515S53/row18_structural/nl_probe/r1/cases/SRP1__2x2.json",
+  "case_sha256": "fe054c22ff4c9e0195d0260b63986d4b697b60e3b3f8900b8329ed81d52c3688",
+  "dso_node": 5,
+  "n_scenarios": 4,
+  "n_periods": 24
+ },
+ "scratch": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54",
+ "arms": {
+  "A": {
+   "arm": "A",
+   "alpha": 0.0,
+   "block": "DSO:5:2025:Spring",
+   "init_function": "production",
+   "stub_calls": 1,
+   "row18_state_at_would_be_solve": {
+    "row18_wired": false,
+    "row18_alpha_admm_present": false
+   },
+   "nl": {
+    "labels_off": {
+     "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/A_labels_off.nl",
+     "sha256": "a65a93ff3c49f0e1362dea6b100b5b85ef315c6aa59e7aa68cf5fb6556e9d87d",
+     "bytes": 4539184,
+     "line1": "g3 1 1 0\t# problem case33_1",
+     "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+     "n_vars_columns": 36232,
+     "n_cons_rows": 29828,
+     "n_objs": 1,
+     "n_ranges": 0,
+     "n_eqns": 16424
+    },
+    "labels_on": {
+     "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/A_labels_on.nl",
+     "sha256": "8379c362fb5e261da8e0c1fe6605803a671820d18e05b21e396c2a506ccfe968",
+     "bytes": 9902337,
+     "line1": "g3 1 1 0\t# problem case33_1",
+     "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+     "n_vars_columns": 36232,
+     "n_cons_rows": 29828,
+     "n_objs": 1,
+     "n_ranges": 0,
+     "n_eqns": 16424,
+     "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/A_labels_on.row",
+     "row_sha256": "59af856a5034545b99343c68d767abcf794f873663a74964bd81c8430b69b389",
+     "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/A_labels_on.col",
+     "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+    }
+   }
+  },
+  "A_repeat": {
+   "arm": "A_repeat",
+   "alpha": 0.0,
+   "block": "DSO:5:2025:Spring",
+   "init_function": "production",
+   "stub_calls": 1,
+   "row18_state_at_would_be_solve": {
+    "row18_wired": false,
+    "row18_alpha_admm_present": false
+   },
+   "nl": {
+    "labels_off": {
+     "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/A_repeat_labels_off.nl",
+     "sha256": "a65a93ff3c49f0e1362dea6b100b5b85ef315c6aa59e7aa68cf5fb6556e9d87d",
+     "bytes": 4539184,
+     "line1": "g3 1 1 0\t# problem case33_1",
+     "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+     "n_vars_columns": 36232,
+     "n_cons_rows": 29828,
+     "n_objs": 1,
+     "n_ranges": 0,
+     "n_eqns": 16424
+    },
+    "labels_on": {
+     "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/A_repeat_labels_on.nl",
+     "sha256": "8379c362fb5e261da8e0c1fe6605803a671820d18e05b21e396c2a506ccfe968",
+     "bytes": 9902337,
+     "line1": "g3 1 1 0\t# problem case33_1",
+     "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+     "n_vars_columns": 36232,
+     "n_cons_rows": 29828,
+     "n_objs": 1,
+     "n_ranges": 0,
+     "n_eqns": 16424,
+     "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/A_repeat_labels_on.row",
+     "row_sha256": "59af856a5034545b99343c68d767abcf794f873663a74964bd81c8430b69b389",
+     "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/A_repeat_labels_on.col",
+     "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+    }
+   }
+  },
+  "B": {
+   "arm": "B",
+   "alpha": 0.5,
+   "block": "DSO:5:2025:Spring",
+   "init_function": "production",
+   "stub_calls": 1,
+   "row18_state_at_would_be_solve": {
+    "row18_wired": true,
+    "row18_alpha": 0.5,
+    "row18_alpha_admm_present": false,
+    "n_rows": 192,
+    "n_rows_active": 0,
+    "n_dev_vars": 384,
+    "n_dev_vars_fixed": 384,
+    "fixed_dev_values": [
+     0.0
+    ],
+    "n_indices_fixed_pair_with_active_row": 0,
+    "charge_value": 0.0,
+    "n_scenarios": 4,
+    "n_periods": 24
+   },
+   "nl": {
+    "labels_off": {
+     "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/B_labels_off.nl",
+     "sha256": "a65a93ff3c49f0e1362dea6b100b5b85ef315c6aa59e7aa68cf5fb6556e9d87d",
+     "bytes": 4539184,
+     "line1": "g3 1 1 0\t# problem case33_1",
+     "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+     "n_vars_columns": 36232,
+     "n_cons_rows": 29828,
+     "n_objs": 1,
+     "n_ranges": 0,
+     "n_eqns": 16424
+    },
+    "labels_on": {
+     "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/B_labels_on.nl",
+     "sha256": "8379c362fb5e261da8e0c1fe6605803a671820d18e05b21e396c2a506ccfe968",
+     "bytes": 9902337,
+     "line1": "g3 1 1 0\t# problem case33_1",
+     "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+     "n_vars_columns": 36232,
+     "n_cons_rows": 29828,
+     "n_objs": 1,
+     "n_ranges": 0,
+     "n_eqns": 16424,
+     "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/B_labels_on.row",
+     "row_sha256": "59af856a5034545b99343c68d767abcf794f873663a74964bd81c8430b69b389",
+     "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/B_labels_on.col",
+     "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+    }
+   }
+  },
+  "C": {
+   "arm": "C",
+   "alpha": 0.5,
+   "block": "DSO:5:2025:Spring",
+   "init_function": "_set_row18_inactive_for_initialisation (7a98b25e)",
+   "stub_calls": 1,
+   "row18_state_at_would_be_solve": {
+    "row18_wired": true,
+    "row18_alpha": 0.0,
+    "row18_alpha_admm_present": true,
+    "n_rows": 192,
+    "n_rows_active": 192,
+    "n_dev_vars": 384,
+    "n_dev_vars_fixed": 0,
+    "fixed_dev_values": [],
+    "n_indices_fixed_pair_with_active_row": 0,
+    "charge_value": 0.0,
+    "n_scenarios": 4,
+    "n_periods": 24
+   },
+   "nl": {
+    "labels_off": {
+     "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/C_labels_off.nl",
+     "sha256": "8357ddf7a2460e0ae21905c7b791b9ff330dd72ed9c21aa837576fa0028aa3ed",
+     "bytes": 4557904,
+     "line1": "g3 1 1 0\t# problem case33_1",
+     "line2": " 36616 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+     "n_vars_columns": 36616,
+     "n_cons_rows": 30020,
+     "n_objs": 1,
+     "n_ranges": 0,
+     "n_eqns": 16616
+    },
+    "labels_on": {
+     "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/C_labels_on.nl",
+     "sha256": "f3eed059e80cdc9091118ebe3b2cad85dfa8cfc8b1a1f02e5baf2e3b3c397a07",
+     "bytes": 9954097,
+     "line1": "g3 1 1 0\t# problem case33_1",
+     "line2": " 36616 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+     "n_vars_columns": 36616,
+     "n_cons_rows": 30020,
+     "n_objs": 1,
+     "n_ranges": 0,
+     "n_eqns": 16616,
+     "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/C_labels_on.row",
+     "row_sha256": "77d8487dbec8dbf71aad5853dd1fc687ea67774d33d360142c2dbebbaef4c8f9",
+     "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/C_labels_on.col",
+     "col_sha256": "508ecdd0af87a88918c6ff3a19d7dd2fdca1698b50112e5c86bc0f3b7440eabb"
+    }
+   }
+  },
+  "D": {
+   "arm": "D",
+   "alpha": 0.5,
+   "block": "DSO:5:2025:Spring",
+   "init_function": "negative_control_fix_rows_active (probe-local negative control)",
+   "stub_calls": 1,
+   "row18_state_at_would_be_solve": {
+    "row18_wired": true,
+    "row18_alpha": 0.5,
+    "row18_alpha_admm_present": false,
+    "n_rows": 192,
+    "n_rows_active": 192,
+    "n_dev_vars": 384,
+    "n_dev_vars_fixed": 384,
+    "fixed_dev_values": [
+     0.0
+    ],
+    "n_indices_fixed_pair_with_active_row": 192,
+    "charge_value": 0.0,
+    "n_scenarios": 4,
+    "n_periods": 24
+   },
+   "nl": {
+    "labels_off": {
+     "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/D_labels_off.nl",
+     "sha256": "df9e2ae0fca40046a0754dba888346e75aafc04999ac52e2f7af652a72f6f66f",
+     "bytes": 4547268,
+     "line1": "g3 1 1 0\t# problem case33_1",
+     "line2": " 36232 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+     "n_vars_columns": 36232,
+     "n_cons_rows": 30020,
+     "n_objs": 1,
+     "n_ranges": 0,
+     "n_eqns": 16616
+    },
+    "labels_on": {
+     "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/D_labels_on.nl",
+     "sha256": "913fcbcfb0250d774a28d9219c5f779f56c4047eab76f3c4a7f2199af30d2ce8",
+     "bytes": 9924581,
+     "line1": "g3 1 1 0\t# problem case33_1",
+     "line2": " 36232 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+     "n_vars_columns": 36232,
+     "n_cons_rows": 30020,
+     "n_objs": 1,
+     "n_ranges": 0,
+     "n_eqns": 16616,
+     "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/D_labels_on.row",
+     "row_sha256": "77d8487dbec8dbf71aad5853dd1fc687ea67774d33d360142c2dbebbaef4c8f9",
+     "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w54/r1/nl/D_labels_on.col",
+     "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+    }
+   }
+  }
+ },
+ "columns_by_arm": {
+  "A": 36232,
+  "A_repeat": 36232,
+  "B": 36232,
+  "C": 36616,
+  "D": 36232
+ },
+ "rows_by_arm": {
+  "A": 29828,
+  "A_repeat": 29828,
+  "B": 29828,
+  "C": 30020,
+  "D": 30020
+ },
+ "header_counts_identical_between_label_settings": true,
+ "labels_on_row_col_written_for_every_arm": true,
+ "arm_state_assertions": {
+  "A_not_wired": true,
+  "B_structural_init_state": true,
+  "C_w51_param_only_state": true,
+  "D_negative_control_state": true,
+  "one_stub_call_per_arm": true
+ },
+ "predictions": {
+  "P0_control_A_equals_A_repeat": {
+   "outcome": {
+    "labels_off": {
+     "nl": true
+    },
+    "labels_on": {
+     "nl": true,
+     "row": true,
+     "col": true
+    }
+   },
+   "holds": true
+  },
+  "P1_A_equals_B": {
+   "outcome": {
+    "labels_off": {
+     "nl": true
+    },
+    "labels_on": {
+     "nl": true,
+     "row": true,
+     "col": true
+    }
+   },
+   "holds": true,
+   "on_false": "STOP and report the difference; no workaround"
+  },
+  "P2_C_minus_A": {
+   "n": 4,
+   "T": 24,
+   "column_delta": 384,
+   "row_delta": 192,
+   "expected_column_delta": 384,
+   "expected_row_delta": 192,
+   "extra_names": {
+    "col": {
+     "n_x": 36232,
+     "n_y": 36616,
+     "only_in_y_by_family": {
+      "row18_dev_p_down": 96,
+      "row18_dev_p_up": 96,
+      "row18_dev_q_down": 96,
+      "row18_dev_q_up": 96
+     },
+     "only_in_x_by_family": {},
+     "only_in_x_first_20": []
+    },
+    "row": {
+     "n_x": 29829,
+     "n_y": 30021,
+     "only_in_y_by_family": {
+      "row18_dev_p_def": 96,
+      "row18_dev_q_def": 96
+     },
+     "only_in_x_by_family": {},
+     "only_in_x_first_20": []
+    }
+   },
+   "holds": true
+  },
+  "P3_D_fewer_columns_than_A": {
+   "column_delta": 0,
+   "row_delta": 192,
+   "names_vs_A": {
+    "col": {
+     "n_x": 36232,
+     "n_y": 36232,
+     "only_in_y_by_family": {},
+     "only_in_x_by_family": {},
+     "only_in_x_first_20": []
+    },
+    "row": {
+     "n_x": 29829,
+     "n_y": 30021,
+     "only_in_y_by_family": {
+      "row18_dev_p_def": 96,
+      "row18_dev_q_def": 96
+     },
+     "only_in_x_by_family": {},
+     "only_in_x_first_20": []
+    }
+   },
+   "holds": false,
+   "on_false": "STOP and report: the stated hazard reading would be wrong"
+  }
+ },
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "all_checks_pass": false,
+ "wall_s": 36.724287033081055
+}

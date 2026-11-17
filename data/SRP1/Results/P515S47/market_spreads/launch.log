@@ -1,0 +1,40 @@
+[P5.15 Addendum 31 W22 -- paper-scale market-scenario spreads (spec v17 Z31; zero solves)] start 2026-09-21T14:37:28.535618+00:00; HEAD abf0cb303882b3aa8ccfecf51a152682c29e852e
+[read] SRP1 ...
+[read] paper ...
+{
+ "SRP1_4h_spread_undiscounted (Z4)": 97.99086039739976,
+ "paper_mean_profile_4h_spread_undiscounted": 91.72775939691898,
+ "paper_avg_of_scenario_4h_spreads_undiscounted": 94.64715634846279,
+ "R = mean_profile / SRP1 (undiscounted)": 0.9360848453102575,
+ "avg_of_scenario_spreads / SRP1 (undiscounted)": 0.9658773886117884,
+ "flattening = mean_profile / avg_of_scenario_spreads (undiscounted)": 0.9691549427983294,
+ "SRP1_4h_spread_r2 (Z4)": 97.01788674187569,
+ "R_r2 = mean_profile_r2 / SRP1_r2": 0.9372576465471794,
+ "avg_of_scenario_spreads_r2 / SRP1_r2": 0.9670257076166785,
+ "like-for-like 2025 (only common year): paper mean_profile 2025 / SRP1 2025 (day-weighted)": 0.9694648709978263,
+ "like-for-like 2025 (only common year): paper avg_of_scenario_spreads 2025 / SRP1 2025 (day-weighted)": 0.9939286226892993,
+ "supplementary: growth-normalized (2025 level) R = paper mean_profile / SRP1, undiscounted weights": 0.9150641848892984,
+ "supplementary: growth-normalized avg_of_scenario_spreads / SRP1, undiscounted weights": 0.94411047518174
+}
+[checks] {
+ "solve_guard_verify_0": true,
+ "no_model_construction_call": true,
+ "stop_point_hits_exactly_declared": true,
+ "srp1_scenario_checksum_matches": true,
+ "srp1_prices_bound_to_every_block_are_planning_object": true,
+ "srp1_network_pm_is_planning_prob_market_scenarios": true,
+ "srp1_no_congestion_management_network": true,
+ "srp1_discount_factor_0_02": true,
+ "paper_scenario_checksum_matches": true,
+ "paper_prices_bound_to_every_block_are_planning_object": true,
+ "paper_network_pm_is_planning_prob_market_scenarios": true,
+ "paper_no_congestion_management_network": true,
+ "paper_discount_factor_0_02": true,
+ "paper_pm_all_0_2": true,
+ "z4_definition_reproduced_to_1e-9": true,
+ "srp1_prices_equal_z4_committed_prices": true,
+ "srp1_recomputed_spread_equals_97.99_to_1e-9": true,
+ "mean_profile_spread_le_avg_of_scenario_spreads_every_day": true,
+ "mean_profile_spread_le_avg_of_scenario_spreads_horizon": true
+}
+[P5.15 Addendum 31 W22 -- paper-scale market-scenario spreads (spec v17 Z31; zero solves)] ok=True; guard counts {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}; blocked []; stop hits 2; wrote /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S47/market_spreads/market_spreads.json

@@ -1,0 +1,100 @@
+{
+ "stage": "P5.4-R1",
+ "provenance": {
+  "timestamp_utc": "2026-09-07T19:44:13.256413+00:00",
+  "git_head": "af8435fec3444535555aa1ed6a6843935dd8458d",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.4-R1 canonical D2-P regression"
+ },
+ "timestamp_utc": "2026-09-07T19:44:13.334905+00:00",
+ "R1_gate": {
+  "per_agent": {
+   "dso": {
+    "total": 36,
+    "succeeded": 36
+   },
+   "tso": {
+    "total": 12,
+    "succeeded": 12
+   },
+   "esso": {
+    "total": 3,
+    "succeeded": 3
+   }
+  },
+  "primary_failures": 0,
+  "recovery_attempts": 0,
+  "persistent_failures": 0,
+  "persistent_failure_ids": [],
+  "iterations": {
+   "n": 48,
+   "mean": 71.33333333333333,
+   "median": 65.0,
+   "max": 134,
+   "total": 3424
+  },
+  "runtime_s": 41.74766707420349,
+  "n_shared_ess_rows": 1728,
+  "max_converter_capability_violation": 0.0,
+  "n_converter_capability_violations": 0,
+  "max_h1_complementarity_violation": 0.0,
+  "n_h1_complementarity_violations": 0,
+  "max_p_circ_norm": 0.008606034979497256,
+  "mean_p_circ_norm": 0.00287374196774979,
+  "max_p_circ_over_sqrt_eps": 0.8606034979497256,
+  "n_rows_above_1e-2_S": 0,
+  "jacobian": {
+   "case33_1/2030/Winter": {
+    "n_equality_rows": 4275,
+    "n_exactly_zero_rows": 0,
+    "zero_row_components": {},
+    "sigma_min_full": 0.005924612387602124,
+    "reduced_condition_number": 89834.60282786915,
+    "full_row_rank": true
+   },
+   "case9/2025/Winter": {
+    "n_equality_rows": 1809,
+    "n_exactly_zero_rows": 0,
+    "zero_row_components": {},
+    "sigma_min_full": 0.032870537146123056,
+    "reduced_condition_number": 1422.709269279452,
+    "full_row_rank": true
+   }
+  },
+  "requirements": {
+   "dso_36_of_36": true,
+   "tso_12_of_12": true,
+   "esso_3_of_3": true,
+   "zero_persistent_failures": true,
+   "zero_h1_complementarity_violations": true,
+   "zero_converter_capability_violations": true
+  },
+  "all_requirements_met": true
+ }
+}

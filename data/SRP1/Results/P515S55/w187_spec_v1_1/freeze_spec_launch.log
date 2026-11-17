@@ -1,0 +1,21 @@
+19:13:46 [W187-v1.1] mode FREEZE-SPEC; HEAD cc03bbafdb8359937000561c6e902ce2abd035e9
+19:13:46 [W187-v1.1] launcher diff vs the spec v1 blob
+19:13:46 [W187-v1.1]    hunks 1 removed 2 added 2; exactly the two G0 constants True
+19:13:46 [W187-v1.1] accepted state
+19:13:50 [W187-v1.1]    refusals so far 0
+19:13:50 [W187-v1.1] Step-7 keys (the launcher's own dry-run code via spec v1's step7_keys) vs the committed dry run
+19:13:51 [W187-v1.1]    (distinct keys, rows equal to the dry run) {'e3': (1, 1), 'e2': (8, 8), 'screen': (15, 15)}; alias 105c0fd3 reuse_of 5cfe69a6 equal True
+19:13:51 [W187-v1.1] G0 (require_current_production=True)
+19:13:51 [W187-v1.1]    accepted True: 16/16 items
+19:13:51 [W187-v1.1] screen parent capture checklist (phase-level)
+19:13:52 [W187-v1.1]    [('x0_A_1x', True), ('y2025__n9_p0.25_e0.5_N_1x', True)]
+19:13:52 [W187-v1.1] gate (i) citation
+19:13:53 [W187-v1.1]    696/696 identical; Q aggregation AST-equal True
+19:13:53 [W187-v1.1] gate (ii) record
+19:13:53 [W187-v1.1]    status ran GATE_PASS_RULED True
+19:13:53 [W187-v1.1] the two P5.16 inputs: static search
+19:13:55 [W187-v1.1]    outside the read set: {'data/SRP1/SRP1_5x3y_1x1.json': True, 'data/SRP1/SharedESS/SRP1_5x3y_ESS_Params.json': True}
+19:13:55 [W187-v1.1] wrote data/SRP1/Results/P515S55/frozen_step7_campaign_spec_v1_1_25071d2f.json sha256 25071d2f7545ee1c27a352539687ddeebcc46fbcab3a864b2ecb71889228e5f3
+19:13:55 [W187-v1.1] wrote data/SRP1/Results/P515S55/w187_spec_v1_1/w187_spec_v1_1_manifest_sha256.json sha256 52a74db45ac98fff32f746217eb7302b34f42facb37e0803ac7b41ca5a664dc4; guards all_zero True
+19:13:55 [W187-v1.1] summary {"launcher_diff": {"v1_blob_found": true, "v1_blob_commit": "02e8d4671cc0a588633f943e740fa8f349de39ba", "v1_sha256": "3b990d19bbde8e9fb6bf75d2e5447c55116d4a3d4d21c174e53776dffc561757", "now_sha256": "069a7b88a59ddcf568408b1b4a23b73e08dc367867cce5b1265185bf559461ad", "n_hunks": 1, "n_removed": 2, "n_added": 2, "unified_diff_n0": "--- a/p515_s55_step7_launcher.py (v1 blob 3b990d19)\n+++ b/p515_s55_step7_launcher.py (now 069a7b88)\n@@ -187,2 +187,2 @@\n-G0_ARTIFACT_REL = os.path.join(P55, 'w183_nl_post_w183c_off', 'w183_nl_digest.json.gz')\n-G0_ARTIFACT_SHA256 = 'ca195bd38fe2384493012dcf7127a36a8923d8a5029c2c821b5bb0f47f57ab6a'\n+G0_ARTIFACT_REL = os.path.join(P55, 'pincheck_nl_head_f6c23977', 'w183_nl_digest.json.gz')\n+G0_ARTIFACT_SHA256 = '315ca94a8d2ccd59d5c9ee045694fcc998030995ad322fc99fa2fe49bd0da5b4'\n", "exactly_the_two_g0_constants": true}, "keys": {"e3": [1, 1], "e2": [8, 8], "screen": [15, 15]}, "g0": {"accepted": true, "n_true": 16, "n_items": 16}, "gate_i": {"n_blocks_identical": 696, "n_blocks_compared": 696}, "gate_ii": "ran", "p516": {"data/SRP1/SRP1_5x3y_1x1.json": true, "data/SRP1/SharedESS/SRP1_5x3y_ESS_Params.json": true}}
+19:13:55 [W187-v1.1] final guards: all_zero=True n=10 pickle={'w183i_d': {'load': 0, 'loads': 0}, 'step7_launcher': {'load': 0, 'loads': 0}, 'e1_launcher': {'load': 0, 'loads': 0}} build={'w183i_d': {'ConcreteModel.__init__': 0}, 'step7_launcher': {'ConcreteModel.__init__': 0}, 'e1_launcher': {'ConcreteModel.__init__': 0}} e1_tripwires_nonzero={}

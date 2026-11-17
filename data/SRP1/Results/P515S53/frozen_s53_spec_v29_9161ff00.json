@@ -1,0 +1,398 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 46 ruling 7",
+  "Planner task W86 (steps 1-3, rulings Q1/Q2)"
+ ],
+ "cells": {
+  "c_star": {
+   "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "expected_eval_key": "96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772",
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.96875,
+     3.875
+    ],
+    "7": [
+     0.96875,
+     3.875
+    ],
+    "9": [
+     0.96875,
+     3.875
+    ]
+   },
+   "pre_tail_eval_key": "070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb"
+  },
+  "n7_4h_e1": {
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "expected_eval_key": "ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d",
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.25,
+     1.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   },
+   "pre_tail_eval_key": "bd504ecf5a288d447e53ef6f7e8090b017d15549b257aa095ff4f95890a06e42"
+  },
+  "x0": {
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "expected_eval_key": "5cfe69a615ae370835a5896eaa6899f1d9973b7adf649437c2ddd94d1d2836ee",
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.0,
+     0.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   },
+   "pre_tail_eval_key": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7"
+  }
+ },
+ "configuration": {
+  "arm_label": "s39_D",
+  "cap": 500,
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "concurrency": 3,
+  "convergence_depth_tail": {
+   "compl_inf_tol": 1e-06,
+   "enabled": true
+  },
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ess_params_file_sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+  "name": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70): the case file alone (AA keep_memory declared) with the ESS ageing parameters declared, the convergence-depth tight tail DECLARED ENABLED (compl_inf_tol 1e-6, certifying cycles only), post-certification: persist the certified TSO/DSO models only",
+  "note": "no overrides; no model variant; post-certification persist_certified_models only (no hull polish, no reference); num_max_iters := cap; tail per spec v28 (AA-off predicate, non-latching, ESSO untouched)",
+  "overrides": {},
+  "post_certification": {
+   "hull_polish": false,
+   "persist_certified_models": true
+  },
+  "required_consecutive_cycles": 10
+ },
+ "declared_solve_profile": {
+  "c_star": {
+   "at_the_reference_certification_cycle": 4488,
+   "reference_observed": 4528,
+   "rule": "51 x (cycles_run + 1) + every retry attempted (per event); cycles_run is the run's own (<= 500); the post-certification persist step solves nothing (outside the child guard window)",
+   "verification": "RECONCILED PER EVENT in the child record; NOT guard-verified"
+  },
+  "n7_4h_e1": {
+   "at_the_reference_certification_cycle": 5763,
+   "reference_observed": 5764,
+   "rule": "51 x (cycles_run + 1) + every retry attempted (per event); cycles_run is the run's own (<= 500); the post-certification persist step solves nothing (outside the child guard window)",
+   "verification": "RECONCILED PER EVENT in the child record; NOT guard-verified"
+  },
+  "x0": {
+   "at_the_reference_certification_cycle": 6783,
+   "reference_observed": 6783,
+   "rule": "51 x (cycles_run + 1) + every retry attempted (per event); cycles_run is the run's own (<= 500); the post-certification persist step solves nothing (outside the child guard window)",
+   "verification": "RECONCILED PER EVENT in the child record; NOT guard-verified"
+  }
+ },
+ "estimates": {
+  "disk": "per cell: eval dir ~140-265 MB (references 180 / 137 / 263 MB) + certified_models.pkl ~165 MB + tail capture ~10 MB; oracle working dir (IPOPT logs) ~0.8 GB per cell; total ~3.5 GB",
+  "memory": "per child peak ~2.40 GiB during the run, ~3.23 GiB after the persist step (measured on x0_capture); preflight 3 x 3.5 GiB = 10.5 GiB of 32 GiB",
+  "wall": "~55-65 min expected, <= ~1.5 h: the three cells run concurrently; references: C* 2,858 s (87 cycles), unit 3,146 s (112), x0 3,193 s (132, alone) child wall at concurrency 2 / 1; 12 cores, one single-threaded child per cell; the tight cycles (~9 per cell) add a few IPOPT iterations per solve; the persist step ~10 s"
+ },
+ "fallback_test_operational": {
+  "consequence": "if ANY of the three cells fails to certify or moves materially: the fallback -- the unchanged configuration (tail disabled) with the depth caveat recorded (the Planner's section 8 reading); otherwise the tail-enabled references replace them for what follows",
+  "fails_to_certify": "TEST, per cell: the tail-enabled run ends with status != \"certified\" under the UNCHANGED certification criterion (all three Boyd channels inside tolerance and every local solve successful for 10 consecutive cycles) within cap 500; a harness error (child exit != 0, a failed per-entry gate) counts as a failure to certify",
+  "moves_materially": "TEST, per cell: |Q_tail - Q_ref| > bar_ref(cell), the reference's own bar",
+  "reported_beside_never_replacing": {
+   "author_band_ratio": "|dQ| / (1e-6 |Q_ref|)  (> 1: outside the author's 1e-6 relative band)",
+   "own_bar_ratio": "|dQ| / bar_ref",
+   "terminal_step_error_bar": "e_term = step_ref + step_tail (the gross-cost step at each run's last cycle)",
+   "terminal_step_resolution": "|dQ| / e_term  (< 1: indeterminate -- not explained beyond stopping slack)",
+   "terminal_step_to_threshold": "step / objective_tolerance at the last cycle, for BOTH runs (rule ten)",
+   "two_run_bar_resolution": "|dQ| / (bar_ref + bar_tail)  (< 1: indeterminate at the bar)"
+  },
+  "source": "spec v28 fallback_rule_operational (restated, not changed); Addendum 46 ruling 7"
+ },
+ "frozen_utc": "2026-09-25T16:30:11.911040+00:00",
+ "git_head_at_freeze": "d1b122091062d0d5a3f12f69c2084db7ae1e0081",
+ "harness_sha256": "a04c835afdedc8a2556691894b01fdb102ac2be0733b47a626b5301ddce60b49",
+ "launcher_sha256": "812333ff36603c123c3e5909b0777de2c17af6971cebb396e854af5f186a55b2",
+ "not_permitted": [
+  "no change to the ADMM formulation, the certification criterion, the AA predicate or any solver option beyond the tail's compl_inf_tol",
+  "no committed artifact modified or re-run onto; fresh campaign id / root / working dirs",
+  "no screen / nohup / &; attached, alone, both streams captured"
+ ],
+ "per_entry_gates": {
+  "G1_harness_clean": "child exit 0, evaluation_record.json written by the child, status certified or not_certified",
+  "G2_eval_key": "record eval_key == the v29 expected key",
+  "G3_append_reconcile": "record convergence_depth_per_round_append.ok True, AND recomputed: appended file byte-identical to the end-of-run file, sha256 == the record's, rounds 0..cycles_run",
+  "G4_tail_state_check": "record convergence_depth_tail_state_check.match True (enabled, 1e-6)",
+  "G5_solve_profile_reconciled_per_event": "reconciliation_supported, identity_holds, observed == 51 x (cycles_run + 1) + retries attempted, 0 blocked; network floor records == observed - 3 x (cycles_run + 1)",
+  "G6_floor_records": "every record parse_reason None, options_list_agrees, compl_inf_tol_in_force == 1e-6 on tail-active cycles and == production (TSO 5e-4, DSO 1e-4 default) elsewhere",
+  "G7_append_sealed": "last event sealed, no append write error",
+  "G8_post_certification": "certified -> status evaluated and certified_models.pkl written (sha256 recorded); else skipped",
+  "G9_ess_ageing_readback": "all_match before and after the run",
+  "applies_to": "each of the three re-certification cells (c_star, n7_4h_e1, x0); there is no other arm",
+  "comparison": "FALLBACK_TEST quantities vs the committed reference, reported per cell"
+ },
+ "planner_decisions_w86": [
+  "three entries: c_star, n7_4h_e1, x0 (nodes 5/7/9 at (0, 0), 2025) -- x = 0 RE-RUN under the C2 baseline declaration, not pinned; the mixed-era artefact is retired",
+  "declare configuration.convergence_depth_tail = {'enabled': True, 'compl_inf_tol': 1e-6}",
+  "pre-launch assertion: the three frozen eval keys are exactly 96c5aa50..., ca8927e7..., 5cfe69a6...",
+  "cap 500, 10 consecutive cycles; concurrency 3 (one per cell) subject to a memory preflight",
+  "persist_certified_models: True",
+  "predictions recorded before the run (author and Worker)",
+  "fallback test stated operationally (v28), reported against the 1e-6 band and each cell's own bar",
+  "per-entry gates: reconcile ok, tail state check, solve profile reconciled per event, comparison with the committed references (terminal-step error bar, terminal-step-to-threshold ratio)",
+  "Q1 on W85: a declared-OFF tail shares the undeclared key (implemented and checked in W86 step 1)",
+  "Q2 on W85: the child smoke is required before the run; solve claim reconciled per event if no guard can be verified"
+ ],
+ "pre_launch_assertion": {
+  "holds": true,
+  "per_cell": {
+   "c_star": {
+    "absent_from_every_committed_spec_outside_w86": true,
+    "committed_specs_holding_it_outside_w86": [],
+    "declared_off_key_equals_pre_tail": true,
+    "differs_from_pre_tail": true,
+    "expected": "96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772",
+    "frozen_entry_equals_expected": true,
+    "frozen_entry_eval_key": null,
+    "pre_tail_key": "070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb",
+    "recomputed_equals_expected": true,
+    "recomputed_now": "96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772",
+    "undeclared_key_equals_pre_tail": true
+   },
+   "n7_4h_e1": {
+    "absent_from_every_committed_spec_outside_w86": true,
+    "committed_specs_holding_it_outside_w86": [],
+    "declared_off_key_equals_pre_tail": true,
+    "differs_from_pre_tail": true,
+    "expected": "ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d",
+    "frozen_entry_equals_expected": true,
+    "frozen_entry_eval_key": null,
+    "pre_tail_key": "bd504ecf5a288d447e53ef6f7e8090b017d15549b257aa095ff4f95890a06e42",
+    "recomputed_equals_expected": true,
+    "recomputed_now": "ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d",
+    "undeclared_key_equals_pre_tail": true
+   },
+   "x0": {
+    "absent_from_every_committed_spec_outside_w86": true,
+    "committed_specs_holding_it_outside_w86": [],
+    "declared_off_key_equals_pre_tail": true,
+    "differs_from_every_pinned_x0_key": true,
+    "differs_from_pre_tail": true,
+    "expected": "5cfe69a615ae370835a5896eaa6899f1d9973b7adf649437c2ddd94d1d2836ee",
+    "frozen_entry_equals_expected": true,
+    "frozen_entry_eval_key": null,
+    "pinned_x0_keys": {
+     "a0_c7_x0": "7aa017f09989b56d17a1307d7ae2d9d86582e9666295ee9e25ef560ee32f975b",
+     "s48_x0_capture": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7"
+    },
+    "pre_tail_key": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7",
+    "recomputed_equals_expected": true,
+    "recomputed_now": "5cfe69a615ae370835a5896eaa6899f1d9973b7adf649437c2ddd94d1d2836ee",
+    "undeclared_key_equals_pre_tail": true
+   }
+  }
+ },
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v28_c8b5a715.json",
+  "sha256": "c8b5a715083c47cdaa1d5af0f24259115682542d159a206365ccf7f76c50edde"
+ },
+ "predecessor_not_edited": "v28 stays as frozen; v29 records the re-certification it called for",
+ "predictions_recorded_before_the_run": {
+  "author_verbatim": "Prediction: SRP1 references (C*, x = 0, smallest unit) unchanged or within 1e-6 relative (SRP1 already at the floor 192/192); at 2 x 2 the fifteen early stops would reach the floor.",
+  "conflict": "the author predicts |dQ| <= 1e-6 |Q_ref| (~650 EUR); the Worker predicts ~3.4e3 EUR (~5e-6). Both predict no fallback (|dQ| < bar_ref); the run discriminates on the 1e-6 band, and only where the terminal-step error bar resolves it",
+  "recorded": "BEFORE the re-certification runs (the W86 smoke, cap 2, was seen first; it tests capture, not values)",
+  "worker": {
+   "W1_systematic_shift": "each cell: dQ = Q_tail - Q_ref ~ -3.4e3 EUR (~ -5e-6 relative) -- the W82 at-floor barrier gap per SRP1 cell (G ~ 3,387-3,466 EUR: TSO ~950-1,020 at compl_inf_tol 5e-4, DSO ~2,435-2,450 at the 1e-4 default) falling by ~500x (TSO) and ~100x (DSO) in the tight certifying cycles (v28 P3); on top of path / stopping differences of the order of the terminal step",
+   "W2_inside_own_bar": "|dQ| < bar_ref on every cell -- NOT material, no fallback (v28 P5, 0.75); bars: C* 25,146.49, unit 25,104.65, x0 9,629.98",
+   "W3_author_band_refuted": "|dQ| > 1e-6 |Q_ref| (~650 EUR) on each cell -- the author's band is refuted (v28 P4, 0.8)",
+   "W4_determinacy": "the -3.4e3 shift is resolvable against the terminal-step error bar (step_ref + step_tail) only where that bar is < 3.4e3: likely at x0 (ref step 219.87) and C* (1,753.61), not guaranteed at the unit (3,702.76); where |dQ| < the bar the sign is indeterminate (CLAUDE.md), not a confirmation",
+   "W5_certifies": "each cell certifies within cap 500 with the tail (v28 P1, 0.85)",
+   "W6_cert_cycle": "certification cycle within +3 of the reference for each cell (v28 P2, 0.6): C* 87, unit 112, x0 132",
+   "W7_R": "R = Q(0) - Q(unit) changes by less than the two-cell bar-sum 34,734.63 (v28 P6, 0.9); committed R = 259,427.77",
+   "W8_solver_side": "v28 P7 (>= 1 tight solve exits acceptable in a cell: 0.35), P8 (tight-cycle median iterations +1 to +6), P10 (retries in the tight cycles at most twice the reference's) carry over unchanged"
+  }
+ },
+ "reference_R": {
+  "R_ref": 259427.76775527,
+  "bar_sum": 34734.63290083408
+ },
+ "references": {
+  "c_star": {
+   "Q_gross": 650912327.1956586,
+   "bar": 25146.48616361618,
+   "campaign": "s47_recert (spec 902f93aa)",
+   "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "certification_cycle": 87,
+   "cycles_run": 87,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star",
+   "eval_key": "070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb",
+   "files_git": {
+    "evaluation_record.json": {
+     "git_clean": true,
+     "git_tracked": true
+    },
+    "per_cycle_record.jsonl": {
+     "git_clean": true,
+     "git_tracked": true
+    }
+   },
+   "files_sha256": {
+    "evaluation_record.json": "6f1bace2e47c024520bf0ddfd35e86c5b9e5964eb3434c73d40365f92404f4bf",
+    "per_cycle_record.jsonl": "73d988d221f099b60cb19ab564f83f4998e22f651a38751f36c69b2dd51eaf3e"
+   },
+   "ok": true,
+   "peak_rss_child_bytes": 2577645568,
+   "rule_ten_terminal_step_over_threshold_production": 0.026940789592534445,
+   "solve_profile_observed": 4528,
+   "status": "certified",
+   "terminal_gross_step_abs": 1753.6139293909073,
+   "terminal_gross_step_over_threshold": 0.026940789592534445,
+   "terminal_objective_tolerance": 65091.4080809588,
+   "terminal_salvage_value": -1.9285001043605776e-34,
+   "wall_child_process_s": 2858.417144060135
+  },
+  "n7_4h_e1": {
+   "Q_gross": 653600033.4601703,
+   "bar": 25104.654562950134,
+   "campaign": "s47_recert (spec 902f93aa)",
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "certification_cycle": 112,
+   "cycles_run": 112,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/bd504ecf5a288d44_n7_4h_e1",
+   "eval_key": "bd504ecf5a288d447e53ef6f7e8090b017d15549b257aa095ff4f95890a06e42",
+   "files_git": {
+    "evaluation_record.json": {
+     "git_clean": true,
+     "git_tracked": true
+    },
+    "per_cycle_record.jsonl": {
+     "git_clean": true,
+     "git_tracked": true
+    }
+   },
+   "files_sha256": {
+    "evaluation_record.json": "d15f5e5ec88d6abacc0d80923ac7ac1ed84cec1791b4262405b6deba5ab976e8",
+    "per_cycle_record.jsonl": "82002e4f2f249bbf6e24d0060a9774952625dc0e62bbaee23889c8336511f439"
+   },
+   "ok": true,
+   "peak_rss_child_bytes": 2574581760,
+   "rule_ten_terminal_step_over_threshold_production": 0.05665180691137927,
+   "solve_profile_observed": 5764,
+   "status": "certified",
+   "terminal_gross_step_abs": 3702.76228928566,
+   "terminal_gross_step_over_threshold": 0.05665180691137927,
+   "terminal_objective_tolerance": 65360.00334601703,
+   "terminal_salvage_value": -7.807295072933878e-53,
+   "wall_child_process_s": 3145.606178998947
+  },
+  "x0": {
+   "Q_gross": 653859461.2279255,
+   "bar": 9629.97833788395,
+   "campaign": "s48_x0_capture (spec 4a50c0e2), C2-baseline declaration",
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "certification_cycle": 132,
+   "cross_check": {
+    "equal": {
+     "Q_gross": true,
+     "bar": true,
+     "candidate_key": true,
+     "certification_cycle": true,
+     "cycles_run": true,
+     "terminal_gross_step_abs": true
+    },
+    "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0",
+    "eval_key": "7aa017f09989b56d17a1307d7ae2d9d86582e9666295ee9e25ef560ee32f975b",
+    "files_sha256": {
+     "evaluation_record.json": "34868965df76a9f1dc62d93d6ce4e2a50ceb4e12f8d3f2aeb4f8c96742bb4835",
+     "per_cycle_record.jsonl": "8663b96213c87dbb69d90790fc4fe771106f2bd838e17d9809f752cdf7a2f01e"
+    },
+    "note": "the pinned A0 x0 record (C3-era spec, no ageing declaration) -- the mixed-era artefact this re-run retires; equal to the C2-declared record on every field"
+   },
+   "cycles_run": 132,
+   "eval_dir": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0",
+   "eval_key": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7",
+   "files_git": {
+    "evaluation_record.json": {
+     "git_clean": true,
+     "git_tracked": true
+    },
+    "per_cycle_record.jsonl": {
+     "git_clean": true,
+     "git_tracked": true
+    }
+   },
+   "files_sha256": {
+    "evaluation_record.json": "a5ca47231348be7da5cb044c5ee4cdd6b03accfc084125a4b8402ae24df98939",
+    "per_cycle_record.jsonl": "8663b96213c87dbb69d90790fc4fe771106f2bd838e17d9809f752cdf7a2f01e"
+   },
+   "ok": true,
+   "peak_rss_child_bytes": 3470491648,
+   "rule_ten_terminal_step_over_threshold_production": 0.003362677294765486,
+   "solve_profile_observed": 6783,
+   "status": "certified",
+   "terminal_gross_step_abs": 219.8718364238739,
+   "terminal_gross_step_over_threshold": 0.003362677294765486,
+   "terminal_objective_tolerance": 65385.94612279256,
+   "terminal_salvage_value": 0.0,
+   "wall_child_process_s": 3193.380092859268
+  }
+ },
+ "schema": "p515_frozen_spec_v29",
+ "smoke_gate": {
+  "campaign_spec_sha256": "37266e0173d45259b7e6f75d40d96780bc928740baf287226eea4b98f6a9f0b1",
+  "failing": [],
+  "git": {
+   "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_smoke/smoke_gate.json": {
+    "git_clean": true,
+    "git_tracked": true
+   },
+   "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_smoke/smoke_manifest_sha256.json": {
+    "git_clean": true,
+    "git_tracked": true
+   }
+  },
+  "manifest": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_smoke/smoke_manifest_sha256.json",
+  "manifest_sha256": "afd9a6cdacf66a5e3701a55d3c20123f7ae6dfcf8fe56b6b88e0b12558b645f5",
+  "pass": true,
+  "path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_smoke/smoke_gate.json",
+  "sha256": "5c7c151741fbfc0377dd59a7e96c5c62ff885afc7051d3c11753d96a14145ce2",
+  "solve_claim": "RECONCILED PER EVENT, NOT GUARD-VERIFIED: the child's in-window guard count {'permitted_solve': 153, 'permitted_exec': 153, 'blocked_solve': 0, 'blocked_exec': 0} reconciled in its record (expected 153); the parent cannot verify a guard in the child process"
+ },
+ "solve_claim": "RECONCILED PER EVENT, NOT GUARD-VERIFIED: the parent (this launcher) cannot arm or verify a guard in a child process; the child's run_admm_arm guard (armed, raising on an undeclared call site) is reconciled per event in its record; the parent's own guard permitted=() verify(0)",
+ "stage": "P5.15 Addendum 46 ruling 7, W86 -- tight-tail SRP1 re-certification (C*, n7_4h_e1, x = 0) through the campaign harness, tail declared {enabled True, compl_inf_tol 1e-6}",
+ "version": 29
+}

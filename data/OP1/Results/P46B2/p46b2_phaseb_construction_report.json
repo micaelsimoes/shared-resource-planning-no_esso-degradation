@@ -1,0 +1,458 @@
+{
+ "stage": "P4.6-B2",
+ "phase": "b",
+ "case": {
+  "spec_dir": "data/OP1",
+  "spec_file": "OP1.json",
+  "dso_connection_node": 9,
+  "network": "case33_3",
+  "year": 2025,
+  "day": "Summer"
+ },
+ "A_provenance": {
+  "phase": "b",
+  "git_head": "606aab719851041d295bca4d0a738041b95298bb",
+  "timestamp_utc": "2026-09-06T14:43:07.684526+00:00",
+  "ess_snet_def_rule_source": "def ess_snet_def_rule(m, e, s_m, s_o, p):\n    # Production-safe numerical normalization (P4.6-B2): kappa_es * g_es == 0,\n    # where kappa_es = 1/S_rated[e] is a FIXED (immutable) build-time Param --\n    # never a symbolic division by a decision variable -- so this is a\n    # constant-multiple reformulation with the identical feasible set as the\n    # original g_es == 0 for any finite positive kappa_es. The B1 load-positive\n    # sign convention is untouched: pnet and qnet enter squared.\n    snet = m.es_sch[e, s_m, s_o, p] - m.es_sdch[e, s_m, s_o, p]\n    kappa = m.ess_snet_def_scale[e]\n    g = snet ** 2 - m.es_pnet[e, s_m, s_o, p] ** 2 - m.es_qnet[e, s_m, s_o, p] ** 2\n    return kappa * g == 0\n",
+  "ess_pnet_rule_source": "def ess_pnet_rule(m, e, s_m, s_o, p):\n    # Canonical ordinary-ESS convention (P4.6-B1): the ordinary ESS is\n    # represented as a LOAD, so positive net power is consumption from the\n    # network (charging) and negative net power is injection (discharging).\n    return m.es_pnet[e,s_m,s_o,p] == m.es_pch[e,s_m,s_o,p] - m.es_pdch[e,s_m,s_o,p]\n",
+  "ess_comp_rule_source": "def ess_comp_rule(m, e, s_m, s_o, p, network, params):\n    sch = m.es_sch[e, s_m, s_o, p]\n    sdch = m.es_sdch[e, s_m, s_o, p]\n    s_rated = network.energy_storages[e].s\n    if params.ess_model == ESS_MODEL_EXACT:\n        return sch * sdch <= EQUALITY_TOLERANCE\n    elif params.ess_model == ESS_MODEL_BILINEAR_RELAXATION:\n        return sch * sdch <= ESS_COMPLEMENTARITY_TOLERANCE * s_rated ** 2\n    elif params.ess_model == ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY:\n        return sch ** 2 + sdch ** 2 <= (sch + sdch) ** 2 + EQUALITY_TOLERANCE\n    else:\n        return pe.Constraint.Skip\n",
+  "ess_soc_rule_source": "def ess_soc_rule(m, e, s_m, s_o, p, network, params):\n\n    ess = network.energy_storages[e]\n    eff_ch = ess.eff_ch\n    eff_dch = ess.eff_dch\n    if p == 0:\n        soc_prev = ess.e_init\n    else:\n        soc_prev = m.es_soc[e, s_m, s_o, p-1]\n\n    delta = eff_ch * m.es_sch[e, s_m, s_o, p] - (m.es_sdch[e, s_m, s_o, p] / eff_dch)\n\n    return m.es_soc[e, s_m, s_o, p] == soc_prev + delta\n",
+  "ess_s_limit_rule_source": "def ess_s_limit_rule(m, e, s_m, s_o, p, network):\n    ess = network.energy_storages[e]\n    return m.es_sch[e, s_m, s_o, p] + m.es_sdch[e, s_m, s_o, p] <= ess.s + EQUALITY_TOLERANCE\n",
+  "ordinary_scale_helper_present": true,
+  "ordinary_scale_helper_source": "def ordinary_ess_snet_def_scale(s_rated, es_id=None):\n    \"\"\"Fixed numerical scale kappa_es = 1/S_rated[e] for `ess_snet_def` (P4.6-B2),\n    based on the installed ordinary-ESS rated apparent power in p.u.\n\n    Unlike shared ESS, ordinary ESS has no zero-capacity gating: its rows are\n    never deactivated, so a (near-)zero rating cannot be given a finite\n    placeholder scale and quietly solved -- it would leave a degenerate\n    nonlinear row in the model. An instantiated ordinary ESS must therefore\n    have strictly positive rated apparent power, and anything else is rejected\n    here at construction time.\"\"\"\n    if s_rated is None or s_rated <= ORDINARY_ESS_MIN_RATED_POWER:\n        raise ValueError(\n            f'Energy Storage {es_id}: invalid ordinary ESS rated apparent power '\n            f's_rated={s_rated} p.u. An instantiated ordinary energy storage must have '\n            f'strictly positive rated apparent power greater than '\n            f'{ORDINARY_ESS_MIN_RATED_POWER} p.u. A network with no ordinary energy '\n            f'storage is fine; a zero-rated one is not.'\n        )\n    return 1.0 / s_rated\n",
+  "shared_sync_helper_still_shared_only": true,
+  "no_ordinary_dual_remapping_helper": true
+ },
+ "B_construction": {
+  "component_local_name": "ess_snet_def",
+  "component_is_ess_snet_def": true,
+  "row_count": 48,
+  "index_tuples": [
+   [
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    0,
+    1
+   ],
+   [
+    0,
+    0,
+    0,
+    2
+   ],
+   [
+    0,
+    0,
+    0,
+    3
+   ],
+   [
+    0,
+    0,
+    0,
+    4
+   ],
+   [
+    0,
+    0,
+    0,
+    5
+   ],
+   [
+    0,
+    0,
+    0,
+    6
+   ],
+   [
+    0,
+    0,
+    0,
+    7
+   ],
+   [
+    0,
+    0,
+    0,
+    8
+   ],
+   [
+    0,
+    0,
+    0,
+    9
+   ],
+   [
+    0,
+    0,
+    0,
+    10
+   ],
+   [
+    0,
+    0,
+    0,
+    11
+   ],
+   [
+    0,
+    0,
+    0,
+    12
+   ],
+   [
+    0,
+    0,
+    0,
+    13
+   ],
+   [
+    0,
+    0,
+    0,
+    14
+   ],
+   [
+    0,
+    0,
+    0,
+    15
+   ],
+   [
+    0,
+    0,
+    0,
+    16
+   ],
+   [
+    0,
+    0,
+    0,
+    17
+   ],
+   [
+    0,
+    0,
+    0,
+    18
+   ],
+   [
+    0,
+    0,
+    0,
+    19
+   ],
+   [
+    0,
+    0,
+    0,
+    20
+   ],
+   [
+    0,
+    0,
+    0,
+    21
+   ],
+   [
+    0,
+    0,
+    0,
+    22
+   ],
+   [
+    0,
+    0,
+    0,
+    23
+   ],
+   [
+    1,
+    0,
+    0,
+    0
+   ],
+   [
+    1,
+    0,
+    0,
+    1
+   ],
+   [
+    1,
+    0,
+    0,
+    2
+   ],
+   [
+    1,
+    0,
+    0,
+    3
+   ],
+   [
+    1,
+    0,
+    0,
+    4
+   ],
+   [
+    1,
+    0,
+    0,
+    5
+   ],
+   [
+    1,
+    0,
+    0,
+    6
+   ],
+   [
+    1,
+    0,
+    0,
+    7
+   ],
+   [
+    1,
+    0,
+    0,
+    8
+   ],
+   [
+    1,
+    0,
+    0,
+    9
+   ],
+   [
+    1,
+    0,
+    0,
+    10
+   ],
+   [
+    1,
+    0,
+    0,
+    11
+   ],
+   [
+    1,
+    0,
+    0,
+    12
+   ],
+   [
+    1,
+    0,
+    0,
+    13
+   ],
+   [
+    1,
+    0,
+    0,
+    14
+   ],
+   [
+    1,
+    0,
+    0,
+    15
+   ],
+   [
+    1,
+    0,
+    0,
+    16
+   ],
+   [
+    1,
+    0,
+    0,
+    17
+   ],
+   [
+    1,
+    0,
+    0,
+    18
+   ],
+   [
+    1,
+    0,
+    0,
+    19
+   ],
+   [
+    1,
+    0,
+    0,
+    20
+   ],
+   [
+    1,
+    0,
+    0,
+    21
+   ],
+   [
+    1,
+    0,
+    0,
+    22
+   ],
+   [
+    1,
+    0,
+    0,
+    23
+   ]
+  ],
+  "total_constraint_data_count": 7921,
+  "constraint_component_names": [
+   "branch_flow_limit",
+   "branch_flow_limit_ji",
+   "ess_comp",
+   "ess_pch_link",
+   "ess_pdch_link",
+   "ess_phi_lower",
+   "ess_phi_upper",
+   "ess_pnet_def",
+   "ess_s_limit",
+   "ess_snet_def",
+   "ess_soc_def",
+   "ess_soc_final",
+   "ess_soc_limits",
+   "flex_energy_balance_p",
+   "gen_pf_lower",
+   "gen_pf_profile",
+   "gen_pf_upper",
+   "node_balance_p",
+   "node_balance_q",
+   "pij_def",
+   "pji_def",
+   "qij_def",
+   "qji_def",
+   "r_sqr_def",
+   "sess_comp",
+   "sess_pch_link",
+   "sess_pdch_link",
+   "sess_phi_limit_lower",
+   "sess_phi_limit_upper",
+   "sess_pnet_def",
+   "sess_s_limit",
+   "sess_snet_def",
+   "sess_soc_def",
+   "sess_soc_final",
+   "sess_soc_limit_lower",
+   "sess_soc_limit_upper",
+   "sg_capability",
+   "shared_energy_storage_e_sensitivities",
+   "shared_energy_storage_s_sensitivities",
+   "voltage_mag_def",
+   "voltage_mag_sqr_def",
+   "voltage_magnitude_lower_cons",
+   "voltage_magnitude_upper_cons",
+   "voltage_product_imag_def",
+   "voltage_product_real_def",
+   "voltage_product_real_nonnegative",
+   "voltage_setpoint_cons"
+  ],
+  "has_replacement_component": false,
+  "scale_component_present": true,
+  "units": {
+   "1": {
+    "es_id": 1,
+    "bus": 23,
+    "s_rated_pu": 0.005,
+    "s_rated_MVA": 0.5,
+    "expected_kappa": 200.0,
+    "kappa_in_model": 200.0,
+    "kappa_matches_expected": true,
+    "scale_component_is_param": true,
+    "scale_is_mutable": false,
+    "scale_is_plain_numeric_data": true,
+    "scale_is_not_a_variable": true
+   },
+   "2": {
+    "es_id": 2,
+    "bus": 18,
+    "s_rated_pu": 0.005,
+    "s_rated_MVA": 0.5,
+    "expected_kappa": 200.0,
+    "kappa_in_model": 200.0,
+    "kappa_matches_expected": true,
+    "scale_component_is_param": true,
+    "scale_is_mutable": false,
+    "scale_is_plain_numeric_data": true,
+    "scale_is_not_a_variable": true
+   }
+  },
+  "equivalence_points": [
+   {
+    "point": "on_surface",
+    "g_es": 0.0,
+    "constraint_body": 0.0,
+    "body_equals_kappa_times_g": true,
+    "body_equals_g": true,
+    "zero_iff_zero": true,
+    "sign_preserved": true
+   },
+   {
+    "point": "positive_residual",
+    "g_es": 3e-06,
+    "constraint_body": 0.0006000000000000001,
+    "body_equals_kappa_times_g": true,
+    "body_equals_g": false,
+    "zero_iff_zero": true,
+    "sign_preserved": true
+   },
+   {
+    "point": "negative_residual",
+    "g_es": -3e-06,
+    "constraint_body": -0.0006000000000000001,
+    "body_equals_kappa_times_g": true,
+    "body_equals_g": false,
+    "zero_iff_zero": true,
+    "sign_preserved": true
+   }
+  ],
+  "body_expression_sample": "200.0*((es_sch[0,0,0,0] - es_sdch[0,0,0,0])**2 - es_pnet[0,0,0,0]**2 - es_qnet[0,0,0,0]**2)",
+  "body_contains_division_by_variable": false,
+  "ess_comp_row_count": 48,
+  "ess_s_limit_row_count": 48,
+  "ess_soc_def_row_count": 48,
+  "ess_pnet_def_row_count": 48
+ },
+ "C_zero_capacity": {
+  "no_ordinary_ess": {
+   "constructed": true,
+   "ess_snet_def_rows": 0,
+   "rows_are_zero": true,
+   "exception": null
+  },
+  "zero_rated": {
+   "rejected": true,
+   "exception_type": "ValueError",
+   "message": "Energy Storage 1: invalid ordinary ESS rated apparent power s_rated=0.0 p.u. An instantiated ordinary energy storage must have strictly positive rated apparent power greater than 1e-10 p.u. A network with no ordinary energy storage is fine; a zero-rated one is not.",
+   "mentions_rated_power": true,
+   "identifies_energy_storage": true
+  },
+  "below_tolerance_rated": {
+   "rejected": true,
+   "exception_type": "ValueError",
+   "message": "Energy Storage 1: invalid ordinary ESS rated apparent power s_rated=1e-14 p.u. An instantiated ordinary energy storage must have strictly positive rated apparent power greater than 1e-10 p.u. A network with no ordinary energy storage is fine; a zero-rated one is not.",
+   "mentions_rated_power": true,
+   "identifies_energy_storage": true
+  }
+ }
+}

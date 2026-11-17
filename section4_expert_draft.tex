@@ -1,0 +1,496 @@
+% ====================================================================================================================
+% SECTION 4 — RESULTS: EXPERT FRAME (2026-10-08)
+% Replaces main.tex l. 1126–1448 (from "\section{Results}" to the line before the CONCLUSIONS banner).
+% Sources: frozen tables frozen_step6_tables_v1_590088fe.json via export/T1–T11.tex (numbers copied verbatim, rounded
+% as in export/README.md), export/figures/captions.md (W165), export/paragraphs_v5.md (ii)–(iv) and the accepted
+% sentences, STEP6_REVISION_MAP.md §B.4, section2_expert_draft.tex Part D.2 (salvage).
+% Conventions: every number in this section is a frozen-table cell or a named record; "determinate" and "within
+% resolution" as defined in Subsection 2.2.7; gross Q (settlement excluded) primary, net of salvage beside.
+% Figure files to upload to Overleaf from data/SRP1/Results/P515S53/w160_step6_frozen/export/figures/:
+%   fig1_breakeven.pdf, fig2_flexibility_ladder.pdf, fig3_ageing_arms.pdf, fig4_q_versus_cycle.pdf, fig5_benchmark.pdf
+% Author slots are marked "% [AUTHOR — write]" with the facts to use; expert text is complete where no slot is marked.
+% [CONFIRM — W177] marks statements the Planner checks against code or records before the round closes.
+% Labels introduced: sec:results (kept), subsec:res_baseline, subsec:res_breakeven, subsec:res_degradation,
+%   subsec:res_coordination, subsec:res_multiscenario, subsec:res_sensitivities, subsec:res_certification,
+%   subsec:res_limitations, subsec:res_insights; tab:res_value_ladder, tab:res_breakeven, tab:res_flex_ladder,
+%   tab:res_energy_ladder_m2, tab:res_ageing, tab:res_benchmark, tab:res_multiscenario, tab:res_year_ladder,
+%   tab:res_discount; fig:res_breakeven, fig:res_flex_ladder, fig:res_ageing, fig:res_benchmark, fig:res_q_cycle;
+%   eq:salvage_credit, eq:salvage_remaining_life.
+% ====================================================================================================================
+
+\section{Results}
+\label{sec:results}
+
+\textcolor{blue}{
+    This section reports the planning results of the revised method on the single-scenario instance of Section~\ref{sec:case_studies} and, in Subsection~\ref{subsec:res_multiscenario}, on the $3 \times 3$ multi-scenario instance. Every reported number is a certified recourse evaluation or a difference between two of them; a difference is called determinate or within resolution by the rule of Subsection~\ref{subsubsec:certification}, and an evaluation that did not certify by its cap enters a comparison in the uncertified form of that subsection, with its bar stated. The objective is the gross operational cost $Q$ of Subsection~\ref{subsubsec:certification}, with the interface settlement excluded; the value of a plan is $Q(\boldsymbol{0}) - Q(\boldsymbol{x})$, and a plan pays when its value exceeds its investment cost $I(\boldsymbol{x})$ of \eqref{eq:investment_cost_generic}. Amounts are in thousands of euro over the 15-year horizon, discounted at 2\,\% unless stated otherwise. Where a net column appears, it is net of a terminal salvage credit computed after the evaluation from each installation's remaining calendar life and terminal state of health,
+}
+\textcolor{blue}{
+    \begin{equation}
+        C^\text{Salvage}(\boldsymbol{x}) =
+        \sum_{e \in E^S} \sum_{y^\text{Inv} \in Y}
+        \frac{I_{e,y^\text{Inv}}}{(1+r)^{\,y^\text{End}-y_0}}
+        \;\frac{T^\text{Rem}_{e,y^\text{Inv}}}{T^\text{Cal}_{e,y^\text{Inv}}}
+        \; SoH_{e,y^\text{Inv},y^\text{End}},
+        \label{eq:salvage_credit}
+    \end{equation}
+    \begin{equation}
+        T^\text{Rem}_{e,y^\text{Inv}} = \max\left\{0,\; y^\text{Inv} + T^\text{Cal}_{e,y^\text{Inv}} - y^\text{End}\right\},
+        \label{eq:salvage_remaining_life}
+    \end{equation}
+}
+\textcolor{blue}{
+    where $I_{e,y^\text{Inv}} = \sum_{c \in \Omega_C} \omega_c \big( c^{\text{Inv,S}}_{y^\text{Inv},c} S^{\text{Inv}}_{e,y^\text{Inv}} + c^{\text{Inv,E}}_{y^\text{Inv},c} E^{\text{Inv}}_{e,y^\text{Inv}} \big)$ is the expected undiscounted cost of the cohort installed at node $e$ in year $y^\text{Inv}$, $y^\text{End}$ the end of the planning horizon, $T^\text{Rem}$ its remaining calendar life at $y^\text{End}$ and $SoH_{e,y^\text{Inv},y^\text{End}}$ its terminal state of health. The credit is reported, not optimized: the recourse does not see it, no plan is selected for it, and the net value is $Q(\boldsymbol{0}) - Q(\boldsymbol{x}) + C^\text{Salvage}(\boldsymbol{x})$.
+    % [CONFIRM — W177] eq:salvage_credit against _get_terminal_salvage_value_*: (a) y^End is the end of the last block
+    % (2035 + Y_y), not the last representative year; (b) the SoH is the terminal SoH of the last block; (c) the cohort
+    % cost is the expected (probability-weighted) one; (d) the discount exponent is y^End − y_0.
+}
+
+% --------------------------------------------------------------------------------------------------------------------
+\subsection{\textcolor{blue}{Planning Result at the Baseline}}
+\label{subsec:res_baseline}
+
+% [AUTHOR — write] One or two paragraphs. The facts, all from Table~\ref{tab:res_value_ladder} and Table~\ref{tab:res_multiscenario}:
+%  - The search of Algorithm 1 returned the plan without shared storage, x = 0, at the single-scenario instance; its
+%    fourteen admissible unit neighbours were all evaluated and each is worse beyond the search resolution (§2.1 says
+%    this; here say what it means: no unit of storage at any node, in any year, pays at the baseline).
+%  - Headline: the reference unit (node 7, 0.25 MVA / 1 MWh, 2025) has value 253.5 k€ against an investment cost of
+%    318.0 k€: value − I = −64.4 k€, 4.93 × its determinacy threshold of 13.1 k€ (T1 CHECK row = T7 row 2 %).
+%  - The ladder (Table~\ref{tab:res_value_ladder}): every evaluated plan loses determinately — 4.39 × to 45.94 × its
+%    threshold or bar; the loss grows with size, 64.4 → 347.2 k€ from 1 to 5 MWh at 4 h, 114.1 → 616.6 k€ at 2 h
+%    (the 2 h plans carry twice the converter cost for the same energy); the 0.5 MWh unit at node 5 (the smallest
+%    admissible plan) loses 49.7 k€ (3.94 ×). Say "affine in size" only as it is read from Fig.~\ref{fig:res_breakeven}:
+%    the fit of Subsection~\ref{subsec:res_breakeven}.
+%  - Two-node plans (C rows) lose more than their parts would: 102.1 k€ (nodes 5 and 9, 2025), 93.9 k€ (nodes 5 and 7,
+%    2030; 84.0 k€ net).
+%  - Net of salvage the picture is the same for the 2025 plans (identical d net, since all cohorts reach y^End with the
+%    same remaining life); it differs for the 2030 plan (93.9 gross vs 84.0 net), which is Subsection~\ref{subsec:res_sensitivities}.
+%  - Multi-scenario instance: x = 0 as well, value − I = −81.3 k€ against a resolution of 18.0 k€ (4.52 ×); the
+%    detail is Subsection~\ref{subsec:res_multiscenario}.
+%  - Do NOT write "optimal" in the global sense, "smallest unit" for the 0.25 MVA / 1 MWh unit (the lattice admits
+%    0.5 MWh), or "the budget is exhausted".
+%  - Wording check for the letter: it calls the 0.25 MVA / 1 MWh unit "the smallest unit"; the smallest admissible
+%    plan is 0.25 MVA / 0.5 MWh (the C row). Use "the reference unit" here and align the letter at its final pass.
+
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{Candidate plans against the plan without storage at the single-scenario instance (base flexibility price, investment year 2025 unless stated). $F(\boldsymbol{x}) - F(\boldsymbol{0}) = I(\boldsymbol{x}) - \text{value}$, gross; threshold $\max\{3 \times \text{larger band}, 2\tau\}$ between certified evaluations, or the uncertified bar $3 \max\{|t_{\text{sum}}|, |s|\}$ where the plan's evaluation is uncertified (marked $^{u}$); $\times$ = difference over threshold or bar. $^{f}$: certificate flagged (a turning point on a non-clean cycle); in the uncertified form beside, bar 70.7~k\euro, $2.94\times$, determinate. Net of the salvage credit the differences of the 2025 plans are unchanged; the 2030 plan's is 84.0~k\euro{} ($7.00\times$ gross, $6.27\times$ net).}}
+    \label{tab:res_value_ladder}
+    \scriptsize\setlength{\tabcolsep}{4pt}
+    \begin{tabular}{l c r r r l}
+        \toprule
+        Plan (node; $S^{\text{Inv}}$, $E^{\text{Inv}}$) & Duration & $F(\boldsymbol{x}) - F(\boldsymbol{0})$ (k\euro) & Threshold or bar (k\euro) & $\times$ & Verdict \\
+        \midrule
+        Node 5; 0.25~MVA, 0.5~MWh            & 2~h & 49.7  & 12.6 & 3.94  & determinate \\
+        Node 5; 0.25~MVA, 1~MWh              & 4~h & 58.0  & 13.2 & 4.39  & determinate \\
+        Node 7; 0.25~MVA, 1~MWh (reference)  & 4~h & 64.4  & 13.1 & 4.93  & determinate \\
+        Node 7; 0.5~MVA, 2~MWh               & 4~h & 135.5 & 13.4 & 10.13 & determinate \\
+        Node 7; 0.75~MVA, 3~MWh$^{f}$        & 4~h & 208.3 & 12.6 & 16.49 & determinate \\
+        Node 7; 1~MVA, 4~MWh                 & 4~h & 274.0 & 13.6 & 20.19 & determinate \\
+        Node 7; 1.25~MVA, 5~MWh$^{u}$        & 4~h & 347.2 & 23.9 & 14.52 & determinate \\
+        Node 7; 0.5~MVA, 1~MWh               & 2~h & 114.1 & 12.6 & 9.03  & determinate \\
+        Node 7; 1~MVA, 2~MWh$^{u}$           & 2~h & 231.7 & 24.2 & 9.56  & determinate \\
+        Node 7; 1.5~MVA, 3~MWh$^{u}$         & 2~h & 361.7 & 41.4 & 8.74  & determinate \\
+        Node 7; 2~MVA, 4~MWh                 & 2~h & 494.4 & 13.4 & 36.91 & determinate \\
+        Node 7; 2.5~MVA, 5~MWh               & 2~h & 616.6 & 13.4 & 45.94 & determinate \\
+        Node 9; 0.25~MVA, 1~MWh              & 4~h & 61.1  & 12.6 & 4.84  & determinate \\
+        Node 9; 0.75~MVA, 3~MWh              & 4~h & 199.1 & 13.5 & 14.78 & determinate \\
+        Nodes 5 and 9; 0.25~MVA, 0.5~MWh each        & 2~h & 102.1 & 12.6 & 8.09 & determinate \\
+        Nodes 5 and 7; 0.25~MVA, 0.5~MWh each (2030) & 2~h & 93.9  & 13.4 & 7.00 & determinate \\
+        \bottomrule
+    \end{tabular}
+    % Sources: T1 rows C:y2025__n5_p0.25_e0.5, B:n5_4h_e1, B:n7_4h_e1 (= CHECK:headline), B:n7_4h_e2 … e5, B:n7_2h_e1 … e5,
+    % B:n9_4h_e1, B:n9_4h_e3, C:y2025__n5_p0.25_e0.5__n9_p0.25_e0.5, C:y2030__n5_p0.25_e0.5__n7_p0.25_e0.5 (d gross,
+    % threshold / bar, × gross, d net, verdict). The S column is E over the duration (0.25 MVA per MWh at 4 h, 0.5 at 2 h).
+    % [CONFIRM — W177] the S/E/duration of each B and C cell against its candidate record (the cell names carry
+    % duration and E only).
+\end{table}
+
+% --------------------------------------------------------------------------------------------------------------------
+\subsection{\textcolor{blue}{Break-even Conditions}}
+\label{subsec:res_breakeven}
+
+% [AUTHOR — write] Three paragraphs: (a) the energy cost, (b) the flexibility price, (c) the plan found at twice the
+% flexibility price. Facts:
+%  (a) Fig.~\ref{fig:res_breakeven} and Table~\ref{tab:res_breakeven}. The value of the node-7 plans is fitted as
+%      value = a + bE + cP on the 4 h and 2 h ladders; the break-even energy cost is e* = b + c/4 − p/4 with p the
+%      power cost per MVA (256,320 €/MVA). Certified-only fit (6 points): e* = 183,080 €/MWh; the banded fit (all 10
+%      points, the four uncertified or flagged evaluations as intervals): 171,310–192,560 €/MWh over every corner of
+%      the intervals, against the energy cost of 253,880 €/MWh: the margin is at least 61,320 €/MWh (at most 82,570).
+%      The slope b + c/4 agrees between the two fits within 0.47 % at the midpoints (4.76 / 3.83 % at the corners).
+%      With the flagged certificate kept as certified the banded range is 173,490–190,380 €/MWh (W145 row). State the
+%      fit as what it is: an affine description of the evaluated ladder, not a model of value.
+%  (b) Fig.~\ref{fig:res_flex_ladder} and Table~\ref{tab:res_flex_ladder}. Accepted sentence 1, verbatim: "the unit
+%      pays at a flexibility price 1.75 and 2 times the base price (+14.2 k€ and +46.3 k€, determinate) and breaks even
+%      between 1.5 and 1.75 (≈ 1.63 by linear interpolation)". At 1.5 × the unit's evaluation was refused by the gap
+%      clause; the difference (−14.5 k€) is within the uncertified bar (18.8 k€, 0.77 ×), so the sign at 1.5 × is not
+%      claimed.
+%  (c) Table~\ref{tab:res_energy_ladder_m2}: at 2 × the base price the value of the node-7, 4 h plans exceeds their
+%      cost at every size evaluated, 46.3 k€ (1 MWh) to 228.4 k€ (5 MWh); the increments per MWh (46.5, 41.0, 42.8,
+%      51.8 k€) are each determinate (the second MWh against its threshold of 12.8 k€, the others against the
+%      uncertified bars of 26.5–27.7 k€). The search at this price returned a two-node plan in 2030 — node 5
+%      0.25 MVA / 0.5 MWh and node 7 1 MVA / 3 MWh [CONFIRM — W177: the plan behind ref:5ca4f86c] — whose evaluation
+%      did not certify (gap clause; gap 9.2 k€, slack 1.5 k€). Of its 61 admissible unit neighbours seventeen were
+%      evaluated and none is determinately better; of the thirteen re-evaluated under the certification rule, the plan
+%      is better than twelve (seven determinately, five within resolution) and within resolution of the thirteenth
+%      (§2.1 states the same count; T1 L rows: differences +5.6 to +94.3 k€, the thirteenth −6.1 k€ against a bar of
+%      27.9 k€). The demonstration is that the search finds a plan when one pays; the plan's own margin over x = 0 at
+%      this price is not a frozen claim and is not stated.
+%  - Do not state an optimum at 2 ×; the two-node plan is uncertified and the box was not exhausted (44 of 61 never
+%    evaluated).
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=1.00\textwidth]{fig1_breakeven.pdf}
+    \caption{\textcolor{blue}{Break-even of the energy cost at node 7 (investment year 2025). Value minus investment cost of the evaluated plans against installed energy $E$: (a) 4~h plans, (b) 2~h plans. Filled circles: certified evaluations (their band is not visible at this scale); open squares: evaluations uncertified at their cap, with the bar $3\max\{|t_{\text{sum}}|, |s|\}$ (thick) and the interval the banded fit uses, bar $+ 2\tau$ (thin); open diamond: a certified evaluation entered as an interval because its certificate is flagged. Lines: the affine fit value $= a + bE + cP$ at the panel's duration, on the certified points only ($n = 6$) and on all points with the intervals at their midpoints ($n = 10$). (c) The break-even energy cost $e^{*} = b + c/4 - p/4$ of each fit against the energy cost of 253.88~k\euro/MWh: certified-only 183.08~k\euro/MWh; banded 171.31--192.56~k\euro/MWh over every corner of the intervals; the margin is at least 61.32~k\euro/MWh. Gross operational cost, settlement excluded.}}
+    \label{fig:res_breakeven}
+\end{figure}
+
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{Break-even energy cost at node 7 from the affine fit value $= a + bE + cP$; $e^{*} = b + c/4 - p/4$ with the power cost $p = 256{,}320$~\euro/MVA; energy cost 253{,}880~\euro/MWh. Ranges are over every corner of the intervals of the uncertified evaluations; the agreement column is the relative difference of $b + c/4$ between the two fits at the interval midpoints.}}
+    \label{tab:res_breakeven}
+    \scriptsize\setlength{\tabcolsep}{4pt}
+    \begin{tabular}{l c r c c r}
+        \toprule
+        Fit & $n$ certified & $e^{*}$ certified-only & $e^{*}$ banded & Margin & Agreement (\%) \\
+            &               & (\euro/MWh)            & (\euro/MWh)    & (\euro/MWh) & \\
+        \midrule
+        Four intervals (reported)                         & 6 & 183{,}080 & 171{,}310--192{,}560 & 61{,}320--82{,}570 & 0.47 \\
+        Three intervals (flagged certificate kept)        & 7 & 182{,}700 & 173{,}490--190{,}380 & 63{,}500--80{,}390 & 0.31 \\
+        \bottomrule
+    \end{tabular}
+    % Sources: T3 rows "conservative A64 (4 intervals)" and "committed W145 (3 intervals)".
+\end{table}
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.60\textwidth]{fig2_flexibility_ladder.pdf}
+    \caption{\textcolor{blue}{Value minus investment cost of the reference unit (node 7, 0.25~MVA / 1~MWh, 2025) against the multiplier $m$ of the base flexibility price; value $= Q(\boldsymbol{0}) - Q(\text{unit})$, both evaluated at the same $m$. Error bars: the determinacy threshold of each difference between certified evaluations, $\max\{3 \times \text{larger band}, 2\tau\}$, or the uncertified bar where one evaluation is uncertified (open square, $m = 1.5$: the unit's evaluation was refused by the gap clause). A difference is determinate when its bar does not reach zero. The unit pays at $m = 1.75$ and $2$ ($+14.2$~k\euro, $1.32\times$ its threshold; $+46.3$~k\euro, $3.77\times$) and loses 64.4~k\euro{} at the base price ($4.93\times$). Gross operational cost, settlement excluded.}}
+    \label{fig:res_flex_ladder}
+\end{figure}
+
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{The reference unit under the flexibility-price ladder (node 7, 0.25~MVA / 1~MWh, 2025; both evaluations of each row at the same multiplier $m$). Threshold between certified evaluations, or the uncertified bar where the unit's evaluation is uncertified ($^{u}$).}}
+    \label{tab:res_flex_ladder}
+    \scriptsize\setlength{\tabcolsep}{4pt}
+    \begin{tabular}{l r r r l}
+        \toprule
+        $m$ & Value $- I$ (k\euro) & Threshold or bar (k\euro) & $\times$ & Verdict \\
+        \midrule
+        1.00       & $-$64.4 & 13.1 & 4.93 & determinate \\
+        1.50$^{u}$ & $-$14.5 & 18.8 & 0.77 & within the uncertified bar \\
+        1.75       & 14.2    & 10.8 & 1.32 & determinate \\
+        2.00       & 46.3    & 12.3 & 3.77 & determinate \\
+        \bottomrule
+    \end{tabular}
+    % Sources: T1 CHECK:headline_V_minus_I_settled, H:m1.5:value_minus_I, H:m2:value_minus_I; T10 H:m1.75:value_minus_I.
+\end{table}
+
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{Energy ladder at twice the base flexibility price (node 7, 4~h plans, 2025): value minus investment cost of each plan, and the increment from the previous size. Threshold between certified evaluations, or the uncertified bar where an evaluation is uncertified ($^{u}$); $^{f}$: flagged certificate (in the uncertified form beside: 15.9~k\euro, $11.12\times$ for the plan; 27.7~k\euro, $1.55\times$ and 26.5~k\euro, $1.95\times$ for the increments around it, all determinate).}}
+    \label{tab:res_energy_ladder_m2}
+    \scriptsize\setlength{\tabcolsep}{3pt}
+    \begin{tabular}{l r r r l r r r l}
+        \toprule
+        $E^{\text{Inv}}$ (MWh) & Value $- I$ (k\euro) & Thr./bar (k\euro) & $\times$ & Verdict & Increment (k\euro) & Thr./bar (k\euro) & $\times$ & Verdict \\
+        \midrule
+        1         & 46.3  & 12.3 & 3.77  & determinate & ---  & ---  & ---  & --- \\
+        2         & 92.8  & 12.8 & 7.26  & determinate & 46.5 & 12.8 & 3.64 & determinate \\
+        3$^{u}$   & 133.8 & 27.7 & 4.83  & determinate & 41.0 & 27.7 & 1.48 & determinate \\
+        4$^{f}$   & 176.6 & 9.7  & 18.14 & determinate & 42.8 & 27.7 & 1.55 & determinate \\
+        5$^{u}$   & 228.4 & 26.5 & 8.60  & determinate & 51.8 & 26.5 & 1.95 & determinate \\
+        \bottomrule
+    \end{tabular}
+    % Sources: T1 H:m2:value_minus_I, I:m2:e2_value_minus_I, J:e3_value_minus_I, J:e4_value_minus_I, J:e5_value_minus_I;
+    % increments I:m2:second_MWh, J:e2_to_e3, J:e3_to_e4, J:e4_to_e5. The 1 MWh row is the m = 2 row of
+    % Table~\ref{tab:res_flex_ladder}. [CONFIRM — W177] the I/J cells are the node-7 4 h plans of 2–5 MWh (candidate
+    % keys cc4eb5df, fb21d822, 11725e45, cab98853 match the B cells n7_4h_e2 … e5).
+\end{table}
+
+% --------------------------------------------------------------------------------------------------------------------
+\subsection{\textcolor{blue}{Degradation Decides the Investment}}
+\label{subsec:res_degradation}
+
+% [AUTHOR — write] Two paragraphs around Fig.~\ref{fig:res_ageing} and Table~\ref{tab:res_ageing}; the plan is held
+% fixed at the reference unit under every arm (no re-optimisation per arm; say so). Facts:
+%  - Accepted sentence 3, verbatim: "without ageing the unit is at break-even (−4.1 k€, within resolution); with the
+%    baseline calibration and the 0.70 floor it loses 31.6–73.7 k€ across the aged arms, determinately".
+%  - Row by row (value − I; ×): baseline −64.4 (4.93); cycling only −31.6 (2.50); retention 50 % −73.7 (5.74);
+%    retention 50 %, mid-block −65.9 (5.12); datasheet 8,000 cycles −45.2 (3.58); no ageing −4.1 (0.32, within
+%    resolution); baseline with the 0.50 floor −59.5 (4.71).
+%  - Against the retention-50 % arm (T1 "vs C3" rows): cycling only +42.1 (3.28 ×, determinate); datasheet +28.5
+%    (2.22 ×, determinate); no ageing +69.6 (5.41 ×, determinate); baseline +9.3 (0.71 ×, within resolution);
+%    mid-block +7.9 (0.61 ×, within resolution). So the calendar fade costs as much as reading the datasheet count to
+%    50 % retention: the two are not resolved from each other.
+%  - The 0.70 floor binds in 2035 under the baseline, the retention-50 % arm and its mid-block variant; never under
+%    cycling only, the datasheet arm and no ageing. Available-energy fraction (PV-weighted) 0.786–1.000; EFC/day
+%    0.76–1.29.
+%  - Accepted sentence 2, verbatim: "lowering the end-of-life floor from 0.70 to 0.50 releases cycling in every year
+%    (EFC/day +0.18, +0.20, +0.27) but adds only +4.9 k€, within resolution; the unit still loses 59.5 k€
+%    determinately, so the floor is not what makes storage uneconomic at SRP1" — in the manuscript write "at the
+%    single-scenario instance" for "at SRP1". At the 0.50 floor: EFC/day 1.19 / 1.10 / 0.91 (2025 / 2030 / 2035);
+%    2035 terminal SoH 0.677; the floor never binds.
+%  - The elasticity ε_AE (1.04–1.85 on the three resolvable arms at the 0.70 floor) belongs to the limitations
+%    paragraph as a hypothesis, not here as a result.
+%  - Do not write "the floor never binds" generally (erratum of the letter's first draft); the binding years are in
+%    the table.
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.60\textwidth]{fig3_ageing_arms.pdf}
+    \caption{\textcolor{blue}{Value minus investment cost of the reference unit (node 7, 0.25~MVA / 1~MWh, 2025) under each ageing calibration of Table~\ref{tab:ageing_calibrations}, the plan held fixed; error bars: the determinacy threshold $\max\{3 \times \text{larger band}, 2\tau\}$ of the difference against the plan without storage. Right: the first year in which the 0.70 state-of-health floor binds (never: not within the horizon). Without ageing the unit is at break-even ($-4.1$~k\euro, within resolution); under every aged arm it loses 31.6--73.7~k\euro, determinately. Gross operational cost, settlement excluded.}}
+    \label{fig:res_ageing}
+\end{figure}
+
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{The reference unit (node 7, 0.25~MVA / 1~MWh, 2025) under the ageing calibrations of Table~\ref{tab:ageing_calibrations}, the plan held fixed. Value $= Q(\boldsymbol{0}) - Q(\text{unit})$ under the same arm; $I = 318.0$~k\euro; threshold $\max\{3 \times \text{larger band}, 2\tau\}$. $AE$: PV-weighted available-energy fraction; EFC: equivalent full cycles per day, PV-weighted. The last row changes the floor only.}}
+    \label{tab:res_ageing}
+    \scriptsize\setlength{\tabcolsep}{3pt}
+    \begin{tabular}{l r r r r l l r r}
+        \toprule
+        Calibration & Value (k\euro) & Value $- I$ (k\euro) & Threshold (k\euro) & $\times$ & Verdict & Floor binds & $AE$ & EFC/day \\
+        \midrule
+        Baseline (cycling + calendar)   & 253.5 & $-$64.4 & 13.1 & 4.93 & determinate       & 2035  & 0.793 & 0.86 \\
+        Cycling only                    & 286.3 & $-$31.6 & 12.6 & 2.50 & determinate       & never & 0.888 & 1.19 \\
+        Retention 50\,\%                & 244.2 & $-$73.7 & 12.8 & 5.74 & determinate       & 2035  & 0.786 & 0.76 \\
+        Retention 50\,\%, mid-block     & 252.1 & $-$65.9 & 12.9 & 5.12 & determinate       & 2035  & 0.836 & 0.76 \\
+        Datasheet 8\,000 cycles         & 272.8 & $-$45.2 & 12.6 & 3.58 & determinate       & never & 0.834 & 1.13 \\
+        No ageing                       & 313.8 & $-$4.1  & 12.9 & 0.32 & within resolution & never & 1.000 & 1.29 \\
+        Baseline, 0.50 floor            & ---   & $-$59.5 & 12.6 & 4.71 & determinate       & never & ---   & --- \\
+        \bottomrule
+    \end{tabular}
+    % Sources: T8 rows C2_calfade, C2, C3_unit, C3_midblock, C4, no_ageing (value, value − I, threshold, ×, verdict,
+    % floor binds, AE, EFC/day); T10 row E:soh050:value_minus_I (−59.5, 12.6, 4.71) and its caption (floor never binds;
+    % EFC/day 1.19 / 1.10 / 0.91). The arm names follow Table~\ref{tab:ageing_calibrations}: C2_calfade = Baseline,
+    % C2 = Cycling only, C3_unit = Retention 50 %, C3_midblock = Retention 50 %, mid-block, C4 = Datasheet 8,000 cycles.
+    % [CONFIRM — W177] the value and AE / EFC of the 0.50-floor cell (e_soh050) if the author wants them filled.
+\end{table}
+
+% --------------------------------------------------------------------------------------------------------------------
+\subsection{\textcolor{blue}{Value of Coordination}}
+\label{subsec:res_coordination}
+
+% [AUTHOR — write] Two or three paragraphs around Fig.~\ref{fig:res_benchmark} and Table~\ref{tab:res_benchmark}; the
+% arrangements are defined in Section~\ref{sec:case_settings}. Facts:
+%  - At the plan without storage, coordinated operation costs 653,873.7 k€ (gross, settlement excluded; band 71.9 k€);
+%    the price-taker arrangement 744,770.3 k€ (band 0.0 over its three starts) and the passive arrangement
+%    895,049.9 k€ (band 25.8 k€). Coordination beats the best static arrangement by 90,896.6 k€, 13.9 % of the
+%    coordinated cost and 1,264 times the larger band; against the passive arrangement the benefit is 241,176.2 k€
+%    (36.9 %, derived from the recorded values).
+%  - Decomposition of the 90,896.6 k€ by agent (W130): the transmission system 77.2 % — conventional energy, with
+%    0.81 TWh of transmission renewables left curtailed by the price-taker arrangement (TN curtailment 807.6 GWh
+%    price-taker, 781.7 GWh passive, day-weighted, best start of each) — and the distribution systems' flexibility 22.8 % (DN curtailment
+%    0.6 GWh price-taker, 201.2 GWh passive).
+%  - Accepted sentence 4, verbatim (the mechanism sentence; mandatory): "the benefit is the value of dispatching DN
+%    flexibility against the TN's marginal value λ_t rather than the wholesale price π_t; coordination — or a
+%    locational real-time signal computed by the TSO, which is coordination by another name — delivers it, a static
+%    rule with wholesale exposure does not."
+%  - The static arrangements rest on the no-reverse-flow rule; without any interface rule (the unconstrained sweep,
+%    cold start) the TN cannot accept the DN exchange in 1 of 12 blocks under the passive schedules (6 hours; 2035
+%    Summer) and in 8 of 12 under the price-taker schedules (25 hours). The coordinated solution itself uses reverse
+%    flow in 4 interface-hours (3,308.3 MWh, block-weighted) — the caveat to state with the benefit.
+%  - The consistency pass (Section~\ref{sec:case_settings}) moved the passive starts by −44.0 / −69.8 / −69.8 k€ and
+%    the price-taker by +0.2 k€; NRF violations at the re-evaluation: 29 (passive, max excess 0.00618 p.u.) and 70
+%    (price-taker, 0.000321 p.u.).
+%  - Replace the submitted "voltage violations eliminated" and "18.25 % / 92.16 %" claims by this; say explicitly that
+%    13.9 % is a differently defined quantity (gross Q, settlement excluded, against static no-reverse-flow practice at
+%    the same plan), not a corrected version of the 18.25 %.
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=1.00\textwidth]{fig5_benchmark.pdf}
+    \caption{\textcolor{blue}{Value of coordination at the plan without storage. (a) Gross operational cost $Q$ of the two static no-reverse-flow arrangements (each the best of three solver starts) and of coordinated operation; labels: the difference to coordinated operation. Coordination beats the best static arrangement (price-taker) by 90{,}896.6~k\euro{} (13.9\,\%), 1{,}264 times the larger band (71.9~k\euro). (b) The 90{,}896.6~k\euro{} by agent: the transmission system (77.2\,\%: conventional energy, with 0.81~TWh of transmission renewables left curtailed by the price-taker arrangement) and the distribution systems' flexibility (22.8\,\%). Without any interface rule the transmission network cannot accept the distribution exchange in 1 (passive) and 8 (price-taker) of 12 blocks; coordinated operation uses reverse flow in 4 interface-hours. Settlement excluded.}}
+    \label{fig:res_benchmark}
+\end{figure}
+
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{Static no-reverse-flow (NRF) arrangements against coordinated operation at the plan without storage (single-scenario instance). Each arrangement is the best of three solver starts; band: the reproducibility band of the coordinated evaluation (0.011\,\% of $Q$) or the spread of the arrangement over its three starts. NRF violations and maximum excess: at the re-evaluation of each DN at the TN interface voltage. Curtailment: day-weighted, over the horizon. Sweep: blocks (of 12) and hours in which the TN cannot accept the DN exchange when no interface rule is imposed. Gross operational cost, settlement excluded.}}
+    \label{tab:res_benchmark}
+    \scriptsize\setlength{\tabcolsep}{2.5pt}
+    \begin{tabular}{l r r r r r c r r c}
+        \toprule
+        Arrangement & $Q$ & Band & $Q - Q^{\text{coord}}$ & \% & $\times$ band & NRF viol. & TN curt. & DN curt. & Sweep \\
+                    & (k\euro) & (k\euro) & (k\euro) &  &  & (max p.u.) & (GWh) & (GWh) & (blocks / h) \\
+        \midrule
+        Coordinated       & 653{,}873.7 & 71.9 & ---         & ---  & ---          & ---            & ---   & ---   & --- \\
+        Price-taker NRF   & 744{,}770.3 & 0.0  & 90{,}896.6  & 13.9 & 1{,}263.75   & 70 (0.000321)  & 807.6 & 0.6   & 8 / 25 \\
+        Passive NRF       & 895{,}049.9 & 25.8 & 241{,}176.2 & 36.9 & 3{,}353.11   & 29 (0.00618)   & 781.7 & 201.2 & 1 / 6 \\
+        \bottomrule
+    \end{tabular}
+    % Sources: T6 rows "coordinated", "price-taker NRF, best of 3: warm_from_certified", "passive NRF, best of 3:
+    % perturbed" (Q, band, Q − Q181, %, × larger band, sweep) and the per-start rows for NRF violations, max excess and
+    % curtailment of the best start (price-taker warm_from_certified: 70, 0.000321, 807.6, 0.6; passive perturbed: 29,
+    % 0.00618, 781.7, 201.2).
+    % The passive benefit and % are derived by W160 from recorded values (T6 label). Full T6 to the supplementary set.
+\end{table}
+
+% --------------------------------------------------------------------------------------------------------------------
+\subsection{\textcolor{blue}{Multi-Scenario Instance}}
+\label{subsec:res_multiscenario}
+
+% [AUTHOR — write] One paragraph; the instance is defined in Section~\ref{sec:case_studies} (3 market × 3 operation
+% scenarios, five three-year blocks 2025 / 2028 / 2031 / 2034 / 2037, the commitment premium of Subsection
+% \ref{subsubsec:commitment}). Facts (Table~\ref{tab:res_multiscenario}):
+%  - The search returned x = 0 here too; the reference unit's value is 236.7 k€ at certification (cycle 72, production
+%    exit) against I = 318.0 k€: value − I = −81.3 k€, against a resolution of 18.0 k€ (4.52 ×), determinate.
+%  - The ratio R of the unit's value here to its settled single-scenario value (253.5 k€) is reported as a band:
+%    0.934 at certification, 0.909 after the post-hoc settled descent D = 6.2 k€ of the x = 0 evaluation (a
+%    damped-cosine fit continued 16 cycles past the exit [CONFIRM — W177: the 16 cycles]), against 0.9331 predicted before the run from the mean-profile
+%    price spread (the average 4 h spread ratio of the two horizons' price profiles, Section~\ref{sec:case_studies}).
+%  - The x = 0 evaluation replayed its 72 recorded cycles bitwise.
+%  - Say what the band means: the multi-scenario evaluations stopped by the production exit, not the certification
+%    rule, so their stopping error is bounded by the post-hoc descent, not by τ (Subsection~\ref{subsubsec:certification}
+%    says this for the ratio).
+%  - The planning conclusion is unchanged; the storage value is 0.909–0.934 of its single-scenario value, i.e. the
+%    scenario spread removes 7–9 % of it, as the price spread predicted.
+
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{The $3 \times 3$ multi-scenario instance: the reference unit (node 7, 0.25~MVA / 1~MWh, 2025) against the plan without storage, and the ratio $R$ of its value to the settled single-scenario value. The multi-scenario evaluations stopped by the production exit; $D$ is the post-hoc settled descent of the $\boldsymbol{x} = \boldsymbol{0}$ evaluation continued past it. Gross operational cost, settlement excluded.}}
+    \label{tab:res_multiscenario}
+    \scriptsize\setlength{\tabcolsep}{4pt}
+    \begin{tabular}{l r l}
+        \toprule
+        Quantity & Value & Note \\
+        \midrule
+        Value $Q(\boldsymbol{0}) - Q(\text{unit})$ at certification (cycle 72) & 236.7~k\euro & recorded \\
+        Investment cost $I$                                                  & 318.0~k\euro & recorded \\
+        Value $- I$                                                          & $-$81.3~k\euro & determinate \\
+        Resolution of the value                                              & 18.0~k\euro  & $|{\rm value} - I| / {\rm resolution} = 4.52$ \\
+        Post-hoc settled descent $D$ of the $\boldsymbol{x} = \boldsymbol{0}$ evaluation & 6.2~k\euro & damped-cosine fit \\
+        Settled single-scenario value of the unit                           & 253.5~k\euro & Table~\ref{tab:res_ageing}, baseline \\
+        $R$ at certification (upper end)                                     & 0.934 & $V / V^{\text{single}}$ \\
+        $R$ after the settled descent (lower end)                            & 0.909 & $(V - D) / V^{\text{single}}$ \\
+        $R$ predicted from the mean-profile price spread                     & 0.9331 & recorded before the run \\
+        Replay of the $\boldsymbol{x} = \boldsymbol{0}$ evaluation           & 72 / 72 cycles & bitwise \\
+        \bottomrule
+    \end{tabular}
+    % Sources: T11, every row.
+\end{table}
+
+% --------------------------------------------------------------------------------------------------------------------
+\subsection{\textcolor{blue}{Investment Year and Discount Rate}}
+\label{subsec:res_sensitivities}
+
+% [AUTHOR — write] Two paragraphs. Facts:
+%  (a) Investment year (Table~\ref{tab:res_year_ladder}). Deferring the reference unit changes little gross and
+%      nothing net: against the plan without storage, the 2030 unit loses 68.5 k€ gross (56.7 net of an 11.8 k€
+%      salvage) and the 2035 unit 111.0 k€ gross (54.5 net of 56.5 k€). The 2035 − 2030 difference is 42.5 k€ gross,
+%      determinate (3.46 × its threshold of 12.3 k€), and −2.3 k€ net, within resolution (0.19 ×): the investment-year
+%      comparison in this instance is decided by the salvage convention, not by operation (T4 caption, verbatim).
+%      The same holds for larger plans (T1 G rows): node 7, 0.5 MVA / 1 MWh in 2030 loses 99.0 gross / 88.3 net, in
+%      2035 139.7 / 85.1; 0.5 MVA / 2 MWh in 2030 137.4 / 113.1, in 2035 223.6 / 109.1 (all determinate).
+%  (b) Discount rate (Table~\ref{tab:res_discount}): the unit never pays between 0 and 8 % — value − I from −40.8 k€
+%      (0 %, 2.57 ×) to −114.6 k€ (8 %, 8.78 ×), all determinate; the discount is applied as one factor per
+%      representative year to the five years of its block, with I paid in 2025.
+%  (c) Salvage: across the 60 pairwise claims of the frozen tables no verdict changes sign between gross and net
+%      [CONFIRM — W177: W153 totals, "0 sign changes in 60 claims"; one verdict changes category: the F2 neighbour
+%      y2030__n5_p0.25_e0.5__n7_p1_e3, within the bar gross (0.95 ×) and determinate net (1.22 ×)].
+
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{Investment year of the reference unit (node 7, 0.25~MVA / 1~MWh): cost against the plan without storage, $M = I + Q(\boldsymbol{x}) - Q(\boldsymbol{0})$, gross and net of the salvage credit \eqref{eq:salvage_credit}; the 2035 $-$ 2030 difference under the rule of Subsection~\ref{subsubsec:certification}.}}
+    \label{tab:res_year_ladder}
+    \scriptsize\setlength{\tabcolsep}{4pt}
+    \begin{tabular}{l r r r r c l}
+        \toprule
+        Investment year & $M$ gross (k\euro) & Salvage (k\euro) & $M$ net (k\euro) & Threshold (k\euro) & $\times$ gross / net & Verdict gross / net \\
+        \midrule
+        2025 (reference) & 64.4  & 0.0  & 64.4 & --- & --- & --- \\
+        2030             & 68.5  & 11.8 & 56.7 & --- & --- & --- \\
+        2035             & 111.0 & 56.5 & 54.5 & --- & --- & --- \\
+        2035 $-$ 2030    & 42.5  & ---  & $-$2.3 & 12.3 & 3.46 / 0.19 & determinate / within resolution \\
+        \bottomrule
+    \end{tabular}
+    % Sources: T4 (2030, 2035, 2035 − 2030 rows); the 2025 row is T1 CHECK (d gross = d net = 64.4).
+    % [CONFIRM — W177] the 2025 cohort's salvage is zero (T^Rem = 0 at y^End for T^Cal = 15 and y^Inv = 2025), so that
+    % the 2025 row may show 0.0; otherwise print "---".
+\end{table}
+
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{Discount rate: the reference unit (node 7, 0.25~MVA / 1~MWh, 2025) against the plan without storage; one discount factor per representative year applied to the five years of its block, $I$ paid in 2025. Gross operational cost, settlement excluded.}}
+    \label{tab:res_discount}
+    \scriptsize\setlength{\tabcolsep}{4pt}
+    \begin{tabular}{r r r r r r l}
+        \toprule
+        Rate (\%) & Value (k\euro) & $I$ (k\euro) & Value $- I$ (k\euro) & Threshold (k\euro) & $\times$ & Verdict \\
+        \midrule
+        0 & 277.1 & 318.0 & $-$40.8  & 15.9 & 2.57 & determinate \\
+        2 & 253.5 & 318.0 & $-$64.4  & 13.1 & 4.93 & determinate \\
+        5 & 225.2 & 318.0 & $-$92.7  & 13.1 & 7.10 & determinate \\
+        8 & 203.4 & 318.0 & $-$114.6 & 13.1 & 8.78 & determinate \\
+        \bottomrule
+    \end{tabular}
+    % Sources: T7, every row.
+\end{table}
+
+% --------------------------------------------------------------------------------------------------------------------
+\subsection{\textcolor{blue}{Certification Statistics and Computational Performance}}
+\label{subsec:res_certification}
+
+\textcolor{blue}{
+    Of the 42 single-scenario evaluations run under the certification rule of Subsection~\ref{subsubsec:certification} for the comparisons above, 32 certified (24 on the oscillatory branch, 8 on the monotone branch). The 10 uncertified evaluations divide as follows: 5 refused by the gap clause, 2 reset by residual lapses, 3 failed by the growth test; each enters its comparison in the uncertified form, with the bar stated beside it. The median certification cycle was 174, and certification came a median 65 cycles after the first residual pass (range 21--89). The median ratio of the window range to $\tau$ at certification was 0.86. The four further evaluations all certified. Ten of the 46 certificates the tables use stop within 5\,\% of $\tau$; the rule therefore bounds each evaluation's stopping error at about $\tau$, not well inside it. Evaluations continued past a certificate under this rule moved by at most $0.9\tau$. Passing the residual test alone does not bound this error: on the reference evaluations the objective moved by a further 15--21~k\euro{} after the residual-based stopping rule had certified them, which is why every reported difference carries the threshold of Subsection~\ref{subsubsec:certification} rather than the residual tolerances.
+}
+
+\textcolor{blue}{
+    Figure~\ref{fig:res_q_cycle} shows the two outcomes on recorded trajectories. Panel (a) is the settled evaluation of the plan without storage, the reference of every comparison at the base price: certification at cycle 181, 58 cycles after the first residual pass at $k_0 = 123$, with a window range of $0.93\tau$; at cycle 132, where the residual-based rule had stopped this evaluation, the objective still had 15.0~k\euro{} to move. Panels (b) and (c) are the reference unit at 1.5 times the base flexibility price: the objective settles, but the priced interface-consensus gap $t_{\text{sum}}$ stays outside $\pm\tau/2$ to the cap, so the evaluation is reported in the uncertified form (gap 2.5~k\euro, slack 6.3~k\euro{} from the certificate of its earlier run), and its comparison in Table~\ref{tab:res_flex_ladder} is within the bar. The mechanism behind the refused gaps is described in Subsection~\ref{subsec:res_limitations}.
+}
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=1.00\textwidth]{fig4_q_versus_cycle.pdf}
+    \caption{\textcolor{blue}{Objective against ADMM cycle on two recorded evaluations. (a) The settled evaluation of the plan without storage (single-scenario instance): $Q - Q(k^{*})$ from the first residual pass $k_0 = 123$ to the certification cycle $k^{*} = 181$; circles: the turning points; shaded: the certifying window (the last 32 cycles), whose range (dashed) is $0.93\tau$. $N = 132$: the cycle at which the residual-based rule had stopped this evaluation; $Q$ moved 15.0~k\euro{} after it. (b) The reference unit (node 7, 0.25~MVA / 1~MWh, 2025) at 1.5 times the base flexibility price, refused by the gap clause: $Q - Q(\text{cap})$ from $k_0 = 85$ to the cap at cycle 194; the objective settles, (c) but the priced interface-consensus gap $t_{\text{sum}}$ stays outside $\pm\tau/2$ (ticks: the 59 cycles at which every other clause held and the gap clause refused). Gross operational cost, settlement excluded.}}
+    \label{fig:res_q_cycle}
+\end{figure}
+
+\textcolor{blue}{
+    The three planning searches of Algorithm~\ref{alg:shared_ess_planning_mads} made 41 new recourse evaluations in all (14, 20 and 7 against budgets of 20, 20 and 60), each stopped by the production exit of the coordination procedure and compared at the search resolution $\sigma_Q$ of Section~\ref{sec:case_settings}; the evaluations behind the tables of this section are the re-evaluations of the incumbents, their neighbours and the sensitivity cells under the certification rule, on the final code. % [CONFIRM — W177] W173 realized use 14/20, 20/20, 7/60; "41" is their sum.
+    The 42 evaluations run under the rule took 220{,}876~s of wall time over 8{,}570 ADMM cycles, a median of 25.6~s per cycle, on an Apple M2~Max with 32~GiB of memory under macOS~27.0, one evaluation at a time and single-threaded: OMP, MKL, OpenBLAS, vecLib and NumExpr were capped at one thread in every evaluation's recorded environment, and the HSL library is built without OpenMP, so MA97 ran serially. The cost of a planning statement is the cost of its certified evaluations; the search adds the evaluations it proposes and nothing else.
+}
+
+\textcolor{blue}{
+    \textbf{Reproducibility.} Replaying a run reproduces its trajectory bitwise: the multi-scenario evaluation of the plan without storage replayed its 72 recorded cycles bitwise; the three single-scenario reference continuations replayed bitwise to their certification cycles; and every evaluation repeated from an earlier record replayed that record bitwise up to its first residual pass before continuing. Two distribution blocks (node~7 in 2025 Winter, node~5 in 2035 Winter) end some primary solves at IPOPT's acceptable level within ten times the tight-tail tolerances; they are counted as clean under the rule of Subsection~\ref{subsubsec:certification}. Two offsets are common to every evaluation and cancel in every reported difference: tightening the interior-point tail lowered the certified objective of each of the three single-scenario references by $1.0$--$1.2 \times 10^{-6}$ relative, with the same sign (the complementarity tolerance went to $10^{-6}$ from $10^{-4}$ in the distribution subproblems and from $5 \times 10^{-4}$ in the transmission subproblem); and the $10^{-5}$~p.u. slack on the renewable availability bound lowers the objective by about 7.8~k\euro{} at first order, $1.2 \times 10^{-5}$ of it.
+}
+
+% --------------------------------------------------------------------------------------------------------------------
+\subsection{\textcolor{blue}{Limitations}}
+\label{subsec:res_limitations}
+
+\textcolor{blue}{
+    \textbf{Degenerate interface duals.} In some evaluations, storage discharge drives the transmission network's conventional generation to its lower bound while distribution flexibility is at zero activation, where its cost is non-smooth. The interface price $\lambda$, the consensus dual of the interface power, is then set-valued, $\lambda \in [0, c^{\text{flex}}]$, and the consensus converges at the pace of a degenerate dual. This is a known property of the method, not a defect. Certification reports these cases as objective settled, interface-consensus gap unresolved; they appear with large storage and a high flexibility price, and they share one fingerprint: a priced gap of $-8.8$ to $-9.4$~k\euro, split about 55\,\% at node~5, 31\,\% at node~9 and 14\,\% at node~7, with the power-flow primal residual, as a fraction of its tolerance, stuck near 0.69. At the base price, the 5~MWh evaluation fails to certify for a different reason: repeated transmission solver recoveries break the growth test, while its consensus gap is small ($+1.1$~k\euro) and of the opposite sign. An economic tie-breaker in the storage agent's objective would remove the degeneracy and is left to future work.
+}
+
+\textcolor{blue}{
+    \textbf{Solver recoveries and numerical slacks.} In a few transmission blocks some solves reach the iteration limit and recover only to IPOPT's acceptable level; after the first residual pass these number 21 cycles in 10 evaluations, all in transmission blocks, the recurring block being 2035 Spring, and they are excluded from certification evidence. Renewable output is bounded by availability plus a $10^{-5}$~p.u. numerical slack; the resulting over-production totals about 62~MWh-equivalent over the horizon and is reported separately from the curtailment figures. The monotone branch of the certification rule bounds the remaining descent linearly, without a fit; an evaluation drifting with a half-life longer than its window can certify with drift left beyond $\tau$ (about $3\tau$ is estimated for the reference corner plan's measured half-life at the earlier window of 44 cycles).
+}
+
+\textcolor{blue}{
+    \textbf{Scope of the study.} The planning search is a heuristic over a lattice with one investment year common to all nodes; per-node timing and staged capacity, which the master problem admits, were not searched, and no optimality certificate is claimed: the result is that no evaluated plan pays at the baseline, with every evaluated unit neighbour of the plan without storage determinately worse. The ageing arms re-evaluate a fixed plan rather than re-optimising it; since the reference unit loses determinately under every aged arm and the value is affine in size on the evaluated ladders, the plan without storage is the search's answer under each of them, but this was not run. The horizon is three representative years each standing for a five-year block (five three-year blocks at the multi-scenario instance), with four representative days per year; the discretization is a modelling choice and the degradation chain is applied at block boundaries. The test system (one 9-bus transmission network with three 33-bus distribution networks) limits the generality of the conclusions. The salvage credit is reported, not optimized, and the attribution of degradation to the transmission and distribution operators is not unique under a jointly determined schedule and is not attempted. Finally, the 0.70 state-of-health floor raises the elasticity of value to available energy ($\varepsilon_{AE}$ 1.04--1.85, against 0.41--0.62 for the same three resolvable arms at a 0.50 floor); this is read as a late-life tail effect, the floor removing the low-SoH years whose throughput is least valuable, but the decomposition that would show it has not been measured.
+}
+
+% --------------------------------------------------------------------------------------------------------------------
+\subsection{\textcolor{blue}{Key Insights}}
+\label{subsec:res_insights}
+
+% [AUTHOR — edit] Proposed replacement of the four insights (revision map §B.4); the author owns the wording.
+\textcolor{blue}{
+    The case study yields four insights:
+    \begin{enumerate}[(i)]
+        \item under the baseline the tool returns no investment, and the reason is degradation: without ageing the reference unit is at break-even, with the datasheet calibration and the 0.70 floor it loses determinately under every aged arm;
+        \item the conditions under which shared storage pays are quantified with a stated resolution: an energy cost at most 171--193~k\euro/MWh against 254, or a flexibility price of 1.75 times the base and above (at twice the base the search finds a two-node plan);
+        \item coordination itself is worth 13.9\,\% of the operating cost against the best static no-reverse-flow arrangement, through the dispatch of distribution flexibility against the transmission network's marginal value rather than the wholesale price; and
+        \item certified recourse evaluation is what makes planning differences of a few tens of thousands of euro meaningful on a recourse of 654~M\euro: the stopping rule, not the residual test, decides what can be claimed.
+    \end{enumerate}
+}
+
+\textcolor{blue}{Taken together, these findings show that shared ESS planning should not be addressed through static or degradation-neutral formulations that decouple investment decisions from coordinated transmission--distribution operation; and that, on this instance, the same coordinated operation that would give storage its value is itself the larger prize.}
+
+% ====================================================================================================================
+% Supplementary set for Appendix E (round 3): T1 (all 60 claims), T2 (certificate per cell), T5 (Phase B), T6 (all
+% starts), T9 (dual dead zone), T10, the certification statistics in full and the prediction scorecard (paragraphs (v)).
+% ====================================================================================================================

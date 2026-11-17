@@ -1,0 +1,79 @@
+{
+ "schema": "p515_s44_scale_measurement_v1",
+ "label": "srp1_watchdog_abort_test_r2",
+ "instance": "srp1",
+ "launch": "launch.json",
+ "build_child": {
+  "mode": "build",
+  "command": [
+   "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+   "-u",
+   "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_scale_measurement.py",
+   "--child",
+   "build",
+   "--label",
+   "srp1_watchdog_abort_test_r2"
+  ],
+  "exit_code": 97,
+  "raw_returncode": 97,
+  "wall_s": 18.23102903366089,
+  "parent_observed_peak": {
+   "measure": 538099712,
+   "rss_tree": 538099712
+  },
+  "wait4_rusage": {
+   "ru_utime": 16.35578,
+   "ru_stime": 0.946329,
+   "ru_maxrss": 541130752,
+   "ru_minflt": 69196,
+   "ru_majflt": 86,
+   "ru_nvcsw": 7,
+   "ru_nivcsw": 6169
+  },
+  "thread_caps_in_child_env": {
+   "OMP_NUM_THREADS": "1",
+   "MKL_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": "1",
+   "VECLIB_MAXIMUM_THREADS": "1",
+   "NUMEXPR_NUM_THREADS": "1"
+  }
+ },
+ "build_status": "watchdog_abort",
+ "build_abort": {
+  "cause": "process-tree memory above 0.50 GiB (536870912 bytes)",
+  "stage_at_abort": "create_distribution_networks_models (sequential; optimize intercepted) :: build_model DSO case33_2 2025 Autumn",
+  "rss_reached": {
+   "t": 17.309,
+   "stage": "create_distribution_networks_models (sequential; optimize intercepted) :: build_model DSO case33_2 2025 Autumn",
+   "rss_self": 538099712,
+   "rss_children": 0,
+   "n_children": 0,
+   "rss_tree": 538099712,
+   "footprint_self": 424756472,
+   "measure": 538099712,
+   "sys_available": 14680031232,
+   "sys_used_pct": 57.3,
+   "swap_used": 262144
+  },
+  "elapsed_s": 17.315,
+  "peak_so_far": {
+   "measure": 538099712,
+   "rss_tree": 538099712,
+   "rss_self": 538099712,
+   "footprint_self": 424756472,
+   "stage_at_peak_measure": "create_distribution_networks_models (sequential; optimize intercepted) :: build_model DSO case33_2 2025 Autumn",
+   "t_at_peak_measure": 17.309
+  }
+ },
+ "parent_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "exit_code": 97,
+ "ended_utc": "2026-09-19T14:34:43.823605+00:00"
+}

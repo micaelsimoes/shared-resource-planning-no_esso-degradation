@@ -1,0 +1,17 @@
+=== arm s38_B_pfbal (continuity (v9 arm B: PF balancing live)), run_dir=data/SRP1/Results/P515S38_B_PFBAL_run ===
+instance: {'s_mva': 0.96875, 'e_mwh': 3.875, 'year': 2025, 'assignment': 'uniform across active nodes (control/perturbation)'}; cycles_run=151, converged_at_cycle=149, gross_operational_cost=651022935.4800234
+pf_entry_stride stop cycle = 151 (matches g.cycles_run)
+node-7 entries collected: 576 (expect 576 = 2 power_types x 3 years x 4 days x 24 periods)
+node 7 at-rating (>= 0.99) period-slots: 22 / 288
+node 7 at-rating (>= 0.95) period-slots: 24 / 288
+  top_n_vs_ge99pct: n_top=25 n_at_rating=22 coincidence=0 (0.000) expected_under_independence=1.910 enrichment=0.0
+  top_n_vs_ge95pct: n_top=25 n_at_rating=24 coincidence=0 (0.000) expected_under_independence=2.083 enrichment=0.0
+  top_pct_vs_ge99pct: n_top=58 n_at_rating=22 coincidence=0 (0.000) expected_under_independence=4.431 enrichment=0.0
+  top_pct_vs_ge95pct: n_top=58 n_at_rating=24 coincidence=0 (0.000) expected_under_independence=4.833 enrichment=0.0
+  2030 concentration [at_rating_ge99pct]: 7/22 = 0.318 (baseline 0.333, enrichment 0.9545454545454546)
+  2030 concentration [at_rating_ge95pct]: 8/24 = 0.333 (baseline 0.333, enrichment 1.0)
+  2030 concentration [top_n_s2]: 11/25 = 0.440 (baseline 0.333, enrichment 1.32)
+  2030 concentration [top_pct_s2]: 26/58 = 0.448 (baseline 0.333, enrichment 1.3448275862068966)
+  RESULT node 5: rating=200.0 MVA, n_binding(>=99%)=0, n_binding(>=95%)=0, of which storage>=99%-own-rating (>=99% interface)=0, (>=95% interface)=0
+  RESULT node 7: rating=100.0 MVA, n_binding(>=99%)=22, n_binding(>=95%)=24, of which storage>=99%-own-rating (>=99% interface)=1, (>=95% interface)=2
+  RESULT node 9: rating=150.0 MVA, n_binding(>=99%)=0, n_binding(>=95%)=0, of which storage>=99%-own-rating (>=99% interface)=0, (>=95% interface)=0

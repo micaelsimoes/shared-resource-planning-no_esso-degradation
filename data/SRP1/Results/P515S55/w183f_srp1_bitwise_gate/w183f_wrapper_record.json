@@ -1,0 +1,112 @@
+{
+ "schema": "p515_s55_w183f_bitwise_gate_v1_wrapper_record",
+ "stage": "P5.15 Addendum 83 W183f -- SRP1 two-cycle bitwise identity (serial, sequential DSO builder) re-run on the W183a/W183c code (NRF off by default), vs committed baseline C* and the committed W48 arm",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 83, W183 order item W183f (gate part)",
+  "Planner task W183f (gate part)"
+ ],
+ "recorded_prediction": "the two-cycle gate passes",
+ "timestamp_utc": "2026-10-25T18:37:53.102464+00:00",
+ "git_head_at_run": "17b4c1cfd5763705d618a47dcd3b3b46a17a7548",
+ "code_sha256_before_run": {
+  "shared_resources_planning.py": "ade9c843bc7c5b6514ab91ecc54f327330a5249709766699ff2f50c8288473d6",
+  "network_parameters.py": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92",
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+  "admm_parameters.py": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+  "p515_s44_campaign_harness.py": "c34ebdc5463a1fe0fd6398c6acad4dcfb61dbfbd142ef3de517ca517168d77be",
+  "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+  "p515_s53_srp1_bitwise_gate.py": "b63b1fb94ec305a782cb139d6e9c42be8b7a49b2ef78cb0d174f09e3d53f6766",
+  "p515_s52_srp1_bitwise_gate.py": "7bd3009ad4c263159ec84b929c921b5cf4f2d702c71154963754b3a906f28545",
+  "p515_s51_srp1_bitwise_gate.py": "c4adb3b8f98dc2570fcf4e8ccc3c5def0209f874d95b2c5efeae868b33640760",
+  "p515_s50_generalization_gate.py": "5abfe5c2b9a67533942cc77cdfcca523e17c998f42210620f7d852d18968cc43",
+  "p515_s49_memory_fix_gate.py": "c75d26dd313b2bdec74d97854ad9a3f4d2adbf07b1a654dd15cced432ad63bfc",
+  "p515_s45_snapshot_off_two_cycle_gate.py": "f5e103577a7dc0c465144984e28b50ab4b1efc0405c3c23f2ab3afc7f917f4a2",
+  "p515_s55_w183f_bitwise_gate.py": "8fb660be802afa28ab55fee8048ca96a53ebffef78e1e37e1376f68f7521b47c"
+ },
+ "code_sha256_after_run": {
+  "shared_resources_planning.py": "ade9c843bc7c5b6514ab91ecc54f327330a5249709766699ff2f50c8288473d6",
+  "network_parameters.py": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92",
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+  "admm_parameters.py": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+  "p515_s44_campaign_harness.py": "c34ebdc5463a1fe0fd6398c6acad4dcfb61dbfbd142ef3de517ca517168d77be",
+  "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+  "p515_s53_srp1_bitwise_gate.py": "b63b1fb94ec305a782cb139d6e9c42be8b7a49b2ef78cb0d174f09e3d53f6766",
+  "p515_s52_srp1_bitwise_gate.py": "7bd3009ad4c263159ec84b929c921b5cf4f2d702c71154963754b3a906f28545",
+  "p515_s51_srp1_bitwise_gate.py": "c4adb3b8f98dc2570fcf4e8ccc3c5def0209f874d95b2c5efeae868b33640760",
+  "p515_s50_generalization_gate.py": "5abfe5c2b9a67533942cc77cdfcca523e17c998f42210620f7d852d18968cc43",
+  "p515_s49_memory_fix_gate.py": "c75d26dd313b2bdec74d97854ad9a3f4d2adbf07b1a654dd15cced432ad63bfc",
+  "p515_s45_snapshot_off_two_cycle_gate.py": "f5e103577a7dc0c465144984e28b50ab4b1efc0405c3c23f2ab3afc7f917f4a2",
+  "p515_s55_w183f_bitwise_gate.py": "8fb660be802afa28ab55fee8048ca96a53ebffef78e1e37e1376f68f7521b47c"
+ },
+ "code_unchanged_during_run": true,
+ "instance": {
+  "candidate": "C* 0.96875 MVA / 3.875 MWh at nodes 5, 7, 9, investment year 2025",
+  "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+ },
+ "objective_convention": "gross_operational_cost (settlement-excluded gross cost), as in gate.json",
+ "scope": "sequential DSO builder only (ParallelExecution false in the case file); the parallel DSO builder is not exercised by this gate",
+ "declared_substitutions": {
+  "1_identifiers": {
+   "STAGE": "P5.15 Addendum 83 W183f -- SRP1 two-cycle bitwise identity (serial, sequential DSO builder) re-run on the W183a/W183c code (NRF off by default), vs committed baseline C* and the committed W48 arm",
+   "SCHEMA": "p515_s55_w183f_bitwise_gate_v1",
+   "ARM": "s55w183fgate",
+   "OUT_REL": "data/SRP1/Results/P515S55/w183f_srp1_bitwise_gate"
+  },
+  "2_extra_clean_files": [
+   "network.py",
+   "solver_parameters.py",
+   "model_construction_helpers.py",
+   "shared_resources_planning.py",
+   "p56a_oracle.py",
+   "p515_s41_hull_polish.py",
+   "p515_g_g1_g4_admm_gates.py",
+   "p515_s44_scale_measurement.py",
+   "p515_s45_snapshot_off_two_cycle_gate.py",
+   "p515_s49_memory_fix_gate.py",
+   "p515_s44_campaign_harness.py",
+   "shared_energy_storage_data.py",
+   "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "admm_parameters.py",
+   "p515_s31c_evaluate.py",
+   "p515_s51_row18_zero_solve_checks.py",
+   "p515_s51_srp1_bitwise_gate.py",
+   "p515_s52_pilot_checks.py",
+   "p515_s52_srp1_bitwise_gate.py",
+   "p515_s53_init_fix_zero_solve_checks.py",
+   "p515_s53_srp1_bitwise_gate.py",
+   "network_parameters.py",
+   "p515_s55_w183f_bitwise_gate.py"
+  ],
+  "3_extra_forbidden": [
+   "p515_s46_",
+   "p515_s47_",
+   "p515_s48_",
+   "p515_s49_",
+   "p515_s50_",
+   "p515_s51_",
+   "p515_s52_",
+   "p515_s53_",
+   "p515_s55_"
+  ]
+ },
+ "committed_gate_exit_status": 1,
+ "committed_gate_verdict": {
+  "gate_items": {
+   "w39_w35_gate_pass": true,
+   "w51_code_present_in_the_modules_that_ran": true,
+   "w51_counter_exact_and_never_acting": true,
+   "vs_committed_w48_arm_all_files_present": true,
+   "vs_committed_w48_arm_zero_genuine_diffs": false
+  },
+  "gate_pass": false
+ },
+ "guard_counts_at_end": {
+  "permitted_solve": 153,
+  "permitted_exec": 153,
+  "blocked_solve": 0,
+  "blocked_exec": 0
+ },
+ "gate_pass": false
+}

@@ -1,0 +1,434 @@
+{
+ "caption_values": [],
+ "checks": {
+  "C2.T8_equals_T1_claim": {
+   "detail": [
+    -31607.236165883485,
+    -31607.236165883485
+   ],
+   "ok": true
+  },
+  "C2.verdict_equals_claim": {
+   "detail": [
+    "determinate",
+    "determinate"
+   ],
+   "ok": true
+  },
+  "C2_calfade.T8_equals_T1_claim": {
+   "detail": [
+    -64417.38662493462,
+    -64417.38662493462
+   ],
+   "ok": true
+  },
+  "C2_calfade.verdict_equals_claim": {
+   "detail": [
+    "determinate",
+    "determinate"
+   ],
+   "ok": true
+  },
+  "C3_midblock.T8_equals_T1_claim": {
+   "detail": [
+    -65891.87730801338,
+    -65891.87730801338
+   ],
+   "ok": true
+  },
+  "C3_midblock.verdict_equals_claim": {
+   "detail": [
+    "determinate",
+    "determinate"
+   ],
+   "ok": true
+  },
+  "C3_unit.T8_equals_T1_claim": {
+   "detail": [
+    -73746.65554356808,
+    -73746.65554356808
+   ],
+   "ok": true
+  },
+  "C3_unit.verdict_equals_claim": {
+   "detail": [
+    "determinate",
+    "determinate"
+   ],
+   "ok": true
+  },
+  "C4.T8_equals_T1_claim": {
+   "detail": [
+    -45196.695339920465,
+    -45196.695339920465
+   ],
+   "ok": true
+  },
+  "C4.verdict_equals_claim": {
+   "detail": [
+    "determinate",
+    "determinate"
+   ],
+   "ok": true
+  },
+  "arm_set_equals_T8": {
+   "detail": [
+    "C2",
+    "C2_calfade",
+    "C3_midblock",
+    "C3_unit",
+    "C4",
+    "no_ageing"
+   ],
+   "ok": true
+  },
+  "baseline_phrase_in_map": {
+   "detail": "calendar retention 0.985/yr in the baseline (C2_calfade)",
+   "ok": true
+  },
+  "no_ageing.T8_equals_T1_claim": {
+   "detail": [
+    -4140.5379110598005,
+    -4140.5379110598005
+   ],
+   "ok": true
+  },
+  "no_ageing.verdict_equals_claim": {
+   "detail": [
+    "within resolution",
+    "within resolution"
+   ],
+   "ok": true
+  },
+  "one_unit_in_every_arm": {
+   "detail": [
+    "node 7, 0.25 MVA / 1 MWh, 2025"
+   ],
+   "ok": true
+  }
+ },
+ "computed": [
+  {
+   "formula": "from the T8 column key floor_year_070",
+   "inputs": {
+    "frozen": {
+     "json_path": "tables.ageing.rows[].floor_year_070",
+     "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+     "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+    }
+   },
+   "name": "floor_level",
+   "rounding": "2 dp",
+   "unit": "SoH",
+   "value": 0.7
+  }
+ ],
+ "figure": "fig3_ageing_arms",
+ "height_mm": 64.0,
+ "layout_choices": [
+  "single column (90 mm); arms on the vertical axis in the Planner's order (task W165), value - I on the horizontal axis with the T1 E threshold as +/- error bar; the 0.70 floor-binding year written at the right of each arm",
+  "y-limits extended below the last arm to hold the legend (layout)",
+  "y-limits extended below the last arm to hold the legend (layout)"
+ ],
+ "objective_convention": "Objective convention: Q = gross operational cost (gross_operational_cost), settlement excluded; value = Q(0) - Q(x); I = investment cost.",
+ "pdf": {
+  "determinism": "generated twice in this run; sha256 equal",
+  "font_file": {
+   "family": "Arial",
+   "path": "/System/Library/Fonts/Supplemental/Arial.ttf",
+   "sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9"
+  },
+  "fonts": {
+   "base_fonts": [
+    "BWGHJF+Arial-ItalicMT",
+    "GOFYPY+ArialMT"
+   ],
+   "has_creation_date": false,
+   "has_mod_date": false,
+   "n_FontFile": 0,
+   "n_FontFile2": 2,
+   "n_FontFile3": 0,
+   "type3": 0
+  },
+  "metadata": {
+   "CreationDate": null,
+   "Creator": "p515_s53_w165_step6_figures.py",
+   "ModDate": null,
+   "Producer": "Matplotlib pdf backend"
+  },
+  "sha256": "8f2438074dc57a65efc62b8af75ab7c2c2d1af2514869f8bc9c19cb10f3465e2"
+ },
+ "preview_png": {
+  "dpi": 200,
+  "note": "preview for review, not a deliverable",
+  "sha256": "5e64032faa0d7e693a8b89f880776c1cd1c785300027d0dcf9950e41edfbdd00"
+ },
+ "values": [
+  {
+   "name": "no_ageing.value_minus_I",
+   "rounding": "plotted at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "tables.ageing.rows[5].value_minus_I",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": -4140.5379110598005
+  },
+  {
+   "name": "no_ageing.threshold",
+   "rounding": "plotted (+/- error bar)",
+   "source": {
+    "json_path": "tables.claims[57].gross_threshold_or_bar (claim E:n7_4h_e1_no_ageing:value_minus_I)",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 12858.703612804413
+  },
+  {
+   "name": "no_ageing.floor_year_070",
+   "rounding": "integer; null written \"never\"",
+   "source": {
+    "json_path": "tables.ageing.rows[5].floor_year_070",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "year",
+   "value": null
+  },
+  {
+   "name": "no_ageing.verdict",
+   "rounding": "as recorded",
+   "source": {
+    "json_path": "tables.ageing.rows[5].verdict",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "text",
+   "value": "within resolution"
+  },
+  {
+   "name": "C2.value_minus_I",
+   "rounding": "plotted at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "tables.ageing.rows[1].value_minus_I",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": -31607.236165883485
+  },
+  {
+   "name": "C2.threshold",
+   "rounding": "plotted (+/- error bar)",
+   "source": {
+    "json_path": "tables.claims[49].gross_threshold_or_bar (claim E:n7_4h_e1_C2:value_minus_I)",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 12627.514008879662
+  },
+  {
+   "name": "C2.floor_year_070",
+   "rounding": "integer; null written \"never\"",
+   "source": {
+    "json_path": "tables.ageing.rows[1].floor_year_070",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "year",
+   "value": null
+  },
+  {
+   "name": "C2.verdict",
+   "rounding": "as recorded",
+   "source": {
+    "json_path": "tables.ageing.rows[1].verdict",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "text",
+   "value": "determinate"
+  },
+  {
+   "name": "C2_calfade.value_minus_I",
+   "rounding": "plotted at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "tables.ageing.rows[3].value_minus_I",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": -64417.38662493462
+  },
+  {
+   "name": "C2_calfade.threshold",
+   "rounding": "plotted (+/- error bar)",
+   "source": {
+    "json_path": "tables.claims[51].gross_threshold_or_bar (claim E:n7_4h_e1_C2_calfade:value_minus_I)",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 13054.22152018547
+  },
+  {
+   "name": "C2_calfade.floor_year_070",
+   "rounding": "integer; null written \"never\"",
+   "source": {
+    "json_path": "tables.ageing.rows[3].floor_year_070",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "year",
+   "value": 2035
+  },
+  {
+   "name": "C2_calfade.verdict",
+   "rounding": "as recorded",
+   "source": {
+    "json_path": "tables.ageing.rows[3].verdict",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "text",
+   "value": "determinate"
+  },
+  {
+   "name": "C3_unit.value_minus_I",
+   "rounding": "plotted at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "tables.ageing.rows[0].value_minus_I",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": -73746.65554356808
+  },
+  {
+   "name": "C3_unit.threshold",
+   "rounding": "plotted (+/- error bar)",
+   "source": {
+    "json_path": "tables.claims[48].gross_threshold_or_bar (claim E:C3_unit_value_minus_I)",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 12840.020701289177
+  },
+  {
+   "name": "C3_unit.floor_year_070",
+   "rounding": "integer; null written \"never\"",
+   "source": {
+    "json_path": "tables.ageing.rows[0].floor_year_070",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "year",
+   "value": 2035
+  },
+  {
+   "name": "C3_unit.verdict",
+   "rounding": "as recorded",
+   "source": {
+    "json_path": "tables.ageing.rows[0].verdict",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "text",
+   "value": "determinate"
+  },
+  {
+   "name": "C3_midblock.value_minus_I",
+   "rounding": "plotted at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "tables.ageing.rows[4].value_minus_I",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": -65891.87730801338
+  },
+  {
+   "name": "C3_midblock.threshold",
+   "rounding": "plotted (+/- error bar)",
+   "source": {
+    "json_path": "tables.claims[53].gross_threshold_or_bar (claim E:n7_4h_e1_C3_midblock:value_minus_I)",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 12867.481023073196
+  },
+  {
+   "name": "C3_midblock.floor_year_070",
+   "rounding": "integer; null written \"never\"",
+   "source": {
+    "json_path": "tables.ageing.rows[4].floor_year_070",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "year",
+   "value": 2035
+  },
+  {
+   "name": "C3_midblock.verdict",
+   "rounding": "as recorded",
+   "source": {
+    "json_path": "tables.ageing.rows[4].verdict",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "text",
+   "value": "determinate"
+  },
+  {
+   "name": "C4.value_minus_I",
+   "rounding": "plotted at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "tables.ageing.rows[2].value_minus_I",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": -45196.695339920465
+  },
+  {
+   "name": "C4.threshold",
+   "rounding": "plotted (+/- error bar)",
+   "source": {
+    "json_path": "tables.claims[55].gross_threshold_or_bar (claim E:n7_4h_e1_C4:value_minus_I)",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 12627.514008879662
+  },
+  {
+   "name": "C4.floor_year_070",
+   "rounding": "integer; null written \"never\"",
+   "source": {
+    "json_path": "tables.ageing.rows[2].floor_year_070",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "year",
+   "value": null
+  },
+  {
+   "name": "C4.verdict",
+   "rounding": "as recorded",
+   "source": {
+    "json_path": "tables.ageing.rows[2].verdict",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "text",
+   "value": "determinate"
+  }
+ ],
+ "width": "single",
+ "width_mm": 90.0
+}

@@ -1,0 +1,1824 @@
+{
+ "schema": "p515_s49_flex_price_gate_v1",
+ "stage": "P5.15 Addendum 34 W33 item 3 -- two-cycle bitwise gate: flexibility-price override PRESENT at m = 1.0 vs committed baseline C*",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 34",
+  "Planner task W33 item 3",
+  "data/SRP1/Results/P515S49/frozen_s49_spec_v19_f8adcc97.json flex_price_ladder"
+ ],
+ "timestamp_utc": "2026-09-22T14:15:35.761097+00:00",
+ "git_head_at_run": "2e82a23ff4a6d8400e768c9343ecbac80c6c9e18",
+ "script": "p515_s49_flex_price_gate.py",
+ "script_sha256": "45ee3179398f98cfd03c79918128f40e9da2a9e253c480a89ea6b2d966813b99",
+ "w10_module_sha256": "f5e103577a7dc0c465144984e28b50ab4b1efc0405c3c23f2ab3afc7f917f4a2",
+ "w32_module_sha256": "c75d26dd313b2bdec74d97854ad9a3f4d2adbf07b1a654dd15cced432ad63bfc",
+ "harness_sha256": "5c198bd8b2a4bc87c5297f092c1f03d95c0b82a9fe9eb30afadb8fc768832d6c",
+ "harness_commit": "2e82a23f",
+ "case_file": {
+  "path": "data/SRP1/SRP1_params.json",
+  "sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "anderson_acceleration_loaded": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  }
+ },
+ "ess_params_file": {
+  "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+  "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+  "recert_pin": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  }
+ },
+ "declared_substitutions": {
+  "1_reference": {
+   "report": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star/g_s39_D.json",
+   "sha256": "ced90e47873925b5bb87360984d348558d11ea11fd004e93f3a2668fdc389971",
+   "campaign": "s47_recert (spec campaign_spec_s47_recert_902f93aa.json), BASELINE (C2 + phi_cal 0.985 + soh_min 0.70), AA keep_memory from the case file, cap 500; cycles_run 87, gross_operational_cost 650912327.1956586"
+  },
+  "2_hook_declaration_and_override": {
+   "recert_spec": {
+    "path": "data/SRP1/Results/P515S47/campaign_s47_recert/campaign_spec_s47_recert_902f93aa.json",
+    "sha256": "902f93aa22093455daa50927bdfa28bc885b2c5491151d211dc943bb3de86ee4"
+   },
+   "declaration_injected": {
+    "ess_ageing_baseline": {
+     "calendar_life_years": 15,
+     "calendar_retention_per_year": 0.985,
+     "calibration": {
+      "cycles_n": 10000,
+      "eol_retention_r": 0.8,
+      "reference_dod_d": 0.8,
+      "status": "ACTIVE"
+     },
+     "cycle_life_nominal": 10000,
+     "depth_of_discharge_nominal": 0.8,
+     "minimum_soh": 0.7
+    },
+    "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+    "ess_params_file": {
+     "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+     "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+     "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+    }
+   },
+   "override": "p515_s44_campaign_harness._config_hook_factory(..., flex_price_multiplier=1.0) -- present explicitly"
+  }
+ },
+ "instance": {
+  "candidate_label": "C* (0.96875 MVA / 3.875 MWh at nodes 5, 7, 9, investment year 2025)",
+  "candidate_canonical": {
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.96875,
+     3.875
+    ],
+    "7": [
+     0.96875,
+     3.875
+    ],
+    "9": [
+     0.96875,
+     3.875
+    ]
+   }
+  },
+  "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+  "candidate_key_pin_matches": true
+ },
+ "configuration": {
+  "arm": "s49flexgate",
+  "cap": 2,
+  "arm_label": "s39_D",
+  "snapshots": "on (no assignment)",
+  "flex_price_multiplier": 1.0,
+  "release_solution_bookkeeping": "default (off)",
+  "model_variant": null,
+  "overrides": {},
+  "apply_rho": false,
+  "full_diagnostics_in_rows": true,
+  "thread_caps": {
+   "OMP_NUM_THREADS": "1",
+   "MKL_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": "1",
+   "VECLIB_MAXIMUM_THREADS": "1",
+   "NUMEXPR_NUM_THREADS": "1"
+  },
+  "nlp_solver_path": {
+   "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+   "source": "environment"
+  }
+ },
+ "objective_convention": "gross_operational_cost is the settlement-excluded gross cost; net_operational_recourse differs by the terminal salvage credit",
+ "capture_path_checklist_asserted_before_run": {
+  "record_capture_paths (campaign harness)": true,
+  "callable_p515_g_g1_g4_admm_gates.run_admm_arm": true,
+  "callable_p515_g_g1_g4_admm_gates.write_boyd_terminal_s35ref": true,
+  "callable_p515_g_g1_g4_admm_gates.s38_pf_capture_hooks": true,
+  "callable_p515_g_g1_g4_admm_gates.s39_exempt_until_capture_hooks": true,
+  "callable_p515_g_g1_g4_admm_gates._acquire_exclusive_run_lock": true,
+  "callable_p515_s44_campaign_harness._config_hook_factory": true,
+  "callable_p515_s44_campaign_harness.canonical_candidate": true,
+  "callable_p515_s44_campaign_harness.investment_map_from_canonical": true,
+  "callable_p515_s44_campaign_harness.eval_ids": true,
+  "callable_p515_s44_scale_measurement.apply_snapshot_setting": true,
+  "callable_p515_s44_scale_measurement.snapshot_hook_wrapper": true,
+  "callable_p515_s44_scale_measurement.expected_block_counts": true,
+  "callable_p515_s43_aa_run._build_aa_per_cycle_sidecar": true,
+  "callable_p515_s40_polish_gap._build_floor_rows": true,
+  "callable_p515_s40_polish_gap._derive_top_level_from_rows": true,
+  "callable_p515_s40_clone_capture_preflight._diff": true,
+  "callable_p515_s40_clone_capture_preflight._load_json": true,
+  "callable_p515_s40_clone_capture_preflight._load_jsonl": true,
+  "callable_p515_s40_clone_capture_preflight._sha256_file": true,
+  "callable_p515_s43_aa_flagoff_gate._classify_diffs": true,
+  "callable_p515_s43_aa_flagoff_gate._capture_returned_state": true,
+  "callable_p515_s44_tie_classifier.reclassify_sidecar_diffs": true,
+  "callable_shared_resources_planning._validate_snapshot_capture_modes": true,
+  "callable_shared_resources_planning._build_pristine_snapshot_bases": true,
+  "production_SNAPSHOT_CAPTURE_MODES_has_off": true,
+  "production_capture_block_mutable_state_is_module_attr": true,
+  "BlockData_clone_is_the_method_ConcreteModel_uses": true,
+  "comparator_convention_EXCLUDE_KEY_NAMES": true,
+  "comparator_convention_EXCLUDE_DOTTED_SUFFIXES": true,
+  "comparator_convention_INTENTIONAL_DIFF_SUFFIXES": true,
+  "comparator_convention_ARTIFACT_FILES": true,
+  "comparator_convention_SIDECAR_JSONL_FILES": true,
+  "trajectory_field_list_RECORD_TRAJECTORY_FIELDS": true,
+  "run_admm_arm_parameter_investment_map": true,
+  "run_admm_arm_parameter_num_max_iters_override": true,
+  "run_admm_arm_parameter_eval_id": true,
+  "run_admm_arm_parameter_apply_rho": true,
+  "run_admm_arm_parameter_full_diagnostics_in_rows": true,
+  "run_admm_arm_parameter_post_run_hook": true,
+  "run_admm_arm_parameter_pre_solve_hook": true,
+  "report_field_network_failures_summary_classes": true,
+  "report_field_solve_profile_observed": true,
+  "production_state_peak_rss": true,
+  "callable_H.apply_flex_price_multiplier": true,
+  "callable_H.validate_flex_price_multiplier": true,
+  "callable_H._config_hook_factory": true,
+  "callable_H.flex_price_readback_run_models": true,
+  "hook_factory_accepts_flex_price_multiplier": true,
+  "hook_applies_the_multiplier": true,
+  "w10_run_arm_resolves_hook_factory_via_H": true,
+  "network_failure_events_carry_attempt_flags": true
+ },
+ "flex_price_applied_in_child": {
+  "flex_price_multiplier": 1.0,
+  "label": null,
+  "where_applied": "pre_solve_hook (after _construct_arm_planning, before run_operational_planning): DSO network[year][day].cost_flex replaced by m * cost_flex (new arrays); DSO holder cost_flex rebound; TSO and planning.cost_flex untouched; no file edited",
+  "precondition": {
+   "5": {
+    "obj_type_is_min_cost": true,
+    "fl_reg": true
+   },
+   "7": {
+    "obj_type_is_min_cost": true,
+    "fl_reg": true
+   },
+   "9": {
+    "obj_type_is_min_cost": true,
+    "fl_reg": true
+   }
+  },
+  "checks": {
+   "every_dso_array_is_m_times_original_bitwise": true,
+   "every_dso_array_is_a_new_object": true,
+   "no_dso_array_shared_with_the_tso": true,
+   "dso_holder_cost_flex_rebound": true,
+   "tso_arrays_unchanged": true,
+   "planning_cost_flex_unchanged": true,
+   "dso_energy_prices_unchanged": true,
+   "readback_every_dso_block_objective": true
+  },
+  "readback_pre_run": {
+   "method": "probe DSO blocks built by production network.build_model(params) before and after the replacement; objective standard repn compared (compare_flex_price_summaries)",
+   "rel_tol": 1e-15,
+   "n_blocks": 36,
+   "all_match": true,
+   "n_flex_coefficients": 55296,
+   "n_bitwise_exact": 55296,
+   "max_rel_dev": 0.0,
+   "per_block": {
+    "DSO|5|2025|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2025|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2025|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2025|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2030|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2030|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2030|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2030|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2035|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2035|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2035|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2035|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2025|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2025|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2025|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2025|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2030|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2030|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2030|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2030|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2035|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2035|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2035|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2035|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2025|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2025|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2025|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2025|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2030|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2030|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2030|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2030|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2035|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2035|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2035|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2035|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    }
+   }
+  },
+  "profile_applied_per_year_day": {
+   "2025|Autumn": {
+    "base": [
+     49.63697380384428,
+     50.025626511243445,
+     47.431677828564524,
+     46.148259480758696,
+     44.03248064322951,
+     44.13546448324996,
+     50.320832558068986,
+     56.99410356922245,
+     60.65408168005125,
+     57.17931189526381,
+     52.100121754466485,
+     45.71668372902448,
+     49.144709343947575,
+     46.91061809156841,
+     46.10530639125782,
+     49.93120071786118,
+     56.97456170740788,
+     63.639812819586865,
+     76.06444315847455,
+     76.38114733935285,
+     70.19449486780165,
+     61.97916741175868,
+     57.524993336869414,
+     54.99209967257155
+    ],
+    "applied": [
+     49.63697380384428,
+     50.025626511243445,
+     47.431677828564524,
+     46.148259480758696,
+     44.03248064322951,
+     44.13546448324996,
+     50.320832558068986,
+     56.99410356922245,
+     60.65408168005125,
+     57.17931189526381,
+     52.100121754466485,
+     45.71668372902448,
+     49.144709343947575,
+     46.91061809156841,
+     46.10530639125782,
+     49.93120071786118,
+     56.97456170740788,
+     63.639812819586865,
+     76.06444315847455,
+     76.38114733935285,
+     70.19449486780165,
+     61.97916741175868,
+     57.524993336869414,
+     54.99209967257155
+    ]
+   },
+   "2025|Spring": {
+    "base": [
+     50.387905127438465,
+     48.65359133086557,
+     46.72559591861644,
+     43.060250738740194,
+     45.282609269431376,
+     47.57717684335567,
+     53.22349887442124,
+     48.246631926239175,
+     36.86053437713862,
+     31.85411914133111,
+     28.714134054080947,
+     26.89141928054934,
+     25.17986357266501,
+     23.773915213933044,
+     21.277557180050266,
+     22.52860069631732,
+     23.988446813264254,
+     29.1398648377484,
+     37.91058362644221,
+     47.147343358829865,
+     55.33405622692387,
+     49.86962068414622,
+     50.2138448675198,
+     47.08031355487596
+    ],
+    "applied": [
+     50.387905127438465,
+     48.65359133086557,
+     46.72559591861644,
+     43.060250738740194,
+     45.282609269431376,
+     47.57717684335567,
+     53.22349887442124,
+     48.246631926239175,
+     36.86053437713862,
+     31.85411914133111,
+     28.714134054080947,
+     26.89141928054934,
+     25.17986357266501,
+     23.773915213933044,
+     21.277557180050266,
+     22.52860069631732,
+     23.988446813264254,
+     29.1398648377484,
+     37.91058362644221,
+     47.147343358829865,
+     55.33405622692387,
+     49.86962068414622,
+     50.2138448675198,
+     47.08031355487596
+    ]
+   },
+   "2025|Summer": {
+    "base": [
+     49.17568066575419,
+     50.16029495683979,
+     47.93024725672766,
+     44.66301122239913,
+     45.831791098871385,
+     46.03284583501982,
+     50.003931502942486,
+     53.961514103193196,
+     50.44828555328529,
+     45.78911445878577,
+     39.1221023335275,
+     36.994516646840204,
+     37.46751591726923,
+     36.82115187669457,
+     33.377755902602296,
+     36.68637707010694,
+     41.24484269614679,
+     48.75443204890988,
+     53.74510679762383,
+     61.716859899658594,
+     58.95279776995153,
+     58.00923393423022,
+     52.06487162746869,
+     51.48900323929059
+    ],
+    "applied": [
+     49.17568066575419,
+     50.16029495683979,
+     47.93024725672766,
+     44.66301122239913,
+     45.831791098871385,
+     46.03284583501982,
+     50.003931502942486,
+     53.961514103193196,
+     50.44828555328529,
+     45.78911445878577,
+     39.1221023335275,
+     36.994516646840204,
+     37.46751591726923,
+     36.82115187669457,
+     33.377755902602296,
+     36.68637707010694,
+     41.24484269614679,
+     48.75443204890988,
+     53.74510679762383,
+     61.716859899658594,
+     58.95279776995153,
+     58.00923393423022,
+     52.06487162746869,
+     51.48900323929059
+    ]
+   },
+   "2025|Winter": {
+    "base": [
+     36.14252978286299,
+     34.95375062335762,
+     34.55337582646039,
+     34.81460120962257,
+     34.1177490893825,
+     34.8607320638934,
+     37.375039998826196,
+     38.67820063361696,
+     35.76572547231954,
+     32.195131467865124,
+     27.98787746054062,
+     26.17830471890746,
+     23.256770791052812,
+     22.956938545192614,
+     21.43247498710086,
+     22.273133691562514,
+     25.583704621588737,
+     30.085575381898163,
+     37.217491931949425,
+     42.40972656762173,
+     44.13541069009076,
+     38.36275875034545,
+     38.837935132977314,
+     38.51874251746752
+    ],
+    "applied": [
+     36.14252978286299,
+     34.95375062335762,
+     34.55337582646039,
+     34.81460120962257,
+     34.1177490893825,
+     34.8607320638934,
+     37.375039998826196,
+     38.67820063361696,
+     35.76572547231954,
+     32.195131467865124,
+     27.98787746054062,
+     26.17830471890746,
+     23.256770791052812,
+     22.956938545192614,
+     21.43247498710086,
+     22.273133691562514,
+     25.583704621588737,
+     30.085575381898163,
+     37.217491931949425,
+     42.40972656762173,
+     44.13541069009076,
+     38.36275875034545,
+     38.837935132977314,
+     38.51874251746752
+    ]
+   },
+   "2030|Autumn": {
+    "base": [
+     54.80322990576575,
+     55.232333899116874,
+     52.36840495408515,
+     50.95140739379808,
+     48.61541659546529,
+     48.729119076271694,
+     55.55826522840552,
+     62.92609564637112,
+     66.9670072186694,
+     63.13058060374618,
+     57.52274427348915,
+     50.474912891181724,
+     54.25973016549619,
+     51.7931129011473,
+     50.90398371224203,
+     55.12808019331659,
+     62.90451985188285,
+     70.26349565334712,
+     83.98129149736933,
+     84.33095850377023,
+     77.50039427386072,
+     68.43000893764179,
+     63.51224084744543,
+     60.71572157614725
+    ],
+    "applied": [
+     54.80322990576575,
+     55.232333899116874,
+     52.36840495408515,
+     50.95140739379808,
+     48.61541659546529,
+     48.729119076271694,
+     55.55826522840552,
+     62.92609564637112,
+     66.9670072186694,
+     63.13058060374618,
+     57.52274427348915,
+     50.474912891181724,
+     54.25973016549619,
+     51.7931129011473,
+     50.90398371224203,
+     55.12808019331659,
+     62.90451985188285,
+     70.26349565334712,
+     83.98129149736933,
+     84.33095850377023,
+     77.50039427386072,
+     68.43000893764179,
+     63.51224084744543,
+     60.71572157614725
+    ]
+   },
+   "2030|Spring": {
+    "base": [
+     54.14141649407849,
+     51.937082059259126,
+     52.728020388696294,
+     51.427074833863564,
+     53.09593567504859,
+     52.5909274850507,
+     55.016033674558116,
+     52.369853859389714,
+     42.04613536364669,
+     33.04436037199974,
+     30.09765164070352,
+     29.583326387462993,
+     28.768281628659164,
+     26.592456454846626,
+     25.165031495926037,
+     25.030497721268418,
+     27.058339716070414,
+     31.36905142556587,
+     39.90005757842211,
+     54.59800387913731,
+     60.50153866290147,
+     54.99307783832926,
+     53.86555255787141,
+     52.47688524152096
+    ],
+    "applied": [
+     54.14141649407849,
+     51.937082059259126,
+     52.728020388696294,
+     51.427074833863564,
+     53.09593567504859,
+     52.5909274850507,
+     55.016033674558116,
+     52.369853859389714,
+     42.04613536364669,
+     33.04436037199974,
+     30.09765164070352,
+     29.583326387462993,
+     28.768281628659164,
+     26.592456454846626,
+     25.165031495926037,
+     25.030497721268418,
+     27.058339716070414,
+     31.36905142556587,
+     39.90005757842211,
+     54.59800387913731,
+     60.50153866290147,
+     54.99307783832926,
+     53.86555255787141,
+     52.47688524152096
+    ]
+   },
+   "2030|Summer": {
+    "base": [
+     53.91364818015988,
+     53.243778343095954,
+     52.597261503519,
+     50.57206093397188,
+     50.64065317589751,
+     50.903154804578605,
+     54.590848882217195,
+     56.935874409386976,
+     54.56247781940731,
+     48.45618567137061,
+     43.948704626121526,
+     40.026020109024394,
+     41.51761467989782,
+     39.01575043930904,
+     38.188105002328236,
+     39.659786247759214,
+     45.42745582998987,
+     50.9640641673062,
+     61.01427313095923,
+     69.64431689853636,
+     69.34580647698834,
+     62.106237288138836,
+     58.80737823190514,
+     56.79436797175545
+    ],
+    "applied": [
+     53.91364818015988,
+     53.243778343095954,
+     52.597261503519,
+     50.57206093397188,
+     50.64065317589751,
+     50.903154804578605,
+     54.590848882217195,
+     56.935874409386976,
+     54.56247781940731,
+     48.45618567137061,
+     43.948704626121526,
+     40.026020109024394,
+     41.51761467989782,
+     39.01575043930904,
+     38.188105002328236,
+     39.659786247759214,
+     45.42745582998987,
+     50.9640641673062,
+     61.01427313095923,
+     69.64431689853636,
+     69.34580647698834,
+     62.106237288138836,
+     58.80737823190514,
+     56.79436797175545
+    ]
+   },
+   "2030|Winter": {
+    "base": [
+     40.18870380979431,
+     38.86236273748501,
+     37.79479728535193,
+     39.14669299693682,
+     37.437474063282885,
+     38.45703902248407,
+     41.89706176667626,
+     43.00524242410071,
+     39.45291260002045,
+     35.652364762405526,
+     30.842396759810622,
+     29.416774364575176,
+     25.762107445231965,
+     25.526708153202236,
+     23.896973609595477,
+     24.567493285265957,
+     28.643417229473165,
+     33.705232870630994,
+     41.472561709209714,
+     46.35781644727216,
+     49.93388996321139,
+     42.468570291694796,
+     43.56309522229618,
+     42.94692145708164
+    ],
+    "applied": [
+     40.18870380979431,
+     38.86236273748501,
+     37.79479728535193,
+     39.14669299693682,
+     37.437474063282885,
+     38.45703902248407,
+     41.89706176667626,
+     43.00524242410071,
+     39.45291260002045,
+     35.652364762405526,
+     30.842396759810622,
+     29.416774364575176,
+     25.762107445231965,
+     25.526708153202236,
+     23.896973609595477,
+     24.567493285265957,
+     28.643417229473165,
+     33.705232870630994,
+     41.472561709209714,
+     46.35781644727216,
+     49.93388996321139,
+     42.468570291694796,
+     43.56309522229618,
+     42.94692145708164
+    ]
+   },
+   "2035|Autumn": {
+    "base": [
+     63.47209027701906,
+     59.86781994785588,
+     56.74269932195146,
+     56.758371405352804,
+     55.226098459693866,
+     53.671377555754496,
+     63.306434013900535,
+     74.49028181657022,
+     75.73289214397907,
+     70.48812864999276,
+     62.971305778731555,
+     55.10559041170115,
+     60.94306374750098,
+     58.07159360422252,
+     54.74945868576224,
+     65.41573616029449,
+     66.68898421130095,
+     80.6470359898071,
+     92.69945455545604,
+     91.61545182693294,
+     80.71008819054386,
+     75.7548222211939,
+     69.5996272784007,
+     66.31580505863475
+    ],
+    "applied": [
+     63.47209027701906,
+     59.86781994785588,
+     56.74269932195146,
+     56.758371405352804,
+     55.226098459693866,
+     53.671377555754496,
+     63.306434013900535,
+     74.49028181657022,
+     75.73289214397907,
+     70.48812864999276,
+     62.971305778731555,
+     55.10559041170115,
+     60.94306374750098,
+     58.07159360422252,
+     54.74945868576224,
+     65.41573616029449,
+     66.68898421130095,
+     80.6470359898071,
+     92.69945455545604,
+     91.61545182693294,
+     80.71008819054386,
+     75.7548222211939,
+     69.5996272784007,
+     66.31580505863475
+    ]
+   },
+   "2035|Spring": {
+    "base": [
+     60.94783165719484,
+     59.74177007714874,
+     57.621836753723365,
+     54.01185897994495,
+     56.283509419041664,
+     57.81517403320678,
+     63.90089242274482,
+     59.03167868074964,
+     45.44174154978181,
+     38.220886663628406,
+     34.14195942822271,
+     33.091048825268174,
+     30.84131906729246,
+     29.603181461024143,
+     26.28070926781716,
+     27.37243757758703,
+     29.5760906346292,
+     35.448428434963304,
+     45.746149146549904,
+     58.07856819952817,
+     66.46444947670824,
+     60.98670912027695,
+     60.20476878957606,
+     57.54839190902256
+    ],
+    "applied": [
+     60.94783165719484,
+     59.74177007714874,
+     57.621836753723365,
+     54.01185897994495,
+     56.283509419041664,
+     57.81517403320678,
+     63.90089242274482,
+     59.03167868074964,
+     45.44174154978181,
+     38.220886663628406,
+     34.14195942822271,
+     33.091048825268174,
+     30.84131906729246,
+     29.603181461024143,
+     26.28070926781716,
+     27.37243757758703,
+     29.5760906346292,
+     35.448428434963304,
+     45.746149146549904,
+     58.07856819952817,
+     66.46444947670824,
+     60.98670912027695,
+     60.20476878957606,
+     57.54839190902256
+    ]
+   },
+   "2035|Summer": {
+    "base": [
+     59.83063353465548,
+     60.455462293384464,
+     58.318005658490634,
+     54.8465496808214,
+     55.87730027561655,
+     56.13832131263991,
+     60.76919016055277,
+     64.93545783184992,
+     61.127858157811296,
+     55.142286782771514,
+     47.936423448221234,
+     44.83059460713995,
+     45.720919729357114,
+     44.354313356462114,
+     41.11424422410463,
+     44.45392874656748,
+     50.2339141446047,
+     58.50902733336888,
+     66.06352390184942,
+     75.71076379241606,
+     73.23428949174307,
+     70.08243220335973,
+     63.898450857668415,
+     62.74487215298881
+    ],
+    "applied": [
+     59.83063353465548,
+     60.455462293384464,
+     58.318005658490634,
+     54.8465496808214,
+     55.87730027561655,
+     56.13832131263991,
+     60.76919016055277,
+     64.93545783184992,
+     61.127858157811296,
+     55.142286782771514,
+     47.936423448221234,
+     44.83059460713995,
+     45.720919729357114,
+     44.354313356462114,
+     41.11424422410463,
+     44.45392874656748,
+     50.2339141446047,
+     58.50902733336888,
+     66.06352390184942,
+     75.71076379241606,
+     73.23428949174307,
+     70.08243220335973,
+     63.898450857668415,
+     62.74487215298881
+    ]
+   },
+   "2035|Winter": {
+    "base": [
+     47.70113830259562,
+     42.1462245536177,
+     43.91421114848537,
+     44.60369552118331,
+     45.36723850792732,
+     43.57060891439106,
+     45.746028435259426,
+     48.12191483471713,
+     44.69291094868722,
+     42.82325714349681,
+     35.84763481115646,
+     32.35837849670737,
+     29.702109859342087,
+     29.432973826173118,
+     27.439414285289427,
+     27.826487092060088,
+     32.477568441905085,
+     38.87756308651873,
+     48.2292592279003,
+     54.563264594153985,
+     55.0310354014796,
+     48.090626445617104,
+     49.828740777143224,
+     49.313051589802186
+    ],
+    "applied": [
+     47.70113830259562,
+     42.1462245536177,
+     43.91421114848537,
+     44.60369552118331,
+     45.36723850792732,
+     43.57060891439106,
+     45.746028435259426,
+     48.12191483471713,
+     44.69291094868722,
+     42.82325714349681,
+     35.84763481115646,
+     32.35837849670737,
+     29.702109859342087,
+     29.432973826173118,
+     27.439414285289427,
+     27.826487092060088,
+     32.477568441905085,
+     38.87756308651873,
+     48.2292592279003,
+     54.563264594153985,
+     55.0310354014796,
+     48.090626445617104,
+     49.828740777143224,
+     49.313051589802186
+    ]
+   }
+  },
+  "profile_identical_across_dso": true
+ },
+ "arm_summary": {
+  "arm": "s49flexgate",
+  "snapshots_requested": "on",
+  "out_dir": "data/SRP1/Results/P515S49/flex_price_gate/arm",
+  "working_dir_ids": {
+   "run": "p515s44_s45_w10_snapoff_s49flexgate_578636daa6d6360d_run",
+   "precheck": "p515s44_s45_w10_snapoff_s49flexgate_578636daa6d6360d_precheck"
+  },
+  "report_path": "data/SRP1/Results/P515S49/flex_price_gate/arm/g_s39_D.json",
+  "candidate_canonical": {
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.96875,
+     3.875
+    ],
+    "7": [
+     0.96875,
+     3.875
+    ],
+    "9": [
+     0.96875,
+     3.875
+    ]
+   }
+  },
+  "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+  "cycles_run": 2,
+  "recourse": 740922817.2425401,
+  "gross_operational_cost": 740922817.2425401,
+  "terminal_objective_change_abs": 845932257.6109526,
+  "terminal_objective_tolerance": 158685.50748534928,
+  "rule_ten_terminal_step_over_threshold": 5330.87281262313,
+  "local_solve_failures": 0,
+  "network_failures_summary": {
+   "n_blocks": 0,
+   "classes": {
+    "recovered_tier1": 0,
+    "recovered_tier2": 0,
+    "unrecovered": 0,
+    "not_attempted": 0,
+    "indeterminate": 0,
+    "recovered": 0
+   },
+   "n_frozen_snapshots": 0,
+   "n_esso_recovery_events": 0,
+   "path": "data/SRP1/Results/P515S49/flex_price_gate/arm/network_failures_s39_D.jsonl"
+  },
+  "solve_profile": {
+   "observed": {
+    "permitted_solve": 153,
+    "permitted_exec": 153,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "identity_holds": true
+  },
+  "snapshot_setting": {
+   "requested": "on",
+   "tso_mode_before": "lightweight",
+   "dso_mode_before": "lightweight",
+   "tso_mode_after": "lightweight",
+   "dso_mode_after": "lightweight",
+   "expected": [
+    "lightweight",
+    "lightweight"
+   ],
+   "took_effect": true,
+   "persistent_workers_enabled": false
+  },
+  "configuration_checks": {
+   "rho_v_matches_D": true,
+   "rho_pf_matches_D": true,
+   "rho_ess_matches_D": true,
+   "tau_is_0": true,
+   "gamma_policy_tied_to_rho": true,
+   "balancing_exempt_until_matches_D": true,
+   "balancing_exempt_channels_empty": true,
+   "freeze_after_unchanged_cycles_is_10": true,
+   "freeze_backstop_cycle_is_200": true,
+   "minimum_consecutive_converged_cycles_matches_spec": true,
+   "shared_ess_initialization_is_standalone": true,
+   "num_max_iters_is_spec_cap": true,
+   "anderson_acceleration_case_file_matches_declaration": true,
+   "anderson_acceleration_case_file_memory_regularization_frozen": true,
+   "persistent_workers_off": true,
+   "parallel_execution_off": true
+  },
+  "anderson_acceleration_effective": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "expected_block_counts_from_planning": {
+   "tso_blocks": 12,
+   "dso_blocks": 36,
+   "network_blocks": 48,
+   "esso_models": 3,
+   "solves_per_cycle": 51
+  },
+  "frozen_smopf_dir": "data/SRP1/Results/P515S49/flex_price_gate/arm/results/FrozenSMOPF",
+  "frozen_smopf_inventory": [],
+  "frozen_smopf_n_pkl": 0,
+  "frozen_smopf_n_skipped_markers": 0,
+  "wall_clock_s": {
+   "measured_here": 106.6158230304718,
+   "reported_by_run_admm_arm": 106.00769901275635
+  },
+  "peak_rss": {
+   "units": "bytes on macOS/BSD (ru_maxrss)",
+   "process_ru_maxrss_before_arm": 460128256,
+   "process_ru_maxrss_after_arm": 2268790784,
+   "production_state_peak_rss_ru_maxrss": 2265481216,
+   "production_state_peak_rss_platform_units": "bytes on macOS/BSD, kilobytes on Linux (Python resource module, RUSAGE_SELF.ru_maxrss)",
+   "solver_subprocesses_ru_maxrss_before": 13598720,
+   "solver_subprocesses_ru_maxrss_after": 52002816,
+   "semantics": "ru_maxrss is a process high-water mark, so \"after arm 2\" is the max over both arms; the production_state figure is taken by production at the end of run_operational_planning and is per-arm"
+  },
+  "published_caps": {
+   "5": {
+    "2025": {
+     "s_available": 0.96875,
+     "e_available": 3.522770892402501
+    },
+    "2030": {
+     "s_available": 0.96875,
+     "e_available": 3.2052071842190077
+    },
+    "2035": {
+     "s_available": 0.96875,
+     "e_available": 2.9229843309217896
+    }
+   },
+   "7": {
+    "2025": {
+     "s_available": 0.96875,
+     "e_available": 3.5229205171705176
+    },
+    "2030": {
+     "s_available": 0.96875,
+     "e_available": 3.2054795756053944
+    },
+    "2035": {
+     "s_available": 0.96875,
+     "e_available": 2.9233157716159517
+    }
+   },
+   "9": {
+    "2025": {
+     "s_available": 0.96875,
+     "e_available": 3.5228210291124706
+    },
+    "2030": {
+     "s_available": 0.96875,
+     "e_available": 3.2052799172621254
+    },
+    "2035": {
+     "s_available": 0.96875,
+     "e_available": 2.9230483752000174
+    }
+   }
+  }
+ },
+ "clone_capture_counters_informational": {
+  "s49flexgate_precheck": {
+   "clone": 0,
+   "capture": 0,
+   "clone_sites": {},
+   "capture_sites": {}
+  },
+  "arm_s49flexgate": {
+   "clone": 24,
+   "capture": 48,
+   "clone_sites": {
+    "p515_s45_snapshot_off_two_cycle_gate.py:340 in counting_clone": 24
+   },
+   "capture_sites": {
+    "p515_s45_snapshot_off_two_cycle_gate.py:344 in counting_capture": 48
+   }
+  }
+ },
+ "solve_profile": {
+  "declared_before_the_run": {
+   "case_file": "data/SRP1/SRP1.json",
+   "years": [
+    "2025",
+    "2030",
+    "2035"
+   ],
+   "days": [
+    "Autumn",
+    "Spring",
+    "Summer",
+    "Winter"
+   ],
+   "n_year_day_blocks": 12,
+   "n_networks": 4,
+   "network_solves_per_cycle": 48,
+   "active_distribution_network_nodes": [
+    5,
+    7,
+    9
+   ],
+   "esso_solves_per_cycle": 3,
+   "solves_per_cycle": 51,
+   "cap": 2,
+   "declared_base_solves_per_arm": 153,
+   "declared_base_solves_both_arms": 306,
+   "identity": "observed_arm == base + 1 * recovered_tier1 + 2 * recovered_tier2 (recovery counts from the arm own network_failures_summary)"
+  },
+  "base_declared": 153,
+  "event_level_reconciliation_GATING": {
+   "definition": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted] (every retry actually attempted, recovered or not); unsupported when an ESSO recovery event or an indeterminate network event exists, or the event file does not hold summary.n_blocks events",
+   "events_file": "data/SRP1/Results/P515S49/flex_price_gate/arm/network_failures_s39_D.jsonl",
+   "n_network_events": 0,
+   "n_events_by_class": {
+    "recovered_tier1": 0,
+    "recovered_tier2": 0,
+    "unrecovered": 0,
+    "not_attempted": 0,
+    "indeterminate": 0
+   },
+   "retry_solves_credited": 0,
+   "n_esso_recovery_events": 0,
+   "n_indeterminate": 0,
+   "supported": true,
+   "expected": 153
+  },
+  "w10_recovered_only_identity_reported": {
+   "recovered_tier1": 0,
+   "recovered_tier2": 0,
+   "expected": 153,
+   "holds": true
+  },
+  "observed_in_arm": 153,
+  "identity_holds": true,
+  "expected_block_counts_from_planning": {
+   "tso_blocks": 12,
+   "dso_blocks": 36,
+   "network_blocks": 48,
+   "esso_models": 3,
+   "solves_per_cycle": 51
+  },
+  "planning_derivation_agrees_with_case_file": true,
+  "process_guard": {
+   "permitted_call_sites": [
+    [
+     "network.py",
+     "_run_smopf_solver_attempt"
+    ],
+    [
+     "shared_energy_storage_data.py",
+     "_run_solver_attempt"
+    ]
+   ],
+   "counts": {
+    "permitted_solve": 153,
+    "permitted_exec": 153,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_exactly": 153,
+   "verify_failures": [],
+   "no_solves_outside_the_arm": true
+  }
+ },
+ "reference_comparison_GATING": {
+  "gating": true,
+  "reference_report": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star/g_s39_D.json",
+  "reference_sha256": "ced90e47873925b5bb87360984d348558d11ea11fd004e93f3a2668fdc389971",
+  "reference_campaign": "s47_recert (spec campaign_spec_s47_recert_902f93aa.json), BASELINE (C2 + phi_cal 0.985 + soh_min 0.70), AA keep_memory from the case file, cap 500; cycles_run 87, gross_operational_cost 650912327.1956586",
+  "reference_cycles_run": 87,
+  "reference_gross_operational_cost": 650912327.1956586,
+  "mode": "truncated: cycle_trajectory[:2] + the rows-derived top-level fields, vs the reference's first 2 committed rows (cycle-count-dependent artifacts -- esso_capture, solve_profile, network_failures_summary, esso_complementarity_diagnostics_by_round, esso_models_pickle -- out of scope)",
+  "n_cycles_compared": 2,
+  "diff_value_naming": "CP._diff names the reference value 'legacy' and arm ON's value 'lightweight'",
+  "n_provenance_diffs": 0,
+  "n_diffs": 0,
+  "reproduces": true,
+  "first_differing_field": null,
+  "first_diffs": [],
+  "caveat": "GATING here (W33 item 3); cap 2 vs the reference cap 500 -- W10/W20/W32 (committed) reproduced committed C* rows with 0 diffs at cap 2"
+ },
+ "trajectory_field_table_vs_reference": {
+  "field_list_source": "p515_s44_campaign_harness.RECORD_TRAJECTORY_FIELDS (BY IMPORT)",
+  "n_fields": 29,
+  "n_rows_on": 2,
+  "n_rows_off": 2,
+  "rows_length_equal": true,
+  "total_mismatches": 0,
+  "fields_with_mismatch": [],
+  "per_field": {
+   "boyd_all_pass": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_ess_channel_pass": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_ess_dual_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_ess_primal_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_pf_channel_pass": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_pf_dual_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_pf_primal_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_stop": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_v_channel_pass": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_v_dual_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_v_primal_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "consecutive_converged_cycles": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "cycle": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "cycle_convergence": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "efc_per_day_max": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "gross_operational_cost": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "local_solves_ok": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "objective_change_abs": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "objective_change_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "objective_tolerance": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "recourse": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_ess_action": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_ess_after": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_freeze_active": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_pf_action": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_pf_after": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_v_action": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_v_after": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "terminal_salvage_value": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   }
+  }
+ },
+ "gate_items": {
+  "ran_two_cycles": true,
+  "reproduces_committed_reference_zero_diffs": true,
+  "trajectory_fields_identical_to_reference": true,
+  "solve_reconciliation_event_level_identity_holds": true,
+  "planning_derivation_agrees_with_case_file": true,
+  "process_guard_verified_exactly": true,
+  "no_solves_outside_the_arm": true,
+  "no_blocked_solver_calls": true,
+  "shared_frozen_smopf_untouched": true,
+  "ess_ageing_declaration_verified_in_child": true,
+  "override_present_at_m_1_0": true,
+  "override_applied_checks_all_true": true,
+  "override_read_back_36_blocks_bitwise": true,
+  "harness_commit_in_head": true
+ },
+ "gate_pass": true,
+ "wall_clock_s": 119.99512195587158
+}

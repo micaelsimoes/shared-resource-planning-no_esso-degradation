@@ -1,0 +1,40 @@
+{
+  "stage": "P5.13-C — relocation of the ESS ageing constants into SRP1_ESS_Params.json",
+  "status": "FROZEN GATE — written and hashed BEFORE any source edit",
+  "authorization": "author, 2026-09-12: behaviour-preserving refactor, first production code change in this sequence; defaults must reproduce current values exactly; prove neutrality rather than assert it; include the calibration triple in the file schema; stop and report if exact neutrality cannot be achieved",
+  "roles": "Worker unavailable; the Planner is both author and verifier, which is why the gate is frozen before the edit and its verdict is mechanical",
+  "change_permitted": {
+    "files": ["shared_energy_storage_parameters.py", "shared_energy_storage_data.py", "data/SRP1/SharedESS/SRP1_ESS_Params.json"],
+    "nature": "read t_cal, cl_nom, dod_nom and soh_min from the ESS parameters file, applying them to each SharedEnergyStorage instance at creation; add a declared-only degradation calibration block to the schema",
+    "defaults": {"t_cal": 15, "cl_nom": 10000, "dod_nom": 0.80, "soh_min": 0.50, "rule": "every default must equal the value currently hard-coded in shared_energy_storage.py:18-21, so that an absent key reproduces today's behaviour exactly"}
+  },
+  "change_forbidden": [
+    "any change to the degradation law, the SoH chain, bounds, tolerances or any constraint expression",
+    "consumption of the calibration triple by the law — the triple is DECLARED in the schema and read into the parameters object, but no constraint may depend on it in this change; consuming it requires the author's (N, D, R) decision and is not behaviour-neutral",
+    "any change to shared_energy_storage.py's numerical values",
+    "any change to case data other than adding the new keys to SRP1_ESS_Params.json",
+    "any solver invocation: this gate is structural and runs no solve"
+  ],
+  "invariants": {
+    "I1": "for each of the three ESSO models, the ordered semantic state (variables with bounds/fixed flags/values, Params, and every constraint expression rendered as a string, in deterministic order) must be byte-identical pre- and post-edit",
+    "I2": "for each of the three ESSO models, the .nl export must be byte-identical pre- and post-edit",
+    "I3": "on every SharedEnergyStorage object in every representative year, (t_cal, cl_nom, dod_nom, soh_min) == (15, 10000, 0.80, 0.50) post-edit, matching pre-edit",
+    "I4": "the objective, feasibility-penalty and salvage expression strings must be identical pre- and post-edit",
+    "I5": "the post-edit git diff must be confined to the three files listed in change_permitted plus this stage's own artifacts"
+  },
+  "procedure": [
+    "1. freeze this specification and hash it (done before any edit)",
+    "2. run p513_c_param_move_gate.py in 'capture' mode on the UNMODIFIED tree -> baseline manifest",
+    "3. make the edit",
+    "4. run the same harness in 'capture' mode -> post manifest",
+    "5. run the harness in 'compare' mode; it must report equality on I1-I4, and the Planner checks I5 from the diff"
+  ],
+  "decision_rule": {
+    "pass": "all of I1-I5 equal; the refactor is then recorded as behaviour-neutral and every existing result remains valid unchanged",
+    "fail": "ANY inequality — the edit is reverted and the difference reported; no attempt may be made to argue that a difference is immaterial"
+  },
+  "what_this_gate_does_not_prove": [
+    "it does not re-run any ADMM trajectory or solve; it proves that the model handed to the solver is identical, which is the property the refactor claims",
+    "it does not address the calibration decision (N, D, R), which remains open and blocking"
+  ]
+}

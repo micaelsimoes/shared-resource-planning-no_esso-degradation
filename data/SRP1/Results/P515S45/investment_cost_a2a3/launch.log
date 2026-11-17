@@ -1,0 +1,64 @@
+21:17:53 [W16] concurrency preflight passed (no other p5* python process alive)
+21:17:53 [W16] building the A2 points through p515_s45_a1_campaign.stage_points("a2") ...
+21:17:53 [W16] evaluating I(x) for 21 candidates with the corrected cost file ...
+21:18:04 [W16] sigma_Q estimate from the existing ladders ...
+
+[W16] guard counts {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} verify(0) failures []
+[W16] max |master - p56a| = 9.313e-10 EUR; max |power+energy - master| = 2.328e-10 EUR
+[W16] best 2025 setting per node (argmin F = I + Q within that node's a1a ladder):
+        node 5: n5_4h_e1     P=0.25 MVA E=1 MWh (4 h)  I=317957.01  Q=653614718.03  F=653932675.04
+        node 7: n7_4h_e1     P=0.25 MVA E=1 MWh (4 h)  I=317957.01  Q=653597653.72  F=653915610.73
+        node 9: n9_4h_e1     P=0.25 MVA E=1 MWh (4 h)  I=317957.01  Q=653602441.60  F=653920398.60
+label                                    I_new_eur       slack@1e6 feas E<=5 src  key
+presence_n5_n7                           635914.02       364085.98 True  True  new   00b96fd5cdf5545c
+presence_n5_n9                           635914.02       364085.98 True  True  new   f9689a4b1d27fda8
+presence_n7_n9                           635914.02       364085.98 True  True  new   85d6d95a8ef8876b
+presence_n5_n7_n9                        953871.03        46128.97 True  True  new   6fbf40202169d482
+lattice_c_star_p1.0_e4.0                3815484.10     -2815484.10 False True  reuse a002e3ab10e2d7bb
+res_n7_p0.25_e0.5_y2025                  191018.17       808981.83 True  True  reuse 56b9730bfb7b78c7
+res_n7_p0.5_e1.5_y2025                   508975.18       491024.82 True  True  new   062178ab2f3a87ff
+res_n7_p0.75_e1.5_y2025                  573054.51       426945.49 True  True  new   4f135d7a623cac5f
+res_n7_p0.75_e2.5_y2025                  826932.19       173067.81 True  True  new   222e4f71cc132c96
+res_n7_p1_e2.5_y2025                     891011.52       108988.48 True  True  new   3e15cb08487bf947
+res_n7_p1.25_e2.5_y2025                  955090.85        44909.15 True  True  new   fdfe88cd4342f81a
+res_n7_p1_e3.5_y2025                    1144889.20      -144889.20 False True  new   26fd9df9d6cbebc6
+res_n7_p1.25_e3.5_y2025                 1208968.53      -208968.53 False True  new   b427fc258e5a19cc
+res_n7_p1.5_e3.5_y2025                  1273047.86      -273047.86 False True  new   2b27083604eec084
+res_n7_p1.75_e3.5_y2025                 1337127.19      -337127.19 False True  new   8b321b9fe9b52824
+res_n7_p1.25_e4.5_y2025                 1462846.20      -462846.20 False True  new   44c40574f84ca528
+res_n7_p1.5_e4.5_y2025                  1526925.53      -526925.53 False True  new   c6938af91713e6ff
+res_n7_p1.75_e4.5_y2025                 1591004.87      -591004.87 False True  new   add3b33dbfdd42a7
+res_n7_p2_e4.5_y2025                    1655084.20      -655084.20 False True  new   95b18224ba5de1e4
+res_n7_p2.25_e4.5_y2025                 1719163.53      -719163.53 False True  new   773240eaeaa65195
+res_n7_p0.5_e1_y2025                     382036.34       617963.66 True  True  reuse 3993aebc641d4dad
+[W16] A3 enumeration: 52 proposals -> 14 new, 2 already evaluated, 36 dropped
+        already_evaluated  res_n7_p0.25_e0.5_y2025      dur=2.0  == a0:n7_p0.25_e0.5
+        new                res_n7_p0.5_e1.5_y2025       dur=3.0
+        new                res_n7_p0.75_e1.5_y2025      dur=2.0
+        new                res_n7_p0.75_e2.5_y2025      dur=3.3333333333333335
+        new                res_n7_p1_e2.5_y2025         dur=2.5
+        new                res_n7_p1.25_e2.5_y2025      dur=2.0
+        new                res_n7_p1_e3.5_y2025         dur=3.5
+        new                res_n7_p1.25_e3.5_y2025      dur=2.8
+        new                res_n7_p1.5_e3.5_y2025       dur=2.3333333333333335
+        new                res_n7_p1.75_e3.5_y2025      dur=2.0
+        new                res_n7_p1.25_e4.5_y2025      dur=3.6
+        new                res_n7_p1.5_e4.5_y2025       dur=3.0
+        new                res_n7_p1.75_e4.5_y2025      dur=2.5714285714285716
+        new                res_n7_p2_e4.5_y2025         dur=2.25
+        new                res_n7_p2.25_e4.5_y2025      dur=2.0
+        already_evaluated  res_n7_p0.5_e1_y2025         dur=2.0  == a1a:n7_2h_e1
+[W16] sigma_Q ESTIMATE over 10 ladders: max 28208.4 EUR (4.319e-05 of Q), median 14375.0 EUR (2.200e-05); provisional 1.1e-04 = 71857.5 EUR; max bar 35469.4 EUR
+        a1a|n5|2h|y2025        sigma_Q=   15595.8 (2.39e-05) at n5_2h_e3         max_bar=9446.6 monotone=True
+        a1a|n5|4h|y2025        sigma_Q=   14253.0 (2.18e-05) at n5_4h_e2         max_bar=14465.9 monotone=True
+        a1a|n7|2h|y2025        sigma_Q=   16729.7 (2.56e-05) at n7_2h_e3         max_bar=10000.0 monotone=True
+        a1a|n7|4h|y2025        sigma_Q=   10400.9 (1.59e-05) at n7_4h_e4         max_bar=11340.3 monotone=True
+        a1a|n9|2h|y2025        sigma_Q=   17446.9 (2.67e-05) at n9_2h_e3         max_bar=10139.9 monotone=True
+        a1a|n9|4h|y2025        sigma_Q=   28208.4 (4.32e-05) at n9_4h_e2         max_bar=11766.4 monotone=True
+        a1b|n7|2h|y2030        sigma_Q=    6672.0 (1.02e-05) at n7_2h_e4_y2030   max_bar=15674.1 monotone=True
+        a1b|n7|2h|y2035        sigma_Q=   14497.0 (2.22e-05) at n7_2h_e3_y2035   max_bar=14682.5 monotone=True
+        a1b|n7|4h|y2030        sigma_Q=    5208.6 (7.97e-06) at n7_4h_e2_y2030   max_bar=35469.4 monotone=True
+        a1b|n7|4h|y2035        sigma_Q=    9877.4 (1.51e-05) at n7_4h_e2_y2035   max_bar=34988.7 monotone=True
+[W16] predecessor unchanged: True 28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b
+[W16] files modified outside OUT_DIR: ["data/SRP1/Diagrams/SRP1_market_prices_2025_Autumn.pdf", "data/SRP1/Diagrams/SRP1_market_prices_2025_Spring.pdf", "data/SRP1/Diagrams/SRP1_market_prices_2025_Summer.pdf", "data/SRP1/Diagrams/SRP1_market_prices_2025_Winter.pdf", "data/SRP1/Diagrams/case33_1_RES_generation_scenarios_2025_Autumn.pdf", "data/SRP1/Diagrams/case33_1_RES_generation_scenarios_2025_Spring.pdf", "data/SRP1/Diagrams/case33_1_RES_generation_scenarios_2025_Summer.pdf", "data/SRP1/Diagrams/case33_1_RES_generation_scenarios_2025_Winter.pdf", "data/SRP1/Diagrams/case33_1_flexibility_scenarios_2025_Autumn.pdf", "data/SRP1/Diagrams/case33_1_flexibility_scenarios_2025_Spring.pdf", "data/SRP1/Diagrams/case33_1_flexibility_scenarios_2025_Summer.pdf", "data/SRP1/Diagrams/case33_1_flexibility_scenarios_2025_Winter.pdf", "data/SRP1/Diagrams/case33_1_load_scenarios_2025_Autumn.pdf", "data/SRP1/Diagrams/case33_1_load_scenarios_2025_Spring.pdf", "data/SRP1/Diagrams/case33_1_load_scenarios_2025_Summer.pdf", "data/SRP1/Diagrams/case33_1_load_scenarios_2025_Winter.pdf", "data/SRP1/Diagrams/case33_2_RES_generation_scenarios_2025_Autumn.pdf", "data/SRP1/Diagrams/case33_2_RES_generation_scenarios_2025_Spring.pdf", "data/SRP1/Diagrams/case33_2_RES_generation_scenarios_2025_Summer.pdf", "data/SRP1/Diagrams/case33_2_RES_generation_scenarios_2025_Winter.pdf", "data/SRP1/Diagrams/case33_2_flexibility_scenarios_2025_Autumn.pdf", "data/SRP1/Diagrams/case33_2_flexibility_scenarios_2025_Spring.pdf", "data/SRP1/Diagrams/case33_2_flexibility_scenarios_2025_Summer.pdf", "data/SRP1/Diagrams/case33_2_flexibility_scenarios_2025_Winter.pdf", "data/SRP1/Diagrams/case33_2_load_scenarios_2025_Autumn.pdf", "data/SRP1/Diagrams/case33_2_load_scenarios_2025_Spring.pdf", "data/SRP1/Diagrams/case33_2_load_scenarios_2025_Summer.pdf", "data/SRP1/Diagrams/case33_2_load_scenarios_2025_Winter.pdf", "data/SRP1/Diagrams/case33_3_RES_generation_scenarios_2025_Autumn.pdf", "data/SRP1/Diagrams/case33_3_RES_generation_scenarios_2025_Spring.pdf", "data/SRP1/Diagrams/case33_3_RES_generation_scenarios_2025_Summer.pdf", "data/SRP1/Diagrams/case33_3_RES_generation_scenarios_2025_Winter.pdf", "data/SRP1/Diagrams/case33_3_flexibility_scenarios_2025_Autumn.pdf", "data/SRP1/Diagrams/case33_3_flexibility_scenarios_2025_Spring.pdf", "data/SRP1/Diagrams/case33_3_flexibility_scenarios_2025_Summer.pdf", "data/SRP1/Diagrams/case33_3_flexibility_scenarios_2025_Winter.pdf", "data/SRP1/Diagrams/case33_3_load_scenarios_2025_Autumn.pdf", "data/SRP1/Diagrams/case33_3_load_scenarios_2025_Spring.pdf", "data/SRP1/Diagrams/case33_3_load_scenarios_2025_Summer.pdf", "data/SRP1/Diagrams/case33_3_load_scenarios_2025_Winter.pdf", "data/SRP1/Diagrams/case9_RES_generation_scenarios_2025_Autumn.pdf", "data/SRP1/Diagrams/case9_RES_generation_scenarios_2025_Spring.pdf", "data/SRP1/Diagrams/case9_RES_generation_scenarios_2025_Summer.pdf", "data/SRP1/Diagrams/case9_RES_generation_scenarios_2025_Winter.pdf", "data/SRP1/Diagrams/case9_flexibility_scenarios_2025_Autumn.pdf", "data/SRP1/Diagrams/case9_flexibility_scenarios_2025_Spring.pdf", "data/SRP1/Diagrams/case9_flexibility_scenarios_2025_Summer.pdf", "data/SRP1/Diagrams/case9_flexibility_scenarios_2025_Winter.pdf", "data/SRP1/Diagrams/case9_load_scenarios_2025_Autumn.pdf", "data/SRP1/Diagrams/case9_load_scenarios_2025_Spring.pdf", "data/SRP1/Diagrams/case9_load_scenarios_2025_Summer.pdf", "data/SRP1/Diagrams/case9_load_scenarios_2025_Winter.pdf"]
+[W16] done

@@ -1,0 +1,5263 @@
+{
+ "schema": "w182d_claims/1",
+ "stage": "P5.15 W182d (Addendum 82 v2, W182 items A7 and A8)",
+ "started_utc": "2026-10-25T14:07:49.378354+00:00",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "identity": {
+  "ok": true,
+  "checks": [
+   {
+    "check": "clone HEAD is edd7a63",
+    "ok": true,
+    "detail": "edd7a63a6c2ea06c1db17e3b6941bde8aa6d6838"
+   },
+   {
+    "check": "clone tracked files clean (read-only use)",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "check": "main.tex sha256 prefix = audit fingerprint b08a3365607e56f2",
+    "ok": true,
+    "detail": "b08a3365607e56f2ff8c56572a9a74bc9ea97d5fb461faa252fab7955ffa8f5b"
+   },
+   {
+    "check": "letter is v9 (header line)",
+    "ok": true,
+    "detail": "% Response to reviewers \u2014 v9 (expert, 2026-10-16; Addendum 8"
+   }
+  ],
+  "clone_head": "edd7a63a6c2ea06c1db17e3b6941bde8aa6d6838",
+  "main_sha256": "b08a3365607e56f2ff8c56572a9a74bc9ea97d5fb461faa252fab7955ffa8f5b",
+  "repo_head": "ab1d8d7b767f97c4755c67ea168ed442622e72e5"
+ },
+ "objective_convention": "no Q computed; I(x) is the expected discounted investment cost of the master (EUR, discounted to 2025); 13.9 / 12.2 % from the frozen benchmark (gross operational cost, settlement excluded)",
+ "production_calls": [
+  "shared_energy_storage_parameters.SharedEnergyStorageParameters.read_parameters_from_file",
+  "shared_energy_storage_data._get_operational_scenarios_info_from_excel_file",
+  "shared_energy_storage_data._get_investment_costs_from_excel_file",
+  "shared_resources_planning._check_candidate_first_stage_feasibility"
+ ],
+ "A7": {
+  "entries": [
+   {
+    "id": "M-ABS-1",
+    "file": "main.tex",
+    "lines": [
+     145,
+     145
+    ],
+    "region": "abstract",
+    "status": "listed",
+    "quote": "This paper proposes a two-stage stochastic framework for shared battery ESS siting, sizing and installation timing under investment-cost uncertainty.",
+    "cat": [
+     "ii",
+     "iii"
+    ],
+    "strength": "implied",
+    "why": "Investment-cost uncertainty enters only as probability-weighted coefficients of I(x) and of the expected-budget row (l. 541, 690; code: the master row and the search lattice use one expected coefficient per year), so with one common plan the selection is that of the expected-cost problem and no value of stochastic selection is demonstrated or measured. \"Installation timing\": the searches used one cohort per node and a common year (l. 1203); node-specific timing and staging not explored (l. 1781).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "expected_objective",
+      "file": "main.tex",
+      "line": 541,
+      "ok": true
+     },
+     {
+      "key": "expected_budget",
+      "file": "main.tex",
+      "line": 690,
+      "ok": true
+     },
+     {
+      "key": "code_budget_row_expected",
+      "file": "shared_energy_storage_data.py",
+      "line": 376,
+      "ok": true
+     },
+     {
+      "key": "code_search_expected_coeff",
+      "file": "p515_s47_phase_b_record.py",
+      "line": 385,
+      "ok": true
+     },
+     {
+      "key": "search_single_scenario",
+      "file": "main.tex",
+      "line": 1203,
+      "ok": true
+     },
+     {
+      "key": "scope_timing",
+      "file": "main.tex",
+      "line": 1781,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "M-ABS-2",
+    "file": "main.tex",
+    "lines": [
+     145,
+     145
+    ],
+    "region": "abstract",
+    "status": "listed",
+    "quote": "A derivative-free search explores discrete investment plans, and an Alternating Direction Method of Multipliers (ADMM)-based coordination procedure evaluates their operation under load, renewable-generation and market-price uncertainty.",
+    "cat": [
+     "i"
+    ],
+    "strength": "implied",
+    "why": "The plans the search explored were evaluated in the single-scenario configuration (one market x one load-RES scenario, l. 1203); only two fixed plans were evaluated on the 3x3 instance and the search was not repeated there (l. 1636, 1781).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "search_single_scenario",
+      "file": "main.tex",
+      "line": 1203,
+      "ok": true
+     },
+     {
+      "key": "ms_search_not_repeated",
+      "file": "main.tex",
+      "line": 1636,
+      "ok": true
+     },
+     {
+      "key": "scope_fixed_plans",
+      "file": "main.tex",
+      "line": 1781,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "M-HL-1",
+    "file": "main.tex",
+    "lines": [
+     163,
+     163
+    ],
+    "region": "highlights (main.tex)",
+    "status": "listed",
+    "quote": "A stochastic framework plans shared storage at transmission--distribution interfaces",
+    "cat": [
+     "i",
+     "ii"
+    ],
+    "strength": "implied",
+    "why": "\"Plans\" under a stochastic framework: the planning searches ran single-scenario (l. 1203) and the cost uncertainty acts through expected coefficients only (l. 690).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "search_single_scenario",
+      "file": "main.tex",
+      "line": 1203,
+      "ok": true
+     },
+     {
+      "key": "expected_budget",
+      "file": "main.tex",
+      "line": 690,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "M-CON-1",
+    "file": "main.tex",
+    "lines": [
+     387,
+     387
+    ],
+    "region": "contributions",
+    "status": "listed",
+    "quote": "A two-stage stochastic planning framework for shared ESS deployment at TN--DN interface nodes that determines a multi-year investment plan and evaluates it against scenario-dependent coordinated TSO--DSO operation.",
+    "cat": [
+     "i",
+     "iii"
+    ],
+    "strength": "implied",
+    "why": "The plan the framework \"determines\" (the search incumbent) was evaluated single-scenario; scenario-dependent evaluation exists only for two fixed plans (l. 1203, 1636). \"Multi-year plan\": one cohort, common year (l. 1781).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "search_single_scenario",
+      "file": "main.tex",
+      "line": 1203,
+      "ok": true
+     },
+     {
+      "key": "ms_search_not_repeated",
+      "file": "main.tex",
+      "line": 1636,
+      "ok": true
+     },
+     {
+      "key": "scope_timing",
+      "file": "main.tex",
+      "line": 1781,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "M-CON-3",
+    "file": "main.tex",
+    "lines": [
+     389,
+     389
+    ],
+    "region": "contributions",
+    "status": "borderline",
+    "quote": "together with explicit numerical acceptance criteria for assessing the resolution of planning comparisons.",
+    "cat": [
+     "iv-b"
+    ],
+    "strength": "implied (read with l. 368: \"its stopping error is seldom quantified\")",
+    "why": "\"Resolution\" is a defined term (l. 2037) and the bullet does not assert a bound; read with l. 368 it implies the paper quantifies stopping error, which l. 2003 and l. 1777 deny.",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "within_resolution_defined",
+      "file": "main.tex",
+      "line": 2037,
+      "ok": true
+     },
+     {
+      "key": "cert_definition",
+      "file": "main.tex",
+      "line": 2003,
+      "ok": true
+     },
+     {
+      "key": "cert_no_bound",
+      "file": "main.tex",
+      "line": 1777,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "M-CON-4",
+    "file": "main.tex",
+    "lines": [
+     390,
+     390
+    ],
+    "region": "contributions",
+    "status": "other",
+    "quote": "and the role of degradation in the investment decision.",
+    "cat": [
+     "other: audit 3.1 \"degradation matters\" row"
+    ],
+    "strength": "explicit",
+    "why": "Degradation results are fixed-plan re-evaluations (l. 1781); no degradation-neutral planning search was run.",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "scope_fixed_plans",
+      "file": "main.tex",
+      "line": 1781,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "M-45-1",
+    "file": "main.tex",
+    "lines": [
+     1636,
+     1636
+    ],
+    "region": "Section 4.5",
+    "status": "borderline",
+    "quote": "The resulting shortfall of 81.3~k\\euro{} exceeds the reported numerical resolution of 18.0~k\\euro{}.",
+    "cat": [
+     "iv-b"
+    ],
+    "strength": "implied",
+    "why": "A \"numerical resolution\" is quoted for two evaluations that the same paragraph says were not certified; l. 2037 defines resolution through the comparison rules of Appendix A.5. The 18.0 figure's rule is not stated in Section 4.5 (not checked here).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "ms_not_certified",
+      "file": "main.tex",
+      "line": 1636,
+      "ok": true
+     },
+     {
+      "key": "within_resolution_defined",
+      "file": "main.tex",
+      "line": 2037,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "M-45-2",
+    "file": "main.tex",
+    "lines": [
+     1640,
+     1640
+    ],
+    "region": "Section 4.5",
+    "status": "borderline",
+    "quote": "This range reflects estimated remaining movement in the no-storage evaluation and is not a certified interval.",
+    "cat": [
+     "iv-b"
+    ],
+    "strength": "implied (by contrast)",
+    "why": "\"Not a certified interval\" implies that certification would yield an interval on the value ratio; l. 2003 says certification gives no rigorous bound.",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "cert_definition",
+      "file": "main.tex",
+      "line": 2003,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "M-5-1",
+    "file": "main.tex",
+    "lines": [
+     1795,
+     1795
+    ],
+    "region": "Section 5",
+    "status": "borderline",
+    "quote": "The two-stage stochastic formulation links investment decisions with coordinated TSO--DSO operation under uncertainty, while battery degradation couples storage utilisation with available capacity over the planning horizon.",
+    "cat": [
+     "i"
+    ],
+    "strength": "formulation statement",
+    "why": "True of the formulation; in the case the investment decisions were searched single-scenario (l. 1203).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "search_single_scenario",
+      "file": "main.tex",
+      "line": 1203,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "H-3",
+    "file": "highlights.tex",
+    "lines": [
+     12,
+     12
+    ],
+    "region": "highlights (standalone)",
+    "status": "listed",
+    "quote": "Every recourse evaluation is certified; every planning difference has a resolution",
+    "cat": [
+     "iv-s",
+     "iv-b"
+    ],
+    "strength": "explicit",
+    "why": "10 of 42 campaign evaluations uncertified (l. 1739); the 41 search evaluations ran under the residual-based exit (l. 1760); the 3x3 evaluations and the returned 2x plan are uncertified (l. 1636, 1507); certification gives no rigorous bound (l. 2003, 1777).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "ten_uncertified",
+      "file": "main.tex",
+      "line": 1739,
+      "ok": true
+     },
+     {
+      "key": "search_41_residual",
+      "file": "main.tex",
+      "line": 1760,
+      "ok": true
+     },
+     {
+      "key": "ms_not_certified",
+      "file": "main.tex",
+      "line": 1636,
+      "ok": true
+     },
+     {
+      "key": "returned_plan_uncertified",
+      "file": "main.tex",
+      "line": 1507,
+      "ok": true
+     },
+     {
+      "key": "cert_definition",
+      "file": "main.tex",
+      "line": 2003,
+      "ok": true
+     },
+     {
+      "key": "cert_no_bound",
+      "file": "main.tex",
+      "line": 1777,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "H-4",
+    "file": "highlights.tex",
+    "lines": [
+     13,
+     13
+    ],
+    "region": "highlights (standalone)",
+    "status": "listed",
+    "quote": "Without ageing the reference storage unit breaks even; with ageing it loses",
+    "cat": [
+     "iv-b"
+    ],
+    "strength": "explicit",
+    "why": "Converts \"within numerical resolution\" (row 46, w.r., 0.32x) into a demonstrated break-even; a w.r. verdict is the failure of the determinacy rule (l. 2037), not a bound placing the margin at zero.",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "no_ageing_row",
+      "file": "main.tex",
+      "line": 2676,
+      "ok": true
+     },
+     {
+      "key": "within_resolution_defined",
+      "file": "main.tex",
+      "line": 2037,
+      "ok": true
+     },
+     {
+      "key": "cert_definition",
+      "file": "main.tex",
+      "line": 2003,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-01",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     42,
+     43
+    ],
+    "region": "letter, opening",
+    "status": "listed",
+    "quote": "in which each candidate plan is evaluated by the\ncoordinated TSO--DSO recourse under an explicit stopping and certification rule",
+    "cat": [
+     "iv-s"
+    ],
+    "strength": "explicit",
+    "why": "Search candidates ran under the production (residual) exit, not the certification rule (l. 1760; E.6).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "search_41_residual",
+      "file": "main.tex",
+      "line": 1760,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-00",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     48,
+     49
+    ],
+    "region": "letter, opening",
+    "status": "borderline",
+    "quote": "loses 64.4~k\\euro{} over the horizon, determinately, as does every other plan\nevaluated",
+    "cat": [
+     "iv-s"
+    ],
+    "strength": "implied",
+    "why": "Six of the fourteen neighbours of x = 0 were evaluated by the search only, under the production exit, and carry no determinacy verdict under the rule (l. 2808, 1760); every certified baseline comparison of Table E.20 (a) is determinate.",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "search_only_six",
+      "file": "main.tex",
+      "line": 2808,
+      "ok": true
+     },
+     {
+      "key": "search_41_residual",
+      "file": "main.tex",
+      "line": 1760,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-02",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     54,
+     55
+    ],
+    "region": "letter, opening",
+    "status": "borderline",
+    "quote": "and we have tried to make every number it\nreports traceable and to state the resolution at which each difference is claimed.",
+    "cat": [
+     "iv-b"
+    ],
+    "strength": "implied",
+    "why": "\"Resolution\" as a property of each claimed difference; l. 2003 / 1777 state it is not a bound.",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "cert_definition",
+      "file": "main.tex",
+      "line": 2003,
+      "ok": true
+     },
+     {
+      "key": "cert_no_bound",
+      "file": "main.tex",
+      "line": 1777,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-02b",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     81,
+     81
+    ],
+    "region": "letter, R1.2",
+    "status": "borderline",
+    "quote": "and the resolution at which the difference is claimed (Section~2.2.7, the opening of Section~4, and the captions and notes of Tables~7--15).",
+    "cat": [
+     "iv-b"
+    ],
+    "strength": "implied",
+    "why": "As L-02.",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "cert_definition",
+      "file": "main.tex",
+      "line": 2003,
+      "ok": true
+     },
+     {
+      "key": "cert_no_bound",
+      "file": "main.tex",
+      "line": 1777,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-03",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     58,
+     58
+    ],
+    "region": "letter, opening",
+    "status": "borderline",
+    "quote": "under the no-ageing calibration the unit is at break-even within resolution and the plan is indeterminate at the precision of this study.",
+    "cat": [
+     "iv-b"
+    ],
+    "strength": "implied (\"precision of this study\")",
+    "why": "Row 46 is w.r.; a \"precision\" of the study is not established by the acceptance rule (l. 2003).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "no_ageing_row",
+      "file": "main.tex",
+      "line": 2676,
+      "ok": true
+     },
+     {
+      "key": "cert_definition",
+      "file": "main.tex",
+      "line": 2003,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-04",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     78,
+     78
+    ],
+    "region": "letter, R1.2",
+    "status": "listed",
+    "quote": "on the latter, run on a finer five-block horizon, the reference unit again loses determinately to the plan without storage, and its value is 0.909--0.934 of its single-scenario value, against 0.933 predicted from the mean-profile price spread (Section~4.5).",
+    "cat": [
+     "iv-s",
+     "iv-b"
+    ],
+    "strength": "explicit",
+    "why": "\"Determinately\" for two evaluations Section 4.5 calls not certified; the ratio range is set against a three-decimal prediction as if resolved; the 0.933 prediction is not in main.tex (searched).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "ms_not_certified",
+      "file": "main.tex",
+      "line": 1636,
+      "ok": true
+     },
+     {
+      "key": "ms_not_certified_interval",
+      "file": "main.tex",
+      "line": 1640,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-05",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     102,
+     102
+    ],
+    "region": "letter, R1.5",
+    "status": "listed",
+    "quote": "a derivative-free search driving certified recourse evaluations, with no cuts.",
+    "cat": [
+     "iv-s"
+    ],
+    "strength": "explicit",
+    "why": "The search drove residual-exit evaluations (l. 1760); certification was applied afterwards to reported comparisons.",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "search_41_residual",
+      "file": "main.tex",
+      "line": 1760,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-06",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     114,
+     115
+    ],
+    "region": "letter, R2.1",
+    "status": "borderline",
+    "quote": "stage selects one scenario-independent multi-year plan; the second stage evaluates it under\nscenario-dependent coordinated operation.",
+    "cat": [
+     "i"
+    ],
+    "strength": "formulation statement",
+    "why": "True of the formulation; the case search evaluated single-scenario (l. 1203).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "search_single_scenario",
+      "file": "main.tex",
+      "line": 1203,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-07",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     137,
+     137
+    ],
+    "region": "letter, R2.3",
+    "status": "listed",
+    "quote": "The method claims no optimality certificate; what it certifies is each evaluation (Section~2.2.7), and every planning statement in the paper is a pairwise comparison of certified evaluations with a stated determinacy threshold.",
+    "cat": [
+     "iv-s"
+    ],
+    "strength": "explicit",
+    "why": "Ten campaign evaluations, the 41 search evaluations, the 3x3 pair and the returned 2x plan are not certified; Section 4.2 / 4.5 statements rest on them (l. 1739, 1760, 1636, 1507).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "ten_uncertified",
+      "file": "main.tex",
+      "line": 1739,
+      "ok": true
+     },
+     {
+      "key": "search_41_residual",
+      "file": "main.tex",
+      "line": 1760,
+      "ok": true
+     },
+     {
+      "key": "ms_not_certified",
+      "file": "main.tex",
+      "line": 1636,
+      "ok": true
+     },
+     {
+      "key": "returned_plan_uncertified",
+      "file": "main.tex",
+      "line": 1507,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-08",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     168,
+     169
+    ],
+    "region": "letter, R2.5",
+    "status": "listed",
+    "quote": "On sensitivity to the penalty schedule: the certification bounds the\nstopping error of each evaluation, not the basin the nonconvex recourse converges to",
+    "cat": [
+     "iv-b"
+    ],
+    "strength": "explicit",
+    "why": "main.tex says the opposite: no rigorous bound on subsequent objective movement (l. 2003, 1777).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "cert_definition",
+      "file": "main.tex",
+      "line": 2003,
+      "ok": true
+     },
+     {
+      "key": "cert_no_bound",
+      "file": "main.tex",
+      "line": 1777,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-09",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     229,
+     230
+    ],
+    "region": "letter, R3.2",
+    "status": "listed",
+    "quote": "what is certified is each recourse evaluation, and each reported difference carries the\nthreshold above which it is called determinate (Section~2.2.7).",
+    "cat": [
+     "iv-s"
+    ],
+    "strength": "explicit",
+    "why": "Not every recourse evaluation is certified (l. 1739, 1760, 1636).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "ten_uncertified",
+      "file": "main.tex",
+      "line": 1739,
+      "ok": true
+     },
+     {
+      "key": "search_41_residual",
+      "file": "main.tex",
+      "line": 1760,
+      "ok": true
+     },
+     {
+      "key": "ms_not_certified",
+      "file": "main.tex",
+      "line": 1636,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-10",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     230,
+     232
+    ],
+    "region": "letter, R3.2",
+    "status": "listed",
+    "quote": "The resolution is set by\n$\\tau = \\delta_R V/4$ with $\\delta_R = 0.07$ of the single-scenario storage value, so that a ratio of\ntwo values is resolved to $\\delta_R$.",
+    "cat": [
+     "iv-b"
+    ],
+    "strength": "explicit",
+    "why": "Eq. (acceptance_tolerance) only prescribes tau; nothing in main.tex establishes that a ratio is resolved to delta_R, and l. 2003 denies a rigorous bound.",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "tau_definition",
+      "file": "main.tex",
+      "line": 1993,
+      "ok": true
+     },
+     {
+      "key": "cert_definition",
+      "file": "main.tex",
+      "line": 2003,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-11",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     221,
+     221
+    ],
+    "region": "letter, R3.1",
+    "status": "borderline",
+    "quote": "2035 is worse than 2030 in gross terms (+42.5~k\\euro{}, determinate) and indistinguishable net of salvage ($-2.3$~k\\euro{}, within resolution)",
+    "cat": [
+     "iii"
+    ],
+    "strength": "implied (offered in reply to a request to reassess timing with salvage)",
+    "why": "A fixed-plan year comparison with a post-evaluation credit (l. 1363); the paper itself says neither year is preferable (l. 1677). Hedged, but it answers a salvage-aware timing request.",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "salvage_post_evaluation",
+      "file": "main.tex",
+      "line": 1363,
+      "ok": true
+     },
+     {
+      "key": "year_neither_preferable",
+      "file": "main.tex",
+      "line": 1677,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-12",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     263,
+     263
+    ],
+    "region": "letter, R3.6",
+    "status": "listed",
+    "quote": "without ageing $-4.1$~k\\euro{} (within resolution, i.e.\\ break-even)",
+    "cat": [
+     "iv-b"
+    ],
+    "strength": "explicit",
+    "why": "\"i.e. break-even\" turns a w.r. verdict (row 46) into a zero-margin result (audit 6).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "no_ageing_row",
+      "file": "main.tex",
+      "line": 2676,
+      "ok": true
+     },
+     {
+      "key": "within_resolution_defined",
+      "file": "main.tex",
+      "line": 2037,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-13",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     264,
+     264
+    ],
+    "region": "letter, R3.6",
+    "status": "listed",
+    "quote": "Under the no-ageing calibration the unit is at break-even and the plan is indeterminate at this precision.",
+    "cat": [
+     "iv-b"
+    ],
+    "strength": "explicit",
+    "why": "As L-12, plus \"this precision\" as an established property of the rule (l. 2003).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "no_ageing_row",
+      "file": "main.tex",
+      "line": 2676,
+      "ok": true
+     },
+     {
+      "key": "cert_definition",
+      "file": "main.tex",
+      "line": 2003,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-14",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     264,
+     264
+    ],
+    "region": "letter, R3.6",
+    "status": "borderline",
+    "quote": "Lowering the end-of-life floor from 0.70 to 0.50 changes the value by $+4.9$~k\\euro{}, within resolution, so the floor is not what makes storage uneconomic here (Table~11, last row).",
+    "cat": [
+     "iv-b"
+    ],
+    "strength": "implied",
+    "why": "A w.r. verdict (row 58, 0.38x) read as the absence of an effect; w.r. means only that the determinacy rule was not met (l. 2037).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "floor_row",
+      "file": "main.tex",
+      "line": 2688,
+      "ok": true
+     },
+     {
+      "key": "within_resolution_defined",
+      "file": "main.tex",
+      "line": 2037,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-O1",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     58,
+     58
+    ],
+    "region": "letter, opening",
+    "status": "other",
+    "quote": "so the plan without storage would be the search's answer under each aged calibration provided that this affinity holds under it",
+    "cat": [
+     "other: audit 7 extrapolation of the baseline search to unsearched calibrations; uses ladders with out-of-budget points (A8)"
+    ],
+    "strength": "explicit (hedged as inference)",
+    "why": "No search was run under any other calibration (l. 1781).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "scope_fixed_plans",
+      "file": "main.tex",
+      "line": 1781,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-O2",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     249,
+     249
+    ],
+    "region": "letter, R3.4",
+    "status": "other",
+    "quote": "storage does not pay under an optimistic cycle life, and it loses more under the datasheet calibration (Section~4.3).",
+    "cat": [
+     "other: audit 7 (datasheet loses 45.2 k EUR, baseline 64.4 k EUR: it loses less)"
+    ],
+    "strength": "explicit",
+    "why": "Rows 48 and 49 of tab:appE_claims.",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "baseline_row",
+      "file": "main.tex",
+      "line": 2678,
+      "ok": true
+     },
+     {
+      "key": "datasheet_row",
+      "file": "main.tex",
+      "line": 2679,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "L-O3",
+    "file": "response_to_reviewers_draft.tex",
+    "lines": [
+     264,
+     264
+    ],
+    "region": "letter, R3.6",
+    "status": "other",
+    "quote": "since the value is affine in size on the evaluated ladders with a slope below cost, the plan without storage would be the search's answer under each of them",
+    "cat": [
+     "other: audit 3.2 / 7 (fixed-plan losses offered as making re-optimisation unnecessary); ladders include out-of-budget points (A8)"
+    ],
+    "strength": "explicit (hedged as inference)",
+    "why": "Fixed-plan re-evaluations only (l. 1781).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "scope_fixed_plans",
+      "file": "main.tex",
+      "line": 1781,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "C-1",
+    "file": "cover_letter.tex",
+    "lines": [
+     14,
+     14
+    ],
+    "region": "cover letter",
+    "status": "listed",
+    "quote": "The proposed approach is formulated as a bi-level stochastic optimization model in which the upper level determines siting, sizing, and staged investment decisions under investment-cost uncertainty, while the lower level evaluates these decisions through coordinated operation.",
+    "cat": [
+     "ii",
+     "iii"
+    ],
+    "strength": "explicit (submitted-version text, unrevised)",
+    "why": "Staged decisions were not searched (l. 1781); cost uncertainty enters as expected coefficients (l. 690); \"bi-level\" withdrawn in the revision.",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [
+     {
+      "key": "scope_timing",
+      "file": "main.tex",
+      "line": 1781,
+      "ok": true
+     },
+     {
+      "key": "expected_budget",
+      "file": "main.tex",
+      "line": 690,
+      "ok": true
+     }
+    ],
+    "evidence_ok": true
+   },
+   {
+    "id": "C-O1",
+    "file": "cover_letter.tex",
+    "lines": [
+     24,
+     24
+    ],
+    "region": "cover letter",
+    "status": "other",
+    "quote": "The analysis further shows that battery degradation materially affects ESS valuation and that planning-horizon discretization can influence siting and sizing decisions.",
+    "cat": [
+     "other: withdrawn result (audit 7: cover letter unrevised)"
+    ],
+    "strength": "explicit",
+    "why": "The discretization sensitivity was removed (letter l. 281).",
+    "quote_at_lines": true,
+    "in_scope": true,
+    "evidence": [],
+    "evidence_ok": true
+   }
+  ],
+  "supplement_outside_scope": [
+   {
+    "id": "S-INTRO-GAP",
+    "file": "main.tex",
+    "lines": [
+     368,
+     368
+    ],
+    "region": "Introduction, gap paragraph",
+    "quote": "its stopping error is seldom quantified, so that planning differences are reported without a stated resolution",
+    "cat": [
+     "iv-b"
+    ],
+    "why": "Implies the paper quantifies the stopping error (contrast l. 2003, 1777).",
+    "quote_at_lines": true
+   },
+   {
+    "id": "S-INTRO-TIMING",
+    "file": "main.tex",
+    "lines": [
+     361,
+     361
+    ],
+    "region": "Introduction",
+    "quote": "linking shared ESS siting, sizing and installation timing with coordinated TSO--DSO operation",
+    "cat": [
+     "iii"
+    ],
+    "why": "Formulation capability; case search: common year, one cohort (l. 1781).",
+    "quote_at_lines": true
+   },
+   {
+    "id": "S-MASTER-STAGED",
+    "file": "main.tex",
+    "lines": [
+     536,
+     536
+    ],
+    "region": "Section 2.2 opening",
+    "quote": "including siting, sizing, and staged capacity expansion",
+    "cat": [
+     "iii"
+    ],
+    "why": "Formulation capability; staged expansion not explored (l. 1781).",
+    "quote_at_lines": true
+   }
+  ],
+  "scope_lines": {
+   "main.tex": {
+    "abstract": [
+     140,
+     141,
+     142,
+     143,
+     144,
+     145,
+     146,
+     147,
+     148,
+     149,
+     150
+    ],
+    "highlights (main.tex)": [
+     162,
+     163,
+     164,
+     165,
+     166,
+     167,
+     168
+    ],
+    "contributions": [
+     381,
+     382,
+     383,
+     384,
+     385,
+     386,
+     387,
+     388,
+     389,
+     390,
+     391
+    ],
+    "Section 4.5": [
+     1632,
+     1633,
+     1634,
+     1635,
+     1636,
+     1637,
+     1638,
+     1639,
+     1640,
+     1641,
+     1642,
+     1643,
+     1644,
+     1645,
+     1646,
+     1647,
+     1648,
+     1649,
+     1650,
+     1651,
+     1652,
+     1653,
+     1654,
+     1655,
+     1656,
+     1657,
+     1658,
+     1659,
+     1660,
+     1661,
+     1662,
+     1663,
+     1664,
+     1665,
+     1666,
+     1667,
+     1668,
+     1669,
+     1670,
+     1671
+    ],
+    "Section 5": [
+     1791,
+     1792,
+     1793,
+     1794,
+     1795,
+     1796,
+     1797,
+     1798,
+     1799,
+     1800,
+     1801,
+     1802,
+     1803,
+     1804,
+     1805,
+     1806,
+     1807,
+     1808,
+     1809,
+     1813
+    ]
+   },
+   "highlights.tex": {
+    "highlights (standalone)": [
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15
+    ]
+   },
+   "cover_letter.tex": {
+    "cover letter": [
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36,
+     37,
+     38
+    ]
+   },
+   "response_to_reviewers_draft.tex": {
+    "letter (v9), reviewer quotes excluded": [
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     43,
+     44,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     51,
+     52,
+     53,
+     54,
+     55,
+     56,
+     57,
+     58,
+     59,
+     61,
+     62,
+     63,
+     74,
+     75,
+     76,
+     77,
+     78,
+     79,
+     80,
+     81,
+     82,
+     83,
+     84,
+     85,
+     86,
+     87,
+     88,
+     97,
+     98,
+     99,
+     100,
+     102,
+     103,
+     104,
+     106,
+     107,
+     108,
+     113,
+     114,
+     115,
+     116,
+     117,
+     118,
+     119,
+     120,
+     121,
+     122,
+     123,
+     125,
+     126,
+     127,
+     128,
+     134,
+     135,
+     136,
+     137,
+     138,
+     139,
+     140,
+     141,
+     142,
+     143,
+     144,
+     145,
+     146,
+     151,
+     152,
+     153,
+     154,
+     155,
+     156,
+     157,
+     158,
+     159,
+     160,
+     161,
+     162,
+     163,
+     164,
+     165,
+     166,
+     167,
+     168,
+     169,
+     170,
+     171,
+     172,
+     173,
+     174,
+     175,
+     176,
+     181,
+     182,
+     183,
+     184,
+     185,
+     186,
+     187,
+     191,
+     192,
+     193,
+     194,
+     195,
+     196,
+     197,
+     202,
+     203,
+     204,
+     205,
+     206,
+     207,
+     208,
+     209,
+     210,
+     211,
+     212,
+     214,
+     215,
+     216,
+     220,
+     221,
+     222,
+     223,
+     224,
+     228,
+     229,
+     230,
+     231,
+     232,
+     233,
+     234,
+     235,
+     236,
+     237,
+     241,
+     242,
+     243,
+     244,
+     245,
+     249,
+     250,
+     251,
+     252,
+     256,
+     257,
+     258,
+     259,
+     263,
+     264,
+     265,
+     266,
+     267,
+     272,
+     273,
+     274,
+     275,
+     276,
+     278,
+     279,
+     280,
+     281,
+     282,
+     283,
+     284,
+     285,
+     286,
+     287,
+     288,
+     289,
+     290,
+     291,
+     292
+    ]
+   }
+  },
+  "regions_main_tex": {
+   "abstract": [
+    140,
+    150
+   ],
+   "highlights (main.tex)": [
+    162,
+    168
+   ],
+   "contributions": [
+    381,
+    391
+   ],
+   "Section 4.5": [
+    1632,
+    1672
+   ],
+   "Section 5": [
+    1791,
+    1813
+   ]
+  },
+  "keyword_pattern": "stochastic|uncertain|scenario|trajector|probabilit|expected|timing|installation year|investment year|install|staged|multi-year|defer|certif|resolution|resolv|determinat|precision|bound|break-even|breaks even|guarantee|optimal",
+  "coverage": {
+   "covered": [
+    {
+     "file": "main.tex",
+     "line": 145,
+     "region": "abstract",
+     "fragment": "This paper proposes a two-stage stochastic framework for shared battery ESS siting, sizing and installation timing under investment-cost uncertainty.",
+     "keywords": [
+      "install",
+      "stochastic",
+      "timing",
+      "uncertain"
+     ],
+     "entries": [
+      "M-ABS-1"
+     ]
+    },
+    {
+     "file": "main.tex",
+     "line": 145,
+     "region": "abstract",
+     "fragment": "A derivative-free search explores discrete investment plans, and an Alternating Direction Method of Multipliers (ADMM)-based coordination procedure evaluates their operation under load, renewable-generation and market-price uncertainty.",
+     "keywords": [
+      "uncertain"
+     ],
+     "entries": [
+      "M-ABS-2"
+     ]
+    },
+    {
+     "file": "main.tex",
+     "line": 163,
+     "region": "highlights (main.tex)",
+     "fragment": "\\item A stochastic framework plans shared storage at transmission--distribution interfaces",
+     "keywords": [
+      "stochastic"
+     ],
+     "entries": [
+      "M-HL-1"
+     ]
+    },
+    {
+     "file": "main.tex",
+     "line": 387,
+     "region": "contributions",
+     "fragment": "\\item \\textcolor{blue}{A two-stage stochastic planning framework for shared ESS deployment at TN--DN interface nodes that determines a multi-year investment plan and evaluates it against scenario-dependent coordinated TSO--DSO operation.}",
+     "keywords": [
+      "multi-year",
+      "scenario",
+      "stochastic"
+     ],
+     "entries": [
+      "M-CON-1"
+     ]
+    },
+    {
+     "file": "main.tex",
+     "line": 389,
+     "region": "contributions",
+     "fragment": "\\item \\textcolor{blue}{A nested solution strategy combining a derivative-free investment search with ADMM-based decentralized operational evaluation, together with explicit numerical acceptance criteria for assessing the resolution of planning comparisons.}",
+     "keywords": [
+      "resolution"
+     ],
+     "entries": [
+      "M-CON-3"
+     ]
+    },
+    {
+     "file": "main.tex",
+     "line": 390,
+     "region": "contributions",
+     "fragment": "\\item \\textcolor{blue}{A case study on an integrated 108-bus system that quantifies the value of coordination against static interface practice, the break-even conditions for shared storage in energy cost and flexibility price, and the role of degradation in the investment decision.}",
+     "keywords": [
+      "break-even"
+     ],
+     "entries": [
+      "M-CON-4"
+     ]
+    },
+    {
+     "file": "main.tex",
+     "line": 1636,
+     "region": "Section 4.5",
+     "fragment": "The resulting shortfall of 81.3~k\\euro{} exceeds the reported numerical resolution of 18.0~k\\euro{}.",
+     "keywords": [
+      "resolution"
+     ],
+     "entries": [
+      "M-45-1"
+     ]
+    },
+    {
+     "file": "main.tex",
+     "line": 1640,
+     "region": "Section 4.5",
+     "fragment": "This range reflects estimated remaining movement in the no-storage evaluation and is not a certified interval.",
+     "keywords": [
+      "certif"
+     ],
+     "entries": [
+      "M-45-2"
+     ]
+    },
+    {
+     "file": "main.tex",
+     "line": 1795,
+     "region": "Section 5",
+     "fragment": "The two-stage stochastic formulation links investment decisions with coordinated TSO--DSO operation under uncertainty, while battery degradation couples storage utilisation with available capacity over the planning horizon.",
+     "keywords": [
+      "stochastic",
+      "uncertain"
+     ],
+     "entries": [
+      "M-5-1"
+     ]
+    },
+    {
+     "file": "highlights.tex",
+     "line": 12,
+     "region": "highlights (standalone)",
+     "fragment": "\\item Every recourse evaluation is certified; every planning difference has a resolution",
+     "keywords": [
+      "certif",
+      "resolution"
+     ],
+     "entries": [
+      "H-3"
+     ]
+    },
+    {
+     "file": "highlights.tex",
+     "line": 13,
+     "region": "highlights (standalone)",
+     "fragment": "\\item Without ageing the reference storage unit breaks even; with ageing it loses",
+     "keywords": [
+      "breaks even"
+     ],
+     "entries": [
+      "H-4"
+     ]
+    },
+    {
+     "file": "cover_letter.tex",
+     "line": 14,
+     "region": "cover letter",
+     "fragment": "The proposed approach is formulated as a bi-level stochastic optimization model in which the upper level determines siting, sizing, and staged investment decisions under investment-cost uncertainty, while the lower level evaluates these decisions through coordinated operation.",
+     "keywords": [
+      "staged",
+      "stochastic",
+      "uncertain"
+     ],
+     "entries": [
+      "C-1"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 42,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "siting--sizing--timing lattice (Sections~2.1 and~2.2), in which each candidate plan is evaluated by the",
+     "keywords": [
+      "timing"
+     ],
+     "entries": [
+      "L-01"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 43,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "coordinated TSO--DSO recourse under an explicit stopping and certification rule (Section~2.2.7 and",
+     "keywords": [
+      "certif"
+     ],
+     "entries": [
+      "L-01"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 48,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "unit (0.25~MVA / 1~MWh at node~7) loses 64.4~k\\euro{} over the horizon, determinately, as does every other plan",
+     "keywords": [
+      "determinat"
+     ],
+     "entries": [
+      "L-00"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 55,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "reports traceable and to state the resolution at which each difference is claimed.",
+     "keywords": [
+      "resolution"
+     ],
+     "entries": [
+      "L-02"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 58,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "We did not re-optimize the investment plan under every ageing calibration (Reviewer~3, degradation-neutral benchmark): under every aged calibration the reference unit loses determinately, and at the baseline calibration the value is measured to be affine in storage size with a slope below cost, so the plan without storage would be the search's answer under each aged calibration provided that this affinity holds under it, which we state as an inference, not a result (Section~4.8); under the no-ageing calibration the unit is at break-even within resolution and the plan is indeterminate at the precision of this study.",
+     "keywords": [
+      "break-even",
+      "determinat",
+      "precision",
+      "resolution"
+     ],
+     "entries": [
+      "L-03",
+      "L-O1"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 78,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "on the latter, run on a finer five-block horizon, the reference unit again loses determinately to the plan without storage, and its value is 0.909--0.934 of its single-scenario value, against 0.933 predicted from the mean-profile price spread (Section~4.5).",
+     "keywords": [
+      "determinat",
+      "scenario"
+     ],
+     "entries": [
+      "L-04"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 81,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "Every benefit is now stated with its basis: the objective convention (gross operational cost, settlement excluded), the horizon (three representative years standing for five-year blocks at the single-scenario instance; five three-year blocks at the multi-scenario instance), the comparison it is drawn from, and the resolution at which the difference is claimed (Section~2.2.7, the opening of Section~4, and the captions and notes of Tables~7--15).",
+     "keywords": [
+      "resolution",
+      "scenario"
+     ],
+     "entries": [
+      "L-02b"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 102,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "The framework figure (Figure~1) was also redrawn, with fewer elements, to reflect the revised architecture: a derivative-free search driving certified recourse evaluations, with no cuts.}",
+     "keywords": [
+      "certif"
+     ],
+     "entries": [
+      "L-05"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 114,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "stage selects one scenario-independent multi-year plan; the second stage evaluates it under",
+     "keywords": [
+      "multi-year",
+      "scenario"
+     ],
+     "entries": [
+      "L-06"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 115,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "scenario-dependent coordinated operation.",
+     "keywords": [
+      "scenario"
+     ],
+     "entries": [
+      "L-06"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 137,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "The method claims no optimality certificate; what it certifies is each evaluation (Section~2.2.7), and every planning statement in the paper is a pairwise comparison of certified evaluations with a stated determinacy threshold.",
+     "keywords": [
+      "certif",
+      "optimal"
+     ],
+     "entries": [
+      "L-07"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 168,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "On sensitivity to the penalty schedule: the certification bounds the",
+     "keywords": [
+      "bound",
+      "certif"
+     ],
+     "entries": [
+      "L-08"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 221,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "Separately, the investment-year comparison depends on the convention --- 2035 is worse than 2030 in gross terms (+42.5~k\\euro{}, determinate) and indistinguishable net of salvage ($-2.3$~k\\euro{}, within resolution) --- and the paper says so (Section~4.6).",
+     "keywords": [
+      "determinat",
+      "resolution"
+     ],
+     "entries": [
+      "L-11"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 229,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "certificate; what is certified is each recourse evaluation, and each reported difference carries the",
+     "keywords": [
+      "certif"
+     ],
+     "entries": [
+      "L-09"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 230,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "threshold above which it is called determinate (Section~2.2.7).",
+     "keywords": [
+      "determinat"
+     ],
+     "entries": [
+      "L-09"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 230,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "The resolution is set by",
+     "keywords": [
+      "resolution"
+     ],
+     "entries": [
+      "L-10"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 231,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "$\\tau = \\delta_R V/4$ with $\\delta_R = 0.07$ of the single-scenario storage value, so that a ratio of",
+     "keywords": [
+      "scenario"
+     ],
+     "entries": [
+      "L-10"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 232,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "two values is resolved to $\\delta_R$.",
+     "keywords": [
+      "resolv"
+     ],
+     "entries": [
+      "L-10"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 263,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "At a fixed plan (the reference unit, 0.25~MVA / 1~MWh at node~7), the value minus investment is: without ageing $-4.1$~k\\euro{} (within resolution, i.e.\\ break-even); cycling only $-31.6$~k\\euro{}; cycling and calendar (the baseline) $-64.4$~k\\euro{};  the datasheet calibration at 8,000 cycles $-45.2$~k\\euro{}, the 50\\,\\% retention calibration $-73.7$~k\\euro{} and the same evaluated at mid-block $-65.9$~k\\euro{}; all determinate except the no-ageing case (Table~11 and Figure~7).",
+     "keywords": [
+      "break-even",
+      "determinat",
+      "resolution"
+     ],
+     "entries": [
+      "L-12"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 264,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "Lowering the end-of-life floor from 0.70 to 0.50 changes the value by $+4.9$~k\\euro{}, within resolution, so the floor is not what makes storage uneconomic here (Table~11, last row).",
+     "keywords": [
+      "resolution"
+     ],
+     "entries": [
+      "L-14"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 264,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "On installed capacity and timing: under every aged calibration the reference unit loses determinately, and since the value is affine in size on the evaluated ladders with a slope below cost, the plan without storage would be the search's answer under each of them; this is stated as an inference, the search was not rerun per calibration (Section~4.8).",
+     "keywords": [
+      "determinat",
+      "install",
+      "timing"
+     ],
+     "entries": [
+      "L-O3"
+     ]
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 264,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "Under the no-ageing calibration the unit is at break-even and the plan is indeterminate at this precision.",
+     "keywords": [
+      "break-even",
+      "determinat",
+      "precision"
+     ],
+     "entries": [
+      "L-13"
+     ]
+    }
+   ],
+   "excluded": [
+    {
+     "file": "main.tex",
+     "line": 144,
+     "region": "abstract",
+     "fragment": "Shared Energy Storage Systems (ESSs) installed at transmission--distribution interface nodes can support both Transmission System Operators (TSOs) and Distribution System Operators (DSOs).",
+     "keywords": [
+      "install"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "main.tex",
+     "line": 144,
+     "region": "abstract",
+     "fragment": "Their planning must account for coordinated operation under uncertainty and battery degradation.",
+     "keywords": [
+      "uncertain"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "main.tex",
+     "line": 146,
+     "region": "abstract",
+     "fragment": "For a fixed reference 0.25~MVA/1~MWh unit, baseline ageing yields an investment shortfall of 64.4~k\\euro{}, while the margin without ageing is within numerical resolution of break-even.",
+     "keywords": [
+      "break-even",
+      "resolution"
+     ],
+     "reason": "fixed-plan result labelled as such; \"within numerical resolution\" / \"determinate\" used as defined (l. 2037, A.5), not converted into break-even"
+    },
+    {
+     "file": "main.tex",
+     "line": 146,
+     "region": "abstract",
+     "fragment": "Its estimated margin remains negative in the $3 \\times 3$ multi-scenario evaluation.",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "fixed-plan result labelled as such; \"within numerical resolution\" / \"determinate\" used as defined (l. 2037, A.5), not converted into break-even"
+    },
+    {
+     "file": "main.tex",
+     "line": 381,
+     "region": "contributions",
+     "fragment": "To address this gap, this paper formulates shared ESS planning as a two-stage stochastic program with operational recourse.",
+     "keywords": [
+      "stochastic"
+     ],
+     "reason": "formulation or scope statement, true of the model; not a claim about the experiments"
+    },
+    {
+     "file": "main.tex",
+     "line": 381,
+     "region": "contributions",
+     "fragment": "The first stage determines a single, scenario-independent investment plan specifying ESS locations, capacities and installation years.",
+     "keywords": [
+      "installation year",
+      "scenario"
+     ],
+     "reason": "formulation or scope statement, true of the model; not a claim about the experiments"
+    },
+    {
+     "file": "main.tex",
+     "line": 381,
+     "region": "contributions",
+     "fragment": "Uncertainty is represented through alternative trajectories of future ESS investment costs and operational scenarios of load, RES generation and market prices.",
+     "keywords": [
+      "scenario",
+      "trajector",
+      "uncertain"
+     ],
+     "reason": "formulation or scope statement, true of the model; not a claim about the experiments"
+    },
+    {
+     "file": "main.tex",
+     "line": 382,
+     "region": "contributions",
+     "fragment": "Demand growth and RES capacity follow predefined trajectories, while policy changes, infrastructure retirements and the cost of capital as a stochastic quantity are outside the present formulation and left to future work.",
+     "keywords": [
+      "stochastic",
+      "trajector"
+     ],
+     "reason": "formulation or scope statement, true of the model; not a claim about the experiments"
+    },
+    {
+     "file": "main.tex",
+     "line": 388,
+     "region": "contributions",
+     "fragment": "\\item \\textcolor{blue}{A degradation-aware shared ESS formulation that internalizes cycling- and calendar-induced capacity loss, calibrated from datasheet cycle-life statements and bounded by an end-of-life floor, and preserves the intertemporal consistency of available storage capacity.}",
+     "keywords": [
+      "bound"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "main.tex",
+     "line": 1632,
+     "region": "Section 4.5",
+     "fragment": "\\subsection{\\textcolor{blue}{Multi-Scenario Evaluation}}",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "heading, label, caption or pointer list"
+    },
+    {
+     "file": "main.tex",
+     "line": 1633,
+     "region": "Section 4.5",
+     "fragment": "\\label{subsec:res_multiscenario}",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "heading, label, caption or pointer list"
+    },
+    {
+     "file": "main.tex",
+     "line": 1636,
+     "region": "Section 4.5",
+     "fragment": "The reference unit and the plan without storage were evaluated for all nine combinations of three market scenarios and three load and renewable-generation scenarios, using five representative three-year blocks.",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "main.tex",
+     "line": 1636,
+     "region": "Section 4.5",
+     "fragment": "As shown in Table~\\ref{tab:res_multiscenario}, the reference unit provides estimated discounted operating savings of 236.7~k\\euro{} against an investment cost of 318.0~k\\euro{}.",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "main.tex",
+     "line": 1636,
+     "region": "Section 4.5",
+     "fragment": "These evaluations used the residual-based stopping criterion described in Appendix~\\ref{app:admm_updated_stopping} and were not certified under the rule of Subsection~\\ref{subsubsec:certification}.",
+     "keywords": [
+      "certif"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "main.tex",
+     "line": 1640,
+     "region": "Section 4.5",
+     "fragment": "A fit to the continued objective trajectory of the plan without storage estimated a further cost decrease of 6.2~k\\euro{}.",
+     "keywords": [
+      "trajector"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "main.tex",
+     "line": 1640,
+     "region": "Section 4.5",
+     "fragment": "Accounting for this decrease alone would reduce the estimated storage value from 236.7 to 230.5~k\\euro{}, corresponding to values approximately 7--9\\,\\% below the single-scenario value.",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "main.tex",
+     "line": 1640,
+     "region": "Section 4.5",
+     "fragment": "The configurations also differ in temporal discretisation and commitment-cost treatment, so the lower value cannot be attributed solely to scenario uncertainty.",
+     "keywords": [
+      "scenario",
+      "uncertain"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "main.tex",
+     "line": 1645,
+     "region": "Section 4.5",
+     "fragment": "\\caption{\\textcolor{blue}{Multi-scenario evaluation of the reference unit (node~7, 0.25~MVA / 1~MWh, installed in 2025).}}",
+     "keywords": [
+      "install",
+      "scenario"
+     ],
+     "reason": "heading, label, caption or pointer list"
+    },
+    {
+     "file": "main.tex",
+     "line": 1646,
+     "region": "Section 4.5",
+     "fragment": "\\label{tab:res_multiscenario}",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "heading, label, caption or pointer list"
+    },
+    {
+     "file": "main.tex",
+     "line": 1655,
+     "region": "Section 4.5",
+     "fragment": "Reported numerical resolution & 18.0~k\\euro{} \\\\",
+     "keywords": [
+      "resolution"
+     ],
+     "reason": "table row of the quantity of M-45-1 (borderline there)"
+    },
+    {
+     "file": "main.tex",
+     "line": 1656,
+     "region": "Section 4.5",
+     "fragment": "Single-scenario operating savings & 253.5~k\\euro{} \\\\",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "main.tex",
+     "line": 1665,
+     "region": "Section 4.5",
+     "fragment": "Operating savings and investment margin are reported at the residual-based stopping point; the multi-scenario evaluations are uncertified.",
+     "keywords": [
+      "certif",
+      "scenario"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "main.tex",
+     "line": 1667,
+     "region": "Section 4.5",
+     "fragment": "Ratios use the single-scenario operating savings as the denominator.",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "main.tex",
+     "line": 1803,
+     "region": "Section 5",
+     "fragment": "Fixed-plan sensitivities showed that the reference unit's investment margin was within numerical resolution of break-even without ageing and negative under all tested calibrations that included ageing.",
+     "keywords": [
+      "break-even",
+      "resolution"
+     ],
+     "reason": "fixed-plan result labelled as such; \"within numerical resolution\" / \"determinate\" used as defined (l. 2037, A.5), not converted into break-even"
+    },
+    {
+     "file": "main.tex",
+     "line": 1803,
+     "region": "Section 5",
+     "fragment": "The estimated marginal break-even energy costs for 4~h storage at node~7 were below the baseline energy-capacity cost.",
+     "keywords": [
+      "break-even"
+     ],
+     "reason": "listed under A8 instead (out-of-budget fit or abstract wording)"
+    },
+    {
+     "file": "main.tex",
+     "line": 1803,
+     "region": "Section 5",
+     "fragment": "Its estimated investment margin remained negative in the multi-scenario evaluation.",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "fixed-plan result labelled as such; \"within numerical resolution\" / \"determinate\" used as defined (l. 2037, A.5), not converted into break-even"
+    },
+    {
+     "file": "main.tex",
+     "line": 1807,
+     "region": "Section 5",
+     "fragment": "Future work will extend the planning search to node-specific installation timing and staged expansion, and assess the scalability and numerical robustness of the coordination procedure on larger test systems.",
+     "keywords": [
+      "install",
+      "staged",
+      "timing"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "main.tex",
+     "line": 1807,
+     "region": "Section 5",
+     "fragment": "Further developments will consider richer degradation and uncertainty models, other shared flexibility resources, and the allocation of battery degradation among operators.",
+     "keywords": [
+      "uncertain"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "cover_letter.tex",
+     "line": 14,
+     "region": "cover letter",
+     "fragment": "This manuscript proposes a degradation-aware planning framework for shared battery energy storage systems installed at transmission--distribution interface nodes and jointly operated under coordinated TSO--DSO operation.",
+     "keywords": [
+      "install"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 40,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "0.50\\,\\% gap was a stopping tolerance rather than an optimality certificate.",
+     "keywords": [
+      "certif",
+      "optimal"
+     ],
+     "reason": "restates the reviewer's point in the letter's agreement"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 58,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "The largest instance of the submitted version (five representative years, twenty-five scenarios) could not be evaluated under the certification rule within the memory available and is stated as future work (Section~4.8); the multi-scenario results are given on a $3\\times3$ scenario instance (Section~4.5).",
+     "keywords": [
+      "certif",
+      "scenario"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 63,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "\\subsection*{R1.2 --- Uncertainty, system size, and the date and basis of the reported benefits}",
+     "keywords": [
+      "uncertain"
+     ],
+     "reason": "heading, label, caption or pointer list"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 75,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "On (i): the investment-cost uncertainty is uncertainty about future technology cost --- alternative trajectories of the unit cost of storage over the horizon --- not about the cost of capital; the cost of capital is treated separately through the discount-rate sensitivity requested in R1.4.",
+     "keywords": [
+      "trajector",
+      "uncertain"
+     ],
+     "reason": "listed under A8 instead (out-of-budget fit or abstract wording)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 75,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "Operational uncertainty is represented through scenarios of load, RES generation and market prices (Section~3), and",
+     "keywords": [
+      "scenario",
+      "uncertain"
+     ],
+     "reason": "listed under A8 instead (out-of-budget fit or abstract wording)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 77,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "The revised results are given on the single-scenario instance and on a $3\\times3$ market$\\times$operation scenario instance;",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 85,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "\\rchanges{Abstract; Section~3 (instance as run; scenario structure); Section~4.5 (multi-scenario instance);",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "heading, label, caption or pointer list"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 86,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "Section~2.3.4, last paragraph, Section~4.8 and Section~5 (attribution); captions and notes of Tables~7--15 (basis and resolution).}",
+     "keywords": [
+      "resolution"
+     ],
+     "reason": "heading, label, caption or pointer list"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 88,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "\\subsection*{R1.4 --- Uncertainty and discount-rate sensitivity}",
+     "keywords": [
+      "uncertain"
+     ],
+     "reason": "heading, label, caption or pointer list"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 97,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "\\rresponse{On (i): the introduction now states which of these sources of uncertainty are represented in this work --- technology maturation, as trajectories of future storage investment cost, and market prices, load and RES generation, as operational scenarios; demand growth and RES capacity, as predefined trajectories --- and which are outside its scope: policy changes, infrastructure retirements and the cost of capital as a stochastic quantity, left to future work.",
+     "keywords": [
+      "scenario",
+      "stochastic",
+      "trajector",
+      "uncertain"
+     ],
+     "reason": "formulation or scope statement, true of the model; not a claim about the experiments"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 97,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "Fuel costs are not represented separately: conventional generation in the transmission network is priced at the wholesale energy price of the scenario (Section~3.3), so fuel-cost uncertainty enters only through the market-price scenarios.",
+     "keywords": [
+      "scenario",
+      "uncertain"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 97,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "On (ii): a discount-rate sensitivity was added at a fixed plan: at 0, 2, 5 and 8\\,\\% the reference unit's value minus investment is $-40.8$, $-64.4$, $-92.7$ and $-114.6$~k\\euro{} respectively, negative and determinate at every rate (Table~15).",
+     "keywords": [
+      "determinat"
+     ],
+     "reason": "fixed-plan result labelled as such; \"within numerical resolution\" / \"determinate\" used as defined (l. 2037, A.5), not converted into break-even"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 108,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "\\subsection*{R2.1 and R2.9 --- Not a true bi-level problem; scenario-averaged investment decisions}",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "heading, label, caption or pointer list"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 113,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "The problem is a two-stage stochastic program with operational recourse: the first",
+     "keywords": [
+      "stochastic"
+     ],
+     "reason": "formulation or scope statement, true of the model; not a claim about the experiments"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 116,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "investment plan is a single vector common to all scenarios in every evaluation (Section~2.1), so it is",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 117,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "nonanticipative by construction; the investment-cost uncertainty enters the first-stage objective as the",
+     "keywords": [
+      "uncertain"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 118,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "probability-weighted expected cost of that single plan, and no scenario-specific investment is averaged.",
+     "keywords": [
+      "expected",
+      "probabilit",
+      "scenario"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 125,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "\\rresponse{Algorithm~1 and Section~2.1 now state the outer loop as implemented: the lattice (0.25~MVA and 0.5~MWh units, duration between 2 and 4~h, investment year), the poll and frame-size rules of the mesh adaptive direct search, the completion rule and the evaluation cache; Figure~2 illustrates the search, and Eq.~(13) gives how each recourse evaluation aggregates scenarios, representative days and years with discounting.",
+     "keywords": [
+      "investment year",
+      "scenario"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 125,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "One recourse evaluation is made per candidate plan; within an evaluation, every ADMM cycle solves one local problem per network block (three representative years $\\times$ four representative days $\\times$ four network operators at the single-scenario instance, 48 blocks, with the scenarios inside each block) and one per shared-ESS agent (three, one per interface node, each spanning all years and days), and the evaluation ends at the production exit during the search, or, for the evaluations behind the reported comparisons, when the certification rule of Section~2.2.7 (stated in full in Appendix~A.5) holds or its cycle cap is reached (Section~3.6).",
+     "keywords": [
+      "certif",
+      "scenario"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 125,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "The number of candidates evaluated is reported in Section~4.7, and the cycles of every single-scenario evaluation behind a reported comparison in Appendix~E.}",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 142,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "new 2.2.7 ``Recourse evaluation and certification'');",
+     "keywords": [
+      "certif"
+     ],
+     "reason": "heading, label, caption or pointer list"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 154,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "measured turning points, non-growing swings above a noise floor, a range bound $\\tau$ over a window at",
+     "keywords": [
+      "bound"
+     ],
+     "reason": "describes the acceptance rule (\"bound\" = a threshold of the rule), not an error bound"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 155,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "least one period long, a bound on the priced interface-consensus gap, and clean local solves inside the",
+     "keywords": [
+      "bound"
+     ],
+     "reason": "describes the acceptance rule (\"bound\" = a threshold of the rule), not an error bound"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 158,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "certified, the 10 uncertified by cause, the certification-cycle statistics, the measured",
+     "keywords": [
+      "certif"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 159,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "post-certification movement ($\\le 0.9\\,\\tau$ on continued cells), and bitwise replays of every evaluation",
+     "keywords": [
+      "certif"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 160,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "The uncertified evaluations are reported in a dedicated form and",
+     "keywords": [
+      "certif"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 162,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "storage discharge drives transmission conventional output to its lower bound).",
+     "keywords": [
+      "bound"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 166,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "On failure handling: a local solve that does not return an optimal point is retried",
+     "keywords": [
+      "optimal"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 167,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "under a documented sequence of solver settings, and a cycle is counted as certification evidence only if",
+     "keywords": [
+      "certif"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 182,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "These studies take the installed capacity and the network-level conditions as given; the present paper addresses the planning decision upstream of that scheduling.",
+     "keywords": [
+      "install"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 203,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "The state-of-charge recursion with charging and discharging efficiencies, the energy limits, the daily closure condition and the $P$--$Q$--$S$ capability inequality are now printed, and the sign convention is stated once: charging and discharging are separate non-negative variables whose difference is the active-power exchange, reactive power is a separate converter variable, and the capability inequality bounds their combination.",
+     "keywords": [
+      "bound"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 204,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "The paper now also says where each constraint is enforced: the SOC dynamics, energy limits and capability inequality sit in the TSO and DSO network models, once per representative day and common to the scenarios of that day, and the capability inequality is enforced in the shared-ESS agent as well;",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 221,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "Among the 55 comparisons of the full claims table that are reported both gross and net, it changes no sign and one verdict: a two-node plan evaluated under the doubled flexibility price becomes determinate in its favour against one of its unit neighbours.",
+     "keywords": [
+      "determinat"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 224,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "\\subsection*{R3.2 --- The 0.50\\,\\% gap is not an optimality certificate}",
+     "keywords": [
+      "certif",
+      "optimal"
+     ],
+     "reason": "heading, label, caption or pointer list"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 228,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "The method is described as a nested decomposition with no optimality",
+     "keywords": [
+      "optimal"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 241,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "On continuity: within each block (one representative year and one representative day) the shared storage has a single charging, discharging and state-of-charge schedule, common to all market and operation scenarios --- in the network models it is one scenario-free variable per hour referenced by every scenario's power balance, and the storage agent has no scenario index --- so the schedule is non-anticipative by construction rather than by a penalty, and the state-of-health chain is driven by this one schedule.",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 241,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "Scenario deviations are absorbed on the network side: the TSO dispatches its own network per scenario against the scenario-free interface schedule, and each DSO's substation import varies by scenario, its deviation from the DSO's own expected import being charged at a premium on the hour's expected market price (Section~2.3.5).",
+     "keywords": [
+      "expected",
+      "scenario"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 241,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "The state of charge evolves over the hours of each representative day with charging and discharging efficiencies within stated limits of the available energy, starts every day at the same level and closes there up to a penalised slack bounded by a small fraction of the available energy, so no energy is carried between representative days; continuity across representative years is carried by the state-of-health chain, which maps the realized cell-side throughput of each year into the available energy of that year and the next.",
+     "keywords": [
+      "bound"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 241,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "Cumulative discharge beyond the stored energy is therefore excluded by the energy limits and the closure condition in every day and scenario.}",
+     "keywords": [
+      "scenario"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 256,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "Their values differ materially: the reference unit loses 31.6~k\\euro{} under cycling only and 64.4~k\\euro{} with calendar ageing, both determinate (Table~11).}",
+     "keywords": [
+      "determinat"
+     ],
+     "reason": "fixed-plan result labelled as such; \"within numerical resolution\" / \"determinate\" used as defined (l. 2037, A.5), not converted into break-even"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 264,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "On installed capacity over time: Table~11 gives, per calibration, the year in which the end-of-life floor binds (in 2035 under the baseline and both 50\\,\\% retention variants; not within the horizon under cycling only and the datasheet calibration) and the present-value-weighted available energy, together with the equivalent full cycles per day.",
+     "keywords": [
+      "install"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 273,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "the years of its block, representative-day weights, and scenario probabilities; investment costs are",
+     "keywords": [
+      "probabilit",
+      "scenario"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 274,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "discounted from their installation year (Section~2.2.1).",
+     "keywords": [
+      "installation year"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 283,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "\\item The limitations section is new: set-valued interface duals with large storage and high flexibility prices; transmission solver recoveries; a $10^{-5}$~p.u.\\ renewable bound slack and its aggregate; the monotone branch of the settling rule (Section~4.8).",
+     "keywords": [
+      "bound"
+     ],
+     "reason": "keyword incidental: no claim about what was run"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 285,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "In the submitted version it held per-block operating results of the submitted instance, which the revision does not use; it now holds the record behind Section~4: every pairwise comparison, with its threshold or bar and its verdict, gross and, where evaluated, net of salvage; every single-scenario recourse evaluation those comparisons use, with its stopping status, band, gap and slack; the neighbours of the plan without storage re-evaluated under the certification rule; the solver starts of the static arrangements; the evaluations refused by the gap clause; and the certification statistics.",
+     "keywords": [
+      "certif",
+      "scenario"
+     ],
+     "reason": "accurate statement of what was run (states the restriction, the status or a recorded value)"
+    },
+    {
+     "file": "response_to_reviewers_draft.tex",
+     "line": 288,
+     "region": "letter (v9), reviewer quotes excluded",
+     "fragment": "\\item The method description now focuses on the planning layer: the full certification rule and the solver and coordination settings moved to Appendix~A (A.5 and A.8), and two explanatory figures were added, an illustration of the planning search (Figure~2) and the investment lattice of the case study (Figure~4).",
+     "keywords": [
+      "certif"
+     ],
+     "reason": "heading, label, caption or pointer list"
+    }
+   ],
+   "uncovered": [],
+   "unused_exclusions": []
+  },
+  "counts": {
+   "listed": 16,
+   "borderline": 11,
+   "other": 5
+  },
+  "listed_by_file": {
+   "main.tex": 4,
+   "highlights.tex": 2,
+   "response_to_reviewers_draft.tex": 9,
+   "cover_letter.tex": 1
+  },
+  "listed_by_category": {
+   "ii": 3,
+   "iii": 3,
+   "i": 3,
+   "iv-s": 6,
+   "iv-b": 7
+  },
+  "all_quotes_located": true,
+  "all_evidence_located": true,
+  "all_entries_in_scope": true
+ },
+ "A8_1_budget": {
+  "case": {
+   "years": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "discount_rate": 0.02,
+   "budget_eur": 1000000.0,
+   "max_capacity_mwh": 5.0,
+   "ratio_bounds_h": [
+    2.0,
+    4.0
+   ],
+   "trajectory_probabilities": [
+    0.35,
+    0.55,
+    0.1
+   ],
+   "unit_costs_eur": {
+    "power": {
+     "0": {
+      "2025": 214171.32910223768,
+      "2030": 168720.15012439265,
+      "2035": 153929.27440020515
+     },
+     "1": {
+      "2025": 267528.7212530719,
+      "2030": 224250.2932694956,
+      "2035": 206958.25777164166
+     },
+     "2": {
+      "2025": 342165.6238488894,
+      "2030": 278097.0387178216,
+      "2035": 268576.723404457
+     }
+    },
+    "energy": {
+     "0": {
+      "2025": 212132.83090957787,
+      "2030": 167114.2595388713,
+      "2035": 152464.16443904658
+     },
+     "1": {
+      "2025": 264982.3635447595,
+      "2030": 222115.86276729195,
+      "2035": 204988.41411333327
+     },
+     "2": {
+      "2025": 338908.86670623126,
+      "2030": 275450.090999905,
+      "2035": 266020.3907359085
+     }
+    }
+   }
+  },
+  "expected_unit_costs": {
+   "2025": {
+    "discount_multiplier": 1.0,
+    "power_undiscounted": 256317.32425986166,
+    "energy_undiscounted": 253877.6774385931,
+    "power_discounted": 256317.32425986166,
+    "energy_discounted": 253877.6774385931
+   },
+   "2030": {
+    "discount_multiplier": 0.9057308098299159,
+    "power_undiscounted": 210199.41771354218,
+    "energy_undiscounted": 208198.72446060603,
+    "power_discounted": 190384.08883146333,
+    "energy_discounted": 188571.99931126024
+   },
+   "2035": {
+    "discount_multiplier": 0.8203482998751551,
+    "power_undiscounted": 194559.9601549204,
+    "energy_undiscounted": 192708.1243895905,
+    "power_discounted": 159606.93253686687,
+    "energy_discounted": 158087.7822151305
+   }
+  },
+  "formula": "I(x) = sum_nodes (1+r)^-(y-2025) * sum_c w_c (c^S_{y,c} S + c^E_{y,c} E), r = SRP1.json DiscountFactor, w_c = SRP1_ESS.xlsx Scenarios row; admissible iff I(x) <= budget (SRP1_ESS_Params.json) -- the formula of shared_resources_planning._check_candidate_first_stage_feasibility and of the master budget row (shared_energy_storage_data.py l. 366-378)",
+  "checks": [
+   {
+    "check": "2025: expected discounted unit costs = W2 table (|diff| <= 1e-6 EUR)",
+    "ok": true,
+    "detail": {
+     "power": 256317.32425986166,
+     "energy": 253877.6774385931
+    }
+   },
+   {
+    "check": "2030: expected discounted unit costs = W2 table (|diff| <= 1e-6 EUR)",
+    "ok": true,
+    "detail": {
+     "power": 190384.08883146333,
+     "energy": 188571.99931126024
+    }
+   },
+   {
+    "check": "2035: expected discounted unit costs = W2 table (|diff| <= 1e-6 EUR)",
+    "ok": true,
+    "detail": {
+     "power": 159606.93253686687,
+     "energy": 158087.7822151305
+    }
+   },
+   {
+    "check": "Table 1 equals the cost file (k EUR, 2 dp; probabilities)",
+    "ok": true,
+    "detail": [
+     {
+      "row": "power Low",
+      "line": 1229,
+      "table": [
+       214.17,
+       168.72,
+       153.93
+      ],
+      "file": [
+       214.17,
+       168.72,
+       153.93
+      ],
+      "prob_table": 35.0,
+      "prob_file": 35.0,
+      "ok": true
+     },
+     {
+      "row": "power Medium",
+      "line": 1230,
+      "table": [
+       267.53,
+       224.25,
+       206.96
+      ],
+      "file": [
+       267.53,
+       224.25,
+       206.96
+      ],
+      "prob_table": 55.0,
+      "prob_file": 55.00000000000001,
+      "ok": true
+     },
+     {
+      "row": "power High",
+      "line": 1231,
+      "table": [
+       342.17,
+       278.1,
+       268.58
+      ],
+      "file": [
+       342.17,
+       278.1,
+       268.58
+      ],
+      "prob_table": 10.0,
+      "prob_file": 10.0,
+      "ok": true
+     },
+     {
+      "row": "energy Low",
+      "line": 1233,
+      "table": [
+       212.13,
+       167.11,
+       152.46
+      ],
+      "file": [
+       212.13,
+       167.11,
+       152.46
+      ],
+      "prob_table": 35.0,
+      "prob_file": 35.0,
+      "ok": true
+     },
+     {
+      "row": "energy Medium",
+      "line": 1234,
+      "table": [
+       264.98,
+       222.12,
+       204.99
+      ],
+      "file": [
+       264.98,
+       222.12,
+       204.99
+      ],
+      "prob_table": 55.0,
+      "prob_file": 55.00000000000001,
+      "ok": true
+     },
+     {
+      "row": "energy High",
+      "line": 1235,
+      "table": [
+       338.91,
+       275.45,
+       266.02
+      ],
+      "file": [
+       338.91,
+       275.45,
+       266.02
+      ],
+      "prob_table": 10.0,
+      "prob_file": 10.0,
+      "ok": true
+     }
+    ]
+   },
+   {
+    "check": "printed 2025 expected costs 256.32 / 253.88 = file rounded",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "main.tex states budget 1 M EUR and 5 MWh per node = case file",
+    "ok": true,
+    "detail": [
+     1207
+    ]
+   },
+   {
+    "check": "61 evaluations parsed from tab:appE_evaluations",
+    "ok": true,
+    "detail": 61
+   },
+   {
+    "check": "closed-form verdict = production check for every evaluation",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "audit 3.6 table reproduced (k EUR, 1 dp)",
+    "ok": true,
+    "detail": {
+     "1": 318.0,
+     "2": 635.9,
+     "3": 953.9,
+     "4": 1271.8,
+     "5": 1589.8
+    }
+   },
+   {
+    "check": "s51 F2 record: 0.75/3 I = 953871.0255 EUR, E = 4 and 5 budget-infeasible",
+    "ok": true,
+    "detail": "under the EUR 1,000,000 budget the node-7 4 h ladder at 2025 is feasible up to 3.0 MWh (I = 953871.0255106756, slack 46128.97448932438); the next rung is infeasible. The BUDGET CORNER is that point, E"
+   },
+   {
+    "check": "single-node 2025 lattice: 12 admissible (main.tex l. 2797), 23 over budget (W177b)",
+    "ok": true,
+    "detail": {
+     "admissible": [
+      "0.25/0.5",
+      "0.25/1",
+      "0.5/1",
+      "0.5/1.5",
+      "0.5/2",
+      "0.75/1.5",
+      "0.75/2",
+      "0.75/2.5",
+      "0.75/3",
+      "1/2",
+      "1/2.5",
+      "1.25/2.5"
+     ],
+     "over_budget": [
+      "1/3",
+      "1/3.5",
+      "1/4",
+      "1.25/3",
+      "1.25/3.5",
+      "1.25/4",
+      "1.25/4.5",
+      "1.25/5",
+      "1.5/3",
+      "1.5/3.5",
+      "1.5/4",
+      "1.5/4.5",
+      "1.5/5",
+      "1.75/3.5",
+      "1.75/4",
+      "1.75/4.5",
+      "1.75/5",
+      "2/4",
+      "2/4.5",
+      "2/5",
+      "2.25/4.5",
+      "2.25/5",
+      "2.5/5"
+     ]
+    }
+   },
+   {
+    "check": "returned 2x plan (evaluation 40, 2030) I ~ 992.3 k EUR, within budget (audit 3.6)",
+    "ok": true,
+    "detail": 992268.1082843702
+   }
+  ],
+  "ladder_4h_node7_2025": [
+   {
+    "S_MVA": 0.25,
+    "E_MWh": 1,
+    "I_eur": 317957.0085035585,
+    "budget_slack_eur": 682042.9914964414,
+    "production_first_stage_ok": true,
+    "reasons": ""
+   },
+   {
+    "S_MVA": 0.5,
+    "E_MWh": 2,
+    "I_eur": 635914.017007117,
+    "budget_slack_eur": 364085.98299288296,
+    "production_first_stage_ok": true,
+    "reasons": ""
+   },
+   {
+    "S_MVA": 0.75,
+    "E_MWh": 3,
+    "I_eur": 953871.0255106755,
+    "budget_slack_eur": 46128.97448932449,
+    "production_first_stage_ok": true,
+    "reasons": ""
+   },
+   {
+    "S_MVA": 1.0,
+    "E_MWh": 4,
+    "I_eur": 1271828.034014234,
+    "budget_slack_eur": -271828.0340142341,
+    "production_first_stage_ok": false,
+    "reasons": "investment budget violated"
+   },
+   {
+    "S_MVA": 1.25,
+    "E_MWh": 5,
+    "I_eur": 1589785.0425177924,
+    "budget_slack_eur": -589785.0425177924,
+    "production_first_stage_ok": false,
+    "reasons": "investment budget violated"
+   }
+  ],
+  "evaluations": [
+   {
+    "eval": 1,
+    "line": 2717,
+    "plan_text": "$\\boldsymbol{x}=\\boldsymbol{0}$",
+    "year": null,
+    "condition": "base",
+    "status": "cert.",
+    "nodes": {},
+    "I_eur": 0.0,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 1000000.0,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 2,
+    "line": 2718,
+    "plan_text": "7: 0.25/1",
+    "year": 2025,
+    "condition": "base",
+    "status": "cert.",
+    "nodes": {
+     "7": [
+      0.25,
+      1.0
+     ]
+    },
+    "I_eur": 317957.0085035585,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 682042.9914964414,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 3,
+    "line": 2719,
+    "plan_text": "7: 0.5/2",
+    "year": 2025,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.5,
+      2.0
+     ]
+    },
+    "I_eur": 635914.017007117,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 364085.98299288296,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 4,
+    "line": 2720,
+    "plan_text": "7: 0.75/3",
+    "year": 2025,
+    "condition": "base",
+    "status": "cert., osc.$^{f}$",
+    "nodes": {
+     "7": [
+      0.75,
+      3.0
+     ]
+    },
+    "I_eur": 953871.0255106755,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 46128.97448932449,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 5,
+    "line": 2721,
+    "plan_text": "7: 1/4",
+    "year": 2025,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      1.0,
+      4.0
+     ]
+    },
+    "I_eur": 1271828.034014234,
+    "production_first_stage_ok": false,
+    "production_reasons": "investment budget violated",
+    "budget_slack_eur": -271828.0340142341,
+    "over_budget": true,
+    "consistent": true
+   },
+   {
+    "eval": 6,
+    "line": 2722,
+    "plan_text": "7: 1.25/5",
+    "year": 2025,
+    "condition": "base",
+    "status": "growth test",
+    "nodes": {
+     "7": [
+      1.25,
+      5.0
+     ]
+    },
+    "I_eur": 1589785.0425177924,
+    "production_first_stage_ok": false,
+    "production_reasons": "investment budget violated",
+    "budget_slack_eur": -589785.0425177924,
+    "over_budget": true,
+    "consistent": true
+   },
+   {
+    "eval": 7,
+    "line": 2723,
+    "plan_text": "7: 0.5/1",
+    "year": 2025,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.5,
+      1.0
+     ]
+    },
+    "I_eur": 382036.3395685239,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 617963.6604314761,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 8,
+    "line": 2724,
+    "plan_text": "7: 1/2",
+    "year": 2025,
+    "condition": "base",
+    "status": "lapse reset",
+    "nodes": {
+     "7": [
+      1.0,
+      2.0
+     ]
+    },
+    "I_eur": 764072.6791370478,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 235927.32086295215,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 9,
+    "line": 2725,
+    "plan_text": "7: 1.5/3",
+    "year": 2025,
+    "condition": "base",
+    "status": "growth test",
+    "nodes": {
+     "7": [
+      1.5,
+      3.0
+     ]
+    },
+    "I_eur": 1146109.0187055718,
+    "production_first_stage_ok": false,
+    "production_reasons": "investment budget violated",
+    "budget_slack_eur": -146109.01870557177,
+    "over_budget": true,
+    "consistent": true
+   },
+   {
+    "eval": 10,
+    "line": 2726,
+    "plan_text": "7: 2/4",
+    "year": 2025,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      2.0,
+      4.0
+     ]
+    },
+    "I_eur": 1528145.3582740957,
+    "production_first_stage_ok": false,
+    "production_reasons": "investment budget violated",
+    "budget_slack_eur": -528145.3582740957,
+    "over_budget": true,
+    "consistent": true
+   },
+   {
+    "eval": 11,
+    "line": 2727,
+    "plan_text": "7: 2.5/5",
+    "year": 2025,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      2.5,
+      5.0
+     ]
+    },
+    "I_eur": 1910181.6978426196,
+    "production_first_stage_ok": false,
+    "production_reasons": "investment budget violated",
+    "budget_slack_eur": -910181.6978426196,
+    "over_budget": true,
+    "consistent": true
+   },
+   {
+    "eval": 12,
+    "line": 2728,
+    "plan_text": "5: 0.25/1",
+    "year": 2025,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "5": [
+      0.25,
+      1.0
+     ]
+    },
+    "I_eur": 317957.0085035585,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 682042.9914964414,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 13,
+    "line": 2729,
+    "plan_text": "9: 0.25/1",
+    "year": 2025,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "9": [
+      0.25,
+      1.0
+     ]
+    },
+    "I_eur": 317957.0085035585,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 682042.9914964414,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 14,
+    "line": 2730,
+    "plan_text": "9: 0.75/3",
+    "year": 2025,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "9": [
+      0.75,
+      3.0
+     ]
+    },
+    "I_eur": 953871.0255106755,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 46128.97448932449,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 15,
+    "line": 2733,
+    "plan_text": "5: 0.25/0.5",
+    "year": 2025,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ]
+    },
+    "I_eur": 191018.16978426196,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 808981.830215738,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 16,
+    "line": 2734,
+    "plan_text": "5: 0.25/0.5",
+    "year": 2025,
+    "condition": "base",
+    "status": "superseded$^{s}$",
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ]
+    },
+    "I_eur": 191018.16978426196,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 808981.830215738,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 17,
+    "line": 2735,
+    "plan_text": "7: 0.25/0.5",
+    "year": 2025,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.25,
+      0.5
+     ]
+    },
+    "I_eur": 191018.16978426196,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 808981.830215738,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 18,
+    "line": 2736,
+    "plan_text": "9: 0.25/0.5",
+    "year": 2025,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "9": [
+      0.25,
+      0.5
+     ]
+    },
+    "I_eur": 191018.16978426196,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 808981.830215738,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 19,
+    "line": 2737,
+    "plan_text": "5: 0.25/0.5",
+    "year": 2030,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ]
+    },
+    "I_eur": 141882.02186349596,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 858117.9781365041,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 20,
+    "line": 2738,
+    "plan_text": "7: 0.25/0.5",
+    "year": 2030,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.25,
+      0.5
+     ]
+    },
+    "I_eur": 141882.02186349596,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 858117.9781365041,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 21,
+    "line": 2739,
+    "plan_text": "9: 0.25/0.5",
+    "year": 2030,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "9": [
+      0.25,
+      0.5
+     ]
+    },
+    "I_eur": 141882.02186349596,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 858117.9781365041,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 22,
+    "line": 2740,
+    "plan_text": "5, 9: 0.25/0.5 each",
+    "year": 2025,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "9": [
+      0.25,
+      0.5
+     ]
+    },
+    "I_eur": 382036.3395685239,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 617963.6604314761,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 23,
+    "line": 2741,
+    "plan_text": "5, 7: 0.25/0.5 each",
+    "year": 2030,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "7": [
+      0.25,
+      0.5
+     ]
+    },
+    "I_eur": 283764.0437269919,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 716235.9562730081,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 24,
+    "line": 2744,
+    "plan_text": "7: 0.25/1",
+    "year": 2030,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.25,
+      1.0
+     ]
+    },
+    "I_eur": 236168.02151912608,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 763831.9784808739,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 25,
+    "line": 2745,
+    "plan_text": "7: 0.25/1",
+    "year": 2035,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.25,
+      1.0
+     ]
+    },
+    "I_eur": 197989.5153493472,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 802010.4846506529,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 26,
+    "line": 2746,
+    "plan_text": "7: 0.5/1",
+    "year": 2030,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.5,
+      1.0
+     ]
+    },
+    "I_eur": 283764.0437269919,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 716235.9562730081,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 27,
+    "line": 2747,
+    "plan_text": "7: 0.5/1",
+    "year": 2035,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.5,
+      1.0
+     ]
+    },
+    "I_eur": 237891.24848356392,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 762108.7515164361,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 28,
+    "line": 2748,
+    "plan_text": "7: 0.5/2",
+    "year": 2030,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.5,
+      2.0
+     ]
+    },
+    "I_eur": 472336.04303825216,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 527663.9569617478,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 29,
+    "line": 2749,
+    "plan_text": "7: 0.5/2",
+    "year": 2035,
+    "condition": "base",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.5,
+      2.0
+     ]
+    },
+    "I_eur": 395979.0306986944,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 604020.9693013056,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 30,
+    "line": 2752,
+    "plan_text": "$\\boldsymbol{x}=\\boldsymbol{0}$",
+    "year": null,
+    "condition": "$m=1.5$",
+    "status": "cert., osc.",
+    "nodes": {},
+    "I_eur": 0.0,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 1000000.0,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 31,
+    "line": 2753,
+    "plan_text": "7: 0.25/1",
+    "year": 2025,
+    "condition": "$m=1.5$",
+    "status": "gap clause",
+    "nodes": {
+     "7": [
+      0.25,
+      1.0
+     ]
+    },
+    "I_eur": 317957.0085035585,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 682042.9914964414,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 32,
+    "line": 2754,
+    "plan_text": "$\\boldsymbol{x}=\\boldsymbol{0}$",
+    "year": null,
+    "condition": "$m=1.75$",
+    "status": "cert., osc.",
+    "nodes": {},
+    "I_eur": 0.0,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 1000000.0,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 33,
+    "line": 2755,
+    "plan_text": "7: 0.25/1",
+    "year": 2025,
+    "condition": "$m=1.75$",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.25,
+      1.0
+     ]
+    },
+    "I_eur": 317957.0085035585,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 682042.9914964414,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 34,
+    "line": 2756,
+    "plan_text": "$\\boldsymbol{x}=\\boldsymbol{0}$",
+    "year": null,
+    "condition": "$m=2$",
+    "status": "cert., osc.",
+    "nodes": {},
+    "I_eur": 0.0,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 1000000.0,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 35,
+    "line": 2757,
+    "plan_text": "7: 0.25/1",
+    "year": 2025,
+    "condition": "$m=2$",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.25,
+      1.0
+     ]
+    },
+    "I_eur": 317957.0085035585,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 682042.9914964414,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 36,
+    "line": 2758,
+    "plan_text": "7: 0.5/2",
+    "year": 2025,
+    "condition": "$m=2$",
+    "status": "cert., mon.",
+    "nodes": {
+     "7": [
+      0.5,
+      2.0
+     ]
+    },
+    "I_eur": 635914.017007117,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 364085.98299288296,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 37,
+    "line": 2759,
+    "plan_text": "7: 0.75/3",
+    "year": 2025,
+    "condition": "$m=2$",
+    "status": "growth test",
+    "nodes": {
+     "7": [
+      0.75,
+      3.0
+     ]
+    },
+    "I_eur": 953871.0255106755,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 46128.97448932449,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 38,
+    "line": 2760,
+    "plan_text": "7: 1/4",
+    "year": 2025,
+    "condition": "$m=2$",
+    "status": "cert., osc.$^{f}$",
+    "nodes": {
+     "7": [
+      1.0,
+      4.0
+     ]
+    },
+    "I_eur": 1271828.034014234,
+    "production_first_stage_ok": false,
+    "production_reasons": "investment budget violated",
+    "budget_slack_eur": -271828.0340142341,
+    "over_budget": true,
+    "consistent": true
+   },
+   {
+    "eval": 39,
+    "line": 2761,
+    "plan_text": "7: 1.25/5",
+    "year": 2025,
+    "condition": "$m=2$",
+    "status": "gap clause",
+    "nodes": {
+     "7": [
+      1.25,
+      5.0
+     ]
+    },
+    "I_eur": 1589785.0425177924,
+    "production_first_stage_ok": false,
+    "production_reasons": "investment budget violated",
+    "budget_slack_eur": -589785.0425177924,
+    "over_budget": true,
+    "consistent": true
+   },
+   {
+    "eval": 40,
+    "line": 2764,
+    "plan_text": "5: 0.25/0.5; 7: 1/3.5",
+    "year": 2030,
+    "condition": "$m=2$",
+    "status": "gap clause",
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "7": [
+      1.0,
+      3.5
+     ]
+    },
+    "I_eur": 992268.1082843702,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 7731.891715629841,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 41,
+    "line": 2765,
+    "plan_text": "5: 0.25/1; 7: 1/3",
+    "year": 2030,
+    "condition": "$m=2$",
+    "status": "gap clause",
+    "nodes": {
+     "5": [
+      0.25,
+      1.0
+     ],
+     "7": [
+      1.0,
+      3.0
+     ]
+    },
+    "I_eur": 992268.1082843703,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 7731.891715629725,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 42,
+    "line": 2766,
+    "plan_text": "5: 0.25/0.5; 7: 1/3",
+    "year": 2030,
+    "condition": "$m=2$",
+    "status": "lapse reset",
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "7": [
+      1.0,
+      3.0
+     ]
+    },
+    "I_eur": 897982.1086287401,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 102017.89137125993,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 43,
+    "line": 2767,
+    "plan_text": "5: 0.25/0.5; 7: 0.75/3",
+    "year": 2030,
+    "condition": "$m=2$",
+    "status": "cert., mon.",
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "7": [
+      0.75,
+      3.0
+     ]
+    },
+    "I_eur": 850386.0864208742,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 149613.91357912577,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 44,
+    "line": 2768,
+    "plan_text": "5: 0.25/0.5; 7: 1.25/3",
+    "year": 2030,
+    "condition": "$m=2$",
+    "status": "cert., mon.",
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "7": [
+      1.25,
+      3.0
+     ]
+    },
+    "I_eur": 945578.1308366059,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 54421.86916339409,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 45,
+    "line": 2769,
+    "plan_text": "5: 0.25/0.5; 7: 0.75/3; 9: 0.25/0.5",
+    "year": 2030,
+    "condition": "$m=2$",
+    "status": "gap clause",
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "7": [
+      0.75,
+      3.0
+     ],
+     "9": [
+      0.25,
+      0.5
+     ]
+    },
+    "I_eur": 992268.1082843702,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 7731.891715629841,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 46,
+    "line": 2770,
+    "plan_text": "7: 1/3",
+    "year": 2030,
+    "condition": "$m=2$",
+    "status": "cert., mon.",
+    "nodes": {
+     "7": [
+      1.0,
+      3.0
+     ]
+    },
+    "I_eur": 756100.0867652441,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 243899.91323475586,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 47,
+    "line": 2771,
+    "plan_text": "7: 0.75/3",
+    "year": 2030,
+    "condition": "$m=2$",
+    "status": "cert., mon.",
+    "nodes": {
+     "7": [
+      0.75,
+      3.0
+     ]
+    },
+    "I_eur": 708504.0645573783,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 291495.9354426217,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 48,
+    "line": 2772,
+    "plan_text": "7: 1/3.5",
+    "year": 2030,
+    "condition": "$m=2$",
+    "status": "cert., mon.",
+    "nodes": {
+     "7": [
+      1.0,
+      3.5
+     ]
+    },
+    "I_eur": 850386.0864208742,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 149613.91357912577,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 49,
+    "line": 2773,
+    "plan_text": "7: 1/4",
+    "year": 2030,
+    "condition": "$m=2$",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      1.0,
+      4.0
+     ]
+    },
+    "I_eur": 944672.0860765043,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 55327.91392349568,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 50,
+    "line": 2774,
+    "plan_text": "7: 1/3; 9: 0.25/0.5",
+    "year": 2030,
+    "condition": "$m=2$",
+    "status": "gap clause",
+    "nodes": {
+     "7": [
+      1.0,
+      3.0
+     ],
+     "9": [
+      0.25,
+      0.5
+     ]
+    },
+    "I_eur": 897982.1086287401,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 102017.89137125993,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 51,
+    "line": 2775,
+    "plan_text": "7: 1/3.5; 9: 0.25/0.5",
+    "year": 2030,
+    "condition": "$m=2$",
+    "status": "gap clause",
+    "nodes": {
+     "7": [
+      1.0,
+      3.5
+     ],
+     "9": [
+      0.25,
+      0.5
+     ]
+    },
+    "I_eur": 992268.1082843702,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 7731.891715629841,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 52,
+    "line": 2776,
+    "plan_text": "7: 0.75/3; 9: 0.25/0.5",
+    "year": 2030,
+    "condition": "$m=2$",
+    "status": "cert., mon.",
+    "nodes": {
+     "7": [
+      0.75,
+      3.0
+     ],
+     "9": [
+      0.25,
+      0.5
+     ]
+    },
+    "I_eur": 850386.0864208742,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 149613.91357912577,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 53,
+    "line": 2777,
+    "plan_text": "5: 0.25/0.5; 7: 0.75/2.5",
+    "year": 2030,
+    "condition": "$m=2$",
+    "status": "cert., mon.",
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "7": [
+      0.75,
+      2.5
+     ]
+    },
+    "I_eur": 756100.086765244,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 243899.91323475598,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 54,
+    "line": 2780,
+    "plan_text": "7: 0.25/1",
+    "year": 2025,
+    "condition": "no ageing",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.25,
+      1.0
+     ]
+    },
+    "I_eur": 317957.0085035585,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 682042.9914964414,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 55,
+    "line": 2781,
+    "plan_text": "7: 0.25/1",
+    "year": 2025,
+    "condition": "cycling only",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.25,
+      1.0
+     ]
+    },
+    "I_eur": 317957.0085035585,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 682042.9914964414,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 56,
+    "line": 2782,
+    "plan_text": "7: 0.25/1",
+    "year": 2025,
+    "condition": "baseline",
+    "status": "cert., osc.$^{t}$",
+    "nodes": {
+     "7": [
+      0.25,
+      1.0
+     ]
+    },
+    "I_eur": 317957.0085035585,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 682042.9914964414,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 57,
+    "line": 2783,
+    "plan_text": "7: 0.25/1",
+    "year": 2025,
+    "condition": "datasheet",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.25,
+      1.0
+     ]
+    },
+    "I_eur": 317957.0085035585,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 682042.9914964414,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 58,
+    "line": 2784,
+    "plan_text": "7: 0.25/1",
+    "year": 2025,
+    "condition": "retention 50\\,\\%",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.25,
+      1.0
+     ]
+    },
+    "I_eur": 317957.0085035585,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 682042.9914964414,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 59,
+    "line": 2785,
+    "plan_text": "7: 0.25/1",
+    "year": 2025,
+    "condition": "ret.\\ 50\\,\\%, mid-block",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.25,
+      1.0
+     ]
+    },
+    "I_eur": 317957.0085035585,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 682042.9914964414,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 60,
+    "line": 2786,
+    "plan_text": "7: 0.25/1",
+    "year": 2025,
+    "condition": "baseline, 0.50 floor",
+    "status": "cert., osc.",
+    "nodes": {
+     "7": [
+      0.25,
+      1.0
+     ]
+    },
+    "I_eur": 317957.0085035585,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 682042.9914964414,
+    "over_budget": false,
+    "consistent": true
+   },
+   {
+    "eval": 61,
+    "line": 2787,
+    "plan_text": "7: 0.25/1",
+    "year": 2025,
+    "condition": "baseline, 0.70 floor",
+    "status": "cert., osc.$^{t}$",
+    "nodes": {
+     "7": [
+      0.25,
+      1.0
+     ]
+    },
+    "I_eur": 317957.0085035585,
+    "production_first_stage_ok": true,
+    "production_reasons": "",
+    "budget_slack_eur": 682042.9914964414,
+    "over_budget": false,
+    "consistent": true
+   }
+  ],
+  "over_budget_evaluations": [
+   {
+    "eval": 5,
+    "line": 2721,
+    "plan_text": "7: 1/4",
+    "year": 2025,
+    "condition": "base",
+    "I_eur": 1271828.034014234,
+    "budget_slack_eur": -271828.0340142341
+   },
+   {
+    "eval": 6,
+    "line": 2722,
+    "plan_text": "7: 1.25/5",
+    "year": 2025,
+    "condition": "base",
+    "I_eur": 1589785.0425177924,
+    "budget_slack_eur": -589785.0425177924
+   },
+   {
+    "eval": 9,
+    "line": 2725,
+    "plan_text": "7: 1.5/3",
+    "year": 2025,
+    "condition": "base",
+    "I_eur": 1146109.0187055718,
+    "budget_slack_eur": -146109.01870557177
+   },
+   {
+    "eval": 10,
+    "line": 2726,
+    "plan_text": "7: 2/4",
+    "year": 2025,
+    "condition": "base",
+    "I_eur": 1528145.3582740957,
+    "budget_slack_eur": -528145.3582740957
+   },
+   {
+    "eval": 11,
+    "line": 2727,
+    "plan_text": "7: 2.5/5",
+    "year": 2025,
+    "condition": "base",
+    "I_eur": 1910181.6978426196,
+    "budget_slack_eur": -910181.6978426196
+   },
+   {
+    "eval": 38,
+    "line": 2760,
+    "plan_text": "7: 1/4",
+    "year": 2025,
+    "condition": "$m=2$",
+    "I_eur": 1271828.034014234,
+    "budget_slack_eur": -271828.0340142341
+   },
+   {
+    "eval": 39,
+    "line": 2761,
+    "plan_text": "7: 1.25/5",
+    "year": 2025,
+    "condition": "$m=2$",
+    "I_eur": 1589785.0425177924,
+    "budget_slack_eur": -589785.0425177924
+   }
+  ],
+  "lattice_single_node_2025": {
+   "admissible": [
+    "0.25/0.5",
+    "0.25/1",
+    "0.5/1",
+    "0.5/1.5",
+    "0.5/2",
+    "0.75/1.5",
+    "0.75/2",
+    "0.75/2.5",
+    "0.75/3",
+    "1/2",
+    "1/2.5",
+    "1.25/2.5"
+   ],
+   "over_budget": [
+    "1/3",
+    "1/3.5",
+    "1/4",
+    "1.25/3",
+    "1.25/3.5",
+    "1.25/4",
+    "1.25/4.5",
+    "1.25/5",
+    "1.5/3",
+    "1.5/3.5",
+    "1.5/4",
+    "1.5/4.5",
+    "1.5/5",
+    "1.75/3.5",
+    "1.75/4",
+    "1.75/4.5",
+    "1.75/5",
+    "2/4",
+    "2/4.5",
+    "2/5",
+    "2.25/4.5",
+    "2.25/5",
+    "2.5/5"
+   ]
+  }
+ },
+ "A8_1_places": {
+  "places": [
+   {
+    "id": "P01",
+    "file": "main.tex",
+    "line": 1424,
+    "quote": "An affine fit, $\\text{value}=a+bE+cP$, is obtained from the evaluated 2~h and 4~h configurations",
+    "element": "text, Section 4.2",
+    "over_budget_content": "fit points = evaluations 2-11 (5 of 10 over budget)",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P02",
+    "file": "main.tex",
+    "line": 1424,
+    "quote": "The six certified evaluations give $e^{*}=183{,}080$~\\euro/MWh.",
+    "element": "text, Section 4.2",
+    "over_budget_content": "certified fit points 2, 3, 5, 7, 10, 11 (3 of 6 over budget: 5, 10, 11)",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P03",
+    "file": "main.tex",
+    "line": 1425,
+    "quote": "Including all ten evaluations, with uncertified and flagged evaluations represented by intervals, gives 171{,}310--192{,}560~\\euro/MWh.",
+    "element": "text, Section 4.2",
+    "over_budget_content": "evaluations 2-11",
+    "label": "none",
+    "note": "the next sentence restricts the estimate to \"the fitted range\", not to the admissible set",
+    "quote_at_line": true
+   },
+   {
+    "id": "P04",
+    "file": "main.tex",
+    "line": 1431,
+    "quote": "Storage investment margins at node~7 in 2025 for (a) 4~h and (b) 2~h configurations",
+    "element": "Figure 1 caption (fig1_breakeven.pdf)",
+    "over_budget_content": "panels (a), (b): E = 1-5 MWh, 4 h and 2 h",
+    "label": "none",
+    "note": "figure inspected visually: no budget line or legend entry",
+    "quote_at_line": true
+   },
+   {
+    "id": "P05",
+    "file": "main.tex",
+    "line": 1437,
+    "quote": "Estimated marginal break-even energy cost for 4~h storage at node~7",
+    "element": "Table tab:res_breakeven caption",
+    "over_budget_content": "n = 6 / 10 fit (rows l. 1446-1447)",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P06",
+    "file": "main.tex",
+    "line": 1467,
+    "quote": "all five evaluated 4~h configurations at node~7, installed in 2025, have positive investment margins",
+    "element": "text, Section 4.2",
+    "over_budget_content": "7: 1/4 and 7: 1.25/5 at m = 2",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P07",
+    "file": "main.tex",
+    "line": 1467,
+    "quote": "Each additional 1~MWh yields a determinate increase in margin of 41.0--51.8~k\\euro{}.",
+    "element": "text, Section 4.2",
+    "over_budget_content": "increments 3->4 and 4->5 MWh",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P08",
+    "file": "main.tex",
+    "line": 1472,
+    "quote": "Investment margins and incremental gains for 4~h storage at node~7 in 2025, at twice the base flexibility price.",
+    "element": "Table tab:res_energy_ladder_m2 caption",
+    "over_budget_content": "rows 4 and 5 MWh",
+    "label": "none",
+    "note": "row marks u / f are certification marks only",
+    "quote_at_line": true
+   },
+   {
+    "id": "P08a",
+    "file": "main.tex",
+    "line": 1487,
+    "quote": "4$^{f}$ & 176.6",
+    "element": "Table tab:res_energy_ladder_m2 row",
+    "over_budget_content": "7: 1/4, m = 2",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P08b",
+    "file": "main.tex",
+    "line": 1488,
+    "quote": "5$^{u}$ & 228.4",
+    "element": "Table tab:res_energy_ladder_m2 row",
+    "over_budget_content": "7: 1.25/5, m = 2",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P09",
+    "file": "main.tex",
+    "line": 1803,
+    "quote": "The estimated marginal break-even energy costs for 4~h storage at node~7 were below the baseline energy-capacity cost.",
+    "element": "text, Section 5",
+    "over_budget_content": "derived from the P01-P03 fit",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P10a",
+    "file": "main.tex",
+    "line": 2628,
+    "quote": "4 & 7: 1/4 & 1 / 5 & 274.0",
+    "element": "tab:appE_claims (a) row 4",
+    "over_budget_content": "7: 1/4",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P10b",
+    "file": "main.tex",
+    "line": 2629,
+    "quote": "5 & 7: 1.25/5 & 1 / 6$^{u}$",
+    "element": "tab:appE_claims (a) row 5",
+    "over_budget_content": "7: 1.25/5",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P10c",
+    "file": "main.tex",
+    "line": 2632,
+    "quote": "8 & 7: 1.5/3 & 1 / 9$^{u}$",
+    "element": "tab:appE_claims (a) row 8",
+    "over_budget_content": "7: 1.5/3",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P10d",
+    "file": "main.tex",
+    "line": 2633,
+    "quote": "9 & 7: 2/4 & 1 / 10",
+    "element": "tab:appE_claims (a) row 9",
+    "over_budget_content": "7: 2/4",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P10e",
+    "file": "main.tex",
+    "line": 2634,
+    "quote": "10 & 7: 2.5/5 & 1 / 11",
+    "element": "tab:appE_claims (a) row 10",
+    "over_budget_content": "7: 2.5/5",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P10f",
+    "file": "main.tex",
+    "line": 2652,
+    "quote": "26 & 7: 1/4, $m=2$",
+    "element": "tab:appE_claims (b) row 26",
+    "over_budget_content": "7: 1/4, m = 2",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P10g",
+    "file": "main.tex",
+    "line": 2653,
+    "quote": "27 & 7: 1.25/5, $m=2$",
+    "element": "tab:appE_claims (b) row 27",
+    "over_budget_content": "7: 1.25/5, m = 2",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P10h",
+    "file": "main.tex",
+    "line": 2656,
+    "quote": "30 & 7: 0.75/3 $\\to$ 1/4, $m=2$",
+    "element": "tab:appE_claims (b) row 30",
+    "over_budget_content": "-> 7: 1/4",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P10i",
+    "file": "main.tex",
+    "line": 2657,
+    "quote": "31 & 7: 1/4 $\\to$ 1.25/5, $m=2$",
+    "element": "tab:appE_claims (b) row 31",
+    "over_budget_content": "7: 1/4 -> 1.25/5",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P11a",
+    "file": "main.tex",
+    "line": 2716,
+    "quote": "(a) Baseline price: the plan without storage and single-node plans in 2025",
+    "element": "tab:appE_evaluations group (a) header",
+    "over_budget_content": "evaluations 5, 6, 9, 10, 11",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P11d",
+    "file": "main.tex",
+    "line": 2721,
+    "quote": "5 & 7: 1/4 & 2025 & base",
+    "element": "tab:appE_evaluations row 5",
+    "over_budget_content": "7: 1/4",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P11e",
+    "file": "main.tex",
+    "line": 2722,
+    "quote": "6 & 7: 1.25/5 & 2025 & base",
+    "element": "tab:appE_evaluations row 6",
+    "over_budget_content": "7: 1.25/5",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P11f",
+    "file": "main.tex",
+    "line": 2725,
+    "quote": "9 & 7: 1.5/3 & 2025 & base",
+    "element": "tab:appE_evaluations row 9",
+    "over_budget_content": "7: 1.5/3",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P11g",
+    "file": "main.tex",
+    "line": 2726,
+    "quote": "10 & 7: 2/4 & 2025 & base",
+    "element": "tab:appE_evaluations row 10",
+    "over_budget_content": "7: 2/4",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P11h",
+    "file": "main.tex",
+    "line": 2727,
+    "quote": "11 & 7: 2.5/5 & 2025 & base",
+    "element": "tab:appE_evaluations row 11",
+    "over_budget_content": "7: 2.5/5",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P11b",
+    "file": "main.tex",
+    "line": 2760,
+    "quote": "38 & 7: 1/4 & 2025 & $m=2$",
+    "element": "tab:appE_evaluations row 38",
+    "over_budget_content": "7: 1/4, m = 2",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P11c",
+    "file": "main.tex",
+    "line": 2761,
+    "quote": "39 & 7: 1.25/5 & 2025 & $m=2$",
+    "element": "tab:appE_evaluations row 39",
+    "over_budget_content": "7: 1.25/5, m = 2",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P12a",
+    "file": "main.tex",
+    "line": 2899,
+    "quote": "39 & 7: 1.25/5 & 2025 & $m=2$ & gap clause",
+    "element": "tab:appE_gap row",
+    "over_budget_content": "7: 1.25/5, m = 2",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P12b",
+    "file": "main.tex",
+    "line": 2906,
+    "quote": "6 & 7: 1.25/5 & 2025 & base & growth test",
+    "element": "tab:appE_gap row",
+    "over_budget_content": "7: 1.25/5",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P13",
+    "file": "main.tex",
+    "line": 2921,
+    "quote": "the cache of the baseline search was seeded with the single-node ladders of the initial design, including ladder points over the budget",
+    "element": "text, Appendix E.7",
+    "over_budget_content": "unnamed",
+    "label": "labelled (over budget)",
+    "note": "the only sentence that says so; it does not name the points or reach Section 4.2, Fig. 1 or the tables",
+    "quote_at_line": true
+   },
+   {
+    "id": "P14",
+    "file": "main.tex",
+    "line": 2797,
+    "quote": "twelve are admissible, the smallest being 0.25~MVA / 0.5~MWh",
+    "element": "text + fig_lattice_case.pdf, Appendix E.3",
+    "over_budget_content": "all 23 over-budget single-node 2025 plans (legend: \"within limits, over budget\")",
+    "label": "partial",
+    "note": "labels the lattice, not the evaluated ladder; no cross-reference from Section 4.2",
+    "quote_at_line": true
+   },
+   {
+    "id": "P15",
+    "file": "response_to_reviewers_draft.tex",
+    "line": 58,
+    "quote": "at the baseline calibration the value is measured to be affine in storage size with a slope below cost",
+    "element": "letter, opening",
+    "over_budget_content": "the ladders (evaluations 2-11)",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   },
+   {
+    "id": "P16",
+    "file": "response_to_reviewers_draft.tex",
+    "line": 264,
+    "quote": "since the value is affine in size on the evaluated ladders with a slope below cost",
+    "element": "letter, R3.6",
+    "over_budget_content": "the ladders (evaluations 2-11)",
+    "label": "none",
+    "note": "",
+    "quote_at_line": true
+   }
+  ],
+  "all_quotes_at_lines": true,
+  "token_scan_main_tex": {
+   "tokens": [
+    "7: 1.25/5",
+    "7: 1.5/3",
+    "7: 1/4",
+    "7: 2.5/5",
+    "7: 2/4"
+   ],
+   "hits": [
+    [
+     2628,
+     "7: 1/4"
+    ],
+    [
+     2629,
+     "7: 1.25/5"
+    ],
+    [
+     2632,
+     "7: 1.5/3"
+    ],
+    [
+     2633,
+     "7: 2/4"
+    ],
+    [
+     2634,
+     "7: 2.5/5"
+    ],
+    [
+     2652,
+     "7: 1/4"
+    ],
+    [
+     2653,
+     "7: 1.25/5"
+    ],
+    [
+     2657,
+     "7: 1/4"
+    ],
+    [
+     2721,
+     "7: 1/4"
+    ],
+    [
+     2722,
+     "7: 1.25/5"
+    ],
+    [
+     2725,
+     "7: 1.5/3"
+    ],
+    [
+     2726,
+     "7: 2/4"
+    ],
+    [
+     2727,
+     "7: 2.5/5"
+    ],
+    [
+     2760,
+     "7: 1/4"
+    ],
+    [
+     2761,
+     "7: 1.25/5"
+    ],
+    [
+     2899,
+     "7: 1.25/5"
+    ],
+    [
+     2906,
+     "7: 1.25/5"
+    ]
+   ],
+   "unlisted_lines": []
+  },
+  "label_phrase_scan": {
+   "pattern": "over (the )?budget|outside the admissible|inadmissible|exploratory|probe|exceeds? the budget|budget-infeasible|not admissible",
+   "files": [
+    "main.tex",
+    "highlights.tex",
+    "cover_letter.tex",
+    "response_to_reviewers_draft.tex"
+   ],
+   "hits": [
+    {
+     "file": "main.tex",
+     "line": 506,
+     "match": "inadmissible",
+     "context": "mathcal{P} \\gets$ the $n+1$ OrthoMADS points $\\boldsymbol{z}^{\\text{inc}} + \\Delta \\boldsymbol{v}$, inadmissible ones dropped; \\lIf{$\\Delta = 1$}{$\\mathcal{P} \\gets \\mathcal{P} \\cup$ every admissible unit neighbo"
+    },
+    {
+     "file": "main.tex",
+     "line": 509,
+     "match": "inadmissible",
+     "context": "\\mathcal{P} \\gets$ the $2n$ OrthoMADS points $\\boldsymbol{z}^{\\text{inc}} \\pm \\boldsymbol{v}$, each inadmissible point snapped to the nearest admissible point of the unit frame; \\lIf{fewer than $n+1$ distinct poi"
+    },
+    {
+     "file": "main.tex",
+     "line": 2921,
+     "match": "over the budget",
+     "context": "eline search was seeded with the single-node ladders of the initial design, including ladder points over the budget, and the caches of the two searches under the doubled flexibility price with the certified evaluati"
+    }
+   ]
+  },
+  "counts": {
+   "places": 34,
+   "labelled": 1,
+   "partial": 1,
+   "none": 32
+  }
+ },
+ "A8_2_13_9": {
+  "pattern": "13[.,]9",
+  "files_searched": [
+   "main.tex",
+   "highlights.tex",
+   "cover_letter.tex",
+   "response_to_reviewers_draft.tex",
+   "highlights_v2",
+   "submitted_highlights",
+   "submitted_main",
+   "submitted_cover"
+  ],
+  "hits": [
+   {
+    "file": "main.tex",
+    "line": 1583,
+    "text": "The price-taker and passive arrangements incur 13.9\\% and 36.9\\% higher discounted operating costs than coordinated operation, respectively.",
+    "framing": "cost increase (correct)",
+    "note": "\"incur 13.9 % ... higher ... than coordinated operation\""
+   },
+   {
+    "file": "main.tex",
+    "line": 1597,
+    "text": "Price-taker NRF & 744\\,770.3 (0.0)  & 90\\,896.6 (13.9)   & 807.6 & 0.6   \\\\",
+    "framing": "cost increase (correct)",
+    "note": "table column Delta Q (%); note: \"percentages are relative to the coordinated cost\""
+   },
+   {
+    "file": "highlights.tex",
+    "line": 14,
+    "text": "\\item Coordination is worth 13.9\\,\\% of operating cost against static interface practice",
+    "framing": "saving",
+    "note": "\"Coordination is worth 13.9 % of operating cost against static interface practice\": a benefit of 13.9 % of operating cost; denominator unstated"
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 53,
+    "text": "no-reverse-flow interface arrangement, 90.9~M\\euro{} (13.9\\,\\%), with its mechanism stated",
+    "framing": "saving",
+    "note": "the value of coordination \"90.9 M EUR (13.9 %)\""
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 80,
+    "text": "On (iii): the 18.25\\,\\% and 92.16\\,\\% figures are withdrawn with the results they came from (see the opening of this letter); the abstract reports instead the value of coordination, 13.9\\,\\% of the discounted operating cost over the 15-year horizon against the best static no-reverse-flow arrangement, a horizon total rather than the figure of a particular year.",
+    "framing": "saving",
+    "note": "\"the abstract reports instead the value of coordination, 13.9 % of the discounted operating cost\" -- the abstract reports 12.2 %"
+   },
+   {
+    "file": "highlights_v2",
+    "line": 12,
+    "text": "\\item Coordination is worth 13.9\\,\\% of operating cost against static interface practice       % 80",
+    "framing": "saving",
+    "note": "staging copy of the standalone bullet (identical text)"
+   }
+  ],
+  "unclassified": [],
+  "missing_expected": [],
+  "called_saving": [
+   {
+    "file": "highlights.tex",
+    "line": 14,
+    "text": "\\item Coordination is worth 13.9\\,\\% of operating cost against static interface practice",
+    "framing": "saving",
+    "note": "\"Coordination is worth 13.9 % of operating cost against static interface practice\": a benefit of 13.9 % of operating cost; denominator unstated"
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 53,
+    "text": "no-reverse-flow interface arrangement, 90.9~M\\euro{} (13.9\\,\\%), with its mechanism stated",
+    "framing": "saving",
+    "note": "the value of coordination \"90.9 M EUR (13.9 %)\""
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 80,
+    "text": "On (iii): the 18.25\\,\\% and 92.16\\,\\% figures are withdrawn with the results they came from (see the opening of this letter); the abstract reports instead the value of coordination, 13.9\\,\\% of the discounted operating cost over the 15-year horizon against the best static no-reverse-flow arrangement, a horizon total rather than the figure of a particular year.",
+    "framing": "saving",
+    "note": "\"the abstract reports instead the value of coordination, 13.9 % of the discounted operating cost\" -- the abstract reports 12.2 %"
+   },
+   {
+    "file": "highlights_v2",
+    "line": 12,
+    "text": "\\item Coordination is worth 13.9\\,\\% of operating cost against static interface practice       % 80",
+    "framing": "saving",
+    "note": "staging copy of the standalone bullet (identical text)"
+   }
+  ],
+  "ratios": {
+   "benefit_eur": 90896608.39950395,
+   "coordinated_Q_eur": 653873702.1876609,
+   "price_taker_Q_eur": 744770310.5871649,
+   "benefit_over_coordinated": 0.13901248527871937,
+   "benefit_over_price_taker": 0.1220464982389571,
+   "frozen_field_benefit_relative": 0.13901248527871937,
+   "frozen_benefit_relative_is_over_coordinated": true,
+   "pct_saving_vs_price_taker_1dp": 12.2,
+   "pct_increase_over_coordinated_1dp": 13.9,
+   "main_table_values_match_frozen": true
+  },
+  "cover_letter_has_13_9": false,
+  "cover_letter_operating_cost_claim": [
+   24
+  ]
+ },
+ "A8_3_abstract": {
+  "abstract_lines": [
+   140,
+   150
+  ],
+  "technology_sentence": {
+   "line": 145,
+   "quote": "This paper proposes a two-stage stochastic framework for shared battery ESS siting, sizing and installation timing under investment-cost uncertainty.",
+   "at_line": true
+  },
+  "operational_uncertainty_sentence": {
+   "line": 145,
+   "quote": "evaluates their operation under load, renewable-generation and market-price uncertainty.",
+   "at_line": true
+  },
+  "abstract_technology_terms_present": {
+   "lithium": false,
+   "li-ion": false,
+   "lfp": false,
+   "chemistr": false
+  },
+  "abstract_says_battery": true,
+  "abstract_cost_terms_present": {
+   "technology": false,
+   "trajector": false,
+   "future": false,
+   "converter": false
+  },
+  "abstract_says_investment_cost_uncertainty": true,
+  "case_technology_line": [
+   1298
+  ],
+  "case_trajectories_line": [
+   1219
+  ],
+  "cost_file_breakdown_first_row": [
+   [
+    "Component",
+    "Cost, [$/kWh]"
+   ],
+   [
+    "Li-Ion Battery cabinet",
+    270.22
+   ]
+  ],
+  "trajectories_in_file": {
+   "n": 3,
+   "probabilities": [
+    0.35,
+    0.55,
+    0.1
+   ]
+  },
+  "letter_claims_about_abstract": {
+   "abstract_now_says_both": {
+    "line": 76,
+    "ok_at_line": true
+   },
+   "abstract_names_the_chemistry": {
+    "line": 77,
+    "ok_at_line": true
+   }
+  }
+ },
+ "highlights_copies": {
+  "main_tex": [
+   "A stochastic framework plans shared storage at transmission--distribution interfaces",
+   "Battery degradation links storage dispatch with long-term available capacity",
+   "No evaluated storage plan recovers its investment cost under baseline assumptions",
+   "Reference unit margins are positive at 1.75 and 2 times the base flexibility price",
+   "Coordination without storage cuts operating costs by 12.2\\% versus price-taking"
+  ],
+  "standalone": [
+   "Shared storage planned at TSO--DSO interfaces under nonconvex coordinated operation",
+   "A derivative-free lattice search proposes plans; ADMM coordination evaluates them",
+   "Every recourse evaluation is certified; every planning difference has a resolution",
+   "Without ageing the reference storage unit breaks even; with ageing it loses",
+   "Coordination is worth 13.9\\,\\% of operating cost against static interface practice"
+  ],
+  "review_v2_items": [
+   "Shared storage planned at TSO--DSO interfaces under nonconvex coordinated operation",
+   "A derivative-free lattice search proposes plans; ADMM coordination evaluates them",
+   "Every recourse evaluation is certified; every planning difference has a resolution",
+   "Without ageing the reference storage unit breaks even; with ageing it loses",
+   "Coordination is worth 13.9\\,\\% of operating cost against static interface practice"
+  ],
+  "submitted": [
+   "A bi-level stochastic framework is proposed for planning shared ESSs at TN--DN interface nodes",
+   "Cycling-induced battery degradation is explicitly linked to coordinated multi-year TSO--DSO operation",
+   "Benders' decomposition and ADMM enable scalable planning with decentralized AC-feasible operation",
+   "Shared ESSs reduce operating costs, RES curtailment, and voltage violations under coordinated operation",
+   "Planning-horizon discretization materially affects degradation trajectories and ESS investment decisions"
+  ],
+  "standalone_equals_main": false,
+  "standalone_equals_review_v2_first5": true,
+  "standalone_equals_submitted": false
+ },
+ "negative_controls": [
+  {
+   "control": "NC1 an altered A7 quote is not located",
+   "refused": true,
+   "detail": null
+  },
+  {
+   "control": "NC2 a planted keyword sentence in the abstract is uncovered",
+   "refused": true,
+   "detail": null
+  },
+  {
+   "control": "NC3 the production check is live: 7: 1.25/5 refused at 1e6, admitted at 1.6e6",
+   "refused": true,
+   "detail": {
+    "at_1e6": false,
+    "at_1_6e6": true
+   }
+  },
+  {
+   "control": "NC4 7: 1/4 is over budget in 2025 and within it in 2030 (discounting is applied)",
+   "refused": true,
+   "detail": {
+    "2025": false,
+    "2030": true
+   }
+  },
+  {
+   "control": "NC5 a planted \"lithium-ion\" in the abstract is detected",
+   "refused": true,
+   "detail": null
+  },
+  {
+   "control": "NC6 removing 13.9 from highlights.tex removes its hit",
+   "refused": true,
+   "detail": null
+  }
+ ],
+ "predictions": {
+  "A7": {
+   "expected": ">= 6 sentences listed",
+   "listed": 16,
+   "borderline": 11,
+   "held": true,
+   "held_on_main_tex_alone": false
+  }
+ },
+ "input_hash_checks": {
+  "cost_xlsx": true,
+  "w2_table": true,
+  "frozen": true
+ },
+ "guards": {
+  "solve_profile_guard": {
+   "label": "P5.15 W182d claims listing (never solves)",
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "pickle_counts": {
+   "load": 0,
+   "loads": 0
+  }
+ },
+ "finished_utc": "2026-10-25T14:07:49.651957+00:00"
+}

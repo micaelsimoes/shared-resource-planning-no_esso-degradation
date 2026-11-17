@@ -1,0 +1,5061 @@
+{
+ "stage": "P5.15 Addendum 48, W90 / W91 -- option (b) measured at zero solves on the 3 x 3 instance; stage spec v36 (W91: the margin rule on ONE measure, footprint; G6 v36 closes the tier-2 vacuity hole); the two-arm 3 x 3 smoke ((b) on vs off, bitwise, measuring the runtime footprint peak directly) and the 3 x 3 pair (x = 0 and the smallest node-7 unit, concurrency 1, (b) on, persistence by the margin rule)",
+ "utc": "2026-09-27T02:38:34.390947+00:00",
+ "git_head_at_run": "8a8ef1508bc73ecbe56320bdad77e861b96b26c4",
+ "campaign_spec_path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/campaign_spec_s53_w91_3x3_pair_231558f0.json",
+ "campaign_spec_sha256": "231558f0705797327c10d8e0e82ff878e19ed3a4620766bd5b113995bb920e99",
+ "stage_spec": {
+  "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v36_14bbddc7.json",
+  "sha256": "14bbddc7593c6ee3ee56854b12cb146d6770a27953e3f36bd88c3e0417c40110"
+ },
+ "pre_launch_assertion": {
+  "per_cell": {
+   "x0": {
+    "eval_key": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+    "v34_frozen_eval_key": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+    "equals_v34_frozen_key": true,
+    "pre_tail_3x3_key": "19ad04f2e9c14c51de8a886195ec583a73d6916730fcbdbde512610dbf3c9857",
+    "differs_from_pre_tail_3x3_key": true,
+    "declared_off_key_equals_pre_tail_key": true,
+    "alpha_row_2x2_key_same_candidate": "7d53b6f21b686a44db69f0901e03c870d14e15d00bfaaa6a5379822890918a94",
+    "differs_from_2x2_alpha_row_key": true,
+    "absent_from_every_committed_spec_outside_w89_w90": true,
+    "committed_specs_holding_it_outside_w89_w90": [],
+    "frozen_entries_equal_recomputed": true,
+    "n_frozen_entries_checked": 1
+   },
+   "n7_4h_e1": {
+    "eval_key": "c82522f470b35b58399bfe47ebd45612a95641ae308128de5d1c3c08ad5408a1",
+    "v34_frozen_eval_key": "c82522f470b35b58399bfe47ebd45612a95641ae308128de5d1c3c08ad5408a1",
+    "equals_v34_frozen_key": true,
+    "pre_tail_3x3_key": "08cbcdcefb78bc9ce27c27c00dfe1ff84895f47992e0be0d8f02e8e4f5ff0481",
+    "differs_from_pre_tail_3x3_key": true,
+    "declared_off_key_equals_pre_tail_key": true,
+    "alpha_row_2x2_key_same_candidate": "711fce9aa74d687892b994e332472c7d59745ef74ce9030abc12d54a9aaf83b4",
+    "differs_from_2x2_alpha_row_key": true,
+    "absent_from_every_committed_spec_outside_w89_w90": true,
+    "committed_specs_holding_it_outside_w89_w90": [],
+    "frozen_entries_equal_recomputed": true,
+    "n_frozen_entries_checked": 1
+   }
+  },
+  "holds": true,
+  "n_committed_keys_scanned": 3521,
+  "excluded_roots": [
+   "data/SRP1/Results/P515S53/w89_3x3",
+   "data/SRP1/Results/P515S53/w90_3x3"
+  ]
+ },
+ "objective_convention": "Q(x) = certified_cost = gross_operational_cost (_get_operational_recourse_components: the CONTRACTED interface settlement and the solver-only interface-voltage pin excluded; the row 18 charge and the price-deviation covariance -- the settlement DEVIATION part -- included, Addendum 38 (C)); value = Q(0) - Q(x); F = I + Q; terminal salvage and net_operational_recourse = gross - salvage reported, excluded.",
+ "per_cell": {
+  "x0": {
+   "status": "certified",
+   "cycles_run": 72,
+   "certification_cycle": 72,
+   "Q": 842832534.7623764,
+   "bar": 13954.375690460205,
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 16276684800,
+    "production_state_peak_rss_ru_maxrss": 16276684800,
+    "solver_subprocesses_max_ru_maxrss": 410976256,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "footprint_peak_reported_not_gated": {
+    "measure": "ri_lifetime_max_phys_footprint of the evaluation child (the harness's --child Python process; its IPOPT subprocesses are NOT included -- the same scope as child_python_process_ru_maxrss), read by this launcher with proc_pid_rusage(pid, RUSAGE_INFO_V4) (struct rusage_info_v4, macOS SDK sys/resource.h): the kernel-tracked high-water mark of phys_footprint over the process lifetime -- the footprint analogue of ru_maxrss, so no sampling gap. FINAL value = the read on the EXITED, NOT-YET-REAPED child (ri_proc_exit_abstime != 0), taken on the kqueue EVFILT_PROC NOTE_EXIT event (xnu keeps the exit rusage until the harness reaps with os.wait4, which it polls every POLL_S = 5 s); identity: pid from the harness's launch.json, parent pid == this launcher, command line holds --child and the entry's eval key, ri_proc_start_abstime constant across reads (no pid reuse)",
+    "launch_json": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/launch.json",
+    "eval_key": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+    "poll_s": 1.0,
+    "pid": 4781,
+    "identity": {
+     "ppid": 4708,
+     "launcher_pid": 4708,
+     "ppid_is_launcher": true,
+     "cmdline_has_child_flag": true,
+     "cmdline_has_eval_key": true
+    },
+    "identity_verified": true,
+    "registered_exit_event": true,
+    "n_live_reads": 28488,
+    "live_max_phys_footprint_sampled_bytes": 20517044400,
+    "lifetime_max_phys_footprint_last_live_bytes": 20517044400,
+    "exit_event_received": true,
+    "final_read_after_exit": true,
+    "exit_read": {
+     "ri_phys_footprint": 0,
+     "ri_lifetime_max_phys_footprint": 20517044400,
+     "ri_interval_max_phys_footprint": 20517044400,
+     "ri_resident_size": 1925709824,
+     "ri_proc_start_abstime": 211899068950,
+     "ri_proc_exit_abstime": 896750591933
+    },
+    "lifetime_max_phys_footprint_bytes": 20517044400,
+    "capture_exact": true,
+    "errors": [],
+    "lifetime_max_phys_footprint_gib": 19.107986614108086,
+    "thread_alive_after_stop": false
+   },
+   "gates": {
+    "G1_harness_clean": true,
+    "G2_eval_key": true,
+    "G3_append_reconcile": true,
+    "G4_tail_state_check": true,
+    "G5_solve_profile_reconciled_per_event": true,
+    "G6_floor_records_v36": false,
+    "G7_append_sealed": true,
+    "G8_post_certification": true,
+    "G9_ess_ageing_readback": true,
+    "G10_alpha_row_capture": true,
+    "G11_acceptance_cross_check": true,
+    "G12_b_in_force": true
+   },
+   "gates_pass": false,
+   "gate_detail": {
+    "exit_code": 0,
+    "w86_evaluation_checks": {
+     "checks": {
+      "append_reconciles_byte_identical": true,
+      "checklist_line1_before_any_solve": true,
+      "tail_state_check_matches": true,
+      "solve_profile_reconciled_per_event": false,
+      "floor_records_at_compl_inf_tol_in_force": true,
+      "append_sealed_after_reconcile": true,
+      "post_certification_persisted": false,
+      "ess_ageing_readback_all_match": true,
+      "all_files_present": true
+     },
+     "detail": {
+      "files_present": {
+       "network_ipopt_solve_records.jsonl": true,
+       "network_ipopt_solve_records_append.jsonl": true,
+       "convergence_depth_append_events.jsonl": true,
+       "convergence_depth_tail_state.json": true
+      },
+      "append": {
+       "record_field": {
+        "records_append_path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/network_ipopt_solve_records_append.jsonl",
+        "records_append_sha256": "4cb3f58f647f94feff46e07ae259e677fb89116c9a521b9bacf099fdff036d82",
+        "end_of_run_records_sha256": "4cb3f58f647f94feff46e07ae259e677fb89116c9a521b9bacf099fdff036d82",
+        "n_records_appended": 5840,
+        "rounds_appended": [
+         0,
+         1,
+         2,
+         3,
+         4,
+         5,
+         6,
+         7,
+         8,
+         9,
+         10,
+         11,
+         12,
+         13,
+         14,
+         15,
+         16,
+         17,
+         18,
+         19,
+         20,
+         21,
+         22,
+         23,
+         24,
+         25,
+         26,
+         27,
+         28,
+         29,
+         30,
+         31,
+         32,
+         33,
+         34,
+         35,
+         36,
+         37,
+         38,
+         39,
+         40,
+         41,
+         42,
+         43,
+         44,
+         45,
+         46,
+         47,
+         48,
+         49,
+         50,
+         51,
+         52,
+         53,
+         54,
+         55,
+         56,
+         57,
+         58,
+         59,
+         60,
+         61,
+         62,
+         63,
+         64,
+         65,
+         66,
+         67,
+         68,
+         69,
+         70,
+         71,
+         72
+        ],
+        "events_path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/convergence_depth_append_events.jsonl",
+        "records_append_byte_identical_to_end_of_run_file": true,
+        "tail_state_rebuilt_from_events_equals_returned_state": true,
+        "write_errors": [],
+        "ok": true
+       },
+       "end_of_run_sha256": "4cb3f58f647f94feff46e07ae259e677fb89116c9a521b9bacf099fdff036d82",
+       "append_sha256": "4cb3f58f647f94feff46e07ae259e677fb89116c9a521b9bacf099fdff036d82",
+       "n_end_of_run": 5840,
+       "rounds_drained": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72
+       ],
+       "n_bytes": 4450814
+      },
+      "checklist": {
+       "first_event": "checklist",
+       "utc": "2026-09-26T10:21:12.372518+00:00",
+       "pid": 4781,
+       "record_child_pid": 4781,
+       "work_logs_dir": "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs",
+       "n_log_files": 299,
+       "earliest_log_birth_utc": "2026-09-26T10:21:37.190844+00:00",
+       "first_drain_utc": "2026-09-26T10:26:19.598867+00:00",
+       "seconds_before_first_log": 24.818325757980347
+      },
+      "solve_profile": {
+       "observed": {
+        "permitted_solve": 6059,
+        "permitted_exec": 6059,
+        "blocked_solve": 0,
+        "blocked_exec": 0
+       },
+       "identity_holds": true,
+       "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+       "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+       "n_dso": 3,
+       "n_years": 5,
+       "n_days": 4,
+       "n_esso_nodes": 3,
+       "solves_per_cycle": 83,
+       "rounds": 73,
+       "rounds_note": "one initialization round + cycles_run ADMM cycles",
+       "base_solves": 6059,
+       "retry_solves_credited": 0,
+       "reconciliation_supported": true,
+       "expected_solves": 6059,
+       "recovered_only_identity": {
+        "expected": 6059,
+        "holds": true,
+        "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+       }
+      },
+      "floor": {
+       "production_compl_inf_tol": {
+        "case9": 0.0005,
+        "case33_1": 0.0001,
+        "case33_2": 0.0001,
+        "case33_3": 0.0001
+       },
+       "tail_active_cycles": [
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72
+       ],
+       "n_records": 5840,
+       "n_bad": 0,
+       "bad_first": [],
+       "floor_status_tally": {
+        "DSO|above": 540,
+        "DSO|at": 3840,
+        "TSO|above": 1166,
+        "TSO|at": 294
+       },
+       "floor_status_tally_tail_cycles": {
+        "DSO|above": 540,
+        "TSO|above": 166,
+        "TSO|at": 14
+       },
+       "exit_tally": {
+        "Optimal Solution Found.": 5835,
+        "Solved To Acceptable Level.": 5
+       },
+       "records_per_round": {
+        "0": 80,
+        "1": 80,
+        "2": 80,
+        "3": 80,
+        "4": 80,
+        "5": 80,
+        "6": 80,
+        "7": 80,
+        "8": 80,
+        "9": 80,
+        "10": 80,
+        "11": 80,
+        "12": 80,
+        "13": 80,
+        "14": 80,
+        "15": 80,
+        "16": 80,
+        "17": 80,
+        "18": 80,
+        "19": 80,
+        "20": 80,
+        "21": 80,
+        "22": 80,
+        "23": 80,
+        "24": 80,
+        "25": 80,
+        "26": 80,
+        "27": 80,
+        "28": 80,
+        "29": 80,
+        "30": 80,
+        "31": 80,
+        "32": 80,
+        "33": 80,
+        "34": 80,
+        "35": 80,
+        "36": 80,
+        "37": 80,
+        "38": 80,
+        "39": 80,
+        "40": 80,
+        "41": 80,
+        "42": 80,
+        "43": 80,
+        "44": 80,
+        "45": 80,
+        "46": 80,
+        "47": 80,
+        "48": 80,
+        "49": 80,
+        "50": 80,
+        "51": 80,
+        "52": 80,
+        "53": 80,
+        "54": 80,
+        "55": 80,
+        "56": 80,
+        "57": 80,
+        "58": 80,
+        "59": 80,
+        "60": 80,
+        "61": 80,
+        "62": 80,
+        "63": 80,
+        "64": 80,
+        "65": 80,
+        "66": 80,
+        "67": 80,
+        "68": 80,
+        "69": 80,
+        "70": 80,
+        "71": 80,
+        "72": 80
+       }
+      },
+      "post_certification": {},
+      "certified_models_pkl": null,
+      "tail_state_check": {
+       "expected_enabled": true,
+       "enabled_in_state": true,
+       "expected_compl_inf_tol_tail": 1e-06,
+       "compl_inf_tol_tail_in_state": 1e-06,
+       "match": true,
+       "n_cycles_recorded": 72,
+       "cycles_tail_active": [
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72
+       ],
+       "n_cycles_acted": 1,
+       "restore_at_exit_acted": true
+      },
+      "tail_state_summary": {
+       "n_per_cycle": 72,
+       "cycles_active": [
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72
+       ],
+       "n_acted": 1,
+       "restore_at_exit_acted": true
+      }
+     },
+     "note": "SRP1-specific items superseded by G5 / G6"
+    },
+    "G5": {
+     "solve_profile": {
+      "observed": {
+       "permitted_solve": 6059,
+       "permitted_exec": 6059,
+       "blocked_solve": 0,
+       "blocked_exec": 0
+      },
+      "identity_holds": true,
+      "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+      "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+      "n_dso": 3,
+      "n_years": 5,
+      "n_days": 4,
+      "n_esso_nodes": 3,
+      "solves_per_cycle": 83,
+      "rounds": 73,
+      "rounds_note": "one initialization round + cycles_run ADMM cycles",
+      "base_solves": 6059,
+      "retry_solves_credited": 0,
+      "reconciliation_supported": true,
+      "expected_solves": 6059,
+      "recovered_only_identity": {
+       "expected": 6059,
+       "holds": true,
+       "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+      }
+     },
+     "n_network_records": 5840,
+     "rounds": 73
+    },
+    "G6": {
+     "gate_pass": false,
+     "B_blocks_per_round": 80,
+     "window_W": [
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72
+     ],
+     "terminal_round_T": 72,
+     "judged_rounds": [
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72
+     ],
+     "production_compl_inf_tol": {
+      "case9": 0.0005,
+      "case33_1": 0.0001,
+      "case33_2": 0.0001,
+      "case33_3": 0.0001
+     },
+     "n_records_total": 5840,
+     "population_n": 720,
+     "per_round_counts": {
+      "64": {
+       "n": 80,
+       "n_primary": 80
+      },
+      "65": {
+       "n": 80,
+       "n_primary": 80
+      },
+      "66": {
+       "n": 80,
+       "n_primary": 80
+      },
+      "67": {
+       "n": 80,
+       "n_primary": 80
+      },
+      "68": {
+       "n": 80,
+       "n_primary": 80
+      },
+      "69": {
+       "n": 80,
+       "n_primary": 80
+      },
+      "70": {
+       "n": 80,
+       "n_primary": 80
+      },
+      "71": {
+       "n": 80,
+       "n_primary": 80
+      },
+      "72": {
+       "n": 80,
+       "n_primary": 80
+      }
+     },
+     "non_vacuity": {
+      "v30_part": true,
+      "terminal_blocks_eq_B": true,
+      "one_judged_attempt_per_terminal_block": true,
+      "terminal_judged_accepted_eq_B": true,
+      "terminal_floor_testable_accepted_ge_min": true,
+      "holds": true
+     },
+     "n_bad_records": 0,
+     "bad_records": [],
+     "n_bad_blocks": 79,
+     "bad_blocks": [
+      {
+       "block": [
+        72,
+        "case33_1",
+        2025,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2025,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2025,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2025,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2025,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2025,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2025,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2025,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2028,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2028,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2028,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2028,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2028,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2028,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2028,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2028,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2031,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2031,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2031,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2031,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2031,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2031,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2031,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2031,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2034,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2034,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2034,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2034,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2034,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2034,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2034,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2034,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2037,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2037,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2037,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2037,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2037,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2037,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_1",
+        2037,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_1",
+         "year": 2037,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2025,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2025,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2025,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2025,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2025,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2025,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2025,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2025,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2028,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2028,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2028,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2028,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2028,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2028,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2028,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2028,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2031,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2031,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2031,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2031,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2031,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2031,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2031,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2031,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2034,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2034,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2034,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2034,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2034,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2034,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2034,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2034,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2037,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2037,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2037,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2037,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2037,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2037,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_2",
+        2037,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_2",
+         "year": 2037,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2025,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2025,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2025,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2025,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2025,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2025,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2025,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2025,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2028,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2028,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2028,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2028,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2028,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2028,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2028,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2028,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2031,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2031,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2031,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2031,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2031,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2031,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2031,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2031,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2034,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2034,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2034,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2034,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2034,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2034,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2034,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2034,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2037,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2037,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2037,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2037,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2037,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2037,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case33_3",
+        2037,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case33_3",
+         "year": 2037,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2025,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2025,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.9108579441711107,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2025,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2025,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 4.348557259650487,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2025,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2025,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.9153797644773745,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2025,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2025,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.8414125331472446,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2028,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2028,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 4.680003388231575,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2028,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2028,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 4.100064577309507,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2028,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2028,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.9645696503693006,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2031,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2031,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 4.736015991753091,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2031,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2031,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 5.0462131178912,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2031,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2031,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 4.347816490111229,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2031,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2031,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 4.430401502543598,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2034,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2034,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 4.8574035092647145,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2034,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2034,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 5.428584204090931,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2034,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2034,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 4.870973977204654,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2034,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2034,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 4.710240400756764,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2037,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2037,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 5.5147856514184985,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2037,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2037,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 5.85352234737715,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2037,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2037,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 5.023406621923474,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        72,
+        "case9",
+        2037,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 72,
+         "network": "case9",
+         "year": 2037,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 5.018979697618902,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      }
+     ],
+     "terminal_round": {
+      "n_records": 80,
+      "n_blocks": 80,
+      "n_judged": 80,
+      "n_judged_applicable": 80,
+      "n_judged_not_applicable": 0,
+      "judged_attempt_labels": {
+       "primary": 80
+      },
+      "judged_exit": {
+       "Optimal Solution Found.": 80
+      },
+      "judged_applicable_floor_status": {
+       "above": 79,
+       "at": 1
+      },
+      "judged_not_applicable": [],
+      "judged_floor_status_recomputed_from_mu_over_floor_agrees": true,
+      "judged_mu_over_floor_range_applicable": [
+       0.9999999914694951,
+       5.85352234737715
+      ],
+      "superseded_counted_reported_never_judged_on_floor": {
+       "n": 0,
+       "attempts": {},
+       "floor_status": {},
+       "exit": {},
+       "records": []
+      },
+      "ladders": {
+       "primary": 80
+      }
+     },
+     "window_rounds_before_T_reported": {
+      "n": 640,
+      "n_not_applicable": 0,
+      "attempts": {
+       "primary": 640
+      },
+      "floor_status_applicable": {
+       "above": 627,
+       "at": 13
+      }
+     },
+     "pre_tail_reported_not_gated": {
+      "n": 5120,
+      "n_not_applicable": 0,
+      "attempts": {
+       "primary": 5120
+      }
+     },
+     "gate_version": "v36",
+     "non_vacuity_v32_reported_not_gated": {
+      "v30_part": true,
+      "terminal_blocks_eq_B": true,
+      "one_judged_attempt_per_terminal_block": true,
+      "terminal_judged_applicable_ge_B": true,
+      "holds": true
+     },
+     "n_judged_accepted_final": 80,
+     "tier2_terminal_blocks_counted": {
+      "n_judged_not_applicable": 0,
+      "n_judged_applicable": 80,
+      "judged_not_applicable": []
+     },
+     "gate_pass_v32_reported": false,
+     "non_vacuity_v35_reported": {
+      "v30_part": true,
+      "terminal_blocks_eq_B": true,
+      "one_judged_attempt_per_terminal_block": true,
+      "terminal_judged_accepted_eq_B": true,
+      "holds": true
+     },
+     "n_floor_testable_accepted_final": 80,
+     "min_floor_testable_accepted_final": 72,
+     "insufficiently_tested": false,
+     "gate_pass_v35_reported": false
+    },
+    "G6_tier2_final_attempts_in_T_flag": false,
+    "G8": {
+     "post_certification": {},
+     "requested": {
+      "hull_polish": false,
+      "persist_certified_models": false
+     },
+     "resolved": null,
+     "pickle": null
+    },
+    "G10": {
+     "parts": {
+      "written_all_three": true,
+      "multiscenario_checks_pass": true,
+      "activation_readback_all_ok": true,
+      "per_cycle_response_every_cycle": true,
+      "derived_checksum_in_child": true,
+      "premium_applied_alpha_0p5": true,
+      "initialisation_identity_recorded_and_equal": true,
+      "capture_checklist_asserted_before_run": true,
+      "response_terminal_file_present": true,
+      "multiscenario_terminal_file_present": true
+     },
+     "written": {
+      "multiscenario_terminal": "written",
+      "operational_workbook": "written",
+      "response_terminal": "written"
+     },
+     "per_cycle_response": {
+      "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/per_cycle_response.jsonl",
+      "n_lines": 72,
+      "n_trajectory_rows": 72,
+      "n_captured": 72,
+      "cycles_match": true
+     },
+     "premium_applied": {
+      "declared": {
+       "alpha": 0.5,
+       "floor": null
+      },
+      "before": {
+       "alpha": 0.0,
+       "floor": null,
+       "source": "default"
+      },
+      "after": {
+       "alpha": 0.5,
+       "floor": null,
+       "source": "campaign spec entry interface_deviation_premium (p515_s44_campaign_harness, W47)"
+      },
+      "took_effect": true
+     },
+     "activation_readback_all_ok": true,
+     "initialisation_identity": {
+      "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/init_identity/f6e9cd53fdbb8ee8_x0.json",
+      "gross_operational_cost": 272114.20300347114,
+      "gross_operational_cost_hex": "0x1.09bc8cfe02456p+18",
+      "n_compared": 1,
+      "compared": [
+       {
+        "file": "smoke_reference__f6e9cd53fdbb8ee8_x0.json",
+        "label": "x0",
+        "gross_operational_cost_hex": "0x1.09bc8cfe02456p+18",
+        "equal": true,
+        "components_equal": {
+         "gross_operational_cost": true,
+         "gross_operational_cost_including_settlement": true,
+         "interface_settlement_total": true,
+         "voltage_pin_total": true,
+         "terminal_salvage_value": true,
+         "net_operational_recourse": true
+        }
+       }
+      ],
+      "other_candidates_not_compared": [],
+      "mismatches": [],
+      "all_equal": true
+     }
+    },
+    "G11": {
+     "events_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/network_failures_s39_D.jsonl",
+     "n_events": 0,
+     "n_blocks_with_expected_event": 0,
+     "n_observed": 0,
+     "expected_class_counts": {},
+     "observed_class_counts": {},
+     "duplicate_event_blocks": [],
+     "n_mismatches": 0,
+     "mismatches": [],
+     "agrees": true
+    },
+    "G12": {
+     "parts": {
+      "declared_in_record": true,
+      "took_effect": true,
+      "read_back_all": true,
+      "calls_as_expected": true
+     },
+     "calls": 5840,
+     "successful_network_solves": 5840,
+     "n_blocks_over_all_rounds": 5840,
+     "applied": {
+      "requested": true,
+      "before": {
+       "tso": false,
+       "dso_5": false,
+       "dso_7": false,
+       "dso_9": false
+      },
+      "read_back": {
+       "tso": true,
+       "dso_5": true,
+       "dso_7": true,
+       "dso_9": true
+      },
+      "solver_params_objects_distinct": true,
+      "took_effect": true
+     }
+    }
+   },
+   "cell_quantities": {
+    "eval_dir": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0",
+    "label": "x0",
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "eval_key": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+    "alpha": 0.5,
+    "status": "certified",
+    "certified": true,
+    "cycles_run": 72,
+    "certification_cycle": 72,
+    "Q": 842832534.7623764,
+    "Q_is_certified": true,
+    "bar": 13954.375690460205,
+    "rule_ten": {
+     "terminal_step_over_threshold": 0.04752601039838396,
+     "terminal_gross_step_abs": 4005.665818452835,
+     "objective_tolerance": 84283.65404281949,
+     "production": 0.04752601039838396
+    },
+    "charge": 25082401.205104288,
+    "VP": 188.0472249728892,
+    "C": 817750133.5572722,
+    "V": 842832722.8096014,
+    "A": 817750321.6044972,
+    "P_charge": 50164802.410208575,
+    "P_posthoc": 50164956.69330064,
+    "P_posthoc_p_leg": 50164956.65626505,
+    "P_used": 50164802.410208575,
+    "P_charge_minus_posthoc_rel": -3.0755153046359473e-06,
+    "P_posthoc_vs_child_live_rel": 0.0,
+    "dispersion": {
+     "E_abs_d_p_mwh_weighted": 535975.0518460467,
+     "E_abs_d_p_mwh_unweighted": 2208.878283749049,
+     "sum_omega_d2_p_mw2h_weighted": 4926137.607528513,
+     "sum_omega_d2_p_mw2h_unweighted": 20431.094690571546,
+     "peak_block_rms_mw": 8.036748677572067,
+     "peak_abs_d_mw": 48.32432425874821,
+     "worst_block_share": {
+      "block": "DSO|7|2031|Autumn",
+      "rms_mw": 7.633307956134538,
+      "share": 0.2927206142568913,
+      "mean_abs_committed_flow_mw": 26.077111021076075
+     },
+     "max_abs_rms_block": {
+      "block": "DSO|7|2034|Winter",
+      "rms_mw": 8.036748677572067,
+      "share": 0.28286290229971284,
+      "mean_abs_committed_flow_mw": 28.412169330909908
+     }
+    },
+    "split_unweighted_w46": {
+     "sum_omega_d2": 20431.094690571554,
+     "market_part": 2752.7224296008676,
+     "operation_part": 17678.372260970682,
+     "market_share_of_sum_omega_d2": 0.1347320087979026,
+     "E_abs_d": 2208.8782837490485,
+     "E_abs_d_market": 712.4519811908503,
+     "covariance": -3095.3888492885017
+    },
+    "split_weighted": {
+     "sum_omega_d2": 4926137.607528517,
+     "market_part": 661108.3058305577,
+     "operation_part": 4265029.3016979555,
+     "E_abs_d": 535975.051846047,
+     "E_abs_d_market": 171598.71509185433,
+     "covariance": -748745.7728326311
+    },
+    "covariance_production_weighted": -748745.7728323116,
+    "curtailment_per_network": {
+     "TSO": {
+      "E_plus_mwh_weighted": 865.0870112293811,
+      "E_net_mwh_weighted": 846.6579810379081,
+      "priced_eur_weighted": 159238.42438997555,
+      "n_entries_above_tol": 117
+     },
+     "DSO5": {
+      "E_plus_mwh_weighted": 902.8106563052968,
+      "E_net_mwh_weighted": 886.4023335863308,
+      "priced_eur_weighted": 29715.740488439587,
+      "n_entries_above_tol": 1958
+     },
+     "DSO7": {
+      "E_plus_mwh_weighted": 713.5564627444114,
+      "E_net_mwh_weighted": 700.0191786638956,
+      "priced_eur_weighted": 43945.7718506301,
+      "n_entries_above_tol": 2119
+     },
+     "DSO9": {
+      "E_plus_mwh_weighted": 484.7541206526861,
+      "E_net_mwh_weighted": 473.1010254282519,
+      "priced_eur_weighted": 21510.134675403548,
+      "n_entries_above_tol": 2778
+     }
+    },
+    "curtailment_entry_classes": {
+     "TSO|interior": 117,
+     "DSO5|capability_bound": 1918,
+     "DSO5|interior": 40,
+     "DSO7|capability_bound": 2087,
+     "DSO7|interior": 32,
+     "DSO9|capability_bound": 2750,
+     "DSO9|interior": 28
+    },
+    "row18_condition_entries": {
+     "n": 42,
+     "sum_c_mw_unweighted": 16.258668903842597
+    },
+    "flexibility_per_dso_weighted": {
+     "DSO5": {
+      "p_up_mwh": 1095752.7030349816,
+      "p_down_mwh": 1095752.7031028885,
+      "q_up_mvarh": 4688.443865962728,
+      "q_down_mvarh": -3.5376238333942363
+     },
+     "DSO7": {
+      "p_up_mwh": 1087432.654571861,
+      "p_down_mwh": 1087432.6546390431,
+      "q_up_mvarh": 4502.829630483185,
+      "q_down_mvarh": -3.534567816065317
+     },
+     "DSO9": {
+      "p_up_mwh": 1289073.901778644,
+      "p_down_mwh": 1289073.901846236,
+      "q_up_mvarh": 5725.811658386402,
+      "q_down_mvarh": -3.538445114876059
+     }
+    },
+    "row18_charge_p_weighted": 25082439.40233957,
+    "row18_charge_q_weighted": -38.197235282964975,
+    "q_leg_share": -1.5228699585266107e-06,
+    "row18_zl_identity": {
+     "n_checked": 25920,
+     "n_missing_suffix_values": 0,
+     "n_le_1e-6": 25920,
+     "n_le_1e-4": 25920,
+     "n_le_1e-2": 25920,
+     "worst_rel_zl_sum_vs_2coef": 2.9008199324917127e-09,
+     "worst_rel_abs_dual_vs_half_zl_diff": 1.450381593770917e-09,
+     "tol": 0.0001,
+     "holds": true
+    },
+    "lmp_ref_dso_quantiles_eur_mwh": {
+     "n": 6855,
+     "min": 1.7242892869124233e-06,
+     "median": 73.87439837549437,
+     "max": 283.5702422179911
+    },
+    "initialisation_identity": {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/init_identity/f6e9cd53fdbb8ee8_x0.json",
+     "gross_operational_cost": 272114.20300347114,
+     "gross_operational_cost_hex": "0x1.09bc8cfe02456p+18",
+     "n_compared": 1,
+     "compared": [
+      {
+       "file": "smoke_reference__f6e9cd53fdbb8ee8_x0.json",
+       "label": "x0",
+       "gross_operational_cost_hex": "0x1.09bc8cfe02456p+18",
+       "equal": true,
+       "components_equal": {
+        "gross_operational_cost": true,
+        "gross_operational_cost_including_settlement": true,
+        "interface_settlement_total": true,
+        "voltage_pin_total": true,
+        "terminal_salvage_value": true,
+        "net_operational_recourse": true
+       }
+      }
+     ],
+     "other_candidates_not_compared": [],
+     "mismatches": [],
+     "all_equal": true
+    },
+    "activation_readback_all_ok": true,
+    "per_cycle_rows": 72,
+    "per_cycle_all_captured": true,
+    "P_gap_primal_bound": {
+     "derivable": true,
+     "problems": [],
+     "E_eur_per_alpha": 80076.40623598373,
+     "E_rel_to_P_posthoc": 0.001596261843213704,
+     "observed_gap_eur_per_alpha": -154.28309206664562,
+     "observed_gap_rel": -3.0755153046359473e-06,
+     "observed_over_E": 0.0019266985035763984,
+     "within_symmetric_band": true,
+     "exits": [
+      "optimal"
+     ],
+     "eps_values": [
+      1e-05
+     ],
+     "beta_values": [
+      1e-08
+     ],
+     "realized_decomposition_weighted": {
+      "gap": -154.2830920835927,
+      "split": -154.28309646636598,
+      "split_negative": 154.28309646636598,
+      "split_positive": 0.0,
+      "residual": 1.4230404776297837e-05,
+      "bound_weight": 3995828654.4902077,
+      "max_abs_row_residual_pu_p": 1.1779614244633736e-11,
+      "max_abs_row_residual_pu_q": 2.5185404535164714e-15,
+      "max_bound_violation_pu": 9.872756777756677e-09,
+      "max_min_split_pu": 0.0,
+      "identity_abs_gap_minus_split_le_residual_all_blocks": true
+     },
+     "decomposition_gap_minus_observed_abs": 1.6947069525485858e-08,
+     "n_blocks": 60
+    },
+    "retry_solves_credited": 0,
+    "post_certification": null
+   },
+   "parent_view": {
+    "exit_code": 0,
+    "wall_s": 28535.56865310669,
+    "wait4_ru_maxrss": 16276684800
+   }
+  },
+  "n7_4h_e1": {
+   "status": "certified",
+   "cycles_run": 69,
+   "certification_cycle": 69,
+   "Q": 842595839.5131028,
+   "bar": 4010.5701702833176,
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 16302620672,
+    "production_state_peak_rss_ru_maxrss": 16302620672,
+    "solver_subprocesses_max_ru_maxrss": 409567232,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "footprint_peak_reported_not_gated": {
+    "measure": "ri_lifetime_max_phys_footprint of the evaluation child (the harness's --child Python process; its IPOPT subprocesses are NOT included -- the same scope as child_python_process_ru_maxrss), read by this launcher with proc_pid_rusage(pid, RUSAGE_INFO_V4) (struct rusage_info_v4, macOS SDK sys/resource.h): the kernel-tracked high-water mark of phys_footprint over the process lifetime -- the footprint analogue of ru_maxrss, so no sampling gap. FINAL value = the read on the EXITED, NOT-YET-REAPED child (ri_proc_exit_abstime != 0), taken on the kqueue EVFILT_PROC NOTE_EXIT event (xnu keeps the exit rusage until the harness reaps with os.wait4, which it polls every POLL_S = 5 s); identity: pid from the harness's launch.json, parent pid == this launcher, command line holds --child and the entry's eval key, ri_proc_start_abstime constant across reads (no pid reuse)",
+    "launch_json": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/c82522f470b35b58_n7_4h_e1/launch.json",
+    "eval_key": "c82522f470b35b58399bfe47ebd45612a95641ae308128de5d1c3c08ad5408a1",
+    "poll_s": 1.0,
+    "pid": 15017,
+    "identity": {
+     "ppid": 4708,
+     "launcher_pid": 4708,
+     "ppid_is_launcher": true,
+     "cmdline_has_child_flag": true,
+     "cmdline_has_eval_key": true
+    },
+    "identity_verified": true,
+    "registered_exit_event": true,
+    "n_live_reads": 30056,
+    "live_max_phys_footprint_sampled_bytes": 20187479952,
+    "lifetime_max_phys_footprint_last_live_bytes": 20295188440,
+    "exit_event_received": true,
+    "final_read_after_exit": true,
+    "exit_read": {
+     "ri_phys_footprint": 0,
+     "ri_lifetime_max_phys_footprint": 20295188440,
+     "ri_interval_max_phys_footprint": 20295188440,
+     "ri_resident_size": 1916534784,
+     "ri_proc_start_abstime": 896873139678,
+     "ri_proc_exit_abstime": 1619612649275
+    },
+    "lifetime_max_phys_footprint_bytes": 20295188440,
+    "capture_exact": true,
+    "errors": [],
+    "lifetime_max_phys_footprint_gib": 18.901367150247097,
+    "thread_alive_after_stop": false
+   },
+   "gates": {
+    "G1_harness_clean": true,
+    "G2_eval_key": true,
+    "G3_append_reconcile": true,
+    "G4_tail_state_check": true,
+    "G5_solve_profile_reconciled_per_event": true,
+    "G6_floor_records_v36": false,
+    "G7_append_sealed": true,
+    "G8_post_certification": true,
+    "G9_ess_ageing_readback": true,
+    "G10_alpha_row_capture": true,
+    "G11_acceptance_cross_check": true,
+    "G12_b_in_force": true
+   },
+   "gates_pass": false,
+   "gate_detail": {
+    "exit_code": 0,
+    "w86_evaluation_checks": {
+     "checks": {
+      "append_reconciles_byte_identical": true,
+      "checklist_line1_before_any_solve": true,
+      "tail_state_check_matches": true,
+      "solve_profile_reconciled_per_event": false,
+      "floor_records_at_compl_inf_tol_in_force": true,
+      "append_sealed_after_reconcile": true,
+      "post_certification_persisted": false,
+      "ess_ageing_readback_all_match": true,
+      "all_files_present": true
+     },
+     "detail": {
+      "files_present": {
+       "network_ipopt_solve_records.jsonl": true,
+       "network_ipopt_solve_records_append.jsonl": true,
+       "convergence_depth_append_events.jsonl": true,
+       "convergence_depth_tail_state.json": true
+      },
+      "append": {
+       "record_field": {
+        "records_append_path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/c82522f470b35b58_n7_4h_e1/network_ipopt_solve_records_append.jsonl",
+        "records_append_sha256": "69c029ba98ec129fd6c9e85bca7d1a43ea26fe12f5836361beeb03b2472f6eb3",
+        "end_of_run_records_sha256": "69c029ba98ec129fd6c9e85bca7d1a43ea26fe12f5836361beeb03b2472f6eb3",
+        "n_records_appended": 5606,
+        "rounds_appended": [
+         0,
+         1,
+         2,
+         3,
+         4,
+         5,
+         6,
+         7,
+         8,
+         9,
+         10,
+         11,
+         12,
+         13,
+         14,
+         15,
+         16,
+         17,
+         18,
+         19,
+         20,
+         21,
+         22,
+         23,
+         24,
+         25,
+         26,
+         27,
+         28,
+         29,
+         30,
+         31,
+         32,
+         33,
+         34,
+         35,
+         36,
+         37,
+         38,
+         39,
+         40,
+         41,
+         42,
+         43,
+         44,
+         45,
+         46,
+         47,
+         48,
+         49,
+         50,
+         51,
+         52,
+         53,
+         54,
+         55,
+         56,
+         57,
+         58,
+         59,
+         60,
+         61,
+         62,
+         63,
+         64,
+         65,
+         66,
+         67,
+         68,
+         69
+        ],
+        "events_path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/c82522f470b35b58_n7_4h_e1/convergence_depth_append_events.jsonl",
+        "records_append_byte_identical_to_end_of_run_file": true,
+        "tail_state_rebuilt_from_events_equals_returned_state": true,
+        "write_errors": [],
+        "ok": true
+       },
+       "end_of_run_sha256": "69c029ba98ec129fd6c9e85bca7d1a43ea26fe12f5836361beeb03b2472f6eb3",
+       "append_sha256": "69c029ba98ec129fd6c9e85bca7d1a43ea26fe12f5836361beeb03b2472f6eb3",
+       "n_end_of_run": 5606,
+       "rounds_drained": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69
+       ],
+       "n_bytes": 4248129
+      },
+      "checklist": {
+       "first_event": "checklist",
+       "utc": "2026-09-26T18:16:52.714317+00:00",
+       "pid": 15017,
+       "record_child_pid": 15017,
+       "work_logs_dir": "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_c82522f470b35b58_run/logs",
+       "n_log_files": 295,
+       "earliest_log_birth_utc": "2026-09-26T18:17:16.616982+00:00",
+       "first_drain_utc": "2026-09-26T18:22:16.766875+00:00",
+       "seconds_before_first_log": 23.902665376663208
+      },
+      "solve_profile": {
+       "observed": {
+        "permitted_solve": 5816,
+        "permitted_exec": 5816,
+        "blocked_solve": 0,
+        "blocked_exec": 0
+       },
+       "identity_holds": true,
+       "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+       "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+       "n_dso": 3,
+       "n_years": 5,
+       "n_days": 4,
+       "n_esso_nodes": 3,
+       "solves_per_cycle": 83,
+       "rounds": 70,
+       "rounds_note": "one initialization round + cycles_run ADMM cycles",
+       "base_solves": 5810,
+       "retry_solves_credited": 6,
+       "reconciliation_supported": true,
+       "expected_solves": 5816,
+       "recovered_only_identity": {
+        "expected": 5816,
+        "holds": true,
+        "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+       }
+      },
+      "floor": {
+       "production_compl_inf_tol": {
+        "case9": 0.0005,
+        "case33_1": 0.0001,
+        "case33_2": 0.0001,
+        "case33_3": 0.0001
+       },
+       "tail_active_cycles": [
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69
+       ],
+       "n_records": 5606,
+       "n_bad": 0,
+       "bad_first": [],
+       "floor_status_tally": {
+        "DSO|above": 371,
+        "DSO|at": 3833,
+        "TSO|above": 9,
+        "TSO|at": 1393
+       },
+       "floor_status_tally_tail_cycles": {
+        "DSO|above": 366,
+        "DSO|at": 174,
+        "TSO|at": 180
+       },
+       "exit_tally": {
+        "Maximum Number of Iterations Exceeded.": 6,
+        "Optimal Solution Found.": 5569,
+        "Solved To Acceptable Level.": 31
+       },
+       "records_per_round": {
+        "0": 80,
+        "1": 80,
+        "2": 81,
+        "3": 80,
+        "4": 80,
+        "5": 80,
+        "6": 80,
+        "7": 80,
+        "8": 80,
+        "9": 80,
+        "10": 80,
+        "11": 80,
+        "12": 80,
+        "13": 80,
+        "14": 80,
+        "15": 80,
+        "16": 80,
+        "17": 80,
+        "18": 80,
+        "19": 81,
+        "20": 80,
+        "21": 80,
+        "22": 80,
+        "23": 80,
+        "24": 80,
+        "25": 80,
+        "26": 80,
+        "27": 81,
+        "28": 80,
+        "29": 80,
+        "30": 80,
+        "31": 80,
+        "32": 80,
+        "33": 80,
+        "34": 80,
+        "35": 80,
+        "36": 80,
+        "37": 80,
+        "38": 80,
+        "39": 80,
+        "40": 80,
+        "41": 80,
+        "42": 80,
+        "43": 80,
+        "44": 80,
+        "45": 80,
+        "46": 80,
+        "47": 80,
+        "48": 80,
+        "49": 80,
+        "50": 81,
+        "51": 80,
+        "52": 80,
+        "53": 82,
+        "54": 80,
+        "55": 80,
+        "56": 80,
+        "57": 80,
+        "58": 80,
+        "59": 80,
+        "60": 80,
+        "61": 80,
+        "62": 80,
+        "63": 80,
+        "64": 80,
+        "65": 80,
+        "66": 80,
+        "67": 80,
+        "68": 80,
+        "69": 80
+       }
+      },
+      "post_certification": {},
+      "certified_models_pkl": null,
+      "tail_state_check": {
+       "expected_enabled": true,
+       "enabled_in_state": true,
+       "expected_compl_inf_tol_tail": 1e-06,
+       "compl_inf_tol_tail_in_state": 1e-06,
+       "match": true,
+       "n_cycles_recorded": 69,
+       "cycles_tail_active": [
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69
+       ],
+       "n_cycles_acted": 1,
+       "restore_at_exit_acted": true
+      },
+      "tail_state_summary": {
+       "n_per_cycle": 69,
+       "cycles_active": [
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69
+       ],
+       "n_acted": 1,
+       "restore_at_exit_acted": true
+      }
+     },
+     "note": "SRP1-specific items superseded by G5 / G6"
+    },
+    "G5": {
+     "solve_profile": {
+      "observed": {
+       "permitted_solve": 5816,
+       "permitted_exec": 5816,
+       "blocked_solve": 0,
+       "blocked_exec": 0
+      },
+      "identity_holds": true,
+      "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+      "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+      "n_dso": 3,
+      "n_years": 5,
+      "n_days": 4,
+      "n_esso_nodes": 3,
+      "solves_per_cycle": 83,
+      "rounds": 70,
+      "rounds_note": "one initialization round + cycles_run ADMM cycles",
+      "base_solves": 5810,
+      "retry_solves_credited": 6,
+      "reconciliation_supported": true,
+      "expected_solves": 5816,
+      "recovered_only_identity": {
+       "expected": 5816,
+       "holds": true,
+       "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+      }
+     },
+     "n_network_records": 5606,
+     "rounds": 70
+    },
+    "G6": {
+     "gate_pass": false,
+     "B_blocks_per_round": 80,
+     "window_W": [
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69
+     ],
+     "terminal_round_T": 69,
+     "judged_rounds": [
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69
+     ],
+     "production_compl_inf_tol": {
+      "case9": 0.0005,
+      "case33_1": 0.0001,
+      "case33_2": 0.0001,
+      "case33_3": 0.0001
+     },
+     "n_records_total": 5606,
+     "population_n": 720,
+     "per_round_counts": {
+      "61": {
+       "n": 80,
+       "n_primary": 80
+      },
+      "62": {
+       "n": 80,
+       "n_primary": 80
+      },
+      "63": {
+       "n": 80,
+       "n_primary": 80
+      },
+      "64": {
+       "n": 80,
+       "n_primary": 80
+      },
+      "65": {
+       "n": 80,
+       "n_primary": 80
+      },
+      "66": {
+       "n": 80,
+       "n_primary": 80
+      },
+      "67": {
+       "n": 80,
+       "n_primary": 80
+      },
+      "68": {
+       "n": 80,
+       "n_primary": 80
+      },
+      "69": {
+       "n": 80,
+       "n_primary": 80
+      }
+     },
+     "non_vacuity": {
+      "v30_part": true,
+      "terminal_blocks_eq_B": true,
+      "one_judged_attempt_per_terminal_block": true,
+      "terminal_judged_accepted_eq_B": true,
+      "terminal_floor_testable_accepted_ge_min": true,
+      "holds": true
+     },
+     "n_bad_records": 0,
+     "bad_records": [],
+     "n_bad_blocks": 41,
+     "bad_blocks": [
+      {
+       "block": [
+        69,
+        "case33_1",
+        2025,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2025,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2025,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2025,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2025,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2025,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2025,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2025,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2028,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2028,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2028,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2028,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2028,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2028,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2028,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2028,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2031,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2031,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2031,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2031,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2031,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2031,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2031,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2031,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2034,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2034,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2034,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2034,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2034,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2034,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2034,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2034,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2037,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2037,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2037,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2037,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2037,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2037,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_1",
+        2037,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_1",
+         "year": 2037,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_2",
+        2034,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_2",
+         "year": 2034,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Solved To Acceptable Level.",
+         "floor_status": "above",
+         "mu_over_floor": 27.56493915648068,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2025,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2025,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2025,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2025,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2025,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2025,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2025,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2025,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2028,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2028,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2028,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2028,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2028,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2028,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2028,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2028,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2031,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2031,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2031,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2031,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2031,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2031,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2031,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2031,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2034,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2034,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2034,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2034,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2034,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2034,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2034,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2034,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2037,
+        "Autumn"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2037,
+         "day": "Autumn",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2037,
+        "Spring"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2037,
+         "day": "Spring",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2037,
+        "Summer"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2037,
+         "day": "Summer",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      },
+      {
+       "block": [
+        69,
+        "case33_3",
+        2037,
+        "Winter"
+       ],
+       "failures": [
+        "final_accepted_attempt_floor_not_at"
+       ],
+       "ladder": [
+        {
+         "round": 69,
+         "network": "case33_3",
+         "year": 2037,
+         "day": "Winter",
+         "attempt": "primary",
+         "exit": "Optimal Solution Found.",
+         "floor_status": "above",
+         "mu_over_floor": 3.0627710173867424,
+         "compl_inf_tol_in_force": 1e-06
+        }
+       ]
+      }
+     ],
+     "terminal_round": {
+      "n_records": 80,
+      "n_blocks": 80,
+      "n_judged": 80,
+      "n_judged_applicable": 80,
+      "n_judged_not_applicable": 0,
+      "judged_attempt_labels": {
+       "primary": 80
+      },
+      "judged_exit": {
+       "Optimal Solution Found.": 79,
+       "Solved To Acceptable Level.": 1
+      },
+      "judged_applicable_floor_status": {
+       "above": 41,
+       "at": 39
+      },
+      "judged_not_applicable": [],
+      "judged_floor_status_recomputed_from_mu_over_floor_agrees": true,
+      "judged_mu_over_floor_range_applicable": [
+       0.9999999999999999,
+       27.56493915648068
+      ],
+      "superseded_counted_reported_never_judged_on_floor": {
+       "n": 0,
+       "attempts": {},
+       "floor_status": {},
+       "exit": {},
+       "records": []
+      },
+      "ladders": {
+       "primary": 80
+      }
+     },
+     "window_rounds_before_T_reported": {
+      "n": 640,
+      "n_not_applicable": 0,
+      "attempts": {
+       "primary": 640
+      },
+      "floor_status_applicable": {
+       "above": 325,
+       "at": 315
+      }
+     },
+     "pre_tail_reported_not_gated": {
+      "n": 4886,
+      "n_not_applicable": 0,
+      "attempts": {
+       "primary": 4880,
+       "recovery": 6
+      }
+     },
+     "gate_version": "v36",
+     "non_vacuity_v32_reported_not_gated": {
+      "v30_part": true,
+      "terminal_blocks_eq_B": true,
+      "one_judged_attempt_per_terminal_block": true,
+      "terminal_judged_applicable_ge_B": true,
+      "holds": true
+     },
+     "n_judged_accepted_final": 80,
+     "tier2_terminal_blocks_counted": {
+      "n_judged_not_applicable": 0,
+      "n_judged_applicable": 80,
+      "judged_not_applicable": []
+     },
+     "gate_pass_v32_reported": false,
+     "non_vacuity_v35_reported": {
+      "v30_part": true,
+      "terminal_blocks_eq_B": true,
+      "one_judged_attempt_per_terminal_block": true,
+      "terminal_judged_accepted_eq_B": true,
+      "holds": true
+     },
+     "n_floor_testable_accepted_final": 80,
+     "min_floor_testable_accepted_final": 72,
+     "insufficiently_tested": false,
+     "gate_pass_v35_reported": false
+    },
+    "G6_tier2_final_attempts_in_T_flag": false,
+    "G8": {
+     "post_certification": {},
+     "requested": {
+      "hull_polish": false,
+      "persist_certified_models": false
+     },
+     "resolved": null,
+     "pickle": null
+    },
+    "G10": {
+     "parts": {
+      "written_all_three": true,
+      "multiscenario_checks_pass": true,
+      "activation_readback_all_ok": true,
+      "per_cycle_response_every_cycle": true,
+      "derived_checksum_in_child": true,
+      "premium_applied_alpha_0p5": true,
+      "initialisation_identity_recorded_and_equal": true,
+      "capture_checklist_asserted_before_run": true,
+      "response_terminal_file_present": true,
+      "multiscenario_terminal_file_present": true
+     },
+     "written": {
+      "multiscenario_terminal": "written",
+      "operational_workbook": "written",
+      "response_terminal": "written"
+     },
+     "per_cycle_response": {
+      "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/c82522f470b35b58_n7_4h_e1/per_cycle_response.jsonl",
+      "n_lines": 69,
+      "n_trajectory_rows": 69,
+      "n_captured": 69,
+      "cycles_match": true
+     },
+     "premium_applied": {
+      "declared": {
+       "alpha": 0.5,
+       "floor": null
+      },
+      "before": {
+       "alpha": 0.0,
+       "floor": null,
+       "source": "default"
+      },
+      "after": {
+       "alpha": 0.5,
+       "floor": null,
+       "source": "campaign spec entry interface_deviation_premium (p515_s44_campaign_harness, W47)"
+      },
+      "took_effect": true
+     },
+     "activation_readback_all_ok": true,
+     "initialisation_identity": {
+      "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/init_identity/c82522f470b35b58_n7_4h_e1.json",
+      "gross_operational_cost": 301825.7323783637,
+      "gross_operational_cost_hex": "0x1.26c06edf49802p+18",
+      "n_compared": 0,
+      "compared": [],
+      "other_candidates_not_compared": [
+       {
+        "file": "f6e9cd53fdbb8ee8_x0.json",
+        "label": "x0",
+        "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57"
+       },
+       {
+        "file": "smoke_reference__f6e9cd53fdbb8ee8_x0.json",
+        "label": "x0",
+        "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57"
+       }
+      ],
+      "mismatches": [],
+      "all_equal": true
+     }
+    },
+    "G11": {
+     "events_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/c82522f470b35b58_n7_4h_e1/network_failures_s39_D.jsonl",
+     "n_events": 6,
+     "n_blocks_with_expected_event": 6,
+     "n_observed": 6,
+     "expected_class_counts": {
+      "recovered_tier1": 6
+     },
+     "observed_class_counts": {
+      "recovered_tier1": 6
+     },
+     "duplicate_event_blocks": [],
+     "n_mismatches": 0,
+     "mismatches": [],
+     "agrees": true
+    },
+    "G12": {
+     "parts": {
+      "declared_in_record": true,
+      "took_effect": true,
+      "read_back_all": true,
+      "calls_as_expected": true
+     },
+     "calls": 5600,
+     "successful_network_solves": 5600,
+     "n_blocks_over_all_rounds": 5600,
+     "applied": {
+      "requested": true,
+      "before": {
+       "tso": false,
+       "dso_5": false,
+       "dso_7": false,
+       "dso_9": false
+      },
+      "read_back": {
+       "tso": true,
+       "dso_5": true,
+       "dso_7": true,
+       "dso_9": true
+      },
+      "solver_params_objects_distinct": true,
+      "took_effect": true
+     }
+    }
+   },
+   "cell_quantities": {
+    "eval_dir": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/c82522f470b35b58_n7_4h_e1",
+    "label": "n7_4h_e1",
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "eval_key": "c82522f470b35b58399bfe47ebd45612a95641ae308128de5d1c3c08ad5408a1",
+    "alpha": 0.5,
+    "status": "certified",
+    "certified": true,
+    "cycles_run": 69,
+    "certification_cycle": 69,
+    "Q": 842595839.5131028,
+    "Q_is_certified": true,
+    "bar": 4010.5701702833176,
+    "rule_ten": {
+     "terminal_step_over_threshold": 0.020035200645809638,
+     "terminal_gross_step_abs": 1688.1610530614853,
+     "objective_tolerance": 84259.75276741559,
+     "production": 0.020035200645809638
+    },
+    "charge": 25081114.02482169,
+    "VP": 188.13884410061658,
+    "C": 817514725.4882811,
+    "V": 842596027.6519469,
+    "A": 817514913.6271253,
+    "P_charge": 50162228.04964338,
+    "P_posthoc": 50162382.85154066,
+    "P_posthoc_p_leg": 50162382.8200317,
+    "P_used": 50162228.04964338,
+    "P_charge_minus_posthoc_rel": -3.0860156252558023e-06,
+    "P_posthoc_vs_child_live_rel": 0.0,
+    "dispersion": {
+     "E_abs_d_p_mwh_weighted": 535980.917813915,
+     "E_abs_d_p_mwh_unweighted": 2208.903497615076,
+     "sum_omega_d2_p_mw2h_weighted": 4927750.156605785,
+     "sum_omega_d2_p_mw2h_unweighted": 20438.517116364455,
+     "peak_block_rms_mw": 8.040365360443461,
+     "peak_abs_d_mw": 48.30959782991396,
+     "worst_block_share": {
+      "block": "DSO|7|2031|Autumn",
+      "rms_mw": 7.630938982071618,
+      "share": 0.29263024846044594,
+      "mean_abs_committed_flow_mw": 26.077068321606106
+     },
+     "max_abs_rms_block": {
+      "block": "DSO|7|2034|Winter",
+      "rms_mw": 8.040365360443461,
+      "share": 0.28299188889522825,
+      "mean_abs_committed_flow_mw": 28.41199933974163
+     }
+    },
+    "split_unweighted_w46": {
+     "sum_omega_d2": 20438.517116364463,
+     "market_part": 2747.174330394616,
+     "operation_part": 17691.342785969846,
+     "market_share_of_sum_omega_d2": 0.13441162657515118,
+     "E_abs_d": 2208.9034976150765,
+     "E_abs_d_market": 710.3989099487857,
+     "covariance": -3087.9517068761847
+    },
+    "split_weighted": {
+     "sum_omega_d2": 4927750.156605788,
+     "market_part": 659793.338858731,
+     "operation_part": 4267956.817747053,
+     "E_abs_d": 535980.9178139151,
+     "E_abs_d_market": 171121.55698594043,
+     "covariance": -746992.0807113128
+    },
+    "covariance_production_weighted": -746992.080711786,
+    "curtailment_per_network": {
+     "TSO": {
+      "E_plus_mwh_weighted": 873.5820685450037,
+      "E_net_mwh_weighted": 855.1274668985257,
+      "priced_eur_weighted": 160793.14534938303,
+      "n_entries_above_tol": 117
+     },
+     "DSO5": {
+      "E_plus_mwh_weighted": 902.8894468340576,
+      "E_net_mwh_weighted": 886.4797290471693,
+      "priced_eur_weighted": 29726.0247469968,
+      "n_entries_above_tol": 1959
+     },
+     "DSO7": {
+      "E_plus_mwh_weighted": 710.1322519029146,
+      "E_net_mwh_weighted": 696.5945826538762,
+      "priced_eur_weighted": 44079.455751106616,
+      "n_entries_above_tol": 2114
+     },
+     "DSO9": {
+      "E_plus_mwh_weighted": 484.71717147832146,
+      "E_net_mwh_weighted": 473.0640061152408,
+      "priced_eur_weighted": 21514.71234286519,
+      "n_entries_above_tol": 2780
+     }
+    },
+    "curtailment_entry_classes": {
+     "TSO|interior": 117,
+     "DSO5|capability_bound": 1919,
+     "DSO5|interior": 40,
+     "DSO7|capability_bound": 2082,
+     "DSO7|interior": 32,
+     "DSO9|capability_bound": 2752,
+     "DSO9|interior": 28
+    },
+    "row18_condition_entries": {
+     "n": 42,
+     "sum_c_mw_unweighted": 16.236985178168588
+    },
+    "flexibility_per_dso_weighted": {
+     "DSO5": {
+      "p_up_mwh": 1095447.9254532477,
+      "p_down_mwh": 1095447.925521158,
+      "q_up_mvarh": 4687.976827033046,
+      "q_down_mvarh": -3.5376224550481514
+     },
+     "DSO7": {
+      "p_up_mwh": 1085239.0427391208,
+      "p_down_mwh": 1085239.0427903289,
+      "q_up_mvarh": 4502.116143594406,
+      "q_down_mvarh": -3.618305557118181
+     },
+     "DSO9": {
+      "p_up_mwh": 1288938.5059695698,
+      "p_down_mwh": 1288938.506037167,
+      "q_up_mvarh": 5726.079099071519,
+      "q_down_mvarh": -3.5384452261059853
+     }
+    },
+    "row18_charge_p_weighted": 25081152.37911803,
+    "row18_charge_q_weighted": -38.35429633761857,
+    "q_leg_share": -1.529210237617874e-06,
+    "row18_zl_identity": {
+     "n_checked": 25920,
+     "n_missing_suffix_values": 0,
+     "n_le_1e-6": 25920,
+     "n_le_1e-4": 25920,
+     "n_le_1e-2": 25920,
+     "worst_rel_zl_sum_vs_2coef": 1.9563734662558638e-08,
+     "worst_rel_abs_dual_vs_half_zl_diff": 9.815461381113685e-09,
+     "tol": 0.0001,
+     "holds": true
+    },
+    "lmp_ref_dso_quantiles_eur_mwh": {
+     "n": 6853,
+     "min": 5.847985148340121e-07,
+     "median": 73.87078760877952,
+     "max": 283.59054715047847
+    },
+    "initialisation_identity": {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/init_identity/c82522f470b35b58_n7_4h_e1.json",
+     "gross_operational_cost": 301825.7323783637,
+     "gross_operational_cost_hex": "0x1.26c06edf49802p+18",
+     "n_compared": 0,
+     "compared": [],
+     "other_candidates_not_compared": [
+      {
+       "file": "f6e9cd53fdbb8ee8_x0.json",
+       "label": "x0",
+       "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57"
+      },
+      {
+       "file": "smoke_reference__f6e9cd53fdbb8ee8_x0.json",
+       "label": "x0",
+       "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57"
+      }
+     ],
+     "mismatches": [],
+     "all_equal": true
+    },
+    "activation_readback_all_ok": true,
+    "per_cycle_rows": 69,
+    "per_cycle_all_captured": true,
+    "P_gap_primal_bound": {
+     "derivable": true,
+     "problems": [],
+     "E_eur_per_alpha": 92344.53146615262,
+     "E_rel_to_P_posthoc": 0.0018409119785926676,
+     "observed_gap_eur_per_alpha": -154.8018972799182,
+     "observed_gap_rel": -3.0860156252558023e-06,
+     "observed_over_E": 0.0016763515372500244,
+     "within_symmetric_band": true,
+     "exits": [
+      "acceptable",
+      "optimal"
+     ],
+     "eps_values": [
+      1e-05,
+      0.0001
+     ],
+     "beta_values": [
+      1e-08
+     ],
+     "realized_decomposition_weighted": {
+      "gap": -154.80189727967965,
+      "split": -154.8018972489338,
+      "split_negative": 154.8018972489338,
+      "split_positive": 0.0,
+      "residual": 7.889072434368167e-07,
+      "bound_weight": 3995828654.4902077,
+      "max_abs_row_residual_pu_p": 1.9596975132479264e-13,
+      "max_abs_row_residual_pu_q": 8.34449708851096e-15,
+      "max_bound_violation_pu": 9.958454869246838e-09,
+      "max_min_split_pu": 0.0,
+      "identity_abs_gap_minus_split_le_residual_all_blocks": true
+     },
+     "decomposition_gap_minus_observed_abs": 2.3854340724938083e-10,
+     "n_blocks": 60
+    },
+    "retry_solves_credited": 6,
+    "post_certification": null
+   },
+   "parent_view": {
+    "exit_code": 0,
+    "wall_s": 30116.588509082794,
+    "wait4_ru_maxrss": 16302620672
+   }
+  }
+ },
+ "all_gates_pass": false,
+ "value_and_R": {
+  "value_eur": 236695.2492736578,
+  "resolution": 17964.945860743523,
+  "value_determinate": true,
+  "value_per_mwh": 236695.2492736578,
+  "I_eur": 317957.0085035586,
+  "value_minus_I": -81261.75922990078,
+  "value_minus_I_determinate": true,
+  "ratio_to_srp1_tail": 0.9125588483309005,
+  "ratio_resolution": 0.14046973172979096,
+  "band": [
+   0.93,
+   1.09
+  ],
+  "inside_band": false,
+  "R_prefix_recorded": 0.9331,
+  "both_certified": true
+ },
+ "reference_R": {
+  "Q_unit_tail": 653599356.2420883,
+  "Q_x0_tail": 653858731.5686293,
+  "R_SRP1_pre_tail_superseded": 259427.76775527,
+  "R_SRP1_tail": 259375.32654094696,
+  "bar_caveat": "bar_tail == bar_ref bitwise on both SRP1 cells (W88 caveat: the two-run bar is not an independent measure); used here as the SRP1 side of the ratio resolution only",
+  "bar_sum_SRP1_tail": 34734.63290083408,
+  "bar_unit_tail": 25104.654562950134,
+  "bar_x0_tail": 9629.97833788395,
+  "objective_convention": "gross_operational_cost (settlement excluded)",
+  "source": {
+   "path": "data/SRP1/Results/P515S53/g6_final_attempt_w89/reeval_w89.json",
+   "sha256": "722272014523583ed7b60cfe8f339e1bb050ddcab41ba9c510c2eadfd5496224"
+  }
+ },
+ "smoke_gate": {
+  "path": "data/SRP1/Results/P515S53/w90_3x3/smoke_gate_v36/smoke_gate.json",
+  "sha256": "79a168c012617e8cd420d4e4ec2a349f740da3d37fa2e4c2df5295210798db1d"
+ },
+ "post_certification_decided": {
+  "hull_polish": false,
+  "persist_certified_models": false
+ },
+ "hull_polish_at_3x3": "the hull polish is omitted at 3 x 3 and reported as such, with the SRP1 figure (3.09e-6 relative, below the band -- Addendum 48's statement; provenance in the stage spec's hull_polish_srp1_figure_provenance; the terminal models are not kept); with persistence the pickle is kept and no polish runs in the child either (Addendum 46 voided the polished convention; a polish, if ever wanted, runs post hoc from the pickle)",
+ "solve_claim": "RECONCILED PER EVENT in each child record (G5); parent guards verify(0)",
+ "guards": {
+  "alpha_row_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w86_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w87": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w88": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_step1": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_3x3_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w90_3x3_parent": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  }
+ },
+ "memory_preflight_at_run": {
+  "utc": "2026-09-26T10:20:56.552554+00:00",
+  "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+  "page_size_bytes": 16384,
+  "vm_stat_pages": {
+   "pages_free": 742182,
+   "pages_inactive": 496315,
+   "pages_wired_down": 149977,
+   "anonymous_pages": 299366,
+   "pages_occupied_by_compressor": 313441
+  },
+  "hw_memsize_bytes": 34359738368,
+  "concurrency": 1,
+  "required_bytes": 20584120351,
+  "required_gib": 19.170455961488187,
+  "per_child_budget_gib": 3.5,
+  "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 3.5 GiB",
+  "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+  "budget_derivation": {
+   "x0_capture_child_peak_with_persist_bytes": 3470491648,
+   "x0_capture_production_peak_before_persist_bytes": 2395537408,
+   "s47_recert_c_star_child_peak_no_persist_bytes": 2577645568,
+   "s47_recert_unit_child_peak_no_persist_bytes": 2574581760,
+   "source": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/{evaluation_record,post_certification}.json and data/SRP1/Results/P515S47/campaign_s47_recert/evals/*/evaluation_record.json peak_rss",
+   "budget": "3.5 GiB per child = the measured persist peak (3.23 GiB) + 0.27 GiB margin"
+  },
+  "missing_vm_stat_figures": [],
+  "non_reclaimable_gib": 11.63916015625,
+  "available_bytes": 21862285312,
+  "available_gib": 20.36083984375,
+  "free_plus_inactive_gib": 18.897964477539062,
+  "pass": true,
+  "stage": "pair launch",
+  "w86_rule_fields_superseded": [
+   "required_bytes",
+   "required_gib",
+   "rule",
+   "per_child_budget_gib"
+  ]
+ },
+ "batch_info": {
+  "max_concurrent_observed": 1,
+  "timeline": [
+   {
+    "event": "start",
+    "label": "x0",
+    "pid": 4781,
+    "t": 1790418056.557219
+   },
+   {
+    "event": "end",
+    "label": "x0",
+    "pid": 4781,
+    "t": 1790446592.1258721,
+    "exit_code": 0
+   },
+   {
+    "event": "start",
+    "label": "n7_4h_e1",
+    "pid": 15017,
+    "t": 1790446597.1440089
+   },
+   {
+    "event": "end",
+    "label": "n7_4h_e1",
+    "pid": 15017,
+    "t": 1790476713.732518,
+    "exit_code": 0
+   }
+  ]
+ },
+ "g_footprint_basis_first_measurement": {
+  "x0_pair_footprint_peak_bytes": 20517044400,
+  "x0_capture_exact": true,
+  "smoke_P_on_bytes": 19898695232,
+  "g_footprint": 1.031074859974015,
+  "g_rss_used_by_the_rule": 1.0344457318072233,
+  "note": "reported, not gated; it does not revisit the persistence decision the smoke gate fixed"
+ },
+ "wall_clock_s": 58662.94661784172
+}

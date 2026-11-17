@@ -1,0 +1,20 @@
+{
+ "gate": "cc3",
+ "predictions": {
+  "advisor_order_of_magnitude": {
+   "2028": 2.0,
+   "2037": 8.0
+  },
+  "d_obj_d_throughput": "= kappa * d(credit)/d(throughput) to <= 1e-6 relative (AD vs FD and vs the closed form)",
+  "euro_parity": "(kappa / a) == 1 / sigma == d(block ADMM objective) / d(block PV cost)",
+  "expert_dS_dTP_eur_per_MWh": {
+   "2025": 0.0,
+   "2028": "~1 within a factor 2",
+   "2037": "~5 within a factor 2"
+  },
+  "kappa": "a / sigma = 1 / w_med, reproduced by hand from admm_esso_al_scale and admm_common_objective_scale",
+  "kappa_at_initialisation": 0.0,
+  "slack_safety": "holds (expert): salvage marginal per unit es_pnet <= 1e-3 * PENALTY_ESSO_SLACK"
+ },
+ "recorded_utc": "2026-10-31T15:38:27.664927+00:00"
+}

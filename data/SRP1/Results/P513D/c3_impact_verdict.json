@@ -1,0 +1,54 @@
+{
+  "calibration": {
+    "D": 0.8,
+    "N": 10000,
+    "R": 0.5,
+    "k": 11541.560327111707,
+    "k_over_cl_nom": 1.1541560327111706,
+    "two_k": 23083.120654223414
+  },
+  "changed_components": [
+    "constraints.energy_storage_capacity_degradation",
+    "vars.es_avg_ch_dch_per_unit",
+    "vars.es_degradation_per_unit",
+    "vars.es_degradation_per_unit_cumul",
+    "vars.es_e_available_per_unit",
+    "vars.es_pch_hat_agg",
+    "vars.es_pch_hat_per_unit",
+    "vars.es_pch_per_unit",
+    "vars.es_pdch_hat_agg",
+    "vars.es_pdch_hat_per_unit",
+    "vars.es_pdch_per_unit",
+    "vars.es_soh_per_unit",
+    "vars.es_soh_per_unit_cumul",
+    "vars.slack_es_ch_comp_per_unit",
+    "vars.slack_es_pnet_down",
+    "vars.slack_es_pnet_up",
+    "vars.slack_es_soh_per_unit_cumul_down",
+    "vars.slack_es_soh_per_unit_cumul_up",
+    "vars.slack_es_soh_per_unit_down",
+    "vars.slack_es_soh_per_unit_up"
+  ],
+  "degradation_rows": {
+    "differing_row_count": 6,
+    "row_count_post": 30,
+    "row_count_pre": 30,
+    "rows_carrying_2_cl_nom_post": 0,
+    "rows_carrying_2_cl_nom_pre": 6,
+    "rows_carrying_2k_post": 6,
+    "sample_post": "es_degradation_per_unit[0,0]*(23083.120654223414*es_e_rated_per_unit[0,0])  ==  es_avg_ch_dch_per_unit[0,0]",
+    "sample_pre": "es_degradation_per_unit[0,0]*(20000*es_e_rated_per_unit[0,0])  ==  es_avg_ch_dch_per_unit[0,0]",
+    "sample_row_key": "1"
+  },
+  "failures": [
+    "E1 confinement: changed components ['constraints.energy_storage_capacity_degradation', 'vars.es_avg_ch_dch_per_unit', 'vars.es_degradation_per_unit', 'vars.es_degradation_per_unit_cumul', 'vars.es_e_available_per_unit', 'vars.es_pch_hat_agg', 'vars.es_pch_hat_per_unit', 'vars.es_pch_per_unit', 'vars.es_pdch_hat_agg', 'vars.es_pdch_hat_per_unit', 'vars.es_pdch_per_unit', 'vars.es_soh_per_unit', 'vars.es_soh_per_unit_cumul', 'vars.slack_es_ch_comp_per_unit', 'vars.slack_es_pnet_down', 'vars.slack_es_pnet_up', 'vars.slack_es_soh_per_unit_cumul_down', 'vars.slack_es_soh_per_unit_cumul_up', 'vars.slack_es_soh_per_unit_down', 'vars.slack_es_soh_per_unit_up'] != ['constraints.energy_storage_capacity_degradation']"
+  ],
+  "gate_spec": "data/SRP1/Results/P513D/frozen_c3_impact_gate_v1_8ee17c92.json",
+  "post_file": "state_c3_post_node5.json",
+  "post_state_sha256": "23837a495c4ddddedf7afffc295319932a4711bbfa3762b800ad3bab0dc024a4",
+  "pre_file": "state_pre_node5.json",
+  "pre_state_sha256": "c39d6ba855392d387e666845af7909b4d6d7be237d20e33051e689db99e337d4",
+  "stage": "P5.13-D",
+  "unchanged_component_count": 31,
+  "verdict": "FAIL \u2014 impact is not what the change claims"
+}

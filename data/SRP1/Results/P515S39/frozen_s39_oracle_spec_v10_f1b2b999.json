@@ -1,0 +1,81 @@
+{
+ "after_review": "oracle configuration written to the case file; Step 3.5 polish gap; Step 3 closes",
+ "arms": {
+  "s39_C": {
+   "ess_balancing": "EXEMPT for the whole run (balancing_exempt_channels = ['ess']); rho_ess fixed 0.01",
+   "order": 1,
+   "output_root": "data/SRP1/Results/P515S39_C_run"
+  },
+  "s39_D": {
+   "ess_balancing": "TWO-PHASE: exempt (rho_ess fixed 0.01) until the ESS Boyd dual ratio (boyd_ess_dual_ratio = s/eps_dual, which equals dual_ratio_balance at tau = 0) has been < 1 on 5 CONSECUTIVE cycles; from the penalty update of that 5th cycle on, the ESS channel is subject to the standard balancing rule (dead band 5.0, factor 1.5, clamp [1e-4, 1e4]) and the standard freeze rule (10 unchanged with a prior action; absolute 200). The lift is one-way (never re-exempted). The lift cycle and every subsequent ESS action are recorded.",
+   "launch_condition": "after C has exited; never concurrently",
+   "order": 2,
+   "output_root": "data/SRP1/Results/P515S39_D_run",
+   "production_change": "a per-channel conditional exemption (default off: no conditional policy, every previous arm and case study unchanged), keyed in penalty_update; the arm sets it by override for 'ess' with threshold 1.0 and 5 consecutive cycles"
+  }
+ },
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 21",
+  "P5_15_ADDENDUM20_EXPERT_REPORT.md (reviewed)"
+ ],
+ "certification_bar": {
+  "certified_iff": "all three channels (V, PF, ESS) inside their Boyd tolerances (primal ratio <= 1 and dual ratio <= 1) AND every local solve successful, for 10 CONSECUTIVE cycles, within the cap of 300, derived from the trajectory (not the harness stopped_by field)",
+  "cost_bar": {
+   "definition": "|Q_arm - Q_run1| <= max objective step over the arm's last 10 cycles + max objective step over run 1's last 10 cycles",
+   "gated": "NO - Planner interpretation of Addendum 21 (the certification bar is the 10-consecutive test; the rule-nine bar is redefined for reporting). An outside-bar result is flagged in the report lead and blocks nothing automatically; adoption is decided at the review.",
+   "reading": "inside the bar: the cost difference to run 1 is within stopping slack (indeterminate, consistent with run 1); outside the bar: not explained by stopping slack alone, reported as a difference to be explained - never as a lower-cost or different point (the bar is local and valid only when both runs are settled; the arm is settled under the 10-consecutive bar, run 1 under Addendum 16)",
+   "run1_cost": 651039166.0347285,
+   "run1_max_step_last10": 256.2581009864807
+  },
+  "reported_not_gated": [
+   "per-channel terminal ratio max(primal, dual) for V, PF, ESS",
+   "rule-ten objective ratio (terminal objective step / objective tolerance)",
+   "V/PF/ESS clamp flags (Planner: retained as a reported validity flag; a clamp is flagged prominently in the report)",
+   "cost against run 1 under the new rule-nine bar (below)"
+  ],
+  "run1_status": "run 1 remains certified under Addendum 16's rule; it is NOT re-scored under this bar (its longest all-pass streak was 3)",
+  "stopping_rule_consequence": "the runs use minimum_consecutive_converged_cycles = 10 (override), so the production Boyd stop coincides with the certification bar (production counts consecutive cycles with boyd_all_pass AND local_solves_ok, shared_resources_planning.py ~2735-2741); certification cycle = stop cycle when stopped by Boyd"
+ },
+ "common_configuration": {
+  "base": "v9 arm A configuration via deep-copied overrides (run 1 config; rho_v 0.0077, rho_pf 0.198 initial; rho_ess 0.01 initial on every network and the ESSO; cold standalone initialization; sigma, S_ref, D5 unchanged)",
+  "cap": 300,
+  "capture": "everything v9 captured, including per-entry PF capture (stride 1, identity asserted per cycle) and the ESS entry stride",
+  "freeze_after_unchanged_cycles": 10,
+  "freeze_backstop_cycle": 200,
+  "minimum_consecutive_converged_cycles": 10,
+  "pf_balancing": "ACTIVE (not exempt)",
+  "tau": 0.0,
+  "v_balancing": "ACTIVE"
+ },
+ "decisions_in_force": {
+  "cap": 300,
+  "case_file": "data/SRP1/SRP1_params.json is NOT edited by this stage; the adopted oracle configuration is written to the case file only after the stop for review",
+  "freeze_rule": "freeze after 10 unchanged cycles (with >= 1 prior action on that channel) + absolute freeze at cycle 200 (freeze_backstop_cycle = 200)",
+  "tau": "tau = 0 globally is the oracle setting (proximal term removed from the method); per-channel tau is a recorded fallback only on evidence of TSO instability",
+  "tolerances": "unchanged: Boyd eps_abs 1e-5, eps_rel 1e-4"
+ },
+ "parallel_work": [
+  "zero-solve node 7 interface look (P, 2030) at the stop of v9 arms A and B, extended to C and D when available",
+  "Step 3.6: replace the per-cycle TSO whole-model clone with a lightweight capture (mutable parameter values + warm-start suffixes; block rebuilt deterministically on demand), in an isolated worktree; integrated, preflighted and gated only after C and D; then 10-cycle re-measurement; then persistent workers"
+ ],
+ "pre_launch_evidence_for_D": "before D launches, a zero-solve open-loop replay of the two-phase ESS policy (real _update_admm_penalties) on arm C's completed trajectory (and on v9 arm A's) records the predicted lift cycle and first ESS balancing action; recorded as a note, not a prediction change",
+ "predecessor": {
+  "note": "v9 arms A (tau 0) and B (PF balancing) both helped; criterion (c) withdrawn by Addendum 21; v9's s38_C_combined arm (3-consecutive stop) is superseded by s39_C below and is never launched",
+  "path": "data/SRP1/Results/P515S38/frozen_s38_pf_pace_spec_v9_7a2b4ab7.json",
+  "sha256": "7a2b4ab7a98ae0145d647a977aa1d2c63a88b0e169a4c6089cdf96543e409dbd"
+ },
+ "predictions_recorded_in_advance": {
+  "adoption": "if D certifies with storage terminal ratio < 0.5, D is the production oracle; else C (if C certifies); if neither certifies, stop for review",
+  "s39_C": [
+   "PF first channel pass <= 131",
+   "certification (10th consecutive all-pass cycle) by ~145 - operationalized as certification cycle <= 150"
+  ],
+  "s39_D": [
+   "certifies under the bar",
+   "storage channel terminal ratio max(primal, dual) < 0.5 at certification"
+  ]
+ },
+ "report": "lead with the certification verdict per arm under the new bar; then certification cycle, first-pass cycles per channel, per-channel terminal ratios, rule ten, cost vs run 1 under the new bar, rho/gamma trajectories with action labels (for D: ESS lift cycle and actions), per-entry PF decomposition, failures, oscillation/TSO-instability monitoring, EFC trajectory, predictions scored, adoption; stop for review after D",
+ "stage": "P5.15 Addendum 21 - oracle arms C and D under the new certification bar - frozen specification v10",
+ "tso_instability_monitoring": "v9 trigger definitions (unrecovered case9 failure; case9 failure rate > 2x run 1's 58/477; PF or ESS oscillation flag) evaluated and REPORTED for C and D; no fallback arm is authorized in this stage - evidence of TSO instability is reported for the per-channel-tau decision"
+}

@@ -1,0 +1,2913 @@
+{
+ "stage": "P5.15 Addendum 32 W27 -- Q4 reproduction gate (zero solves)",
+ "gate_text_spec_v18": "the x = 0 evaluation reproduces the committed A0 x0 evaluation bitwise on every trajectory field and cost (132 cycles, 653,859,461.2279255) - Q(0) is ageing-independent (W21 NL identity) and the oracle is deterministic; the persistence step must not alter the trajectory",
+ "timestamp_utc": "2026-09-22T09:06:45.526339+00:00",
+ "git_head": "f62fc73d03ecea6cfa951ab5259bad6723a97ce7",
+ "script": "p515_s48_x0_capture_gate.py",
+ "script_sha256": "bb0bac4a7455e49d97ce016bd161ff059a3d777dec8cd0f7381f2a6411040dee",
+ "mode": "real",
+ "self_test": null,
+ "inputs": {
+  "reference_dir": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0",
+  "candidate_dir": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0",
+  "reference_pins": {
+   "evaluation_record.json": "34868965df76a9f1dc62d93d6ce4e2a50ceb4e12f8d3f2aeb4f8c96742bb4835",
+   "g_s39_D.json": "9b4d86760fd920b40c5c93400428dc566a5bdab01c27eb9eefcd5cbfd1dbc0d0",
+   "per_cycle_record.jsonl": "8663b96213c87dbb69d90790fc4fe771106f2bd838e17d9809f752cdf7a2f01e",
+   "component_levels_terminal.json": "32696d9c3afc7f4e3e6624d59f21910509e6e6fe1f5e75a43b33f1413acd7279"
+  },
+  "reference_manifest_check": {
+   "g_s39_D.json": {
+    "sha256": "9b4d86760fd920b40c5c93400428dc566a5bdab01c27eb9eefcd5cbfd1dbc0d0",
+    "child_manifest": "9b4d86760fd920b40c5c93400428dc566a5bdab01c27eb9eefcd5cbfd1dbc0d0",
+    "pin": "9b4d86760fd920b40c5c93400428dc566a5bdab01c27eb9eefcd5cbfd1dbc0d0",
+    "match_manifest": true,
+    "in_manifest": true,
+    "match_pin": true
+   },
+   "boyd_terminal.json": {
+    "sha256": "fb9a60bfcd1e669807eb5dc3080eebb9e7c1c64184efff159c903f06d198dae4",
+    "child_manifest": "fb9a60bfcd1e669807eb5dc3080eebb9e7c1c64184efff159c903f06d198dae4",
+    "pin": null,
+    "match_manifest": true,
+    "in_manifest": true,
+    "match_pin": true
+   },
+   "component_levels_terminal.json": {
+    "sha256": "32696d9c3afc7f4e3e6624d59f21910509e6e6fe1f5e75a43b33f1413acd7279",
+    "child_manifest": "32696d9c3afc7f4e3e6624d59f21910509e6e6fe1f5e75a43b33f1413acd7279",
+    "pin": "32696d9c3afc7f4e3e6624d59f21910509e6e6fe1f5e75a43b33f1413acd7279",
+    "match_manifest": true,
+    "in_manifest": true,
+    "match_pin": true
+   },
+   "interface_settlement_detail_s31c.json": {
+    "sha256": "4882ecce4bf3295bf6001190683c58b1e83f577914636c6805c03cde1deccd12",
+    "child_manifest": "4882ecce4bf3295bf6001190683c58b1e83f577914636c6805c03cde1deccd12",
+    "pin": null,
+    "match_manifest": true,
+    "in_manifest": true,
+    "match_pin": true
+   },
+   "interface_voltage_terminal.json": {
+    "sha256": "944f57f981750321f5098ed579dfcabd26754a8d20490c7b22612e16d884556b",
+    "child_manifest": "944f57f981750321f5098ed579dfcabd26754a8d20490c7b22612e16d884556b",
+    "pin": null,
+    "match_manifest": true,
+    "in_manifest": true,
+    "match_pin": true
+   },
+   "evaluation_record.json": {
+    "sha256": "34868965df76a9f1dc62d93d6ce4e2a50ceb4e12f8d3f2aeb4f8c96742bb4835",
+    "child_manifest": "34868965df76a9f1dc62d93d6ce4e2a50ceb4e12f8d3f2aeb4f8c96742bb4835",
+    "pin": "34868965df76a9f1dc62d93d6ce4e2a50ceb4e12f8d3f2aeb4f8c96742bb4835",
+    "match_manifest": true,
+    "in_manifest": true,
+    "match_pin": true
+   },
+   "recourse_jump_sidecar_baseline.jsonl": {
+    "sha256": "259fe9b8abceed9e32fdf539b96f56471e76ae677a0fc188449265e5cd7d4d0f",
+    "child_manifest": "259fe9b8abceed9e32fdf539b96f56471e76ae677a0fc188449265e5cd7d4d0f",
+    "pin": null,
+    "match_manifest": true,
+    "in_manifest": true,
+    "match_pin": true
+   },
+   "ess_entry_stride_baseline.jsonl": {
+    "sha256": "81f0ee57b092f403fe25648f6c3e700183b23e40421e4d4fc5765f132d65e961",
+    "child_manifest": "81f0ee57b092f403fe25648f6c3e700183b23e40421e4d4fc5765f132d65e961",
+    "pin": null,
+    "match_manifest": true,
+    "in_manifest": true,
+    "match_pin": true
+   },
+   "soh_floor_sidecar_baseline.jsonl": {
+    "sha256": "681c80a208be494a89a1e3e5f9f91ccc67bf5a82528fe6bf25305f27d9476080",
+    "child_manifest": "681c80a208be494a89a1e3e5f9f91ccc67bf5a82528fe6bf25305f27d9476080",
+    "pin": null,
+    "match_manifest": true,
+    "in_manifest": true,
+    "match_pin": true
+   },
+   "pf_entry_stride_s39_D.jsonl": {
+    "sha256": "b8c96e5af61dcbc671f27d4491fb536cbe7f84a1cbe9645f93a62bf93dfefadd",
+    "child_manifest": "b8c96e5af61dcbc671f27d4491fb536cbe7f84a1cbe9645f93a62bf93dfefadd",
+    "pin": null,
+    "match_manifest": true,
+    "in_manifest": true,
+    "match_pin": true
+   },
+   "ess_exempt_until_state_s39_D.jsonl": {
+    "sha256": "5f2e65623cc3110e15e3baa29ab8b7f3281ca674e8500db689786a31a4d2ad45",
+    "child_manifest": "5f2e65623cc3110e15e3baa29ab8b7f3281ca674e8500db689786a31a4d2ad45",
+    "pin": null,
+    "match_manifest": true,
+    "in_manifest": true,
+    "match_pin": true
+   },
+   "aa_per_cycle.jsonl": {
+    "sha256": "cb55a0f111983bd133a468443b4b40dbeda540bb89933f5a82a902b73959799f",
+    "child_manifest": "cb55a0f111983bd133a468443b4b40dbeda540bb89933f5a82a902b73959799f",
+    "pin": null,
+    "match_manifest": true,
+    "in_manifest": true,
+    "match_pin": true
+   },
+   "per_cycle_record.jsonl": {
+    "sha256": "8663b96213c87dbb69d90790fc4fe771106f2bd838e17d9809f752cdf7a2f01e",
+    "child_manifest": "8663b96213c87dbb69d90790fc4fe771106f2bd838e17d9809f752cdf7a2f01e",
+    "pin": "8663b96213c87dbb69d90790fc4fe771106f2bd838e17d9809f752cdf7a2f01e",
+    "match_manifest": true,
+    "in_manifest": true,
+    "match_pin": true
+   },
+   "leak_classification_s39_D.jsonl": {
+    "sha256": "536c0c0512055c01df65b239d3e9daed739e662ebbe1d0930a994138b99fd56a",
+    "child_manifest": "536c0c0512055c01df65b239d3e9daed739e662ebbe1d0930a994138b99fd56a",
+    "pin": null,
+    "match_manifest": true,
+    "in_manifest": true,
+    "match_pin": true
+   },
+   "network_failures_s39_D.jsonl": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "child_manifest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pin": null,
+    "match_manifest": true,
+    "in_manifest": true,
+    "match_pin": true
+   },
+   "esso_recovery_events_s39_D.jsonl": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "child_manifest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pin": null,
+    "match_manifest": true,
+    "in_manifest": true,
+    "match_pin": true
+   },
+   "frozen_snapshots_s39_D.jsonl": {
+    "sha256": "5ecd71a101d1c272f4fb9d0d3f6fc9deee977055f2cdc8ea54f1dbbc6834533e",
+    "child_manifest": "5ecd71a101d1c272f4fb9d0d3f6fc9deee977055f2cdc8ea54f1dbbc6834533e",
+    "pin": null,
+    "match_manifest": true,
+    "in_manifest": true,
+    "match_pin": true
+   }
+  },
+  "campaign_spec": "data/SRP1/Results/P515S48/x0_capture/campaign_spec_s48_x0_capture_4a50c0e2.json",
+  "campaign_spec_sha256": "4a50c0e2277d937409f7471f8361268fea6e36254c1e21bdcf1e6ab8b1dd6a61",
+  "input_file_sha256": {
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/g_s39_D.json": "9b4d86760fd920b40c5c93400428dc566a5bdab01c27eb9eefcd5cbfd1dbc0d0",
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/boyd_terminal.json": "fb9a60bfcd1e669807eb5dc3080eebb9e7c1c64184efff159c903f06d198dae4",
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/component_levels_terminal.json": "32696d9c3afc7f4e3e6624d59f21910509e6e6fe1f5e75a43b33f1413acd7279",
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/interface_settlement_detail_s31c.json": "4882ecce4bf3295bf6001190683c58b1e83f577914636c6805c03cde1deccd12",
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/interface_voltage_terminal.json": "944f57f981750321f5098ed579dfcabd26754a8d20490c7b22612e16d884556b",
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/evaluation_record.json": "34868965df76a9f1dc62d93d6ce4e2a50ceb4e12f8d3f2aeb4f8c96742bb4835",
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/recourse_jump_sidecar_baseline.jsonl": "259fe9b8abceed9e32fdf539b96f56471e76ae677a0fc188449265e5cd7d4d0f",
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/ess_entry_stride_baseline.jsonl": "81f0ee57b092f403fe25648f6c3e700183b23e40421e4d4fc5765f132d65e961",
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/soh_floor_sidecar_baseline.jsonl": "681c80a208be494a89a1e3e5f9f91ccc67bf5a82528fe6bf25305f27d9476080",
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/pf_entry_stride_s39_D.jsonl": "b8c96e5af61dcbc671f27d4491fb536cbe7f84a1cbe9645f93a62bf93dfefadd",
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/ess_exempt_until_state_s39_D.jsonl": "5f2e65623cc3110e15e3baa29ab8b7f3281ca674e8500db689786a31a4d2ad45",
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/aa_per_cycle.jsonl": "cb55a0f111983bd133a468443b4b40dbeda540bb89933f5a82a902b73959799f",
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/per_cycle_record.jsonl": "8663b96213c87dbb69d90790fc4fe771106f2bd838e17d9809f752cdf7a2f01e",
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/leak_classification_s39_D.jsonl": "536c0c0512055c01df65b239d3e9daed739e662ebbe1d0930a994138b99fd56a",
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/network_failures_s39_D.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/esso_recovery_events_s39_D.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/frozen_snapshots_s39_D.jsonl": "5ecd71a101d1c272f4fb9d0d3f6fc9deee977055f2cdc8ea54f1dbbc6834533e",
+   "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/g_s39_D.json": "1605585089ab0c726067e3871c66311e307193547d9b64f199856220402b90e5",
+   "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/boyd_terminal.json": "8e2523112ba58077b9b0bf782907c10f109ffd3bb2b18e3324bc35fd74c41c24",
+   "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/component_levels_terminal.json": "06f18a94d6bb5c4d334e09cd9ce16fd692612cfb2bbfcd4e03615947e24b4766",
+   "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/interface_settlement_detail_s31c.json": "f4e82d389e2623f9bc5797435c0127edf86f7d826f6ed3efe505fa6db15c75ad",
+   "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/interface_voltage_terminal.json": "0c48e8b5fe58d09710001cbafdbe7ccbd522b25ac8112fd2a5cafc191b6b2827",
+   "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/evaluation_record.json": "a5ca47231348be7da5cb044c5ee4cdd6b03accfc084125a4b8402ae24df98939",
+   "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/recourse_jump_sidecar_baseline.jsonl": "259fe9b8abceed9e32fdf539b96f56471e76ae677a0fc188449265e5cd7d4d0f",
+   "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/ess_entry_stride_baseline.jsonl": "81f0ee57b092f403fe25648f6c3e700183b23e40421e4d4fc5765f132d65e961",
+   "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/soh_floor_sidecar_baseline.jsonl": "290b0d24e1b0a3aa9cd28b1b5c22d4d7b015d8ca462588db75eddb8ed783c0c5",
+   "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/pf_entry_stride_s39_D.jsonl": "b8c96e5af61dcbc671f27d4491fb536cbe7f84a1cbe9645f93a62bf93dfefadd",
+   "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/ess_exempt_until_state_s39_D.jsonl": "5f2e65623cc3110e15e3baa29ab8b7f3281ca674e8500db689786a31a4d2ad45",
+   "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/aa_per_cycle.jsonl": "cb55a0f111983bd133a468443b4b40dbeda540bb89933f5a82a902b73959799f",
+   "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/per_cycle_record.jsonl": "8663b96213c87dbb69d90790fc4fe771106f2bd838e17d9809f752cdf7a2f01e",
+   "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/leak_classification_s39_D.jsonl": "2666b0d0f9b33684ebec11c241fbf4b1e47112435f7ca5ac18bf7b10093af7ae",
+   "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/network_failures_s39_D.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/esso_recovery_events_s39_D.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/frozen_snapshots_s39_D.jsonl": "023a3483011c73dacd0bc171511d97aaec8363368df0d8ced5484bf845a0c88c"
+  }
+ },
+ "capture_path_checklist_asserted_before_compare": {
+  "reference_file_g_s39_D.json": true,
+  "reference_file_boyd_terminal.json": true,
+  "reference_file_component_levels_terminal.json": true,
+  "reference_file_interface_settlement_detail_s31c.json": true,
+  "reference_file_interface_voltage_terminal.json": true,
+  "reference_file_evaluation_record.json": true,
+  "reference_file_recourse_jump_sidecar_baseline.jsonl": true,
+  "reference_file_ess_entry_stride_baseline.jsonl": true,
+  "reference_file_soh_floor_sidecar_baseline.jsonl": true,
+  "reference_file_pf_entry_stride_s39_D.jsonl": true,
+  "reference_file_ess_exempt_until_state_s39_D.jsonl": true,
+  "reference_file_aa_per_cycle.jsonl": true,
+  "reference_file_per_cycle_record.jsonl": true,
+  "candidate_file_g_s39_D.json": true,
+  "candidate_file_boyd_terminal.json": true,
+  "candidate_file_component_levels_terminal.json": true,
+  "candidate_file_interface_settlement_detail_s31c.json": true,
+  "candidate_file_interface_voltage_terminal.json": true,
+  "candidate_file_evaluation_record.json": true,
+  "candidate_file_recourse_jump_sidecar_baseline.jsonl": true,
+  "candidate_file_ess_entry_stride_baseline.jsonl": true,
+  "candidate_file_soh_floor_sidecar_baseline.jsonl": true,
+  "candidate_file_pf_entry_stride_s39_D.jsonl": true,
+  "candidate_file_ess_exempt_until_state_s39_D.jsonl": true,
+  "candidate_file_aa_per_cycle.jsonl": true,
+  "candidate_file_per_cycle_record.jsonl": true,
+  "reference_record_field_status": true,
+  "reference_record_field_certification": true,
+  "reference_record_field_cycles_run": true,
+  "reference_record_field_certification_cycle": true,
+  "reference_record_field_certified_cost": true,
+  "reference_record_field_candidate_key": true,
+  "reference_record_field_rule_ten": true,
+  "reference_record_field_anderson_acceleration_effective_in_child": true,
+  "candidate_record_field_status": true,
+  "candidate_record_field_certification": true,
+  "candidate_record_field_cycles_run": true,
+  "candidate_record_field_certification_cycle": true,
+  "candidate_record_field_certified_cost": true,
+  "candidate_record_field_candidate_key": true,
+  "candidate_record_field_rule_ten": true,
+  "candidate_record_field_anderson_acceleration_effective_in_child": true,
+  "candidate_record_field_post_certification.persisted_models": true,
+  "candidate_report_field_cycles_run": true,
+  "candidate_report_field_gross_operational_cost": true,
+  "candidate_report_field_cycle_trajectory": true,
+  "comparator_CP__diff": true,
+  "comparator_FG__classify_diffs": true,
+  "tie_classifier_TC_reclassify_sidecar_diffs": true
+ },
+ "capture_path_checklist_false_items": [],
+ "comparison": {
+  "reference_dir": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0",
+  "candidate_dir": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0",
+  "instance": {
+   "reference_candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "candidate_candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "reference_eval_key": "7aa017f09989b56d17a1307d7ae2d9d86582e9666295ee9e25ef560ee32f975b",
+   "candidate_eval_key": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7"
+  },
+  "comparator": "p515_s45_reverify_compare conventions by import (CP._diff + exclusions, FG._classify_diffs, RC record provenance keys, TC tie classifier) + the W27 roles (module docstring)",
+  "diff_value_naming": "CP._diff names the reference value 'legacy' and the candidate value 'lightweight'",
+  "excluded_field_names": [
+   "component_levels_terminal_and_settlement_detail_path",
+   "component_levels_terminal_path",
+   "ess_entry_stride_sidecar_path",
+   "esso_capture_dir",
+   "heartbeat_path",
+   "interface_voltage_terminal_path",
+   "leak_classification_path",
+   "log_path",
+   "recourse_jump_sidecar_path",
+   "results_dir_redirect",
+   "s34_ess_entry_stride_sidecar_path",
+   "s34_recourse_jump_sidecar_path",
+   "s35ref_soh_floor_sidecar_path",
+   "s38_pf_entry_stride_sidecar_path",
+   "s39_ess_exempt_until_state_sidecar_path",
+   "soh_floor_sidecar_path",
+   "stdout_path",
+   "timestamp_utc",
+   "wall_clock_s"
+  ],
+  "excluded_dotted_suffixes": [
+   "esso_models_pickle.path",
+   "network_failures_summary.path",
+   "soh_floor_multiplier_and_efc_per_cohort_year_terminal.path"
+  ],
+  "record_provenance_keys": {
+   "campaign_id": "campaign identity",
+   "campaign_spec_path": "campaign identity (spec path)",
+   "campaign_spec_sha256": "campaign identity (spec hash)",
+   "candidate_label": "campaign identity (label)",
+   "working_dir_ids": "campaign identity (working-dir ids derive from campaign id + eval key)",
+   "eval_dir": "campaign identity (eval dir)",
+   "eval_key": "campaign identity (eval key = candidate key + effective overrides + case-file AA declaration)",
+   "report_path": "path under the run's own eval dir",
+   "per_cycle_record_path": "path under the run's own eval dir",
+   "campaign_lock_seen_by_child": "run provenance (lock content: pid, campaign id, spec hash, start time)",
+   "child_pid": "run provenance (pid)",
+   "parent_pid": "run provenance (pid)",
+   "configuration": "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)",
+   "evaluation_overrides_effective": "configuration bookkeeping (override vs case file)",
+   "overrides_applied_in_child": "configuration bookkeeping (override vs case file); AA dict gated separately",
+   "anderson_acceleration_effective_in_child": "configuration bookkeeping (Addendum 27 field); AA dict gated separately",
+   "case_file_sha256_in_child": "configuration bookkeeping (Addendum 27 field; case-file sha256)",
+   "configuration_checks_in_child": "configuration bookkeeping (check names differ: AA-off-before-overrides vs case-file-AA-matches-declaration)",
+   "record_capture_checklist_asserted_before_run": "run provenance (rule-eleven checklist)",
+   "thread_caps_seen_by_child": "run provenance (environment)",
+   "PYTHONHASHSEED_in_child": "run provenance (environment)",
+   "nlp_solver_path_in_child": "run provenance (environment)",
+   "schema": "record schema version",
+   "wall_time_s": "run measurement (wall time; not reproducible)",
+   "peak_rss": "run measurement (peak RSS; not reproducible)"
+  },
+  "record_provenance_dotted": {
+   "aa_per_cycle.path": "path under the run's own eval dir"
+  },
+  "record_post_certification_keys_conditional": [
+   "post_certification",
+   "post_certification_path",
+   "post_certification_capture_checklist_asserted_before_run"
+  ],
+  "baseline_declaration_keys_conditional": {
+   "ageing_trajectory_terminal": "baseline declaration (W21): ageing trajectory captured only for declared specs",
+   "ess_ageing_baseline": "baseline declaration (W21): the declared ageing dict",
+   "ess_ageing_baseline_label": "baseline declaration (W21): the declaration label",
+   "ess_ageing_readback_terminal": "baseline declaration (W21): post-run read-back on ESSO clones",
+   "ess_ageing_verified_pre_run": "baseline declaration (W21): pre-run read-back on probe ESSO models",
+   "ess_params_sha256_in_child": "baseline declaration (W21): ESS params file sha256 seen by the child"
+  },
+  "gating_files": [
+   "g_s39_D.json",
+   "boyd_terminal.json",
+   "component_levels_terminal.json",
+   "interface_settlement_detail_s31c.json",
+   "interface_voltage_terminal.json",
+   "evaluation_record.json",
+   "recourse_jump_sidecar_baseline.jsonl",
+   "ess_entry_stride_baseline.jsonl",
+   "soh_floor_sidecar_baseline.jsonl",
+   "pf_entry_stride_s39_D.jsonl",
+   "ess_exempt_until_state_s39_D.jsonl",
+   "aa_per_cycle.jsonl",
+   "per_cycle_record.jsonl"
+  ],
+  "files": {
+   "g_s39_D.json": {
+    "n_raw_diffs": 32,
+    "fg_buckets_raw_counts": {
+     "provenance": 1,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 31
+    },
+    "n": {
+     "provenance": 1,
+     "tie_order": 0,
+     "genuine": 31
+    },
+    "provenance_diffs": [
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.w21_ess_ageing_baseline",
+      "legacy": "<MISSING>",
+      "lightweight": {
+       "declared": {
+        "calendar_life_years": 15,
+        "calendar_retention_per_year": 0.985,
+        "cycle_life_nominal": 10000,
+        "depth_of_discharge_nominal": 0.8,
+        "minimum_soh": 0.7,
+        "calibration": {
+         "status": "ACTIVE",
+         "cycles_n": 10000,
+         "reference_dod_d": 0.8,
+         "eol_retention_r": 0.8
+        }
+       },
+       "label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+       "checks": {
+        "pin_path_is_ess_params_file": true,
+        "file_used_by_production_is_pinned_file": true,
+        "file_sha256_equals_pin": true,
+        "loaded_equals_declaration_types_included": true,
+        "every_ess_soh_min_is_declared": true,
+        "every_ess_phi_cal_is_declared": true,
+        "every_ess_cl_eff_is_production_k": true
+       },
+       "readback_all_match": true,
+       "floor_rows_identical_to_precheck": true
+      },
+      "reason": "rule_eleven_checklist subtree"
+     }
+    ],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {
+     "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(0, 0)": 1,
+     "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(0, 1)": 1,
+     "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(0, 2)": 1,
+     "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(1, 0)": 1,
+     "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(1, 1)": 1,
+     "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(1, 2)": 1,
+     "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(2, 0)": 1,
+     "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(2, 1)": 1,
+     "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(2, 2)": 1,
+     "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(0, 0)": 1,
+     "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(0, 1)": 1,
+     "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(0, 2)": 1,
+     "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(1, 0)": 1,
+     "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(1, 1)": 1,
+     "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(1, 2)": 1,
+     "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(2, 0)": 1,
+     "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(2, 1)": 1,
+     "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(2, 2)": 1,
+     "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(0, 0)": 1,
+     "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(0, 1)": 1,
+     "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(0, 2)": 1,
+     "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(1, 0)": 1,
+     "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(1, 1)": 1,
+     "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(1, 2)": 1,
+     "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(2, 0)": 1,
+     "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(2, 1)": 1,
+     "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(2, 2)": 1,
+     "g_s39_D.json.esso_models_pickle.bytes": 1,
+     "g_s39_D.json.k_in_force.2025": 1,
+     "g_s39_D.json.k_in_force.2030": 1,
+     "g_s39_D.json.k_in_force.2035": 1
+    },
+    "genuine_diffs_first": [
+     {
+      "field": "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(0, 0)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(0, 1)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(0, 2)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(1, 0)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(1, 1)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(1, 2)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(2, 0)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(2, 1)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.5.degradation_fraction_per_year_per_cohort_year.(2, 2)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(0, 0)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(0, 1)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(0, 2)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(1, 0)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(1, 1)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(1, 2)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(2, 0)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(2, 1)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.7.degradation_fraction_per_year_per_cohort_year.(2, 2)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(0, 0)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(0, 1)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(0, 2)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(1, 0)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(1, 1)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(1, 2)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(2, 0)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(2, 1)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_capture.9.degradation_fraction_per_year_per_cohort_year.(2, 2)",
+      "legacy": 0.0,
+      "lightweight": 0.07278349763437508
+     },
+     {
+      "field": "g_s39_D.json.esso_models_pickle.bytes",
+      "legacy": 2656218,
+      "lightweight": 2656632
+     },
+     {
+      "field": "g_s39_D.json.k_in_force.2025",
+      "legacy": 11541.560327111707,
+      "lightweight": 35851.3609417964
+     },
+     {
+      "field": "g_s39_D.json.k_in_force.2030",
+      "legacy": 11541.560327111707,
+      "lightweight": 35851.3609417964
+     },
+     {
+      "field": "g_s39_D.json.k_in_force.2035",
+      "legacy": 11541.560327111707,
+      "lightweight": 35851.3609417964
+     }
+    ],
+    "genuine_diffs_listed_truncated": false
+   },
+   "boyd_terminal.json": {
+    "n_raw_diffs": 18,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 18
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 18
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {
+     "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[*].soh_min": 18
+    },
+    "genuine_diffs_first": [
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[0].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[1].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[2].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[3].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[4].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[5].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[6].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[7].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[8].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[9].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[10].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[11].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[12].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[13].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[14].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[15].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[16].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.per_node_per_cohort_year[17].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     }
+    ],
+    "genuine_diffs_listed_truncated": false
+   },
+   "component_levels_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "interface_settlement_detail_s31c.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "interface_voltage_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "evaluation_record.json": {
+    "n_raw_diffs": 36,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 36
+    },
+    "n": {
+     "provenance": 36,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [
+     {
+      "field": "evaluation_record.json.aa_per_cycle.path",
+      "legacy": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/aa_per_cycle.jsonl",
+      "lightweight": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/aa_per_cycle.jsonl",
+      "reason": "path under the run's own eval dir"
+     },
+     {
+      "field": "evaluation_record.json.ageing_trajectory_terminal",
+      "legacy": "<MISSING>",
+      "lightweight": {
+       "available_energy_soh_point": "end",
+       "ageing_enabled": true,
+       "nodes": {
+        "5": {
+         "cells": [],
+         "salvage_value": 0.0
+        },
+        "7": {
+         "cells": [],
+         "salvage_value": 0.0
+        },
+        "9": {
+         "cells": [],
+         "salvage_value": 0.0
+        }
+       }
+      },
+      "reason": "baseline declaration (W21): ageing trajectory captured only for declared specs (absent from the reference)"
+     },
+     {
+      "field": "evaluation_record.json.campaign_id",
+      "legacy": "s45_a0_c7",
+      "lightweight": "s48_x0_capture",
+      "reason": "campaign identity"
+     },
+     {
+      "field": "evaluation_record.json.campaign_lock_seen_by_child.campaign_id",
+      "legacy": "s45_a0_c7",
+      "lightweight": "s48_x0_capture",
+      "reason": "run provenance (lock content: pid, campaign id, spec hash, start time)"
+     },
+     {
+      "field": "evaluation_record.json.campaign_lock_seen_by_child.campaign_spec_sha256",
+      "legacy": "9d08ad2f144b67ea97dae8dc25d91288fc86a77dd52c7f53276a52c5f00f8b34",
+      "lightweight": "4a50c0e2277d937409f7471f8361268fea6e36254c1e21bdcf1e6ab8b1dd6a61",
+      "reason": "run provenance (lock content: pid, campaign id, spec hash, start time)"
+     },
+     {
+      "field": "evaluation_record.json.campaign_lock_seen_by_child.pid",
+      "legacy": 25385,
+      "lightweight": 85992,
+      "reason": "run provenance (lock content: pid, campaign id, spec hash, start time)"
+     },
+     {
+      "field": "evaluation_record.json.campaign_lock_seen_by_child.started_utc",
+      "legacy": "2026-09-19T18:50:41.999819+00:00",
+      "lightweight": "2026-09-22T08:12:53.660357+00:00",
+      "reason": "run provenance (lock content: pid, campaign id, spec hash, start time)"
+     },
+     {
+      "field": "evaluation_record.json.campaign_spec_path",
+      "legacy": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_spec_s45_a0_c7_9d08ad2f.json",
+      "lightweight": "data/SRP1/Results/P515S48/x0_capture/campaign_spec_s48_x0_capture_4a50c0e2.json",
+      "reason": "campaign identity (spec path)"
+     },
+     {
+      "field": "evaluation_record.json.campaign_spec_sha256",
+      "legacy": "9d08ad2f144b67ea97dae8dc25d91288fc86a77dd52c7f53276a52c5f00f8b34",
+      "lightweight": "4a50c0e2277d937409f7471f8361268fea6e36254c1e21bdcf1e6ab8b1dd6a61",
+      "reason": "campaign identity (spec hash)"
+     },
+     {
+      "field": "evaluation_record.json.child_pid",
+      "legacy": 25396,
+      "lightweight": 86021,
+      "reason": "run provenance (pid)"
+     },
+     {
+      "field": "evaluation_record.json.configuration.ess_ageing_baseline",
+      "legacy": "<MISSING>",
+      "lightweight": {
+       "calendar_life_years": 15,
+       "calendar_retention_per_year": 0.985,
+       "calibration": {
+        "cycles_n": 10000,
+        "eol_retention_r": 0.8,
+        "reference_dod_d": 0.8,
+        "status": "ACTIVE"
+       },
+       "cycle_life_nominal": 10000,
+       "depth_of_discharge_nominal": 0.8,
+       "minimum_soh": 0.7
+      },
+      "reason": "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+     },
+     {
+      "field": "evaluation_record.json.configuration.ess_ageing_baseline_label",
+      "legacy": "<MISSING>",
+      "lightweight": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+      "reason": "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+     },
+     {
+      "field": "evaluation_record.json.configuration.ess_params_file",
+      "legacy": "<MISSING>",
+      "lightweight": {
+       "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+       "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+       "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+      },
+      "reason": "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+     },
+     {
+      "field": "evaluation_record.json.configuration.name",
+      "legacy": "case file alone: AA keep_memory adopted in data/SRP1/SRP1_params.json (Addendum 27)",
+      "lightweight": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70): the case file alone (AA keep_memory adopted in data/SRP1/SRP1_params.json) with the ESS ageing parameters declared; post-certification: persist the certified TSO/DSO models only",
+      "reason": "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+     },
+     {
+      "field": "evaluation_record.json.configuration.note",
+      "legacy": "no overrides; the case file carries AA (declared, checked by the child hook); num_max_iters := cap (run_admm_arm always sets it)",
+      "lightweight": "no overrides; no model variant; post-certification persist_certified_models only (no hull polish, no reference); num_max_iters := cap",
+      "reason": "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+     },
+     {
+      "field": "evaluation_record.json.ess_ageing_baseline",
+      "legacy": "<MISSING>",
+      "lightweight": {
+       "calendar_life_years": 15,
+       "calendar_retention_per_year": 0.985,
+       "cycle_life_nominal": 10000,
+       "depth_of_discharge_nominal": 0.8,
+       "minimum_soh": 0.7,
+       "calibration": {
+        "status": "ACTIVE",
+        "cycles_n": 10000,
+        "reference_dod_d": 0.8,
+        "eol_retention_r": 0.8
+       }
+      },
+      "reason": "baseline declaration (W21): the declared ageing dict (absent from the reference)"
+     },
+     {
+      "field": "evaluation_record.json.ess_ageing_baseline_label",
+      "legacy": "<MISSING>",
+      "lightweight": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+      "reason": "baseline declaration (W21): the declaration label (absent from the reference)"
+     },
+     {
+      "field": "evaluation_record.json.ess_ageing_readback_terminal",
+      "legacy": "<MISSING>",
+      "lightweight": {
+       "expected": {
+        "k": 35851.3609417964,
+        "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.8)",
+        "phi_cal_in_model": 0.985,
+        "floor_row_lower": 0.7,
+        "available_energy_soh_point": "end",
+        "ageing_enabled": true,
+        "d_row_form": "D * 2kE == 365 n avg"
+       },
+       "per_node": {
+        "5": {
+         "readback": {
+          "y_inv": 0,
+          "y0": 0,
+          "y1_available_row": 1,
+          "n_years_data": 5,
+          "d_row_form": "D * 2kE == 365 n avg",
+          "k": 35851.3609417964,
+          "n_years_from_d_row": 5.0,
+          "phi_cal_in_model": 0.985,
+          "soh_row_exp_form_ok": true,
+          "available_energy_soh_point": "end",
+          "available_row_probe": {
+           "soh_end": 0.9,
+           "soh_prev": 0.95,
+           "D": 0.2,
+           "X": 0.9,
+           "X_end": 0.9,
+           "X_mid_closed_form": 0.8277224476758176
+          },
+          "floor_row_lower": 0.7
+         },
+         "checks": {
+          "k": true,
+          "n_years_from_d_row_equals_data": true,
+          "phi_cal_in_model": true,
+          "d_row_form": true,
+          "available_energy_soh_point": true,
+          "soh_row_exp_form": true,
+          "floor_row_lower": true
+         }
+        },
+        "7": {
+         "readback": {
+          "y_inv": 0,
+          "y0": 0,
+          "y1_available_row": 1,
+          "n_years_data": 5,
+          "d_row_form": "D * 2kE == 365 n avg",
+          "k": 35851.3609417964,
+          "n_years_from_d_row": 5.0,
+          "phi_cal_in_model": 0.985,
+          "soh_row_exp_form_ok": true,
+          "available_energy_soh_point": "end",
+          "available_row_probe": {
+           "soh_end": 0.9,
+           "soh_prev": 0.95,
+           "D": 0.2,
+           "X": 0.9,
+           "X_end": 0.9,
+           "X_mid_closed_form": 0.8277224476758176
+          },
+          "floor_row_lower": 0.7
+         },
+         "checks": {
+          "k": true,
+          "n_years_from_d_row_equals_data": true,
+          "phi_cal_in_model": true,
+          "d_row_form": true,
+          "available_energy_soh_point": true,
+          "soh_row_exp_form": true,
+          "floor_row_lower": true
+         }
+        },
+        "9": {
+         "readback": {
+          "y_inv": 0,
+          "y0": 0,
+          "y1_available_row": 1,
+          "n_years_data": 5,
+          "d_row_form": "D * 2kE == 365 n avg",
+          "k": 35851.3609417964,
+          "n_years_from_d_row": 5.0,
+          "phi_cal_in_model": 0.985,
+          "soh_row_exp_form_ok": true,
+          "available_energy_soh_point": "end",
+          "available_row_probe": {
+           "soh_end": 0.9,
+           "soh_prev": 0.95,
+           "D": 0.2,
+           "X": 0.9,
+           "X_end": 0.9,
+           "X_mid_closed_form": 0.8277224476758176
+          },
+          "floor_row_lower": 0.7
+         },
+         "checks": {
+          "k": true,
+          "n_years_from_d_row_equals_data": true,
+          "phi_cal_in_model": true,
+          "d_row_form": true,
+          "available_energy_soh_point": true,
+          "soh_row_exp_form": true,
+          "floor_row_lower": true
+         }
+        }
+       },
+       "all_match": true,
+       "method": "numerical read-back from the built rows (model_variant_readback) against the declaration's closed forms; on clones of the given models"
+      },
+      "reason": "baseline declaration (W21): post-run read-back on ESSO clones (absent from the reference)"
+     },
+     {
+      "field": "evaluation_record.json.ess_ageing_verified_pre_run",
+      "legacy": "<MISSING>",
+      "lightweight": {
+       "declared": {
+        "calendar_life_years": 15,
+        "calendar_retention_per_year": 0.985,
+        "cycle_life_nominal": 10000,
+        "depth_of_discharge_nominal": 0.8,
+        "minimum_soh": 0.7,
+        "calibration": {
+         "status": "ACTIVE",
+         "cycles_n": 10000,
+         "reference_dod_d": 0.8,
+         "eol_retention_r": 0.8
+        }
+       },
+       "loaded": {
+        "calendar_life_years": 15,
+        "cycle_life_nominal": 10000,
+        "depth_of_discharge_nominal": 0.8,
+        "minimum_soh": 0.7,
+        "calendar_retention_per_year": 0.985,
+        "calibration": {
+         "status": "ACTIVE",
+         "cycles_n": 10000,
+         "reference_dod_d": 0.8,
+         "eol_retention_r": 0.8
+        }
+       },
+       "file_used_by_production": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+       "file_sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+       "pin": {
+        "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+        "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+        "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+       },
+       "k_production": 35851.3609417964,
+       "per_ess": [
+        {
+         "year": "2025",
+         "bus": 5,
+         "soh_min": 0.7,
+         "phi_cal": 0.985,
+         "cl_eff": 35851.3609417964
+        },
+        {
+         "year": "2025",
+         "bus": 7,
+         "soh_min": 0.7,
+         "phi_cal": 0.985,
+         "cl_eff": 35851.3609417964
+        },
+        {
+         "year": "2025",
+         "bus": 9,
+         "soh_min": 0.7,
+         "phi_cal": 0.985,
+         "cl_eff": 35851.3609417964
+        },
+        {
+         "year": "2030",
+         "bus": 5,
+         "soh_min": 0.7,
+         "phi_cal": 0.985,
+         "cl_eff": 35851.3609417964
+        },
+        {
+         "year": "2030",
+         "bus": 7,
+         "soh_min": 0.7,
+         "phi_cal": 0.985,
+         "cl_eff": 35851.3609417964
+        },
+        {
+         "year": "2030",
+         "bus": 9,
+         "soh_min": 0.7,
+         "phi_cal": 0.985,
+         "cl_eff": 35851.3609417964
+        },
+        {
+         "year": "2035",
+         "bus": 5,
+         "soh_min": 0.7,
+         "phi_cal": 0.985,
+         "cl_eff": 35851.3609417964
+        },
+        {
+         "year": "2035",
+         "bus": 7,
+         "soh_min": 0.7,
+         "phi_cal": 0.985,
+         "cl_eff": 35851.3609417964
+        },
+        {
+         "year": "2035",
+         "bus": 9,
+         "soh_min": 0.7,
+         "phi_cal": 0.985,
+         "cl_eff": 35851.3609417964
+        }
+       ],
+       "checks": {
+        "pin_path_is_ess_params_file": true,
+        "file_used_by_production_is_pinned_file": true,
+        "file_sha256_equals_pin": true,
+        "loaded_equals_declaration_types_included": true,
+        "every_ess_soh_min_is_declared": true,
+        "every_ess_phi_cal_is_declared": true,
+        "every_ess_cl_eff_is_production_k": true
+       },
+       "readback_pre_run": {
+        "expected": {
+         "k": 35851.3609417964,
+         "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.8)",
+         "phi_cal_in_model": 0.985,
+         "floor_row_lower": 0.7,
+         "available_energy_soh_point": "end",
+         "ageing_enabled": true,
+         "d_row_form": "D * 2kE == 365 n avg"
+        },
+        "per_node": {
+         "5": {
+          "readback": {
+           "y_inv": 0,
+           "y0": 0,
+           "y1_available_row": 1,
+           "n_years_data": 5,
+           "d_row_form": "D * 2kE == 365 n avg",
+           "k": 35851.3609417964,
+           "n_years_from_d_row": 5.0,
+           "phi_cal_in_model": 0.985,
+           "soh_row_exp_form_ok": true,
+           "available_energy_soh_point": "end",
+           "available_row_probe": {
+            "soh_end": 0.9,
+            "soh_prev": 0.95,
+            "D": 0.2,
+            "X": 0.9,
+            "X_end": 0.9,
+            "X_mid_closed_form": 0.8277224476758176
+           },
+           "floor_row_lower": 0.7
+          },
+          "checks": {
+           "k": true,
+           "n_years_from_d_row_equals_data": true,
+           "phi_cal_in_model": true,
+           "d_row_form": true,
+           "available_energy_soh_point": true,
+           "soh_row_exp_form": true,
+           "floor_row_lower": true
+          }
+         },
+         "7": {
+          "readback": {
+           "y_inv": 0,
+           "y0": 0,
+           "y1_available_row": 1,
+           "n_years_data": 5,
+           "d_row_form": "D * 2kE == 365 n avg",
+           "k": 35851.3609417964,
+           "n_years_from_d_row": 5.0,
+           "phi_cal_in_model": 0.985,
+           "soh_row_exp_form_ok": true,
+           "available_energy_soh_point": "end",
+           "available_row_probe": {
+            "soh_end": 0.9,
+            "soh_prev": 0.95,
+            "D": 0.2,
+            "X": 0.9,
+            "X_end": 0.9,
+            "X_mid_closed_form": 0.8277224476758176
+           },
+           "floor_row_lower": 0.7
+          },
+          "checks": {
+           "k": true,
+           "n_years_from_d_row_equals_data": true,
+           "phi_cal_in_model": true,
+           "d_row_form": true,
+           "available_energy_soh_point": true,
+           "soh_row_exp_form": true,
+           "floor_row_lower": true
+          }
+         },
+         "9": {
+          "readback": {
+           "y_inv": 0,
+           "y0": 0,
+           "y1_available_row": 1,
+           "n_years_data": 5,
+           "d_row_form": "D * 2kE == 365 n avg",
+           "k": 35851.3609417964,
+           "n_years_from_d_row": 5.0,
+           "phi_cal_in_model": 0.985,
+           "soh_row_exp_form_ok": true,
+           "available_energy_soh_point": "end",
+           "available_row_probe": {
+            "soh_end": 0.9,
+            "soh_prev": 0.95,
+            "D": 0.2,
+            "X": 0.9,
+            "X_end": 0.9,
+            "X_mid_closed_form": 0.8277224476758176
+           },
+           "floor_row_lower": 0.7
+          },
+          "checks": {
+           "k": true,
+           "n_years_from_d_row_equals_data": true,
+           "phi_cal_in_model": true,
+           "d_row_form": true,
+           "available_energy_soh_point": true,
+           "soh_row_exp_form": true,
+           "floor_row_lower": true
+          }
+         }
+        },
+        "all_match": true,
+        "method": "numerical read-back from the built rows (model_variant_readback) against the declaration's closed forms; on probe models"
+       },
+       "floor_rows_identical_to_precheck": true
+      },
+      "reason": "baseline declaration (W21): pre-run read-back on probe ESSO models (absent from the reference)"
+     },
+     {
+      "field": "evaluation_record.json.ess_params_sha256_in_child",
+      "legacy": "<MISSING>",
+      "lightweight": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+      "reason": "baseline declaration (W21): ESS params file sha256 seen by the child (absent from the reference)"
+     },
+     {
+      "field": "evaluation_record.json.eval_dir",
+      "legacy": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0",
+      "lightweight": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0",
+      "reason": "campaign identity (eval dir)"
+     },
+     {
+      "field": "evaluation_record.json.eval_key",
+      "legacy": "7aa017f09989b56d17a1307d7ae2d9d86582e9666295ee9e25ef560ee32f975b",
+      "lightweight": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7",
+      "reason": "campaign identity (eval key = candidate key + effective overrides + case-file AA declaration)"
+     },
+     {
+      "field": "evaluation_record.json.parent_pid",
+      "legacy": 25385,
+      "lightweight": 85992,
+      "reason": "run provenance (pid)"
+     },
+     {
+      "field": "evaluation_record.json.peak_rss.child_python_process_ru_maxrss",
+      "legacy": 2304573440,
+      "lightweight": 3470491648,
+      "reason": "run measurement (peak RSS; not reproducible)"
+     },
+     {
+      "field": "evaluation_record.json.peak_rss.production_state_peak_rss_ru_maxrss",
+      "legacy": 2304573440,
+      "lightweight": 2395537408,
+      "reason": "run measurement (peak RSS; not reproducible)"
+     },
+     {
+      "field": "evaluation_record.json.peak_rss.solver_subprocesses_max_ru_maxrss",
+      "legacy": 54591488,
+      "lightweight": 54394880,
+      "reason": "run measurement (peak RSS; not reproducible)"
+     },
+     {
+      "field": "evaluation_record.json.per_cycle_record_path",
+      "legacy": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/per_cycle_record.jsonl",
+      "lightweight": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/per_cycle_record.jsonl",
+      "reason": "path under the run's own eval dir"
+     },
+     {
+      "field": "evaluation_record.json.post_certification",
+      "legacy": null,
+      "lightweight": {
+       "status": "evaluated",
+       "evaluated": true,
+       "skip_reason": null,
+       "error": null,
+       "certified_cost": 653859461.2279255,
+       "gate_c_pass": null,
+       "persisted_models": {
+        "path": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/certified_models.pkl",
+        "sha256": "03b62593a23f748c819f18dce52c88c6a9802b8af3c52033ae09a3b88d10afce",
+        "size_bytes": 164013431
+       },
+       "hull_bound_detail_path": null,
+       "requested": {
+        "hull_polish": false,
+        "persist_certified_models": true,
+        "reference": null
+       },
+       "gate_b": null,
+       "gate_c": null,
+       "gate_d": null
+      },
+      "reason": "post-certification (persistence only) requested in this campaign only (reference record holds None for all three keys)"
+     },
+     {
+      "field": "evaluation_record.json.post_certification_capture_checklist_asserted_before_run",
+      "legacy": null,
+      "lightweight": {
+       "certification_fn": true,
+       "stopped_by_fn": true,
+       "hull_polish_fn": true,
+       "persist_fn": true,
+       "decomposition_fn_accepts_reference_dir": true,
+       "cost_band_constant_1_5e_4": true,
+       "reconciliation_tol_1_0": true,
+       "hull_gate_threshold_0_1_pct": true,
+       "aa_sidecar_fn": true,
+       "run_admm_arm_passes_state_to_hook": true
+      },
+      "reason": "post-certification (persistence only) requested in this campaign only (reference record holds None for all three keys)"
+     },
+     {
+      "field": "evaluation_record.json.post_certification_path",
+      "legacy": null,
+      "lightweight": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/post_certification.json",
+      "reason": "post-certification (persistence only) requested in this campaign only (reference record holds None for all three keys)"
+     },
+     {
+      "field": "evaluation_record.json.report_path",
+      "legacy": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/g_s39_D.json",
+      "lightweight": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/g_s39_D.json",
+      "reason": "path under the run's own eval dir"
+     },
+     {
+      "field": "evaluation_record.json.wall_time_s.child_process_s",
+      "legacy": 3976.4501168727875,
+      "lightweight": 3193.380092859268,
+      "reason": "run measurement (wall time; not reproducible)"
+     },
+     {
+      "field": "evaluation_record.json.wall_time_s.run_admm_arm_reported_wall_clock_s",
+      "legacy": 3959.9424302577972,
+      "lightweight": 3169.1363110542297,
+      "reason": "run measurement (wall time; not reproducible)"
+     },
+     {
+      "field": "evaluation_record.json.wall_time_s.run_admm_arm_s",
+      "legacy": 3961.0891289711,
+      "lightweight": 3179.7402381896973,
+      "reason": "run measurement (wall time; not reproducible)"
+     },
+     {
+      "field": "evaluation_record.json.working_dir_ids.precheck",
+      "legacy": "p515s44_s45_a0_c7_7aa017f09989b56d_precheck",
+      "lightweight": "p515s44_s48_x0_capture_d2c96b1480402a3b_precheck",
+      "reason": "campaign identity (working-dir ids derive from campaign id + eval key)"
+     },
+     {
+      "field": "evaluation_record.json.working_dir_ids.run",
+      "legacy": "p515s44_s45_a0_c7_7aa017f09989b56d_run",
+      "lightweight": "p515s44_s48_x0_capture_d2c96b1480402a3b_run",
+      "reason": "campaign identity (working-dir ids derive from campaign id + eval key)"
+     }
+    ],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "recourse_jump_sidecar_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 132,
+     "candidate": 132
+    }
+   },
+   "ess_entry_stride_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 132,
+     "candidate": 132
+    }
+   },
+   "soh_floor_sidecar_baseline.jsonl": {
+    "n_raw_diffs": 2376,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 2376
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 2376
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {
+     "soh_floor_sidecar_baseline.jsonl[*].entries[*].soh_min": 2376
+    },
+    "genuine_diffs_first": [
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[0].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[1].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[2].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[3].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[4].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[5].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[6].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[7].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[8].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[9].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[10].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[11].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[12].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[13].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[14].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[15].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[16].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[0].entries[17].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[0].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[1].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[2].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[3].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[4].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[5].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[6].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[7].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[8].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[9].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[10].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[11].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[12].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[13].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[14].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[15].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[16].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[1].entries[17].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[0].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[1].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[2].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[3].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[4].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[5].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[6].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[7].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[8].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[9].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[10].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[11].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[12].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[13].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[14].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[15].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[16].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[2].entries[17].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[0].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[1].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[2].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[3].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[4].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[5].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[6].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[7].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[8].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[9].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[10].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[11].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[12].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[13].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[14].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[15].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[16].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[3].entries[17].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[0].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[1].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[2].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[3].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[4].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[5].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[6].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[7].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[8].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[9].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[10].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[11].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[12].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[13].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[14].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[15].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[16].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[4].entries[17].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[0].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[1].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[2].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[3].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[4].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[5].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[6].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[7].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[8].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[9].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[10].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[11].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[12].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[13].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[14].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[15].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[16].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[5].entries[17].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[0].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[1].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[2].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[3].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[4].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[5].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[6].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[7].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[8].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[9].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[10].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[11].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[12].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[13].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[14].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[15].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[16].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[6].entries[17].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[0].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[1].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[2].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[3].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[4].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[5].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[6].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[7].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[8].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[9].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[10].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[11].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[12].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[13].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[14].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[15].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[16].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[7].entries[17].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[0].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[1].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[2].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[3].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[4].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[5].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[6].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[7].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[8].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[9].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[10].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[11].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[12].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[13].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[14].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[15].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[16].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[8].entries[17].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[0].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[1].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[2].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[3].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[4].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[5].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[6].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[7].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[8].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[9].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[10].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[11].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[12].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[13].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[14].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[15].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[16].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[9].entries[17].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[0].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[1].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[2].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[3].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[4].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[5].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[6].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[7].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[8].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[9].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[10].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[11].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[12].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[13].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[14].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[15].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[16].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[10].entries[17].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[11].entries[0].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     },
+     {
+      "field": "soh_floor_sidecar_baseline.jsonl[11].entries[1].soh_min",
+      "legacy": 0.5,
+      "lightweight": 0.7
+     }
+    ],
+    "genuine_diffs_listed_truncated": true,
+    "n_rows": {
+     "reference": 132,
+     "candidate": 132
+    }
+   },
+   "pf_entry_stride_s39_D.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 132,
+     "candidate": 132
+    }
+   },
+   "ess_exempt_until_state_s39_D.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 132,
+     "candidate": 132
+    }
+   },
+   "aa_per_cycle.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 132,
+     "candidate": 132
+    }
+   },
+   "per_cycle_record.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 132,
+     "candidate": 132
+    }
+   }
+  },
+  "supplementary_not_gating": {
+   "leak_classification_s39_D.jsonl": {
+    "n_rows": {
+     "reference": 399,
+     "candidate": 399
+    },
+    "n_raw_diffs": 0,
+    "n_diffs_ignoring_path_like_keys": 0,
+    "first_raw_diffs_ignoring_path_like_keys": []
+   },
+   "network_failures_s39_D.jsonl": {
+    "n_rows": {
+     "reference": 0,
+     "candidate": 0
+    },
+    "n_raw_diffs": 0,
+    "n_diffs_ignoring_path_like_keys": 0,
+    "first_raw_diffs_ignoring_path_like_keys": []
+   },
+   "esso_recovery_events_s39_D.jsonl": {
+    "n_rows": {
+     "reference": 0,
+     "candidate": 0
+    },
+    "n_raw_diffs": 0,
+    "n_diffs_ignoring_path_like_keys": 0,
+    "first_raw_diffs_ignoring_path_like_keys": []
+   },
+   "frozen_snapshots_s39_D.jsonl": {
+    "n_rows": {
+     "reference": 2,
+     "candidate": 2
+    },
+    "n_raw_diffs": 4,
+    "n_diffs_ignoring_path_like_keys": 0,
+    "first_raw_diffs_ignoring_path_like_keys": []
+   }
+  },
+  "esso_models_pickle_informational": {
+   "reference_sha256": "0ea169ff430cec5b25aa5fa42eb66243e3afa47ec022fc8a5d65544a575ab7ea",
+   "candidate_sha256": "336ece441fa62e454926ec60366cfa0601d56320b207e15a9358303db0f63c71",
+   "sha256_equal": false
+  },
+  "totals_by_class": {
+   "provenance": 37,
+   "tie_order": 0,
+   "genuine": 2425
+  },
+  "provenance_field_patterns_with_reason": [
+   [
+    "evaluation_record.json.aa_per_cycle.path",
+    "path under the run's own eval dir"
+   ],
+   [
+    "evaluation_record.json.ageing_trajectory_terminal",
+    "baseline declaration (W21): ageing trajectory captured only for declared specs (absent from the reference)"
+   ],
+   [
+    "evaluation_record.json.campaign_id",
+    "campaign identity"
+   ],
+   [
+    "evaluation_record.json.campaign_lock_seen_by_child.campaign_id",
+    "run provenance (lock content: pid, campaign id, spec hash, start time)"
+   ],
+   [
+    "evaluation_record.json.campaign_lock_seen_by_child.campaign_spec_sha256",
+    "run provenance (lock content: pid, campaign id, spec hash, start time)"
+   ],
+   [
+    "evaluation_record.json.campaign_lock_seen_by_child.pid",
+    "run provenance (lock content: pid, campaign id, spec hash, start time)"
+   ],
+   [
+    "evaluation_record.json.campaign_lock_seen_by_child.started_utc",
+    "run provenance (lock content: pid, campaign id, spec hash, start time)"
+   ],
+   [
+    "evaluation_record.json.campaign_spec_path",
+    "campaign identity (spec path)"
+   ],
+   [
+    "evaluation_record.json.campaign_spec_sha256",
+    "campaign identity (spec hash)"
+   ],
+   [
+    "evaluation_record.json.child_pid",
+    "run provenance (pid)"
+   ],
+   [
+    "evaluation_record.json.configuration.ess_ageing_baseline",
+    "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+   ],
+   [
+    "evaluation_record.json.configuration.ess_ageing_baseline_label",
+    "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+   ],
+   [
+    "evaluation_record.json.configuration.ess_params_file",
+    "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+   ],
+   [
+    "evaluation_record.json.configuration.name",
+    "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+   ],
+   [
+    "evaluation_record.json.configuration.note",
+    "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+   ],
+   [
+    "evaluation_record.json.ess_ageing_baseline",
+    "baseline declaration (W21): the declared ageing dict (absent from the reference)"
+   ],
+   [
+    "evaluation_record.json.ess_ageing_baseline_label",
+    "baseline declaration (W21): the declaration label (absent from the reference)"
+   ],
+   [
+    "evaluation_record.json.ess_ageing_readback_terminal",
+    "baseline declaration (W21): post-run read-back on ESSO clones (absent from the reference)"
+   ],
+   [
+    "evaluation_record.json.ess_ageing_verified_pre_run",
+    "baseline declaration (W21): pre-run read-back on probe ESSO models (absent from the reference)"
+   ],
+   [
+    "evaluation_record.json.ess_params_sha256_in_child",
+    "baseline declaration (W21): ESS params file sha256 seen by the child (absent from the reference)"
+   ],
+   [
+    "evaluation_record.json.eval_dir",
+    "campaign identity (eval dir)"
+   ],
+   [
+    "evaluation_record.json.eval_key",
+    "campaign identity (eval key = candidate key + effective overrides + case-file AA declaration)"
+   ],
+   [
+    "evaluation_record.json.parent_pid",
+    "run provenance (pid)"
+   ],
+   [
+    "evaluation_record.json.peak_rss.child_python_process_ru_maxrss",
+    "run measurement (peak RSS; not reproducible)"
+   ],
+   [
+    "evaluation_record.json.peak_rss.production_state_peak_rss_ru_maxrss",
+    "run measurement (peak RSS; not reproducible)"
+   ],
+   [
+    "evaluation_record.json.peak_rss.solver_subprocesses_max_ru_maxrss",
+    "run measurement (peak RSS; not reproducible)"
+   ],
+   [
+    "evaluation_record.json.per_cycle_record_path",
+    "path under the run's own eval dir"
+   ],
+   [
+    "evaluation_record.json.post_certification",
+    "post-certification (persistence only) requested in this campaign only (reference record holds None for all three keys)"
+   ],
+   [
+    "evaluation_record.json.post_certification_capture_checklist_asserted_before_run",
+    "post-certification (persistence only) requested in this campaign only (reference record holds None for all three keys)"
+   ],
+   [
+    "evaluation_record.json.post_certification_path",
+    "post-certification (persistence only) requested in this campaign only (reference record holds None for all three keys)"
+   ],
+   [
+    "evaluation_record.json.report_path",
+    "path under the run's own eval dir"
+   ],
+   [
+    "evaluation_record.json.wall_time_s.child_process_s",
+    "run measurement (wall time; not reproducible)"
+   ],
+   [
+    "evaluation_record.json.wall_time_s.run_admm_arm_reported_wall_clock_s",
+    "run measurement (wall time; not reproducible)"
+   ],
+   [
+    "evaluation_record.json.wall_time_s.run_admm_arm_s",
+    "run measurement (wall time; not reproducible)"
+   ],
+   [
+    "evaluation_record.json.working_dir_ids.precheck",
+    "campaign identity (working-dir ids derive from campaign id + eval key)"
+   ],
+   [
+    "evaluation_record.json.working_dir_ids.run",
+    "campaign identity (working-dir ids derive from campaign id + eval key)"
+   ],
+   [
+    "g_s39_D.json.rule_eleven_checklist.w21_ess_ageing_baseline",
+    "rule_eleven_checklist subtree"
+   ]
+  ],
+  "all_gating_files_present": true,
+  "n_genuine_diffs": 2425,
+  "scalar_checks": {
+   "candidate_status_certified": {
+    "value": "certified",
+    "expected": "certified",
+    "match": true
+   },
+   "candidate_certification.certified": {
+    "value": true,
+    "expected": true,
+    "match": true
+   },
+   "candidate_record_cycles_run": {
+    "value": 132,
+    "expected": 132,
+    "match": true
+   },
+   "candidate_record_certification_cycle": {
+    "value": 132,
+    "expected": 132,
+    "match": true
+   },
+   "candidate_report_cycles_run": {
+    "value": 132,
+    "expected": 132,
+    "match": true
+   },
+   "candidate_record_certified_cost": {
+    "value": 653859461.2279255,
+    "expected": 653859461.2279255,
+    "match": true
+   },
+   "candidate_report_gross_operational_cost": {
+    "value": 653859461.2279255,
+    "expected": 653859461.2279255,
+    "match": true
+   },
+   "candidate_record_candidate_key_is_x0": {
+    "value": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "expected": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "match": true
+   },
+   "reference_record_candidate_key_is_x0": {
+    "value": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "expected": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "match": true
+   },
+   "reference_record_certified_cost": {
+    "value": 653859461.2279255,
+    "expected": 653859461.2279255,
+    "match": true
+   },
+   "reference_record_certification_cycle": {
+    "value": 132,
+    "expected": 132,
+    "match": true
+   },
+   "candidate_effective_aa": {
+    "value": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "expected": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "match": true
+   },
+   "reference_effective_aa": {
+    "value": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "expected": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "match": true
+   },
+   "per_cycle_rows_reference": {
+    "value": 132,
+    "expected": 132,
+    "match": true
+   },
+   "per_cycle_rows_candidate": {
+    "value": 132,
+    "expected": 132,
+    "match": true
+   },
+   "candidate_post_certification_persistence_only": {
+    "value": true,
+    "expected": true,
+    "match": true
+   },
+   "candidate_persisted_models_sha256_verified": {
+    "value": "03b62593a23f748c819f18dce52c88c6a9802b8af3c52033ae09a3b88d10afce",
+    "expected": "03b62593a23f748c819f18dce52c88c6a9802b8af3c52033ae09a3b88d10afce",
+    "match": true
+   }
+  },
+  "persisted_models": {
+   "path": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/certified_models.pkl",
+   "sha256": "03b62593a23f748c819f18dce52c88c6a9802b8af3c52033ae09a3b88d10afce",
+   "size_bytes": 164013431,
+   "sha256_on_disk": "03b62593a23f748c819f18dce52c88c6a9802b8af3c52033ae09a3b88d10afce"
+  },
+  "rule_ten_terminal_step_over_threshold": {
+   "reference": 0.003362677294765486,
+   "candidate": 0.003362677294765486
+  },
+  "objective_convention": "gross_operational_cost (settlement-excluded; = certified_cost)"
+ },
+ "gate_items": {
+  "capture_path_checklist_all_true": true,
+  "reference_files_match_manifest_and_pins": true,
+  "all_gating_files_present": true,
+  "zero_genuine_diffs": false,
+  "scalar_checks_all_match": true,
+  "solve_profile_guard_verified_0": true
+ },
+ "gate_pass": false,
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "wall_clock_s": 5.409059047698975
+}

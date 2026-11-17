@@ -1,0 +1,792 @@
+{
+ "acceptance_cross_check": {
+  "known_blind_spot": "production can discard an accepted IPOPT result when model.solutions.load_from raises; the records cannot see that, the events file would (no success print) -- the cross-check is what would expose it",
+  "role": "INTEGRITY on the real cells (a disagreement means the record-derived definition does not match what production did -> exit 1); reported per cell. Not part of the gate predicate, which self-tests exercise on altered record populations that have no event file",
+  "what": "the acceptance rule above, applied to every block of EVERY round of a real cell, must reproduce production's own log-based failure-event classification (network_failures_s39_D.jsonl, written by p515_g_g1_g4_admm_gates from the child stdout): block with an event <-> ladder not (a single accepted primary); class per ladder: (primary not accepted) -> not_attempted; (primary, recovery accepted) -> recovered_tier1; (primary, recovery not accepted) -> unrecovered; (primary, recovery, tier2 accepted) -> recovered_tier2; (primary, recovery, tier2 not accepted) -> unrecovered. Event cycle \"init\" <-> round 0"
+ },
+ "authority": [
+  "Planner task W89 step 1 (judge the FINAL ACCEPTED attempt per block in T; superseded attempts counted and reported, never judged; non-vacuity preserved; three negative controls; re-evaluate from persisted records; zero solves)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 46 ruling 7"
+ ],
+ "caveats_travelling_with_the_numbers": {
+  "bar_tail_not_independent": "bar_tail equals bar_ref EXACTLY on all three cells: each run's 10-cycle bar window (cycles T-9 .. T) starts on the cycle just BEFORE the first tail cycle, that pre-tail cycle holds the window's largest gross step, and it is bitwise identical in both runs (the runs agree bitwise before the tail). The \"two-run bar\" bar_ref + bar_tail therefore counts ONE pre-tail step twice and is NOT an independent measure; every ratio computed against it (two_run_bar_resolution) carries this caveat. MEASURED per cell in the run output.",
+  "bitwise_before_tail": "The per-cycle gross_operational_cost trajectory is bitwise identical (float.hex) on every cycle before the first tail cycle, on every cell, first differing at the first tail cycle (W87 reported 79 / 104 / 124). This is the MEASURED form of Addendum 46's \"everything before the tail bitwise unchanged\". MEASURED per cell in the run output (number of cycles compared, first differing cycle)."
+ },
+ "evidence_base": {
+  "campaign_manifest": {
+   "git_clean": true,
+   "git_tracked": true,
+   "n_entries": 1107,
+   "path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/campaign_manifest_sha256.json",
+   "sha256": "83f8dab9997d239b671490331941edf285c16b0cf49179390c9eb35bd1cc0009"
+  },
+  "campaign_results": {
+   "git_clean": true,
+   "git_tracked": true,
+   "path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/campaign_results.json",
+   "sha256": "361402fed03c16c65e1502a587d0e21d279b79f83faeadea7b41a1c99b756480"
+  },
+  "campaign_spec": {
+   "git_clean": true,
+   "git_tracked": true,
+   "path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/campaign_spec_s53_w86_tail_recert_ddd6cd44.json",
+   "sha256": "ddd6cd4422b56f946eeeb427dff44ef572490bd34c606fad96eaf00fd4a84ec1"
+  },
+  "cells": {
+   "c_star": {
+    "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+    "eval_dir": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/96c5aa50cc229cc1_c_star",
+    "eval_key": "96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772",
+    "files": {
+     "certified_models.pkl": {
+      "git_tracked": false,
+      "manifest_sha256": "c85fda30408d7e065f2dcc0b4d039d191f7b54ed8e23741a4d66d7fe5587dd68",
+      "note": "not committed (165 MB); hash-recorded in the campaign manifest",
+      "sha256": "c85fda30408d7e065f2dcc0b4d039d191f7b54ed8e23741a4d66d7fe5587dd68"
+     },
+     "convergence_depth_append_events.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "b03304f23b2b0d6d3aaaccae1c73c7520d3ea5a4ff00f62099f4a19bc2becdba",
+      "sha256": "b03304f23b2b0d6d3aaaccae1c73c7520d3ea5a4ff00f62099f4a19bc2becdba"
+     },
+     "convergence_depth_tail_state.json": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "28b3e54b2460b01526ecc6ff594eadbd88c08529d5c39072767a78dc9a0a58db",
+      "sha256": "28b3e54b2460b01526ecc6ff594eadbd88c08529d5c39072767a78dc9a0a58db"
+     },
+     "evaluation_record.json": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "3cd4011d977bf73025059709e30f37a117fd9dbdb6eb8ad832ac74b8902252c7",
+      "sha256": "3cd4011d977bf73025059709e30f37a117fd9dbdb6eb8ad832ac74b8902252c7"
+     },
+     "exit_code.txt": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+     },
+     "network_failures_s39_D.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "c0b52965be8310b6c30b425233eb455172e549e2f0cd82d2d0483f0f8bddf7a3",
+      "sha256": "c0b52965be8310b6c30b425233eb455172e549e2f0cd82d2d0483f0f8bddf7a3"
+     },
+     "network_ipopt_solve_records.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "38c800abc6659ddf719b249e0d9fc44f22b509d374a648dc6a1660b3d43d4e46",
+      "sha256": "38c800abc6659ddf719b249e0d9fc44f22b509d374a648dc6a1660b3d43d4e46"
+     },
+     "network_ipopt_solve_records_append.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "38c800abc6659ddf719b249e0d9fc44f22b509d374a648dc6a1660b3d43d4e46",
+      "sha256": "38c800abc6659ddf719b249e0d9fc44f22b509d374a648dc6a1660b3d43d4e46"
+     },
+     "per_cycle_record.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "dd580b247b7f917638af6393fdbdebdbf96d37a0e520342849fb7d11975deeb8",
+      "sha256": "dd580b247b7f917638af6393fdbdebdbf96d37a0e520342849fb7d11975deeb8"
+     },
+     "post_certification.json": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "125d6f0ea8fde238bcd53ad157ec95e7e2de9b36f677054a9b07c3c9f02bd7a5",
+      "sha256": "125d6f0ea8fde238bcd53ad157ec95e7e2de9b36f677054a9b07c3c9f02bd7a5"
+     }
+    }
+   },
+   "n7_4h_e1": {
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "eval_dir": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1",
+    "eval_key": "ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d",
+    "files": {
+     "certified_models.pkl": {
+      "git_tracked": false,
+      "manifest_sha256": "fe06ca485003b4fc9c0fd9788279bd287dd813d659179b311885e8ab03efda04",
+      "note": "not committed (165 MB); hash-recorded in the campaign manifest",
+      "sha256": "fe06ca485003b4fc9c0fd9788279bd287dd813d659179b311885e8ab03efda04"
+     },
+     "convergence_depth_append_events.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "044a0f8e9e35dd44fc664c94ae06744633e49fe6a44a4633644b304af39d7ea4",
+      "sha256": "044a0f8e9e35dd44fc664c94ae06744633e49fe6a44a4633644b304af39d7ea4"
+     },
+     "convergence_depth_tail_state.json": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "b8a758c7128e18a0645a9752d59944eb33a71195ee0f2fe268481deaf8383630",
+      "sha256": "b8a758c7128e18a0645a9752d59944eb33a71195ee0f2fe268481deaf8383630"
+     },
+     "evaluation_record.json": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "d2b8d3e0e7b410f57fe5d9133fd7082768554cce9c0f185e3f6828608fad138e",
+      "sha256": "d2b8d3e0e7b410f57fe5d9133fd7082768554cce9c0f185e3f6828608fad138e"
+     },
+     "exit_code.txt": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+     },
+     "network_failures_s39_D.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "0e7eee3ab673f989053b31143223ee313c4c7f9f64e12b8f4e6c5c5953919b35",
+      "sha256": "0e7eee3ab673f989053b31143223ee313c4c7f9f64e12b8f4e6c5c5953919b35"
+     },
+     "network_ipopt_solve_records.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "2a1f2252b70fb48d53998fa14069b60ed8d7348d66a3ec7b721a6edd28b58b8f",
+      "sha256": "2a1f2252b70fb48d53998fa14069b60ed8d7348d66a3ec7b721a6edd28b58b8f"
+     },
+     "network_ipopt_solve_records_append.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "2a1f2252b70fb48d53998fa14069b60ed8d7348d66a3ec7b721a6edd28b58b8f",
+      "sha256": "2a1f2252b70fb48d53998fa14069b60ed8d7348d66a3ec7b721a6edd28b58b8f"
+     },
+     "per_cycle_record.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "b5875bbe9908cc3dfd14add7afb168622698b5d6ff500d50acb1117962d58d1f",
+      "sha256": "b5875bbe9908cc3dfd14add7afb168622698b5d6ff500d50acb1117962d58d1f"
+     },
+     "post_certification.json": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "cb762da69d11753cb485e0729023cc056ac53e67ccf98296a6e2e672448ccb2d",
+      "sha256": "cb762da69d11753cb485e0729023cc056ac53e67ccf98296a6e2e672448ccb2d"
+     }
+    }
+   },
+   "x0": {
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "eval_dir": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/5cfe69a615ae3708_x0",
+    "eval_key": "5cfe69a615ae370835a5896eaa6899f1d9973b7adf649437c2ddd94d1d2836ee",
+    "files": {
+     "certified_models.pkl": {
+      "git_tracked": false,
+      "manifest_sha256": "d816bb4b1ade4b44ad4a77872443fe2668986663c524fc4239815d4657974e21",
+      "note": "not committed (165 MB); hash-recorded in the campaign manifest",
+      "sha256": "d816bb4b1ade4b44ad4a77872443fe2668986663c524fc4239815d4657974e21"
+     },
+     "convergence_depth_append_events.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "4d4cd062c01f8c90cf24182f2a8bd739093e336bfb29bad7403b585860a36c2c",
+      "sha256": "4d4cd062c01f8c90cf24182f2a8bd739093e336bfb29bad7403b585860a36c2c"
+     },
+     "convergence_depth_tail_state.json": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "8ff4140e97000b05a8fa9d74b149d12b6805b46e51989429d632257bdc341955",
+      "sha256": "8ff4140e97000b05a8fa9d74b149d12b6805b46e51989429d632257bdc341955"
+     },
+     "evaluation_record.json": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "75979b1c62d5322eeff6b3c61018e011a5d016cea25033a0439fa9aa2122624a",
+      "sha256": "75979b1c62d5322eeff6b3c61018e011a5d016cea25033a0439fa9aa2122624a"
+     },
+     "exit_code.txt": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+     },
+     "network_failures_s39_D.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+     },
+     "network_ipopt_solve_records.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "976b42141400f14b748b45b5b7ea096428cc0f4ad90719d966fc04f1d271fa3c",
+      "sha256": "976b42141400f14b748b45b5b7ea096428cc0f4ad90719d966fc04f1d271fa3c"
+     },
+     "network_ipopt_solve_records_append.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "976b42141400f14b748b45b5b7ea096428cc0f4ad90719d966fc04f1d271fa3c",
+      "sha256": "976b42141400f14b748b45b5b7ea096428cc0f4ad90719d966fc04f1d271fa3c"
+     },
+     "per_cycle_record.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "bd7e47057ee618486fed0a385e8f784ecfd0089e77d5da2aaef13e89fed2f4a2",
+      "sha256": "bd7e47057ee618486fed0a385e8f784ecfd0089e77d5da2aaef13e89fed2f4a2"
+     },
+     "post_certification.json": {
+      "git_clean": true,
+      "git_tracked": true,
+      "manifest_sha256": "55cb08f2d7ad57e8d400ae27c8dcfcda99b4acd50acc38e159e85b36b63e1adc",
+      "sha256": "55cb08f2d7ad57e8d400ae27c8dcfcda99b4acd50acc38e159e85b36b63e1adc"
+     }
+    }
+   }
+  },
+  "references": {
+   "c_star": {
+    "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star",
+    "eval_key": "070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb",
+    "files": {
+     "evaluation_record.json": {
+      "git_clean": true,
+      "git_tracked": true,
+      "sha256": "6f1bace2e47c024520bf0ddfd35e86c5b9e5964eb3434c73d40365f92404f4bf"
+     },
+     "network_failures_s39_D.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "sha256": "50732eed7dae5621b607f9ccf8e653e65cd770fef1a0012fdb73aada512a896e"
+     },
+     "per_cycle_record.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "sha256": "73d988d221f099b60cb19ab564f83f4998e22f651a38751f36c69b2dd51eaf3e"
+     }
+    }
+   },
+   "n7_4h_e1": {
+    "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/bd504ecf5a288d44_n7_4h_e1",
+    "eval_key": "bd504ecf5a288d447e53ef6f7e8090b017d15549b257aa095ff4f95890a06e42",
+    "files": {
+     "evaluation_record.json": {
+      "git_clean": true,
+      "git_tracked": true,
+      "sha256": "d15f5e5ec88d6abacc0d80923ac7ac1ed84cec1791b4262405b6deba5ab976e8"
+     },
+     "network_failures_s39_D.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "sha256": "d9b994a7b099ba8d101dfadd4f60d724bb77397db04837da18066ce78805180f"
+     },
+     "per_cycle_record.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "sha256": "82002e4f2f249bbf6e24d0060a9774952625dc0e62bbaee23889c8336511f439"
+     }
+    }
+   },
+   "x0": {
+    "eval_dir": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0",
+    "eval_key": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7",
+    "files": {
+     "evaluation_record.json": {
+      "git_clean": true,
+      "git_tracked": true,
+      "sha256": "a5ca47231348be7da5cb044c5ee4cdd6b03accfc084125a4b8402ae24df98939"
+     },
+     "network_failures_s39_D.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+     },
+     "per_cycle_record.jsonl": {
+      "git_clean": true,
+      "git_tracked": true,
+      "sha256": "8663b96213c87dbb69d90790fc4fe771106f2bd838e17d9809f752cdf7a2f01e"
+     }
+    }
+   }
+  },
+  "spec_v29": {
+   "git_clean": true,
+   "git_tracked": true,
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v29_9161ff00.json",
+   "sha256": "9161ff00273e2e1907aa75121ac7454d9f33ec39f91c82f93513efae78dfcb98"
+  },
+  "spec_v31": {
+   "git_clean": true,
+   "git_tracked": true,
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v31_cded3496.json",
+   "sha256": "cded34965024b04fbd1d59275924f43788e2bbb0420e914d0d426f02c6d1c54b"
+  },
+  "w88_harness_sha256": "df6488ebaef4d5808ce1814b23198997fed7f3230e280381a65201561f75bec8",
+  "w88_reevaluation": {
+   "git_clean": true,
+   "git_tracked": true,
+   "path": "data/SRP1/Results/P515S53/g6_floor_w88/reeval_w88.json",
+   "sha256": "cf0309aff5c9fbd96f2b73e9e83175241782cc30786d960e432089b663cc2e78"
+  }
+ },
+ "fallback_test_note": "verbatim from v31 / v30 / v29; \"fails to certify\" counts a failed per-entry gate, now with G6 under v32; \"moves materially\" (|Q_tail - Q_ref| > bar_ref) unchanged",
+ "fallback_test_operational": {
+  "consequence": "if ANY of the three cells fails to certify or moves materially: the fallback -- the unchanged configuration (tail disabled) with the depth caveat recorded (the Planner's section 8 reading); otherwise the tail-enabled references replace them for what follows",
+  "fails_to_certify": "TEST, per cell: the tail-enabled run ends with status != \"certified\" under the UNCHANGED certification criterion (all three Boyd channels inside tolerance and every local solve successful for 10 consecutive cycles) within cap 500; a harness error (child exit != 0, a failed per-entry gate) counts as a failure to certify",
+  "moves_materially": "TEST, per cell: |Q_tail - Q_ref| > bar_ref(cell), the reference's own bar",
+  "reported_beside_never_replacing": {
+   "author_band_ratio": "|dQ| / (1e-6 |Q_ref|)  (> 1: outside the author's 1e-6 relative band)",
+   "own_bar_ratio": "|dQ| / bar_ref",
+   "terminal_step_error_bar": "e_term = step_ref + step_tail (the gross-cost step at each run's last cycle)",
+   "terminal_step_resolution": "|dQ| / e_term  (< 1: indeterminate -- not explained beyond stopping slack)",
+   "terminal_step_to_threshold": "step / objective_tolerance at the last cycle, for BOTH runs (rule ten)",
+   "two_run_bar_resolution": "|dQ| / (bar_ref + bar_tail)  (< 1: indeterminate at the bar)"
+  },
+  "source": "spec v28 fallback_rule_operational (restated, not changed); Addendum 46 ruling 7"
+ },
+ "frozen_utc": "2026-09-25T18:15:46.871874+00:00",
+ "git_head_at_freeze": "fd5a2c027dc38756ff4f66d6283bdfc60d30f721",
+ "integrity_checks": "before any new quantity is read: the evidence base hashes equal the v31 pins and the campaign manifest; the committed W88 code re-evaluates and its per-cell results, self-tests and R equal the committed reeval_w88.json (cf0309af) exactly; the v32 self-tests give their declared verdicts; the acceptance cross-check agrees on every real cell; any mismatch -> exit 1",
+ "launcher_sha256": "812333ff36603c123c3e5909b0777de2c17af6971cebb396e854af5f186a55b2",
+ "not_applicable_declaration_source": {
+  "declaration_line": "reasons.append(f'monotone mu-floor formula not applicable: {blockers} passed')",
+  "declaration_line_present": true,
+  "git_clean": true,
+  "git_tracked": true,
+  "join": "record['parse_reason'] = '; '.join(reasons) if reasons else None",
+  "join_present": true,
+  "path": "network.py",
+  "sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4"
+ },
+ "output": {
+  "file": "reeval_w89.json",
+  "manifest": "reeval_w89_manifest_sha256.json",
+  "note": "a NEW root; nothing committed is re-run onto or modified",
+  "root": "data/SRP1/Results/P515S53/g6_final_attempt_w89"
+ },
+ "per_entry_gates": {
+  "G1_harness_clean": "child exit 0, evaluation_record.json written by the child, status certified or not_certified",
+  "G2_eval_key": "record eval_key == the v29 expected key",
+  "G3_append_reconcile": "record convergence_depth_per_round_append.ok True, AND recomputed: appended file byte-identical to the end-of-run file, sha256 == the record's, rounds 0..cycles_run",
+  "G4_tail_state_check": "record convergence_depth_tail_state_check.match True (enabled, 1e-6)",
+  "G5_solve_profile_reconciled_per_event": "reconciliation_supported, identity_holds, observed == 51 x (cycles_run + 1) + retries attempted, 0 blocked; network floor records == observed - 3 x (cycles_run + 1)",
+  "G6_floor_records_v32": {
+   "B_blocks_per_round": "B = (1 + n_dso) x n_years x n_days of the instance = the number of network blocks solved per round (SRP1: 48; the 3 x 3 instance: 80); stated operationally, not as a literal",
+   "accepted": "r.exit in ['Optimal Solution Found.', 'Solved To Acceptable Level.'] -- the two IPOPT exits whose AMPL solve_result_num (0, 1) Pyomo's .sol reader maps to SolverStatus.ok + TerminationCondition.optimal, i.e. what helper_functions.solver_result_succeeded accepts; any other exit string, or none, is NOT accepted",
+   "applicability_unchanged_from_v31": "a record is NOT APPLICABLE iff its parse_reason, split on \"; \" (the parser's join), holds a component starting \"monotone mu-floor formula not applicable:\" -- the declaration network.parse_ipopt_attempt_segment makes when the attempt passes mu_strategy / barrier_tol_factor / mu_target / mu_min. Every other record is APPLICABLE. residual_reasons = the parse_reason components other than that declaration.",
+   "block": "b(r) = (r.round, r.network, r.year, r.day)",
+   "design_consequence_recorded": "non-vacuity requires >= B judged APPLICABLE attempts in T, so with exactly B blocks EVERY block's final attempt must be applicable: a block of T whose final accepted attempt is a tier-2 retry (mu_strategy adaptive; floor formula not applicable) makes G6 FAIL through non-vacuity -- its terminal solve cannot be shown at the floor. Ruling 2 still passes the record itself (it is judged on the conditions that apply). Self-test T6 declares exactly this outcome. None of the three SRP1 cells has a non-primary record in T (W88 reported tallies); stated here so the rule is not discovered later",
+   "final_accepted_attempt": "the final attempt of the block, when it is accepted; a block whose final attempt is not accepted has NO accepted attempt",
+   "final_attempt": "the LAST attempt of the block's ladder (the attempt whose result production keeps)",
+   "floor_status_definition": "the persisted field, computed by the production parser: \"at\" iff |mu_final / mu_floor - 1| <= 1e-3, mu_floor = min(tol, compl_inf_tol * obj_scaling) / 11. Recomputed from the persisted mu_over_floor and REPORTED (agreement), not gated.",
+   "ladder": "production's retry ladder (network.py _run_smopf): primary -> recovery (tier 1) -> recovery_tier2. A block's attempts, ordered by that ladder, must be EXACTLY a prefix of (primary, recovery, recovery_tier2): one attempt per label, no gap, no unknown label; otherwise the block fails \"ladder_malformed\"",
+   "name": "G6_floor_records_v32",
+   "non_vacuity": "v30 verbatim (P non-empty; every round of W u {T} holds exactly B primary-attempt records and >= B records) AND T holds exactly B blocks AND every block of T has exactly one judged attempt AND the judged applicable attempts of T number >= B [v32; replaces v31's \">= 48 applicable records in T\", which counted superseded attempts too]",
+   "not_judged": "floor status of superseded attempts in T and of every record outside T (reported); exit status of records outside T (reported); pre-tail records (reported evidence, as in v30)",
+   "passes_iff": "non_vacuity holds AND every record of P satisfies its predicate AND every block of T satisfies its",
+   "population_unchanged_from_v30": "P(cell) = { r in <eval_dir>/network_ipopt_solve_records.jsonl : r.round in W u {T} }, W = { p.cycle : p in convergence_depth_tail_state.json per_cycle, p.active is True }, T = evaluation_record.cycles_run; every attempt (primary, recovery, recovery_tier2)",
+   "predicate_every_record_of_P": "v31's per-record predicate WITHOUT its terminal floor clause, on EVERY record of P (superseded attempts included): applicable -> compl_inf_tol_in_force == 1e-6 in W else production, options_list_agrees, parse_reason None; not applicable (ruling 2) -> the same tolerance / options conditions, no residual parse reason, declared class recovery_tier2 / adaptive [v31 verbatim]",
+   "predicate_terminal_block": "for EVERY block of T: ladder well formed; no superseded attempt accepted (production retries only an attempt that did not succeed); the final attempt accepted (\"no_accepted_attempt\" otherwise); and, if the final attempt is APPLICABLE, its floor_status == \"at\" (\"final_accepted_attempt_floor_not_at\" otherwise). A NOT applicable final attempt (tier-2, adaptive mu) has its floor test recorded NOT APPLICABLE and counted -- see non-vacuity [RULING, new]",
+   "replaces": "v31 per_entry_gates.G6_floor_records_v31",
+   "scope_limit": "the ruling-2 path (a not-applicable tier-2 record inside W u {T}) is exercised ONLY by self-tests (T1-T6): none of the three SRP1 cells has a tier-2 retry in W or T (their tier-2 records are C* rounds 11 / 13 / 23, pre-tail)",
+   "superseded_attempts": "every other attempt of the block (a primary or a tier-1 attempt later retried)",
+   "superseded_in_T": "counted and reported (attempt, exit, floor_status, mu_over_floor), never judged on floor status"
+  },
+  "G7_append_sealed": "last event sealed, no append write error",
+  "G8_post_certification": "certified -> status evaluated and certified_models.pkl written (sha256 recorded); else skipped",
+  "G9_ess_ageing_readback": "all_match before and after the run",
+  "applies_to": "each of the three re-certification cells (c_star, n7_4h_e1, x0); there is no other arm",
+  "comparison": "FALLBACK_TEST quantities vs the committed reference, reported per cell",
+  "unchanged_from_v31": "G1-G5, G7-G9, applies_to, comparison: verbatim from v31 (= v30 = v29); computed by the W86 launcher's evaluation_checks through the committed W87 harness (by import, via the committed W88 harness)"
+ },
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v31_cded3496.json",
+  "sha256": "cded34965024b04fbd1d59275924f43788e2bbb0420e914d0d426f02c6d1c54b"
+ },
+ "predecessor_not_edited": "v31 stays as frozen; v32 replaces one of its per-entry gates",
+ "predictions_recorded_before_the_reevaluation": {
+  "P1_G6_v32": "PASS on all three cells: population 434 / 432 / 432 (unchanged); T = 87 / 112 / 132 holds exactly 48 blocks, 48 judged attempts (all primary, all accepted \"Optimal Solution Found.\", all applicable, all \"at\"), 0 superseded attempts; 0 bad records, 0 bad blocks; non-vacuous",
+  "P2_cross_check": "the acceptance rule reproduces production's failure-event classification block for block on all three cells (c_star 37 events, unit 1, x0 0; 0 mismatches)",
+  "P3_other_gates": "G1-G5, G7-G9 True on all three cells, identical to W88 / W87 / W86",
+  "P4_fallback": "NOT triggered on any cell (all certified, every v32 gate True, |dQ| < bar_ref)",
+  "P5_reproduction": "W88's committed per-cell results, self-tests and R reproduced exactly",
+  "P6_self_tests": "every self-test verdict as declared (T1-T18)",
+  "P7_v31_v32_agree_on_real_cells": "v31 and v32 give the same G6 verdict (PASS) on all three real cells, because no T block has a superseded attempt",
+  "recorded": "BEFORE the recorded re-evaluation runs, and NOT BLIND. Seen first: the committed W88 re-evaluation (reeval_w88.json) including its REPORTED terminal-round tallies (48 primary records per cell, all \"at\", 0 not applicable, 0 non-primary records in T) and window tallies (0 tier-2 records in any W). Before the freeze the Worker ALSO ran an exploratory read of the three cells' persisted records (all rounds): ladder shapes -- c_star 4,187 (primary) / 34 (primary, recovery) / 3 (primary, recovery, recovery_tier2); n7_4h_e1 5,423 / 1 / 0; x0 6,384 / 0 / 0 -- exit tallies per attempt, the ladders of c_star rounds 5 / 11 / 13 / 23, and the failure-event class counts (c_star 34 recovered_tier1 + 3 recovered_tier2; unit 1 recovered_tier1; x0 none). That read shows the acceptance cross-check's COUNTS agree; the block-by-block cross-check and the per-cell v32 G6 were NOT executed on the n7_4h_e1 / x0 records before the freeze. Pre-freeze runs otherwise: py_compile and the self-tests (which read the c_star records file) through a scratchpad import writing nothing to the repository -- and self-test T7 IS the unaltered c_star population through the v32 gate, so the c_star v32 G6 verdict (PASS) WAS SEEN before the freeze. The first self-test run failed T18 (2 bad records, declared 1): the test CONSTRUCTION copied the recovery from the primary after altering the primary's tolerance; the construction was corrected to the declared transform (alter the superseded primary only), the expectation was not changed; all 18 then as declared. These predictions are a record of expectation from reported tallies, not a test of an unknown outcome."
+ },
+ "production_source_lines": {
+  "helper_functions": {
+   "git_clean": true,
+   "git_tracked": true,
+   "lines": {
+    "and result.solver.termination_condition in accepted_termination_conditions": true,
+    "po.TerminationCondition.optimal,": true,
+    "result.solver.status == po.SolverStatus.ok": true
+   },
+   "path": "helper_functions.py",
+   "sha256": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2"
+  },
+  "network": {
+   "git_clean": true,
+   "git_tracked": true,
+   "lines": {
+    "if not solver_result_succeeded(recovery_result):": true,
+    "log_suffix='recovery')": true,
+    "log_suffix='recovery_tier2')": true,
+    "recovery_attempted = _is_recoverable_network_failure(primary_result, params)": true
+   },
+   "path": "network.py",
+   "sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4"
+  }
+ },
+ "reason": "v31 ruling 1 judged EVERY applicable terminal-round record on floor status, so a primary that hit max_iter above the floor and was then successfully retried would fail G6 although the block converged properly (the Worker's W88 question 1; C* alone had 40 retry solves, so the larger 3 x 3 instance could plausibly have one in its terminal round). The gate's question is \"did each block's terminal solve reach the floor\" (Planner W89 step 1). v32 judges the final accepted attempt per block, keeps every per-record condition on every record, and keeps non-vacuity at one judged attempt per block and >= B judged applicable records. No threshold is raised or relaxed elsewhere; the fallback test is unchanged.",
+ "reference_R": {
+  "R_ref": 259427.76775527,
+  "bar_sum": 34734.63290083408
+ },
+ "references": {
+  "c_star": {
+   "Q_gross": 650912327.1956586,
+   "bar": 25146.48616361618,
+   "campaign": "s47_recert (spec 902f93aa)",
+   "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "certification_cycle": 87,
+   "cycles_run": 87,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star",
+   "eval_key": "070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb",
+   "files_git": {
+    "evaluation_record.json": {
+     "git_clean": true,
+     "git_tracked": true
+    },
+    "per_cycle_record.jsonl": {
+     "git_clean": true,
+     "git_tracked": true
+    }
+   },
+   "files_sha256": {
+    "evaluation_record.json": "6f1bace2e47c024520bf0ddfd35e86c5b9e5964eb3434c73d40365f92404f4bf",
+    "per_cycle_record.jsonl": "73d988d221f099b60cb19ab564f83f4998e22f651a38751f36c69b2dd51eaf3e"
+   },
+   "ok": true,
+   "peak_rss_child_bytes": 2577645568,
+   "rule_ten_terminal_step_over_threshold_production": 0.026940789592534445,
+   "solve_profile_observed": 4528,
+   "status": "certified",
+   "terminal_gross_step_abs": 1753.6139293909073,
+   "terminal_gross_step_over_threshold": 0.026940789592534445,
+   "terminal_objective_tolerance": 65091.4080809588,
+   "terminal_salvage_value": -1.9285001043605776e-34,
+   "wall_child_process_s": 2858.417144060135
+  },
+  "n7_4h_e1": {
+   "Q_gross": 653600033.4601703,
+   "bar": 25104.654562950134,
+   "campaign": "s47_recert (spec 902f93aa)",
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "certification_cycle": 112,
+   "cycles_run": 112,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/bd504ecf5a288d44_n7_4h_e1",
+   "eval_key": "bd504ecf5a288d447e53ef6f7e8090b017d15549b257aa095ff4f95890a06e42",
+   "files_git": {
+    "evaluation_record.json": {
+     "git_clean": true,
+     "git_tracked": true
+    },
+    "per_cycle_record.jsonl": {
+     "git_clean": true,
+     "git_tracked": true
+    }
+   },
+   "files_sha256": {
+    "evaluation_record.json": "d15f5e5ec88d6abacc0d80923ac7ac1ed84cec1791b4262405b6deba5ab976e8",
+    "per_cycle_record.jsonl": "82002e4f2f249bbf6e24d0060a9774952625dc0e62bbaee23889c8336511f439"
+   },
+   "ok": true,
+   "peak_rss_child_bytes": 2574581760,
+   "rule_ten_terminal_step_over_threshold_production": 0.05665180691137927,
+   "solve_profile_observed": 5764,
+   "status": "certified",
+   "terminal_gross_step_abs": 3702.76228928566,
+   "terminal_gross_step_over_threshold": 0.05665180691137927,
+   "terminal_objective_tolerance": 65360.00334601703,
+   "terminal_salvage_value": -7.807295072933878e-53,
+   "wall_child_process_s": 3145.606178998947
+  },
+  "x0": {
+   "Q_gross": 653859461.2279255,
+   "bar": 9629.97833788395,
+   "campaign": "s48_x0_capture (spec 4a50c0e2), C2-baseline declaration",
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "certification_cycle": 132,
+   "cross_check": {
+    "equal": {
+     "Q_gross": true,
+     "bar": true,
+     "candidate_key": true,
+     "certification_cycle": true,
+     "cycles_run": true,
+     "terminal_gross_step_abs": true
+    },
+    "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0",
+    "eval_key": "7aa017f09989b56d17a1307d7ae2d9d86582e9666295ee9e25ef560ee32f975b",
+    "files_sha256": {
+     "evaluation_record.json": "34868965df76a9f1dc62d93d6ce4e2a50ceb4e12f8d3f2aeb4f8c96742bb4835",
+     "per_cycle_record.jsonl": "8663b96213c87dbb69d90790fc4fe771106f2bd838e17d9809f752cdf7a2f01e"
+    },
+    "note": "the pinned A0 x0 record (C3-era spec, no ageing declaration) -- the mixed-era artefact this re-run retires; equal to the C2-declared record on every field"
+   },
+   "cycles_run": 132,
+   "eval_dir": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0",
+   "eval_key": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7",
+   "files_git": {
+    "evaluation_record.json": {
+     "git_clean": true,
+     "git_tracked": true
+    },
+    "per_cycle_record.jsonl": {
+     "git_clean": true,
+     "git_tracked": true
+    }
+   },
+   "files_sha256": {
+    "evaluation_record.json": "a5ca47231348be7da5cb044c5ee4cdd6b03accfc084125a4b8402ae24df98939",
+    "per_cycle_record.jsonl": "8663b96213c87dbb69d90790fc4fe771106f2bd838e17d9809f752cdf7a2f01e"
+   },
+   "ok": true,
+   "peak_rss_child_bytes": 3470491648,
+   "rule_ten_terminal_step_over_threshold_production": 0.003362677294765486,
+   "solve_profile_observed": 6783,
+   "status": "certified",
+   "terminal_gross_step_abs": 219.8718364238739,
+   "terminal_gross_step_over_threshold": 0.003362677294765486,
+   "terminal_objective_tolerance": 65385.94612279256,
+   "terminal_salvage_value": 0.0,
+   "wall_child_process_s": 3193.380092859268
+  }
+ },
+ "schema": "p515_frozen_spec_v32",
+ "scope_limit_ruling_2": "the ruling-2 path (a not-applicable tier-2 record inside W u {T}) is exercised ONLY by self-tests (T1-T6): none of the three SRP1 cells has a tier-2 retry in W or T (their tier-2 records are C* rounds 11 / 13 / 23, pre-tail)",
+ "script": "p515_s53_w89_g6_final_attempt_reeval.py",
+ "script_sha256": "d1d543bf3c38098921765b6c18b9b9b64600932985211364f150b8b24595565e",
+ "self_tests_declared": [
+  {
+   "base": "c_star tier-2 record (round 11)",
+   "expect": [],
+   "id": "T1",
+   "level": "record",
+   "transform": "round -> min(W); compl_inf_tol_in_force -> 1e-6",
+   "why": "W88 T1: a legitimate adaptive-mu retry inside the window passes the per-record predicate"
+  },
+  {
+   "base": "c_star tier-2 record (round 11)",
+   "expect": [
+    "compl_inf_tol_in_force"
+   ],
+   "id": "T2",
+   "level": "record",
+   "transform": "round -> min(W); compl_inf_tol_in_force kept 1e-4",
+   "why": "W88 T2: the tolerance condition still applies to a tier-2 record"
+  },
+  {
+   "base": "c_star tier-2 record (round 11)",
+   "expect": [
+    "options_list_agrees"
+   ],
+   "id": "T3",
+   "level": "record",
+   "transform": "round -> min(W); compl_inf_tol_in_force -> 1e-6; options_list_agrees -> False",
+   "why": "W88 T3: the options-list condition still applies"
+  },
+  {
+   "base": "c_star tier-2 record (round 11)",
+   "expect": [
+    "parse_reason_beyond_not_applicable"
+   ],
+   "id": "T4",
+   "level": "record",
+   "transform": "round -> min(W); compl_inf_tol_in_force -> 1e-6; parse_reason += \"; no IPOPT options list precedes the banner in the attempt segment\"",
+   "why": "W88 T4: another parse problem is not excused"
+  },
+  {
+   "base": "c_star tier-2 record (round 11)",
+   "expect": [
+    "not_applicable_outside_declared_class"
+   ],
+   "id": "T5",
+   "level": "record",
+   "transform": "round -> min(W); compl_inf_tol_in_force -> 1e-6; attempt -> \"primary\"",
+   "why": "W88 T5: a not-applicable declaration outside the tier-2 / adaptive class fails"
+  },
+  {
+   "base": "c_star records; the round-11 case33_3/2035/Winter ladder",
+   "expect_bad_blocks": 0,
+   "expect_bad_records": 0,
+   "expect_non_vacuity_components_false": [
+    "terminal_judged_applicable_ge_B"
+   ],
+   "expect_pass": false,
+   "id": "T6",
+   "level": "population",
+   "transform": "the whole round-11 ladder of that block (primary max_iter above, recovery max_iter above, tier-2 Optimal, floor not applicable) transplanted into T in place of the block's T primary, round -> T, compl_inf_tol_in_force -> 1e-6",
+   "why": "RECORDED CONSEQUENCE of \">= B judged applicable\": a final accepted tier-2 attempt in T cannot be shown at the floor, so G6 fails through non-vacuity only; every record (tier-2 included, ruling 2) passes"
+  },
+  {
+   "base": "c_star records",
+   "expect_bad_blocks": 0,
+   "expect_bad_records": 0,
+   "expect_non_vacuity_components_false": [],
+   "expect_pass": true,
+   "id": "T7",
+   "level": "population",
+   "transform": "none",
+   "why": "positive control: the real cell passes"
+  },
+  {
+   "base": "c_star records",
+   "expect_bad_records": 0,
+   "expect_block_failures": [
+    "final_accepted_attempt_floor_not_at"
+   ],
+   "expect_non_vacuity_components_false": [],
+   "expect_pass": false,
+   "id": "T8",
+   "level": "population",
+   "transform": "one T primary (no retry) floor_status -> \"above\", mu_over_floor -> 7.0",
+   "why": "W88 T8 at block level: the final (and only) accepted attempt above the floor fails"
+  },
+  {
+   "base": "c_star window primary above the floor (round 82, max_iter)",
+   "expect": [],
+   "id": "T9",
+   "level": "record",
+   "transform": "none",
+   "why": "W88 T9: floor status outside T is reported, not judged"
+  },
+  {
+   "base": "non-vacuity on a synthetic count",
+   "expect_non_vacuous": false,
+   "id": "T10",
+   "level": "count",
+   "transform": "B blocks in T, one judged attempt each, B - 1 of them applicable",
+   "why": "fewer than B judged applicable attempts in T fails as loudly as a bad record"
+  },
+  {
+   "base": "c_star records; one T primary",
+   "expect_bad_records": 0,
+   "expect_block_failures": [
+    "final_accepted_attempt_floor_not_at"
+   ],
+   "expect_non_vacuity_components_false": [],
+   "expect_pass": false,
+   "expect_v31_fails": true,
+   "id": "T11",
+   "level": "population",
+   "transform": "PLANNER NEGATIVE CONTROL (a): the T primary -> exit max_iter, floor \"above\" (mu_over_floor 7.0); a recovery attempt appended (copy of it: attempt recovery, exit Optimal, floor \"above\", mu_over_floor 3.0)",
+   "why": "the FINAL ACCEPTED attempt is above the floor: FAIL"
+  },
+  {
+   "base": "c_star records; one T primary",
+   "expect_bad_blocks": 0,
+   "expect_bad_records": 0,
+   "expect_non_vacuity_components_false": [],
+   "expect_pass": true,
+   "expect_v31_fails": true,
+   "id": "T12",
+   "level": "population",
+   "transform": "PLANNER NEGATIVE CONTROL (b): the T primary -> exit max_iter, floor \"above\" (mu_over_floor 7.0); a recovery attempt appended (attempt recovery, exit Optimal, floor \"at\", mu_over_floor 1.0)",
+   "why": "only a SUPERSEDED attempt is above the floor: PASS under v32 (v31 FAILED it -- the defect W89 fixes); the superseded attempt is counted and reported"
+  },
+  {
+   "base": "c_star records; one T primary",
+   "expect_bad_records": 0,
+   "expect_block_failures": [
+    "no_accepted_attempt"
+   ],
+   "expect_non_vacuity_components_false": [
+    "terminal_judged_applicable_ge_B"
+   ],
+   "expect_pass": false,
+   "id": "T13",
+   "level": "population",
+   "transform": "PLANNER NEGATIVE CONTROL (c): the T primary -> exit max_iter above; recovery appended (exit max_iter, above); tier-2 appended (copy of the real round-11 tier-2 record: round T, same block, compl_inf_tol_in_force 1e-6, exit -> \"Maximum Number of Iterations Exceeded.\")",
+   "why": "a block of T with NO accepted attempt fails (and its judged attempt, a tier-2, is not applicable)"
+  },
+  {
+   "base": "c_star records; one T primary",
+   "expect_bad_records": 0,
+   "expect_block_failures": [
+    "no_accepted_attempt"
+   ],
+   "expect_non_vacuity_components_false": [],
+   "expect_pass": false,
+   "id": "T14",
+   "level": "population",
+   "transform": "the T primary -> exit \"Converged to a point of local infeasibility. Problem may be infeasible.\" (no retry)",
+   "why": "a single-attempt block of T whose only attempt was not accepted fails (no accepted attempt)"
+  },
+  {
+   "base": "c_star records; one T primary",
+   "expect_bad_records": 0,
+   "expect_block_failures": [
+    "superseded_attempt_accepted"
+   ],
+   "expect_non_vacuity_components_false": [],
+   "expect_pass": false,
+   "id": "T15",
+   "level": "population",
+   "transform": "a recovery attempt appended after an ACCEPTED primary (exit Optimal, floor at on both)",
+   "why": "production never retries an accepted solve: a superseded accepted attempt means the ladder is not production's"
+  },
+  {
+   "base": "c_star records; one T primary",
+   "expect_bad_records": 0,
+   "expect_block_failures": [
+    "ladder_malformed",
+    "superseded_attempt_accepted"
+   ],
+   "expect_non_vacuity_components_false": [
+    "v30_part"
+   ],
+   "expect_pass": false,
+   "id": "T16",
+   "level": "population",
+   "transform": "the T primary duplicated (two primary records for one block)",
+   "why": "a malformed ladder fails (the first, accepted, primary is superseded by its duplicate; and the round holds B + 1 primaries: v30 non-vacuity fails too)"
+  },
+  {
+   "base": "c_star records; one T primary",
+   "expect_bad_blocks": 0,
+   "expect_bad_records": 0,
+   "expect_non_vacuity_components_false": [
+    "v30_part",
+    "terminal_blocks_eq_B",
+    "terminal_judged_applicable_ge_B"
+   ],
+   "expect_pass": false,
+   "id": "T17",
+   "level": "population",
+   "transform": "the T primary deleted (T holds B - 1 blocks)",
+   "why": "a missing block fails non-vacuity -- the fix cannot hollow the gate out"
+  },
+  {
+   "base": "c_star records; one T primary",
+   "expect_bad_blocks": 0,
+   "expect_bad_records": 1,
+   "expect_non_vacuity_components_false": [],
+   "expect_pass": false,
+   "id": "T18",
+   "level": "population",
+   "transform": "as T12 (superseded primary above, accepted recovery at) but the SUPERSEDED primary's compl_inf_tol_in_force -> 1e-4",
+   "why": "superseded attempts are excused only from the floor test: every other per-record condition still applies"
+  }
+ ],
+ "solve_claim": "ZERO SOLVES, guard-verified: SolveProfileGuard(permitted=()) armed at import before any project import, plus the imported W88, W87 and W86-launcher permitted=() guards; all four verify(0) == [] on every exit path",
+ "stage": "P5.15 Addendum 46 ruling 7, W89 step 1 -- G6 v32: the terminal round judged on the final accepted attempt per block (superseded attempts counted and reported, never judged on floor status); the W86 tight-tail re-certification re-evaluated from its persisted records under v32 (zero solves)",
+ "v31_G6_verbatim_superseded": {
+  "applicability": "a record is NOT APPLICABLE iff its parse_reason, split on \"; \" (the parser's join), holds a component starting \"monotone mu-floor formula not applicable:\" -- the declaration network.parse_ipopt_attempt_segment makes when the attempt passes mu_strategy / barrier_tol_factor / mu_target / mu_min. Every other record is APPLICABLE. residual_reasons = the parse_reason components other than that declaration.",
+  "design_consequence_recorded": "ruling 1 judges EVERY applicable terminal-round record, including a primary that failed and was retried: a terminal-round primary that exits at max_iter above the floor fails G6 even if its tier-1 retry reaches the floor. None of the three cells has a non-primary record in T (W87 reported tallies); stated here so the rule is not discovered later",
+  "floor_status_definition": "the persisted field, computed by the production parser: \"at\" iff |mu_final / mu_floor - 1| <= 1e-3, mu_floor = min(tol, compl_inf_tol * obj_scaling) / 11. Recomputed from the persisted mu_over_floor and REPORTED (agreement), not gated.",
+  "name": "G6_floor_records_v31",
+  "non_vacuity": "v30 verbatim (P non-empty; every round of W u {T} holds exactly 48 primary-attempt records and >= 48 records) AND [RULING 1, new] the terminal round T holds >= 48 APPLICABLE records",
+  "not_judged": "floor status outside T (window rounds before T: reported, as in v30); exit status (reported); pre-tail records (reported evidence, as in v30)",
+  "passes_iff": "non_vacuity holds AND every record of P satisfies its predicate",
+  "population_unchanged_from_v30": "P(cell) = { r in <eval_dir>/network_ipopt_solve_records.jsonl : r.round in W u {T} }, W = { p.cycle : p in convergence_depth_tail_state.json per_cycle, p.active is True }, T = evaluation_record.cycles_run; every attempt (primary, recovery, recovery_tier2)",
+  "predicate_applicable_record": "compl_inf_tol_in_force == 1e-6 if r.round in W else the network's production value; AND options_list_agrees is True; AND parse_reason is None [v30 verbatim]; AND, if r.round == T: floor_status == \"at\" [RULING 1, new]",
+  "predicate_not_applicable_record": "compl_inf_tol_in_force == 1e-6 if r.round in W else the production value; AND options_list_agrees is True; AND residual_reasons is empty (no parse problem other than the declaration); AND attempt == \"recovery_tier2\" AND mu_strategy_passed == \"adaptive\" (the declared class -- a not-applicable record of any other kind FAILS) [RULING 2, new]. Its floor test is recorded NOT APPLICABLE and counted, in every judged round including T.",
+  "replaces": "v30 per_entry_gates.G6_floor_records_tail_window"
+ },
+ "version": 32,
+ "w88_script_sha256": "df6488ebaef4d5808ce1814b23198997fed7f3230e280381a65201561f75bec8"
+}

@@ -1,0 +1,160 @@
+14:58:38 [S49-FLEX] memory preflight: available (memsize - wired - anonymous - compressor-occupied) = 20.61 GiB [wired 2.61, anonymous 6.90, compressor-occupied 1.89]; free+inactive = 15.19 GiB (recorded only); required 13.75 GiB (hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 5 x 2.75 GiB) -> PASS; vm_stat pages {'pages_free': 19361, 'pages_active': 752093, 'pages_inactive': 975964, 'pages_speculative': 6471, 'pages_wired_down': 170723, 'pages_purgeable': 23843, 'file_backed_pages': 1282479, 'anonymous_pages': 452049, 'pages_stored_in_compressor': 247446, 'pages_occupied_by_compressor': 123675}
+14:58:38 [S49-FLEX] MODEL VARIANT — flexibility price × m under BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)
+14:58:38 [S49-FLEX] preconditions passed; spec data/SRP1/Results/P515S49/campaign_s49_flex_ladder/campaign_spec_s49_flex_ladder_2203f6c1.json sha256=2203f6c1759a8419e566bc4536ef76d2ab44bb4b3ca72f7786638341f7cd899e; git HEAD 55ff2ccae76edfa0b4422c310acfd1418ea0840e (spec frozen at 812ee116801aad1d7bf8aa7667023f24ffee5e21)
+14:58:38 [S49-FLEX] 6 points in 2 waves [['x0_m1p5', 'n7_4h_e1_m1p5', 'x0_m2', 'n7_4h_e1_m2', 'x0_m3'], ['n7_4h_e1_m3']]; stop rule: as a1a (Planner task W15, spec v15 execution.barrier): after every wave, STOP (launch no further wave) if (a) 2 or more non-certified points fall in ONE region (node+duration ladder) or (b) 3 or more non-certified points occur overall. A single isolated non-certified point does NOT stop the campaign. Points already running always finish; unlaunched points are recorded as not_launched_stop_rule and campaign_results.json carries STOP_FOR_REVIEW true (exit 3).
+14:58:38 [S49-FLEX] campaign lock acquired: {'pid': 4231, 'campaign_id': 's49_flex_ladder', 'campaign_spec_sha256': '2203f6c1759a8419e566bc4536ef76d2ab44bb4b3ca72f7786638341f7cd899e', 'started_utc': '2026-09-22T14:58:38.340791+00:00'}
+14:58:38 [S49-FLEX] launching wave 1/2: ['x0_m1p5', 'n7_4h_e1_m1p5', 'x0_m2', 'n7_4h_e1_m2', 'x0_m3'] (concurrency 5)
+14:58:38 [S44-HARNESS] launched x0_m1p5 (key 8435c71859ddde68) pid=4263
+14:58:38 [S44-HARNESS] launched n7_4h_e1_m1p5 (key db77e1549af855bc) pid=4264
+14:58:38 [S44-HARNESS] launched x0_m2 (key 8435c71859ddde68) pid=4265
+14:58:38 [S44-HARNESS] launched n7_4h_e1_m2 (key db77e1549af855bc) pid=4266
+14:58:38 [S44-HARNESS] launched x0_m3 (key 8435c71859ddde68) pid=4267
+14:58:38 [S44-HARNESS] heartbeat x0_m1p5: 0s cycle=None; n7_4h_e1_m1p5: 0s cycle=None; x0_m2: 0s cycle=None; n7_4h_e1_m2: 0s cycle=None; x0_m3: 0s cycle=None
+14:59:38 [S44-HARNESS] heartbeat x0_m1p5: 60s cycle=None; n7_4h_e1_m1p5: 60s cycle=None; x0_m2: 60s cycle=None; n7_4h_e1_m2: 60s cycle=None; x0_m3: 60s cycle=None
+15:00:38 [S44-HARNESS] heartbeat x0_m1p5: 120s cycle=2; n7_4h_e1_m1p5: 120s cycle=1; x0_m2: 120s cycle=2; n7_4h_e1_m2: 120s cycle=1; x0_m3: 120s cycle=2
+15:01:38 [S44-HARNESS] heartbeat x0_m1p5: 180s cycle=4; n7_4h_e1_m1p5: 180s cycle=3; x0_m2: 180s cycle=4; n7_4h_e1_m2: 180s cycle=3; x0_m3: 180s cycle=4
+15:02:38 [S44-HARNESS] heartbeat x0_m1p5: 240s cycle=6; n7_4h_e1_m1p5: 240s cycle=5; x0_m2: 240s cycle=6; n7_4h_e1_m2: 240s cycle=5; x0_m3: 240s cycle=6
+15:03:38 [S44-HARNESS] heartbeat x0_m1p5: 300s cycle=8; n7_4h_e1_m1p5: 300s cycle=7; x0_m2: 300s cycle=8; n7_4h_e1_m2: 300s cycle=7; x0_m3: 300s cycle=8
+15:04:38 [S44-HARNESS] heartbeat x0_m1p5: 361s cycle=10; n7_4h_e1_m1p5: 360s cycle=9; x0_m2: 360s cycle=10; n7_4h_e1_m2: 360s cycle=9; x0_m3: 360s cycle=11
+15:05:38 [S44-HARNESS] heartbeat x0_m1p5: 421s cycle=12; n7_4h_e1_m1p5: 421s cycle=11; x0_m2: 421s cycle=13; n7_4h_e1_m2: 421s cycle=11; x0_m3: 421s cycle=13
+15:06:39 [S44-HARNESS] heartbeat x0_m1p5: 481s cycle=15; n7_4h_e1_m1p5: 481s cycle=13; x0_m2: 481s cycle=15; n7_4h_e1_m2: 481s cycle=12; x0_m3: 481s cycle=15
+15:07:39 [S44-HARNESS] heartbeat x0_m1p5: 541s cycle=17; n7_4h_e1_m1p5: 541s cycle=15; x0_m2: 541s cycle=17; n7_4h_e1_m2: 541s cycle=14; x0_m3: 541s cycle=17
+15:08:39 [S44-HARNESS] heartbeat x0_m1p5: 601s cycle=19; n7_4h_e1_m1p5: 601s cycle=16; x0_m2: 601s cycle=19; n7_4h_e1_m2: 601s cycle=16; x0_m3: 601s cycle=19
+15:09:39 [S44-HARNESS] heartbeat x0_m1p5: 661s cycle=21; n7_4h_e1_m1p5: 661s cycle=18; x0_m2: 661s cycle=21; n7_4h_e1_m2: 661s cycle=18; x0_m3: 661s cycle=22
+15:10:39 [S44-HARNESS] heartbeat x0_m1p5: 721s cycle=23; n7_4h_e1_m1p5: 721s cycle=20; x0_m2: 721s cycle=24; n7_4h_e1_m2: 721s cycle=20; x0_m3: 721s cycle=24
+15:11:39 [S44-HARNESS] heartbeat x0_m1p5: 781s cycle=26; n7_4h_e1_m1p5: 781s cycle=22; x0_m2: 781s cycle=26; n7_4h_e1_m2: 781s cycle=22; x0_m3: 781s cycle=26
+15:12:39 [S44-HARNESS] heartbeat x0_m1p5: 841s cycle=28; n7_4h_e1_m1p5: 841s cycle=24; x0_m2: 841s cycle=28; n7_4h_e1_m2: 841s cycle=24; x0_m3: 841s cycle=28
+15:13:39 [S44-HARNESS] heartbeat x0_m1p5: 901s cycle=30; n7_4h_e1_m1p5: 901s cycle=26; x0_m2: 901s cycle=30; n7_4h_e1_m2: 901s cycle=26; x0_m3: 901s cycle=31
+15:14:39 [S44-HARNESS] heartbeat x0_m1p5: 962s cycle=32; n7_4h_e1_m1p5: 962s cycle=28; x0_m2: 962s cycle=32; n7_4h_e1_m2: 962s cycle=28; x0_m3: 962s cycle=33
+15:15:40 [S44-HARNESS] heartbeat x0_m1p5: 1022s cycle=34; n7_4h_e1_m1p5: 1022s cycle=30; x0_m2: 1022s cycle=35; n7_4h_e1_m2: 1022s cycle=30; x0_m3: 1022s cycle=35
+15:16:40 [S44-HARNESS] heartbeat x0_m1p5: 1082s cycle=37; n7_4h_e1_m1p5: 1082s cycle=32; x0_m2: 1082s cycle=37; n7_4h_e1_m2: 1082s cycle=32; x0_m3: 1082s cycle=37
+15:17:40 [S44-HARNESS] heartbeat x0_m1p5: 1142s cycle=39; n7_4h_e1_m1p5: 1142s cycle=34; x0_m2: 1142s cycle=39; n7_4h_e1_m2: 1142s cycle=34; x0_m3: 1142s cycle=39
+15:18:40 [S44-HARNESS] heartbeat x0_m1p5: 1202s cycle=41; n7_4h_e1_m1p5: 1202s cycle=36; x0_m2: 1202s cycle=41; n7_4h_e1_m2: 1202s cycle=36; x0_m3: 1202s cycle=42
+15:19:40 [S44-HARNESS] heartbeat x0_m1p5: 1262s cycle=43; n7_4h_e1_m1p5: 1262s cycle=38; x0_m2: 1262s cycle=44; n7_4h_e1_m2: 1262s cycle=38; x0_m3: 1262s cycle=44
+15:20:40 [S44-HARNESS] heartbeat x0_m1p5: 1322s cycle=46; n7_4h_e1_m1p5: 1322s cycle=40; x0_m2: 1322s cycle=46; n7_4h_e1_m2: 1322s cycle=40; x0_m3: 1322s cycle=46
+15:21:40 [S44-HARNESS] heartbeat x0_m1p5: 1382s cycle=48; n7_4h_e1_m1p5: 1382s cycle=42; x0_m2: 1382s cycle=48; n7_4h_e1_m2: 1382s cycle=42; x0_m3: 1382s cycle=48
+15:22:40 [S44-HARNESS] heartbeat x0_m1p5: 1442s cycle=50; n7_4h_e1_m1p5: 1442s cycle=44; x0_m2: 1442s cycle=50; n7_4h_e1_m2: 1442s cycle=44; x0_m3: 1442s cycle=51
+15:23:40 [S44-HARNESS] heartbeat x0_m1p5: 1502s cycle=52; n7_4h_e1_m1p5: 1502s cycle=46; x0_m2: 1502s cycle=52; n7_4h_e1_m2: 1502s cycle=46; x0_m3: 1502s cycle=53
+15:24:40 [S44-HARNESS] heartbeat x0_m1p5: 1563s cycle=54; n7_4h_e1_m1p5: 1563s cycle=48; x0_m2: 1563s cycle=55; n7_4h_e1_m2: 1563s cycle=48; x0_m3: 1563s cycle=55
+15:25:41 [S44-HARNESS] heartbeat x0_m1p5: 1623s cycle=57; n7_4h_e1_m1p5: 1623s cycle=50; x0_m2: 1623s cycle=57; n7_4h_e1_m2: 1623s cycle=50; x0_m3: 1623s cycle=57
+15:26:41 [S44-HARNESS] heartbeat x0_m1p5: 1683s cycle=59; n7_4h_e1_m1p5: 1683s cycle=52; x0_m2: 1683s cycle=59; n7_4h_e1_m2: 1683s cycle=52; x0_m3: 1683s cycle=60
+15:27:41 [S44-HARNESS] heartbeat x0_m1p5: 1743s cycle=61; n7_4h_e1_m1p5: 1743s cycle=55; x0_m2: 1743s cycle=61; n7_4h_e1_m2: 1743s cycle=54; x0_m3: 1743s cycle=62
+15:28:41 [S44-HARNESS] heartbeat x0_m1p5: 1803s cycle=63; n7_4h_e1_m1p5: 1803s cycle=57; x0_m2: 1803s cycle=64; n7_4h_e1_m2: 1803s cycle=56; x0_m3: 1803s cycle=64
+15:29:41 [S44-HARNESS] heartbeat x0_m1p5: 1863s cycle=66; n7_4h_e1_m1p5: 1863s cycle=59; x0_m2: 1863s cycle=66; n7_4h_e1_m2: 1863s cycle=58; x0_m3: 1863s cycle=66
+15:30:41 [S44-HARNESS] heartbeat x0_m1p5: 1923s cycle=68; n7_4h_e1_m1p5: 1923s cycle=61; x0_m2: 1923s cycle=68; n7_4h_e1_m2: 1923s cycle=60; x0_m3: 1923s cycle=69
+15:31:41 [S44-HARNESS] heartbeat x0_m1p5: 1983s cycle=70; n7_4h_e1_m1p5: 1983s cycle=63; x0_m2: 1983s cycle=70; n7_4h_e1_m2: 1983s cycle=62; x0_m3: 1983s cycle=71
+15:32:41 [S44-HARNESS] heartbeat x0_m1p5: 2043s cycle=72; n7_4h_e1_m1p5: 2043s cycle=65; x0_m2: 2043s cycle=73; n7_4h_e1_m2: 2043s cycle=64; x0_m3: 2043s cycle=73
+15:33:41 [S44-HARNESS] heartbeat x0_m1p5: 2104s cycle=74; n7_4h_e1_m1p5: 2104s cycle=67; x0_m2: 2104s cycle=75; n7_4h_e1_m2: 2104s cycle=66; x0_m3: 2104s cycle=75
+15:34:42 [S44-HARNESS] heartbeat x0_m1p5: 2164s cycle=77; n7_4h_e1_m1p5: 2164s cycle=69; x0_m2: 2164s cycle=77; n7_4h_e1_m2: 2164s cycle=68; x0_m3: 2164s cycle=78
+15:35:42 [S44-HARNESS] heartbeat x0_m1p5: 2224s cycle=79; n7_4h_e1_m1p5: 2224s cycle=71; x0_m2: 2224s cycle=79; n7_4h_e1_m2: 2224s cycle=70; x0_m3: 2224s cycle=80
+15:36:32 [S44-HARNESS] finished x0_m3 pid=4267 exit=0 status=certified wall=2274s
+15:36:42 [S44-HARNESS] heartbeat x0_m1p5: 2284s cycle=81; n7_4h_e1_m1p5: 2284s cycle=73; x0_m2: 2284s cycle=82; n7_4h_e1_m2: 2284s cycle=73
+15:37:42 [S44-HARNESS] heartbeat x0_m1p5: 2344s cycle=83; n7_4h_e1_m1p5: 2344s cycle=75; x0_m2: 2344s cycle=84; n7_4h_e1_m2: 2344s cycle=75
+15:38:42 [S44-HARNESS] heartbeat x0_m1p5: 2404s cycle=86; n7_4h_e1_m1p5: 2404s cycle=77; x0_m2: 2404s cycle=86; n7_4h_e1_m2: 2404s cycle=77
+15:39:42 [S44-HARNESS] heartbeat x0_m1p5: 2464s cycle=88; n7_4h_e1_m1p5: 2464s cycle=79; x0_m2: 2464s cycle=88; n7_4h_e1_m2: 2464s cycle=79
+15:40:42 [S44-HARNESS] heartbeat x0_m1p5: 2524s cycle=90; n7_4h_e1_m1p5: 2524s cycle=81; x0_m2: 2524s cycle=91; n7_4h_e1_m2: 2524s cycle=81
+15:41:42 [S44-HARNESS] heartbeat x0_m1p5: 2584s cycle=92; n7_4h_e1_m1p5: 2584s cycle=83; x0_m2: 2584s cycle=93; n7_4h_e1_m2: 2584s cycle=83
+15:42:42 [S44-HARNESS] heartbeat x0_m1p5: 2644s cycle=95; n7_4h_e1_m1p5: 2644s cycle=85; x0_m2: 2644s cycle=95; n7_4h_e1_m2: 2644s cycle=85
+15:43:42 [S44-HARNESS] heartbeat x0_m1p5: 2704s cycle=97; n7_4h_e1_m1p5: 2704s cycle=88; x0_m2: 2704s cycle=97; n7_4h_e1_m2: 2704s cycle=87
+15:44:42 [S44-HARNESS] heartbeat x0_m1p5: 2765s cycle=99; n7_4h_e1_m1p5: 2765s cycle=90; x0_m2: 2765s cycle=100; n7_4h_e1_m2: 2764s cycle=89
+15:45:42 [S44-HARNESS] heartbeat x0_m1p5: 2825s cycle=101; n7_4h_e1_m1p5: 2825s cycle=92; x0_m2: 2825s cycle=102; n7_4h_e1_m2: 2825s cycle=91
+15:45:52 [S44-HARNESS] finished x0_m1p5 pid=4263 exit=0 status=certified wall=2835s
+15:46:38 [S44-HARNESS] finished n7_4h_e1_m1p5 pid=4264 exit=0 status=certified wall=2880s
+15:46:43 [S44-HARNESS] heartbeat x0_m2: 2885s cycle=104; n7_4h_e1_m2: 2885s cycle=93
+15:47:43 [S44-HARNESS] heartbeat x0_m2: 2945s cycle=106; n7_4h_e1_m2: 2945s cycle=95
+15:48:43 [S44-HARNESS] heartbeat x0_m2: 3005s cycle=109; n7_4h_e1_m2: 3005s cycle=98
+15:49:43 [S44-HARNESS] heartbeat x0_m2: 3065s cycle=111; n7_4h_e1_m2: 3065s cycle=100
+15:50:43 [S44-HARNESS] heartbeat x0_m2: 3125s cycle=114; n7_4h_e1_m2: 3125s cycle=102
+15:51:43 [S44-HARNESS] heartbeat x0_m2: 3185s cycle=116; n7_4h_e1_m2: 3185s cycle=104
+15:52:43 [S44-HARNESS] heartbeat x0_m2: 3245s cycle=118; n7_4h_e1_m2: 3245s cycle=106
+15:53:43 [S44-HARNESS] heartbeat x0_m2: 3306s cycle=121; n7_4h_e1_m2: 3306s cycle=109
+15:54:44 [S44-HARNESS] heartbeat x0_m2: 3366s cycle=123; n7_4h_e1_m2: 3366s cycle=111
+15:55:44 [S44-HARNESS] heartbeat x0_m2: 3426s cycle=126; n7_4h_e1_m2: 3426s cycle=113
+15:56:44 [S44-HARNESS] heartbeat x0_m2: 3486s cycle=128; n7_4h_e1_m2: 3486s cycle=115
+15:57:44 [S44-HARNESS] heartbeat x0_m2: 3546s cycle=130; n7_4h_e1_m2: 3546s cycle=117
+15:58:44 [S44-HARNESS] heartbeat x0_m2: 3606s cycle=133; n7_4h_e1_m2: 3606s cycle=120
+15:59:14 [S44-HARNESS] finished x0_m2 pid=4265 exit=0 status=certified wall=3636s
+15:59:44 [S44-HARNESS] heartbeat n7_4h_e1_m2: 3666s cycle=122
+16:00:44 [S44-HARNESS] heartbeat n7_4h_e1_m2: 3726s cycle=124
+16:01:44 [S44-HARNESS] heartbeat n7_4h_e1_m2: 3786s cycle=127
+16:02:44 [S44-HARNESS] heartbeat n7_4h_e1_m2: 3847s cycle=129
+16:03:45 [S44-HARNESS] heartbeat n7_4h_e1_m2: 3907s cycle=132
+16:03:55 [S44-HARNESS] finished n7_4h_e1_m2 pid=4266 exit=0 status=certified wall=3917s
+16:03:55 [S49-FLEX] launching wave 2/2: ['n7_4h_e1_m3'] (concurrency 5)
+16:03:55 [S44-HARNESS] launched n7_4h_e1_m3 (key db77e1549af855bc) pid=33070
+16:03:55 [S44-HARNESS] heartbeat n7_4h_e1_m3: 0s cycle=None
+16:04:55 [S44-HARNESS] heartbeat n7_4h_e1_m3: 60s cycle=None
+16:05:55 [S44-HARNESS] heartbeat n7_4h_e1_m3: 120s cycle=2
+16:06:55 [S44-HARNESS] heartbeat n7_4h_e1_m3: 180s cycle=5
+16:07:55 [S44-HARNESS] heartbeat n7_4h_e1_m3: 240s cycle=7
+16:08:55 [S44-HARNESS] heartbeat n7_4h_e1_m3: 301s cycle=9
+16:09:55 [S44-HARNESS] heartbeat n7_4h_e1_m3: 361s cycle=12
+16:10:55 [S44-HARNESS] heartbeat n7_4h_e1_m3: 421s cycle=14
+16:11:55 [S44-HARNESS] heartbeat n7_4h_e1_m3: 481s cycle=16
+16:12:56 [S44-HARNESS] heartbeat n7_4h_e1_m3: 541s cycle=19
+16:13:56 [S44-HARNESS] heartbeat n7_4h_e1_m3: 601s cycle=21
+16:14:56 [S44-HARNESS] heartbeat n7_4h_e1_m3: 661s cycle=23
+16:15:56 [S44-HARNESS] heartbeat n7_4h_e1_m3: 721s cycle=26
+16:16:56 [S44-HARNESS] heartbeat n7_4h_e1_m3: 781s cycle=28
+16:17:56 [S44-HARNESS] heartbeat n7_4h_e1_m3: 842s cycle=30
+16:18:56 [S44-HARNESS] heartbeat n7_4h_e1_m3: 902s cycle=33
+16:19:56 [S44-HARNESS] heartbeat n7_4h_e1_m3: 962s cycle=35
+16:20:56 [S44-HARNESS] heartbeat n7_4h_e1_m3: 1022s cycle=38
+16:21:57 [S44-HARNESS] heartbeat n7_4h_e1_m3: 1082s cycle=40
+16:22:57 [S44-HARNESS] heartbeat n7_4h_e1_m3: 1142s cycle=43
+16:23:57 [S44-HARNESS] heartbeat n7_4h_e1_m3: 1202s cycle=45
+16:24:57 [S44-HARNESS] heartbeat n7_4h_e1_m3: 1262s cycle=47
+16:25:57 [S44-HARNESS] heartbeat n7_4h_e1_m3: 1322s cycle=50
+16:26:57 [S44-HARNESS] heartbeat n7_4h_e1_m3: 1383s cycle=52
+16:27:57 [S44-HARNESS] heartbeat n7_4h_e1_m3: 1443s cycle=54
+16:28:57 [S44-HARNESS] heartbeat n7_4h_e1_m3: 1503s cycle=57
+16:29:57 [S44-HARNESS] heartbeat n7_4h_e1_m3: 1563s cycle=59
+16:30:58 [S44-HARNESS] heartbeat n7_4h_e1_m3: 1623s cycle=62
+16:31:58 [S44-HARNESS] heartbeat n7_4h_e1_m3: 1683s cycle=64
+16:32:58 [S44-HARNESS] heartbeat n7_4h_e1_m3: 1743s cycle=66
+16:33:58 [S44-HARNESS] heartbeat n7_4h_e1_m3: 1803s cycle=69
+16:34:58 [S44-HARNESS] heartbeat n7_4h_e1_m3: 1863s cycle=71
+16:35:58 [S44-HARNESS] heartbeat n7_4h_e1_m3: 1924s cycle=74
+16:36:58 [S44-HARNESS] heartbeat n7_4h_e1_m3: 1984s cycle=76
+16:37:58 [S44-HARNESS] heartbeat n7_4h_e1_m3: 2044s cycle=79
+16:38:58 [S44-HARNESS] heartbeat n7_4h_e1_m3: 2104s cycle=81
+16:39:59 [S44-HARNESS] heartbeat n7_4h_e1_m3: 2164s cycle=84
+16:40:59 [S44-HARNESS] heartbeat n7_4h_e1_m3: 2224s cycle=86
+16:41:59 [S44-HARNESS] heartbeat n7_4h_e1_m3: 2284s cycle=88
+16:42:59 [S44-HARNESS] heartbeat n7_4h_e1_m3: 2344s cycle=90
+16:43:59 [S44-HARNESS] heartbeat n7_4h_e1_m3: 2404s cycle=93
+16:44:59 [S44-HARNESS] heartbeat n7_4h_e1_m3: 2465s cycle=95
+16:45:59 [S44-HARNESS] heartbeat n7_4h_e1_m3: 2525s cycle=98
+16:46:59 [S44-HARNESS] heartbeat n7_4h_e1_m3: 2585s cycle=100
+16:47:59 [S44-HARNESS] heartbeat n7_4h_e1_m3: 2645s cycle=103
+16:49:00 [S44-HARNESS] heartbeat n7_4h_e1_m3: 2705s cycle=105
+16:50:00 [S44-HARNESS] heartbeat n7_4h_e1_m3: 2765s cycle=107
+16:51:00 [S44-HARNESS] heartbeat n7_4h_e1_m3: 2825s cycle=110
+16:52:00 [S44-HARNESS] heartbeat n7_4h_e1_m3: 2885s cycle=112
+16:53:00 [S44-HARNESS] heartbeat n7_4h_e1_m3: 2945s cycle=115
+16:54:00 [S44-HARNESS] heartbeat n7_4h_e1_m3: 3006s cycle=117
+16:55:00 [S44-HARNESS] heartbeat n7_4h_e1_m3: 3066s cycle=120
+16:56:00 [S44-HARNESS] heartbeat n7_4h_e1_m3: 3126s cycle=122
+16:57:00 [S44-HARNESS] heartbeat n7_4h_e1_m3: 3186s cycle=124
+16:58:01 [S44-HARNESS] heartbeat n7_4h_e1_m3: 3246s cycle=127
+16:59:01 [S44-HARNESS] heartbeat n7_4h_e1_m3: 3306s cycle=129
+17:00:01 [S44-HARNESS] heartbeat n7_4h_e1_m3: 3366s cycle=132
+17:01:01 [S44-HARNESS] heartbeat n7_4h_e1_m3: 3426s cycle=134
+17:02:01 [S44-HARNESS] heartbeat n7_4h_e1_m3: 3486s cycle=137
+17:03:01 [S44-HARNESS] heartbeat n7_4h_e1_m3: 3547s cycle=139
+17:04:01 [S44-HARNESS] heartbeat n7_4h_e1_m3: 3607s cycle=142
+17:04:36 [S44-HARNESS] finished n7_4h_e1_m3 pid=33070 exit=0 status=certified wall=3642s
+17:04:36 [S49-FLEX] campaign lock released
+17:04:37 [S49-FLEX] MODEL VARIANT — flexibility price × m under BASELINE (C2 + phi_cal 0.985 + soh_min 0.70) -- objective convention: Q(x) = certified_cost = gross_operational_cost (settlement-excluded); value(m) = Q_m(0) - Q_m(unit); terminal salvage and net_operational_recourse = gross - salvage reported, excluded. At m != 1 the DSO flexibility cost inside Q is priced at m x cost_flex.
+17:04:37 [S49-FLEX] {'m': 1.0, 'source': 'pinned m = 1 references (s48_x0_capture x0, S2 unit)', 'Q_x0': 653859461.2279255, 'Q_unit': 653600033.4601703, 'value': 259427.76775527, 'I': 317957.0085035586, 'value_minus_I': -58529.240748288576, 'resolution': 34734.63290083408, 'reading': 'does not pay (I - value > resolution)', 'T_mwh': 4296.190012545464, 'value_per_full_cycle': 60.385543236613216, 'resolution_per_full_cycle': 8.08498525423787, 'rule_ten_gross_x0': 0.003362677294765486, 'rule_ten_gross_unit': 0.05665180691137927, 'dso_flex_saving_total': 102912.98578573763}
+17:04:37 [S49-FLEX] {'m': 1.5, 'source': 'this campaign', 'Q_x0': 744266070.6986891, 'Q_unit': 743979188.8785937, 'value': 286881.8200954199, 'I': 317957.0085035586, 'value_minus_I': -31075.188408138696, 'resolution': 20314.141637325287, 'reading': 'does not pay (I - value > resolution)', 'T_mwh': 4261.2238482546645, 'value_per_full_cycle': 67.32380891300102, 'resolution_per_full_cycle': 4.767208285865025, 'rule_ten_gross_x0': 0.017428545222095384, 'rule_ten_gross_unit': 0.03132603711256589, 'dso_flex_saving_total': 162357.05808207393}
+17:04:37 [S49-FLEX] {'m': 2.0, 'source': 'this campaign', 'Q_x0': 811016062.203051, 'Q_unit': 810649709.6671975, 'value': 366352.53585350513, 'I': 317957.0085035586, 'value_minus_I': 48395.527349946555, 'resolution': 4846.744132876396, 'reading': 'pays (value - I > resolution)', 'T_mwh': 4235.611864401747, 'value_per_full_cycle': 86.49341525660546, 'resolution_per_full_cycle': 1.1442842942269849, 'rule_ten_gross_x0': 0.005266569918220755, 'rule_ten_gross_unit': 0.008709680073431978, 'dso_flex_saving_total': 268803.2073183805}
+17:04:37 [S49-FLEX] {'m': 3.0, 'source': 'this campaign', 'Q_x0': 876022706.3641598, 'Q_unit': 875588132.6347563, 'value': 434573.7294034958, 'I': 317957.0085035586, 'value_minus_I': 116616.72089993721, 'resolution': 35487.68275761604, 'reading': 'pays (value - I > resolution)', 'T_mwh': 4223.9651052909, 'value_per_full_cycle': 102.88288813256356, 'resolution_per_full_cycle': 8.401509452141187, 'rule_ten_gross_x0': 0.06325973881881414, 'rule_ten_gross_unit': 0.0012142317675182853, 'dso_flex_saving_total': 62159.15803902969}
+17:04:37 [S49-FLEX] x0_m1p5: status=certified cycles=102 Q=744266070.6986891 bar=9447.295217037201 rule_ten_gross=0.017428545222095384 solves=5253/5253
+17:04:37 [S49-FLEX] n7_4h_e1_m1p5: status=certified cycles=94 Q=743979188.8785937 bar=10866.846420288086 rule_ten_gross=0.03132603711256589 solves=4847/4847
+17:04:37 [S49-FLEX] x0_m2: status=certified cycles=134 Q=811016062.203051 bar=1296.2551001310349 rule_ten_gross=0.005266569918220755 solves=6885/6885
+17:04:37 [S49-FLEX] n7_4h_e1_m2: status=certified cycles=132 Q=810649709.6671975 bar=3550.4890327453613 rule_ten_gross=0.008709680073431978 solves=6784/6784
+17:04:37 [S49-FLEX] x0_m3: status=certified cycles=82 Q=876022706.3641598 bar=26367.993607521057 rule_ten_gross=0.06325973881881414 solves=4233/4233
+17:04:37 [S49-FLEX] n7_4h_e1_m3: status=certified cycles=143 Q=875588132.6347563 bar=9119.689150094986 rule_ten_gross=0.0012142317675182853 solves=7344/7344
+17:04:37 [S49-FLEX] parent guard {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} verify0_failures=[]; W25 module guard verify0_failures=[]
+17:04:37 [S49-FLEX] OK: all 6 points certified

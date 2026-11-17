@@ -1,0 +1,687 @@
+{
+ "schema": "p515_s52_pilot_checks_v1",
+ "stage": "P5.15 Addendum 39 W47 -- zero-solve checks for the multi-scenario pilot",
+ "label": "r1",
+ "argv": [
+  "p515_s52_pilot_checks.py",
+  "--label",
+  "r1",
+  "--scratch",
+  "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1"
+ ],
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "script_sha256": "edb7f3ee209037f267224d3eddff04d7aa6ff15aa3a9a0cfe772044b7712f52a",
+ "harness_sha256": "abf797989997535e610b614ce051848cfa780b5ead311cbe7dc169345bcedeb5",
+ "production_sha256": {
+  "shared_resources_planning.py": "e4336a0010355440643acc014a33e03761c41e982863fb56bb07cc5a15a81255",
+  "p515_g_g1_g4_admm_gates.py": "172260450ba167c13c8776881a01c1b0ee096baa79cb98fa2650f83385ad458b",
+  "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+  "network.py": "3673f08a84545a3c43c4fbacdc7a7892027d4c87fb2c910f7ec69d9ccc04b2b0",
+  "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+  "p515_s44_scale_measurement.py": "284abb4d12811886f5ee1c28809db34ccc8425ba4bb9eb726abafd9c764a0a3e"
+ },
+ "git_head": "298e58f064a0f687a4cc2e503d11c5ebcf775544",
+ "git_tracked_changes": [
+  "M PLANNER_BRIEF_2026-09-13.md"
+ ],
+ "started_utc": "2026-09-23T19:27:33.803928+00:00",
+ "scratch": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1",
+ "checks": {
+  "A_keys": {
+   "n_spec_files": 38,
+   "n_entries_with_eval_key": 3560,
+   "per_file": {
+    "data/SRP1/Results/P515S44/campaign_s44_aa_variant/campaign_spec_s44_aa_variant_f90618e8.json": 2,
+    "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/campaign_spec_s44_aa_variant_smoke_e3f83174.json": 2,
+    "data/SRP1/Results/P515S44/campaign_s44_gate/campaign_spec_s44_gate_4047b4e3.json": 0,
+    "data/SRP1/Results/P515S44/campaign_s44_selection_aa/campaign_spec_s44_selection_aa_4135c8d4.json": 3,
+    "data/SRP1/Results/P515S44/harness_checks/c2_spec_root/campaign_spec_c2_f24bc344.json": 0,
+    "data/SRP1/Results/P515S44/harness_checks/c4_fail_campaign/campaign_spec_c4f_92ac6360.json": 0,
+    "data/SRP1/Results/P515S44/harness_checks/c4_foreign_lock_campaign/campaign_spec_c4l_1ce4890b.json": 0,
+    "data/SRP1/Results/P515S44/harness_checks/c4_nonstub_spec_campaign/campaign_spec_c4n_59849c27.json": 0,
+    "data/SRP1/Results/P515S44/harness_checks/c4_stub_campaign/campaign_spec_c4_cf3b201c.json": 0,
+    "data/SRP1/Results/P515S44/harness_checks_r2/c2_spec_root/campaign_spec_c2_04e91893.json": 0,
+    "data/SRP1/Results/P515S44/harness_checks_r2/c4_fail_campaign/campaign_spec_c4f_b96c62d6.json": 0,
+    "data/SRP1/Results/P515S44/harness_checks_r2/c4_foreign_lock_campaign/campaign_spec_c4l_800e7da8.json": 0,
+    "data/SRP1/Results/P515S44/harness_checks_r2/c4_nonstub_spec_campaign/campaign_spec_c4n_34c6cffc.json": 0,
+    "data/SRP1/Results/P515S44/harness_checks_r2/c4_stub_campaign/campaign_spec_c4_0bca1b39.json": 0,
+    "data/SRP1/Results/P515S44/harness_checks_r3/c2_spec_root/campaign_spec_c2_1ea09b7b.json": 2,
+    "data/SRP1/Results/P515S44/harness_checks_r3/c4_fail_campaign/campaign_spec_c4f_0f059fc1.json": 1,
+    "data/SRP1/Results/P515S44/harness_checks_r3/c4_foreign_lock_campaign/campaign_spec_c4l_3029ea43.json": 1,
+    "data/SRP1/Results/P515S44/harness_checks_r3/c4_nonstub_spec_campaign/campaign_spec_c4n_8ca5f6d7.json": 1,
+    "data/SRP1/Results/P515S44/harness_checks_r3/c4_stub_campaign/campaign_spec_c4_83da5ad0.json": 4,
+    "data/SRP1/Results/P515S44/harness_checks_r3/c8_spec_root/campaign_spec_c8_d6300da7.json": 3,
+    "data/SRP1/Results/P515S44/harness_checks_r3/c9_stub_campaign/campaign_spec_c9_276119b8.json": 2,
+    "data/SRP1/Results/P515S44/selection_aa_dry_run/campaign_spec_s44_selection_aa_075e33ef.json": 3,
+    "data/SRP1/Results/P515S45/campaign_s45_a0/campaign_spec_s45_a0_25a05347.json": 8,
+    "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_spec_s45_a0_c7_9d08ad2f.json": 8,
+    "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_spec_s45_a1a_c71f52ee.json": 30,
+    "data/SRP1/Results/P515S45/campaign_s45_a1b/campaign_spec_s45_a1b_bd3040a9.json": 20,
+    "data/SRP1/Results/P515S45/campaign_s45_a2/campaign_spec_s45_a2_d5b52f30.json": 5,
+    "data/SRP1/Results/P515S45/campaign_s45_a3/campaign_spec_s45_a3_4f733b9d.json": 5,
+    "data/SRP1/Results/P515S45/reverify_aa_c_star/campaign_spec_s45_reverify_aa_c_star_4a214b99.json": 1,
+    "data/SRP1/Results/P515S46/campaign_s46_ageing/campaign_spec_s46_ageing_6544c17e.json": 5,
+    "data/SRP1/Results/P515S47/campaign_s47_a1a_baseline/campaign_spec_s47_a1a_baseline_add4ebd8.json": 30,
+    "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json": 1705,
+    "data/SRP1/Results/P515S47/campaign_s47_recert/campaign_spec_s47_recert_902f93aa.json": 2,
+    "data/SRP1/Results/P515S48/x0_capture/campaign_spec_s48_x0_capture_4a50c0e2.json": 1,
+    "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/campaign_spec_s49_flex_ladder_2203f6c1.json": 6,
+    "data/SRP1/Results/P515S50/campaign_s50_marginal/campaign_spec_s50_marginal_fa4b30ee.json": 2,
+    "data/SRP1/Results/P515S51/campaign_s51_f2_ladder/campaign_spec_s51_f2_ladder_c4455767.json": 3,
+    "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_spec_s51_f2_phase_b_5ce295e1.json": 1705
+   },
+   "mismatches": [],
+   "pass": true
+  },
+  "B_format": {
+   "plain_spec_has_no_new_keys": true,
+   "plain_eval_key_is_the_undeclared_formula": true,
+   "declared_spec_records_both": true,
+   "declared_eval_key_recomputes": true,
+   "keys_all_distinct": true,
+   "refusals": {
+    "derived_0": true,
+    "derived_1": true,
+    "derived_2": true,
+    "derived_3": true,
+    "derived_4": true,
+    "premium_0": true,
+    "premium_1": true,
+    "premium_2": true,
+    "premium_3": true,
+    "premium_4": true,
+    "freeze_refuses_wrong_case_sha256": true
+   },
+   "all_refused": true,
+   "keys": {
+    "plain": "bd504ecf5a288d447e53ef6f7e8090b017d15549b257aa095ff4f95890a06e42",
+    "instance_and_premium": "711fce9aa74d687892b994e332472c7d59745ef74ce9030abc12d54a9aaf83b4",
+    "instance_only": "b22c15c9f3e87c71198098a1cc4610eb1b63824de1bf5c555a036602bc8592dc",
+    "premium_only": "80b7ef8936e603b09892e10a799be24a6972fc6f31e2db4516875ec857dd4296",
+    "instance_alpha0": "69401fede2d86bd37f0cac519168e703ee98814d766fcda49af6fa933a0c5bb0"
+   },
+   "pass": true
+  },
+  "H_terminal_lock": {
+   "first": {
+    "status": "held",
+    "lock_path": "../../../../private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/terminal_lock_test/.terminal_phase.lock",
+    "waited_s": 0.00014734268188476562,
+    "stale_locks_taken_over": []
+   },
+   "second": {
+    "status": "timeout_ran_without_lock",
+    "lock_path": "../../../../private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/terminal_lock_test/.terminal_phase.lock",
+    "waited_s": 0.3155179023742676,
+    "held_by": {
+     "pid": 6828,
+     "utc": "2026-09-23T19:27:34.059861+00:00"
+    },
+    "stale_locks_taken_over": []
+   },
+   "released_first": true,
+   "lock_removed": true,
+   "third": {
+    "status": "held",
+    "lock_path": "../../../../private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/terminal_lock_test/.terminal_phase.lock",
+    "waited_s": 0.0005440711975097656,
+    "stale_locks_taken_over": [
+     {
+      "pid": 6846,
+      "utc": "2026-09-23T19:27:34.380842+00:00"
+     }
+    ]
+   },
+   "released_third": true,
+   "pass": true
+  },
+  "G_rule_eleven": {
+   "record": {
+    "trajectory_field_boyd_all_pass": true,
+    "trajectory_field_boyd_ess_channel_pass": true,
+    "trajectory_field_boyd_ess_dual_ratio": true,
+    "trajectory_field_boyd_ess_primal_ratio": true,
+    "trajectory_field_boyd_pf_channel_pass": true,
+    "trajectory_field_boyd_pf_dual_ratio": true,
+    "trajectory_field_boyd_pf_primal_ratio": true,
+    "trajectory_field_boyd_stop": true,
+    "trajectory_field_boyd_v_channel_pass": true,
+    "trajectory_field_boyd_v_dual_ratio": true,
+    "trajectory_field_boyd_v_primal_ratio": true,
+    "trajectory_field_consecutive_converged_cycles": true,
+    "trajectory_field_cycle": true,
+    "trajectory_field_cycle_convergence": true,
+    "trajectory_field_efc_per_day_max": true,
+    "trajectory_field_gross_operational_cost": true,
+    "trajectory_field_local_solves_ok": true,
+    "trajectory_field_objective_change_abs": true,
+    "trajectory_field_objective_change_ratio": true,
+    "trajectory_field_objective_tolerance": true,
+    "trajectory_field_recourse": true,
+    "trajectory_field_rho_ess_action": true,
+    "trajectory_field_rho_ess_after": true,
+    "trajectory_field_rho_freeze_active": true,
+    "trajectory_field_rho_pf_action": true,
+    "trajectory_field_rho_pf_after": true,
+    "trajectory_field_rho_v_action": true,
+    "trajectory_field_rho_v_after": true,
+    "trajectory_field_terminal_salvage_value": true,
+    "esso_capture_attr_es_avg_ch_dch_per_unit": true,
+    "esso_capture_attr_es_soh_per_unit_cumul": true,
+    "esso_capture_attr_es_e_rated_per_unit": true,
+    "harness_fn_run_admm_arm": true,
+    "harness_fn_write_boyd_terminal_s35ref": true,
+    "harness_fn_s38_pf_capture_hooks": true,
+    "harness_fn_s39_exempt_until_capture_hooks": true,
+    "harness_fn__s35ref_terminal_floor_and_efc": true,
+    "harness_fn__derive_stopped_by_from_trajectory": true,
+    "harness_fn__identify_soh_floor_rows": true,
+    "evaluator_fn__certification_from_trajectory": true,
+    "evaluator_fn__first_pass_cycle": true,
+    "evaluator_fn__terminal_ratios": true,
+    "component_levels_recourse_key_interface_settlement_total": true,
+    "run_admm_arm_accepts_investment_map": true,
+    "run_admm_arm_post_run_hook_gets_state": true,
+    "production_state_has_peak_rss": true
+   },
+   "post_certification": {
+    "certification_fn": true,
+    "stopped_by_fn": true,
+    "hull_polish_fn": true,
+    "persist_fn": true,
+    "decomposition_fn_accepts_reference_dir": true,
+    "cost_band_constant_1_5e_4": true,
+    "reconciliation_tol_1_0": true,
+    "hull_gate_threshold_0_1_pct": true,
+    "aa_sidecar_fn": true,
+    "run_admm_arm_passes_state_to_hook": true
+   },
+   "pass": true
+  },
+  "C_child_prerun": {
+   "install": {
+    "case_path": "../../../../private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/case/SRP1__s52_pilot_2x2.json",
+    "case_sha256_in_child": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949",
+    "scenario_checksum_in_child": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563",
+    "instance_label": "s52_pilot_2x2",
+    "checksum_matches_srp1_canonical": false,
+    "expected_block_counts": {
+     "tso_blocks": 20,
+     "dso_blocks": 60,
+     "network_blocks": 80,
+     "esso_models": 3,
+     "solves_per_cycle": 83
+    },
+    "planning_read_dir": "../../../../private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/child_probe/planning_read",
+    "read_wall_s": 12.558731079101562,
+    "reader": "p515_s44_scale_measurement.read_planning_from_derived_case (production SharedResourcesPlanning)",
+    "wall_s": 12.558999061584473
+   },
+   "installed_label_and_checksum": true,
+   "case_sha256_equals_w45": true,
+   "instance_investment_years": [
+    2025,
+    2028,
+    2031,
+    2034,
+    2037
+   ],
+   "investment_year_2025_in_instance": true,
+   "floor_rows_counts_by_node": {
+    "5": 15,
+    "7": 15,
+    "9": 15
+   },
+   "configuration_checks": {
+    "rho_v_matches_D": true,
+    "rho_pf_matches_D": true,
+    "rho_ess_matches_D": true,
+    "tau_is_0": true,
+    "gamma_policy_tied_to_rho": true,
+    "balancing_exempt_until_matches_D": true,
+    "balancing_exempt_channels_empty": true,
+    "freeze_after_unchanged_cycles_is_10": true,
+    "freeze_backstop_cycle_is_200": true,
+    "minimum_consecutive_converged_cycles_matches_spec": true,
+    "shared_ess_initialization_is_standalone": true,
+    "num_max_iters_is_spec_cap": true,
+    "anderson_acceleration_case_file_matches_declaration": true,
+    "anderson_acceleration_case_file_memory_regularization_frozen": true,
+    "persistent_workers_off": true,
+    "parallel_execution_off": true
+   },
+   "derived_instance_checks": {
+    "planning_scenario_checksum_equals_declaration": true,
+    "planning_has_more_than_one_scenario_combination": true
+   },
+   "premium_applied": {
+    "declared": {
+     "alpha": 0.5,
+     "floor": null
+    },
+    "before": {
+     "alpha": 0.0,
+     "floor": null,
+     "source": "default"
+    },
+    "after": {
+     "alpha": 0.5,
+     "floor": null,
+     "source": "campaign spec entry interface_deviation_premium (p515_s44_campaign_harness, W47)"
+    },
+    "took_effect": true
+   },
+   "ess_ageing_checks": {
+    "pin_path_is_ess_params_file": true,
+    "file_used_by_production_is_pinned_file": true,
+    "file_sha256_equals_pin": true,
+    "loaded_equals_declaration_types_included": true,
+    "every_ess_soh_min_is_declared": true,
+    "every_ess_phi_cal_is_declared": true,
+    "every_ess_cl_eff_is_production_k": true
+   },
+   "ess_ageing_readback_all_match": true,
+   "ess_ageing_floor_rows_identical": true,
+   "premium_in_force": {
+    "alpha": 0.5,
+    "floor": null,
+    "source": "campaign spec entry interface_deviation_premium (p515_s44_campaign_harness, W47)"
+   },
+   "pass": true
+  },
+  "D_build": {
+   "interceptor_calls": {
+    "dso": 3,
+    "tso": 1,
+    "esso_init": 1
+   },
+   "build_wall_s": 37.09780478477478,
+   "pass": true
+  },
+  "D_capture": {
+   "n_variables_set": 2778845,
+   "capture_wall_s": 8.656166076660156,
+   "summary_checks": {
+    "settlement_split_rel": true,
+    "covariance_vs_deviation_rel": true,
+    "per_scenario_settlement_rel": true,
+    "per_scenario_row18_rel": true,
+    "per_scenario_q_reconciliation_rel": true,
+    "dispersion_identity_rel": true,
+    "covariance_recomputed_vs_production": true,
+    "row18_readback_all_blocks": true
+   },
+   "summary_all_checks_pass_is_python_bool": true,
+   "identity_worst_rel_diffs": {
+    "settlement_split_rel": 0.0,
+    "covariance_vs_deviation_rel": 7.683368192764007e-15,
+    "per_scenario_settlement_rel": 2.7408903497634842e-14,
+    "per_scenario_row18_rel": 6.785218839544207e-16,
+    "per_scenario_q_reconciliation_rel": 2.7946817368831583e-16,
+    "dispersion_identity_rel": 1.0149243547653627e-15
+   },
+   "n_blocks": 80,
+   "n_dso_blocks_row18_wired": 60,
+   "all_dso_keys": [
+    "E_abs_d_p_mwh_sum_over_blocks",
+    "E_abs_d_p_mwh_weighted",
+    "E_abs_d_q_mvarh_sum_over_blocks",
+    "max_abs_mw_over_all_dso_blocks",
+    "rms_mw_max_over_all_dso_blocks",
+    "row18_charge_sum_over_blocks",
+    "row18_charge_weighted",
+    "sum_omega_d2_p_mw2h_sum_over_blocks",
+    "sum_omega_d2_p_mw2h_weighted"
+   ],
+   "per_dso_nodes": [
+    "5",
+    "7",
+    "9"
+   ],
+   "settlement_identity_keys": [
+    "contracted_total",
+    "covariance_interface_settlement_deviation_total",
+    "covariance_recomputed_vs_production_rel_diff",
+    "covariance_recomputed_weighted_total",
+    "definition",
+    "dso_deviation_part",
+    "leftover_identity_residual",
+    "residual_interface_settlement_total",
+    "tso_deviation_part"
+   ],
+   "placeholder_values_note": "values are a deterministic non-solved point; the numbers are not results, only the identities and the code paths are checked",
+   "w46_formula_cross_check": {
+    "n_blocks": 60,
+    "sum_omega_d2_dec": 30277590.24809721,
+    "sum_omega_d2_capture": 30277590.248097204,
+    "E_abs_d_dec": 176762.78173514412,
+    "E_abs_d_capture": 176762.78173514397,
+    "max_covariance_rel_diff_vs_settlement_scale": 7.54599968379374e-15,
+    "market_share_of_sum_omega_d2": 0.6420892718662693,
+    "settlement_weights_seen_on_dso_blocks": [
+     1.0
+    ],
+    "pass": true
+   },
+   "write_multiscenario_terminal": {
+    "status": "written",
+    "path": "../../../../private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/dry_capture/multiscenario_terminal.json",
+    "sha256": "c521b95755d186bcebe1a02ef6dd4539d692e6903ca63bdd27e2dd008bdb0e23",
+    "runtime_s": 8.656166076660156,
+    "size_bytes": 2507459
+   },
+   "sigma_record_placeholder": {
+    "sigma_fixed": 93635360.0,
+    "sigma_computed": 33764631.272205874,
+    "ratio_computed_over_fixed": 0.36059701454884,
+    "assert_factor": 3.0,
+    "band": [
+     0.3333333333333333,
+     3.0
+    ],
+    "ratio_over_lower_edge": 1.0817910436465201,
+    "upper_edge_over_ratio": 8.319536432528267,
+    "within_band": true,
+    "objective_scale_source": "case_file",
+    "definition": "sigma_computed = max over TSO/DSO blocks of |w_b * f_b| at the initialization solve (shared_resources_planning._compute_common_admm_objective_scale); the resolver raises unless 1/F <= sigma_computed/sigma_fixed <= F"
+   },
+   "write_operational_workbook": {
+    "status": "written",
+    "path": "../../../../private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/dry_workbook/SRP1_distributed_terminal.xlsx",
+    "sha256": "50df8d3fdfe94ee50b702f82dc5cc5c39e19f3a57870a2e62dc5dd2e5b6160f3",
+    "size_bytes": 104126265,
+    "runtime_s": 117.06993699073792,
+    "write_s": 109.86393690109253,
+    "writer": "SharedResourcesPlanning.write_operational_planning_results_to_excel (production)",
+    "point": "terminal models of the run, BEFORE any post-certification step"
+   },
+   "workbook_sheets": [
+    "Main Info",
+    "Run Metadata",
+    "Main Info, Detailed",
+    "SharedESS Specifications",
+    "Capacity Investment",
+    "Capacity Available",
+    "Terminal Salvage",
+    "MarketData",
+    "Interface PF",
+    "Scenario Dispersion",
+    "SharedESS",
+    "Voltage",
+    "Consumption",
+    "Generation",
+    "Branch Losses",
+    "Transformer Ratio",
+    "Branch Loading",
+    "Power Flows",
+    "Energy Storage",
+    "Relaxation Slacks TSO, DSOs",
+    "Slacks operation, aggregated"
+   ],
+   "pass": true
+  },
+  "D2_writers": {
+   "wall_s": 3.5151660442352295,
+   "component_levels_n_blocks": 80,
+   "component_levels_recourse_keys_present": true,
+   "s31c_written": true,
+   "voltage_written": true,
+   "esso_capture_nodes": [
+    "5",
+    "7",
+    "9"
+   ],
+   "ageing_trajectory_nodes": [
+    "5",
+    "7",
+    "9"
+   ],
+   "ageing_trajectory_n_cells_node7": 15,
+   "ess_ageing_readback_on_clones_all_match": true,
+   "updated_capacity_nodes": [
+    "5",
+    "7",
+    "9"
+   ],
+   "paths": {
+    "s31c": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/dry_writers/interface_settlement_detail_s31c.json",
+    "voltage": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/dry_writers/interface_voltage_terminal.json"
+   },
+   "pass": true
+  },
+  "E_fixes": {
+   "E1": {
+    "fixed_reading_max_shared_ess_dispersion": 0.0,
+    "pre_fix_reading_max_shared_ess_dispersion": 98.75278329409488,
+    "n_blocks_pre_fix_reading": 120,
+    "n_records": 1200,
+    "pass": true
+   },
+   "E2": {
+    "per_dso": {
+     "5": {
+      "fixed_sum_abs_delta_p_mw": 600.0000000000001,
+      "sum_t_abs_delta_mw": 599.9999999999999,
+      "pre_fix_would_be_n_scenarios_times": 2399.9999999999995,
+      "rel_diff": 3.7895612573872017e-16
+     },
+     "7": {
+      "fixed_sum_abs_delta_p_mw": 600.0000000000001,
+      "sum_t_abs_delta_mw": 599.9999999999999,
+      "pre_fix_would_be_n_scenarios_times": 2399.9999999999995,
+      "rel_diff": 3.7895612573872017e-16
+     },
+     "9": {
+      "fixed_sum_abs_delta_p_mw": 600.0000000000001,
+      "sum_t_abs_delta_mw": 599.9999999999999,
+      "pre_fix_would_be_n_scenarios_times": 2399.9999999999995,
+      "rel_diff": 3.7895612573872017e-16
+     }
+    },
+    "n_scenarios": 4,
+    "pass": true
+   },
+   "pass": true
+  },
+  "D3_post_certification": {
+   "persist": {
+    "path": "../../../../private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/dry_persist/certified_models.pkl",
+    "sha256": "0702a6bb867c2cd7326ac671b21435741fb5b416b34f7c90d2c3b2a86d5a95f4",
+    "size_bytes": 660552709,
+    "wall_s": 41.79121685028076
+   },
+   "hull": {
+    "wall_s": 4.50790810585022,
+    "n_per_block_base_objectives": 80,
+    "n_hull_entries": 1440,
+    "n_descriptors": 14400,
+    "channels": [
+     "ESS_P",
+     "ESS_Q",
+     "PF_P",
+     "PF_Q",
+     "V"
+    ]
+   },
+   "pass": true
+  },
+  "F_srp1_invariance": {
+   "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+   "checksum_is_canonical": true,
+   "all_probability_vectors_exactly_one_float": true,
+   "block_scenario_pairs_and_na": {
+    "tso": [
+     [
+      0
+     ],
+     [
+      0
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "dso7": [
+     [
+      0
+     ],
+     [
+      0
+     ],
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "na_is_the_only_pair": true,
+   "omega_is_exactly_one": true,
+   "pass": true
+  }
+ },
+ "derived_instance_declaration_used": {
+  "instance_label": "s52_pilot_2x2",
+  "case_path": "../../../../private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/case/SRP1__s52_pilot_2x2.json",
+  "case_sha256": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949",
+  "scenario_checksum": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563",
+  "source_case_path": "data/SRP1/SRP1.json",
+  "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+  "changes_vs_source": [
+   {
+    "key": "Years",
+    "from": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "to": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    }
+   },
+   {
+    "key": "NumMarketScenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   }
+  ]
+ },
+ "solve_profile": {
+  "declared": "zero solves",
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "memory_by_stage": [
+  {
+   "stage": "start (production modules imported)",
+   "t_s": 0.001,
+   "rss_bytes": 249413632,
+   "ru_maxrss_bytes": 249413632
+  },
+  {
+   "stage": "C: derived instance installed (the baseline planning in memory)",
+   "t_s": 13.2,
+   "rss_bytes": 486277120,
+   "ru_maxrss_bytes": 486277120
+  },
+  {
+   "stage": "C: floor precheck + arm planning constructed (fresh_planning deepcopy)",
+   "t_s": 14.694,
+   "rss_bytes": 516177920,
+   "ru_maxrss_bytes": 558727168
+  },
+  {
+   "stage": "C: configuration hook (probe ESSO read-back) done",
+   "t_s": 14.939,
+   "rss_bytes": 517062656,
+   "ru_maxrss_bytes": 558727168
+  },
+  {
+   "stage": "D: ADMM models built (80 network blocks + 3 ESSO, no pristine clones)",
+   "t_s": 52.037,
+   "rss_bytes": 3635052544,
+   "ru_maxrss_bytes": 3635052544
+  },
+  {
+   "stage": "D: point set on every block",
+   "t_s": 63.675,
+   "rss_bytes": 3723395072,
+   "ru_maxrss_bytes": 3723395072
+  },
+  {
+   "stage": "D: multiscenario_terminal written",
+   "t_s": 72.332,
+   "rss_bytes": 3730014208,
+   "ru_maxrss_bytes": 3730014208
+  },
+  {
+   "stage": "D: operational workbook written",
+   "t_s": 189.423,
+   "rss_bytes": 4306976768,
+   "ru_maxrss_bytes": 7732314112
+  },
+  {
+   "stage": "D2: post-run writers done",
+   "t_s": 192.947,
+   "rss_bytes": 4310269952,
+   "ru_maxrss_bytes": 7732314112
+  },
+  {
+   "stage": "D3: certified models pickled",
+   "t_s": 235.034,
+   "rss_bytes": 6822543360,
+   "ru_maxrss_bytes": 9848733696
+  },
+  {
+   "stage": "D3: hull bounds applied (no solve)",
+   "t_s": 239.542,
+   "rss_bytes": 6816202752,
+   "ru_maxrss_bytes": 9848733696
+  }
+ ],
+ "failing_checks": [],
+ "all_ok": true,
+ "finished_utc": "2026-09-23T19:31:43.942437+00:00",
+ "wall_s": 250.1864140033722,
+ "scratch_artifacts_sha256": {
+  "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/dry_capture/multiscenario_terminal.json": "c521b95755d186bcebe1a02ef6dd4539d692e6903ca63bdd27e2dd008bdb0e23",
+  "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/dry_writers/component_levels_terminal.json": "c1a4027e630d1fc2644840fcd4908e27559e94fb045954ba158d00654fc383a0",
+  "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/dry_writers/interface_settlement_detail_s31c.json": "97e54fe61fd5c05f968dccc2401fa72cab332954600576a9e126a248e54163dc",
+  "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/dry_writers/interface_voltage_terminal.json": "7fa590408175d2570e827c5b7b95fb41f81ab3bb89b05b10e191d50a18653f7a",
+  "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/synthetic_freeze_plain/campaign_spec_w47_synthetic_plain_5fb67c7d.json": "5fb67c7dd48e2f0d1e94f3251b9f56097fa2d92df4e3a96bd7ec95754f08e66e",
+  "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/srp1_case/SRP1__srp1.json": "45e8e700a547de22b2c9cd2f9373c4307da30764461e647424eca7eb2d1594b3",
+  "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/case/SRP1__s52_pilot_2x2.json": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949",
+  "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/dry_workbook/SRP1_distributed_terminal.xlsx": "50df8d3fdfe94ee50b702f82dc5cc5c39e19f3a57870a2e62dc5dd2e5b6160f3",
+  "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/dry_persist/certified_models.pkl": "0702a6bb867c2cd7326ac671b21435741fb5b416b34f7c90d2c3b2a86d5a95f4",
+  "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_r1/w47_checks_r1/synthetic_freeze_declared/campaign_spec_w47_synthetic_declared_a45d0de8.json": "a45d0de8a57566e686bbc6b58251b47feb82a6175dda5aa4cd47c6b3ebded7cd"
+ }
+}

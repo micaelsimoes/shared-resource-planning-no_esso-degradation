@@ -1,0 +1,44 @@
+{
+ "schema": "p515_s51_srp1_bitwise_gate_v1_addendum",
+ "stage": "P5.15 Addendum 38 W39 gate 1 -- SRP1 two-cycle bitwise identity: row 18 as signed is vacuous at one scenario, vs committed baseline C*",
+ "row18_code_presence_asserted_before_run": {
+  "wiring_function_present": true,
+  "wiring_returns_before_building_at_one_scenario": true,
+  "wiring_builds_lp_pair": true,
+  "charge_is_alpha_times_pibar_times_baseMVA": true,
+  "deviation_is_against_the_coupled_expectation_var": true,
+  "row18_is_inside_objective_function_rule": true,
+  "voltage_pin_is_inside_objective_function_rule": true,
+  "wiring_rebuilds_the_objective": true,
+  "alpha_defaults_inactive": true,
+  "tso_delta_is_scenario_free_in_the_interface_expression": true,
+  "tso_delta_is_scenario_free_in_the_node_balance": true,
+  "tso_freeing_loop_is_guarded_by_the_first_scenario_pair": true,
+  "sess_alias_present": true,
+  "sess_rows_skip_duplicates": true,
+  "sess_balance_row_is_scenario_free": true,
+  "contracted_expression_present": true,
+  "recourse_excludes_only_the_contracted_part": true,
+  "recourse_reports_the_identity_residual": true,
+  "recourse_excludes_the_voltage_pin": true,
+  "per_scenario_voltage_mismatch_reported": true,
+  "retired_quadratic_retained": true,
+  "retired_quadratic_unwired_in_the_tso_builder": true,
+  "retired_quadratic_unwired_in_the_dso_builder": true,
+  "alpha_threaded_from_admm_parameters": true
+ },
+ "retired_quadratic_tripwire": {
+  "mechanism": "ARMED for the whole run around both retired functions (CLAUDE.md rule six: armed, never asserted)",
+  "n_calls": 0,
+  "calls": []
+ },
+ "retired_quadratic_never_called": true,
+ "w35_gate_exit_status": 0,
+ "gate_pass": true,
+ "guard_counts": {
+  "permitted_solve": 153,
+  "permitted_exec": 153,
+  "blocked_solve": 0,
+  "blocked_exec": 0
+ }
+}

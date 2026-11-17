@@ -1,0 +1,247 @@
+{
+ "stage": "P5.15 Step 3.7 Anderson acceleration -- zero-solve checks",
+ "authority": "PLANNER_BRIEF_2026-09-13.md Addendum 22/23; frozen spec data/SRP1/Results/P515S41/frozen_s41_hull_aa_spec_v12_6e5a546f.json, item4_step_3_7_anderson",
+ "check_A_flag_off": {
+  "default_settings": {
+   "enabled": false,
+   "memory": 5,
+   "regularization": 1e-10
+  },
+  "default_enabled": false,
+  "toggled_enabled_after_setting_true": true,
+  "default_settings_as_expected": true,
+  "default_enabled_is_false": true,
+  "toggled_enabled_is_true": true,
+  "n_call_sites_checked": 6,
+  "call_sites": [
+   {
+    "name": "admm_anderson_acceleration.anderson_acceleration_enabled",
+    "lineno": 240,
+    "guarded": false
+   },
+   {
+    "name": "admm_anderson_acceleration.build_iterate_layout",
+    "lineno": 244,
+    "guarded": true
+   },
+   {
+    "name": "admm_anderson_acceleration.AndersonAccelerationState",
+    "lineno": 246,
+    "guarded": true
+   },
+   {
+    "name": "_get_admm_rho_channel_scalars_for_aa",
+    "lineno": 271,
+    "guarded": true
+   },
+   {
+    "name": "admm_anderson_acceleration.collect_w",
+    "lineno": 272,
+    "guarded": true
+   },
+   {
+    "name": "_anderson_acceleration_cycle_step",
+    "lineno": 450,
+    "guarded": true
+   }
+  ],
+  "n_unguarded_call_sites": 0,
+  "unguarded_call_sites": [],
+  "passed": true
+ },
+ "check_B_linear_map": {
+  "hand_computed_1d_case": {
+   "w1_action": "insufficient memory (m_k=0)",
+   "w1_equals_plain": true,
+   "w2_action": "accepted",
+   "w2_accepted": true,
+   "module_w2": [
+    1.9999999998
+   ],
+   "hand_w2": [
+    1.9999999998
+   ],
+   "module_vs_hand_max_abs_diff": 0.0,
+   "module_w2_vs_fixed_point_abs_diff": 2.000000165480742e-10,
+   "passed": true
+  },
+  "acceleration_2d_case": {
+   "contraction_factor": 0.9,
+   "w_star": [
+    -14.765772923017225,
+    10.765628244320654
+   ],
+   "plain_cycles_to_1e-10": 247,
+   "aa_cycles_to_1e-10": 3,
+   "passed": true
+  },
+  "passed": true
+ },
+ "check_C_state_machine": {
+  "memory_after_cycle_2": 1,
+  "rho_change_record": {
+   "cycle": 3,
+   "action": "memory reset (rho change)",
+   "accepted": false,
+   "combined_residual": null,
+   "baseline_residual_before": 0.5,
+   "memory_size_before": 1,
+   "memory_size_after": 0,
+   "reset": true,
+   "reset_reason": "rho changed on channel(s): ['pf']",
+   "rho_changed_channels": [
+    "pf"
+   ]
+  },
+  "memory_after_rho_change": 0,
+  "cycle_4_after_clear": {
+   "cycle": 4,
+   "combined_residual": 1.000000082740371e-10,
+   "baseline_residual_before": 0.5,
+   "memory_size_before": 0,
+   "boyd_all_pass": false,
+   "rho_changed_channels": [],
+   "action": "insufficient memory (m_k=0)",
+   "accepted": false,
+   "memory_size_after": 0,
+   "reset": false,
+   "reset_reason": null
+  },
+  "cycle_6_reject": {
+   "memory_before": 1,
+   "baseline_before": 5.000000413701855e-11,
+   "record": {
+    "cycle": 6,
+    "combined_residual": 5.0,
+    "baseline_residual_before": 5.000000413701855e-11,
+    "memory_size_before": 1,
+    "boyd_all_pass": false,
+    "rho_changed_channels": [],
+    "action": "rejected (safeguard)",
+    "accepted": false,
+    "memory_size_after": 0,
+    "gamma_columns": 2,
+    "reset": true,
+    "reset_reason": "safeguard rejection (combined residual did not fall below the last accepted mark)"
+   },
+   "memory_after": 0,
+   "baseline_after": 5.000000413701855e-11
+  },
+  "off_tolerance_records": [
+   {
+    "cycle": 7,
+    "combined_residual": 1.2500001034254637e-11,
+    "baseline_residual_before": 5.000000413701855e-11,
+    "memory_size_before": 0,
+    "boyd_all_pass": true,
+    "rho_changed_channels": [],
+    "action": "off (all channels within Boyd tolerance)",
+    "accepted": false,
+    "memory_size_after": 0,
+    "reset": false,
+    "reset_reason": null
+   },
+   {
+    "cycle": 8,
+    "combined_residual": 6.249889494824856e-12,
+    "baseline_residual_before": 5.000000413701855e-11,
+    "memory_size_before": 0,
+    "boyd_all_pass": true,
+    "rho_changed_channels": [],
+    "action": "off (all channels within Boyd tolerance)",
+    "accepted": false,
+    "memory_size_after": 1,
+    "reset": false,
+    "reset_reason": null
+   },
+   {
+    "cycle": 9,
+    "combined_residual": 3.1250557697148906e-12,
+    "baseline_residual_before": 5.000000413701855e-11,
+    "memory_size_before": 1,
+    "boyd_all_pass": true,
+    "rho_changed_channels": [],
+    "action": "off (all channels within Boyd tolerance)",
+    "accepted": false,
+    "memory_size_after": 2,
+    "reset": false,
+    "reset_reason": null
+   }
+  ],
+  "memory_while_off": [
+   0,
+   1,
+   2
+  ],
+  "resume_record": {
+   "memory_before_resume": 2,
+   "record": {
+    "cycle": 10,
+    "combined_residual": 1.5625278848574453e-12,
+    "baseline_residual_before": 5.000000413701855e-11,
+    "memory_size_before": 2,
+    "boyd_all_pass": false,
+    "rho_changed_channels": [],
+    "action": "accepted",
+    "accepted": true,
+    "memory_size_after": 3,
+    "gamma_columns": 3,
+    "reset": false,
+    "reset_reason": null
+   }
+  },
+  "passed": true
+ },
+ "check_D_round_trip": {
+  "eval_id": "p515s41_aa_zero_solve_check",
+  "layout_n_entries": 12096,
+  "n_z_entries": 4320,
+  "n_u_entries": 7776,
+  "rho_channel": {
+   "v": 0.0077,
+   "pf": 0.198,
+   "ess": 0.01
+  },
+  "shared_ess_reference_rating_mva": 2.5,
+  "identity_case_bitwise": {
+   "consensus_bitwise_match": true,
+   "dual_bitwise_match": true,
+   "w_entries_all_0_or_1": true
+  },
+  "perturbed_z_case_bitwise": {
+   "multipliers_used": [
+    2.0,
+    -0.5,
+    4.0,
+    -1.0,
+    0.25
+   ],
+   "consensus_bitwise_match": true,
+   "w_entries_match_multipliers": true
+  },
+  "perturbed_u_case_tolerance_only": {
+   "note": "NOT bitwise by construction (two chained non-power-of-two factors, rho and scale); see docstring.",
+   "max_abs_diff": 8.881784197001252e-16,
+   "max_rel_diff": 2.7185615121637165e-16,
+   "happens_to_be_bitwise_exact": false,
+   "tolerance_used_rel": 1e-09,
+   "within_tolerance": true
+  },
+  "write_back_guard_static_check": {
+   "write_back_w_call_count_in_orchestrator": 1,
+   "write_back_w_call_guarded_by_accepted_check": true,
+   "passed": true
+  },
+  "passed": true
+ },
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "all_checks_passed": true
+}

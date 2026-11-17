@@ -1,0 +1,298 @@
+{
+ "count": {
+  "any_reverse_flow_material": true,
+  "any_reverse_flow_strict": true,
+  "definition": "Addendum 57: per DSO interface entry (DN node, year, representative day, market scenario s_m, operation scenario s_o, period p) p_int = pg_adn[s_m, s_o, p] x DN baseMVA [MW] -- the sign convention of the NRF rows (> 0 import TN -> DN, < 0 REVERSE flow, export DN -> TN). REVERSE entry: p_int < 0 (strict; the primary count, the Addendum's wording); MATERIAL reverse entry: p_int < -1e-6 p.u. of the DN base (separates numerical zeros). Counts: interface-hours (node x block x hour x scenario entries), probability-weighted (sum of omega), and day-weighted (sum of years x days x omega = interface-hours over the horizon, undiscounted). Energy of the reverse entries, |p_int| x 1 h: MWh per representative day (omega-weighted), day-weighted MWh (years x days), and block-weighted (years x days x discount -- the EUR-at-1-EUR/MWh convention of the curtailment figures). The TSO copy pc_adn is counted beside it (secondary), with the largest DSO - TSO difference (the consensus residual).",
+  "material_tol_pu": 1e-06,
+  "min_entry": {
+   "day": "Autumn",
+   "hour": 19,
+   "node_id": 7,
+   "omega": 1.0,
+   "p_int_mw": -3.156856856401926,
+   "p_int_pu": -0.03156856856401926,
+   "p_int_tso_mw": -3.1568787574334953,
+   "period": 18,
+   "s_m": 0,
+   "s_o": 0,
+   "year": "2025"
+  },
+  "n_entries": 864,
+  "n_entries_at_zero_within_material_tol": 0,
+  "n_reverse_entries_listed": 4,
+  "per_node": {
+   "5": {
+    "material": {
+     "count": 0,
+     "count_day_weighted": 0.0,
+     "count_probability_weighted": 0.0,
+     "energy_mwh_block_weighted": 0.0,
+     "energy_mwh_day_weighted": 0.0,
+     "energy_mwh_rep_day": 0.0
+    },
+    "strict": {
+     "count": 0,
+     "count_day_weighted": 0.0,
+     "count_probability_weighted": 0.0,
+     "energy_mwh_block_weighted": 0.0,
+     "energy_mwh_day_weighted": 0.0,
+     "energy_mwh_rep_day": 0.0
+    }
+   },
+   "7": {
+    "material": {
+     "count": 4,
+     "count_day_weighted": 1830.0,
+     "count_probability_weighted": 4.0,
+     "energy_mwh_block_weighted": 3308.2989930749104,
+     "energy_mwh_day_weighted": 3308.2989930749104,
+     "energy_mwh_rep_day": 7.2269950710627295
+    },
+    "strict": {
+     "count": 4,
+     "count_day_weighted": 1830.0,
+     "count_probability_weighted": 4.0,
+     "energy_mwh_block_weighted": 3308.2989930749104,
+     "energy_mwh_day_weighted": 3308.2989930749104,
+     "energy_mwh_rep_day": 7.2269950710627295
+    }
+   },
+   "9": {
+    "material": {
+     "count": 0,
+     "count_day_weighted": 0.0,
+     "count_probability_weighted": 0.0,
+     "energy_mwh_block_weighted": 0.0,
+     "energy_mwh_day_weighted": 0.0,
+     "energy_mwh_rep_day": 0.0
+    },
+    "strict": {
+     "count": 0,
+     "count_day_weighted": 0.0,
+     "count_probability_weighted": 0.0,
+     "energy_mwh_block_weighted": 0.0,
+     "energy_mwh_day_weighted": 0.0,
+     "energy_mwh_rep_day": 0.0
+    }
+   }
+  },
+  "reverse_entries_most_negative_first": [
+   {
+    "day": "Autumn",
+    "hour": 19,
+    "node_id": 7,
+    "omega": 1.0,
+    "p_int_mw": -3.156856856401926,
+    "p_int_pu": -0.03156856856401926,
+    "p_int_tso_mw": -3.1568787574334953,
+    "period": 18,
+    "s_m": 0,
+    "s_o": 0,
+    "year": "2025"
+   },
+   {
+    "day": "Spring",
+    "hour": 22,
+    "node_id": 7,
+    "omega": 1.0,
+    "p_int_mw": -2.4015618438831847,
+    "p_int_pu": -0.02401561843883185,
+    "p_int_tso_mw": -2.4015746144681884,
+    "period": 21,
+    "s_m": 0,
+    "s_o": 0,
+    "year": "2025"
+   },
+   {
+    "day": "Spring",
+    "hour": 2,
+    "node_id": 7,
+    "omega": 1.0,
+    "p_int_mw": -1.6016853043904722,
+    "p_int_pu": -0.01601685304390472,
+    "p_int_tso_mw": -1.6016853044222734,
+    "period": 1,
+    "s_m": 0,
+    "s_o": 0,
+    "year": "2025"
+   },
+   {
+    "day": "Summer",
+    "hour": 22,
+    "node_id": 7,
+    "omega": 1.0,
+    "p_int_mw": -0.06689106638714658,
+    "p_int_pu": -0.0006689106638714657,
+    "p_int_tso_mw": -0.06689114128684004,
+    "period": 21,
+    "s_m": 0,
+    "s_o": 0,
+    "year": "2025"
+   }
+  ],
+  "totals": {
+   "material": {
+    "count": 4,
+    "count_day_weighted": 1830.0,
+    "count_probability_weighted": 4.0,
+    "energy_mwh_block_weighted": 3308.2989930749104,
+    "energy_mwh_day_weighted": 3308.2989930749104,
+    "energy_mwh_rep_day": 7.2269950710627295
+   },
+   "strict": {
+    "count": 4,
+    "count_day_weighted": 1830.0,
+    "count_probability_weighted": 4.0,
+    "energy_mwh_block_weighted": 3308.2989930749104,
+    "energy_mwh_day_weighted": 3308.2989930749104,
+    "energy_mwh_rep_day": 7.2269950710627295
+   }
+  },
+  "tso_side_secondary": {
+   "material": 4,
+   "max_abs_dso_minus_tso_mw": 0.00027157182285009185,
+   "strict": 4
+  }
+ },
+ "git_head": "d575a16143d9f27e5551062047a502bc4d91c4ed",
+ "hand_check": [
+  {
+   "abs_diff_mw": 0.0,
+   "bitwise": true,
+   "day": "Autumn",
+   "dso_expected_interface_pf_p_mw": -3.156856856401926,
+   "hour": 19,
+   "in_listed_reverse_entries": true,
+   "listed_value_mw": -3.156856856401926,
+   "node_id": 7,
+   "p_int_by_hand_mw": -3.156856856401926,
+   "p_int_pg_adn_mw": -3.156856856401926,
+   "pg_ref_gen_pu": -0.03156856856401926,
+   "shared_ess_at_ref_pu": 0.0,
+   "tso_minus_dso_mw": -2.190103156918255e-05,
+   "tso_pc_plus_delta_by_hand_mw": -3.1568787574334953,
+   "year": "2025"
+  },
+  {
+   "abs_diff_mw": 0.0,
+   "bitwise": true,
+   "day": "Spring",
+   "dso_expected_interface_pf_p_mw": -2.4015618438831847,
+   "hour": 22,
+   "in_listed_reverse_entries": true,
+   "listed_value_mw": -2.4015618438831847,
+   "node_id": 7,
+   "p_int_by_hand_mw": -2.4015618438831847,
+   "p_int_pg_adn_mw": -2.4015618438831847,
+   "pg_ref_gen_pu": -0.02401561843883185,
+   "shared_ess_at_ref_pu": 0.0,
+   "tso_minus_dso_mw": -1.2770585003707424e-05,
+   "tso_pc_plus_delta_by_hand_mw": -2.4015746144681884,
+   "year": "2025"
+  },
+  {
+   "abs_diff_mw": 0.0,
+   "bitwise": true,
+   "day": "Spring",
+   "dso_expected_interface_pf_p_mw": -1.6016853043904722,
+   "hour": 2,
+   "in_listed_reverse_entries": true,
+   "listed_value_mw": -1.6016853043904722,
+   "node_id": 7,
+   "p_int_by_hand_mw": -1.6016853043904722,
+   "p_int_pg_adn_mw": -1.6016853043904722,
+   "pg_ref_gen_pu": -0.01601685304390472,
+   "shared_ess_at_ref_pu": 0.0,
+   "tso_minus_dso_mw": -3.1801228317362984e-11,
+   "tso_pc_plus_delta_by_hand_mw": -1.6016853044222734,
+   "year": "2025"
+  },
+  {
+   "abs_diff_mw": 0.0,
+   "bitwise": true,
+   "day": "Autumn",
+   "dso_expected_interface_pf_p_mw": 100.53283795653529,
+   "hour": 12,
+   "in_listed_reverse_entries": false,
+   "listed_value_mw": null,
+   "node_id": 9,
+   "p_int_by_hand_mw": 100.53283795653529,
+   "p_int_pg_adn_mw": 100.53283795653529,
+   "pg_ref_gen_pu": 1.005328379565353,
+   "shared_ess_at_ref_pu": 0.0,
+   "tso_minus_dso_mw": 1.7195134205394424e-12,
+   "tso_pc_plus_delta_by_hand_mw": 100.53283795653701,
+   "year": "2035"
+  }
+ ],
+ "harness_sha256": "32fe78cac0e8e39c1de05de13e83776a8fbb939f65c0b60bfcb82f29996ca565",
+ "instance": {
+  "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+  "cell": "d110bd1a5977df1e_x0",
+  "certification_cycle": 181,
+  "certified_models": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/certified_models.pkl",
+   "sha256": "99ab1070b0e61cc7818975ce898069d2060d2668bae67c166b58913e9923c33a"
+  },
+  "label": "x0",
+  "problem": "SRP1",
+  "q181": 653873702.1876609
+ },
+ "objective_convention": "no Q here; counts and energies only (MWh, stated weightings)",
+ "script_sha256": "fc88b7f00283762adf42921deb2fb05c9e37476fea37fd4ad33dc62c309f016a",
+ "sign_proof": {
+  "consensus_same_sign_max_abs_dso_minus_tso_mw": 0.00027157182285009185,
+  "dso_settlement_pays_plus_pi_pg_adn_source": true,
+  "reading": "TN generation minus the ADN interface loads is the TN's own losses (small, >= 0) at every hour, and the TN has no other load: pc_adn > 0 is power the TN delivers to the DN. The DSO copy pg_adn agrees with pc_adn to the consensus residual, so pg_adn > 0 is IMPORT (TN -> DN) and pg_adn < 0 REVERSE flow -- the NRF rows bound the right sign",
+  "tn_losses_max_mw": 2.091147776486821,
+  "tn_losses_min_mw": 0.14826053830494956,
+  "tn_losses_nonnegative_every_hour": true,
+  "tn_only_loads_are_adn_interfaces": true,
+  "tn_only_loads_are_adn_interfaces_max_abs_mw": 0.0,
+  "worst_5_hours_by_losses": [
+   {
+    "adn_load_mw": 24.809508868957792,
+    "all_loads_mw": 24.809508868957792,
+    "block": "TSO|-|2025|Spring",
+    "gen_mw": 24.95776940726274,
+    "hour": 8,
+    "losses_mw": 0.14826053830494956
+   },
+   {
+    "adn_load_mw": 20.763062106896292,
+    "all_loads_mw": 20.763062106896292,
+    "block": "TSO|-|2025|Spring",
+    "gen_mw": 20.957543494863742,
+    "hour": 7,
+    "losses_mw": 0.19448138796744985
+   },
+   {
+    "adn_load_mw": 40.594700782083635,
+    "all_loads_mw": 40.594700782083635,
+    "block": "TSO|-|2030|Spring",
+    "gen_mw": 40.7999196975099,
+    "hour": 8,
+    "losses_mw": 0.20521891542626491
+   },
+   {
+    "adn_load_mw": 48.09172213008387,
+    "all_loads_mw": 48.09172213008387,
+    "block": "TSO|-|2035|Spring",
+    "gen_mw": 48.307437644289706,
+    "hour": 21,
+    "losses_mw": 0.2157155142058329
+   },
+   {
+    "adn_load_mw": 47.96751017066545,
+    "all_loads_mw": 47.96751017066545,
+    "block": "TSO|-|2035|Spring",
+    "gen_mw": 48.18536149244495,
+    "hour": 8,
+    "losses_mw": 0.21785132177949862
+   }
+  ]
+ },
+ "stage": "P5.15 W116 -- reverse-flow count of the coordinated Q181 solution (zero solves)",
+ "statement": "part of the measured benefit is the value of allowing reverse flow",
+ "utc": "2026-09-28T17:21:12.195028+00:00"
+}

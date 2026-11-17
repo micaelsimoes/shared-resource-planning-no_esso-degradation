@@ -1,0 +1,398 @@
+{
+ "stage": "P5.6-A6 failure",
+ "provenance": {
+  "timestamp_utc": "2026-09-08T10:42:14.511732+00:00",
+  "git_head": "1de1a558b24475add3fe24998084bcc573629eac",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.6-A6 failure diagnosis"
+ },
+ "timestamp_utc": "2026-09-08T10:47:57.596602+00:00",
+ "candidate": "s+e|node9|2025|-10%",
+ "status": "POLISH_FAILURE",
+ "admm": {
+  "converged": true,
+  "initialization_failed": false,
+  "cycles": 9,
+  "runtime_s": 284.6708378791809,
+  "n_recovery_diagnostics": 0,
+  "gross_operational_cost": 848055430.4022154,
+  "terminal_salvage_value": 3883.750634911498,
+  "net_operational_recourse": 848051546.6515805
+ },
+ "esso": {
+  "solved": {
+   "5": true,
+   "7": true,
+   "9": true
+  },
+  "runtime_s": 0.6177699565887451,
+  "solve_count": 3
+ },
+ "admm_coordination_residuals": {
+  "interface_p": 0.01967380337129654,
+  "interface_q": 0.003294023018428266,
+  "interface_v": 0.0001495901031096647,
+  "shared_ess_p": 2.5829949817351856e-06,
+  "shared_ess_q": 1.0335888295315798e-08
+ },
+ "capacity_shift_into_networks": 5.517253916604236e-05,
+ "available_capacity": {
+  "5|2025": {
+   "s_available": 0.010634892806127162,
+   "e_available": 0.017170052643740528
+  },
+  "5|2030": {
+   "s_available": 0.021269785612254323,
+   "e_available": 0.031787832165135754
+  },
+  "5|2035": {
+   "s_available": 0.03190467841838149,
+   "e_available": 0.04271075460887086
+  },
+  "7|2025": {
+   "s_available": 0.010634892806127162,
+   "e_available": 0.01713314248804511
+  },
+  "7|2030": {
+   "s_available": 0.021269785612254323,
+   "e_available": 0.03168939675070431
+  },
+  "7|2035": {
+   "s_available": 0.03190467841838149,
+   "e_available": 0.04316022683337194
+  },
+  "9|2025": {
+   "s_available": 0.009571403525514445,
+   "e_available": 0.015419359661597475
+  },
+  "9|2030": {
+   "s_available": 0.02020629633164161,
+   "e_available": 0.030431317442211777
+  },
+  "9|2035": {
+   "s_available": 0.03084118913776877,
+   "e_available": 0.042012515373692425
+  }
+ },
+ "polish": {
+  "blocks": [
+   {
+    "agent": "TSO",
+    "year": 2025,
+    "day": "Spring",
+    "solved": true
+   },
+   {
+    "agent": "TSO",
+    "year": 2025,
+    "day": "Summer",
+    "solved": true
+   },
+   {
+    "agent": "TSO",
+    "year": 2025,
+    "day": "Autumn",
+    "solved": true
+   },
+   {
+    "agent": "TSO",
+    "year": 2025,
+    "day": "Winter",
+    "solved": true
+   },
+   {
+    "agent": "TSO",
+    "year": 2030,
+    "day": "Spring",
+    "solved": true
+   },
+   {
+    "agent": "TSO",
+    "year": 2030,
+    "day": "Summer",
+    "solved": true
+   },
+   {
+    "agent": "TSO",
+    "year": 2030,
+    "day": "Autumn",
+    "solved": true
+   },
+   {
+    "agent": "TSO",
+    "year": 2030,
+    "day": "Winter",
+    "solved": true
+   },
+   {
+    "agent": "TSO",
+    "year": 2035,
+    "day": "Spring",
+    "solved": true
+   },
+   {
+    "agent": "TSO",
+    "year": 2035,
+    "day": "Summer",
+    "solved": true
+   },
+   {
+    "agent": "TSO",
+    "year": 2035,
+    "day": "Autumn",
+    "solved": true
+   },
+   {
+    "agent": "TSO",
+    "year": 2035,
+    "day": "Winter",
+    "solved": true
+   },
+   {
+    "agent": "DSO5",
+    "year": 2025,
+    "day": "Spring",
+    "solved": true
+   },
+   {
+    "agent": "DSO5",
+    "year": 2025,
+    "day": "Summer",
+    "solved": true
+   },
+   {
+    "agent": "DSO5",
+    "year": 2025,
+    "day": "Autumn",
+    "solved": true
+   },
+   {
+    "agent": "DSO5",
+    "year": 2025,
+    "day": "Winter",
+    "solved": true
+   },
+   {
+    "agent": "DSO5",
+    "year": 2030,
+    "day": "Spring",
+    "solved": true
+   },
+   {
+    "agent": "DSO5",
+    "year": 2030,
+    "day": "Summer",
+    "solved": true
+   },
+   {
+    "agent": "DSO5",
+    "year": 2030,
+    "day": "Autumn",
+    "solved": true
+   },
+   {
+    "agent": "DSO5",
+    "year": 2030,
+    "day": "Winter",
+    "solved": true
+   },
+   {
+    "agent": "DSO5",
+    "year": 2035,
+    "day": "Spring",
+    "solved": true
+   },
+   {
+    "agent": "DSO5",
+    "year": 2035,
+    "day": "Summer",
+    "solved": true
+   },
+   {
+    "agent": "DSO5",
+    "year": 2035,
+    "day": "Autumn",
+    "solved": true
+   },
+   {
+    "agent": "DSO5",
+    "year": 2035,
+    "day": "Winter",
+    "solved": true
+   },
+   {
+    "agent": "DSO7",
+    "year": 2025,
+    "day": "Spring",
+    "solved": true
+   },
+   {
+    "agent": "DSO7",
+    "year": 2025,
+    "day": "Summer",
+    "solved": true
+   },
+   {
+    "agent": "DSO7",
+    "year": 2025,
+    "day": "Autumn",
+    "solved": true
+   },
+   {
+    "agent": "DSO7",
+    "year": 2025,
+    "day": "Winter",
+    "solved": true
+   },
+   {
+    "agent": "DSO7",
+    "year": 2030,
+    "day": "Spring",
+    "solved": true
+   },
+   {
+    "agent": "DSO7",
+    "year": 2030,
+    "day": "Summer",
+    "solved": true
+   },
+   {
+    "agent": "DSO7",
+    "year": 2030,
+    "day": "Autumn",
+    "solved": true
+   },
+   {
+    "agent": "DSO7",
+    "year": 2030,
+    "day": "Winter",
+    "solved": true
+   },
+   {
+    "agent": "DSO7",
+    "year": 2035,
+    "day": "Spring",
+    "solved": true
+   },
+   {
+    "agent": "DSO7",
+    "year": 2035,
+    "day": "Summer",
+    "solved": true
+   },
+   {
+    "agent": "DSO7",
+    "year": 2035,
+    "day": "Autumn",
+    "solved": true
+   },
+   {
+    "agent": "DSO7",
+    "year": 2035,
+    "day": "Winter",
+    "solved": true
+   },
+   {
+    "agent": "DSO9",
+    "year": 2025,
+    "day": "Spring",
+    "solved": true
+   },
+   {
+    "agent": "DSO9",
+    "year": 2025,
+    "day": "Summer",
+    "solved": true
+   },
+   {
+    "agent": "DSO9",
+    "year": 2025,
+    "day": "Autumn",
+    "solved": true
+   },
+   {
+    "agent": "DSO9",
+    "year": 2025,
+    "day": "Winter",
+    "solved": true
+   },
+   {
+    "agent": "DSO9",
+    "year": 2030,
+    "day": "Spring",
+    "solved": false
+   },
+   {
+    "agent": "DSO9",
+    "year": 2030,
+    "day": "Summer",
+    "solved": true
+   },
+   {
+    "agent": "DSO9",
+    "year": 2030,
+    "day": "Autumn",
+    "solved": true
+   },
+   {
+    "agent": "DSO9",
+    "year": 2030,
+    "day": "Winter",
+    "solved": true
+   },
+   {
+    "agent": "DSO9",
+    "year": 2035,
+    "day": "Spring",
+    "solved": true
+   },
+   {
+    "agent": "DSO9",
+    "year": 2035,
+    "day": "Summer",
+    "solved": true
+   },
+   {
+    "agent": "DSO9",
+    "year": 2035,
+    "day": "Autumn",
+    "solved": true
+   },
+   {
+    "agent": "DSO9",
+    "year": 2035,
+    "day": "Winter",
+    "solved": true
+   }
+  ],
+  "all_solved": false,
+  "runtime_s": 46.94360089302063,
+  "solve_count": 48
+ }
+}

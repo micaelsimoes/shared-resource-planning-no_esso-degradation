@@ -1,0 +1,640 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 40 ruling 1",
+  "frozen spec v24 (this stage)",
+  "Planner task W64"
+ ],
+ "bar_window_cycles": 10,
+ "campaign_id": "s53_alpha_row_smoke",
+ "candidates": [
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "7d53b6f21b686a44_x0_a0p50",
+   "eval_key": "7d53b6f21b686a44db69f0901e03c870d14e15d00bfaaa6a5379822890918a94",
+   "interface_deviation_premium": {
+    "alpha": 0.5,
+    "floor": null
+   },
+   "key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "label": "x0_a0p50",
+   "overrides": {},
+   "post_certification": null,
+   "working_dir_ids": {
+    "precheck": "p515s44_s53_alpha_row_smoke_7d53b6f21b686a44_precheck",
+    "run": "p515s44_s53_alpha_row_smoke_7d53b6f21b686a44_run"
+   }
+  }
+ ],
+ "cap": 2,
+ "concurrency": 1,
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "derived_instance": {
+   "case_path": "data/SRP1/Results/P515S52/pilot_instance/SRP1__s52_pilot_2x2.json",
+   "case_sha256": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949",
+   "changes_vs_source": [
+    {
+     "from": {
+      "2025": 5,
+      "2030": 5,
+      "2035": 5
+     },
+     "key": "Years",
+     "to": {
+      "2025": 3,
+      "2028": 3,
+      "2031": 3,
+      "2034": 3,
+      "2037": 3
+     }
+    },
+    {
+     "from": 1,
+     "key": "NumMarketScenarios",
+     "to": 2
+    },
+    {
+     "from": 1,
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "to": 2
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "to": 2
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "to": 2
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "to": 2
+    }
+   ],
+   "instance_label": "s52_pilot_2x2",
+   "scenario_checksum": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563",
+   "source_case_path": "data/SRP1/SRP1.json",
+   "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+  },
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ess_params_file": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "full_diagnostics_in_rows": true,
+  "name": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70); the 2x2 pilot instance s52_pilot_2x2; row 18 premium per entry (the alpha row); case-file AA declared",
+  "note": "no overrides, no model variant, no flexibility-price variant, no post-certification",
+  "overrides": {}
+ },
+ "extra": {
+  "alpha_grid_as_ordered": [
+   0.0,
+   0.1,
+   0.25,
+   0.5,
+   1.0
+  ],
+  "campaign_script": "p515_s53_alpha_row_campaign.py",
+  "campaign_script_sha256": "40c14b5bf2258ab0d3e891d6447d906a5daac3711f3de5b796f9c8853afffe7a",
+  "cells": {
+   "x0_a0p50": {
+    "alpha": 0.5,
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "eval_key": "7d53b6f21b686a44db69f0901e03c870d14e15d00bfaaa6a5379822890918a94",
+    "point": "x0"
+   }
+  },
+  "hazard_static_checks": {
+   "child_reads_no_other_campaign_root": true,
+   "evaluate_writes_only_under_ctx_roots": true,
+   "own_roots_outside_protected": true,
+   "protected_roots_exist": true
+  },
+  "instance": {
+   "case_path": "data/SRP1/Results/P515S52/pilot_instance/SRP1__s52_pilot_2x2.json",
+   "case_sha256": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949",
+   "changes_vs_source": [
+    {
+     "from": {
+      "2025": 5,
+      "2030": 5,
+      "2035": 5
+     },
+     "key": "Years",
+     "to": {
+      "2025": 3,
+      "2028": 3,
+      "2031": 3,
+      "2034": 3,
+      "2037": 3
+     }
+    },
+    {
+     "from": 1,
+     "key": "NumMarketScenarios",
+     "to": 2
+    },
+    {
+     "from": 1,
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "to": 2
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "to": 2
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "to": 2
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "to": 2
+    }
+   ],
+   "derive_base": "paper",
+   "derive_description": "the paper instance: 5 representative years (2025, 2028, 2031, 2034, 2037; each a 3-year block, sum 15) x 4 days x 5 market x 5 operation scenarios (25 combinations per block)",
+   "derive_overrides": {
+    "num_market_scenarios": 2,
+    "num_operation_scenarios": 2
+   },
+   "equals_w45_pilot_case_sha256": true,
+   "existed_before": true,
+   "source_case_path": "data/SRP1/SRP1.json",
+   "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+   "years": {
+    "2025": 3,
+    "2028": 3,
+    "2031": 3,
+    "2034": 3,
+    "2037": 3
+   },
+   "years_expected": true
+  },
+  "instance_facts": {
+   "alpha_arb": {
+    "definition": "p515_s51_coordinated_decomposition.alpha_arb_by_hour on the TSO block prices (market prices are common to every network), per (year, day, hour)",
+    "fraction_of_hours_below": {
+     "0.0": 0.0,
+     "0.1": 0.7270833333333333,
+     "0.25": 0.9458333333333333,
+     "0.5": 0.9916666666666667,
+     "1.0": 1.0
+    },
+    "max": 0.877367699960065,
+    "median": 0.042183120545718114,
+    "n_hours": 480,
+    "p90": 0.18890081514072066,
+    "planner_statement": {
+     "max": 0.668,
+     "median": 0.022,
+     "p90": 0.157
+    }
+   },
+   "block_weights_tso": {
+    "2025|Autumn": 273.0,
+    "2025|Spring": 276.0,
+    "2025|Summer": 273.0,
+    "2025|Winter": 273.0,
+    "2028|Autumn": 257.2539973313431,
+    "2028|Spring": 260.08096433498423,
+    "2028|Summer": 257.2539973313431,
+    "2028|Winter": 257.2539973313431,
+    "2031|Autumn": 242.4161873368304,
+    "2031|Spring": 245.080101483389,
+    "2031|Summer": 242.4161873368304,
+    "2031|Winter": 242.4161873368304,
+    "2034|Autumn": 228.4341875832357,
+    "2034|Spring": 230.94445338085367,
+    "2034|Summer": 228.4341875832357,
+    "2034|Winter": 228.4341875832357,
+    "2037|Autumn": 215.25863693379213,
+    "2037|Spring": 217.62411646053712,
+    "2037|Summer": 215.25863693379213,
+    "2037|Winter": 215.25863693379213
+   },
+   "declared_solve_profile_per_cycle": 83,
+   "expected_block_counts": {
+    "dso_blocks": 60,
+    "esso_models": 3,
+    "network_blocks": 80,
+    "solves_per_cycle": 83,
+    "tso_blocks": 20
+   },
+   "min_hourly_mean_price": 9.81204468708017,
+   "n_dso_blocks": 60,
+   "n_tso_blocks": 20,
+   "planning_dimensions": {
+    "active_distribution_network_nodes": [
+     5,
+     7,
+     9
+    ],
+    "days": {
+     "Autumn": 91,
+     "Spring": 92,
+     "Summer": 91,
+     "Winter": 91
+    },
+    "num_instants": 24,
+    "num_market_scenarios": 2,
+    "num_operation_scenarios": {
+     "case33_1": 2,
+     "case33_2": 2,
+     "case33_3": 2,
+     "case9": 2
+    },
+    "random_seed": 2026,
+    "scenario_metadata": {
+     "combined_scenario_checksum": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563",
+     "deterministic_scenarios": true,
+     "market_scenario_checksum": "f96ae5bffa617abbd0d35f53cb32dd07e0ec9ef3dbe1598f63d3f1c931fb45b7",
+     "operational_scenario_checksum": "433864055b30e0adc48616ef032a76609070e8271208ca54967bcc67737f6683",
+     "random_seed": 2026
+    },
+    "years": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    }
+   },
+   "planning_read_redirected_to": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/freeze_reads/w47_w64_8wfy8ia2",
+   "premium_floor_needed": false,
+   "scenario_checksum": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563"
+  },
+  "label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "lock_observations_at_freeze_non_gating": [],
+  "memory_at_freeze_non_gating": {
+   "available_bytes": 22119186432,
+   "available_gib": 20.60009765625,
+   "budget_derivation": "MEASURED zero-solve on the pilot instance (p515_s52_pilot_checks, memory_by_stage): the 80 ADMM-built network blocks + 3 ESSO models of the unit candidate hold 3.40 GiB RSS (no pristine clones, no solver state); the multi-scenario capture adds ~0; production's workbook writer a +3.75 GiB TRANSIENT for ~2 min (released by gc.collect() to +0.55 GiB); the certified-model pickle (0.66 GB on disk) a +5.1 GiB TRANSIENT and +2.3 GiB retained. NOT measured (need solves): the pristine snapshot clones (lightweight, the default: every TSO block and every node-7 DSO block, ~1.3 GiB estimated), solver state (multiplier suffixes, SolverResults, AA memory) and the fixed overhead (SRP1 campaign children peak at 2.32-2.40 GiB for ~0.6 GiB of models). Sustained per child: ~5.5-6.5 GiB -> 7 GiB; the terminal-phase transient -> 6 GiB, counted ONCE because the harness serializes the children's terminal phases (`acquire_terminal_phase_lock` on the campaign root). Without the model pickle the transient would be the workbook's ~4 GiB. W48 (Planner ruling: persist_certified_models dropped): the terminal-phase transient is now the workbook's -- measured RSS 3,730,014,208 -> peak 7,732,314,112 bytes (+3.727 GiB), retained +0.537 GiB after it -- budgeted at 4 GiB (was 6 GiB for the pickle); the +2.3 GiB the pickle retained is gone too. Per-child sustained budget unchanged at 7 GiB. Required: pilot 2 x 7 + 4 = 18 GiB (was 20), repro 1 x 7 + 4 = 11 GiB (was 13). Still NOT measured: the hull polish's own solve-time memory (it re-solves the 80 blocks after the workbook).",
+   "concurrency": 1,
+   "free_plus_inactive_gib": 13.574234008789062,
+   "hw_memsize_bytes": 34359738368,
+   "missing_vm_stat_figures": [],
+   "non_reclaimable_gib": 11.39990234375,
+   "page_size_bytes": 16384,
+   "pass": true,
+   "per_child_sustained_budget_gib": 7.0,
+   "required_bytes": 11811160064,
+   "required_gib": 11.0,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 7 GiB + 4 GiB (one terminal-phase transient at a time: the harness terminal-phase lock)",
+   "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside); the measure of A0 / S47, with the budget re-derived for this instance",
+   "terminal_transient_budget_gib": 4.0,
+   "utc": "2026-09-24T14:00:31.950927+00:00",
+   "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+   "vm_stat_pages": {
+    "anonymous_pages": 462499,
+    "file_backed_pages": 1270923,
+    "pages_active": 858159,
+    "pages_free": 30260,
+    "pages_inactive": 859341,
+    "pages_occupied_by_compressor": 122389,
+    "pages_purgeable": 3006,
+    "pages_speculative": 15922,
+    "pages_stored_in_compressor": 252323,
+    "pages_wired_down": 162216
+   }
+  },
+  "memory_rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 7 GiB + 4 GiB (one terminal-phase transient at a time: the harness terminal-phase lock)",
+  "objective_convention": "Q(x) = certified_cost = gross_operational_cost (_get_operational_recourse_components: the CONTRACTED interface settlement and the solver-only interface-voltage pin excluded; the row 18 charge and the price-deviation covariance -- the settlement DEVIATION part -- included, Addendum 38 (C)); value = Q(0) - Q(x); F = I + Q; terminal salvage and net_operational_recourse = gross - salvage reported, excluded.",
+  "pairs": {
+   "1": [
+    "x0_a0p50",
+    "n7_4h_e1_a0p50"
+   ],
+   "2": [
+    "x0_a0p00",
+    "x0_a1p00"
+   ],
+   "3": [
+    "x0_a0p10",
+    "x0_a0p25"
+   ]
+  },
+  "pins": {
+   "cost_file": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+    "sha256_on_disk": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+    "sha256_pinned": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6"
+   },
+   "ess_params_file": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "sha256_on_disk": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+    "sha256_pinned": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+   },
+   "instance_case": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S52/pilot_instance/SRP1__s52_pilot_2x2.json",
+    "sha256_on_disk": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949",
+    "sha256_pinned": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949"
+   },
+   "instance_record": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S52/pilot_instance/instance_record.json",
+    "sha256_on_disk": "af539cd13d0fde164c5328b8944e903a46bed177a023f8af985288c8df5afb81",
+    "sha256_pinned": "af539cd13d0fde164c5328b8944e903a46bed177a023f8af985288c8df5afb81"
+   },
+   "sigma_check": {
+    "commit": "c8f4b4c7",
+    "commit_in_HEAD": true,
+    "git_clean": true,
+    "git_tracked": true,
+    "path": "data/SRP1/Results/P515S52/sigma_check/r2/sigma_check.json"
+   },
+   "spec_v23": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v23_39a07fd8.json",
+    "sha256_on_disk": "39a07fd85bd02aaee0f4042d9a7b201cf4df9027191ff70d7939b124061f685c",
+    "sha256_pinned": "39a07fd85bd02aaee0f4042d9a7b201cf4df9027191ff70d7939b124061f685c"
+   },
+   "spec_v24": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v24_3ac8c185.json",
+    "sha256_on_disk": "3ac8c185261e80bfda29b6b7c53645da1d5984af3d20e5aae1db18f685a14074",
+    "sha256_pinned": "3ac8c185261e80bfda29b6b7c53645da1d5984af3d20e5aae1db18f685a14074"
+   }
+  },
+  "protected_roots": [
+   "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist",
+   "data/SRP1/Results/P515S52/campaign_s52_pilot_repro_nopersist",
+   "data/SRP1/Results/P515S52/campaign_s52_pilot",
+   "data/SRP1/Results/P515S52/campaign_s52_pilot_repro"
+  ],
+  "rule_eleven_asserted_before_run": {
+   "harness_alpha_row": {
+    "audit_constants_by_import": true,
+    "audit_helpers_by_import": true,
+    "boyd_once_per_cycle_before_local_check": true,
+    "child_closes_hooks_in_post_run_hook": true,
+    "child_installs_alpha_row_hooks": true,
+    "child_merges_per_cycle_response": true,
+    "child_response_capture_error_exits_2": true,
+    "child_writes_response_before_workbook_and_post_certification": true,
+    "coordination_record_by_import": true,
+    "coordination_record_reads_duals_rho_request_pbar_scale": true,
+    "decomposition_by_import": true,
+    "init_check_then_prepare_dso_then_prepare_tso": true,
+    "local_check_called_exactly_twice": true,
+    "model_declares_dual_and_bound_suffixes": true,
+    "p_posthoc_formula_defined": true,
+    "p_posthoc_inputs_captured": true,
+    "post_run_hook_gets_optimization_results": true,
+    "prepare_dso_sets_weight_and_penalty": true,
+    "prepare_tso_sets_weight_and_penalty": true,
+    "production_fn__activate_row18_with_settlement": true,
+    "production_fn__admm_local_solves_succeeded": true,
+    "production_fn__get_admm_block_weight": true,
+    "production_fn__get_local_interface_settlement": true,
+    "production_fn__get_operational_interface_dispersion": true,
+    "production_fn__get_operational_recourse_components": true,
+    "production_fn__prepare_distribution_objectives_for_admm": true,
+    "production_fn__prepare_transmission_objectives_for_admm": true,
+    "production_fn_create_shared_energy_storage_model": true,
+    "production_fn_create_transmission_network_model": true,
+    "production_fn_get_admm_boyd_residual_metrics": true,
+    "release_bookkeeping_leaves_suffixes": true,
+    "row18_activated_in_prepare_dso": true,
+    "solved_objective_is_p58_rescaled": true,
+    "tso_and_esso_built_before_prepare": true
+   },
+   "harness_post_certification": {
+    "aa_sidecar_fn": true,
+    "certification_fn": true,
+    "cost_band_constant_1_5e_4": true,
+    "decomposition_fn_accepts_reference_dir": true,
+    "hull_gate_threshold_0_1_pct": true,
+    "hull_polish_fn": true,
+    "persist_fn": true,
+    "reconciliation_tol_1_0": true,
+    "run_admm_arm_passes_state_to_hook": true,
+    "stopped_by_fn": true
+   },
+   "harness_record": {
+    "component_levels_recourse_key_interface_settlement_total": true,
+    "esso_capture_attr_es_avg_ch_dch_per_unit": true,
+    "esso_capture_attr_es_e_rated_per_unit": true,
+    "esso_capture_attr_es_soh_per_unit_cumul": true,
+    "evaluator_fn__certification_from_trajectory": true,
+    "evaluator_fn__first_pass_cycle": true,
+    "evaluator_fn__terminal_ratios": true,
+    "harness_fn__derive_stopped_by_from_trajectory": true,
+    "harness_fn__identify_soh_floor_rows": true,
+    "harness_fn__s35ref_terminal_floor_and_efc": true,
+    "harness_fn_run_admm_arm": true,
+    "harness_fn_s38_pf_capture_hooks": true,
+    "harness_fn_s39_exempt_until_capture_hooks": true,
+    "harness_fn_write_boyd_terminal_s35ref": true,
+    "production_state_has_peak_rss": true,
+    "run_admm_arm_accepts_investment_map": true,
+    "run_admm_arm_post_run_hook_gets_state": true,
+    "trajectory_field_boyd_all_pass": true,
+    "trajectory_field_boyd_ess_channel_pass": true,
+    "trajectory_field_boyd_ess_dual_ratio": true,
+    "trajectory_field_boyd_ess_primal_ratio": true,
+    "trajectory_field_boyd_pf_channel_pass": true,
+    "trajectory_field_boyd_pf_dual_ratio": true,
+    "trajectory_field_boyd_pf_primal_ratio": true,
+    "trajectory_field_boyd_stop": true,
+    "trajectory_field_boyd_v_channel_pass": true,
+    "trajectory_field_boyd_v_dual_ratio": true,
+    "trajectory_field_boyd_v_primal_ratio": true,
+    "trajectory_field_consecutive_converged_cycles": true,
+    "trajectory_field_cycle": true,
+    "trajectory_field_cycle_convergence": true,
+    "trajectory_field_efc_per_day_max": true,
+    "trajectory_field_gross_operational_cost": true,
+    "trajectory_field_local_solves_ok": true,
+    "trajectory_field_objective_change_abs": true,
+    "trajectory_field_objective_change_ratio": true,
+    "trajectory_field_objective_tolerance": true,
+    "trajectory_field_recourse": true,
+    "trajectory_field_rho_ess_action": true,
+    "trajectory_field_rho_ess_after": true,
+    "trajectory_field_rho_freeze_active": true,
+    "trajectory_field_rho_pf_action": true,
+    "trajectory_field_rho_pf_after": true,
+    "trajectory_field_rho_v_action": true,
+    "trajectory_field_rho_v_after": true,
+    "trajectory_field_terminal_salvage_value": true
+   },
+   "launcher": {
+    "C_A_monotonicity_in_row": true,
+    "P0_posthoc_formula_applied_in_cell": true,
+    "P0_posthoc_inputs_captured": true,
+    "P_charge_in_cell": true,
+    "Q_certified_cost": true,
+    "charge_weighted_captured": true,
+    "coordination_in_capture": true,
+    "covariance_in_cell": true,
+    "curtailment_in_capture": true,
+    "dispersion_metrics_in_cell": true,
+    "envelope_in_row": true,
+    "flexibility_in_capture": true,
+    "path_is_run_admm_arm": true,
+    "per_cycle_response_fields": true,
+    "q_leg_share_in_capture": true,
+    "row18_duals_in_capture": true,
+    "rule_ten_in_cell": true,
+    "split_by_w46_definitions": true,
+    "unit_value_in_row": true,
+    "voltage_pin_total_captured": true
+   }
+  },
+  "smoke_declared_solves_base": 249,
+  "smoke_gate": {
+   "checks": {
+    "G10_per_cycle_cost": "per-cycle capture < 60 s per cycle",
+    "G11_eval_key_unchanged": "x0_a0p50 key == the superseded s52 x0 key (computed by the pre-W64 harness) and the row spec's n7_4h_e1_a0p50 key == the s52 unit key",
+    "G12_hazard": "protected-root metadata unchanged before / after",
+    "G13_P_formulas": "cell_quantities runs on the smoke eval dir; the P |d| form from multiscenario_terminal.json (post hoc) equals the child-side live-model value to rel 1e-9; charge / alpha >= the |d| form and exceeds it by <= 1e-3 relative",
+    "G14_rule_eleven": "the child's alpha-row checklist all true",
+    "G1_guard_exact": "GUARD.verify(expected) == [] and the child's own solve_profile identity holds",
+    "G1b_no_solve_after_verify": "the bounded guard's counts do not move while the (zero-solve) checks run",
+    "G2_child_ran": "evaluation_record status not_certified (cap 2) with cycles_run == 2, no child error; multiscenario_terminal, operational_workbook and response_terminal all \"written\"",
+    "G3_activation_readback": "all_ok; 60 DSO blocks each alpha_on_model == 0.5, 192 rows all active, 0 pair Vars fixed; 20 TSO blocks penalty 0 / weight 1 / no row 18",
+    "G4_init_identity": "record written with a finite gross cost and its float.hex; compared with 0 records",
+    "G5_per_cycle": "2 response lines, both captured, cycles 1..2 match the trajectory, every numeric response field finite; per_cycle_record.jsonl carries every PER_CYCLE_RECORD_FIELDS key",
+    "G6_row18_duals_nonempty_and_sane": "some DSO curtailment entries carry the row 18 fields, all finite; the zL stationarity identity |zL(d+) + zL(d-)| = 2 omega alpha pibar B holds to rel 1e-4 on >= 99% of the checked indices and to 1e-2 on all, with 0 missing suffix values (n_checked = 2 x 96 x 60 = 11,520)",
+    "G7_coordination_nonempty_and_sane": "60 DSO blocks, no capture error, 24 hours each, dual_pf_p_req / p_pf_req_mw / pbar_mw finite, rho_pf > 0, admm_objective_scale > 0, some dual_pf_p_req != 0",
+    "G8_curtailment_entries": "n > 0; c_mw > tol, pg / pg_avail / qg / sg_avail finite, bus dual present, termination available on every entry (LMP quantiles reported, not gated)",
+    "G9_capture_cost": "response_terminal.json < 10 MB; RSS after - before the capture < 1 GiB"
+   },
+   "declared_solve_profile": "SolveProfileGuard(p514_n_instrumented_cstar.PERMITTED) armed around the whole child path; expected = 83 x 3 = 249 + every retry ATTEMPTED (per-event reconciliation, W35); verified EXACTLY with GUARD.verify(expected) (solves and process launches); an unsupported reconciliation fails",
+   "reported_not_gated": [
+    "smoke process peak RSS vs the s52 repro twin",
+    "LMP quantiles",
+    "Q-leg share",
+    "curtailment counts by class",
+    "wall time"
+   ],
+   "what": "ONE 2-cycle x0 alpha = 0.5 evaluation (campaign s53_alpha_row_smoke, cap 2, concurrency 1, no post-certification) run in the launcher process through the harness child path H._child_real (the gate hooks s38/s39, run_admm_arm, the W47 multi-scenario capture, the W64 capture), attached, alone"
+  },
+  "spec_v23": {
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v23_39a07fd8.json",
+   "sha256": "39a07fd85bd02aaee0f4042d9a7b201cf4df9027191ff70d7939b124061f685c"
+  },
+  "spec_v24": {
+   "git_clean": true,
+   "git_tracked": true,
+   "match": true,
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v24_3ac8c185.json",
+   "sha256_on_disk": "3ac8c185261e80bfda29b6b7c53645da1d5984af3d20e5aae1db18f685a14074",
+   "sha256_pinned": "3ac8c185261e80bfda29b6b7c53645da1d5984af3d20e5aae1db18f685a14074"
+  },
+  "spec_v24_pin": {
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v24_3ac8c185.json",
+   "sha256": "3ac8c185261e80bfda29b6b7c53645da1d5984af3d20e5aae1db18f685a14074"
+  },
+  "stage": "smoke",
+  "stage_text": "P5.15 Addendum 40 ruling 1 (W64) -- the R3.6 alpha row on the 2 x 2 pilot instance: x = 0 at alpha in {0, 0.1, 0.25, 0.5, 1.0} + the smallest node-7 unit at alpha = 0.5, all certified; a two-mechanism cost-of-commitment curve",
+  "superseded_keys": {
+   "n7_4h_e1_a0p50": {
+    "eval_dir": "711fce9aa74d6878_n7_4h_e1",
+    "eval_key": "711fce9aa74d687892b994e332472c7d59745ef74ce9030abc12d54a9aaf83b4",
+    "superseded_label": "n7_4h_e1",
+    "working_dir_ids": {
+     "precheck": "p515s44_s52_pilot_nopersist_711fce9aa74d6878_precheck",
+     "run": "p515s44_s52_pilot_nopersist_711fce9aa74d6878_run"
+    }
+   },
+   "x0_a0p50": {
+    "eval_dir": "7d53b6f21b686a44_x0",
+    "eval_key": "7d53b6f21b686a44db69f0901e03c870d14e15d00bfaaa6a5379822890918a94",
+    "superseded_label": "x0",
+    "working_dir_ids": {
+     "precheck": "p515s44_s52_pilot_nopersist_7d53b6f21b686a44_precheck",
+     "run": "p515s44_s52_pilot_nopersist_7d53b6f21b686a44_run"
+    }
+   }
+  }
+ },
+ "frozen_utc": "2026-09-24T14:00:32.076400+00:00",
+ "git_head": "fc5a7a5273956ea063528b965116b25049dba611",
+ "harness": {
+  "path": "p515_s44_campaign_harness.py",
+  "sha256": "b12c73ed415ff39fb61c720caf7533b496f40c69c8220f3ef9bf1793817b149b"
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "nlp_solver_path_env": {
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "source": "environment"
+ },
+ "required_consecutive_cycles": 10,
+ "schema": "p515_s44_campaign_spec_v2",
+ "thread_caps": {
+  "MKL_NUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1"
+ }
+}

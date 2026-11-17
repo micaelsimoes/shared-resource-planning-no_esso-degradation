@@ -1,0 +1,117 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 23",
+  "P5_15_ADDENDUM22_EXPERT_REPORT.md (reviewed)"
+ ],
+ "item1_zero_solve_prerequisites": {
+  "harness_checks": [
+   "confirm the polish harness's primal starting point is the certified block solution (not a re-initialized point)",
+   "confirm the polish harness does not re-fix interface loads (pc/qc at ADN buses or any other coupling parameter) from the MUTATED consensus_vars - the constructor bug the Step 3.6 pristine-block design avoided (P5_15_ADDENDUM22_EXPERT_REPORT.md section 6.1)"
+  ],
+  "node7_multiplier": "report the node 7 interface-rating constraint's multiplier at the certified TSO solves ONLY if already captured in committed artifacts (zero solves); the polish-derived multiplier is not used",
+  "on_defect": "a harness defect found here is fixed and recorded before the hull run; the exact-fix result (17/48) is then re-read in its light but NOT re-run",
+  "restoration_logs": "read the polish-phase IPOPT logs (restoration phase, final infeasibility/constraint-violation lines, the constraints or variables named where IPOPT reports them) for the six autumn/winter TSO failures (TSO 2025/2030/2035 Autumn, Winter) and the five DSO-2025 failures (DSO5 Spring; DSO7 Spring, Autumn; DSO9 Spring, Autumn) of data/SRP1/Results/P515S40/polish_gap_v2/; identify the violated constraints where the logs allow; zero solves"
+ },
+ "item2_hull_polish": {
+  "all_blocks_must_solve": "all 48 (36 DSO + 12 TSO); otherwise the gate is not evaluated and the Planner stops for review",
+  "definition": "at the certified cycle, every coupling entry is constrained ENTRYWISE to the closed interval [min, max] of the agents' achieved values: V and PF over the two agents (TSO copy, DSO copy), ESS over the three agents (TSO, DSO, ESSO copies); a degenerate interval (equal values) is a fixed value; each block is feasible by construction because its own achieved point lies in the hull",
+  "exact_fix_finding": "the exact-fix outcome (17/48 infeasible at the certified point) is recorded as a methodological finding (one manuscript sentence)",
+  "flag": "any block with Delta_i > 1e-6 * certified cost (= 650.97) is flagged as a solver artefact, not distortion",
+  "gap": "Delta = sum_i [f_i(polished) - f_i(certified)] over the 48 blocks on the weighted base objective, gross_operational_cost convention; expected <= 0 by construction",
+  "gate": "|Delta| / certified cost < 0.1 %",
+  "interpretation": "block-stationarity at the certified tolerance (a bound on augmented-Lagrangian distortion), NOT optimality evidence for the nonconvex problem; polished sides may differ by up to the certified residual",
+  "objective": "unscaled base objective as in P5.7 (ADMM objective and the p58 rescaled objective deactivated)",
+  "on_pass": "Step 3 closes; REVISION_CONTEXT.md head records the oracle as THE baseline configuration and the R2.5 package (certified consensus, hull polish gap, reproducibility band <= 0.011 %, DSO SMOPF multimodality ~0.3 %); manuscript list updated per Addendum 23",
+  "recovery": "production recovery policy (tier-1, tier-2)",
+  "report": [
+   "total Delta",
+   "TSO/DSO split",
+   "max |Delta_i| and which block",
+   "number of hull bounds active at the polished points (within 1e-9 relative of an interval end), per channel",
+   "per-block Delta_i table",
+   "flagged blocks"
+  ],
+  "reproduction_check": "the in-process run to certification must reproduce D bitwise (cycle 139, cost 650966975.2943751, every trajectory row); the rule_eleven_checklist subtree is reported, not gating (51a5fb48)",
+  "start": "primal warm start from the certified block solution; IPOPT default bound push; NO multiplier import"
+ },
+ "item3_persistent_workers_bounded_task": {
+  "gate": "bitwise identity (serial legacy vs serial with the DSO capture; and parallel vs serial) on every numeric artifact AND the previously failing esso_models pickle field",
+  "record": "the 5.09x / 97% screening figure is recorded as mis-accounted (parent sync counted as absorbable)",
+  "scope": [
+   "5-cycle per-phase timing on the parallel path (no algorithmic change)",
+   "fix the implicit->explicit bound restore and its W1001 warnings",
+   "remove the DSO node-7 failure-snapshot per-cycle clone with the lightweight capture technique"
+  ],
+  "then": "the within-cycle parallel path is PAUSED regardless of the timing; Step 5 parallelism is candidate-level"
+ },
+ "item4_step_3_7_anderson": {
+  "adoption": "pass -> AA-on becomes the frozen campaign configuration, case file updated before Step 5, D superseded and never mixed; fail on cycles -> AA stays off and the campaign runs D",
+  "citations": [
+   "Walker & Ni (2011)",
+   "Zhang, O'Donoghue & Boyd (2020)",
+   "Fu, Zhang & Boyd (2020)"
+  ],
+  "gate": [
+   "flag off: two-cycle bitwise identity against the oracle configuration",
+   "flag on: certification <= 80 cycles at C*",
+   "flag on: certified cost within 1.5e-4 relative of D (|Q - 650966975.2943751| <= 97645.05)",
+   "flag on: cost decomposition vs D reconciles to generation + internal flexibility cost",
+   "flag on: hull polish gap < 0.1 % at the AA certified point"
+  ],
+  "method": {
+   "activation": "active from cycle 1; memory cleared at EVERY rho change on any channel (balancing step, ESS exemption lift, freeze)",
+   "certificate_independence": "AA OFF whenever all channels are inside tolerance, so the 10 certifying cycles are plain ADMM; AA resumes if a channel leaves tolerance",
+   "flag": "harness/params flag, default OFF",
+   "iterate": "stacked (z, u) over all channels, scaled as in the Boyd residual-test normalization (V in pu, PF in pu, ESS divided by S_ref); g = F(w) - w",
+   "memory": 5,
+   "regularization": "Tikhonov 1e-10",
+   "safeguard": "no extra solves: an AA step is taken only while the combined scaled residual at the current cycle is below the residual recorded before the last accepted AA step; otherwise the plain iterate is used and the memory cleared (the Fu-Zhang-Boyd envelope form is acceptable; the implemented choice is recorded)",
+   "type": "type-II Anderson acceleration"
+  },
+  "record_per_cycle": "accepted/rejected AA steps and memory resets, with reasons",
+  "record_resources": "peak RSS of the 3.7 serial certified run (sizes candidate-level parallelism on 32 GB)"
+ },
+ "manuscript_items_added": [
+  "hull-polish definition and the exact-fix sentence",
+  "reproducibility statement (Addendum 23 wording)",
+  "node 7 restated (only what holds; congestion-relief value and siting reason struck)",
+  "AA paragraph and convergence figure if adopted",
+  "references: Walker & Ni (2011); Fu, Zhang & Boyd (2020); Hong, Luo & Razaviyayn (2016); Wang, Yin & Zeng (2019)"
+ ],
+ "one_background_run_at_a_time": true,
+ "oracle": {
+  "arm": "s39_D",
+  "case_file_commit": "fb3de341",
+  "certification_cycle": 139,
+  "certified_cost": 650966975.2943751,
+  "reproduced_bitwise": [
+   "51a5fb48 run",
+   "57d523d0 run (v2)"
+  ]
+ },
+ "order": [
+  "1 zero-solve: restoration-log read + harness starting-point and re-fix checks; fix any harness defect",
+  "2 hull polish full run (Step 3 closes on pass; REVISION_CONTEXT.md head)",
+  "STOP FOR REVIEW after Step 3 closes",
+  "3 persistent-worker bounded task, then the path is paused",
+  "4 Step 3.7 Anderson acceleration",
+  "STOP FOR REVIEW after 3.7"
+ ],
+ "predecessor": {
+  "note": "v11 items 1-3 done; Step 3.5 as exact-fix midpoint polish was not evaluable (17/48 infeasible); Addendum 23 restates it",
+  "path": "data/SRP1/Results/P515S40/frozen_s40_closure_spec_v11_0e9a37be.json",
+  "sha256": "0e9a37be7ef2455475be8f437e7f4f2fd9e0415b2f8ebb0a823e58cd8e7ec475"
+ },
+ "predictions_recorded_in_advance": {
+  "hull_polish": [
+   "all 48 blocks solve (the start is feasible by construction)",
+   "Delta <= 0 up to solver tolerance",
+   "|Delta| / cost < 0.1 % (gate)"
+  ],
+  "step_3_7": [
+   "Addendum 23: certification <= 80 cycles (gate)",
+   "Planner expectation, stated separately: AA shortens the early walk but not the late phase set by the storage channel hovering near its tolerance (arm C: storage broke the 10-cycle streak repeatedly; arm D: ESS inside from cycle 75, certification at 139); Planner central estimate 90 cycles, range 70-115 - i.e. the <= 80 gate is judged uncertain before the run"
+  ]
+ },
+ "stage": "P5.15 Addendum 23 - hull polish (Step 3.5 restated), persistent-worker bounded task, Step 3.7 amended - frozen specification v12"
+}

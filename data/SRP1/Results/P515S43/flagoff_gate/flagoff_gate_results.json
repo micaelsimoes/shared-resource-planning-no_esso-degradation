@@ -1,0 +1,769 @@
+{
+ "stage": "P5.15 Step 3.7 integration -- Task 1: flag-off two-cycle bitwise gate",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 23/24",
+  "data/SRP1/Results/P515S41/frozen_s41_hull_aa_spec_v12_6e5a546f.json",
+  "data/SRP1/Results/P515S42/frozen_s42_helper_aa_spec_v13_2cab76e8.json"
+ ],
+ "timestamp_utc": "2026-09-18T23:26:55.218807+00:00",
+ "arm": "s39_D",
+ "num_cycles": 2,
+ "mode_label": "preflight_s43flagoff",
+ "out_dir": "data/SRP1/Results/P515S43/flagoff_gate",
+ "report_path": "data/SRP1/Results/P515S43/flagoff_gate/g_s39_D.json",
+ "anderson_acceleration_explicitly_off": true,
+ "anderson_acceleration_settings_in_force": {
+  "enabled": false,
+  "memory": 5,
+  "regularization": 1e-10
+ },
+ "aa_call_counts": {
+  "build_iterate_layout": 0,
+  "collect_w": 0,
+  "write_back_w": 0,
+  "combined_scaled_residual": 0,
+  "_antisymmetry_check": 0,
+  "_get_admm_rho_channel_scalars_for_aa": 0,
+  "_anderson_acceleration_cycle_step": 0,
+  "AndersonAccelerationState.__init__": 0,
+  "AndersonAccelerationState.step": 0,
+  "AndersonAccelerationState.clear_memory": 0,
+  "AndersonAccelerationState.clear_for_rho_change": 0,
+  "AndersonAccelerationState.skip_on_failure": 0,
+  "AndersonAccelerationState.memory_size": 0,
+  "anderson_acceleration_enabled (informational, not gated)": 1
+ },
+ "total_gated_aa_calls": 0,
+ "zero_aa_calls": true,
+ "peak_rss": {
+  "state_peak_rss_ru_maxrss": 2232647680,
+  "state_peak_rss_platform_units": "bytes on macOS/BSD, kilobytes on Linux (Python resource module, RUSAGE_SELF.ru_maxrss)",
+  "peak_rss_keys_found_in_this_run_report": [],
+  "peak_rss_keys_found_in_lightweight_reference_report": [],
+  "appears_in_any_compared_artifact": false,
+  "reading": "peak_rss_ru_maxrss/peak_rss_platform_units are added to the `state` dict shared_resources_planning._run_operational_planning returns, NOT copied into the report run_admm_arm writes to g_<label>.json -- confirmed empty above by a recursive key scan of the actual written/compared JSON, not by static reading of the source alone."
+ },
+ "aa_new_diagnostic_field_names": [
+  "aa_accepted",
+  "aa_action",
+  "aa_baseline_residual_before",
+  "aa_boyd_all_pass",
+  "aa_combined_residual",
+  "aa_enabled",
+  "aa_gamma_columns",
+  "aa_memory_size_after",
+  "aa_memory_size_before",
+  "aa_reset",
+  "aa_reset_reason",
+  "aa_rho_changed_channels"
+ ],
+ "aa_field_pattern_ok": true,
+ "aa_field_pattern_violations": [],
+ "known_tie_break_alias_pairs": [
+  [
+   "economic_market_cost",
+   "generation_cost"
+  ]
+ ],
+ "known_tie_break_root_cause_evidence": {
+  "mechanism": "p515_g_g1_g4_admm_gates.py's recourse-jump capture hook iterates set(flat_current) | set(flat_previous) (tuples of (block_key, component_name) strings) then list.sort(key=abs_delta, reverse=True) -- a STABLE sort. 'economic_market_cost' and 'generation_cost' are two always-numerically-identical aliases of the same block objective component (shared_resources_planning.py:5158), so their abs_delta ties EXACTLY; the tie is then broken by set-iteration order, which depends on Python's per-process string-hash randomization (PYTHONHASHSEED, unset/randomized here).",
+  "pythonhashseed_env": null,
+  "reproduction": "six independent `python3 -c \"print(list({('k','economic_market_cost'),('k','generation_cost')}))\"` invocations in this same shell session produced BOTH possible orderings across the six separate processes -- confirms the ordering is process-random, not a function of run content. Not caused by AA or by the flag-off configuration; a pre-existing property of this diagnostic-only (never gates production cost) sidecar's tie-breaking."
+ },
+ "vs_d_committed_truncated": {
+  "provenance_diffs_reported_not_gating": [],
+  "n_provenance_diffs": 0,
+  "mode": "truncated (cycle_trajectory[:2] + rows-derived top-level fields vs D's first 2 committed rows; cycle-count-dependent artifacts (esso_capture, solve_profile, network_failures_summary, esso_complementarity_diagnostics_by_round, esso_models_pickle) out of scope for a truncated comparison)",
+  "is_full_mode": false,
+  "n_cycles_compared": 2,
+  "d_reference_path": "data/SRP1/Results/P515S39_D_run/g_s39_D.json",
+  "d_reference_cycles_run": 139,
+  "excluded_field_names": [
+   "component_levels_terminal_and_settlement_detail_path",
+   "component_levels_terminal_path",
+   "ess_entry_stride_sidecar_path",
+   "esso_capture_dir",
+   "heartbeat_path",
+   "interface_voltage_terminal_path",
+   "leak_classification_path",
+   "log_path",
+   "recourse_jump_sidecar_path",
+   "results_dir_redirect",
+   "s34_ess_entry_stride_sidecar_path",
+   "s34_recourse_jump_sidecar_path",
+   "s35ref_soh_floor_sidecar_path",
+   "s38_pf_entry_stride_sidecar_path",
+   "s39_ess_exempt_until_state_sidecar_path",
+   "soh_floor_sidecar_path",
+   "stdout_path",
+   "timestamp_utc",
+   "wall_clock_s"
+  ],
+  "excluded_dotted_suffixes": [
+   "esso_models_pickle.path",
+   "network_failures_summary.path",
+   "soh_floor_multiplier_and_efc_per_cohort_year_terminal.path"
+  ],
+  "intentional_difference_suffixes": [
+   "rule_eleven_checklist.s40_tso_snapshot_capture_mode_requested"
+  ],
+  "scalar_checks": {},
+  "n_diffs": 24,
+  "first_diffs": [
+   {
+    "field": "cycle_trajectory[0].aa_accepted",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_action",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_baseline_residual_before",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_boyd_all_pass",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_combined_residual",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_enabled",
+    "legacy": "<MISSING>",
+    "lightweight": false
+   },
+   {
+    "field": "cycle_trajectory[0].aa_gamma_columns",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_memory_size_after",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_memory_size_before",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_reset",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_reset_reason",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_rho_changed_channels",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_accepted",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_action",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_baseline_residual_before",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_boyd_all_pass",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_combined_residual",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_enabled",
+    "legacy": "<MISSING>",
+    "lightweight": false
+   },
+   {
+    "field": "cycle_trajectory[1].aa_gamma_columns",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_memory_size_after",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   }
+  ],
+  "reproduces": false,
+  "aa_new_field_diffs": [
+   {
+    "field": "cycle_trajectory[0].aa_accepted",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_action",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_baseline_residual_before",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_boyd_all_pass",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_combined_residual",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_enabled",
+    "legacy": "<MISSING>",
+    "lightweight": false
+   },
+   {
+    "field": "cycle_trajectory[0].aa_gamma_columns",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_memory_size_after",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_memory_size_before",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_reset",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_reset_reason",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[0].aa_rho_changed_channels",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_accepted",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_action",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_baseline_residual_before",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_boyd_all_pass",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_combined_residual",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_enabled",
+    "legacy": "<MISSING>",
+    "lightweight": false
+   },
+   {
+    "field": "cycle_trajectory[1].aa_gamma_columns",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_memory_size_after",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_memory_size_before",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_reset",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_reset_reason",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   },
+   {
+    "field": "cycle_trajectory[1].aa_rho_changed_channels",
+    "legacy": "<MISSING>",
+    "lightweight": null
+   }
+  ],
+  "n_aa_new_field_diffs": 24,
+  "known_tie_break_diffs": [],
+  "n_known_tie_break_diffs": 0,
+  "genuine_diffs": [],
+  "n_genuine_diffs": 0
+ },
+ "vs_clone_preflight_v2_lightweight": {
+  "reference_dir": "data/SRP1/Results/P515S40/clone_preflight_v2/lightweight",
+  "reference_report_exists": true,
+  "report_diff": {
+   "provenance_diffs": [
+    {
+     "field": "report.rule_eleven_checklist.s40_tso_snapshot_capture_mode_override",
+     "legacy": true,
+     "lightweight": "<MISSING>"
+    },
+    {
+     "field": "report.rule_eleven_checklist.s43_anderson_acceleration_explicitly_off",
+     "legacy": "<MISSING>",
+     "lightweight": true
+    },
+    {
+     "field": "report.rule_eleven_checklist.s43_anderson_acceleration_settings_in_force",
+     "legacy": "<MISSING>",
+     "lightweight": {
+      "enabled": false,
+      "memory": 5,
+      "regularization": 1e-10
+     }
+    }
+   ],
+   "n_provenance_diffs": 3,
+   "aa_new_field_diffs": [
+    {
+     "field": "report.cycle_trajectory[0].aa_accepted",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[0].aa_action",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[0].aa_baseline_residual_before",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[0].aa_boyd_all_pass",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[0].aa_combined_residual",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[0].aa_enabled",
+     "legacy": "<MISSING>",
+     "lightweight": false
+    },
+    {
+     "field": "report.cycle_trajectory[0].aa_gamma_columns",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[0].aa_memory_size_after",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[0].aa_memory_size_before",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[0].aa_reset",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[0].aa_reset_reason",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[0].aa_rho_changed_channels",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[1].aa_accepted",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[1].aa_action",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[1].aa_baseline_residual_before",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[1].aa_boyd_all_pass",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[1].aa_combined_residual",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[1].aa_enabled",
+     "legacy": "<MISSING>",
+     "lightweight": false
+    },
+    {
+     "field": "report.cycle_trajectory[1].aa_gamma_columns",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[1].aa_memory_size_after",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[1].aa_memory_size_before",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[1].aa_reset",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[1].aa_reset_reason",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    },
+    {
+     "field": "report.cycle_trajectory[1].aa_rho_changed_channels",
+     "legacy": "<MISSING>",
+     "lightweight": null
+    }
+   ],
+   "n_aa_new_field_diffs": 24,
+   "known_tie_break_diffs": [],
+   "n_known_tie_break_diffs": 0,
+   "genuine_diffs": [],
+   "n_genuine_diffs": 0
+  },
+  "artifact_diffs": {
+   "g_s39_D.json": {
+    "provenance_diffs": [
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.s40_tso_snapshot_capture_mode_override",
+      "legacy": true,
+      "lightweight": "<MISSING>"
+     },
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.s43_anderson_acceleration_explicitly_off",
+      "legacy": "<MISSING>",
+      "lightweight": true
+     },
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.s43_anderson_acceleration_settings_in_force",
+      "legacy": "<MISSING>",
+      "lightweight": {
+       "enabled": false,
+       "memory": 5,
+       "regularization": 1e-10
+      }
+     }
+    ],
+    "aa_new_field_diffs": [
+     {
+      "field": "g_s39_D.json.cycle_trajectory[0].aa_accepted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[0].aa_action",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[0].aa_baseline_residual_before",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[0].aa_boyd_all_pass",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[0].aa_combined_residual",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[0].aa_enabled",
+      "legacy": "<MISSING>",
+      "lightweight": false
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[0].aa_gamma_columns",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[0].aa_memory_size_after",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[0].aa_memory_size_before",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[0].aa_reset",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[0].aa_reset_reason",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[0].aa_rho_changed_channels",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[1].aa_accepted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[1].aa_action",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[1].aa_baseline_residual_before",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[1].aa_boyd_all_pass",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[1].aa_combined_residual",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[1].aa_enabled",
+      "legacy": "<MISSING>",
+      "lightweight": false
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[1].aa_gamma_columns",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[1].aa_memory_size_after",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[1].aa_memory_size_before",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[1].aa_reset",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[1].aa_reset_reason",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[1].aa_rho_changed_channels",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     }
+    ],
+    "known_tie_break_diffs": [],
+    "genuine_diffs": [],
+    "n_genuine_diffs": 0
+   },
+   "boyd_terminal.json": {
+    "provenance_diffs": [],
+    "aa_new_field_diffs": [],
+    "known_tie_break_diffs": [],
+    "genuine_diffs": [],
+    "n_genuine_diffs": 0
+   },
+   "component_levels_terminal.json": {
+    "provenance_diffs": [],
+    "aa_new_field_diffs": [],
+    "known_tie_break_diffs": [],
+    "genuine_diffs": [],
+    "n_genuine_diffs": 0
+   },
+   "interface_settlement_detail_s31c.json": {
+    "provenance_diffs": [],
+    "aa_new_field_diffs": [],
+    "known_tie_break_diffs": [],
+    "genuine_diffs": [],
+    "n_genuine_diffs": 0
+   },
+   "interface_voltage_terminal.json": {
+    "provenance_diffs": [],
+    "aa_new_field_diffs": [],
+    "known_tie_break_diffs": [],
+    "genuine_diffs": [],
+    "n_genuine_diffs": 0
+   }
+  },
+  "sidecar_diffs": {
+   "recourse_jump_sidecar_baseline.jsonl": {
+    "provenance_diffs": [],
+    "aa_new_field_diffs": [],
+    "known_tie_break_diffs": [
+     {
+      "field": "recourse_jump_sidecar_baseline.jsonl[1].objective_component_block_deltas[1].component",
+      "legacy": "economic_market_cost",
+      "lightweight": "generation_cost"
+     },
+     {
+      "field": "recourse_jump_sidecar_baseline.jsonl[1].objective_component_block_deltas[2].component",
+      "legacy": "generation_cost",
+      "lightweight": "economic_market_cost"
+     },
+     {
+      "field": "recourse_jump_sidecar_baseline.jsonl[1].objective_component_block_deltas[5].component",
+      "legacy": "economic_market_cost",
+      "lightweight": "generation_cost"
+     },
+     {
+      "field": "recourse_jump_sidecar_baseline.jsonl[1].objective_component_block_deltas[6].component",
+      "legacy": "generation_cost",
+      "lightweight": "economic_market_cost"
+     }
+    ],
+    "genuine_diffs": [],
+    "n_genuine_diffs": 0
+   },
+   "ess_entry_stride_baseline.jsonl": {
+    "provenance_diffs": [],
+    "aa_new_field_diffs": [],
+    "known_tie_break_diffs": [],
+    "genuine_diffs": [],
+    "n_genuine_diffs": 0
+   },
+   "soh_floor_sidecar_baseline.jsonl": {
+    "provenance_diffs": [],
+    "aa_new_field_diffs": [],
+    "known_tie_break_diffs": [],
+    "genuine_diffs": [],
+    "n_genuine_diffs": 0
+   },
+   "pf_entry_stride_s39_D.jsonl": {
+    "provenance_diffs": [],
+    "aa_new_field_diffs": [],
+    "known_tie_break_diffs": [],
+    "genuine_diffs": [],
+    "n_genuine_diffs": 0
+   },
+   "ess_exempt_until_state_s39_D.jsonl": {
+    "provenance_diffs": [],
+    "aa_new_field_diffs": [],
+    "known_tie_break_diffs": [],
+    "genuine_diffs": [],
+    "n_genuine_diffs": 0
+   }
+  },
+  "total_genuine_diffs": 0,
+  "total_known_tie_break_diffs": 4,
+  "all_artifacts_present": true,
+  "note_on_intervening_production_changes": "This reference (commit 8214be0d) predates BOTH the Step 3.6 bound-restore fix (16a19456) and AA integration (9a965494); any genuine (non-provenance, non-aa_*, non-tie-break) diff found here is reported as-is, with its likely attribution stated, never rationalized away."
+ },
+ "excluded_field_names": [
+  "component_levels_terminal_and_settlement_detail_path",
+  "component_levels_terminal_path",
+  "ess_entry_stride_sidecar_path",
+  "esso_capture_dir",
+  "heartbeat_path",
+  "interface_voltage_terminal_path",
+  "leak_classification_path",
+  "log_path",
+  "recourse_jump_sidecar_path",
+  "results_dir_redirect",
+  "s34_ess_entry_stride_sidecar_path",
+  "s34_recourse_jump_sidecar_path",
+  "s35ref_soh_floor_sidecar_path",
+  "s38_pf_entry_stride_sidecar_path",
+  "s39_ess_exempt_until_state_sidecar_path",
+  "soh_floor_sidecar_path",
+  "stdout_path",
+  "timestamp_utc",
+  "wall_clock_s"
+ ],
+ "excluded_dotted_suffixes": [
+  "esso_models_pickle.path",
+  "network_failures_summary.path",
+  "soh_floor_multiplier_and_efc_per_cohort_year_terminal.path"
+ ],
+ "intentional_difference_suffixes": [
+  "rule_eleven_checklist.s40_tso_snapshot_capture_mode_requested"
+ ],
+ "gate_pass": true,
+ "wall_clock_s": 106.74657893180847
+}

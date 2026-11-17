@@ -1,0 +1,4958 @@
+{
+ "schema": "p515_s53_w180c_text_letter",
+ "task": "W180c (Addendum 79, W180 item (c)): A.1-A.9 and letter v7 verbatim at e5322f8; letter pointer check; eight W179b rows re-scored; CONFIRM / prefix / AUTHOR counts",
+ "objective_convention": "Q = gross_operational_cost, settlement excluded; net = Q - terminal salvage credit; F = I + Q (no objective value is computed here; quoted values are the manuscript's)",
+ "rating_scale_W174b": {
+  "H": "a referee re-deriving from the text gets a different model, number or verdict",
+  "M": "imprecise, but not a different result",
+  "L": "wording"
+ },
+ "started_utc": "2026-10-16T12:55:13.347935+00:00",
+ "repo_head": "7b6ba5fe40079cfd8cfe859fd229f1538a0c1d36",
+ "script": {
+  "path": "p515_s53_w180c_text_letter.py",
+  "sha256": "52dfd0f267d94d580bb70202ad2ce26e07a32d0ede4ab0f7e1fc61574aba56af"
+ },
+ "imported": {
+  "p515_s53_w179b_checks.py": "69e24631e6393ed2af7b580d16ed5300b0cad239193f7ca46180067c406008ec",
+  "p515_s53_w178c_letter_checks.py": "48e5d8b956a90dd00a35b5b89cc5d4351b5c8962194133032c24b4794f63425f",
+  "p515_s53_w177b3r_checks.py": "e8b230025aedee35a2f8e36082c4247cbfd1d58d6d01c53b5a05c3c3d0d0706c",
+  "p515_s53_w177b_part3_checks.py": "f7a389221601ef8880a04ea488d8d81c2e1459122e5b463c9cff90743ef7fd8d",
+  "p515_s53_w167_nomenclature_years.py": "cae920e21ec9970953a929ae22079f5e7ad5cd1e32ee5577ac3e2067f051c662",
+  "p515_s47_phase_b_record.py": "97f573e52fb574836a72dce8c61b3d5c6b8919aa509e0ffbc04a1a6473ed6c62",
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab"
+ },
+ "capture_checklist": {
+  "captures": {
+   "identity (HEAD, sha256, lines, byte-identity, diff +/- lines)": "identity",
+   "(2) A.1-A.9 verbatim, located; reconstruction outside Appendix E; Appendix E hunks inside the block": "task_main_edits",
+   "(3) letter v7 section-B edits verbatim; reconstruction; pointer multiset v6 -> v7": "task_letter_edits",
+   "(4) static numbering e5322f8 vs 48099ab; one label added": "task_numbering",
+   "(4) every letter v7 pointer: verdict, number at HEAD, W179b verdict, needles": "task_pointers",
+   "(5) eight W179b rows re-scored": "task_rows",
+   "(6) CONFIRM / <word>~\\ref{app: / [AUTHOR] counts": "task_counts",
+   "negative controls": "task_negative_controls",
+   "guards (solve 0, pickle 0, no production import)": "verify_guards"
+  },
+  "b_symbols": [
+   "target_v6",
+   "resolve_v6",
+   "region_v6",
+   "line_map",
+   "task_elsarticle",
+   "GUARD",
+   "PICKLE_COUNTS",
+   "SEC_EXTRA"
+  ],
+  "c_symbols": [
+   "numbering_adjusted",
+   "task_refs",
+   "_consecutive",
+   "GUARD",
+   "PICKLE_COUNTS"
+  ],
+  "r_symbols": [
+   "letter_pointers",
+   "cite_order",
+   "GUARD",
+   "PICKLE_COUNTS"
+  ],
+  "all_present": true
+ },
+ "identity": {
+  "clone_head": "e5322f8",
+  "clone_head_full": "e5322f85dced8034312c9afb97c19001bce6bfa0",
+  "clone_head_subject": "Update on Overleaf.",
+  "clone_head_date": "2026-10-15T16:56:44+00:00",
+  "commits_after_48099ab": [
+   "e5322f85dced8034312c9afb97c19001bce6bfa0"
+  ],
+  "clone_tracked_modified": "",
+  "main_sha256": "b3282295ece4cc3b0f9bc4ff5cd00ad2d86a7e60650221bfd2d0bd00fa61c492",
+  "main_lines": 2710,
+  "letter_sha256": "34a5754ba6ccb53e29d64fad38fddc921c3048479fc5c31eef39664d9a0efa38",
+  "letter_lines": 292,
+  "blob_sha256": {
+   "48099ab:main.tex": "28008ab0d79b477c4e8d86a0c3a4d1acf9c95ed9c4921f4757f1600cda1c60af",
+   "HEAD:main.tex": "b3282295ece4cc3b0f9bc4ff5cd00ad2d86a7e60650221bfd2d0bd00fa61c492",
+   "48099ab:letter": "6ecd0ee7f2d5de7a528d84f6ee4fecf71905dc9a887388e66c0d78ca466c036e",
+   "HEAD:letter": "34a5754ba6ccb53e29d64fad38fddc921c3048479fc5c31eef39664d9a0efa38"
+  },
+  "repo_tracked_modified": "M TASKS.md",
+  "diffs": {
+   "main 48099ab -> HEAD vs main_48099ab_round6.diff": {
+    "n_hunks_committed": 16,
+    "n_hunks_git_U0": 22,
+    "n_minus_committed": 28,
+    "n_plus_committed": 21,
+    "git_diff": {
+     "ordered_equal": true,
+     "sorted_equal": true,
+     "net_equal": true,
+     "n_minus": 28,
+     "n_plus": 21
+    },
+    "difflib": {
+     "ordered_equal": false,
+     "sorted_equal": false,
+     "net_equal": true,
+     "n_minus": 33,
+     "n_plus": 26
+    }
+   },
+   "letter 48099ab -> HEAD vs letter_v6_v7.diff": {
+    "n_hunks_committed": 5,
+    "n_hunks_git_U0": 5,
+    "n_minus_committed": 6,
+    "n_plus_committed": 6,
+    "git_diff": {
+     "ordered_equal": true,
+     "sorted_equal": true,
+     "net_equal": true,
+     "n_minus": 6,
+     "n_plus": 6
+    },
+    "difflib": {
+     "ordered_equal": true,
+     "sorted_equal": true,
+     "net_equal": true,
+     "n_minus": 6,
+     "n_plus": 6
+    }
+   }
+  },
+  "checks": {
+   "head": true,
+   "head_full": true,
+   "main_sha": true,
+   "main_lines": true,
+   "letter_sha": true,
+   "letter_lines": true,
+   "main_equals_main_48099ab_round6": true,
+   "letter_equals_v7": true,
+   "head_blobs_equal_working_copy": true,
+   "48099ab_main_is_W179bs": true,
+   "48099ab_letter_is_W179bs_v6": true,
+   "one_commit_after_48099ab": true,
+   "clone_clean": true,
+   "frozen_json": true,
+   "w179b_json": true,
+   "w179b_script": true,
+   "main_hunks_16": true,
+   "letter_hunks_5": true,
+   "git diff +/- lines equal (as multisets): main 48099ab -> HEAD vs main_48099ab_round6.diff": true,
+   "difflib +/- lines equal (net): main 48099ab -> HEAD vs main_48099ab_round6.diff": true,
+   "git diff +/- lines equal (as multisets): letter 48099ab -> HEAD vs letter_v6_v7.diff": true,
+   "difflib +/- lines equal (net): letter 48099ab -> HEAD vs letter_v6_v7.diff": true
+  }
+ },
+ "main_edits": {
+  "appendix_E_block_48099ab": [
+   2374,
+   2702
+  ],
+  "appendix_E_block_head": [
+   2375,
+   2695
+  ],
+  "appendix_E_block_expert_convention": {
+   "48099ab": [
+    2374,
+    2701
+   ],
+   "head": [
+    2375,
+    2694
+   ],
+   "expert_48099ab": [
+    2374,
+    2701
+   ],
+   "expert_head": [
+    2375,
+    2694
+   ],
+   "agree": true
+  },
+  "rows": [
+   {
+    "id": "A.1",
+    "where": "2.2.6",
+    "step6_line_48099ab": 697,
+    "old_source": "STEP6 A.1",
+    "new_source": "STEP6 A.1",
+    "pairs": [
+     {
+      "old": "are fixed parameters of the operational subproblem. The resulting evaluated operating cost",
+      "new": "are held fixed in the operational subproblem, where they enter as the parameters $\\hat{S}^{\\text{Inv}}_{e,y^{\\text{Inv}}}$ and $\\hat{E}^{\\text{Inv}}_{e,y^{\\text{Inv}}}$ of Subsection~\\ref{subsubsec:capacity}. The resulting evaluated operating cost",
+      "old_lines_48099ab": [
+       697
+      ],
+      "old_count_48099ab": 1,
+      "new_lines_head": [
+       697
+      ],
+      "new_count_head": 1,
+      "old_count_head": 0,
+      "ok": true
+     }
+    ],
+    "verbatim_at_head": true,
+    "line_head": [
+     697
+    ],
+    "step6_line_matches_48099ab": true
+   },
+   {
+    "id": "A.1b",
+    "where": "2.3.2 heading",
+    "step6_line_48099ab": 768,
+    "heading_line_48099ab": [
+     768
+    ],
+    "heading_line_head": [
+     768
+    ],
+    "label_line_head": [
+     769
+    ],
+    "label_line_48099ab": [],
+    "label_text_exact": true,
+    "verbatim_at_head": true,
+    "step6_line_matches_48099ab": true,
+    "line_head": [
+     769
+    ]
+   },
+   {
+    "id": "A.2",
+    "where": "2.2.7 Determinacy",
+    "step6_line_48099ab": 743,
+    "old_source": "STEP6 A.2",
+    "new_source": "STEP6 A.2 (first pair: \"re-evaluated ...\" completed by the unchanged words of the old text)",
+    "pairs": [
+     {
+      "old": "every cell it proposed was re-evaluated under this rule before being reported",
+      "new": "every incumbent it proposed was re-evaluated under this rule before being reported",
+      "old_lines_48099ab": [
+       743
+      ],
+      "old_count_48099ab": 1,
+      "new_lines_head": [
+       743
+      ],
+      "new_count_head": 1,
+      "old_count_head": 0,
+      "ok": true
+     },
+     {
+      "old": "the bands, gaps and slacks of every evaluation used in a reported comparison are tabulated in~\\ref{app:results}.",
+      "new": "the bands, gaps and slacks of every single-scenario evaluation used in a reported comparison are tabulated in~\\ref{app:results}; the multi-scenario evaluations, stopped by the production exit, carry the resolution stated with them in Table~\\ref{tab:res_multiscenario}.",
+      "old_lines_48099ab": [
+       743
+      ],
+      "old_count_48099ab": 1,
+      "new_lines_head": [
+       743
+      ],
+      "new_count_head": 1,
+      "old_count_head": 0,
+      "ok": true
+     }
+    ],
+    "verbatim_at_head": true,
+    "line_head": [
+     743
+    ],
+    "step6_line_matches_48099ab": true
+   },
+   {
+    "id": "A.3",
+    "where": "2.3.3 closure sentence",
+    "step6_line_48099ab": 968,
+    "old_source": "expert diff (STEP6 A.3 says \"Replace the sentence by\")",
+    "new_source": "STEP6 A.3 (code block)",
+    "pairs": [
+     {
+      "old": "Both daily closure slacks were zero, within solver tolerance, at every certified evaluation reported in this study.",
+      "new": "At every certificate used in a reported comparison, and at both multi-scenario evaluations, both daily closure slacks sat at their lower bound to within the solver's bound relaxation ($10^{-6}$~MWh per slack); in the superseded evaluation~16 of Table~\\ref{tab:appE_evaluations} their sum reached $1.8 \\times 10^{-6}$~MWh, $5 \\times 10^{-6}$ of the available energy. Without storage the closure row is not built.",
+      "old_lines_48099ab": [
+       968
+      ],
+      "old_count_48099ab": 1,
+      "new_lines_head": [
+       969
+      ],
+      "new_count_head": 1,
+      "old_count_head": 0,
+      "ok": true
+     }
+    ],
+    "verbatim_at_head": true,
+    "line_head": [
+     969
+    ],
+    "step6_line_matches_48099ab": true
+   },
+   {
+    "id": "A.4",
+    "where": "4.7 first sentence",
+    "step6_line_48099ab": 1689,
+    "old_source": "STEP6 A.4 (its \"...\" spans filled by the words common to its old and new text)",
+    "new_source": "STEP6 A.4",
+    "pairs": [
+     {
+      "old": "Every certificate reported in this paper was decided, or re-decided from its committed record, under the rule",
+      "new": "Every certificate used in a reported comparison was decided, or re-decided from its committed record, under the rule",
+      "old_lines_48099ab": [
+       1689
+      ],
+      "old_count_48099ab": 1,
+      "new_lines_head": [
+       1690
+      ],
+      "new_count_head": 1,
+      "old_count_head": 0,
+      "ok": true
+     },
+     {
+      "old": "and certifies at the cycle reported; the single-scenario tables carry these certificates.",
+      "new": "and certifies at the cycle reported; the single-scenario tables carry these certificates. One earlier certificate, issued under a previous version of the rule and since superseded, is recorded in \\ref{app:results} and used in no comparison.",
+      "old_lines_48099ab": [
+       1689
+      ],
+      "old_count_48099ab": 1,
+      "new_lines_head": [
+       1690
+      ],
+      "new_count_head": 1,
+      "old_count_head": null,
+      "ok": true
+     }
+    ],
+    "verbatim_at_head": true,
+    "line_head": [
+     1690
+    ],
+    "step6_line_matches_48099ab": true
+   },
+   {
+    "id": "A.5",
+    "where": "4.7 last sentence",
+    "step6_line_48099ab": 1690,
+    "old_source": "STEP6 A.5",
+    "new_source": "STEP6 A.5",
+    "pairs": [
+     {
+      "old": "Every comparison and every evaluation behind this section is listed in~\\ref{app:results}, together with the full certification statistics and the reproducibility record.",
+      "new": "Every comparison of this section, and every single-scenario evaluation behind it, is listed in~\\ref{app:results}, together with the full certification statistics and the reproducibility record; the search's own evaluations, stopped at the production exit, are reported by their counts, and the multi-scenario pair in Table~\\ref{tab:res_multiscenario}.",
+      "old_lines_48099ab": [
+       1690
+      ],
+      "old_count_48099ab": 1,
+      "new_lines_head": [
+       1691
+      ],
+      "new_count_head": 1,
+      "old_count_head": 0,
+      "ok": true
+     }
+    ],
+    "verbatim_at_head": true,
+    "line_head": [
+     1691
+    ],
+    "step6_line_matches_48099ab": true
+   },
+   {
+    "id": "A.6",
+    "where": "4.8 degenerate duals",
+    "step6_line_48099ab": 1716,
+    "old_source": "STEP6 A.6",
+    "new_source": "STEP6 A.6",
+    "pairs": [
+     {
+      "old": "split in the same proportions among the three interface nodes (Table~\\ref{tab:appE_gap})",
+      "new": "split in the same proportions among the three interface nodes wherever the split was recorded (Table~\\ref{tab:appE_gap})",
+      "old_lines_48099ab": [
+       1716
+      ],
+      "old_count_48099ab": 1,
+      "new_lines_head": [
+       1717
+      ],
+      "new_count_head": 1,
+      "old_count_head": 0,
+      "ok": true
+     }
+    ],
+    "verbatim_at_head": true,
+    "line_head": [
+     1717
+    ],
+    "step6_line_matches_48099ab": true
+   },
+   {
+    "id": "A.7",
+    "where": "4.8 Scope",
+    "step6_line_48099ab": 1724,
+    "old_source": "STEP6 A.7",
+    "new_source": "STEP6 A.7",
+    "pairs": [
+     {
+      "old": "with every evaluated unit neighbour of the plan without storage determinately worse.",
+      "new": "with every evaluated unit neighbour of the plan without storage worse, determinately for the eight re-evaluated under the certification rule (Table~\\ref{tab:appE_neighbours}) and beyond the search resolution for the other six.",
+      "old_lines_48099ab": [
+       1724
+      ],
+      "old_count_48099ab": 1,
+      "new_lines_head": [
+       1725
+      ],
+      "new_count_head": 1,
+      "old_count_head": 0,
+      "ok": true
+     }
+    ],
+    "verbatim_at_head": true,
+    "line_head": [
+     1725
+    ],
+    "step6_line_matches_48099ab": true
+   },
+   {
+    "id": "A.8",
+    "where": "Appendix A.3",
+    "step6_line_48099ab": 1899,
+    "old_source": "STEP6 A.8",
+    "new_source": "STEP6 A.8",
+    "pairs": [
+     {
+      "old": "(Subsection~\\ref{app:admm_updated_stopping})",
+      "new": "(\\ref{app:admm_updated_stopping})",
+      "old_lines_48099ab": [
+       1899
+      ],
+      "old_count_48099ab": 1,
+      "new_lines_head": [
+       1900
+      ],
+      "new_count_head": 1,
+      "old_count_head": 0,
+      "ok": true
+     }
+    ],
+    "verbatim_at_head": true,
+    "line_head": [
+     1900
+    ],
+    "step6_line_matches_48099ab": true
+   },
+   {
+    "id": "A.9",
+    "where": "Conclusions",
+    "step6_line_48099ab": 1736,
+    "old_source": "STEP6 A.9",
+    "new_source": "STEP6 A.9",
+    "pairs": [
+     {
+      "old": "or, at the multi-scenario instance, stopped by the production exit with its remaining movement measured --- and every planning comparison is reported with the resolution at which it is decided.",
+      "new": "or, at the multi-scenario instance, stopped by the production exit, with the remaining movement of the plan without storage estimated from a continued run --- and every planning comparison is reported with the resolution at which it is decided, the search's own evaluations at the search resolution.",
+      "old_lines_48099ab": [
+       1736
+      ],
+      "old_count_48099ab": 1,
+      "new_lines_head": [
+       1737
+      ],
+      "new_count_head": 1,
+      "old_count_head": 0,
+      "ok": true
+     }
+    ],
+    "verbatim_at_head": true,
+    "line_head": [
+     1737
+    ],
+    "step6_line_matches_48099ab": true
+   }
+  ],
+  "reconstruction_outside_appendix_E_equal": true,
+  "reconstruction_first_difference": null,
+  "after_appendix_E_equal": true,
+  "git_hunks": [
+   {
+    "old": [
+     697,
+     1
+    ],
+    "new": [
+     697,
+     1
+    ],
+    "inside_appendix_E": false,
+    "a_edits": [
+     "A.1"
+    ],
+    "classified": true
+   },
+   {
+    "old": [
+     743,
+     1
+    ],
+    "new": [
+     743,
+     1
+    ],
+    "inside_appendix_E": false,
+    "a_edits": [
+     "A.2"
+    ],
+    "classified": true
+   },
+   {
+    "old": [
+     768,
+     0
+    ],
+    "new": [
+     769,
+     1
+    ],
+    "inside_appendix_E": false,
+    "a_edits": [
+     "A.1b"
+    ],
+    "classified": true
+   },
+   {
+    "old": [
+     968,
+     1
+    ],
+    "new": [
+     969,
+     1
+    ],
+    "inside_appendix_E": false,
+    "a_edits": [
+     "A.3"
+    ],
+    "classified": true
+   },
+   {
+    "old": [
+     1689,
+     2
+    ],
+    "new": [
+     1690,
+     2
+    ],
+    "inside_appendix_E": false,
+    "a_edits": [
+     "A.4",
+     "A.5"
+    ],
+    "classified": true
+   },
+   {
+    "old": [
+     1716,
+     1
+    ],
+    "new": [
+     1717,
+     1
+    ],
+    "inside_appendix_E": false,
+    "a_edits": [
+     "A.6"
+    ],
+    "classified": true
+   },
+   {
+    "old": [
+     1724,
+     1
+    ],
+    "new": [
+     1725,
+     1
+    ],
+    "inside_appendix_E": false,
+    "a_edits": [
+     "A.7"
+    ],
+    "classified": true
+   },
+   {
+    "old": [
+     1736,
+     1
+    ],
+    "new": [
+     1737,
+     1
+    ],
+    "inside_appendix_E": false,
+    "a_edits": [
+     "A.9"
+    ],
+    "classified": true
+   },
+   {
+    "old": [
+     1899,
+     1
+    ],
+    "new": [
+     1900,
+     1
+    ],
+    "inside_appendix_E": false,
+    "a_edits": [
+     "A.8"
+    ],
+    "classified": true
+   },
+   {
+    "old": [
+     2379,
+     3
+    ],
+    "new": [
+     2380,
+     2
+    ],
+    "inside_appendix_E": true,
+    "a_edits": [],
+    "classified": true
+   },
+   {
+    "old": [
+     2388,
+     1
+    ],
+    "new": [
+     2388,
+     1
+    ],
+    "inside_appendix_E": true,
+    "a_edits": [],
+    "classified": true
+   },
+   {
+    "old": [
+     2494,
+     1
+    ],
+    "new": [
+     2494,
+     1
+    ],
+    "inside_appendix_E": true,
+    "a_edits": [],
+    "classified": true
+   },
+   {
+    "old": [
+     2525,
+     1
+    ],
+    "new": [
+     2525,
+     1
+    ],
+    "inside_appendix_E": true,
+    "a_edits": [],
+    "classified": true
+   },
+   {
+    "old": [
+     2588,
+     1
+    ],
+    "new": [
+     2588,
+     1
+    ],
+    "inside_appendix_E": true,
+    "a_edits": [],
+    "classified": true
+   },
+   {
+    "old": [
+     2590,
+     2
+    ],
+    "new": [
+     2589,
+     0
+    ],
+    "inside_appendix_E": true,
+    "a_edits": [],
+    "classified": true
+   },
+   {
+    "old": [
+     2623,
+     1
+    ],
+    "new": [
+     2621,
+     1
+    ],
+    "inside_appendix_E": true,
+    "a_edits": [],
+    "classified": true
+   },
+   {
+    "old": [
+     2625,
+     2
+    ],
+    "new": [
+     2622,
+     0
+    ],
+    "inside_appendix_E": true,
+    "a_edits": [],
+    "classified": true
+   },
+   {
+    "old": [
+     2630,
+     1
+    ],
+    "new": [
+     2626,
+     1
+    ],
+    "inside_appendix_E": true,
+    "a_edits": [],
+    "classified": true
+   },
+   {
+    "old": [
+     2661,
+     1
+    ],
+    "new": [
+     2657,
+     1
+    ],
+    "inside_appendix_E": true,
+    "a_edits": [],
+    "classified": true
+   },
+   {
+    "old": [
+     2692,
+     1
+    ],
+    "new": [
+     2688,
+     1
+    ],
+    "inside_appendix_E": true,
+    "a_edits": [],
+    "classified": true
+   },
+   {
+    "old": [
+     2694,
+     3
+    ],
+    "new": [
+     2689,
+     0
+    ],
+    "inside_appendix_E": true,
+    "a_edits": [],
+    "classified": true
+   },
+   {
+    "old": [
+     2699,
+     1
+    ],
+    "new": [
+     2692,
+     1
+    ],
+    "inside_appendix_E": true,
+    "a_edits": [],
+    "classified": true
+   }
+  ],
+  "n_hunks_main_text": 9,
+  "n_hunks_appendix_E": 13,
+  "every_hunk_classified": true,
+  "every_edit_has_a_hunk": true,
+  "ok": true
+ },
+ "letter_edits": {
+  "rows": [
+   {
+    "id": "R1.4 fuel out of the clause",
+    "source": "expert diff (STEP6 B: \"Fuel taken out of the 'introduction now states' clause\")",
+    "pairs": [
+     {
+      "old": "technology maturation, as trajectories of future storage investment cost; fuel costs, through the wholesale prices at which conventional generation is costed (Section~3.3), and market prices",
+      "new": "technology maturation, as trajectories of future storage investment cost, and market prices",
+      "old_count_v6": 1,
+      "new_count_v7": 1,
+      "old_count_v7": 0,
+      "ok": true
+     }
+    ],
+    "verbatim_at_head": true,
+    "lines_v7": [
+     97
+    ]
+   },
+   {
+    "id": "R1.4 closing sentence",
+    "source": "STEP6 B R1.4 (sentence verbatim; placement from the diff)",
+    "pairs": [
+     {
+      "old": "left to future work. On (ii):",
+      "new": "left to future work. Fuel costs are not represented separately: conventional generation in the transmission network is priced at the wholesale energy price of the scenario (Section~3.3), so fuel-cost uncertainty enters only through the market-price scenarios. On (ii):",
+      "old_count_v6": 1,
+      "new_count_v7": 1,
+      "old_count_v7": 0,
+      "ok": true
+     }
+    ],
+    "verbatim_at_head": true,
+    "lines_v7": [
+     97
+    ]
+   },
+   {
+    "id": "R2.2",
+    "source": "STEP6 B R2.2",
+    "pairs": [
+     {
+      "old": "and the cycles of every evaluation in Appendix~E",
+      "new": "and the cycles of every evaluation behind a reported comparison in Appendix~E",
+      "old_count_v6": 1,
+      "new_count_v7": 1,
+      "old_count_v7": 0,
+      "ok": true
+     }
+    ],
+    "verbatim_at_head": true,
+    "lines_v7": [
+     125
+    ]
+   },
+   {
+    "id": "R2.5",
+    "source": "STEP6 B R2.5",
+    "pairs": [
+     {
+      "old": "bitwise replays of every gated evaluation (Section~4.7 and Appendix~E)",
+      "new": "bitwise replays of every evaluation repeated from an earlier record (Section~4.7 and Appendix~E.6)",
+      "old_count_v6": 1,
+      "new_count_v7": 1,
+      "old_count_v7": 0,
+      "ok": true
+     }
+    ],
+    "verbatim_at_head": true,
+    "lines_v7": [
+     160
+    ]
+   },
+   {
+    "id": "Further changes, Appendix E bullet",
+    "source": "STEP6 B Further changes (its \"...\" = the unchanged rest)",
+    "pairs": [
+     {
+      "old": "every recourse evaluation, with its stopping status",
+      "new": "every single-scenario recourse evaluation those comparisons use, with its stopping status",
+      "old_count_v6": 1,
+      "new_count_v7": 1,
+      "old_count_v7": 0,
+      "ok": true
+     }
+    ],
+    "verbatim_at_head": true,
+    "lines_v7": [
+     285
+    ]
+   },
+   {
+    "id": "header",
+    "source": "expert diff (STEP6 B: \"Header comment dated v7\")",
+    "pairs": [
+     {
+      "old": "% Response to reviewers — DRAFT for the author (expert's skeleton, 2026-10-06).",
+      "new": "% Response to reviewers — v7 (expert, 2026-10-15; round 6 / Addendum 79). DRAFT for the author (expert's skeleton, 2026-10-06).",
+      "old_count_v6": 1,
+      "new_count_v7": 1,
+      "old_count_v7": 0,
+      "ok": true
+     }
+    ],
+    "verbatim_at_head": true,
+    "lines_v7": [
+     1
+    ]
+   }
+  ],
+  "reconstruction_equal": true,
+  "changed_lines_v7": [
+   1,
+   97,
+   125,
+   159,
+   160,
+   285
+  ],
+  "line_count_v6_v7": [
+   293,
+   293
+  ],
+  "fuel_in_introduction_clause": false,
+  "introduction_clause": "\\rresponse{On (i): the introduction now states which of these sources of uncertainty are represented in this work --- technology maturation, as trajectories of future storage investment cost, and market prices, load and RES generation, as operational scenarios; demand growth and RES capacity, as predefined trajectories --- and which are outside its scope: policy changes, infrastructure retirements and the cost of capital as a stochastic quantity, ",
+  "ok": true,
+  "pointer_change": {
+   "n_v6": 165,
+   "n_v7": 165,
+   "only_in_v6": [
+    [
+     160,
+     "appendix",
+     "Appendix~E)",
+     [
+      "E"
+     ]
+    ]
+   ],
+   "only_in_v7": [
+    [
+     160,
+     "appendix",
+     "Appendix~E.6)",
+     [
+      "E.6"
+     ]
+    ]
+   ]
+  },
+  "pointer_change_is_only_E_to_E6": true
+ },
+ "numbering": {
+  "n_labels_head": 132,
+  "n_labels_48099ab": 131,
+  "n_compared": 131,
+  "n_compared_outside_appendix_E": 119,
+  "n_compared_appendix_E": 12,
+  "labels_changed": [],
+  "labels_removed": [],
+  "labels_new": [
+   {
+    "label": "subsubsec:capacity",
+    "kind": "subsubsection",
+    "number": "2.3.2",
+    "line": 769
+   }
+  ],
+  "refs_static_head": {
+   "n_ref_uses": 237,
+   "n_ref_keys": 96,
+   "n_labels": 132,
+   "undefined_refs": [],
+   "duplicate_labels": [],
+   "numbering_warnings": []
+  },
+  "heading_2_3_2": [
+   {
+    "number": "2.3.2",
+    "line": 768,
+    "title": "Installed and Available Capacity"
+   }
+  ],
+  "only_new_label_is_subsubsec_capacity_at_2_3_2": true,
+  "elsarticle": {
+   "dtx_appendix_block_first_line": 1459,
+   "dtx_appendix_block": [
+    "\\renewcommand\\appendix{\\par",
+    "  \\setcounter{section}{0}%",
+    "  \\setcounter{subsection}{0}%",
+    "  \\setcounter{equation}{0}",
+    "  \\gdef\\thefigure{\\@Alph\\c@section.\\arabic{figure}}%",
+    "  \\gdef\\thetable{\\@Alph\\c@section.\\arabic{table}}%",
+    "  \\gdef\\thesection{\\appendixname~\\@Alph\\c@section}%",
+    "  \\@addtoreset{equation}{section}%",
+    "  \\gdef\\theequation{\\@Alph\\c@section.\\arabic{equation}}%",
+    "  \\addtocontents{toc}{\\string\\let\\string\\numberline\\string\\tmptocnumberline}{}{}",
+    "}",
+    ""
+   ],
+   "thetable_redefined_as_section_letter_dot_arabic": true,
+   "table_counter_reset_anywhere_in_dtx": false,
+   "addtoreset_table_lines": [],
+   "thesubsection_redefined_in_dtx": false,
+   "reading": "\\appendix sets \\thetable to <section letter>.<table counter> and resets section, subsection and equation only; the table counter is never reset (no \\@addtoreset{table}), so the appendix tables continue the global count: D.16-D.19, then E.20-E.24. \\thesubsection is not redefined, so it is article's \\thesection.\\arabic{subsection} = \"Appendix A.4\": a \"Subsection~\\ref{app:...}\" prints \"Subsection Appendix A.4\" (static reading; nothing compiled)"
+  }
+ },
+ "pointers": {
+  "n_pointers": 165,
+  "counts": {
+   "MATCH": 160,
+   "SUBMITTED": 5
+  },
+  "by_kind": {
+   "section": {
+    "MATCH": 91,
+    "SUBMITTED": 1
+   },
+   "appendix": {
+    "MATCH": 26
+   },
+   "table": {
+    "MATCH": 16
+   },
+   "figure": {
+    "SUBMITTED": 3,
+    "MATCH": 10
+   },
+   "algorithm": {
+    "MATCH": 2
+   },
+   "equation": {
+    "MATCH": 10
+   },
+   "former": {
+    "SUBMITTED": 1
+   },
+   "new": {
+    "MATCH": 1
+   },
+   "reference": {
+    "MATCH": 4
+   }
+  },
+  "pointers": [
+   {
+    "line": 42,
+    "keyword": "Sections",
+    "kind": "section",
+    "text": "Sections~2.1 and~2.2)",
+    "numbers": [
+     "2.1"
+    ],
+    "range": false,
+    "target": "subsec:architecture",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.1",
+    "number_head": "2.1",
+    "number_head_unadjusted": "2.1",
+    "verdict": "MATCH",
+    "content_needles": {
+     "mesh adaptive direct search": true
+    }
+   },
+   {
+    "line": 42,
+    "keyword": "Sections",
+    "kind": "section",
+    "text": "Sections~2.1 and~2.2)",
+    "numbers": [
+     "2.2"
+    ],
+    "range": false,
+    "target": "subsec:master",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2",
+    "number_head": "2.2",
+    "number_head_unadjusted": "2.2",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 43,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.2.7",
+    "numbers": [
+     "2.2.7"
+    ],
+    "range": false,
+    "target": "subsubsec:certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2.7",
+    "number_head": "2.2.7",
+    "number_head_unadjusted": "2.2.7",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 44,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~A.5)",
+    "numbers": [
+     "A.5"
+    ],
+    "range": false,
+    "target": "app:admm_updated_certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A.5",
+    "number_head": "A.5",
+    "number_head_unadjusted": "A.5",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 45,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~3.5)",
+    "numbers": [
+     "3.5"
+    ],
+    "range": false,
+    "target": "sec:case_ess_params",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "3.5",
+    "number_head": "3.5",
+    "number_head_unadjusted": "3.5",
+    "verdict": "MATCH",
+    "content_needles": {
+     "$\\phi^{\\text{Cal}} = 0.985$": true
+    }
+   },
+   {
+    "line": 50,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.2)",
+    "numbers": [
+     "4.2"
+    ],
+    "range": false,
+    "target": "subsec:res_breakeven",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.2",
+    "number_head": "4.2",
+    "number_head_unadjusted": "4.2",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 51,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.3)",
+    "numbers": [
+     "4.3"
+    ],
+    "range": false,
+    "target": "subsec:res_degradation",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.3",
+    "number_head": "4.3",
+    "number_head_unadjusted": "4.3",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 54,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.4)",
+    "numbers": [
+     "4.4"
+    ],
+    "range": false,
+    "target": "subsec:res_coordination",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.4",
+    "number_head": "4.4",
+    "number_head_unadjusted": "4.4",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 58,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.8)",
+    "numbers": [
+     "4.8"
+    ],
+    "range": false,
+    "target": "subsec:res_limitations",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.8",
+    "number_head": "4.8",
+    "number_head_unadjusted": "4.8",
+    "verdict": "MATCH",
+    "content_needles": {
+     "the value is affine in size": true,
+     "could not be evaluated within the memory available": true
+    }
+   },
+   {
+    "line": 58,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.8)",
+    "numbers": [
+     "4.8"
+    ],
+    "range": false,
+    "target": "subsec:res_limitations",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.8",
+    "number_head": "4.8",
+    "number_head_unadjusted": "4.8",
+    "verdict": "MATCH",
+    "content_needles": {
+     "the value is affine in size": true,
+     "could not be evaluated within the memory available": true
+    }
+   },
+   {
+    "line": 58,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.5)",
+    "numbers": [
+     "4.5"
+    ],
+    "range": false,
+    "target": "subsec:res_multiscenario",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.5",
+    "number_head": "4.5",
+    "number_head_unadjusted": "4.5",
+    "verdict": "MATCH",
+    "content_needles": {
+     "The multi-scenario instance combines three market scenarios": true
+    }
+   },
+   {
+    "line": 75,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~3)",
+    "numbers": [
+     "3"
+    ],
+    "range": false,
+    "target": "sec:case_studies",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "3",
+    "number_head": "3",
+    "number_head_unadjusted": "3",
+    "verdict": "MATCH",
+    "content_needles": {
+     "three market scenarios and three operation scenarios": true
+    }
+   },
+   {
+    "line": 77,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~3.5)",
+    "numbers": [
+     "3.5"
+    ],
+    "range": false,
+    "target": "sec:case_ess_params",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "3.5",
+    "number_head": "3.5",
+    "number_head_unadjusted": "3.5",
+    "verdict": "MATCH",
+    "content_needles": {
+     "lithium-ion": true
+    }
+   },
+   {
+    "line": 78,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.5)",
+    "numbers": [
+     "4.5"
+    ],
+    "range": false,
+    "target": "subsec:res_multiscenario",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.5",
+    "number_head": "4.5",
+    "number_head_unadjusted": "4.5",
+    "verdict": "MATCH",
+    "content_needles": {
+     "0.9331": true,
+     "The planning search was not repeated at this instance": true
+    }
+   },
+   {
+    "line": 79,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.8)",
+    "numbers": [
+     "4.8"
+    ],
+    "range": false,
+    "target": "subsec:res_limitations",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.8",
+    "number_head": "4.8",
+    "number_head_unadjusted": "4.8",
+    "verdict": "MATCH",
+    "content_needles": {
+     "limits the generality": true
+    }
+   },
+   {
+    "line": 81,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.2.7",
+    "numbers": [
+     "2.2.7"
+    ],
+    "range": false,
+    "target": "subsubsec:certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2.7",
+    "number_head": "2.2.7",
+    "number_head_unadjusted": "2.2.7",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 81,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4",
+    "numbers": [
+     "4"
+    ],
+    "range": false,
+    "target": "sec:results",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4",
+    "number_head": "4",
+    "number_head_unadjusted": "4",
+    "verdict": "MATCH",
+    "content_needles": {
+     "The objective is the gross operational cost": true
+    }
+   },
+   {
+    "line": 81,
+    "keyword": "Tables",
+    "kind": "table",
+    "text": "Tables~7--15)",
+    "numbers": [
+     "7",
+     "15"
+    ],
+    "range": true,
+    "target": [
+     "tab:res_value_ladder",
+     "tab:res_breakeven",
+     "tab:res_flex_ladder",
+     "tab:res_energy_ladder_m2",
+     "tab:res_ageing",
+     "tab:res_benchmark",
+     "tab:res_multiscenario",
+     "tab:res_year_ladder",
+     "tab:res_discount"
+    ],
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "7--15",
+    "members": [
+     "tab:res_value_ladder",
+     "tab:res_breakeven",
+     "tab:res_flex_ladder",
+     "tab:res_energy_ladder_m2",
+     "tab:res_ageing",
+     "tab:res_benchmark",
+     "tab:res_multiscenario",
+     "tab:res_year_ladder",
+     "tab:res_discount"
+    ],
+    "members_head": [
+     "7",
+     "8",
+     "9",
+     "10",
+     "11",
+     "12",
+     "13",
+     "14",
+     "15"
+    ],
+    "number_head": "7--15",
+    "number_head_unadjusted": "10--18",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 82,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.3.4",
+    "numbers": [
+     "2.3.4"
+    ],
+    "range": false,
+    "target": "title:^Degradation Chain of the Shared-ESS Agent$",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.3.4",
+    "number_head": "2.3.4",
+    "number_head_unadjusted": "2.3.4",
+    "verdict": "MATCH",
+    "content_needles": {
+     "cannot be uniquely attributed": true
+    }
+   },
+   {
+    "line": 82,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.8)",
+    "numbers": [
+     "4.8"
+    ],
+    "range": false,
+    "target": "subsec:res_limitations",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.8",
+    "number_head": "4.8",
+    "number_head_unadjusted": "4.8",
+    "verdict": "MATCH",
+    "content_needles": {
+     "not unique under a jointly determined schedule": true
+    }
+   },
+   {
+    "line": 82,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~5)",
+    "numbers": [
+     "5"
+    ],
+    "range": false,
+    "target": "sec:conclusions",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "5",
+    "number_head": "5",
+    "number_head_unadjusted": "5",
+    "verdict": "MATCH",
+    "content_needles": {
+     "allocation of the degradation of a shared asset": true
+    }
+   },
+   {
+    "line": 85,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~3",
+    "numbers": [
+     "3"
+    ],
+    "range": false,
+    "target": "sec:case_studies",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "3",
+    "number_head": "3",
+    "number_head_unadjusted": "3",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 85,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.5",
+    "numbers": [
+     "4.5"
+    ],
+    "range": false,
+    "target": "subsec:res_multiscenario",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.5",
+    "number_head": "4.5",
+    "number_head_unadjusted": "4.5",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 86,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.3.4",
+    "numbers": [
+     "2.3.4"
+    ],
+    "range": false,
+    "target": "title:^Degradation Chain of the Shared-ESS Agent$",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.3.4",
+    "number_head": "2.3.4",
+    "number_head_unadjusted": "2.3.4",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 86,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.8",
+    "numbers": [
+     "4.8"
+    ],
+    "range": false,
+    "target": "subsec:res_limitations",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.8",
+    "number_head": "4.8",
+    "number_head_unadjusted": "4.8",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 86,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~5",
+    "numbers": [
+     "5"
+    ],
+    "range": false,
+    "target": "sec:conclusions",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "5",
+    "number_head": "5",
+    "number_head_unadjusted": "5",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 86,
+    "keyword": "Tables",
+    "kind": "table",
+    "text": "Tables~7--15",
+    "numbers": [
+     "7",
+     "15"
+    ],
+    "range": true,
+    "target": [
+     "tab:res_value_ladder",
+     "tab:res_breakeven",
+     "tab:res_flex_ladder",
+     "tab:res_energy_ladder_m2",
+     "tab:res_ageing",
+     "tab:res_benchmark",
+     "tab:res_multiscenario",
+     "tab:res_year_ladder",
+     "tab:res_discount"
+    ],
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "7--15",
+    "members": [
+     "tab:res_value_ladder",
+     "tab:res_breakeven",
+     "tab:res_flex_ladder",
+     "tab:res_energy_ladder_m2",
+     "tab:res_ageing",
+     "tab:res_benchmark",
+     "tab:res_multiscenario",
+     "tab:res_year_ladder",
+     "tab:res_discount"
+    ],
+    "members_head": [
+     "7",
+     "8",
+     "9",
+     "10",
+     "11",
+     "12",
+     "13",
+     "14",
+     "15"
+    ],
+    "number_head": "7--15",
+    "number_head_unadjusted": "10--18",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 97,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~3.3)",
+    "numbers": [
+     "3.3"
+    ],
+    "range": false,
+    "target": "titlek:subsection:^Transmission Network$",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "3.3",
+    "number_head": "3.3",
+    "number_head_unadjusted": "3.3",
+    "verdict": "MATCH",
+    "content_needles": {
+     "Conventional generation in the TN is priced at the wholesale energy price": true,
+     "no separate generator cost curves are used": true
+    }
+   },
+   {
+    "line": 97,
+    "keyword": "Table",
+    "kind": "table",
+    "text": "Table~15)",
+    "numbers": [
+     "15"
+    ],
+    "range": false,
+    "target": "tab:res_discount",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "15",
+    "number_head": "15",
+    "number_head_unadjusted": "18",
+    "verdict": "MATCH",
+    "content_needles": {
+     "rates other than 2\\,\\% re-weight the 2\\,\\% evaluations": true
+    }
+   },
+   {
+    "line": 97,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.6)",
+    "numbers": [
+     "4.6"
+    ],
+    "range": false,
+    "target": "subsec:res_sensitivities",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.6",
+    "number_head": "4.6",
+    "number_head_unadjusted": "4.6",
+    "verdict": "MATCH",
+    "content_needles": {
+     "re-weight the per-year costs of the 2\\,\\% evaluations": true
+    }
+   },
+   {
+    "line": 97,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~A.1)",
+    "numbers": [
+     "A.1"
+    ],
+    "range": false,
+    "target": "app:admm_updated_agents",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A.1",
+    "number_head": "A.1",
+    "number_head_unadjusted": "A.1",
+    "verdict": "MATCH",
+    "content_needles": {
+     "(1+r)^{-(y-y_0)}": true
+    }
+   },
+   {
+    "line": 98,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~1",
+    "numbers": [
+     "1"
+    ],
+    "range": false,
+    "target": "title:^Introduction$",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "1",
+    "number_head": "1",
+    "number_head_unadjusted": "1",
+    "verdict": "MATCH",
+    "content_needles": {
+     "cost of capital": true
+    }
+   },
+   {
+    "line": 98,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.6",
+    "numbers": [
+     "4.6"
+    ],
+    "range": false,
+    "target": "subsec:res_sensitivities",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.6",
+    "number_head": "4.6",
+    "number_head_unadjusted": "4.6",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 98,
+    "keyword": "Table",
+    "kind": "table",
+    "text": "Table~15",
+    "numbers": [
+     "15"
+    ],
+    "range": false,
+    "target": "tab:res_discount",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "15",
+    "number_head": "15",
+    "number_head_unadjusted": "18",
+    "verdict": "MATCH",
+    "content_needles": {
+     "rates other than 2\\,\\% re-weight the 2\\,\\% evaluations": true
+    }
+   },
+   {
+    "line": 100,
+    "keyword": "Figure",
+    "kind": "figure",
+    "text": "Figure 2",
+    "numbers": [
+     "2"
+    ],
+    "range": false,
+    "target": "SUBMITTED:the R1.5 heading quotes the reviewer's figure number (submitted Figure 2, Addendum 75)",
+    "verdict_w179b_48099ab": "SUBMITTED",
+    "number_w179b_48099ab": null,
+    "verdict": "SUBMITTED",
+    "note": "the R1.5 heading quotes the reviewer's figure number (submitted Figure 2, Addendum 75)"
+   },
+   {
+    "line": 102,
+    "keyword": "Figure",
+    "kind": "figure",
+    "text": "Figure~2",
+    "numbers": [
+     "2"
+    ],
+    "range": false,
+    "target": "SUBMITTED:\"Figure 2 of the submitted version\"",
+    "verdict_w179b_48099ab": "SUBMITTED",
+    "number_w179b_48099ab": null,
+    "verdict": "SUBMITTED",
+    "note": "\"Figure 2 of the submitted version\""
+   },
+   {
+    "line": 102,
+    "keyword": "Figure",
+    "kind": "figure",
+    "text": "Figure~3",
+    "numbers": [
+     "3"
+    ],
+    "range": false,
+    "target": "fig:tso_dso_coordination_cs1_network_diagram",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "3",
+    "number_head": "3",
+    "number_head_unadjusted": "3",
+    "verdict": "MATCH",
+    "content_needles": {
+     "network_diagram_ieee9.pdf": true
+    }
+   },
+   {
+    "line": 102,
+    "keyword": "Figure",
+    "kind": "figure",
+    "text": "Figure~1)",
+    "numbers": [
+     "1"
+    ],
+    "range": false,
+    "target": "fig:two-stage_tool_framework",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "1",
+    "number_head": "1",
+    "number_head_unadjusted": "1",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 103,
+    "keyword": "Figure",
+    "kind": "figure",
+    "text": "Figure~3",
+    "numbers": [
+     "3"
+    ],
+    "range": false,
+    "target": "fig:tso_dso_coordination_cs1_network_diagram",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "3",
+    "number_head": "3",
+    "number_head_unadjusted": "3",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 103,
+    "keyword": "Figure",
+    "kind": "figure",
+    "text": "Figure~1",
+    "numbers": [
+     "1"
+    ],
+    "range": false,
+    "target": "fig:two-stage_tool_framework",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "1",
+    "number_head": "1",
+    "number_head_unadjusted": "1",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 116,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.1)",
+    "numbers": [
+     "2.1"
+    ],
+    "range": false,
+    "target": "subsec:architecture",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.1",
+    "number_head": "2.1",
+    "number_head_unadjusted": "2.1",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 121,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.1",
+    "numbers": [
+     "2.1"
+    ],
+    "range": false,
+    "target": "subsec:architecture",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.1",
+    "number_head": "2.1",
+    "number_head_unadjusted": "2.1",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 121,
+    "keyword": "Sections",
+    "kind": "section",
+    "text": "Sections~1, 2.1, 2.2, 5",
+    "numbers": [
+     "1"
+    ],
+    "range": false,
+    "target": "title:^Introduction$",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "1",
+    "number_head": "1",
+    "number_head_unadjusted": "1",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 121,
+    "keyword": "Sections",
+    "kind": "section",
+    "text": "Sections~1, 2.1, 2.2, 5",
+    "numbers": [
+     "2.1"
+    ],
+    "range": false,
+    "target": "subsec:architecture",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.1",
+    "number_head": "2.1",
+    "number_head_unadjusted": "2.1",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 121,
+    "keyword": "Sections",
+    "kind": "section",
+    "text": "Sections~1, 2.1, 2.2, 5",
+    "numbers": [
+     "2.2"
+    ],
+    "range": false,
+    "target": "subsec:master",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2",
+    "number_head": "2.2",
+    "number_head_unadjusted": "2.2",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 121,
+    "keyword": "Sections",
+    "kind": "section",
+    "text": "Sections~1, 2.1, 2.2, 5",
+    "numbers": [
+     "5"
+    ],
+    "range": false,
+    "target": "sec:conclusions",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "5",
+    "number_head": "5",
+    "number_head_unadjusted": "5",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 125,
+    "keyword": "Algorithm",
+    "kind": "algorithm",
+    "text": "Algorithm~1",
+    "numbers": [
+     "1"
+    ],
+    "range": false,
+    "target": "alg:shared_ess_planning_mads",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "1",
+    "number_head": "1",
+    "number_head_unadjusted": "1",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 125,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.1",
+    "numbers": [
+     "2.1"
+    ],
+    "range": false,
+    "target": "subsec:architecture",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.1",
+    "number_head": "2.1",
+    "number_head_unadjusted": "2.1",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 125,
+    "keyword": "Figure",
+    "kind": "figure",
+    "text": "Figure~2",
+    "numbers": [
+     "2"
+    ],
+    "range": false,
+    "target": "fig:search_generic",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2",
+    "number_head": "2",
+    "number_head_unadjusted": "2",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 125,
+    "keyword": "Eq.",
+    "kind": "equation",
+    "text": "Eq.~(13)",
+    "numbers": [
+     "13"
+    ],
+    "range": false,
+    "target": [
+     "eq:recourse_value"
+    ],
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "13",
+    "number_head": "13",
+    "number_head_unadjusted": "13",
+    "verdict": "MATCH",
+    "content_needles": {
+     "\\frac{Y_y}{(1+r)^{y-y_0}}": true,
+     "\\omega_m \\, \\omega_o": true
+    }
+   },
+   {
+    "line": 125,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.2.7",
+    "numbers": [
+     "2.2.7"
+    ],
+    "range": false,
+    "target": "subsubsec:certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2.7",
+    "number_head": "2.2.7",
+    "number_head_unadjusted": "2.2.7",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 125,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~3.6)",
+    "numbers": [
+     "3.6"
+    ],
+    "range": false,
+    "target": "sec:case_settings",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "3.6",
+    "number_head": "3.6",
+    "number_head_unadjusted": "3.6",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 125,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.7",
+    "numbers": [
+     "4.7"
+    ],
+    "range": false,
+    "target": "subsec:res_certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.7",
+    "number_head": "4.7",
+    "number_head_unadjusted": "4.7",
+    "verdict": "MATCH",
+    "content_needles": {
+     "41 new recourse evaluations in all": true
+    }
+   },
+   {
+    "line": 125,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~A.5)",
+    "numbers": [
+     "A.5"
+    ],
+    "range": false,
+    "target": "app:admm_updated_certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A.5",
+    "number_head": "A.5",
+    "number_head_unadjusted": "A.5",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 125,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~E",
+    "numbers": [
+     "E"
+    ],
+    "range": false,
+    "target": "app:results",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "E",
+    "number_head": "E",
+    "number_head_unadjusted": "E",
+    "verdict": "MATCH",
+    "content_needles": {
+     "$k^{*}$/end": true
+    }
+   },
+   {
+    "line": 126,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.1",
+    "numbers": [
+     "2.1"
+    ],
+    "range": false,
+    "target": "subsec:architecture",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.1",
+    "number_head": "2.1",
+    "number_head_unadjusted": "2.1",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 126,
+    "keyword": "Algorithm",
+    "kind": "algorithm",
+    "text": "Algorithm~1",
+    "numbers": [
+     "1"
+    ],
+    "range": false,
+    "target": "alg:shared_ess_planning_mads",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "1",
+    "number_head": "1",
+    "number_head_unadjusted": "1",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 126,
+    "keyword": "Figure",
+    "kind": "figure",
+    "text": "Figure~2",
+    "numbers": [
+     "2"
+    ],
+    "range": false,
+    "target": "fig:search_generic",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2",
+    "number_head": "2",
+    "number_head_unadjusted": "2",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 126,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.2",
+    "numbers": [
+     "2.2"
+    ],
+    "range": false,
+    "target": "subsec:master",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2",
+    "number_head": "2.2",
+    "number_head_unadjusted": "2.2",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 126,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~3.6",
+    "numbers": [
+     "3.6"
+    ],
+    "range": false,
+    "target": "sec:case_settings",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "3.6",
+    "number_head": "3.6",
+    "number_head_unadjusted": "3.6",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 126,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.7",
+    "numbers": [
+     "4.7"
+    ],
+    "range": false,
+    "target": "subsec:res_certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.7",
+    "number_head": "4.7",
+    "number_head_unadjusted": "4.7",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 126,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~E",
+    "numbers": [
+     "E"
+    ],
+    "range": false,
+    "target": "app:results",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "E",
+    "number_head": "E",
+    "number_head_unadjusted": "E",
+    "verdict": "MATCH",
+    "content_needles": {
+     "Recourse evaluations.": true
+    }
+   },
+   {
+    "line": 135,
+    "keyword": "Sections",
+    "kind": "section",
+    "text": "Sections~2.1 and~2.2)",
+    "numbers": [
+     "2.1"
+    ],
+    "range": false,
+    "target": "subsec:architecture",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.1",
+    "number_head": "2.1",
+    "number_head_unadjusted": "2.1",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 135,
+    "keyword": "Sections",
+    "kind": "section",
+    "text": "Sections~2.1 and~2.2)",
+    "numbers": [
+     "2.2"
+    ],
+    "range": false,
+    "target": "subsec:master",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2",
+    "number_head": "2.2",
+    "number_head_unadjusted": "2.2",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 136,
+    "keyword": "Sections",
+    "kind": "section",
+    "text": "Sections~2.2.6 and~2.3.2)",
+    "numbers": [
+     "2.2.6"
+    ],
+    "range": false,
+    "target": "title:^Coupling Between Planning and Operational Recourse$",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2.6",
+    "needle_replaced": {
+     "w179b_needle": "are fixed parameters of the operational subproblem",
+     "w180c_needle": "are held fixed in the operational subproblem",
+     "why": "A.1 rewrote the 2.2.6 sentence the W179b needle quoted; the letter (l. 136: \"the investment being a fixed parameter of the recourse\") is checked against the new wording",
+     "w179b_needle_present_at_head": false
+    },
+    "number_head": "2.2.6",
+    "number_head_unadjusted": "2.2.6",
+    "verdict": "MATCH",
+    "content_needles": {
+     "are held fixed in the operational subproblem": true
+    }
+   },
+   {
+    "line": 136,
+    "keyword": "Sections",
+    "kind": "section",
+    "text": "Sections~2.2.6 and~2.3.2)",
+    "numbers": [
+     "2.3.2"
+    ],
+    "range": false,
+    "target": "title:^Installed and Available Capacity$",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.3.2",
+    "number_head": "2.3.2",
+    "number_head_unadjusted": "2.3.2",
+    "verdict": "MATCH",
+    "content_needles": {
+     "whose ratings are the fixed additions": true
+    }
+   },
+   {
+    "line": 137,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.2.7)",
+    "numbers": [
+     "2.2.7"
+    ],
+    "range": false,
+    "target": "subsubsec:certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2.7",
+    "number_head": "2.2.7",
+    "number_head_unadjusted": "2.2.7",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 141,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.2",
+    "numbers": [
+     "2.2"
+    ],
+    "range": false,
+    "target": "subsec:master",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2",
+    "number_head": "2.2",
+    "number_head_unadjusted": "2.2",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 141,
+    "keyword": "former",
+    "kind": "former",
+    "text": "former 2.2.7",
+    "numbers": [
+     "2.2.7"
+    ],
+    "range": false,
+    "target": "SUBMITTED:\"former 2.2.7 Benders' cuts\"",
+    "verdict_w179b_48099ab": "SUBMITTED",
+    "number_w179b_48099ab": null,
+    "verdict": "SUBMITTED",
+    "note": "\"former 2.2.7 Benders' cuts\""
+   },
+   {
+    "line": 142,
+    "keyword": "new",
+    "kind": "new",
+    "text": "new 2.2.7",
+    "numbers": [
+     "2.2.7"
+    ],
+    "range": false,
+    "target": "subsubsec:certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2.7",
+    "number_head": "2.2.7",
+    "number_head_unadjusted": "2.2.7",
+    "verdict": "MATCH",
+    "content_needles": {
+     "Recourse Evaluation and Certification": true
+    }
+   },
+   {
+    "line": 143,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.7",
+    "numbers": [
+     "4.7"
+    ],
+    "range": false,
+    "target": "subsec:res_certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.7",
+    "number_head": "4.7",
+    "number_head_unadjusted": "4.7",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 143,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~A.5",
+    "numbers": [
+     "A.5"
+    ],
+    "range": false,
+    "target": "app:admm_updated_certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A.5",
+    "number_head": "A.5",
+    "number_head_unadjusted": "A.5",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 152,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.2.7)",
+    "numbers": [
+     "2.2.7"
+    ],
+    "range": false,
+    "target": "subsubsec:certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2.7",
+    "number_head": "2.2.7",
+    "number_head_unadjusted": "2.2.7",
+    "verdict": "MATCH",
+    "content_needles": {
+     "No convergence guarantee is available": true
+    }
+   },
+   {
+    "line": 156,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.2.7",
+    "numbers": [
+     "2.2.7"
+    ],
+    "range": false,
+    "target": "subsubsec:certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2.7",
+    "number_head": "2.2.7",
+    "number_head_unadjusted": "2.2.7",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 156,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~A.5)",
+    "numbers": [
+     "A.5"
+    ],
+    "range": false,
+    "target": "app:admm_updated_certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A.5",
+    "number_head": "A.5",
+    "number_head_unadjusted": "A.5",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 157,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~A.3)",
+    "numbers": [
+     "A.3"
+    ],
+    "range": false,
+    "target": "app:admm_updated_updates",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A.3",
+    "number_head": "A.3",
+    "number_head_unadjusted": "A.3",
+    "verdict": "MATCH",
+    "content_needles": {
+     "residual balancing": true
+    }
+   },
+   {
+    "line": 160,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.7",
+    "numbers": [
+     "4.7"
+    ],
+    "range": false,
+    "target": "subsec:res_certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.7",
+    "number_head": "4.7",
+    "number_head_unadjusted": "4.7",
+    "verdict": "MATCH",
+    "content_needles": {
+     "Of the 42 single-scenario evaluations": true
+    }
+   },
+   {
+    "line": 160,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~E.6)",
+    "numbers": [
+     "E.6"
+    ],
+    "range": false,
+    "target": "app:results_statistics",
+    "verdict_w179b_48099ab": null,
+    "number_w179b_48099ab": null,
+    "number_head": "E.6",
+    "number_head_unadjusted": "E.6",
+    "verdict": "MATCH",
+    "content_needles": {
+     "every evaluation repeated from an earlier record replayed that record bitwise": true
+    }
+   },
+   {
+    "line": 164,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~A.3",
+    "numbers": [
+     "A.3"
+    ],
+    "range": false,
+    "target": "app:admm_updated_updates",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A.3",
+    "number_head": "A.3",
+    "number_head_unadjusted": "A.3",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 164,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~A.8",
+    "numbers": [
+     "A.8"
+    ],
+    "range": false,
+    "target": "app:admm_updated_settings",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A.8",
+    "number_head": "A.8",
+    "number_head_unadjusted": "A.8",
+    "verdict": "MATCH",
+    "content_needles": {
+     "$\\rho^{V}_0 = 0.0077$": true
+    }
+   },
+   {
+    "line": 168,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~A.5)",
+    "numbers": [
+     "A.5"
+    ],
+    "range": false,
+    "target": "app:admm_updated_certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A.5",
+    "number_head": "A.5",
+    "number_head_unadjusted": "A.5",
+    "verdict": "MATCH",
+    "content_needles": {
+     "Clean evidence": true
+    }
+   },
+   {
+    "line": 171,
+    "keyword": "Table",
+    "kind": "table",
+    "text": "Table~12)",
+    "numbers": [
+     "12"
+    ],
+    "range": false,
+    "target": "tab:res_benchmark",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "12",
+    "number_head": "12",
+    "number_head_unadjusted": "15",
+    "verdict": "MATCH",
+    "content_needles": {
+     "best of three solver starts": true
+    }
+   },
+   {
+    "line": 172,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.8)",
+    "numbers": [
+     "4.8"
+    ],
+    "range": false,
+    "target": "subsec:res_limitations",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.8",
+    "number_head": "4.8",
+    "number_head_unadjusted": "4.8",
+    "verdict": "MATCH",
+    "content_needles": {
+     "a different penalty schedule or starting point could reach a different local solution": true
+    }
+   },
+   {
+    "line": 173,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.2.7",
+    "numbers": [
+     "2.2.7"
+    ],
+    "range": false,
+    "target": "subsubsec:certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2.7",
+    "number_head": "2.2.7",
+    "number_head_unadjusted": "2.2.7",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 173,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.7",
+    "numbers": [
+     "4.7"
+    ],
+    "range": false,
+    "target": "subsec:res_certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.7",
+    "number_head": "4.7",
+    "number_head_unadjusted": "4.7",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 173,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.8",
+    "numbers": [
+     "4.8"
+    ],
+    "range": false,
+    "target": "subsec:res_limitations",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.8",
+    "number_head": "4.8",
+    "number_head_unadjusted": "4.8",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 173,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~A.3--A.5 and A.8",
+    "numbers": [
+     "A.3",
+     "A.5"
+    ],
+    "range": true,
+    "target": [
+     "app:admm_updated_updates",
+     "app:admm_updated_stopping",
+     "app:admm_updated_certification"
+    ],
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A.3--A.5",
+    "members": [
+     "app:admm_updated_updates",
+     "app:admm_updated_stopping",
+     "app:admm_updated_certification"
+    ],
+    "members_head": [
+     "A.3",
+     "A.4",
+     "A.5"
+    ],
+    "number_head": "A.3--A.5",
+    "number_head_unadjusted": "A.3--A.5",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 173,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~A.3--A.5 and A.8",
+    "numbers": [
+     "A.8"
+    ],
+    "range": false,
+    "target": "app:admm_updated_settings",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A.8",
+    "number_head": "A.8",
+    "number_head_unadjusted": "A.8",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 173,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~E",
+    "numbers": [
+     "E"
+    ],
+    "range": false,
+    "target": "app:results",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "E",
+    "number_head": "E",
+    "number_head_unadjusted": "E",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 182,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~1",
+    "numbers": [
+     "1"
+    ],
+    "range": false,
+    "target": "title:^Introduction$",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "1",
+    "number_head": "1",
+    "number_head_unadjusted": "1",
+    "verdict": "MATCH",
+    "content_needles": {
+     "aghdam_2025": true
+    }
+   },
+   {
+    "line": 182,
+    "keyword": "reference",
+    "kind": "reference",
+    "text": "[7]--[9]",
+    "numbers": [
+     "7",
+     "9"
+    ],
+    "range": true,
+    "target": [
+     "cite:aghdam_2025",
+     "cite:aghdam_2023",
+     "cite:aghdam_2024"
+    ],
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "7--9",
+    "members": [
+     "cite:aghdam_2025",
+     "cite:aghdam_2023",
+     "cite:aghdam_2024"
+    ],
+    "members_head": [
+     "7",
+     "8",
+     "9"
+    ],
+    "number_head": "7--9",
+    "number_head_unadjusted": "7--9",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 182,
+    "keyword": "reference",
+    "kind": "reference",
+    "text": "[7]",
+    "numbers": [
+     "7"
+    ],
+    "range": false,
+    "target": "cite:aghdam_2025",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "7",
+    "number_head": "7",
+    "number_head_unadjusted": "7",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 182,
+    "keyword": "reference",
+    "kind": "reference",
+    "text": "[8,~9]",
+    "numbers": [
+     "8"
+    ],
+    "range": false,
+    "target": "cite:aghdam_2023",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "8",
+    "number_head": "8",
+    "number_head_unadjusted": "8",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 182,
+    "keyword": "reference",
+    "kind": "reference",
+    "text": "[8,~9]",
+    "numbers": [
+     "9"
+    ],
+    "range": false,
+    "target": "cite:aghdam_2024",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "9",
+    "number_head": "9",
+    "number_head_unadjusted": "9",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 185,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~1",
+    "numbers": [
+     "1"
+    ],
+    "range": false,
+    "target": "title:^Introduction$",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "1",
+    "number_head": "1",
+    "number_head_unadjusted": "1",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 193,
+    "keyword": "Eqs.",
+    "kind": "equation",
+    "text": "Eqs.~(26)--(28)",
+    "numbers": [
+     "26",
+     "28"
+    ],
+    "range": true,
+    "target": [
+     "eq:storage_active_power_limit",
+     "eq:converter_capability",
+     "eq:network_complementarity"
+    ],
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "26--28",
+    "members": [
+     "eq:storage_active_power_limit",
+     "eq:converter_capability",
+     "eq:network_complementarity"
+    ],
+    "members_head": [
+     "26",
+     "27",
+     "28"
+    ],
+    "number_head": "26--28",
+    "number_head_unadjusted": "26--28",
+    "verdict": "MATCH",
+    "content_needles": {
+     "\\le S^{\\text{Av}}_{e,y}": true,
+     "\\left(S^{\\text{Av}}_{e,y}\\right)^2": true,
+     "{S^{\\text{Av}}_{e,y}}": true
+    }
+   },
+   {
+    "line": 194,
+    "keyword": "Equations",
+    "kind": "equation",
+    "text": "Equations~(29)--(35)",
+    "numbers": [
+     "29",
+     "35"
+    ],
+    "range": true,
+    "target": [
+     "eq:esso_net_power",
+     "eq:cohort_allocation",
+     "eq:cell_throughput",
+     "eq:cycling_loss",
+     "eq:soh_chain",
+     "eq:soh_floor",
+     "eq:cycle_life_calibration"
+    ],
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "29--35",
+    "members": [
+     "eq:esso_net_power",
+     "eq:cohort_allocation",
+     "eq:cell_throughput",
+     "eq:cycling_loss",
+     "eq:soh_chain",
+     "eq:soh_floor",
+     "eq:cycle_life_calibration"
+    ],
+    "members_head": [
+     "29",
+     "30",
+     "31",
+     "32",
+     "33",
+     "34",
+     "35"
+    ],
+    "number_head": "29--35",
+    "number_head_unadjusted": "29--35",
+    "verdict": "MATCH",
+    "content_needles": {
+     "\\eta^{\\text{Ch}}_e P^{\\text{Ch}}_{e,y^\\text{Inv},y,d,t}": true
+    }
+   },
+   {
+    "line": 195,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.3.4",
+    "numbers": [
+     "2.3.4"
+    ],
+    "range": false,
+    "target": "title:^Degradation Chain of the Shared-ESS Agent$",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.3.4",
+    "number_head": "2.3.4",
+    "number_head_unadjusted": "2.3.4",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 205,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.3",
+    "numbers": [
+     "2.3"
+    ],
+    "range": false,
+    "target": "subsec:subproblem",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.3",
+    "number_head": "2.3",
+    "number_head_unadjusted": "2.3",
+    "verdict": "MATCH",
+    "content_needles": {
+     "consensus variable": true
+    }
+   },
+   {
+    "line": 205,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~A)",
+    "numbers": [
+     "A"
+    ],
+    "range": false,
+    "target": "app:admm_updated",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A",
+    "number_head": "A",
+    "number_head_unadjusted": "A",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 210,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.3.3",
+    "numbers": [
+     "2.3.3"
+    ],
+    "range": false,
+    "target": "subsubsec:network_storage",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.3.3",
+    "number_head": "2.3.3",
+    "number_head_unadjusted": "2.3.3",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 210,
+    "keyword": "Eqs.",
+    "kind": "equation",
+    "text": "Eqs.~(20)--(28)",
+    "numbers": [
+     "20",
+     "28"
+    ],
+    "range": true,
+    "target": [
+     "eq:storage_net_active_power",
+     "eq:soc_recursion",
+     "eq:soc_limits",
+     "eq:soc_initial",
+     "eq:soc_closure",
+     "eq:soc_closure_slack",
+     "eq:storage_active_power_limit",
+     "eq:converter_capability",
+     "eq:network_complementarity"
+    ],
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "20--28",
+    "members": [
+     "eq:storage_net_active_power",
+     "eq:soc_recursion",
+     "eq:soc_limits",
+     "eq:soc_initial",
+     "eq:soc_closure",
+     "eq:soc_closure_slack",
+     "eq:storage_active_power_limit",
+     "eq:converter_capability",
+     "eq:network_complementarity"
+    ],
+    "members_head": [
+     "20",
+     "21",
+     "22",
+     "23",
+     "24",
+     "25",
+     "26",
+     "27",
+     "28"
+    ],
+    "number_head": "20--28",
+    "number_head_unadjusted": "20--28",
+    "verdict": "MATCH",
+    "content_needles": {
+     "E^{\\text{SoC}}_{e,y,d,t} = E^{\\text{SoC}}_{e,y,d,t-1}": true,
+     "\\left(Q^{\\text{E}}_{e,y,d,t}\\right)^2": true
+    }
+   },
+   {
+    "line": 210,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.3.4",
+    "numbers": [
+     "2.3.4"
+    ],
+    "range": false,
+    "target": "title:^Degradation Chain of the Shared-ESS Agent$",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.3.4",
+    "number_head": "2.3.4",
+    "number_head_unadjusted": "2.3.4",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 210,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~A.1--A.2",
+    "numbers": [
+     "A.1",
+     "A.2"
+    ],
+    "range": true,
+    "target": [
+     "app:admm_updated_agents",
+     "app:admm_updated_implementation"
+    ],
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A.1--A.2",
+    "members": [
+     "app:admm_updated_agents",
+     "app:admm_updated_implementation"
+    ],
+    "members_head": [
+     "A.1",
+     "A.2"
+    ],
+    "number_head": "A.1--A.2",
+    "number_head_unadjusted": "A.1--A.2",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 220,
+    "keyword": "Eqs.",
+    "kind": "equation",
+    "text": "Eqs.~(38)--(39)",
+    "numbers": [
+     "38",
+     "39"
+    ],
+    "range": true,
+    "target": [
+     "eq:salvage_credit",
+     "eq:salvage_remaining_life"
+    ],
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "38--39",
+    "members": [
+     "eq:salvage_credit",
+     "eq:salvage_remaining_life"
+    ],
+    "members_head": [
+     "38",
+     "39"
+    ],
+    "number_head": "38--39",
+    "number_head_unadjusted": "38--39",
+    "verdict": "MATCH",
+    "content_needles": {
+     "SoH^{\\text{Min}}_e}{1 - SoH^{\\text{Min}}_e}": true,
+     "T^\\text{Rem}_{e,y^\\text{Inv}} = \\max": true
+    }
+   },
+   {
+    "line": 220,
+    "keyword": "Table",
+    "kind": "table",
+    "text": "Table~14)",
+    "numbers": [
+     "14"
+    ],
+    "range": false,
+    "target": "tab:res_year_ladder",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "14",
+    "number_head": "14",
+    "number_head_unadjusted": "17",
+    "verdict": "MATCH",
+    "content_needles": {
+     "gross and net of the salvage credit": true
+    }
+   },
+   {
+    "line": 220,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.1",
+    "numbers": [
+     "4.1"
+    ],
+    "range": false,
+    "target": "subsec:res_baseline",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.1",
+    "number_head": "4.1",
+    "number_head_unadjusted": "4.1",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 220,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~E",
+    "numbers": [
+     "E"
+    ],
+    "range": false,
+    "target": "app:results",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "E",
+    "number_head": "E",
+    "number_head_unadjusted": "E",
+    "verdict": "MATCH",
+    "content_needles": {
+     "Every pairwise comparison of the record": true,
+     "Net: net of the terminal salvage credit": true
+    }
+   },
+   {
+    "line": 221,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.6)",
+    "numbers": [
+     "4.6"
+    ],
+    "range": false,
+    "target": "subsec:res_sensitivities",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.6",
+    "number_head": "4.6",
+    "number_head_unadjusted": "4.6",
+    "verdict": "MATCH",
+    "content_needles": {
+     "The investment-year comparison above is not among them": true
+    }
+   },
+   {
+    "line": 221,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~3.5",
+    "numbers": [
+     "3.5"
+    ],
+    "range": false,
+    "target": "sec:case_ess_params",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "3.5",
+    "number_head": "3.5",
+    "number_head_unadjusted": "3.5",
+    "verdict": "MATCH",
+    "content_needles": {
+     "10--90": true
+    }
+   },
+   {
+    "line": 221,
+    "keyword": "Eq.",
+    "kind": "equation",
+    "text": "Eq.~(22)",
+    "numbers": [
+     "22"
+    ],
+    "range": false,
+    "target": [
+     "eq:soc_limits"
+    ],
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "22",
+    "number_head": "22",
+    "number_head_unadjusted": "22",
+    "verdict": "MATCH",
+    "content_needles": {
+     "SoC^{\\text{Min}}_e E^{\\text{Av}}_{e,y}": true
+    }
+   },
+   {
+    "line": 222,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4",
+    "numbers": [
+     "4"
+    ],
+    "range": false,
+    "target": "sec:results",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4",
+    "number_head": "4",
+    "number_head_unadjusted": "4",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 222,
+    "keyword": "Eqs.",
+    "kind": "equation",
+    "text": "Eqs.~(38)--(39)",
+    "numbers": [
+     "38",
+     "39"
+    ],
+    "range": true,
+    "target": [
+     "eq:salvage_credit",
+     "eq:salvage_remaining_life"
+    ],
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "38--39",
+    "members": [
+     "eq:salvage_credit",
+     "eq:salvage_remaining_life"
+    ],
+    "members_head": [
+     "38",
+     "39"
+    ],
+    "number_head": "38--39",
+    "number_head_unadjusted": "38--39",
+    "verdict": "MATCH",
+    "content_needles": {
+     "SoH^{\\text{Min}}_e}{1 - SoH^{\\text{Min}}_e}": true
+    }
+   },
+   {
+    "line": 222,
+    "keyword": "Sections",
+    "kind": "section",
+    "text": "Sections~3.5, 4.1 and 4.6",
+    "numbers": [
+     "3.5"
+    ],
+    "range": false,
+    "target": "sec:case_ess_params",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "3.5",
+    "number_head": "3.5",
+    "number_head_unadjusted": "3.5",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 222,
+    "keyword": "Sections",
+    "kind": "section",
+    "text": "Sections~3.5, 4.1 and 4.6",
+    "numbers": [
+     "4.1"
+    ],
+    "range": false,
+    "target": "subsec:res_baseline",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.1",
+    "number_head": "4.1",
+    "number_head_unadjusted": "4.1",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 222,
+    "keyword": "Sections",
+    "kind": "section",
+    "text": "Sections~3.5, 4.1 and 4.6",
+    "numbers": [
+     "4.6"
+    ],
+    "range": false,
+    "target": "subsec:res_sensitivities",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.6",
+    "number_head": "4.6",
+    "number_head_unadjusted": "4.6",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 222,
+    "keyword": "Table",
+    "kind": "table",
+    "text": "Table~14",
+    "numbers": [
+     "14"
+    ],
+    "range": false,
+    "target": "tab:res_year_ladder",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "14",
+    "number_head": "14",
+    "number_head_unadjusted": "17",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 222,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~E",
+    "numbers": [
+     "E"
+    ],
+    "range": false,
+    "target": "app:results",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "E",
+    "number_head": "E",
+    "number_head_unadjusted": "E",
+    "verdict": "MATCH",
+    "content_needles": {
+     "Every pairwise comparison of the record": true
+    }
+   },
+   {
+    "line": 230,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.2.7)",
+    "numbers": [
+     "2.2.7"
+    ],
+    "range": false,
+    "target": "subsubsec:certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2.7",
+    "number_head": "2.2.7",
+    "number_head_unadjusted": "2.2.7",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 232,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.4",
+    "numbers": [
+     "4.4"
+    ],
+    "range": false,
+    "target": "SUBMITTED:the reviewer's Section 4.4 (submitted version)",
+    "verdict_w179b_48099ab": "SUBMITTED",
+    "number_w179b_48099ab": null,
+    "verdict": "SUBMITTED",
+    "note": "the reviewer's Section 4.4 (submitted version)"
+   },
+   {
+    "line": 232,
+    "keyword": "Figure",
+    "kind": "figure",
+    "text": "Figure~15",
+    "numbers": [
+     "15"
+    ],
+    "range": false,
+    "target": "SUBMITTED:the reviewer's Figure 15 (Addendum 75: no such figure in the submitted source)",
+    "verdict_w179b_48099ab": "SUBMITTED",
+    "number_w179b_48099ab": null,
+    "verdict": "SUBMITTED",
+    "note": "the reviewer's Figure 15 (Addendum 75: no such figure in the submitted source)"
+   },
+   {
+    "line": 235,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.2.7",
+    "numbers": [
+     "2.2.7"
+    ],
+    "range": false,
+    "target": "subsubsec:certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2.7",
+    "number_head": "2.2.7",
+    "number_head_unadjusted": "2.2.7",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 235,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.7",
+    "numbers": [
+     "4.7"
+    ],
+    "range": false,
+    "target": "subsec:res_certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.7",
+    "number_head": "4.7",
+    "number_head_unadjusted": "4.7",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 235,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4",
+    "numbers": [
+     "4"
+    ],
+    "range": false,
+    "target": "sec:results",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4",
+    "number_head": "4",
+    "number_head_unadjusted": "4",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 235,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~A.5",
+    "numbers": [
+     "A.5"
+    ],
+    "range": false,
+    "target": "app:admm_updated_certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A.5",
+    "number_head": "A.5",
+    "number_head_unadjusted": "A.5",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 241,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.3.3",
+    "numbers": [
+     "2.3.3"
+    ],
+    "range": false,
+    "target": "subsubsec:network_storage",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.3.3",
+    "number_head": "2.3.3",
+    "number_head_unadjusted": "2.3.3",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 241,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.3.5)",
+    "numbers": [
+     "2.3.5"
+    ],
+    "range": false,
+    "target": "subsubsec:commitment",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.3.5",
+    "number_head": "2.3.5",
+    "number_head_unadjusted": "2.3.5",
+    "verdict": "MATCH",
+    "content_needles": {
+     "\\bar{\\pi}_t": true
+    }
+   },
+   {
+    "line": 243,
+    "keyword": "Sections",
+    "kind": "section",
+    "text": "Sections~2.3.3--2.3.5",
+    "numbers": [
+     "2.3.3",
+     "2.3.5"
+    ],
+    "range": true,
+    "target": [
+     "subsubsec:network_storage",
+     "title:^Degradation Chain of the Shared-ESS Agent$",
+     "subsubsec:commitment"
+    ],
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.3.3--2.3.5",
+    "members": [
+     "subsubsec:network_storage",
+     "title:^Degradation Chain of the Shared-ESS Agent$",
+     "subsubsec:commitment"
+    ],
+    "members_head": [
+     "2.3.3",
+     "2.3.4",
+     "2.3.5"
+    ],
+    "number_head": "2.3.3--2.3.5",
+    "number_head_unadjusted": "2.3.3--2.3.5",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 250,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.3.4",
+    "numbers": [
+     "2.3.4"
+    ],
+    "range": false,
+    "target": "title:^Degradation Chain of the Shared-ESS Agent$",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.3.4",
+    "number_head": "2.3.4",
+    "number_head_unadjusted": "2.3.4",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 256,
+    "keyword": "Table",
+    "kind": "table",
+    "text": "Table~6)",
+    "numbers": [
+     "6"
+    ],
+    "range": false,
+    "target": "tab:ageing_calibrations",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "6",
+    "number_head": "6",
+    "number_head_unadjusted": "9",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 256,
+    "keyword": "Table",
+    "kind": "table",
+    "text": "Table~11)",
+    "numbers": [
+     "11"
+    ],
+    "range": false,
+    "target": "tab:res_ageing",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "11",
+    "number_head": "11",
+    "number_head_unadjusted": "14",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 257,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~3.5",
+    "numbers": [
+     "3.5"
+    ],
+    "range": false,
+    "target": "sec:case_ess_params",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "3.5",
+    "number_head": "3.5",
+    "number_head_unadjusted": "3.5",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 257,
+    "keyword": "Table",
+    "kind": "table",
+    "text": "Table~6",
+    "numbers": [
+     "6"
+    ],
+    "range": false,
+    "target": "tab:ageing_calibrations",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "6",
+    "number_head": "6",
+    "number_head_unadjusted": "9",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 257,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.3",
+    "numbers": [
+     "4.3"
+    ],
+    "range": false,
+    "target": "subsec:res_degradation",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.3",
+    "number_head": "4.3",
+    "number_head_unadjusted": "4.3",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 257,
+    "keyword": "Table",
+    "kind": "table",
+    "text": "Table~11",
+    "numbers": [
+     "11"
+    ],
+    "range": false,
+    "target": "tab:res_ageing",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "11",
+    "number_head": "11",
+    "number_head_unadjusted": "14",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 263,
+    "keyword": "Table",
+    "kind": "table",
+    "text": "Table~11",
+    "numbers": [
+     "11"
+    ],
+    "range": false,
+    "target": "tab:res_ageing",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "11",
+    "number_head": "11",
+    "number_head_unadjusted": "14",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 263,
+    "keyword": "Figure",
+    "kind": "figure",
+    "text": "Figure~7)",
+    "numbers": [
+     "7"
+    ],
+    "range": false,
+    "target": "fig:res_ageing",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "7",
+    "number_head": "7",
+    "number_head_unadjusted": "7",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 264,
+    "keyword": "Table",
+    "kind": "table",
+    "text": "Table~11",
+    "numbers": [
+     "11"
+    ],
+    "range": false,
+    "target": "tab:res_ageing",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "11",
+    "number_head": "11",
+    "number_head_unadjusted": "14",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 264,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.8)",
+    "numbers": [
+     "4.8"
+    ],
+    "range": false,
+    "target": "subsec:res_limitations",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.8",
+    "number_head": "4.8",
+    "number_head_unadjusted": "4.8",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 264,
+    "keyword": "Table",
+    "kind": "table",
+    "text": "Table~11",
+    "numbers": [
+     "11"
+    ],
+    "range": false,
+    "target": "tab:res_ageing",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "11",
+    "number_head": "11",
+    "number_head_unadjusted": "14",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 265,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.3",
+    "numbers": [
+     "4.3"
+    ],
+    "range": false,
+    "target": "subsec:res_degradation",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.3",
+    "number_head": "4.3",
+    "number_head_unadjusted": "4.3",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 265,
+    "keyword": "Table",
+    "kind": "table",
+    "text": "Table~11",
+    "numbers": [
+     "11"
+    ],
+    "range": false,
+    "target": "tab:res_ageing",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "11",
+    "number_head": "11",
+    "number_head_unadjusted": "14",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 265,
+    "keyword": "Figure",
+    "kind": "figure",
+    "text": "Figure~7",
+    "numbers": [
+     "7"
+    ],
+    "range": false,
+    "target": "fig:res_ageing",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "7",
+    "number_head": "7",
+    "number_head_unadjusted": "7",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 272,
+    "keyword": "Eq.",
+    "kind": "equation",
+    "text": "Eq.~(13)",
+    "numbers": [
+     "13"
+    ],
+    "range": false,
+    "target": [
+     "eq:recourse_value"
+    ],
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "13",
+    "number_head": "13",
+    "number_head_unadjusted": "13",
+    "verdict": "MATCH",
+    "content_needles": {
+     "\\frac{Y_y}{(1+r)^{y-y_0}}": true
+    }
+   },
+   {
+    "line": 274,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.2.1)",
+    "numbers": [
+     "2.2.1"
+    ],
+    "range": false,
+    "target": "title:^Objective Function$",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2.1",
+    "number_head": "2.2.1",
+    "number_head_unadjusted": "2.2.1",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 274,
+    "keyword": "Eq.",
+    "kind": "equation",
+    "text": "Eq.~(13)",
+    "numbers": [
+     "13"
+    ],
+    "range": false,
+    "target": [
+     "eq:recourse_value"
+    ],
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "13",
+    "number_head": "13",
+    "number_head_unadjusted": "13",
+    "verdict": "MATCH",
+    "content_needles": {
+     "\\frac{Y_y}{(1+r)^{y-y_0}}": true
+    }
+   },
+   {
+    "line": 274,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~3)",
+    "numbers": [
+     "3"
+    ],
+    "range": false,
+    "target": "sec:case_studies",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "3",
+    "number_head": "3",
+    "number_head_unadjusted": "3",
+    "verdict": "MATCH",
+    "content_needles": {
+     "each standing for a five-year block": true
+    }
+   },
+   {
+    "line": 275,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.2.7",
+    "numbers": [
+     "2.2.7"
+    ],
+    "range": false,
+    "target": "subsubsec:certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2.7",
+    "number_head": "2.2.7",
+    "number_head_unadjusted": "2.2.7",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 275,
+    "keyword": "Eq.",
+    "kind": "equation",
+    "text": "Eq.~(13)",
+    "numbers": [
+     "13"
+    ],
+    "range": false,
+    "target": [
+     "eq:recourse_value"
+    ],
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "13",
+    "number_head": "13",
+    "number_head_unadjusted": "13",
+    "verdict": "MATCH",
+    "content_needles": {
+     "\\frac{Y_y}{(1+r)^{y-y_0}}": true
+    }
+   },
+   {
+    "line": 275,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~2.2.1",
+    "numbers": [
+     "2.2.1"
+    ],
+    "range": false,
+    "target": "title:^Objective Function$",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2.2.1",
+    "number_head": "2.2.1",
+    "number_head_unadjusted": "2.2.1",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 275,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~3",
+    "numbers": [
+     "3"
+    ],
+    "range": false,
+    "target": "sec:case_studies",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "3",
+    "number_head": "3",
+    "number_head_unadjusted": "3",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 275,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4",
+    "numbers": [
+     "4"
+    ],
+    "range": false,
+    "target": "sec:results",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4",
+    "number_head": "4",
+    "number_head_unadjusted": "4",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 282,
+    "keyword": "Sections",
+    "kind": "section",
+    "text": "Sections~3.6 and~4.4)",
+    "numbers": [
+     "3.6"
+    ],
+    "range": false,
+    "target": "sec:case_settings",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "3.6",
+    "number_head": "3.6",
+    "number_head_unadjusted": "3.6",
+    "verdict": "MATCH",
+    "content_needles": {
+     "no-reverse-flow": true
+    }
+   },
+   {
+    "line": 282,
+    "keyword": "Sections",
+    "kind": "section",
+    "text": "Sections~3.6 and~4.4)",
+    "numbers": [
+     "4.4"
+    ],
+    "range": false,
+    "target": "subsec:res_coordination",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.4",
+    "number_head": "4.4",
+    "number_head_unadjusted": "4.4",
+    "verdict": "MATCH",
+    "content_needles": {
+     "1 (passive) and 8 (price-taker)": true
+    }
+   },
+   {
+    "line": 283,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4.8)",
+    "numbers": [
+     "4.8"
+    ],
+    "range": false,
+    "target": "subsec:res_limitations",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4.8",
+    "number_head": "4.8",
+    "number_head_unadjusted": "4.8",
+    "verdict": "MATCH",
+    "content_needles": {
+     "monotone branch": true
+    }
+   },
+   {
+    "line": 284,
+    "keyword": "Appendices",
+    "kind": "appendix",
+    "text": "Appendices~E.6 and~A.8)",
+    "numbers": [
+     "E.6"
+    ],
+    "range": false,
+    "target": "app:results_statistics",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "E.6",
+    "number_head": "E.6",
+    "number_head_unadjusted": "E.6",
+    "verdict": "MATCH",
+    "content_needles": {
+     "bitwise": true,
+     "single-threaded": true,
+     "Apple M2~Max": true
+    }
+   },
+   {
+    "line": 284,
+    "keyword": "Appendices",
+    "kind": "appendix",
+    "text": "Appendices~E.6 and~A.8)",
+    "numbers": [
+     "A.8"
+    ],
+    "range": false,
+    "target": "app:admm_updated_settings",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A.8",
+    "number_head": "A.8",
+    "number_head_unadjusted": "A.8",
+    "verdict": "MATCH",
+    "content_needles": {
+     "IPOPT~3.14.18": true,
+     "Pyomo~6.9.5": true
+    }
+   },
+   {
+    "line": 285,
+    "keyword": "Section",
+    "kind": "section",
+    "text": "Section~4",
+    "numbers": [
+     "4"
+    ],
+    "range": false,
+    "target": "sec:results",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4",
+    "number_head": "4",
+    "number_head_unadjusted": "4",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 285,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~E",
+    "numbers": [
+     "E"
+    ],
+    "range": false,
+    "target": "app:results",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "E",
+    "number_head": "E",
+    "number_head_unadjusted": "E",
+    "verdict": "MATCH",
+    "content_needles": {
+     "Every pairwise comparison of the record": true,
+     "Neighbours of the Plan without Storage": true,
+     "Evaluations Refused by the Gap Clause": true,
+     "Certification Statistics and Reproducibility": true
+    }
+   },
+   {
+    "line": 287,
+    "keyword": "Table",
+    "kind": "table",
+    "text": "Table~1",
+    "numbers": [
+     "1"
+    ],
+    "range": false,
+    "target": "tab:investment_cost",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "1",
+    "number_head": "1",
+    "number_head_unadjusted": "4",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 288,
+    "keyword": "Figure",
+    "kind": "figure",
+    "text": "Figure~2)",
+    "numbers": [
+     "2"
+    ],
+    "range": false,
+    "target": "fig:search_generic",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "2",
+    "number_head": "2",
+    "number_head_unadjusted": "2",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 288,
+    "keyword": "Figure",
+    "kind": "figure",
+    "text": "Figure~4)",
+    "numbers": [
+     "4"
+    ],
+    "range": false,
+    "target": "fig:investment_lattice",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "4",
+    "number_head": "4",
+    "number_head_unadjusted": "4",
+    "verdict": "MATCH",
+    "content_needles": {
+     "fig_lattice_case.pdf": true
+    }
+   },
+   {
+    "line": 288,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~A",
+    "numbers": [
+     "A"
+    ],
+    "range": false,
+    "target": "app:admm_updated",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A",
+    "number_head": "A",
+    "number_head_unadjusted": "A",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 288,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~A (A.5 and A.8)",
+    "numbers": [
+     "A.5"
+    ],
+    "range": false,
+    "target": "app:admm_updated_certification",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A.5",
+    "number_head": "A.5",
+    "number_head_unadjusted": "A.5",
+    "verdict": "MATCH"
+   },
+   {
+    "line": 288,
+    "keyword": "Appendix",
+    "kind": "appendix",
+    "text": "Appendix~A (A.5 and A.8)",
+    "numbers": [
+     "A.8"
+    ],
+    "range": false,
+    "target": "app:admm_updated_settings",
+    "verdict_w179b_48099ab": "MATCH",
+    "number_w179b_48099ab": "A.8",
+    "number_head": "A.8",
+    "number_head_unadjusted": "A.8",
+    "verdict": "MATCH"
+   }
+  ],
+  "mismatch": [],
+  "ambiguous": [],
+  "submitted": [
+   {
+    "line": 100,
+    "text": "Figure 2",
+    "note": "the R1.5 heading quotes the reviewer's figure number (submitted Figure 2, Addendum 75)"
+   },
+   {
+    "line": 102,
+    "text": "Figure~2",
+    "note": "\"Figure 2 of the submitted version\""
+   },
+   {
+    "line": 141,
+    "text": "former 2.2.7",
+    "note": "\"former 2.2.7 Benders' cuts\""
+   },
+   {
+    "line": 232,
+    "text": "Section~4.4",
+    "note": "the reviewer's Section 4.4 (submitted version)"
+   },
+   {
+    "line": 232,
+    "text": "Figure~15",
+    "note": "the reviewer's Figure 15 (Addendum 75: no such figure in the submitted source)"
+   }
+  ],
+  "n_with_needles": 60,
+  "content_absent": [],
+  "needles_replaced": [
+   {
+    "line": 136,
+    "text": "Sections~2.2.6 and~2.3.2)",
+    "needle_replaced": {
+     "w179b_needle": "are fixed parameters of the operational subproblem",
+     "w180c_needle": "are held fixed in the operational subproblem",
+     "why": "A.1 rewrote the 2.2.6 sentence the W179b needle quoted; the letter (l. 136: \"the investment being a fixed parameter of the recourse\") is checked against the new wording",
+     "w179b_needle_present_at_head": false
+    }
+   }
+  ],
+  "differs_from_w179b": [
+   {
+    "line": 160,
+    "text": "Appendix~E.6)",
+    "verdict_w179b_48099ab": null,
+    "verdict": "MATCH",
+    "number_w179b_48099ab": null,
+    "number_head": "E.6"
+   }
+  ]
+ },
+ "rows": {
+  "rows": [
+   {
+    "row": "C-1",
+    "where": "Conclusions (A.9)",
+    "w179b": "still (narrowed), L: search evaluations not covered; \"movement measured\" is a fit on x = 0 only",
+    "status": "closed",
+    "rating_now": "consistent",
+    "basis": "Both W179b residues are answered by the text: the search evaluations are now named with their resolution (\"the search's own evaluations at the search resolution\"; their stopping status, the production exit, is stated in 4.7), and the multi-scenario clause now says the movement of the plan without storage was \"estimated from a continued run\", which is what 4.5 and Table 13 report (one continued run, x = 0; D = 6.2 k EUR by a post-hoc damped-cosine fit).",
+    "evidence": [
+     {
+      "check": "conclusions: \"stopped by the production exit, with the remaining movement of the plan without storage estimated from a continued run\"",
+      "ok": true,
+      "where": [
+       1737
+      ]
+     },
+     {
+      "check": "conclusions: \"the search's own evaluations at the search resolution\"",
+      "ok": true,
+      "where": [
+       1737
+      ]
+     },
+     {
+      "check": "\"with its remaining movement measured\" gone",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "4.5: only the x = 0 evaluation was continued, its movement a fit",
+      "ok": true,
+      "where": [
+       1606
+      ]
+     },
+     {
+      "check": "Table 13: D \"damped-cosine fit\", \"post-hoc\"",
+      "ok": true,
+      "where": [
+       1623
+      ]
+     },
+     {
+      "check": "4.1: the neighbours compared \"beyond the search resolution\"",
+      "ok": true,
+      "where": [
+       1368
+      ]
+     },
+     {
+      "check": "4.7: the search evaluations \"each stopped by the production exit ... compared at the search resolution\"",
+      "ok": true,
+      "where": [
+       1706
+      ]
+     }
+    ],
+    "w179b_row": {
+     "id": "C-1 (conclusions stopping status)",
+     "status": "still (narrowed)",
+     "rating_now": "L"
+    },
+    "evidence_ok": true
+   },
+   {
+    "row": "R14-2",
+    "where": "letter R1.4 l. 97",
+    "w179b": "still (narrowed), L: the reply said the introduction states fuel; \"fuel\" occurs 0 times in main.tex",
+    "status": "closed",
+    "rating_now": "consistent",
+    "basis": "Fuel is no longer attributed to the introduction. Every source the clause attributes to the introduction is in l. 381-382 as listed. The new sentence restates 3.3 l. 1184; \"so fuel-cost uncertainty enters only through the market-price scenarios\" is the letter's inference from \"no separate generator cost curves are used\", not a manuscript claim, and is consistent with it.",
+    "evidence": [
+     {
+      "check": "letter: \"fuel\" absent from the \"introduction now states\" clause",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "letter: new sentence present",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "main.tex: \"fuel\" occurs 0 times (typeset and comments)",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "3.3 (Transmission Network): \"Conventional generation in the TN is priced at the wholesale energy price of the scenario; no separate generator cost curves are used.\"",
+      "ok": true,
+      "where": [
+       1184
+      ]
+     },
+     {
+      "check": "3.3 is the subsection \"Transmission Network\" (static number)",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "intro l. 381: investment-cost trajectories; operational scenarios of load, RES generation and market prices",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "intro l. 382: demand growth and RES capacity predefined; policy changes, infrastructure retirements, cost of capital outside, future work",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "\"technology maturation\" is the letter's gloss: the intro says \"future ESS investment costs\"; 3.2 ties the trajectories to \"technological progress\"",
+      "ok": true,
+      "where": [
+       1149
+      ]
+     }
+    ],
+    "w179b_row": {
+     "id": "R14-2 (fuel)",
+     "status": "still (narrowed)",
+     "rating_now": "L"
+    },
+    "evidence_ok": true
+   },
+   {
+    "row": "C47-1",
+    "where": "4.7 last sentence (A.5)",
+    "w179b": "L: the 41 search evaluations named in 4.7 are not in Appendix E",
+    "status": "closed",
+    "rating_now": "consistent",
+    "basis": "The sentence now scopes Appendix E to the single-scenario evaluations behind the comparisons and sends the search evaluations to their counts (4.7) and the 3x3 pair to Table 13; each destination holds what it is cited for.",
+    "evidence": [
+     {
+      "check": "4.7 sentence as edited",
+      "ok": true,
+      "where": [
+       1691
+      ]
+     },
+     {
+      "check": "4.7: the counts \"41 new recourse evaluations in all (14, 20 and 7 against budgets of 20, 20 and 60)\"",
+      "ok": true,
+      "where": [
+       1706
+      ]
+     },
+     {
+      "check": "Table 13 (tab:res_multiscenario) holds the 3x3 pair at cycle 72",
+      "ok": true,
+      "where": [
+       1619
+      ]
+     },
+     {
+      "check": "Appendix E intro: E.21 = \"every recourse evaluation those comparisons use\"",
+      "ok": true,
+      "where": null
+     }
+    ],
+    "w179b_row": {
+     "id": "C47-1",
+     "rating": "L"
+    },
+    "evidence_ok": true
+   },
+   {
+    "row": "C48-1",
+    "where": "4.8 degenerate duals (A.6)",
+    "w179b": "L: E.24 prints the split for 5 of the 7 m = 2 evaluations",
+    "status": "closed",
+    "rating_now": "consistent",
+    "basis": "\"wherever the split was recorded\" covers the two \"---\" rows (40, 41), and E.5 now says so; the five recorded splits agree to 0.1 point.",
+    "evidence": [
+     {
+      "check": "4.8: \"split in the same proportions among the three interface nodes wherever the split was recorded\"",
+      "ok": true,
+      "where": [
+       1717
+      ]
+     },
+     {
+      "check": "Table E.24 prints no split (\"---\") exactly for evaluations 40 and 41",
+      "ok": true,
+      "where": [
+       "40",
+       "41"
+      ]
+     },
+     {
+      "check": "E.5: \"(for evaluations~40 and~41 the split and the residual were not recorded)\"",
+      "ok": true,
+      "where": [
+       2657
+      ]
+     },
+     {
+      "check": "the recorded splits (39, 50, 51, 45, 42) are 55.2-55.3 / 13.7 / 31.0-31.1",
+      "ok": true,
+      "where": null
+     }
+    ],
+    "e24_rows": {
+     "31": [
+      "31",
+      "7: 0.25/1",
+      "2025",
+      "$m=1.5$",
+      "gap clause",
+      "$-$2.5",
+      "54.6",
+      "14.5",
+      "30.9",
+      "0.027",
+      "---"
+     ],
+     "39": [
+      "39",
+      "7: 1.25/5",
+      "2025",
+      "$m=2$",
+      "gap clause",
+      "$-$8.8",
+      "55.2",
+      "13.7",
+      "31.0",
+      "0.682",
+      "160"
+     ],
+     "50": [
+      "50",
+      "7: 1/3; 9: 0.25/0.5",
+      "2030",
+      "$m=2$",
+      "gap clause",
+      "$-$9.2",
+      "55.3",
+      "13.7",
+      "31.0",
+      "0.690",
+      "---"
+     ],
+     "51": [
+      "51",
+      "7: 1/3.5; 9: 0.25/0.5",
+      "2030",
+      "$m=2$",
+      "gap clause",
+      "$-$9.2",
+      "55.3",
+      "13.7",
+      "31.0",
+      "0.690",
+      "---"
+     ],
+     "45": [
+      "45",
+      "5: 0.25/0.5; 7: 0.75/3; 9: 0.25/0.5",
+      "2030",
+      "$m=2$",
+      "gap clause",
+      "$-$9.4",
+      "55.3",
+      "13.7",
+      "31.0",
+      "0.700",
+      "---"
+     ],
+     "40": [
+      "40",
+      "5: 0.25/0.5; 7: 1/3.5",
+      "2030",
+      "$m=2$",
+      "gap clause",
+      "$-$9.2",
+      "---",
+      "---",
+      "---",
+      "---",
+      "---"
+     ],
+     "41": [
+      "41",
+      "5: 0.25/1; 7: 1/3",
+      "2030",
+      "$m=2$",
+      "gap clause",
+      "$-$9.3",
+      "---",
+      "---",
+      "---",
+      "---",
+      "---"
+     ],
+     "42": [
+      "42",
+      "5: 0.25/0.5; 7: 1/3",
+      "2030",
+      "$m=2$",
+      "lapse reset",
+      "$-$9.3",
+      "55.3",
+      "13.7",
+      "31.1",
+      "0.692",
+      "218, 222"
+     ],
+     "6": [
+      "6",
+      "7: 1.25/5",
+      "2025",
+      "base",
+      "growth test",
+      "1.1",
+      "58.3",
+      "11.3",
+      "30.3",
+      "0.012",
+      "---"
+     ]
+    },
+    "w179b_row": {
+     "id": "C48-1",
+     "rating": "L"
+    },
+    "evidence_ok": true
+   },
+   {
+    "row": "R22-b",
+    "where": "letter R2.2 l. 125",
+    "w179b": "L: Appendix E does not hold the 41 search evaluations or the 3x3 pair (Table 13, cycle 72)",
+    "status": "still (narrowed)",
+    "rating_now": "L",
+    "basis": "Narrowed: under R2.2's own two classes (search: production exit; behind the reported comparisons: certification rule or cap) the search evaluations are excluded, and every certification-rule evaluation has k*/end in E.21. What remains: the 3x3 pair is behind a reported comparison (Table 13, -81.3 k EUR determinate) and fits neither class of R2.2; its stopping cycle (72) is in Table 13, which Appendix E's introduction points to, and E.6 gives the x = 0 evaluation's 72 replayed cycles but not the unit's. Secondary, arguable: the six search-only neighbours enter the 4.1 / 4.8 Scope / E.3 comparison at the search resolution and have no cycles anywhere. R2.2 is the only one of the four scoped sentences (2.2.7, 4.7, FC bullet, R2.2) without \"single-scenario\". Wording only; no number or verdict changes.",
+    "evidence": [
+     {
+      "check": "letter R2.2: \"and the cycles of every evaluation behind a reported comparison in Appendix~E\"",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "letter R2.2 defines its classes: \"ends at the production exit during the search, or, for the evaluations behind the reported comparisons, when the certification rule ... holds or its cycle cap is reached\"",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "letter R2.2: the cycles clause carries no \"single-scenario\" qualifier (the FC bullet, 4.7 and 2.2.7 do; R2.2 uses \"single-scenario\" only for the instance, \"at the single-scenario instance, 48 blocks\")",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "Appendix E intro sends the multi-scenario evaluations to Table 13 (not in E.21)",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "the 3x3 pair is behind a reported comparison: Table 13 \"Value $- I$ ... determinate\", \"(cycle 72)\"",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "E.6 gives the multi-scenario x = 0 evaluation's cycles (\"replayed its 72 recorded cycles bitwise\"), not the unit's",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "E.3 / 4.8 Scope: six neighbours \"evaluated by the search only\" and compared \"beyond the search resolution\" (no cycles printed for them)",
+      "ok": true,
+      "where": null
+     }
+    ],
+    "w179b_row": {
+     "id": "R22-b",
+     "rating": "L"
+    },
+    "evidence_ok": true
+   },
+   {
+    "row": "FC-2c",
+    "where": "letter Further changes, Appendix E bullet l. 285",
+    "w179b": "L: the bullet dropped the \"those comparisons use\" qualifier",
+    "status": "closed",
+    "rating_now": "consistent",
+    "basis": "The bullet now carries the qualifier of the Appendix E introduction, plus \"single-scenario\"; E.21 is that set (it also lists the superseded evaluation 16, which \"every ... those comparisons use\" does not exclude being exceeded).",
+    "evidence": [
+     {
+      "check": "FC bullet: \"every single-scenario recourse evaluation those comparisons use, with its stopping status, band, gap and slack\"",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "Appendix E intro: \"every recourse evaluation those comparisons use, with its stopping status, band, gap and slack (Table E.21)\"",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "\"those comparisons\" = \"every pairwise comparison\" of the same bullet = Table E.20, whose Eval. column indexes E.21",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "the multi-scenario evaluations are outside E.21 (Appendix E intro, Table 13)",
+      "ok": true,
+      "where": null
+     }
+    ],
+    "w179b_row": {
+     "id": "FC-2c",
+     "rating": "L"
+    },
+    "evidence_ok": true
+   },
+   {
+    "row": "G12 follow-on",
+    "where": "2.2.6 l. 697 (A.1)",
+    "w179b": "new L: 2.2.6 called the un-hatted S^Inv, E^Inv \"fixed parameters of the operational subproblem\"",
+    "status": "closed",
+    "rating_now": "consistent",
+    "basis": "2.2.6 now uses the nomenclature's split: the un-hatted additions are the plan, entering the subproblem as the hatted parameters of 2.3.2 (label added, resolves to 2.3.2).",
+    "evidence": [
+     {
+      "check": "2.2.6: un-hatted additions \"held fixed in the operational subproblem, where they enter as the parameters Ŝ, Ê of Subsection 2.3.2\"",
+      "ok": true,
+      "where": [
+       697
+      ]
+     },
+     {
+      "check": "\"are fixed parameters of the operational subproblem\" gone from 2.2.6",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "nomenclature: Ŝ/Ê \"The same additions as fixed parameters of the operational subproblem\"",
+      "ok": true,
+      "where": [
+       317
+      ]
+     },
+     {
+      "check": "nomenclature: S^Inv/E^Inv \"Converter rating and energy capacity installed at $e$ in $y^{\\text{Inv}}$\"",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "subsubsec:capacity resolves to 2.3.2 \"Installed and Available Capacity\"",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "2.3.2 uses the hats: \"the fixed additions $\\hat{S}^{\\text{Inv}}_{e,y^{\\text{Inv}}}$ and $\\hat{E}^{\\text{Inv}}_{e,y^{\\text{Inv}}}$ of the candidate plan\"",
+      "ok": true,
+      "where": null
+     }
+    ],
+    "w179b_row": {
+     "id": "Nomenclature hat-S / hat-E (W178 Decision 5)",
+     "status": "closed; new difference",
+     "rating_now": "L"
+    },
+    "evidence_ok": true
+   },
+   {
+    "row": "A.3 prefix",
+    "where": "Appendix A.3 l. 1900 (A.8)",
+    "w179b": "L: \"Subsection~\\ref{app:admm_updated_stopping}\" prints \"Subsection Appendix A.4\"",
+    "status": "closed",
+    "rating_now": "consistent",
+    "basis": "The prefix is dropped; 0 label-word prefixes remain (part 6).",
+    "evidence": [
+     {
+      "check": "A.3: \"their tolerances (\\ref{app:admm_updated_stopping})\"",
+      "ok": true,
+      "where": [
+       1900
+      ]
+     },
+     {
+      "check": "no \"Subsection~\\ref{app:\" anywhere",
+      "ok": true,
+      "where": null
+     },
+     {
+      "check": "no label-word prefix before \\ref{app: (W179b PREFIX regex)",
+      "ok": true,
+      "where": null
+     }
+    ],
+    "w179b_row": {
+     "id": "A-prefix, A.3 l. 1899 (not in W178)",
+     "status": "new difference (pre-existing, missed by W178)",
+     "rating_now": "L"
+    },
+    "evidence_ok": true
+   }
+  ],
+  "status_counts": {
+   "closed": 7,
+   "still (narrowed)": 1
+  }
+ },
+ "counts": {
+  "confirm": {
+   "main_tex": [],
+   "letter": []
+  },
+  "word_tilde_ref_app_general": {
+   "pattern": "[A-Za-z]+~\\\\ref\\{app:",
+   "raw_lines": [
+    {
+     "line": 743,
+     "word": "in",
+     "sep": "~",
+     "label": "app:results"
+    },
+    {
+     "line": 1178,
+     "word": "in",
+     "sep": "~",
+     "label": "app:market_data"
+    },
+    {
+     "line": 1182,
+     "word": "in",
+     "sep": "~",
+     "label": "app:tn_description"
+    },
+    {
+     "line": 1209,
+     "word": "in",
+     "sep": "~",
+     "label": "app:dns_description"
+    },
+    {
+     "line": 1691,
+     "word": "in",
+     "sep": "~",
+     "label": "app:results"
+    },
+    {
+     "line": 2395,
+     "word": "of",
+     "sep": "~",
+     "label": "app:admm_updated_certification"
+    },
+    {
+     "line": 2692,
+     "word": "in",
+     "sep": "~",
+     "label": "app:admm_updated_settings"
+    },
+    {
+     "line": 2692,
+     "word": "of",
+     "sep": "~",
+     "label": "app:admm_updated_certification"
+    }
+   ],
+   "typeset_lines": [
+    {
+     "line": 743,
+     "word": "in",
+     "sep": "~",
+     "label": "app:results"
+    },
+    {
+     "line": 1178,
+     "word": "in",
+     "sep": "~",
+     "label": "app:market_data"
+    },
+    {
+     "line": 1182,
+     "word": "in",
+     "sep": "~",
+     "label": "app:tn_description"
+    },
+    {
+     "line": 1209,
+     "word": "in",
+     "sep": "~",
+     "label": "app:dns_description"
+    },
+    {
+     "line": 1691,
+     "word": "in",
+     "sep": "~",
+     "label": "app:results"
+    },
+    {
+     "line": 2395,
+     "word": "of",
+     "sep": "~",
+     "label": "app:admm_updated_certification"
+    },
+    {
+     "line": 2692,
+     "word": "in",
+     "sep": "~",
+     "label": "app:admm_updated_settings"
+    },
+    {
+     "line": 2692,
+     "word": "of",
+     "sep": "~",
+     "label": "app:admm_updated_certification"
+    }
+   ],
+   "by_word_typeset": {
+    "in": 6,
+    "of": 2
+   }
+  },
+  "word_space_or_tilde_ref_app_typeset_by_word": {
+   "of": 8,
+   "in": 11
+  },
+  "label_word_prefixes": [],
+  "appendix_word_before_any_ref": [],
+  "author_comments": {
+   "main_tex_percent_AUTHOR": [],
+   "main_tex_any_AUTHOR_bracket": [],
+   "letter_any_AUTHOR_bracket": [],
+   "expected_by_STEP6_and_Addendum_79": 1
+  },
+  "n_confirm_main": 0,
+  "n_confirm_letter": 0,
+  "n_general_pattern_hits_typeset": 8,
+  "n_label_word_prefixes": 0,
+  "n_author_comments_main": 0,
+  "author_marker_last_change_in_clone": "51a6fb5 2026-10-14T09:03:40+00:00",
+  "author_marker_at_48099ab": 0
+ },
+ "negative_controls": {
+  "controls": [
+   {
+    "id": "NC1 number 1.8 -> 1.9 in A.3",
+    "refused": true
+   },
+   {
+    "id": "NC2 word altered outside the edits (l. 381)",
+    "refused": true
+   },
+   {
+    "id": "NC3 subsection inserted before 3.3",
+    "n_mismatch": 9,
+    "section_3_3_verdicts": [
+     [
+      97,
+      "MISMATCH",
+      "3.4"
+     ]
+    ],
+    "refused": true
+   },
+   {
+    "id": "NC4 3.3 needle sentence removed",
+    "refused": true
+   },
+   {
+    "id": "NC5 letter Appendix E.6 -> E.9",
+    "verdicts": [
+     [
+      "Appendix~E.9)",
+      "UNDECLARED"
+     ]
+    ],
+    "refused": true
+   },
+   {
+    "id": "NC6 letter R1.4 sentence altered",
+    "refused": true
+   }
+  ],
+  "all_refused": true
+ },
+ "frozen_json_unchanged_at_end": true,
+ "guards": {
+  "verify_0_failures": {
+   "own": [],
+   "w179b": [],
+   "w178c": [],
+   "w177b3r": [],
+   "w177b3": [],
+   "w167": [],
+   "phase_b_record": []
+  },
+  "counts": {
+   "own": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "w179b": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "w178c": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "w177b3r": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "w177b3": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "w167": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "phase_b_record": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   }
+  },
+  "pickle_counts": {
+   "own": {
+    "load": 0,
+    "loads": 0
+   },
+   "w179b": {
+    "load": 0,
+    "loads": 0
+   },
+   "w178c": {
+    "load": 0,
+    "loads": 0
+   },
+   "w177b3r": {
+    "load": 0,
+    "loads": 0
+   },
+   "w177b3": {
+    "load": 0,
+    "loads": 0
+   },
+   "w167": {
+    "load": 0,
+    "loads": 0
+   }
+  },
+  "production_modules_imported": [],
+  "ok": true
+ },
+ "predictions": {
+  "(c) 0 pointer MISMATCH": {
+   "outcome": {
+    "MATCH": 160,
+    "SUBMITTED": 5
+   },
+   "held": true
+  },
+  "(c) all eight re-scored rows close": {
+   "not_closed": [
+    "R22-b"
+   ],
+   "held": false
+  },
+  "(c) 0 CONFIRM": {
+   "main": 0,
+   "letter": 0,
+   "held": true
+  },
+  "(c) 0 <word>~\\ref{app: prefixes": {
+   "label_word_prefixes": 0,
+   "general_pattern_hits_typeset": 8,
+   "held": true
+  },
+  "task: one % [AUTHOR] comment (expected)": {
+   "found": 0,
+   "held": false
+  }
+ },
+ "check_failures": [],
+ "finished_utc": "2026-10-16T12:55:24.657030+00:00"
+}

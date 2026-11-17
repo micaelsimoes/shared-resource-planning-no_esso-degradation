@@ -1,0 +1,11 @@
+{
+ "stage": "P5.15 Step 3.2 E2 (s33e2 worker task) -- zero-solve check evidence manifest",
+ "entries": {
+  "zero_solve_checks_e2.json": {
+   "sha256": "1bbd97f3e507da314fa076196d92232e49c91ef466205b948b83f44b0ad19ea2",
+   "bytes": 14391,
+   "committed": true
+  }
+ },
+ "note": "Unlike p515_s32v2_zero_solve_checks.py (check (d)), p515_s33e2_zero_solve_checks.py builds every synthetic ADMM-ready state in memory only (via p515_s32_zero_solve_checks._build_admm_ready_state and this script's own _build_admm_ready_state_fixed_gamma/_build_tso_model_only helpers) and never pickles a snapshot to disk -- there is no companion .pkl fixture in this directory to hash-record."
+}

@@ -1,0 +1,3156 @@
+{
+ "STOP_FOR_REVIEW": false,
+ "stop_rule_state": {
+  "triggered": false,
+  "reasons": [],
+  "non_certified_labels": [],
+  "non_certified_by_region": {}
+ },
+ "non_certified_points": [],
+ "not_launched_points": [],
+ "stop_rule": "spec v15 execution.barrier: \"non-certified evaluations recorded with cause; in A1-A3 a run of barrier points in a region stops for review\". Operational form frozen by Planner task W15: after every wave, STOP (launch no further wave) if (a) 2 or more non-certified points fall in ONE region (node+duration ladder, see _region_key) or (b) 3 or more non-certified points occur overall. A single isolated non-certified point does NOT stop the campaign: it is recorded as a barrier point with its cause. Points already running always finish; unlaunched points are recorded as not_launched_stop_rule and campaign_results.json carries STOP_FOR_REVIEW true (exit 3).",
+ "launch_plan": "waves of 7 points in spec order; the stop rule is evaluated after each wave (the harness's evaluate() has no stop hook, so the wave is the unit at which the campaign can stop)",
+ "stage": "P5.15 Addendum 27 Phase A, A2 -- the presence design of the best per-node settings (4 new) and the lattice C* (1): 5 points; staging not available",
+ "stage_id": "a2",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 27 (Phase A, A1-A3)",
+  "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json A1, A2, A3, execution, master_constraints",
+  "P5_15_S45_REVERIFY_RULING.md (oracle re-verified; consequence 2: bar on the gross cost step, fixed by W5)",
+  "Planner task W15: stages a1a/a1b/a2/a3, the operational stop rule, the selection rules as code",
+  "Planner decision W6: Phase A concurrency 7, memory preflight wired + anonymous + compressor-occupied",
+  "W14 (85c147fa): per-point investment_year in the campaign harness (2030 / 2035 verified)",
+  "W16 (1f2ca6f7): the second, additive I(x) table for the A2 presence design and the A3 resolution candidates, and the zero-solve sigma_Q estimate from the existing ladders",
+  "Planner task W17: the ordered list of pinned I(x) sources; the Planner-fixed a3 point set (the 5 budget-feasible resolution candidates); the x = 0 incumbent / anchor ruling for A3"
+ ],
+ "timestamp_utc": "2026-09-20T22:48:01.113413+00:00",
+ "git_head_at_run": "aea5182ecc11e70f08d13e3a7207ebadcf7a8c23",
+ "campaign_spec_path": "data/SRP1/Results/P515S45/campaign_s45_a2/campaign_spec_s45_a2_d5b52f30.json",
+ "campaign_spec_sha256": "d5b52f302e7610345445ad12d86a6d015cd00690d85299a805afffc295d67b29",
+ "objective_convention": "F uses gross; salvage reported separately. Q(x) = certified_cost = gross_operational_cost (settlement-excluded); F(x) = I(x) + Q(x); terminal_salvage_value and net_operational_recourse = gross - salvage are reported, excluded from F (Addendum 27 item 3).",
+ "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget: \"applied from Phase B only; A1 runs without it by construction\")",
+ "points": {
+  "presence_n5_n7": {
+   "label": "presence_n5_n7",
+   "candidate_key": "00b96fd5cdf5545c5d8971839048cc43b5c2cb88fca71c57bf34ece59e7af248",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.25,
+      1.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "investment_year": 2025,
+   "region": "n5_4h+n7_4h_y2025",
+   "eval_key": "c5ae12a1ce18b5b7ad899db68b4e0a96afb9b53fc5c06d4a60bd795bbf8b1356",
+   "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a2/evals/c5ae12a1ce18b5b7_presence_n5_n7",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "certification_cycle": 118,
+   "cycles_run": 118,
+   "certified_cost_gross_settlement_excluded": 653363180.63376,
+   "terminal_gross_operational_cost": 653363180.63376,
+   "net_operational_recourse": 653363180.63376,
+   "bar": {
+    "value": 9594.031482696533,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+    "n_steps_available": 10
+   },
+   "bar_net_recourse_step_reported": 9594.031482696533,
+   "rule_ten": {
+    "terminal_step_over_threshold_production": 0.008384942254244876,
+    "terminal_objective_change_abs_production_net": 547.8417134284973,
+    "terminal_objective_tolerance": 65336.37284754734,
+    "terminal_gross_step_abs": 547.8417134284973,
+    "terminal_gross_step_over_threshold": 0.008384942254244876,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.13407436862299316,
+     "pf": 0.2512876321499021,
+     "ess": 0.24903828133221595
+    },
+    "note": "production ratio = the net-recourse step the stopping test used / its tolerance; the gross version is computed here from the per-cycle record (terminal row vs its predecessor)"
+   },
+   "terminal_salvage_value": -5.996002616013219e-51,
+   "I_x_eur": 635914.017007117,
+   "F_eur": 653999094.6507671,
+   "budget_slack_eur": 364085.98299288296,
+   "budget_feasible_corrected_file": true,
+   "wall_time": {
+    "record": {
+     "child_process_s": 4076.810476064682,
+     "run_admm_arm_s": 4061.9249250888824,
+     "run_admm_arm_reported_wall_clock_s": 4060.868010044098
+    },
+    "parent_view_s": 4082.0021979808807
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2456600576,
+     "production_state_peak_rss_ru_maxrss": 2456600576,
+     "solver_subprocesses_max_ru_maxrss": 52051968,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2456600576
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 7,
+    "accepted": 50,
+    "rejected (safeguard; memory retained)": 51,
+    "off (all channels within Boyd tolerance)": 10
+   },
+   "aa_per_cycle": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a2/evals/c5ae12a1ce18b5b7_presence_n5_n7/aa_per_cycle.jsonl",
+    "n_rows": 118,
+    "action_counts": {
+     "insufficient memory (m_k=0)": 7,
+     "accepted": 50,
+     "rejected (safeguard; memory retained)": 51,
+     "off (all channels within Boyd tolerance)": 10
+    },
+    "n_accepted": 50,
+    "n_rejected": 51,
+    "rejections_with_memory_retained": [
+     {
+      "cycle": 22,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 26,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 30,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 32,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 34,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 40,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 41,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 43,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 44,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 46,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 50,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 51,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 53,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 55,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 56,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 58,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 59,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 60,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 61,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 63,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 64,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 66,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 67,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 68,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 71,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 72,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 75,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 76,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 78,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 79,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 80,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 81,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 83,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 84,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 85,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 87,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 88,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 89,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 91,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 92,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 94,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 95,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 96,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 97,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 98,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 99,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 100,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 102,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 103,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 104,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 105,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     }
+    ],
+    "first_accept_cycle": 4,
+    "first_reject_cycle": 22
+   },
+   "first_pass_cycle_per_channel": {
+    "v": 41,
+    "pf": 109,
+    "ess": 35
+   },
+   "terminal_ratios_per_channel": {
+    "v": {
+     "primal": 0.00871365798058085,
+     "dual": 0.13407436862299316,
+     "max": 0.13407436862299316
+    },
+    "pf": {
+     "primal": 0.2512876321499021,
+     "dual": 0.1645985379746449,
+     "max": 0.2512876321499021
+    },
+    "ess": {
+     "primal": 0.24903828133221595,
+     "dual": 0.21830793665485598,
+     "max": 0.24903828133221595
+    }
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a2/evals/c5ae12a1ce18b5b7_presence_n5_n7/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "87cc579653c6e7a1dbb6362e9c77694febb139dbbc6f96b1ff4daf47eee8df81",
+    "n_rows": 118,
+    "n_rows_equals_cycles_run": true
+   }
+  },
+  "presence_n5_n9": {
+   "label": "presence_n5_n9",
+   "candidate_key": "f9689a4b1d27fda8b1a1228d4c0102e69cfd7c5582afde5dec8ff6d6a034e2dd",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.25,
+      1.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.25,
+      1.0
+     ]
+    }
+   },
+   "investment_year": 2025,
+   "region": "n5_4h+n9_4h_y2025",
+   "eval_key": "98678e4ebd60579b63f4106dcad8d30b03aee777656648996f1f29d888930f40",
+   "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a2/evals/98678e4ebd60579b_presence_n5_n9",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "certification_cycle": 119,
+   "cycles_run": 119,
+   "certified_cost_gross_settlement_excluded": 653352696.8649101,
+   "terminal_gross_operational_cost": 653352696.8649101,
+   "net_operational_recourse": 653352696.8649101,
+   "bar": {
+    "value": 5807.156970739365,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+    "n_steps_available": 10
+   },
+   "bar_net_recourse_step_reported": 5807.156970739365,
+   "rule_ten": {
+    "terminal_step_over_threshold_production": 0.004655269900017213,
+    "terminal_objective_change_abs_production_net": 304.1534559726715,
+    "terminal_objective_tolerance": 65335.30010183661,
+    "terminal_gross_step_abs": 304.1534559726715,
+    "terminal_gross_step_over_threshold": 0.004655269900017213,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.12972975801739747,
+     "pf": 0.29361909450942386,
+     "ess": 0.2376970838414078
+    },
+    "note": "production ratio = the net-recourse step the stopping test used / its tolerance; the gross version is computed here from the per-cycle record (terminal row vs its predecessor)"
+   },
+   "terminal_salvage_value": 1.4990006540033047e-51,
+   "I_x_eur": 635914.017007117,
+   "F_eur": 653988610.8819172,
+   "budget_slack_eur": 364085.98299288296,
+   "budget_feasible_corrected_file": true,
+   "wall_time": {
+    "record": {
+     "child_process_s": 4161.399370908737,
+     "run_admm_arm_s": 4146.645438909531,
+     "run_admm_arm_reported_wall_clock_s": 4143.168503046036
+    },
+    "parent_view_s": 4167.165128946304
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2477998080,
+     "production_state_peak_rss_ru_maxrss": 2477998080,
+     "solver_subprocesses_max_ru_maxrss": 54788096,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2477998080
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 7,
+    "accepted": 50,
+    "rejected (safeguard; memory retained)": 52,
+    "off (all channels within Boyd tolerance)": 10
+   },
+   "aa_per_cycle": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a2/evals/98678e4ebd60579b_presence_n5_n9/aa_per_cycle.jsonl",
+    "n_rows": 119,
+    "action_counts": {
+     "insufficient memory (m_k=0)": 7,
+     "accepted": 50,
+     "rejected (safeguard; memory retained)": 52,
+     "off (all channels within Boyd tolerance)": 10
+    },
+    "n_accepted": 50,
+    "n_rejected": 52,
+    "rejections_with_memory_retained": [
+     {
+      "cycle": 22,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 24,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 26,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 28,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 30,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 32,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 34,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 40,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 41,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 42,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 44,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 45,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 47,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 48,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 50,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 52,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 55,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 59,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 60,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 61,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 62,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 64,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 67,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 68,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 69,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 70,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 71,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 72,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 76,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 77,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 78,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 80,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 81,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 82,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 84,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 85,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 87,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 88,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 90,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 92,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 93,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 94,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 95,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 96,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 97,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 98,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 100,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 101,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 103,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 104,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 105,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 108,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     }
+    ],
+    "first_accept_cycle": 4,
+    "first_reject_cycle": 22
+   },
+   "first_pass_cycle_per_channel": {
+    "v": 42,
+    "pf": 110,
+    "ess": 35
+   },
+   "terminal_ratios_per_channel": {
+    "v": {
+     "primal": 0.04751988977942843,
+     "dual": 0.12972975801739747,
+     "max": 0.12972975801739747
+    },
+    "pf": {
+     "primal": 0.29361909450942386,
+     "dual": 0.15494579675928702,
+     "max": 0.29361909450942386
+    },
+    "ess": {
+     "primal": 0.22087637845972247,
+     "dual": 0.2376970838414078,
+     "max": 0.2376970838414078
+    }
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a2/evals/98678e4ebd60579b_presence_n5_n9/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "b17366bda8c5a6562ec5143e8b124bc1247ea435d93c6bac45536da97c820947",
+    "n_rows": 119,
+    "n_rows_equals_cycles_run": true
+   }
+  },
+  "presence_n7_n9": {
+   "label": "presence_n7_n9",
+   "candidate_key": "85d6d95a8ef8876b5de6861d69765f5c6b28505786f0573eb0d6ec8a6c026433",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.25,
+      1.0
+     ]
+    }
+   },
+   "investment_year": 2025,
+   "region": "n7_4h+n9_4h_y2025",
+   "eval_key": "3be0745fa72df1acce06e4c8e7da70a95128f17e7645cade3c4137816064fccb",
+   "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a2/evals/3be0745fa72df1ac_presence_n7_n9",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "certification_cycle": 115,
+   "cycles_run": 115,
+   "certified_cost_gross_settlement_excluded": 653374248.723366,
+   "terminal_gross_operational_cost": 653374248.723366,
+   "net_operational_recourse": 653374248.723366,
+   "bar": {
+    "value": 20579.141656041145,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+    "n_steps_available": 10
+   },
+   "bar_net_recourse_step_reported": 20579.141656041145,
+   "rule_ten": {
+    "terminal_step_over_threshold_production": 0.04635748920191707,
+    "terminal_objective_change_abs_production_net": 3028.878968000412,
+    "terminal_objective_tolerance": 65337.4248723366,
+    "terminal_gross_step_abs": 3028.878968000412,
+    "terminal_gross_step_over_threshold": 0.04635748920191707,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.1373715298821755,
+     "pf": 0.21845949511762866,
+     "ess": 0.24347699618550067
+    },
+    "note": "production ratio = the net-recourse step the stopping test used / its tolerance; the gross version is computed here from the per-cycle record (terminal row vs its predecessor)"
+   },
+   "terminal_salvage_value": -4.2159393393842945e-52,
+   "I_x_eur": 635914.017007117,
+   "F_eur": 654010162.7403731,
+   "budget_slack_eur": 364085.98299288296,
+   "budget_feasible_corrected_file": true,
+   "wall_time": {
+    "record": {
+     "child_process_s": 3963.1991460323334,
+     "run_admm_arm_s": 3948.3391988277435,
+     "run_admm_arm_reported_wall_clock_s": 3943.642914056778
+    },
+    "parent_view_s": 3971.7862758636475
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2472099840,
+     "production_state_peak_rss_ru_maxrss": 2472099840,
+     "solver_subprocesses_max_ru_maxrss": 54083584,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2472099840
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 8,
+    "accepted": 52,
+    "rejected (safeguard; memory retained)": 45,
+    "off (all channels within Boyd tolerance)": 10
+   },
+   "aa_per_cycle": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a2/evals/3be0745fa72df1ac_presence_n7_n9/aa_per_cycle.jsonl",
+    "n_rows": 115,
+    "action_counts": {
+     "insufficient memory (m_k=0)": 8,
+     "accepted": 52,
+     "rejected (safeguard; memory retained)": 45,
+     "off (all channels within Boyd tolerance)": 10
+    },
+    "n_accepted": 52,
+    "n_rejected": 45,
+    "rejections_with_memory_retained": [
+     {
+      "cycle": 26,
+      "memory_size_before": 2,
+      "memory_size_after": 3,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 28,
+      "memory_size_before": 4,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 29,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 33,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 34,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 36,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 37,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 39,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 40,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 41,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 43,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 44,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 46,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 47,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 50,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 52,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 54,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 59,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 64,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 65,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 68,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 71,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 75,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 77,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 78,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 79,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 82,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 83,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 85,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 86,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 87,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 88,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 89,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 91,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 92,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 93,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 94,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 95,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 96,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 98,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 99,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 100,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 101,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 104,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     }
+    ],
+    "first_accept_cycle": 4,
+    "first_reject_cycle": 22
+   },
+   "first_pass_cycle_per_channel": {
+    "v": 41,
+    "pf": 106,
+    "ess": 24
+   },
+   "terminal_ratios_per_channel": {
+    "v": {
+     "primal": 0.012987290461222179,
+     "dual": 0.1373715298821755,
+     "max": 0.1373715298821755
+    },
+    "pf": {
+     "primal": 0.21845949511762866,
+     "dual": 0.16135619844056578,
+     "max": 0.21845949511762866
+    },
+    "ess": {
+     "primal": 0.1787801298846466,
+     "dual": 0.24347699618550067,
+     "max": 0.24347699618550067
+    }
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a2/evals/3be0745fa72df1ac_presence_n7_n9/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "9b64d564493ccd6fa9957a9eb71a1235ed0ceb854c5054dba7e52daa45cbe01c",
+    "n_rows": 115,
+    "n_rows_equals_cycles_run": true
+   }
+  },
+  "presence_n5_n7_n9": {
+   "label": "presence_n5_n7_n9",
+   "candidate_key": "6fbf40202169d482506ae4e2d7c5b8dcb9b428105f9b0413156197e87e1985e0",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.25,
+      1.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.25,
+      1.0
+     ]
+    }
+   },
+   "investment_year": 2025,
+   "region": "n5_4h+n7_4h+n9_4h_y2025",
+   "eval_key": "b571ca1b3ec3bc869d92379d1e46a3103654d938dd0309e9167c751316857075",
+   "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a2/evals/b571ca1b3ec3bc86_presence_n5_n7_n9",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "certification_cycle": 109,
+   "cycles_run": 109,
+   "certified_cost_gross_settlement_excluded": 653095878.3463824,
+   "terminal_gross_operational_cost": 653095878.3463824,
+   "net_operational_recourse": 653095878.3463824,
+   "bar": {
+    "value": 19572.26866519451,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+    "n_steps_available": 10
+   },
+   "bar_net_recourse_step_reported": 19572.26866519451,
+   "rule_ten": {
+    "terminal_step_over_threshold_production": 0.029778112485167898,
+    "terminal_objective_change_abs_production_net": 1944.8020441532135,
+    "terminal_objective_tolerance": 65309.782314842654,
+    "terminal_gross_step_abs": 1944.8020441532135,
+    "terminal_gross_step_over_threshold": 0.029778112485167898,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.1634974766016946,
+     "pf": 0.5001754482875261,
+     "ess": 0.37301057417172306
+    },
+    "note": "production ratio = the net-recourse step the stopping test used / its tolerance; the gross version is computed here from the per-cycle record (terminal row vs its predecessor)"
+   },
+   "terminal_salvage_value": -7.495003270016524e-52,
+   "I_x_eur": 953871.0255106755,
+   "F_eur": 654049749.371893,
+   "budget_slack_eur": 46128.97448932449,
+   "budget_feasible_corrected_file": true,
+   "wall_time": {
+    "record": {
+     "child_process_s": 4113.533615112305,
+     "run_admm_arm_s": 4098.870090961456,
+     "run_admm_arm_reported_wall_clock_s": 4097.869712114334
+    },
+    "parent_view_s": 4122.075639009476
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2475376640,
+     "production_state_peak_rss_ru_maxrss": 2475376640,
+     "solver_subprocesses_max_ru_maxrss": 57344000,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2475376640
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 8,
+    "accepted": 49,
+    "rejected (safeguard; memory retained)": 42,
+    "off (all channels within Boyd tolerance)": 10
+   },
+   "aa_per_cycle": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a2/evals/b571ca1b3ec3bc86_presence_n5_n7_n9/aa_per_cycle.jsonl",
+    "n_rows": 109,
+    "action_counts": {
+     "insufficient memory (m_k=0)": 8,
+     "accepted": 49,
+     "rejected (safeguard; memory retained)": 42,
+     "off (all channels within Boyd tolerance)": 10
+    },
+    "n_accepted": 49,
+    "n_rejected": 42,
+    "rejections_with_memory_retained": [
+     {
+      "cycle": 24,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 26,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 28,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 29,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 33,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 34,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 36,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 37,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 39,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 40,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 41,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 43,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 48,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 49,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 50,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 51,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 53,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 55,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 57,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 60,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 64,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 67,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 68,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 69,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 70,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 71,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 72,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 73,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 77,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 78,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 80,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 81,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 82,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 83,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 85,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 88,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 89,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 90,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 94,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 95,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 96,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 97,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     }
+    ],
+    "first_accept_cycle": 4,
+    "first_reject_cycle": 24
+   },
+   "first_pass_cycle_per_channel": {
+    "v": 41,
+    "pf": 100,
+    "ess": 35
+   },
+   "terminal_ratios_per_channel": {
+    "v": {
+     "primal": 0.12640311237472862,
+     "dual": 0.1634974766016946,
+     "max": 0.1634974766016946
+    },
+    "pf": {
+     "primal": 0.5001754482875261,
+     "dual": 0.19533935189219845,
+     "max": 0.5001754482875261
+    },
+    "ess": {
+     "primal": 0.21409642405240895,
+     "dual": 0.37301057417172306,
+     "max": 0.37301057417172306
+    }
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a2/evals/b571ca1b3ec3bc86_presence_n5_n7_n9/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "28c0003e29911941ef23a87f2ad4baf7de041780194b6a3c0fbd8069dd20a515",
+    "n_rows": 109,
+    "n_rows_equals_cycles_run": true
+   }
+  },
+  "lattice_c_star_p1.0_e4.0": {
+   "label": "lattice_c_star_p1.0_e4.0",
+   "candidate_key": "a002e3ab10e2d7bb454503eff68b2fcfe4c5982477ee700d969b37eed8ca05cc",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      1.0,
+      4.0
+     ],
+     "7": [
+      1.0,
+      4.0
+     ],
+     "9": [
+      1.0,
+      4.0
+     ]
+    }
+   },
+   "investment_year": 2025,
+   "region": "n5_4h+n7_4h+n9_4h_y2025",
+   "eval_key": "eae950d246a4c396f9595511b7d5a0f562096c3e42b8dc3ba4647b1746d0ddd0",
+   "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a2/evals/eae950d246a4c396_lattice_c_star_p1_0_e4_0",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "certification_cycle": 109,
+   "cycles_run": 109,
+   "certified_cost_gross_settlement_excluded": 650893053.3783746,
+   "terminal_gross_operational_cost": 650893053.3783746,
+   "net_operational_recourse": 650893053.3783746,
+   "bar": {
+    "value": 7607.651202440262,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+    "n_steps_available": 10
+   },
+   "bar_net_recourse_step_reported": 7607.651202440262,
+   "rule_ten": {
+    "terminal_step_over_threshold_production": 0.011243685094653332,
+    "terminal_objective_change_abs_production_net": 731.8436522483826,
+    "terminal_objective_tolerance": 65089.30533783746,
+    "terminal_gross_step_abs": 731.8436522483826,
+    "terminal_gross_step_over_threshold": 0.011243685094653332,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.19726865093174603,
+     "pf": 0.36857871476677107,
+     "ess": 0.6455455198032531
+    },
+    "note": "production ratio = the net-recourse step the stopping test used / its tolerance; the gross version is computed here from the per-cycle record (terminal row vs its predecessor)"
+   },
+   "terminal_salvage_value": -2.9980013080066094e-51,
+   "I_x_eur": 3815484.102042702,
+   "F_eur": 654708537.4804173,
+   "budget_slack_eur": -2815484.102042702,
+   "budget_feasible_corrected_file": false,
+   "wall_time": {
+    "record": {
+     "child_process_s": 3981.122330904007,
+     "run_admm_arm_s": 3966.240817785263,
+     "run_admm_arm_reported_wall_clock_s": 3965.141042947769
+    },
+    "parent_view_s": 3986.811898946762
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2493759488,
+     "production_state_peak_rss_ru_maxrss": 2493759488,
+     "solver_subprocesses_max_ru_maxrss": 54968320,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2493759488
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 6,
+    "accepted": 49,
+    "rejected (safeguard; memory retained)": 44,
+    "off (all channels within Boyd tolerance)": 10
+   },
+   "aa_per_cycle": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a2/evals/eae950d246a4c396_lattice_c_star_p1_0_e4_0/aa_per_cycle.jsonl",
+    "n_rows": 109,
+    "action_counts": {
+     "insufficient memory (m_k=0)": 6,
+     "accepted": 49,
+     "rejected (safeguard; memory retained)": 44,
+     "off (all channels within Boyd tolerance)": 10
+    },
+    "n_accepted": 49,
+    "n_rejected": 44,
+    "rejections_with_memory_retained": [
+     {
+      "cycle": 14,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 15,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 16,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 17,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 20,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 23,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 24,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 25,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 26,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 29,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 36,
+      "memory_size_before": 1,
+      "memory_size_after": 2,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 38,
+      "memory_size_before": 3,
+      "memory_size_after": 4,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 39,
+      "memory_size_before": 4,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 47,
+      "memory_size_before": 4,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 49,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 52,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 55,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 57,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 60,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 62,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 63,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 65,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 66,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 67,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 68,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 70,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 71,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 72,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 73,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 74,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 76,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 78,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 80,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 81,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 83,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 84,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 85,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 86,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 87,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 90,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 92,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 93,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     }
+    ],
+    "first_accept_cycle": 4,
+    "first_reject_cycle": 14
+   },
+   "first_pass_cycle_per_channel": {
+    "v": 43,
+    "pf": 97,
+    "ess": 54
+   },
+   "terminal_ratios_per_channel": {
+    "v": {
+     "primal": 0.011090180407132734,
+     "dual": 0.19726865093174603,
+     "max": 0.19726865093174603
+    },
+    "pf": {
+     "primal": 0.36857871476677107,
+     "dual": 0.23875673623912713,
+     "max": 0.36857871476677107
+    },
+    "ess": {
+     "primal": 0.6455455198032531,
+     "dual": 0.38601556288047845,
+     "max": 0.6455455198032531
+    }
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a2/evals/eae950d246a4c396_lattice_c_star_p1_0_e4_0/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "c0bb026eb76568c852a7a6f4712f2e20f1c54ff863900554ced75b37a132529c",
+    "n_rows": 109,
+    "n_rows_equals_cycles_run": true
+   }
+  }
+ },
+ "points_provenance": {
+  "rule": "spec v15 A2: \"the best single-node setting per node combined in a 2^|N| presence design (4 new points) ... C* rounded to the lattice (1.0 MVA / 4.0 MWh at all nodes) - 1 point\". The 4 new points are the subsets with at least two nodes: the empty set is A0's x0 and the three singletons are a1a points.",
+  "best_setting_per_node": {
+   "5": {
+    "node": 5,
+    "P_mva": 0.25,
+    "E_mwh": 1.0,
+    "duration_h": 4.0,
+    "investment_year": 2025,
+    "label": "n5_4h_e1",
+    "F_eur": 653932675.042919,
+    "I_x_eur": 317957.0085035586,
+    "Q_gross_eur": 653614718.0344155,
+    "evidence": {
+     "rule": "A2 best setting for node 5 = argmin F within node 5's a1a ladder; ties -> lower I(x)",
+     "n_certified_inputs": 10,
+     "n_inputs_seen": 10,
+     "non_certified_inputs": [],
+     "selected": "n5_4h_e1",
+     "selected_candidate_key": "1821665996ec6edb3492c4e914352e8a47bcc764c8bea1ca82639ab24570ef85",
+     "tie_on_F": [],
+     "tie_on_F_and_I_broken_by_label": [],
+     "inputs": [
+      {
+       "label": "n5_4h_e1",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "1821665996ec6edb3492c4e914352e8a47bcc764c8bea1ca82639ab24570ef85",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.25,
+         1.0
+        ]
+       },
+       "I_x_eur": 317957.0085035586,
+       "Q_gross_eur": 653614718.0344155,
+       "F_eur": 653932675.042919
+      },
+      {
+       "label": "n5_2h_e1",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "2a1302016f89621c85fb641fcdf48f7b3195c6b584106f5ea1f084dbf176827d",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.5,
+         1.0
+        ]
+       },
+       "I_x_eur": 382036.339568524,
+       "Q_gross_eur": 653587843.3094332,
+       "F_eur": 653969879.6490017
+      },
+      {
+       "label": "n5_4h_e2",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "3eed1a1ec1a77fe3860fdcce21ce6b7f5f911d0973a9402656bceb2b0ba368cd",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.5,
+         2.0
+        ]
+       },
+       "I_x_eur": 635914.0170071172,
+       "Q_gross_eur": 653337271.4641526,
+       "F_eur": 653973185.4811597
+      },
+      {
+       "label": "n5_4h_e3",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "32acd70c1b795e3413f9a36215d4f58fe825ad89fce8a205819e8ea2ec2b11aa",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.75,
+         3.0
+        ]
+       },
+       "I_x_eur": 953871.0255106756,
+       "Q_gross_eur": 653109230.433311,
+       "F_eur": 654063101.4588217
+      },
+      {
+       "label": "n5_2h_e2",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "5097b0c6b14ee8d5b8b8471e528d16fe16389b1444683c774d90de530696044a",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         1.0,
+         2.0
+        ]
+       },
+       "I_x_eur": 764072.679137048,
+       "Q_gross_eur": 653310380.4847403,
+       "F_eur": 654074453.1638772
+      },
+      {
+       "label": "n5_4h_e4",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "f92d165248fe348bfd2043df12a7e29d0dd07e4c302bebe369ec1947f4c5ac77",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         1.0,
+         4.0
+        ]
+       },
+       "I_x_eur": 1271828.0340142343,
+       "Q_gross_eur": 652853134.6114208,
+       "F_eur": 654124962.645435
+      },
+      {
+       "label": "n5_4h_e5",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "f0bfdf1c8adb7c398dd5fd9803cfaf012257959345b74678591ffe5106d01c8f",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         1.25,
+         5.0
+        ]
+       },
+       "I_x_eur": 1589785.0425177924,
+       "Q_gross_eur": 652608641.7326849,
+       "F_eur": 654198426.7752026
+      },
+      {
+       "label": "n5_2h_e3",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "bb375de471aaf4b7480243d4f43d55c7ff52c5366ef1ca60d62af1d6367e9764",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         1.5,
+         3.0
+        ]
+       },
+       "I_x_eur": 1146109.018705572,
+       "Q_gross_eur": 653076367.4373538,
+       "F_eur": 654222476.4560595
+      },
+      {
+       "label": "n5_2h_e4",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "f20fb813dfef7d635d95bf970070cbf2aec08e4b392ac7624a472ac225168a8d",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         2.0,
+         4.0
+        ]
+       },
+       "I_x_eur": 1528145.358274096,
+       "Q_gross_eur": 652796655.5654054,
+       "F_eur": 654324800.9236795
+      },
+      {
+       "label": "n5_2h_e5",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "302735fb198422fe5e9155350f0c4635458b6adfc51e7383b6419560ecb51f88",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         2.5,
+         5.0
+        ]
+       },
+       "I_x_eur": 1910181.6978426196,
+       "Q_gross_eur": 652564046.8559694,
+       "F_eur": 654474228.553812
+      }
+     ]
+    }
+   },
+   "7": {
+    "node": 7,
+    "P_mva": 0.25,
+    "E_mwh": 1.0,
+    "duration_h": 4.0,
+    "investment_year": 2025,
+    "label": "n7_4h_e1",
+    "F_eur": 653915610.7320029,
+    "I_x_eur": 317957.0085035586,
+    "Q_gross_eur": 653597653.7234993,
+    "evidence": {
+     "rule": "A2 best setting for node 7 = argmin F within node 7's a1a ladder; ties -> lower I(x)",
+     "n_certified_inputs": 10,
+     "n_inputs_seen": 10,
+     "non_certified_inputs": [],
+     "selected": "n7_4h_e1",
+     "selected_candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+     "tie_on_F": [],
+     "tie_on_F_and_I_broken_by_label": [],
+     "inputs": [
+      {
+       "label": "n7_4h_e1",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         0.25,
+         1.0
+        ]
+       },
+       "I_x_eur": 317957.0085035586,
+       "Q_gross_eur": 653597653.7234993,
+       "F_eur": 653915610.7320029
+      },
+      {
+       "label": "n7_2h_e1",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "3993aebc641d4dadd34f6c27ac7061fb620724dd9eb8ca0e368ce3e70d578489",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         0.5,
+         1.0
+        ]
+       },
+       "I_x_eur": 382036.339568524,
+       "Q_gross_eur": 653598722.5512207,
+       "F_eur": 653980758.8907892
+      },
+      {
+       "label": "n7_4h_e2",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "cc4eb5df385852e67c612ab21d74526d90a2c66f5c7c934889ce4f67731c4ffe",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         0.5,
+         2.0
+        ]
+       },
+       "I_x_eur": 635914.0170071172,
+       "Q_gross_eur": 653372839.7001317,
+       "F_eur": 654008753.7171388
+      },
+      {
+       "label": "n7_4h_e3",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "fb21d822e145ba68c8c65c3fbb9793ddfcb038df172f0f2f08956998c8d81aac",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         0.75,
+         3.0
+        ]
+       },
+       "I_x_eur": 953871.0255106756,
+       "Q_gross_eur": 653123596.7996123,
+       "F_eur": 654077467.825123
+      },
+      {
+       "label": "n7_2h_e2",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "423e5a7f623eb10621b4930e7dfe4874a962e9d3a2ad33b188b2bdef74711c5d",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         1.0,
+         2.0
+        ]
+       },
+       "I_x_eur": 764072.679137048,
+       "Q_gross_eur": 653325523.0600035,
+       "F_eur": 654089595.7391405
+      },
+      {
+       "label": "n7_4h_e4",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "11725e45371a0c7fbd6553b61784bdcd628dedbceb4df0547b11ff2538c32321",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         1.0,
+         4.0
+        ]
+       },
+       "I_x_eur": 1271828.0340142343,
+       "Q_gross_eur": 652873847.3082701,
+       "F_eur": 654145675.3422843
+      },
+      {
+       "label": "n7_4h_e5",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "cab98853bb31f72fbdfc273a6d84b2ba8edbf5d451ec1cebb2529a1c6aaaf823",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         1.25,
+         5.0
+        ]
+       },
+       "I_x_eur": 1589785.0425177924,
+       "Q_gross_eur": 652650749.0643446,
+       "F_eur": 654240534.1068624
+      },
+      {
+       "label": "n7_2h_e3",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "2cd1de8249cfca8da7573d91c62f9ade6c603ba78a0c53558a1b128c04e62292",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         1.5,
+         3.0
+        ]
+       },
+       "I_x_eur": 1146109.018705572,
+       "Q_gross_eur": 653099300.5928335,
+       "F_eur": 654245409.6115391
+      },
+      {
+       "label": "n7_2h_e4",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "7048a00e13045688423a24099e3154de507dad90390b8a3967413dc5056f106c",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         2.0,
+         4.0
+        ]
+       },
+       "I_x_eur": 1528145.358274096,
+       "Q_gross_eur": 652821679.079392,
+       "F_eur": 654349824.437666
+      },
+      {
+       "label": "n7_2h_e5",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "354b38814b9c1147c2dfc0c5e93102dc165b4b0e52ab11657002f77ea1f67ca7",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         2.5,
+         5.0
+        ]
+       },
+       "I_x_eur": 1910181.6978426196,
+       "Q_gross_eur": 652589462.8330867,
+       "F_eur": 654499644.5309293
+      }
+     ]
+    }
+   },
+   "9": {
+    "node": 9,
+    "P_mva": 0.25,
+    "E_mwh": 1.0,
+    "duration_h": 4.0,
+    "investment_year": 2025,
+    "label": "n9_4h_e1",
+    "F_eur": 653920398.6036698,
+    "I_x_eur": 317957.0085035586,
+    "Q_gross_eur": 653602441.5951662,
+    "evidence": {
+     "rule": "A2 best setting for node 9 = argmin F within node 9's a1a ladder; ties -> lower I(x)",
+     "n_certified_inputs": 10,
+     "n_inputs_seen": 10,
+     "non_certified_inputs": [],
+     "selected": "n9_4h_e1",
+     "selected_candidate_key": "a361ac9321459482d0dc53245f7f1711cb4fe2a541f50350e2f3bad6b7588710",
+     "tie_on_F": [],
+     "tie_on_F_and_I_broken_by_label": [],
+     "inputs": [
+      {
+       "label": "n9_4h_e1",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "a361ac9321459482d0dc53245f7f1711cb4fe2a541f50350e2f3bad6b7588710",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         0.25,
+         1.0
+        ]
+       },
+       "I_x_eur": 317957.0085035586,
+       "Q_gross_eur": 653602441.5951662,
+       "F_eur": 653920398.6036698
+      },
+      {
+       "label": "n9_2h_e1",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "75271798795beebe10bee15fc5e4f8f9bdc8758dbbb8dd0f46c8890381edf547",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         0.5,
+         1.0
+        ]
+       },
+       "I_x_eur": 382036.339568524,
+       "Q_gross_eur": 653590205.4983026,
+       "F_eur": 653972241.8378711
+      },
+      {
+       "label": "n9_4h_e2",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "6ed97c64f357dbdca7169367a85822e33fb5e410485884cbdd60ee5e896f8fca",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         0.5,
+         2.0
+        ]
+       },
+       "I_x_eur": 635914.0170071172,
+       "Q_gross_eur": 653402723.8984206,
+       "F_eur": 654038637.9154277
+      },
+      {
+       "label": "n9_2h_e2",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "46628fb108a5ab88af50d491cf7032a6bb2504c7a662a92310e1986419d3bc14",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         1.0,
+         2.0
+        ]
+       },
+       "I_x_eur": 764072.679137048,
+       "Q_gross_eur": 653307646.9815872,
+       "F_eur": 654071719.6607242
+      },
+      {
+       "label": "n9_4h_e3",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "ace7403b9b2710a9fa901a1a31d5e0bc7a3a78672c82718a350f9b9f1f35c0ca",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         0.75,
+         3.0
+        ]
+       },
+       "I_x_eur": 953871.0255106756,
+       "Q_gross_eur": 653127641.0571632,
+       "F_eur": 654081512.0826739
+      },
+      {
+       "label": "n9_4h_e4",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "466fb2a6c3b18620c21687c3964206013cc31549205cdaa60e226a2ea97e9d38",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         1.0,
+         4.0
+        ]
+       },
+       "I_x_eur": 1271828.0340142343,
+       "Q_gross_eur": 652852486.3826941,
+       "F_eur": 654124314.4167084
+      },
+      {
+       "label": "n9_2h_e3",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "dd970259278dd74247b29d9beca6bfc109a215d4c8e397c2729c57853c9c533e",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         1.5,
+         3.0
+        ]
+       },
+       "I_x_eur": 1146109.018705572,
+       "Q_gross_eur": 653082632.866926,
+       "F_eur": 654228741.8856316
+      },
+      {
+       "label": "n9_4h_e5",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "b2e9d339a0f7cd252995c7653856af74e8dd6c42c2f0d7880a7f8c719611e0bf",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         1.25,
+         5.0
+        ]
+       },
+       "I_x_eur": 1589785.0425177924,
+       "Q_gross_eur": 652639190.6022797,
+       "F_eur": 654228975.6447974
+      },
+      {
+       "label": "n9_2h_e4",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "30d0f10d376bc8eca985ccb1cf218ce31b33c3a6a38eedfde0b77a726c6179f9",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         2.0,
+         4.0
+        ]
+       },
+       "I_x_eur": 1528145.358274096,
+       "Q_gross_eur": 652804572.325414,
+       "F_eur": 654332717.683688
+      },
+      {
+       "label": "n9_2h_e5",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "a2a2bd2b7e9d2437c179e9ca409a78128ee0623cf2eefb09dafc2d8cc2b2cfbf",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         2.5,
+         5.0
+        ]
+       },
+       "I_x_eur": 1910181.6978426196,
+       "Q_gross_eur": 652566422.1858051,
+       "F_eur": 654476603.8836477
+      }
+     ]
+    }
+   }
+  },
+  "subsets": [
+   [
+    5,
+    7
+   ],
+   [
+    5,
+    9
+   ],
+   [
+    7,
+    9
+   ],
+   [
+    5,
+    7,
+    9
+   ]
+  ],
+  "staging": "STAGING IS NOT AVAILABLE in this campaign: the canonical candidate form carries exactly ONE investment year (p515_s44_campaign_harness.canonical_candidate; multi-cohort candidates were explicitly out of scope of the year support added by W14, 85c147fa). Spec v15 A2 names 2 staging points (\"half the best capacity in y1 plus half in y2\" and \"the full capacity in y2 alone\"); the first needs two cohorts at one node and cannot be specified here, and neither is included in stage a2. A staged point is REFUSED rather than mis-specified as a single-cohort point.",
+  "staging_points_in_spec_v15_not_included": [
+   "half the best capacity in y1 + half in y2 (two cohorts)",
+   "the full best capacity in y2 alone"
+  ],
+  "lattice_c_star": "1.0 MVA / 4.0 MWh at nodes 5, 7, 9, investment year 2025",
+  "prior_results": [
+   {
+    "stage": "a1a",
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+    "exists": true,
+    "sha256": "b6e9adce6fe33878082ce78a92c719c39c674c72b80930eb02b36d2d2c576aec",
+    "git_tracked": true,
+    "git_clean": true,
+    "stop_for_review": false,
+    "n_points": 30
+   },
+   {
+    "stage": "a1b",
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a1b/campaign_results.json",
+    "exists": true,
+    "sha256": "3a2b77cd4eaee0f91dd369721fafb7ca5ac985f0fa203a8d6aa147bed32507af",
+    "git_tracked": true,
+    "git_clean": true,
+    "stop_for_review": false,
+    "n_points": 20
+   }
+  ],
+  "prior_stages": [
+   "a1a",
+   "a1b"
+  ]
+ },
+ "prior_results_pinned": [
+  {
+   "path": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+   "sha256": "b6e9adce6fe33878082ce78a92c719c39c674c72b80930eb02b36d2d2c576aec",
+   "stage": "a1a"
+  },
+  {
+   "path": "data/SRP1/Results/P515S45/campaign_s45_a1b/campaign_results.json",
+   "sha256": "3a2b77cd4eaee0f91dd369721fafb7ca5ac985f0fa203a8d6aa147bed32507af",
+   "stage": "a1b"
+  }
+ ],
+ "harness_errors": [],
+ "memory_preflight_at_run": {
+  "utc": "2026-09-20T21:38:33.911498+00:00",
+  "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+  "page_size_bytes": 16384,
+  "vm_stat_pages": {
+   "pages_free": 103725,
+   "pages_active": 641033,
+   "pages_inactive": 1012896,
+   "pages_speculative": 50474,
+   "pages_wired_down": 138538,
+   "pages_purgeable": 6471,
+   "file_backed_pages": 1405975,
+   "anonymous_pages": 298428,
+   "pages_stored_in_compressor": 206192,
+   "pages_occupied_by_compressor": 101620
+  },
+  "hw_memsize_bytes": 34359738368,
+  "required_bytes": 20669530112,
+  "required_gib": 19.25,
+  "per_child_budget_gib": 2.75,
+  "concurrency": 7,
+  "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 7 x 2.75 GiB",
+  "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+  "missing_vm_stat_figures": [],
+  "wired_bytes": 2269806592,
+  "anonymous_bytes": 4889444352,
+  "compressor_occupied_bytes": 1664942080,
+  "non_reclaimable_bytes": 8824193024,
+  "non_reclaimable_gib": 8.218170166015625,
+  "available_bytes": 25535545344,
+  "available_gib": 23.781829833984375,
+  "free_plus_inactive_bytes": 18294718464,
+  "free_plus_inactive_gib": 17.038284301757812,
+  "free_plus_inactive_would_pass_same_threshold": false,
+  "pass": true
+ },
+ "pre_run_evidence": {
+  "case_file_aa": {
+   "loaded": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "equals_declaration": true
+  },
+  "pinned_files": {
+   "spec_v15": {
+    "path": "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json",
+    "sha256_pinned": "5feefd7b642fc3d480156ad5e52ed6e1cf9d6698cfd40dbb33389bab6e6229fe",
+    "sha256_on_disk": "5feefd7b642fc3d480156ad5e52ed6e1cf9d6698cfd40dbb33389bab6e6229fe",
+    "match": true
+   },
+   "cost_file": {
+    "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+    "sha256_pinned": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+    "sha256_on_disk": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+    "match": true
+   },
+   "investment_cost_results": {
+    "path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+    "sha256_pinned": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "sha256_on_disk": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "match": true
+   },
+   "investment_cost_source_w2_frozen_table": {
+    "path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+    "sha256_pinned": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "sha256_on_disk": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "match": true
+   },
+   "investment_cost_source_w16_a2a3_table": {
+    "path": "data/SRP1/Results/P515S45/investment_cost_a2a3/investment_cost_a2a3_results.json",
+    "sha256_pinned": "a7e3cca5564d4a77e93ba32d2bc48a029b9001ffd2894aa033fc0d70e51dff19",
+    "sha256_on_disk": "a7e3cca5564d4a77e93ba32d2bc48a029b9001ffd2894aa033fc0d70e51dff19",
+    "match": true
+   },
+   "a0_spec": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_spec_s45_a0_c7_9d08ad2f.json",
+    "sha256_pinned": "9d08ad2f144b67ea97dae8dc25d91288fc86a77dd52c7f53276a52c5f00f8b34",
+    "sha256_on_disk": "9d08ad2f144b67ea97dae8dc25d91288fc86a77dd52c7f53276a52c5f00f8b34",
+    "match": true
+   }
+  },
+  "memory_rule_vs_a0_spec": {
+   "a0_spec_present": true,
+   "a0_rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 7 x 2.75 GiB",
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 7 x 2.75 GiB",
+   "a0_rationale_matches": true,
+   "match": true
+  },
+  "investment_cost_per_point": {
+   "presence_n5_n7": {
+    "candidate_key": "00b96fd5cdf5545c5d8971839048cc43b5c2cb88fca71c57bf34ece59e7af248",
+    "investment_year": 2025,
+    "found": true,
+    "I_x_source": "w16_a2a3_table",
+    "I_x_source_path": "data/SRP1/Results/P515S45/investment_cost_a2a3/investment_cost_a2a3_results.json",
+    "I_x_sources_holding_this_key": [
+     {
+      "source": "w16_a2a3_table",
+      "source_path": "data/SRP1/Results/P515S45/investment_cost_a2a3/investment_cost_a2a3_results.json",
+      "source_order": 2,
+      "matched_entries": [
+       "presence_n5_n7"
+      ],
+      "I_x_eur": 635914.017007117
+     }
+    ],
+    "I_x_sources_agree": true,
+    "matched_entries": [
+     "presence_n5_n7"
+    ],
+    "I_x_eur": 635914.017007117,
+    "I_power_eur": 128158.66212993083,
+    "I_energy_eur": 507755.3548771862,
+    "budget_slack_eur": 364085.98299288296,
+    "budget_slack_in_cost_file_eur": 364085.98299288296,
+    "budget_feasible_corrected_file": true,
+    "first_stage_feasible_production_check": true,
+    "nodes": {
+     "5": [
+      0.25,
+      1.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "source_rule": "I(x) is read from an ORDERED list of pinned I(x) tables (path + sha256 in this spec): 1. w2_frozen_table (data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json) then 2. w16_a2a3_table (data/SRP1/Results/P515S45/investment_cost_a2a3/investment_cost_a2a3_results.json). The first source holding the candidate key supplies I(x); a key held by more than one source must agree EXACTLY on I(x) (any disagreement fails the freeze); every point records the source used and the value each holding source gives.",
+    "note": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget: \"applied from Phase B only; A1 runs without it by construction\")"
+   },
+   "presence_n5_n9": {
+    "candidate_key": "f9689a4b1d27fda8b1a1228d4c0102e69cfd7c5582afde5dec8ff6d6a034e2dd",
+    "investment_year": 2025,
+    "found": true,
+    "I_x_source": "w16_a2a3_table",
+    "I_x_source_path": "data/SRP1/Results/P515S45/investment_cost_a2a3/investment_cost_a2a3_results.json",
+    "I_x_sources_holding_this_key": [
+     {
+      "source": "w16_a2a3_table",
+      "source_path": "data/SRP1/Results/P515S45/investment_cost_a2a3/investment_cost_a2a3_results.json",
+      "source_order": 2,
+      "matched_entries": [
+       "presence_n5_n9"
+      ],
+      "I_x_eur": 635914.017007117
+     }
+    ],
+    "I_x_sources_agree": true,
+    "matched_entries": [
+     "presence_n5_n9"
+    ],
+    "I_x_eur": 635914.017007117,
+    "I_power_eur": 128158.66212993083,
+    "I_energy_eur": 507755.3548771862,
+    "budget_slack_eur": 364085.98299288296,
+    "budget_slack_in_cost_file_eur": 364085.98299288296,
+    "budget_feasible_corrected_file": true,
+    "first_stage_feasible_production_check": true,
+    "nodes": {
+     "5": [
+      0.25,
+      1.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.25,
+      1.0
+     ]
+    },
+    "source_rule": "I(x) is read from an ORDERED list of pinned I(x) tables (path + sha256 in this spec): 1. w2_frozen_table (data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json) then 2. w16_a2a3_table (data/SRP1/Results/P515S45/investment_cost_a2a3/investment_cost_a2a3_results.json). The first source holding the candidate key supplies I(x); a key held by more than one source must agree EXACTLY on I(x) (any disagreement fails the freeze); every point records the source used and the value each holding source gives.",
+    "note": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget: \"applied from Phase B only; A1 runs without it by construction\")"
+   },
+   "presence_n7_n9": {
+    "candidate_key": "85d6d95a8ef8876b5de6861d69765f5c6b28505786f0573eb0d6ec8a6c026433",
+    "investment_year": 2025,
+    "found": true,
+    "I_x_source": "w16_a2a3_table",
+    "I_x_source_path": "data/SRP1/Results/P515S45/investment_cost_a2a3/investment_cost_a2a3_results.json",
+    "I_x_sources_holding_this_key": [
+     {
+      "source": "w16_a2a3_table",
+      "source_path": "data/SRP1/Results/P515S45/investment_cost_a2a3/investment_cost_a2a3_results.json",
+      "source_order": 2,
+      "matched_entries": [
+       "presence_n7_n9"
+      ],
+      "I_x_eur": 635914.017007117
+     }
+    ],
+    "I_x_sources_agree": true,
+    "matched_entries": [
+     "presence_n7_n9"
+    ],
+    "I_x_eur": 635914.017007117,
+    "I_power_eur": 128158.66212993083,
+    "I_energy_eur": 507755.3548771862,
+    "budget_slack_eur": 364085.98299288296,
+    "budget_slack_in_cost_file_eur": 364085.98299288296,
+    "budget_feasible_corrected_file": true,
+    "first_stage_feasible_production_check": true,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.25,
+      1.0
+     ]
+    },
+    "source_rule": "I(x) is read from an ORDERED list of pinned I(x) tables (path + sha256 in this spec): 1. w2_frozen_table (data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json) then 2. w16_a2a3_table (data/SRP1/Results/P515S45/investment_cost_a2a3/investment_cost_a2a3_results.json). The first source holding the candidate key supplies I(x); a key held by more than one source must agree EXACTLY on I(x) (any disagreement fails the freeze); every point records the source used and the value each holding source gives.",
+    "note": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget: \"applied from Phase B only; A1 runs without it by construction\")"
+   },
+   "presence_n5_n7_n9": {
+    "candidate_key": "6fbf40202169d482506ae4e2d7c5b8dcb9b428105f9b0413156197e87e1985e0",
+    "investment_year": 2025,
+    "found": true,
+    "I_x_source": "w16_a2a3_table",
+    "I_x_source_path": "data/SRP1/Results/P515S45/investment_cost_a2a3/investment_cost_a2a3_results.json",
+    "I_x_sources_holding_this_key": [
+     {
+      "source": "w16_a2a3_table",
+      "source_path": "data/SRP1/Results/P515S45/investment_cost_a2a3/investment_cost_a2a3_results.json",
+      "source_order": 2,
+      "matched_entries": [
+       "presence_n5_n7_n9"
+      ],
+      "I_x_eur": 953871.0255106755
+     }
+    ],
+    "I_x_sources_agree": true,
+    "matched_entries": [
+     "presence_n5_n7_n9"
+    ],
+    "I_x_eur": 953871.0255106755,
+    "I_power_eur": 192237.99319489626,
+    "I_energy_eur": 761633.0323157792,
+    "budget_slack_eur": 46128.97448932449,
+    "budget_slack_in_cost_file_eur": 46128.97448932449,
+    "budget_feasible_corrected_file": true,
+    "first_stage_feasible_production_check": true,
+    "nodes": {
+     "5": [
+      0.25,
+      1.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.25,
+      1.0
+     ]
+    },
+    "source_rule": "I(x) is read from an ORDERED list of pinned I(x) tables (path + sha256 in this spec): 1. w2_frozen_table (data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json) then 2. w16_a2a3_table (data/SRP1/Results/P515S45/investment_cost_a2a3/investment_cost_a2a3_results.json). The first source holding the candidate key supplies I(x); a key held by more than one source must agree EXACTLY on I(x) (any disagreement fails the freeze); every point records the source used and the value each holding source gives.",
+    "note": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget: \"applied from Phase B only; A1 runs without it by construction\")"
+   },
+   "lattice_c_star_p1.0_e4.0": {
+    "candidate_key": "a002e3ab10e2d7bb454503eff68b2fcfe4c5982477ee700d969b37eed8ca05cc",
+    "investment_year": 2025,
+    "found": true,
+    "I_x_source": "w2_frozen_table",
+    "I_x_source_path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+    "I_x_sources_holding_this_key": [
+     {
+      "source": "w2_frozen_table",
+      "source_path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+      "source_order": 1,
+      "matched_entries": [
+       "lattice_c_star"
+      ],
+      "I_x_eur": 3815484.102042702
+     },
+     {
+      "source": "w16_a2a3_table",
+      "source_path": "data/SRP1/Results/P515S45/investment_cost_a2a3/investment_cost_a2a3_results.json",
+      "source_order": 2,
+      "matched_entries": [
+       "lattice_c_star_p1.0_e4.0"
+      ],
+      "I_x_eur": 3815484.102042702
+     }
+    ],
+    "I_x_sources_agree": true,
+    "matched_entries": [
+     "lattice_c_star"
+    ],
+    "I_x_eur": 3815484.102042702,
+    "I_power_eur": 768951.972779585,
+    "I_energy_eur": 3046532.129263117,
+    "budget_slack_eur": -2815484.102042702,
+    "budget_slack_in_cost_file_eur": -2815484.102042702,
+    "budget_feasible_corrected_file": false,
+    "first_stage_feasible_production_check": false,
+    "nodes": {
+     "5": [
+      1.0,
+      4.0
+     ],
+     "7": [
+      1.0,
+      4.0
+     ],
+     "9": [
+      1.0,
+      4.0
+     ]
+    },
+    "source_rule": "I(x) is read from an ORDERED list of pinned I(x) tables (path + sha256 in this spec): 1. w2_frozen_table (data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json) then 2. w16_a2a3_table (data/SRP1/Results/P515S45/investment_cost_a2a3/investment_cost_a2a3_results.json). The first source holding the candidate key supplies I(x); a key held by more than one source must agree EXACTLY on I(x) (any disagreement fails the freeze); every point records the source used and the value each holding source gives.",
+    "note": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget: \"applied from Phase B only; A1 runs without it by construction\")"
+   }
+  }
+ },
+ "rule_eleven_asserted_before_run": {
+  "status": true,
+  "certification_cycle": true,
+  "certified_cost_gross": true,
+  "bar_gross_step": true,
+  "bar_net_reported": true,
+  "rule_ten": true,
+  "terminal_salvage_value_in_recourse_components": true,
+  "net_operational_recourse": true,
+  "investment_year_in_canonical": true,
+  "I_x_and_budget_slack_frozen_in_spec": true,
+  "wall_time": true,
+  "peak_rss": true,
+  "aa_action_counts": true,
+  "per_cycle_trajectory_written": true,
+  "per_cycle_fields": true,
+  "error_records_same_schema": true,
+  "stop_rule_inputs": true
+ },
+ "wave_info": [
+  {
+   "wave": 1,
+   "labels": [
+    "presence_n5_n7",
+    "presence_n5_n9",
+    "presence_n7_n9",
+    "presence_n5_n7_n9",
+    "lattice_c_star_p1.0_e4.0"
+   ],
+   "launched": true,
+   "stop_rule_after_wave": {
+    "triggered": false,
+    "reasons": [],
+    "non_certified_labels": [],
+    "non_certified_by_region": {}
+   },
+   "max_concurrent_observed": 5,
+   "timeline": [
+    {
+     "event": "start",
+     "label": "presence_n5_n7",
+     "pid": 5329,
+     "t": 1789940313.925941
+    },
+    {
+     "event": "start",
+     "label": "presence_n5_n9",
+     "pid": 5330,
+     "t": 1789940313.9289029
+    },
+    {
+     "event": "start",
+     "label": "presence_n7_n9",
+     "pid": 5331,
+     "t": 1789940313.931735
+    },
+    {
+     "event": "start",
+     "label": "presence_n5_n7_n9",
+     "pid": 5332,
+     "t": 1789940313.9344552
+    },
+    {
+     "event": "start",
+     "label": "lattice_c_star_p1.0_e4.0",
+     "pid": 5333,
+     "t": 1789940313.9371572
+    },
+    {
+     "event": "end",
+     "label": "presence_n7_n9",
+     "pid": 5331,
+     "t": 1789944285.718011,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "lattice_c_star_p1.0_e4.0",
+     "pid": 5333,
+     "t": 1789944300.749056,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "presence_n5_n7",
+     "pid": 5329,
+     "t": 1789944395.928139,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "presence_n5_n7_n9",
+     "pid": 5332,
+     "t": 1789944436.0100942,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "presence_n5_n9",
+     "pid": 5330,
+     "t": 1789944481.0940318,
+     "exit_code": 0
+    }
+   ]
+  }
+ ],
+ "parent_solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "wall_clock_s": 4168.536705732346
+}

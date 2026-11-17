@@ -1,0 +1,5697 @@
+{
+ "stage": "P5.5-D4",
+ "provenance": {
+  "timestamp_utc": "2026-09-08T05:34:12.793255+00:00",
+  "git_head": "6028d7f69ff6bfd1fd2e51f2d032b9da474c2d18",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.5-D4 fixed-mode screen"
+ },
+ "timestamp_utc": "2026-09-08T05:34:12.872177+00:00",
+ "delta": 0.01,
+ "tie_rule": "if max(pch, pdch) <= 1e-9 p.u. the period carries no meaningful dispatch; the mode is then set to charge-dominant deterministically",
+ "mode_counts": {
+  "discharge": 411,
+  "charge": 453
+ },
+ "mode_source": "D1 polished nonlinear feasible solution",
+ "UB_polished_exact_consensus": 729361085.8583558,
+ "UB_cold": 838496830.813414,
+ "UB_best_recovered": 836586463.43,
+ "rejection_logic": "fixed-mode set is a SUBSET of the MISOCP set, so Q_MISOCP <= Q_fixed_mode <= V for any primal-feasible V; a low V therefore bounds the MISOCP optimum from above",
+ "cases": [
+  {
+   "variant": "canonical candidate",
+   "capacity_multiplier": 1.0,
+   "case": "TSO only",
+   "restriction": {
+    "only_agents": [
+     "TSO"
+    ]
+   },
+   "model_size": {
+    "variables": 30420,
+    "constraints": 29196,
+    "ac_blocks": 12
+   },
+   "continuous_runs": [
+    {
+     "setting": "default",
+     "params": {},
+     "gurobi_status": 2,
+     "ObjVal": -38542.91519678548,
+     "ObjBound": -38542.915255150445,
+     "usable": true,
+     "certified": true,
+     "MaxVio": 5.554651666469255e-07,
+     "BarIterCount": 11,
+     "runtime_s": 1.135174036026001,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "homogeneous",
+     "params": {
+      "BarHomogeneous": 1
+     },
+     "gurobi_status": 2,
+     "ObjVal": -38542.91519420781,
+     "ObjBound": -38542.91541611161,
+     "usable": true,
+     "certified": true,
+     "MaxVio": 1.861556986827118e-07,
+     "BarIterCount": 11,
+     "runtime_s": 1.1602847576141357,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "homogeneous+focus",
+     "params": {
+      "BarHomogeneous": 1,
+      "NumericFocus": 3
+     },
+     "gurobi_status": 2,
+     "ObjVal": -38542.91880860854,
+     "ObjBound": -38542.92668097969,
+     "usable": true,
+     "certified": true,
+     "MaxVio": 2.966982327088083e-07,
+     "BarIterCount": 20,
+     "runtime_s": 1.8232612609863281,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "focus+scale",
+     "params": {
+      "NumericFocus": 3,
+      "ScaleFlag": 2
+     },
+     "gurobi_status": 2,
+     "ObjVal": -38542.91478650868,
+     "ObjBound": -38542.925561128504,
+     "usable": true,
+     "certified": true,
+     "MaxVio": 6.214403022670302e-07,
+     "BarIterCount": 22,
+     "runtime_s": 1.652458906173706,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "homogeneous+nopresolve",
+     "params": {
+      "BarHomogeneous": 1,
+      "Presolve": 0
+     },
+     "gurobi_status": 12,
+     "ObjVal": 265297830139709.2,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 5,
+     "runtime_s": 0.9698328971862793,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    }
+   ],
+   "continuous_best": {
+    "setting": "homogeneous+focus",
+    "params": {
+     "BarHomogeneous": 1,
+     "NumericFocus": 3
+    },
+    "gurobi_status": 2,
+    "ObjVal": -38542.91880860854,
+    "ObjBound": -38542.92668097969,
+    "usable": true,
+    "certified": true,
+    "MaxVio": 2.966982327088083e-07,
+    "BarIterCount": 20,
+    "runtime_s": 1.8232612609863281,
+    "qcp_dual_warning": false,
+    "suboptimal": false,
+    "numerical_trouble": false
+   },
+   "continuous_diagnostics": {
+    "ac_rank_gap_max": 0.05585769624211061,
+    "ac_rank_gap_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_relative_rank_gap": 0.05585769624211061
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_relative_rank_gap": 0.05584938640153565
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_relative_rank_gap": 0.0540745886436001
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_relative_rank_gap": 0.05361289392596861
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_relative_rank_gap": 0.05578597374949643
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_relative_rank_gap": 0.0557576752000904
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_relative_rank_gap": 0.053515230417842556
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_relative_rank_gap": 0.05368016774778874
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_relative_rank_gap": 0.055714174541733046
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_relative_rank_gap": 0.05569233138611265
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_relative_rank_gap": 0.05571330480597979
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_relative_rank_gap": 0.05258453811042222
+     }
+    ],
+    "oltc_rank_gap_max": 0.0,
+    "cycle_residual_max_rad": 0.07160381853201025,
+    "cycle_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.03563787505442795
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.024350440994796774
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.0392264952528838
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.013477507730280891
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.04170197165324918
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.047310501203343236
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.035060649617925765
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.01985936640248953
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.07160381853201025
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.024304452788303177
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.02516856556062841
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.014563268757328718
+     }
+    ],
+    "ess_circulation_max": 0.39096234159821625,
+    "ess_circulation_max_MW": 0.012473319594820686,
+    "ess_S_available_max_MVA": 0.03190467841838149,
+    "ess_circulation_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_circulation_over_S": 0.3909548902192049,
+      "max_circulation_MW": 0.004157763349512456,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_circulation_over_S": 0.3909548902192049,
+      "max_circulation_MW": 0.004157763349512456,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.3909543616001692,
+      "max_circulation_MW": 0.004157757727705676,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_circulation_over_S": 0.3909543616001692,
+      "max_circulation_MW": 0.004157757727705676,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_circulation_over_S": 0.39096234159821625,
+      "max_circulation_MW": 0.008315685188259,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_circulation_over_S": 0.39096234159821625,
+      "max_circulation_MW": 0.008315685188259,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.39096234159821625,
+      "max_circulation_MW": 0.008315685188259,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_circulation_over_S": 0.39096234159821625,
+      "max_circulation_MW": 0.008315685188259,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_circulation_over_S": 0.390955816299165,
+      "max_circulation_MW": 0.012473319594820686,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_circulation_over_S": 0.390955816299165,
+      "max_circulation_MW": 0.012473319594820686,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.390955816299165,
+      "max_circulation_MW": 0.012473319594820686,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_circulation_over_S": 0.390955816299165,
+      "max_circulation_MW": 0.012473319594820686,
+      "S_available_MVA": 0.03190467841838149
+     }
+    ],
+    "esso_min_available_over_rated": 0.8604237345617834
+   },
+   "mode_rows_applied": 864,
+   "mode_rows_missing": 0,
+   "fixed_mode_runs": [
+    {
+     "setting": "default",
+     "params": {},
+     "gurobi_status": 2,
+     "ObjVal": -38542.91517299438,
+     "ObjBound": -38542.92195842674,
+     "usable": true,
+     "certified": true,
+     "MaxVio": 6.042127032608324e-07,
+     "BarIterCount": 20,
+     "runtime_s": 1.6197330951690674,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "homogeneous",
+     "params": {
+      "BarHomogeneous": 1
+     },
+     "gurobi_status": 13,
+     "ObjVal": -38797.80343277607,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 0.00023124387195283536,
+     "BarIterCount": 52,
+     "runtime_s": 2.323913812637329,
+     "qcp_dual_warning": true,
+     "suboptimal": true,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "homogeneous+focus",
+     "params": {
+      "BarHomogeneous": 1,
+      "NumericFocus": 3
+     },
+     "gurobi_status": 13,
+     "ObjVal": -38600.1242053325,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 3.879969415621076e-05,
+     "BarIterCount": 51,
+     "runtime_s": 2.7720887660980225,
+     "qcp_dual_warning": true,
+     "suboptimal": true,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "focus+scale",
+     "params": {
+      "NumericFocus": 3,
+      "ScaleFlag": 2
+     },
+     "gurobi_status": 12,
+     "ObjVal": 298502995304539.25,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 5,
+     "runtime_s": 0.7961900234222412,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous+nopresolve",
+     "params": {
+      "BarHomogeneous": 1,
+      "Presolve": 0
+     },
+     "gurobi_status": 2,
+     "ObjVal": -38542.915193286564,
+     "ObjBound": -38543.15098769933,
+     "usable": true,
+     "certified": true,
+     "MaxVio": 1.0030157854174072e-06,
+     "BarIterCount": 13,
+     "runtime_s": 1.3262360095977783,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": false
+    }
+   ],
+   "fixed_mode_best": {
+    "setting": "homogeneous",
+    "params": {
+     "BarHomogeneous": 1
+    },
+    "gurobi_status": 13,
+    "ObjVal": -38797.80343277607,
+    "ObjBound": -Infinity,
+    "usable": true,
+    "certified": false,
+    "MaxVio": 0.00023124387195283536,
+    "BarIterCount": 52,
+    "runtime_s": 2.323913812637329,
+    "qcp_dual_warning": true,
+    "suboptimal": true,
+    "numerical_trouble": false
+   },
+   "fixed_mode_diagnostics": {
+    "ac_rank_gap_max": 0.06468648718967637,
+    "ac_rank_gap_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_relative_rank_gap": 0.0646675369832053
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_relative_rank_gap": 0.0624725006621052
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_relative_rank_gap": 0.05929333736033573
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_relative_rank_gap": 0.05891034162162175
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_relative_rank_gap": 0.06468648718967637
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_relative_rank_gap": 0.06217832865015133
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_relative_rank_gap": 0.05893668937320066
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_relative_rank_gap": 0.05910084036377317
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_relative_rank_gap": 0.06394392211033566
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_relative_rank_gap": 0.06257747868532608
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_relative_rank_gap": 0.062601011175847
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_relative_rank_gap": 0.05882846533749385
+     }
+    ],
+    "oltc_rank_gap_max": 0.0,
+    "cycle_residual_max_rad": 0.02639609541895549,
+    "cycle_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.01934423922905637
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.02368271785985021
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.01948200153995261
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.019198170227476385
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.019925396579332677
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.02429809469607358
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.019724322563335672
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.019321478179739504
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.019316909432930185
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.02639609541895549
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.02638437485878642
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.020120034392319575
+     }
+    ],
+    "ess_circulation_max": 0.010028245575089407,
+    "ess_circulation_max_MW": 0.0003191885077373557,
+    "ess_S_available_max_MVA": 0.03190467841838149,
+    "ess_circulation_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_circulation_over_S": 0.010002916945277615,
+      "max_circulation_MW": 0.00010637994946162039,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_circulation_over_S": 0.010023618928850613,
+      "max_circulation_MW": 0.00010660011283779342,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.010021657223749592,
+      "max_circulation_MW": 0.00010657925031432683,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_circulation_over_S": 0.010028245575089407,
+      "max_circulation_MW": 0.00010664931672459486,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_circulation_over_S": 0.01000534179420404,
+      "max_circulation_MW": 0.00021281147494004793,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_circulation_over_S": 0.010010425838575992,
+      "max_circulation_MW": 0.00021291961147388254,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.009976429080681285,
+      "max_circulation_MW": 0.0002121965077219504,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_circulation_over_S": 0.00998734512186444,
+      "max_circulation_MW": 0.00021242868957765067,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_circulation_over_S": 0.010004442093152682,
+      "max_circulation_MW": 0.0003191885077373557,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_circulation_over_S": 0.009953292731786304,
+      "max_circulation_MW": 0.0003175566038116558,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.009997426578931937,
+      "max_circulation_MW": 0.0003189646800122032,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_circulation_over_S": 0.00996947323877402,
+      "max_circulation_MW": 0.0003180728376837452,
+      "S_available_MVA": 0.03190467841838149
+     }
+    ],
+    "esso_min_available_over_rated": 0.999003115174163
+   },
+   "objective_change_from_mode_control": -254.88462416752736,
+   "objective_change_relative": -0.006613007837657563
+  },
+  {
+   "variant": "canonical candidate",
+   "capacity_multiplier": 1.0,
+   "case": "TSO + DSO5",
+   "restriction": {
+    "only_agents": [
+     "TSO",
+     "DSO5"
+    ]
+   },
+   "model_size": {
+    "variables": 127812,
+    "constraints": 101868,
+    "ac_blocks": 24
+   },
+   "continuous_runs": [
+    {
+     "setting": "default",
+     "params": {},
+     "gurobi_status": 12,
+     "ObjVal": -38179.64812614769,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 127,
+     "runtime_s": 13.906097173690796,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous",
+     "params": {
+      "BarHomogeneous": 1
+     },
+     "gurobi_status": 12,
+     "ObjVal": -39167.70342732081,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 51,
+     "runtime_s": 10.58050799369812,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous+focus",
+     "params": {
+      "BarHomogeneous": 1,
+      "NumericFocus": 3
+     },
+     "gurobi_status": 13,
+     "ObjVal": -38587.20290964283,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 0.00024113450941598558,
+     "BarIterCount": 72,
+     "runtime_s": 13.348711252212524,
+     "qcp_dual_warning": true,
+     "suboptimal": true,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "focus+scale",
+     "params": {
+      "NumericFocus": 3,
+      "ScaleFlag": 2
+     },
+     "gurobi_status": 12,
+     "ObjVal": -38532.37593063293,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 51,
+     "runtime_s": 7.178009748458862,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous+nopresolve",
+     "params": {
+      "BarHomogeneous": 1,
+      "Presolve": 0
+     },
+     "gurobi_status": 2,
+     "ObjVal": -38542.9146380201,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 0.002145481523063689,
+     "BarIterCount": 19,
+     "runtime_s": 4.864135980606079,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": false
+    }
+   ],
+   "continuous_best": {
+    "setting": "homogeneous+focus",
+    "params": {
+     "BarHomogeneous": 1,
+     "NumericFocus": 3
+    },
+    "gurobi_status": 13,
+    "ObjVal": -38587.20290964283,
+    "ObjBound": -Infinity,
+    "usable": true,
+    "certified": false,
+    "MaxVio": 0.00024113450941598558,
+    "BarIterCount": 72,
+    "runtime_s": 13.348711252212524,
+    "qcp_dual_warning": true,
+    "suboptimal": true,
+    "numerical_trouble": false
+   },
+   "continuous_diagnostics": {
+    "ac_rank_gap_max": 0.04698951642272488,
+    "ac_rank_gap_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_relative_rank_gap": 0.04631915089072924
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_relative_rank_gap": 0.04626462352888168
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_relative_rank_gap": 0.04656279336320218
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_relative_rank_gap": 0.04635961342575194
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_relative_rank_gap": 0.046429233936050286
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_relative_rank_gap": 0.046463029008015126
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_relative_rank_gap": 0.046420009717615285
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_relative_rank_gap": 0.04635959051811343
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_relative_rank_gap": 0.04698951642272488
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_relative_rank_gap": 0.04629498806981621
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_relative_rank_gap": 0.046074085032481435
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_relative_rank_gap": 0.0463894585621262
+     },
+     {
+      "block": "DSO5|2025|Spring|0|0",
+      "max_relative_rank_gap": 0.0016847729546379862
+     },
+     {
+      "block": "DSO5|2025|Summer|0|0",
+      "max_relative_rank_gap": 0.0016341114260637211
+     },
+     {
+      "block": "DSO5|2025|Autumn|0|0",
+      "max_relative_rank_gap": 0.001800755016948688
+     },
+     {
+      "block": "DSO5|2025|Winter|0|0",
+      "max_relative_rank_gap": 0.0018033683368081509
+     },
+     {
+      "block": "DSO5|2030|Spring|0|0",
+      "max_relative_rank_gap": 0.0016817316344908521
+     },
+     {
+      "block": "DSO5|2030|Summer|0|0",
+      "max_relative_rank_gap": 0.0016823048436988507
+     },
+     {
+      "block": "DSO5|2030|Autumn|0|0",
+      "max_relative_rank_gap": 0.0018214409946470309
+     },
+     {
+      "block": "DSO5|2030|Winter|0|0",
+      "max_relative_rank_gap": 0.0018253972004260964
+     },
+     {
+      "block": "DSO5|2035|Spring|0|0",
+      "max_relative_rank_gap": 0.0017361696777290201
+     },
+     {
+      "block": "DSO5|2035|Summer|0|0",
+      "max_relative_rank_gap": 0.0018358896682699444
+     },
+     {
+      "block": "DSO5|2035|Autumn|0|0",
+      "max_relative_rank_gap": 0.0018021497882354585
+     },
+     {
+      "block": "DSO5|2035|Winter|0|0",
+      "max_relative_rank_gap": 0.0018176702365198087
+     }
+    ],
+    "oltc_rank_gap_max": 0.001719944907350149,
+    "cycle_residual_max_rad": 0.07457293002650589,
+    "cycle_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.07086814862873458
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.07314836989085505
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.07324573051554095
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.0695964566311531
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.06916259891124987
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.07127670584722479
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.06789486519422372
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.07147043799627317
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.06469838078598977
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.0739382802149251
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.07457293002650589
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.0730861415322317
+     }
+    ],
+    "ess_circulation_max": 0.49861903063502205,
+    "ess_circulation_max_MW": 0.01149461782490343,
+    "ess_S_available_max_MVA": 0.03190467841838149,
+    "ess_circulation_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_circulation_over_S": 0.36619993179082305,
+      "max_circulation_MW": 0.0038944970202064813,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_circulation_over_S": 0.36619993179082305,
+      "max_circulation_MW": 0.0038944970202064813,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.36619993179082305,
+      "max_circulation_MW": 0.0038944970202064813,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_circulation_over_S": 0.36619993179082305,
+      "max_circulation_MW": 0.0038944970202064813,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_circulation_over_S": 0.3598307298178164,
+      "max_circulation_MW": 0.007653522479925964,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_circulation_over_S": 0.3598307298178164,
+      "max_circulation_MW": 0.007653522479925964,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.3598307298178164,
+      "max_circulation_MW": 0.007653522479925964,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_circulation_over_S": 0.3598307298178164,
+      "max_circulation_MW": 0.007653522479925964,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_circulation_over_S": 0.3602800089118262,
+      "max_circulation_MW": 0.01149461782490343,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_circulation_over_S": 0.3602799733761623,
+      "max_circulation_MW": 0.011494616691149501,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.3602799733761623,
+      "max_circulation_MW": 0.011494616691149501,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_circulation_over_S": 0.3602799733761623,
+      "max_circulation_MW": 0.011494616691149501,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO5|2025|Spring|0|0",
+      "max_circulation_over_S": 0.497542317334842,
+      "max_circulation_MW": 0.005291309211368148,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO5|2025|Summer|0|0",
+      "max_circulation_over_S": 0.4954654584267631,
+      "max_circulation_MW": 0.005269222039507279,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO5|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.4977855957122018,
+      "max_circulation_MW": 0.0052938964508334185,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO5|2025|Winter|0|0",
+      "max_circulation_over_S": 0.49861903063502205,
+      "max_circulation_MW": 0.005302759941898495,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO5|2030|Spring|0|0",
+      "max_circulation_over_S": 0.3486365019404203,
+      "max_circulation_MW": 0.007415423652879027,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO5|2030|Summer|0|0",
+      "max_circulation_over_S": 0.3516710658151805,
+      "max_circulation_MW": 0.007479968175921868,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO5|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.3465746655396842,
+      "max_circulation_MW": 0.007371568834667829,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO5|2030|Winter|0|0",
+      "max_circulation_over_S": 0.3509711332308306,
+      "max_circulation_MW": 0.007465080759909716,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO5|2035|Spring|0|0",
+      "max_circulation_over_S": 0.3525110438922324,
+      "max_circulation_MW": 0.011246751494309636,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO5|2035|Summer|0|0",
+      "max_circulation_over_S": 0.3536207843378437,
+      "max_circulation_MW": 0.011282157406354736,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO5|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.35236837153205647,
+      "max_circulation_MW": 0.01124219957853903,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO5|2035|Winter|0|0",
+      "max_circulation_over_S": 0.35190561379824153,
+      "max_circulation_MW": 0.011227435441856046,
+      "S_available_MVA": 0.03190467841838149
+     }
+    ],
+    "esso_min_available_over_rated": 0.7833090613124223
+   },
+   "mode_rows_applied": 1152,
+   "mode_rows_missing": 0,
+   "fixed_mode_runs": [
+    {
+     "setting": "default",
+     "params": {},
+     "gurobi_status": 12,
+     "ObjVal": -37450.11257989518,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 105,
+     "runtime_s": 13.107643842697144,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous",
+     "params": {
+      "BarHomogeneous": 1
+     },
+     "gurobi_status": 12,
+     "ObjVal": -38618.86042901501,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 71,
+     "runtime_s": 11.050373077392578,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous+focus",
+     "params": {
+      "BarHomogeneous": 1,
+      "NumericFocus": 3
+     },
+     "gurobi_status": 13,
+     "ObjVal": -38689.60210691998,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 0.0025224808281549826,
+     "BarIterCount": 51,
+     "runtime_s": 10.329647064208984,
+     "qcp_dual_warning": true,
+     "suboptimal": true,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "focus+scale",
+     "params": {
+      "NumericFocus": 3,
+      "ScaleFlag": 2
+     },
+     "gurobi_status": 12,
+     "ObjVal": -36811.182628419716,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 89,
+     "runtime_s": 13.631780862808228,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous+nopresolve",
+     "params": {
+      "BarHomogeneous": 1,
+      "Presolve": 0
+     },
+     "gurobi_status": 2,
+     "ObjVal": -38542.72829440143,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 7.481478605963488e-05,
+     "BarIterCount": 18,
+     "runtime_s": 4.917994976043701,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": false
+    }
+   ],
+   "fixed_mode_best": {
+    "setting": "homogeneous+focus",
+    "params": {
+     "BarHomogeneous": 1,
+     "NumericFocus": 3
+    },
+    "gurobi_status": 13,
+    "ObjVal": -38689.60210691998,
+    "ObjBound": -Infinity,
+    "usable": true,
+    "certified": false,
+    "MaxVio": 0.0025224808281549826,
+    "BarIterCount": 51,
+    "runtime_s": 10.329647064208984,
+    "qcp_dual_warning": true,
+    "suboptimal": true,
+    "numerical_trouble": false
+   },
+   "fixed_mode_diagnostics": {
+    "ac_rank_gap_max": 0.06811652181185703,
+    "ac_rank_gap_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_relative_rank_gap": 0.06738158316914344
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_relative_rank_gap": 0.06719625896193619
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_relative_rank_gap": 0.06755819074306971
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_relative_rank_gap": 0.06672068832179226
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_relative_rank_gap": 0.0675025818017288
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_relative_rank_gap": 0.06770379615164349
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_relative_rank_gap": 0.06768935918184911
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_relative_rank_gap": 0.06726484402181429
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_relative_rank_gap": 0.06811652181185703
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_relative_rank_gap": 0.06747229281756369
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_relative_rank_gap": 0.06718322062545136
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_relative_rank_gap": 0.06711683982891635
+     },
+     {
+      "block": "DSO5|2025|Spring|0|0",
+      "max_relative_rank_gap": 0.0018911334231441843
+     },
+     {
+      "block": "DSO5|2025|Summer|0|0",
+      "max_relative_rank_gap": 0.001854554274146325
+     },
+     {
+      "block": "DSO5|2025|Autumn|0|0",
+      "max_relative_rank_gap": 0.0020160575434438974
+     },
+     {
+      "block": "DSO5|2025|Winter|0|0",
+      "max_relative_rank_gap": 0.0019381670750631638
+     },
+     {
+      "block": "DSO5|2030|Spring|0|0",
+      "max_relative_rank_gap": 0.0019233275913916412
+     },
+     {
+      "block": "DSO5|2030|Summer|0|0",
+      "max_relative_rank_gap": 0.0018164529810770504
+     },
+     {
+      "block": "DSO5|2030|Autumn|0|0",
+      "max_relative_rank_gap": 0.0020239220383552214
+     },
+     {
+      "block": "DSO5|2030|Winter|0|0",
+      "max_relative_rank_gap": 0.0019459194073644184
+     },
+     {
+      "block": "DSO5|2035|Spring|0|0",
+      "max_relative_rank_gap": 0.0018592452517179584
+     },
+     {
+      "block": "DSO5|2035|Summer|0|0",
+      "max_relative_rank_gap": 0.0018961367524440323
+     },
+     {
+      "block": "DSO5|2035|Autumn|0|0",
+      "max_relative_rank_gap": 0.002013615333391473
+     },
+     {
+      "block": "DSO5|2035|Winter|0|0",
+      "max_relative_rank_gap": 0.0019708475365004317
+     }
+    ],
+    "oltc_rank_gap_max": 0.0013934779078752773,
+    "cycle_residual_max_rad": 0.07540181117098754,
+    "cycle_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.07251821707941408
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.07398618103045385
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.07261438623986649
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.07231616879852787
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.07172078073453347
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.07299906470179307
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.06999569511308223
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.07308322774167841
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.0725974309906725
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.07502930137890829
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.07540181117098754
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.07121623896131979
+     }
+    ],
+    "ess_circulation_max": 0.010008573512410164,
+    "ess_circulation_max_MW": 0.0003190014816621105,
+    "ess_S_available_max_MVA": 0.03190467841838149,
+    "ess_circulation_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_circulation_over_S": 0.01000569852876583,
+      "max_circulation_MW": 0.00010640953130384885,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_circulation_over_S": 0.01000493912987879,
+      "max_circulation_MW": 0.00010640145517808808,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.010000610009079062,
+      "max_circulation_MW": 0.00010635541544243819,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_circulation_over_S": 0.010008573512410164,
+      "max_circulation_MW": 0.0001064401064467257,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_circulation_over_S": 0.010000018601762412,
+      "max_circulation_MW": 0.00021269825177804174,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_circulation_over_S": 0.010000931083468724,
+      "max_circulation_MW": 0.0002127176600683101,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.009984481984659815,
+      "max_circulation_MW": 0.00021236779126312984,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_circulation_over_S": 0.009987339315554762,
+      "max_circulation_MW": 0.0002124285660786886,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_circulation_over_S": 0.009998580066499644,
+      "max_circulation_MW": 0.0003190014816621105,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_circulation_over_S": 0.009978514770991612,
+      "max_circulation_MW": 0.000318361304861557,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.009979100800208047,
+      "max_circulation_MW": 0.0003183800019352511,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_circulation_over_S": 0.009947947185103395,
+      "max_circulation_MW": 0.00031738605586376713,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO5|2025|Spring|0|0",
+      "max_circulation_over_S": 0.009997667804266324,
+      "max_circulation_MW": 0.00010632412540964105,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO5|2025|Summer|0|0",
+      "max_circulation_over_S": 0.010001932728859759,
+      "max_circulation_MW": 0.00010636948242551845,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO5|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.010000721242281354,
+      "max_circulation_MW": 0.00010635659839562104,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO5|2025|Winter|0|0",
+      "max_circulation_over_S": 0.010005054871092696,
+      "max_circulation_MW": 0.00010640268607349122,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO5|2030|Spring|0|0",
+      "max_circulation_over_S": 0.009998678114430342,
+      "max_circulation_MW": 0.00021266973989987267,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO5|2030|Summer|0|0",
+      "max_circulation_over_S": 0.009999477618600464,
+      "max_circulation_MW": 0.00021268674518216724,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO5|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.009973343492148588,
+      "max_circulation_MW": 0.0002121308779153723,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO5|2030|Winter|0|0",
+      "max_circulation_over_S": 0.009937215305206974,
+      "max_circulation_MW": 0.00021136243912456471,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO5|2035|Spring|0|0",
+      "max_circulation_over_S": 0.009998249439312205,
+      "max_circulation_MW": 0.0003189909331080189,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO5|2035|Summer|0|0",
+      "max_circulation_over_S": 0.009970232182594036,
+      "max_circulation_MW": 0.00031809705154226046,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO5|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.009973328986228677,
+      "max_circulation_MW": 0.0003181958540663486,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO5|2035|Winter|0|0",
+      "max_circulation_over_S": 0.009890295524763656,
+      "max_circulation_MW": 0.00031554669818034204,
+      "S_available_MVA": 0.03190467841838149
+     }
+    ],
+    "esso_min_available_over_rated": 0.9984664931585744
+   },
+   "objective_change_from_mode_control": -102.39919727714732,
+   "objective_change_relative": -0.00265370873128402
+  },
+  {
+   "variant": "canonical candidate",
+   "capacity_multiplier": 1.0,
+   "case": "full four-network oracle",
+   "restriction": {},
+   "model_size": {
+    "variables": 322596,
+    "constraints": 247608,
+    "ac_blocks": 48
+   },
+   "continuous_runs": [
+    {
+     "setting": "default",
+     "params": {},
+     "gurobi_status": 12,
+     "ObjVal": 702450446.0835422,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 111,
+     "runtime_s": 32.39190101623535,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous",
+     "params": {
+      "BarHomogeneous": 1
+     },
+     "gurobi_status": 13,
+     "ObjVal": 653192095.0730587,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 0.010124725883615656,
+     "BarIterCount": 70,
+     "runtime_s": 32.849467277526855,
+     "qcp_dual_warning": true,
+     "suboptimal": true,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "homogeneous+focus",
+     "params": {
+      "BarHomogeneous": 1,
+      "NumericFocus": 3
+     },
+     "gurobi_status": 13,
+     "ObjVal": 653260951.5285976,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 0.010287199117397538,
+     "BarIterCount": 122,
+     "runtime_s": 64.27958297729492,
+     "qcp_dual_warning": true,
+     "suboptimal": true,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "focus+scale",
+     "params": {
+      "NumericFocus": 3,
+      "ScaleFlag": 2
+     },
+     "gurobi_status": 13,
+     "ObjVal": 652393454.295765,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 0.006824306497575897,
+     "BarIterCount": 54,
+     "runtime_s": 23.139937162399292,
+     "qcp_dual_warning": true,
+     "suboptimal": true,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "homogeneous+nopresolve",
+     "params": {
+      "BarHomogeneous": 1,
+      "Presolve": 0
+     },
+     "gurobi_status": 12,
+     "ObjVal": 8789122765526484.0,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 5,
+     "runtime_s": 9.661487817764282,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    }
+   ],
+   "continuous_best": {
+    "setting": "focus+scale",
+    "params": {
+     "NumericFocus": 3,
+     "ScaleFlag": 2
+    },
+    "gurobi_status": 13,
+    "ObjVal": 652393454.295765,
+    "ObjBound": -Infinity,
+    "usable": true,
+    "certified": false,
+    "MaxVio": 0.006824306497575897,
+    "BarIterCount": 54,
+    "runtime_s": 23.139937162399292,
+    "qcp_dual_warning": true,
+    "suboptimal": true,
+    "numerical_trouble": false
+   },
+   "continuous_diagnostics": {
+    "ac_rank_gap_max": 0.02419692305873775,
+    "ac_rank_gap_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_relative_rank_gap": 0.024132742340844525
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_relative_rank_gap": 0.02419692305873775
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_relative_rank_gap": 0.008074639193386355
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_relative_rank_gap": 0.009948013910058175
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_relative_rank_gap": 0.02392889807311524
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_relative_rank_gap": 0.023774162232012935
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_relative_rank_gap": 0.007081012710408715
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_relative_rank_gap": 0.007333162609644242
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_relative_rank_gap": 0.023998302079092388
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_relative_rank_gap": 0.024106847469957397
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_relative_rank_gap": 0.007197944134860537
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_relative_rank_gap": 0.007405143672601428
+     },
+     {
+      "block": "DSO5|2025|Spring|0|0",
+      "max_relative_rank_gap": 3.2682630188980896e-06
+     },
+     {
+      "block": "DSO5|2025|Summer|0|0",
+      "max_relative_rank_gap": 5.123694551617661e-06
+     },
+     {
+      "block": "DSO5|2025|Autumn|0|0",
+      "max_relative_rank_gap": 2.7453640295586693e-06
+     },
+     {
+      "block": "DSO5|2025|Winter|0|0",
+      "max_relative_rank_gap": 3.356732900151879e-06
+     },
+     {
+      "block": "DSO5|2030|Spring|0|0",
+      "max_relative_rank_gap": 2.682188072456991e-06
+     },
+     {
+      "block": "DSO5|2030|Summer|0|0",
+      "max_relative_rank_gap": 4.378780786718901e-06
+     },
+     {
+      "block": "DSO5|2030|Autumn|0|0",
+      "max_relative_rank_gap": 5.275352029759664e-06
+     },
+     {
+      "block": "DSO5|2030|Winter|0|0",
+      "max_relative_rank_gap": 2.7913430362381998e-06
+     },
+     {
+      "block": "DSO5|2035|Spring|0|0",
+      "max_relative_rank_gap": 3.406336892872659e-06
+     },
+     {
+      "block": "DSO5|2035|Summer|0|0",
+      "max_relative_rank_gap": 7.2746989789739815e-06
+     },
+     {
+      "block": "DSO5|2035|Autumn|0|0",
+      "max_relative_rank_gap": 3.283732935397985e-06
+     },
+     {
+      "block": "DSO5|2035|Winter|0|0",
+      "max_relative_rank_gap": 6.149693831569411e-06
+     },
+     {
+      "block": "DSO7|2025|Spring|0|0",
+      "max_relative_rank_gap": 4.712659368564577e-06
+     },
+     {
+      "block": "DSO7|2025|Summer|0|0",
+      "max_relative_rank_gap": 2.9945520631910415e-06
+     },
+     {
+      "block": "DSO7|2025|Autumn|0|0",
+      "max_relative_rank_gap": 3.6063767617846475e-06
+     },
+     {
+      "block": "DSO7|2025|Winter|0|0",
+      "max_relative_rank_gap": 3.878861917465048e-06
+     },
+     {
+      "block": "DSO7|2030|Spring|0|0",
+      "max_relative_rank_gap": 3.0082581997614735e-06
+     },
+     {
+      "block": "DSO7|2030|Summer|0|0",
+      "max_relative_rank_gap": 4.067809114401532e-06
+     },
+     {
+      "block": "DSO7|2030|Autumn|0|0",
+      "max_relative_rank_gap": 3.4864645464423807e-06
+     },
+     {
+      "block": "DSO7|2030|Winter|0|0",
+      "max_relative_rank_gap": 3.9036812425129495e-06
+     },
+     {
+      "block": "DSO7|2035|Spring|0|0",
+      "max_relative_rank_gap": 4.024693121386011e-06
+     },
+     {
+      "block": "DSO7|2035|Summer|0|0",
+      "max_relative_rank_gap": 4.577708127024923e-06
+     },
+     {
+      "block": "DSO7|2035|Autumn|0|0",
+      "max_relative_rank_gap": 4.3248466421636706e-06
+     },
+     {
+      "block": "DSO7|2035|Winter|0|0",
+      "max_relative_rank_gap": 3.6338286122478582e-06
+     },
+     {
+      "block": "DSO9|2025|Spring|0|0",
+      "max_relative_rank_gap": 3.7979113917037205e-06
+     },
+     {
+      "block": "DSO9|2025|Summer|0|0",
+      "max_relative_rank_gap": 4.905719242435766e-06
+     },
+     {
+      "block": "DSO9|2025|Autumn|0|0",
+      "max_relative_rank_gap": 5.097486275140356e-06
+     },
+     {
+      "block": "DSO9|2025|Winter|0|0",
+      "max_relative_rank_gap": 5.057345455645168e-06
+     },
+     {
+      "block": "DSO9|2030|Spring|0|0",
+      "max_relative_rank_gap": 2.494851824741981e-06
+     },
+     {
+      "block": "DSO9|2030|Summer|0|0",
+      "max_relative_rank_gap": 5.172869607329298e-06
+     },
+     {
+      "block": "DSO9|2030|Autumn|0|0",
+      "max_relative_rank_gap": 3.5499444428345296e-06
+     },
+     {
+      "block": "DSO9|2030|Winter|0|0",
+      "max_relative_rank_gap": 4.8041838505976344e-06
+     },
+     {
+      "block": "DSO9|2035|Spring|0|0",
+      "max_relative_rank_gap": 4.62134635643483e-06
+     },
+     {
+      "block": "DSO9|2035|Summer|0|0",
+      "max_relative_rank_gap": 3.1467036146543525e-06
+     },
+     {
+      "block": "DSO9|2035|Autumn|0|0",
+      "max_relative_rank_gap": 2.9448454839922293e-06
+     },
+     {
+      "block": "DSO9|2035|Winter|0|0",
+      "max_relative_rank_gap": 4.547713032035433e-06
+     }
+    ],
+    "oltc_rank_gap_max": 3.4496676529744434e-06,
+    "cycle_residual_max_rad": 0.012294703613559665,
+    "cycle_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.008664405241110451
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.006178358732536804
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.008010456966426105
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.01224575482405088
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.010453373491582596
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.00564435780296435
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.009255920273075091
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.006864127426766675
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.008933158993668755
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.007886207248339439
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.012294703613559665
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.006945829039385565
+     }
+    ],
+    "ess_circulation_max": 0.49975791930449937,
+    "ess_circulation_max_MW": 0.015899592954979374,
+    "ess_S_available_max_MVA": 0.03190467841838149,
+    "ess_circulation_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_circulation_over_S": 0.48768578014855035,
+      "max_circulation_MW": 0.00518648599495233,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_circulation_over_S": 0.48564881581189395,
+      "max_circulation_MW": 0.0051648230975820855,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.49523511860553937,
+      "max_circulation_MW": 0.005266772400199582,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_circulation_over_S": 0.4894165303589881,
+      "max_circulation_MW": 0.005204892337914518,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_circulation_over_S": 0.4964835926572655,
+      "max_circulation_MW": 0.010560099575821841,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_circulation_over_S": 0.4970474872557952,
+      "max_circulation_MW": 0.010572093493040476,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.49975791930449937,
+      "max_circulation_MW": 0.010629743801632997,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_circulation_over_S": 0.4996827332220604,
+      "max_circulation_MW": 0.010628144609778496,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_circulation_over_S": 0.49727071685268665,
+      "max_circulation_MW": 0.015865262308063,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_circulation_over_S": 0.4983467548702519,
+      "max_circulation_MW": 0.015899592954979374,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.49660686233386947,
+      "max_circulation_MW": 0.01584408224312355,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_circulation_over_S": 0.49754366911281445,
+      "max_circulation_MW": 0.01587397076214595,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO5|2025|Spring|0|0",
+      "max_circulation_over_S": 0.4894001581694249,
+      "max_circulation_MW": 0.005204718221433512,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO5|2025|Summer|0|0",
+      "max_circulation_over_S": 0.4878267102778811,
+      "max_circulation_MW": 0.005187984771770916,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO5|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.49092339183139094,
+      "max_circulation_MW": 0.005220917648147205,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO5|2025|Winter|0|0",
+      "max_circulation_over_S": 0.48777777092421604,
+      "max_circulation_MW": 0.005187464306990687,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO5|2030|Spring|0|0",
+      "max_circulation_over_S": 0.49906717627576325,
+      "max_circulation_MW": 0.010615051845498621,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO5|2030|Summer|0|0",
+      "max_circulation_over_S": 0.4968869991141626,
+      "max_circulation_MW": 0.010568679944674642,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO5|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.4983381740390447,
+      "max_circulation_MW": 0.010599546124212763,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO5|2030|Winter|0|0",
+      "max_circulation_over_S": 0.49828858737381626,
+      "max_circulation_MW": 0.010598491426474127,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO5|2035|Spring|0|0",
+      "max_circulation_over_S": 0.47477741613216207,
+      "max_circulation_MW": 0.015147620782006717,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO5|2035|Summer|0|0",
+      "max_circulation_over_S": 0.3432156211874485,
+      "max_circulation_MW": 0.010950184022150585,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO5|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.49268621043965416,
+      "max_circulation_MW": 0.01571899510524819,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO5|2035|Winter|0|0",
+      "max_circulation_over_S": 0.4951480031320873,
+      "max_circulation_MW": 0.015797537809432993,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO7|2025|Spring|0|0",
+      "max_circulation_over_S": 0.48969758355947873,
+      "max_circulation_MW": 0.005207881308574555,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO7|2025|Summer|0|0",
+      "max_circulation_over_S": 0.4897625699087362,
+      "max_circulation_MW": 0.00520857243143277,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO7|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.4900708840207263,
+      "max_circulation_MW": 0.0052118513189644,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO7|2025|Winter|0|0",
+      "max_circulation_over_S": 0.487893582755992,
+      "max_circulation_MW": 0.0051886959534073055,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO7|2030|Spring|0|0",
+      "max_circulation_over_S": 0.49876649091481373,
+      "max_circulation_MW": 0.01060865633233448,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO7|2030|Summer|0|0",
+      "max_circulation_over_S": 0.49720413238660116,
+      "max_circulation_MW": 0.010575425301389923,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO7|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.49854526552111783,
+      "max_circulation_MW": 0.010603950915638583,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO7|2030|Winter|0|0",
+      "max_circulation_over_S": 0.49847795963778757,
+      "max_circulation_MW": 0.010602519333929705,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO7|2035|Spring|0|0",
+      "max_circulation_over_S": 0.4770305496376245,
+      "max_circulation_MW": 0.015219506281932176,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO7|2035|Summer|0|0",
+      "max_circulation_over_S": 0.4140177795816871,
+      "max_circulation_MW": 0.013209104117046077,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO7|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.49287202545325437,
+      "max_circulation_MW": 0.015724923473502416,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO7|2035|Winter|0|0",
+      "max_circulation_over_S": 0.4952799686469893,
+      "max_circulation_MW": 0.01580174812674826,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO9|2025|Spring|0|0",
+      "max_circulation_over_S": 0.4897234686505935,
+      "max_circulation_MW": 0.005208156593743837,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO9|2025|Summer|0|0",
+      "max_circulation_over_S": 0.49068652152786524,
+      "max_circulation_MW": 0.0052183985578602545,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO9|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.49123816089683275,
+      "max_circulation_MW": 0.005224265183416864,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO9|2025|Winter|0|0",
+      "max_circulation_over_S": 0.4871297962889585,
+      "max_circulation_MW": 0.005180573166203635,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO9|2030|Spring|0|0",
+      "max_circulation_over_S": 0.4986703282593385,
+      "max_circulation_MW": 0.010606610973268617,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO9|2030|Summer|0|0",
+      "max_circulation_over_S": 0.49701230833793064,
+      "max_circulation_MW": 0.010571345244999426,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO9|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.49835122670036075,
+      "max_circulation_MW": 0.010599823751520625,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO9|2030|Winter|0|0",
+      "max_circulation_over_S": 0.49865045070244834,
+      "max_circulation_MW": 0.01060618818189507,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO9|2035|Spring|0|0",
+      "max_circulation_over_S": 0.4786063269251561,
+      "max_circulation_MW": 0.01526978094954986,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO9|2035|Summer|0|0",
+      "max_circulation_over_S": 0.34462708922885604,
+      "max_circulation_MW": 0.010995216456109513,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO9|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.4922693791893959,
+      "max_circulation_MW": 0.01570569623825397,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO9|2035|Winter|0|0",
+      "max_circulation_over_S": 0.49505450270121526,
+      "max_circulation_MW": 0.01579455470825404,
+      "S_available_MVA": 0.03190467841838149
+     }
+    ],
+    "esso_min_available_over_rated": 0.9991166684940086
+   },
+   "mode_rows_applied": 1728,
+   "mode_rows_missing": 0,
+   "fixed_mode_runs": [
+    {
+     "setting": "default",
+     "params": {},
+     "gurobi_status": 12,
+     "ObjVal": 5941658088264078.0,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 5,
+     "runtime_s": 9.060892820358276,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous",
+     "params": {
+      "BarHomogeneous": 1
+     },
+     "gurobi_status": 12,
+     "ObjVal": 5941658088264078.0,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 5,
+     "runtime_s": 9.702098846435547,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous+focus",
+     "params": {
+      "BarHomogeneous": 1,
+      "NumericFocus": 3
+     },
+     "gurobi_status": 12,
+     "ObjVal": 5.941786445367031e+16,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 5,
+     "runtime_s": 8.921619176864624,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "focus+scale",
+     "params": {
+      "NumericFocus": 3,
+      "ScaleFlag": 2
+     },
+     "gurobi_status": 13,
+     "ObjVal": 652715986.030945,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 0.006545820250890638,
+     "BarIterCount": 51,
+     "runtime_s": 22.030585765838623,
+     "qcp_dual_warning": true,
+     "suboptimal": true,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "homogeneous+nopresolve",
+     "params": {
+      "BarHomogeneous": 1,
+      "Presolve": 0
+     },
+     "gurobi_status": 13,
+     "ObjVal": 653449380.7665614,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 9.193107498203322,
+     "BarIterCount": 50,
+     "runtime_s": 33.243677854537964,
+     "qcp_dual_warning": false,
+     "suboptimal": true,
+     "numerical_trouble": false
+    }
+   ],
+   "fixed_mode_best": {
+    "setting": "focus+scale",
+    "params": {
+     "NumericFocus": 3,
+     "ScaleFlag": 2
+    },
+    "gurobi_status": 13,
+    "ObjVal": 652715986.030945,
+    "ObjBound": -Infinity,
+    "usable": true,
+    "certified": false,
+    "MaxVio": 0.006545820250890638,
+    "BarIterCount": 51,
+    "runtime_s": 22.030585765838623,
+    "qcp_dual_warning": true,
+    "suboptimal": true,
+    "numerical_trouble": false
+   },
+   "fixed_mode_diagnostics": {
+    "ac_rank_gap_max": 0.024604537688481684,
+    "ac_rank_gap_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_relative_rank_gap": 0.024119494115640596
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_relative_rank_gap": 0.024604537688481684
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_relative_rank_gap": 0.007616680324617355
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_relative_rank_gap": 0.009923835202971446
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_relative_rank_gap": 0.023856575098851338
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_relative_rank_gap": 0.023722570412067975
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_relative_rank_gap": 0.006789118984041514
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_relative_rank_gap": 0.007225547392157662
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_relative_rank_gap": 0.023947978752050143
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_relative_rank_gap": 0.02407120057487412
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_relative_rank_gap": 0.007028361118152857
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_relative_rank_gap": 0.007209422885079609
+     },
+     {
+      "block": "DSO5|2025|Spring|0|0",
+      "max_relative_rank_gap": 1.05655921118806e-05
+     },
+     {
+      "block": "DSO5|2025|Summer|0|0",
+      "max_relative_rank_gap": 5.942674380221469e-06
+     },
+     {
+      "block": "DSO5|2025|Autumn|0|0",
+      "max_relative_rank_gap": 4.126782554127127e-06
+     },
+     {
+      "block": "DSO5|2025|Winter|0|0",
+      "max_relative_rank_gap": 5.8210165390509344e-06
+     },
+     {
+      "block": "DSO5|2030|Spring|0|0",
+      "max_relative_rank_gap": 3.60865739693085e-06
+     },
+     {
+      "block": "DSO5|2030|Summer|0|0",
+      "max_relative_rank_gap": 5.38281136240617e-06
+     },
+     {
+      "block": "DSO5|2030|Autumn|0|0",
+      "max_relative_rank_gap": 6.794787367097928e-06
+     },
+     {
+      "block": "DSO5|2030|Winter|0|0",
+      "max_relative_rank_gap": 4.707954806321972e-06
+     },
+     {
+      "block": "DSO5|2035|Spring|0|0",
+      "max_relative_rank_gap": 7.991762974806034e-06
+     },
+     {
+      "block": "DSO5|2035|Summer|0|0",
+      "max_relative_rank_gap": 6.397186292296298e-06
+     },
+     {
+      "block": "DSO5|2035|Autumn|0|0",
+      "max_relative_rank_gap": 3.0852292624532827e-06
+     },
+     {
+      "block": "DSO5|2035|Winter|0|0",
+      "max_relative_rank_gap": 3.6385269283801186e-06
+     },
+     {
+      "block": "DSO7|2025|Spring|0|0",
+      "max_relative_rank_gap": 1.0409667010150571e-05
+     },
+     {
+      "block": "DSO7|2025|Summer|0|0",
+      "max_relative_rank_gap": 6.9401249893544974e-06
+     },
+     {
+      "block": "DSO7|2025|Autumn|0|0",
+      "max_relative_rank_gap": 7.264921764242594e-06
+     },
+     {
+      "block": "DSO7|2025|Winter|0|0",
+      "max_relative_rank_gap": 4.765253437687217e-06
+     },
+     {
+      "block": "DSO7|2030|Spring|0|0",
+      "max_relative_rank_gap": 2.643424959193862e-06
+     },
+     {
+      "block": "DSO7|2030|Summer|0|0",
+      "max_relative_rank_gap": 4.624011424128579e-06
+     },
+     {
+      "block": "DSO7|2030|Autumn|0|0",
+      "max_relative_rank_gap": 4.1810275264432375e-06
+     },
+     {
+      "block": "DSO7|2030|Winter|0|0",
+      "max_relative_rank_gap": 1.0360901770518849e-05
+     },
+     {
+      "block": "DSO7|2035|Spring|0|0",
+      "max_relative_rank_gap": 3.6210410388010506e-06
+     },
+     {
+      "block": "DSO7|2035|Summer|0|0",
+      "max_relative_rank_gap": 6.842555878716238e-06
+     },
+     {
+      "block": "DSO7|2035|Autumn|0|0",
+      "max_relative_rank_gap": 3.4932160480152907e-06
+     },
+     {
+      "block": "DSO7|2035|Winter|0|0",
+      "max_relative_rank_gap": 3.6718013287002327e-06
+     },
+     {
+      "block": "DSO9|2025|Spring|0|0",
+      "max_relative_rank_gap": 8.500336217385223e-06
+     },
+     {
+      "block": "DSO9|2025|Summer|0|0",
+      "max_relative_rank_gap": 4.671037991056874e-06
+     },
+     {
+      "block": "DSO9|2025|Autumn|0|0",
+      "max_relative_rank_gap": 6.899474409122398e-06
+     },
+     {
+      "block": "DSO9|2025|Winter|0|0",
+      "max_relative_rank_gap": 4.123433591041837e-06
+     },
+     {
+      "block": "DSO9|2030|Spring|0|0",
+      "max_relative_rank_gap": 4.850905189204136e-06
+     },
+     {
+      "block": "DSO9|2030|Summer|0|0",
+      "max_relative_rank_gap": 9.450362541740346e-06
+     },
+     {
+      "block": "DSO9|2030|Autumn|0|0",
+      "max_relative_rank_gap": 5.310356075467372e-06
+     },
+     {
+      "block": "DSO9|2030|Winter|0|0",
+      "max_relative_rank_gap": 5.275960572001959e-06
+     },
+     {
+      "block": "DSO9|2035|Spring|0|0",
+      "max_relative_rank_gap": 3.485497644622857e-06
+     },
+     {
+      "block": "DSO9|2035|Summer|0|0",
+      "max_relative_rank_gap": 3.568535588602088e-06
+     },
+     {
+      "block": "DSO9|2035|Autumn|0|0",
+      "max_relative_rank_gap": 3.8307368284983965e-06
+     },
+     {
+      "block": "DSO9|2035|Winter|0|0",
+      "max_relative_rank_gap": 4.4337368529591825e-06
+     }
+    ],
+    "oltc_rank_gap_max": 4.160798120454422e-06,
+    "cycle_residual_max_rad": 0.012300415190435121,
+    "cycle_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.008658764069548575
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.006185467829311175
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.00800841245920525
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.012241256114732035
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.010456396474102014
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.005647726471333492
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.009250483037573254
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.00685064658167267
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.00893563665485475
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.007885681203904316
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.012300415190435121
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.006958887603927266
+     }
+    ],
+    "ess_circulation_max": 0.009996273524956068,
+    "ess_circulation_max_MW": 0.00031891544034660837,
+    "ess_S_available_max_MVA": 0.03190467841838149,
+    "ess_circulation_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_circulation_over_S": 0.009993334934834702,
+      "max_circulation_MW": 0.00010627804580769282,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_circulation_over_S": 0.009993677201614006,
+      "max_circulation_MW": 0.00010628168577820181,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.00999247505663891,
+      "max_circulation_MW": 0.00010626890109525423,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_circulation_over_S": 0.009994406219077368,
+      "max_circulation_MW": 0.00010628943880077847,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_circulation_over_S": 0.00999522525272788,
+      "max_circulation_MW": 0.00021259629827171254,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_circulation_over_S": 0.009996112342528904,
+      "max_circulation_MW": 0.00021261516648159913,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.009989604215091048,
+      "max_circulation_MW": 0.0002124767400062587,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_circulation_over_S": 0.00999322673498208,
+      "max_circulation_MW": 0.00021255379022771707,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_circulation_over_S": 0.009995883242091202,
+      "max_circulation_MW": 0.00031891544034660837,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_circulation_over_S": 0.009988618378623219,
+      "max_circulation_MW": 0.0003186836572139089,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.009993463667869715,
+      "max_circulation_MW": 0.0003188382446091624,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_circulation_over_S": 0.00998563680580004,
+      "max_circulation_MW": 0.0003185885310918044,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO5|2025|Spring|0|0",
+      "max_circulation_over_S": 0.009993227514282202,
+      "max_circulation_MW": 0.0001062769034016318,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO5|2025|Summer|0|0",
+      "max_circulation_over_S": 0.009994775646982378,
+      "max_circulation_MW": 0.00010629336762694784,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO5|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.009993205081613115,
+      "max_circulation_MW": 0.0001062766648326007,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO5|2025|Winter|0|0",
+      "max_circulation_over_S": 0.00999600963712611,
+      "max_circulation_MW": 0.00010630649097985025,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO5|2030|Spring|0|0",
+      "max_circulation_over_S": 0.009995978856333024,
+      "max_circulation_MW": 0.0002126123272588306,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO5|2030|Summer|0|0",
+      "max_circulation_over_S": 0.009995175346382897,
+      "max_circulation_MW": 0.00021259523677445404,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO5|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.009987639216179858,
+      "max_circulation_MW": 0.00021243494490068938,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO5|2030|Winter|0|0",
+      "max_circulation_over_S": 0.009991923337090137,
+      "max_circulation_MW": 0.00021252606723398798,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO5|2035|Spring|0|0",
+      "max_circulation_over_S": 0.009993083628559024,
+      "max_circulation_MW": 0.00031882611957716845,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO5|2035|Summer|0|0",
+      "max_circulation_over_S": 0.00997817259285809,
+      "max_circulation_MW": 0.00031835038777824513,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO5|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.009987748947805911,
+      "max_circulation_MW": 0.00031865591830327564,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO5|2035|Winter|0|0",
+      "max_circulation_over_S": 0.00998285761476207,
+      "max_circulation_MW": 0.0003184998618954747,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO7|2025|Spring|0|0",
+      "max_circulation_over_S": 0.009993245265713793,
+      "max_circulation_MW": 0.00010627709218620393,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO7|2025|Summer|0|0",
+      "max_circulation_over_S": 0.009994866785904824,
+      "max_circulation_MW": 0.00010629433687961852,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO7|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.009993242725642153,
+      "max_circulation_MW": 0.00010627706517281432,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO7|2025|Winter|0|0",
+      "max_circulation_over_S": 0.009996273524956068,
+      "max_circulation_MW": 0.00010630929739863468,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO7|2030|Spring|0|0",
+      "max_circulation_over_S": 0.009995959514166682,
+      "max_circulation_MW": 0.0002126119158550992,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO7|2030|Summer|0|0",
+      "max_circulation_over_S": 0.009995167970940843,
+      "max_circulation_MW": 0.00021259507990038277,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO7|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.009987703131445648,
+      "max_circulation_MW": 0.0002124363043646901,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO7|2030|Winter|0|0",
+      "max_circulation_over_S": 0.009991898360206678,
+      "max_circulation_MW": 0.00021252553598103156,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO7|2035|Spring|0|0",
+      "max_circulation_over_S": 0.009993956015668921,
+      "max_circulation_MW": 0.00031885395280736606,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO7|2035|Summer|0|0",
+      "max_circulation_over_S": 0.00997785704413341,
+      "max_circulation_MW": 0.0003183403202976589,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO7|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.009987729647305257,
+      "max_circulation_MW": 0.00031865530252700897,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO7|2035|Winter|0|0",
+      "max_circulation_over_S": 0.00998320560509136,
+      "max_circulation_MW": 0.00031851096441502336,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO9|2025|Spring|0|0",
+      "max_circulation_over_S": 0.00999250297795153,
+      "max_circulation_MW": 0.00010626919803542096,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO9|2025|Summer|0|0",
+      "max_circulation_over_S": 0.009994748570190106,
+      "max_circulation_MW": 0.00010629307966816449,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO9|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.009993202914335284,
+      "max_circulation_MW": 0.0001062766417838333,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO9|2025|Winter|0|0",
+      "max_circulation_over_S": 0.009996032506719668,
+      "max_circulation_MW": 0.00010630673419552624,
+      "S_available_MVA": 0.010634892806127162
+     },
+     {
+      "block": "DSO9|2030|Spring|0|0",
+      "max_circulation_over_S": 0.009995976483798278,
+      "max_circulation_MW": 0.00021261227679552516,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO9|2030|Summer|0|0",
+      "max_circulation_over_S": 0.009995173606683444,
+      "max_circulation_MW": 0.00021259519977141964,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO9|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.009988017317344524,
+      "max_circulation_MW": 0.00021244298703140154,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO9|2030|Winter|0|0",
+      "max_circulation_over_S": 0.009991928327381815,
+      "max_circulation_MW": 0.00021252617337642212,
+      "S_available_MVA": 0.021269785612254323
+     },
+     {
+      "block": "DSO9|2035|Spring|0|0",
+      "max_circulation_over_S": 0.00999445559295557,
+      "max_circulation_MW": 0.0003188698916600417,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO9|2035|Summer|0|0",
+      "max_circulation_over_S": 0.009977856301934276,
+      "max_circulation_MW": 0.0003183402966180342,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO9|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.009962275331538838,
+      "max_circulation_MW": 0.0003178431907681214,
+      "S_available_MVA": 0.03190467841838149
+     },
+     {
+      "block": "DSO9|2035|Winter|0|0",
+      "max_circulation_over_S": 0.009983227645672495,
+      "max_circulation_MW": 0.0003185116676126767,
+      "S_available_MVA": 0.03190467841838149
+     }
+    ],
+    "esso_min_available_over_rated": 0.9999525102248581
+   },
+   "objective_change_from_mode_control": 322531.7351799011,
+   "objective_change_relative": 0.0004943822367562875,
+   "gap_continuous_vs_cold": 186103376.51764894,
+   "gap_fixed_mode_vs_cold": 185780844.78246903,
+   "gap_closed_fraction_vs_cold": 0.0017330783633004861,
+   "gap_continuous_vs_best_recovered": 184193009.1342349,
+   "gap_fixed_mode_vs_best_recovered": 183870477.399055,
+   "gap_closed_fraction_vs_best_recovered": 0.001751053075770366,
+   "gap_continuous_vs_polished": 76967631.56259072,
+   "gap_fixed_mode_vs_polished": 76645099.82741082,
+   "gap_closed_fraction_vs_polished": 0.004190485384984409
+  },
+  {
+   "variant": "capacity x100 SENSITIVITY",
+   "capacity_multiplier": 100.0,
+   "case": "TSO only",
+   "restriction": {
+    "only_agents": [
+     "TSO"
+    ]
+   },
+   "model_size": {
+    "variables": 30420,
+    "constraints": 29196,
+    "ac_blocks": 12
+   },
+   "continuous_runs": [
+    {
+     "setting": "default",
+     "params": {},
+     "gurobi_status": 12,
+     "ObjVal": 59696231618677.74,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 5,
+     "runtime_s": 1.5989429950714111,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous",
+     "params": {
+      "BarHomogeneous": 1
+     },
+     "gurobi_status": 12,
+     "ObjVal": 59696231618677.74,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 5,
+     "runtime_s": 0.8318212032318115,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous+focus",
+     "params": {
+      "BarHomogeneous": 1,
+      "NumericFocus": 3
+     },
+     "gurobi_status": 12,
+     "ObjVal": 597006424141547.2,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 5,
+     "runtime_s": 0.8468761444091797,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "focus+scale",
+     "params": {
+      "NumericFocus": 3,
+      "ScaleFlag": 2
+     },
+     "gurobi_status": 12,
+     "ObjVal": 298502995304539.25,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 5,
+     "runtime_s": 0.8243968486785889,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous+nopresolve",
+     "params": {
+      "BarHomogeneous": 1,
+      "Presolve": 0
+     },
+     "gurobi_status": 2,
+     "ObjVal": -38542.91513276741,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 1.0793635819584279e-06,
+     "BarIterCount": 11,
+     "runtime_s": 1.4154040813446045,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": false
+    }
+   ],
+   "continuous_best": {
+    "setting": "homogeneous+nopresolve",
+    "params": {
+     "BarHomogeneous": 1,
+     "Presolve": 0
+    },
+    "gurobi_status": 2,
+    "ObjVal": -38542.91513276741,
+    "ObjBound": -Infinity,
+    "usable": true,
+    "certified": false,
+    "MaxVio": 1.0793635819584279e-06,
+    "BarIterCount": 11,
+    "runtime_s": 1.4154040813446045,
+    "qcp_dual_warning": false,
+    "suboptimal": false,
+    "numerical_trouble": false
+   },
+   "continuous_diagnostics": {
+    "ac_rank_gap_max": 0.06359873386702067,
+    "ac_rank_gap_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_relative_rank_gap": 0.06318387703095177
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_relative_rank_gap": 0.06309127279186752
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_relative_rank_gap": 0.06350000387359604
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_relative_rank_gap": 0.06290927190848676
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_relative_rank_gap": 0.06331015619900464
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_relative_rank_gap": 0.0634654224160372
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_relative_rank_gap": 0.06353430104670667
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_relative_rank_gap": 0.06304279430797462
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_relative_rank_gap": 0.06359873386702067
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_relative_rank_gap": 0.06335431117226123
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_relative_rank_gap": 0.0633028701290849
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_relative_rank_gap": 0.06307281535758542
+     }
+    ],
+    "oltc_rank_gap_max": 0.0,
+    "cycle_residual_max_rad": 0.095321247221972,
+    "cycle_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.095321247221972
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.02981201175673709
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.010266775711194498
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.008063793423926935
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.09523229009966094
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.022715908533043283
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.010569712517363161
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.00824469324648991
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.057484291765305784
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.028911661678463485
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.028670463152475456
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.008660325848549366
+     }
+    ],
+    "ess_circulation_max": 0.36432370497471994,
+    "ess_circulation_max_MW": 1.1619871019719135,
+    "ess_S_available_max_MVA": 3.1904678418383403,
+    "ess_circulation_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_circulation_over_S": 0.35608155207415276,
+      "max_circulation_MW": 0.37868891365481683,
+      "S_available_MVA": 1.0634892806127716
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_circulation_over_S": 0.355775525795243,
+      "max_circulation_MW": 0.37836345798761317,
+      "S_available_MVA": 1.0634892806127705
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.3557296888492204,
+      "max_circulation_MW": 0.37831471088682156,
+      "S_available_MVA": 1.0634892806127378
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_circulation_over_S": 0.35555446064935803,
+      "max_circulation_MW": 0.3781283575746345,
+      "S_available_MVA": 1.0634892806127343
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_circulation_over_S": 0.36432370497471994,
+      "max_circulation_MW": 0.7749087098274596,
+      "S_available_MVA": 2.1269785612254624
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_circulation_over_S": 0.36419368165402377,
+      "max_circulation_MW": 0.7746321530119225,
+      "S_available_MVA": 2.1269785612255805
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.36370942462068523,
+      "max_circulation_MW": 0.7736021486838042,
+      "S_available_MVA": 2.126978561225555
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_circulation_over_S": 0.3637677487209019,
+      "max_circulation_MW": 0.7737262027944924,
+      "S_available_MVA": 2.126978561225505
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_circulation_over_S": 0.3640569903669555,
+      "max_circulation_MW": 1.161512120362136,
+      "S_available_MVA": 3.1904678418382537
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_circulation_over_S": 0.3639571458034847,
+      "max_circulation_MW": 1.1611935694931557,
+      "S_available_MVA": 3.1904678418383403
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.3641838283898165,
+      "max_circulation_MW": 1.161916792995146,
+      "S_available_MVA": 3.1904678418382684
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_circulation_over_S": 0.36420586558941465,
+      "max_circulation_MW": 1.1619871019719135,
+      "S_available_MVA": 3.1904678418383106
+     }
+    ],
+    "esso_min_available_over_rated": 0.9915663256508253
+   },
+   "mode_rows_applied": 864,
+   "mode_rows_missing": 0,
+   "fixed_mode_runs": [
+    {
+     "setting": "default",
+     "params": {},
+     "gurobi_status": 2,
+     "ObjVal": -38542.91476164039,
+     "ObjBound": -38542.92633856925,
+     "usable": true,
+     "certified": true,
+     "MaxVio": 3.6191496424854046e-06,
+     "BarIterCount": 15,
+     "runtime_s": 1.725409746170044,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "homogeneous",
+     "params": {
+      "BarHomogeneous": 1
+     },
+     "gurobi_status": 2,
+     "ObjVal": -38542.915303552945,
+     "ObjBound": -38542.91665137799,
+     "usable": true,
+     "certified": true,
+     "MaxVio": 5.329281510500168e-06,
+     "BarIterCount": 18,
+     "runtime_s": 1.271982192993164,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "homogeneous+focus",
+     "params": {
+      "BarHomogeneous": 1,
+      "NumericFocus": 3
+     },
+     "gurobi_status": 2,
+     "ObjVal": -38542.92597354485,
+     "ObjBound": -38542.94404479259,
+     "usable": true,
+     "certified": true,
+     "MaxVio": 9.458974174169787e-06,
+     "BarIterCount": 21,
+     "runtime_s": 1.6709396839141846,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "focus+scale",
+     "params": {
+      "NumericFocus": 3,
+      "ScaleFlag": 2
+     },
+     "gurobi_status": 2,
+     "ObjVal": -38542.91475843182,
+     "ObjBound": -38542.92363436109,
+     "usable": true,
+     "certified": true,
+     "MaxVio": 9.513108019121461e-06,
+     "BarIterCount": 22,
+     "runtime_s": 1.560905933380127,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "homogeneous+nopresolve",
+     "params": {
+      "BarHomogeneous": 1,
+      "Presolve": 0
+     },
+     "gurobi_status": 2,
+     "ObjVal": -38542.91516116673,
+     "ObjBound": -38542.91701678141,
+     "usable": true,
+     "certified": true,
+     "MaxVio": 1.5755982743104523e-06,
+     "BarIterCount": 16,
+     "runtime_s": 1.6286001205444336,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": false
+    }
+   ],
+   "fixed_mode_best": {
+    "setting": "homogeneous+focus",
+    "params": {
+     "BarHomogeneous": 1,
+     "NumericFocus": 3
+    },
+    "gurobi_status": 2,
+    "ObjVal": -38542.92597354485,
+    "ObjBound": -38542.94404479259,
+    "usable": true,
+    "certified": true,
+    "MaxVio": 9.458974174169787e-06,
+    "BarIterCount": 21,
+    "runtime_s": 1.6709396839141846,
+    "qcp_dual_warning": false,
+    "suboptimal": false,
+    "numerical_trouble": false
+   },
+   "fixed_mode_diagnostics": {
+    "ac_rank_gap_max": 0.04966586762064542,
+    "ac_rank_gap_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_relative_rank_gap": 0.049270663173392085
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_relative_rank_gap": 0.04919714808718726
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_relative_rank_gap": 0.04927927812500159
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_relative_rank_gap": 0.04924871077374849
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_relative_rank_gap": 0.049307025008517226
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_relative_rank_gap": 0.04929165764634145
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_relative_rank_gap": 0.049248587363436014
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_relative_rank_gap": 0.04923943679363393
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_relative_rank_gap": 0.04966586762064542
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_relative_rank_gap": 0.049252433644536714
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_relative_rank_gap": 0.049157543198432574
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_relative_rank_gap": 0.0492439234323687
+     }
+    ],
+    "oltc_rank_gap_max": 0.0,
+    "cycle_residual_max_rad": 0.028544711858160543,
+    "cycle_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.025846467404741613
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.02117689656349775
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.02591153020687198
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.019617169614615904
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.026453602173484025
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.02470902302543143
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.024508736265336672
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.022060018834315187
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.028544711858160543
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.023574793702278996
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.021289116407253506
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.016866053654860824
+     }
+    ],
+    "ess_circulation_max": 0.005072096374403212,
+    "ess_circulation_max_MW": 0.015381786964480722,
+    "ess_S_available_max_MVA": 3.190467841838149,
+    "ess_circulation_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_circulation_over_S": 0.004545232996888439,
+      "max_circulation_MW": 0.004833806570078066,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_circulation_over_S": 0.004519913388313928,
+      "max_circulation_MW": 0.004806879437769764,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.004430096088309897,
+      "max_circulation_MW": 0.0047113597020019,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_circulation_over_S": 0.005072096374403212,
+      "max_circulation_MW": 0.005394120124412438,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_circulation_over_S": 0.004913002246011372,
+      "max_circulation_MW": 0.010449850448518585,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_circulation_over_S": 0.004707803310679328,
+      "max_circulation_MW": 0.010013396712281044,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.004550459261354326,
+      "max_circulation_MW": 0.009678729292630368,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_circulation_over_S": 0.004620493240752384,
+      "max_circulation_MW": 0.00982769006536734,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_circulation_over_S": 0.004821169724004707,
+      "max_circulation_MW": 0.015381786964480722,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_circulation_over_S": 0.004692191744707839,
+      "max_circulation_MW": 0.014970286869228796,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.004736500899285802,
+      "max_circulation_MW": 0.015111653802008825,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_circulation_over_S": 0.004797230014114838,
+      "max_circulation_MW": 0.01530540808993416,
+      "S_available_MVA": 3.190467841838149
+     }
+    ],
+    "esso_min_available_over_rated": 0.9189163499322237
+   },
+   "objective_change_from_mode_control": -0.010840777438716032,
+   "objective_change_relative": -2.812651145190547e-07
+  },
+  {
+   "variant": "capacity x100 SENSITIVITY",
+   "capacity_multiplier": 100.0,
+   "case": "TSO + DSO5",
+   "restriction": {
+    "only_agents": [
+     "TSO",
+     "DSO5"
+    ]
+   },
+   "model_size": {
+    "variables": 127812,
+    "constraints": 101868,
+    "ac_blocks": 24
+   },
+   "continuous_runs": [
+    {
+     "setting": "default",
+     "params": {},
+     "gurobi_status": 12,
+     "ObjVal": -38468.71336242091,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 59,
+     "runtime_s": 7.62688422203064,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous",
+     "params": {
+      "BarHomogeneous": 1
+     },
+     "gurobi_status": 12,
+     "ObjVal": -44531.58107557334,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 51,
+     "runtime_s": 8.370730876922607,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous+focus",
+     "params": {
+      "BarHomogeneous": 1,
+      "NumericFocus": 3
+     },
+     "gurobi_status": 2,
+     "ObjVal": -38564.8071074388,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 7.876898521332748e-06,
+     "BarIterCount": 26,
+     "runtime_s": 7.68845796585083,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "focus+scale",
+     "params": {
+      "NumericFocus": 3,
+      "ScaleFlag": 2
+     },
+     "gurobi_status": 12,
+     "ObjVal": -38564.71597145265,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 119,
+     "runtime_s": 16.531170129776,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous+nopresolve",
+     "params": {
+      "BarHomogeneous": 1,
+      "Presolve": 0
+     },
+     "gurobi_status": 12,
+     "ObjVal": 3183219301734367.0,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 5,
+     "runtime_s": 3.7288670539855957,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    }
+   ],
+   "continuous_best": {
+    "setting": "homogeneous+focus",
+    "params": {
+     "BarHomogeneous": 1,
+     "NumericFocus": 3
+    },
+    "gurobi_status": 2,
+    "ObjVal": -38564.8071074388,
+    "ObjBound": -Infinity,
+    "usable": true,
+    "certified": false,
+    "MaxVio": 7.876898521332748e-06,
+    "BarIterCount": 26,
+    "runtime_s": 7.68845796585083,
+    "qcp_dual_warning": false,
+    "suboptimal": false,
+    "numerical_trouble": false
+   },
+   "continuous_diagnostics": {
+    "ac_rank_gap_max": 0.05489572135817433,
+    "ac_rank_gap_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_relative_rank_gap": 0.05418043091366339
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_relative_rank_gap": 0.053787617726497705
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_relative_rank_gap": 0.054152160456733246
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_relative_rank_gap": 0.05385316938861443
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_relative_rank_gap": 0.05433411508070636
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_relative_rank_gap": 0.054289446747497666
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_relative_rank_gap": 0.054133182209901105
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_relative_rank_gap": 0.05398694289936226
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_relative_rank_gap": 0.05489572135817433
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_relative_rank_gap": 0.05395885121389308
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_relative_rank_gap": 0.05390008362943538
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_relative_rank_gap": 0.0538863944920535
+     },
+     {
+      "block": "DSO5|2025|Spring|0|0",
+      "max_relative_rank_gap": 0.0015486539133370888
+     },
+     {
+      "block": "DSO5|2025|Summer|0|0",
+      "max_relative_rank_gap": 0.0015238823684367983
+     },
+     {
+      "block": "DSO5|2025|Autumn|0|0",
+      "max_relative_rank_gap": 0.0016552286470030413
+     },
+     {
+      "block": "DSO5|2025|Winter|0|0",
+      "max_relative_rank_gap": 0.0016686193934918896
+     },
+     {
+      "block": "DSO5|2030|Spring|0|0",
+      "max_relative_rank_gap": 0.0015599889023419512
+     },
+     {
+      "block": "DSO5|2030|Summer|0|0",
+      "max_relative_rank_gap": 0.0015516909730703256
+     },
+     {
+      "block": "DSO5|2030|Autumn|0|0",
+      "max_relative_rank_gap": 0.001682641064419199
+     },
+     {
+      "block": "DSO5|2030|Winter|0|0",
+      "max_relative_rank_gap": 0.0016697606964753524
+     },
+     {
+      "block": "DSO5|2035|Spring|0|0",
+      "max_relative_rank_gap": 0.0016333300787240062
+     },
+     {
+      "block": "DSO5|2035|Summer|0|0",
+      "max_relative_rank_gap": 0.0016633998909367964
+     },
+     {
+      "block": "DSO5|2035|Autumn|0|0",
+      "max_relative_rank_gap": 0.0016643390054803017
+     },
+     {
+      "block": "DSO5|2035|Winter|0|0",
+      "max_relative_rank_gap": 0.0016813406486086155
+     }
+    ],
+    "oltc_rank_gap_max": 0.0022892714649275798,
+    "cycle_residual_max_rad": 0.058882620108715145,
+    "cycle_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.0558642979990589
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.057086521001685764
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.058882620108715145
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.05735863578175726
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.05462018714385053
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.05630573368318803
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.05435341501564617
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.05614154054098064
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.05103208792883551
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.05696491411567717
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.05474118659789973
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.057095903770179035
+     }
+    ],
+    "ess_circulation_max": 0.3518315719229001,
+    "ess_circulation_max_MW": 1.1216492007007244,
+    "ess_S_available_max_MVA": 3.190467841838149,
+    "ess_circulation_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_circulation_over_S": 0.35145499425485255,
+      "max_circulation_MW": 0.3737686190078394,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_circulation_over_S": 0.3508104815961891,
+      "max_circulation_MW": 0.37308318670413165,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.3498250481878003,
+      "max_circulation_MW": 0.3720351888375525,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_circulation_over_S": 0.35039094017271916,
+      "max_circulation_MW": 0.37263700889749835,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_circulation_over_S": 0.3507198816055905,
+      "max_circulation_MW": 0.7459736691706128,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_circulation_over_S": 0.35145896124709697,
+      "max_circulation_MW": 0.7475456757231353,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.35183157192290004,
+      "max_circulation_MW": 0.7483382106422521,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_circulation_over_S": 0.35143350646184973,
+      "max_circulation_MW": 0.7474915339406338,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_circulation_over_S": 0.3513006448042668,
+      "max_circulation_MW": 1.1208134100650193,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_circulation_over_S": 0.34968881927632967,
+      "max_circulation_MW": 1.115670932551482,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.3510832011107899,
+      "max_circulation_MW": 1.1201196629535706,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_circulation_over_S": 0.3515626097188617,
+      "max_circulation_MW": 1.1216492007007242,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO5|2025|Spring|0|0",
+      "max_circulation_over_S": 0.35145499425485244,
+      "max_circulation_MW": 0.3737686190078393,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO5|2025|Summer|0|0",
+      "max_circulation_over_S": 0.3508104815961891,
+      "max_circulation_MW": 0.37308318670413165,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO5|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.3498250481878003,
+      "max_circulation_MW": 0.37203518883755254,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO5|2025|Winter|0|0",
+      "max_circulation_over_S": 0.350390940172719,
+      "max_circulation_MW": 0.3726370088974982,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO5|2030|Spring|0|0",
+      "max_circulation_over_S": 0.3507198816055904,
+      "max_circulation_MW": 0.7459736691706126,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO5|2030|Summer|0|0",
+      "max_circulation_over_S": 0.35145896124709697,
+      "max_circulation_MW": 0.7475456757231353,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO5|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.3518315719229001,
+      "max_circulation_MW": 0.7483382106422523,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO5|2030|Winter|0|0",
+      "max_circulation_over_S": 0.3514335064618497,
+      "max_circulation_MW": 0.7474915339406337,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO5|2035|Spring|0|0",
+      "max_circulation_over_S": 0.35130064480426687,
+      "max_circulation_MW": 1.1208134100650196,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO5|2035|Summer|0|0",
+      "max_circulation_over_S": 0.3496888192763297,
+      "max_circulation_MW": 1.115670932551482,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO5|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.35108320111079006,
+      "max_circulation_MW": 1.1201196629535712,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO5|2035|Winter|0|0",
+      "max_circulation_over_S": 0.3515626097188618,
+      "max_circulation_MW": 1.1216492007007244,
+      "S_available_MVA": 3.190467841838149
+     }
+    ],
+    "esso_min_available_over_rated": 0.7434131906803234
+   },
+   "mode_rows_applied": 1152,
+   "mode_rows_missing": 0,
+   "fixed_mode_runs": [
+    {
+     "setting": "default",
+     "params": {},
+     "gurobi_status": 12,
+     "ObjVal": -38514.82527925726,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 68,
+     "runtime_s": 8.778442144393921,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous",
+     "params": {
+      "BarHomogeneous": 1
+     },
+     "gurobi_status": 12,
+     "ObjVal": -46144.57797564054,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 52,
+     "runtime_s": 9.08949613571167,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous+focus",
+     "params": {
+      "BarHomogeneous": 1,
+      "NumericFocus": 3
+     },
+     "gurobi_status": 2,
+     "ObjVal": -38564.80335106701,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 0.4166371610696143,
+     "BarIterCount": 31,
+     "runtime_s": 9.055763244628906,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "focus+scale",
+     "params": {
+      "NumericFocus": 3,
+      "ScaleFlag": 2
+     },
+     "gurobi_status": 12,
+     "ObjVal": -38564.08504115837,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 94,
+     "runtime_s": 14.823358058929443,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    },
+    {
+     "setting": "homogeneous+nopresolve",
+     "params": {
+      "BarHomogeneous": 1,
+      "Presolve": 0
+     },
+     "gurobi_status": 2,
+     "ObjVal": -38542.91582624009,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 2.677896235009404e-05,
+     "BarIterCount": 22,
+     "runtime_s": 5.553481101989746,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": false
+    }
+   ],
+   "fixed_mode_best": {
+    "setting": "homogeneous+focus",
+    "params": {
+     "BarHomogeneous": 1,
+     "NumericFocus": 3
+    },
+    "gurobi_status": 2,
+    "ObjVal": -38564.80335106701,
+    "ObjBound": -Infinity,
+    "usable": true,
+    "certified": false,
+    "MaxVio": 0.4166371610696143,
+    "BarIterCount": 31,
+    "runtime_s": 9.055763244628906,
+    "qcp_dual_warning": false,
+    "suboptimal": false,
+    "numerical_trouble": false
+   },
+   "fixed_mode_diagnostics": {
+    "ac_rank_gap_max": 0.04627819753603665,
+    "ac_rank_gap_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_relative_rank_gap": 0.04627819753603665
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_relative_rank_gap": 0.045700648301305755
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_relative_rank_gap": 0.04502402230679617
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_relative_rank_gap": 0.04483589006851021
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_relative_rank_gap": 0.04626968781612863
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_relative_rank_gap": 0.045695607692894935
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_relative_rank_gap": 0.044905297665038896
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_relative_rank_gap": 0.044920920241999604
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_relative_rank_gap": 0.04581899637921166
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_relative_rank_gap": 0.045741788954484074
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_relative_rank_gap": 0.04573557069061688
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_relative_rank_gap": 0.044540766184907654
+     },
+     {
+      "block": "DSO5|2025|Spring|0|0",
+      "max_relative_rank_gap": 0.0010299672344243633
+     },
+     {
+      "block": "DSO5|2025|Summer|0|0",
+      "max_relative_rank_gap": 0.0009946381751573484
+     },
+     {
+      "block": "DSO5|2025|Autumn|0|0",
+      "max_relative_rank_gap": 0.0011062309042832118
+     },
+     {
+      "block": "DSO5|2025|Winter|0|0",
+      "max_relative_rank_gap": 0.0011528722470915925
+     },
+     {
+      "block": "DSO5|2030|Spring|0|0",
+      "max_relative_rank_gap": 0.0010613919499636228
+     },
+     {
+      "block": "DSO5|2030|Summer|0|0",
+      "max_relative_rank_gap": 0.0010409099675253804
+     },
+     {
+      "block": "DSO5|2030|Autumn|0|0",
+      "max_relative_rank_gap": 0.0011504263933665036
+     },
+     {
+      "block": "DSO5|2030|Winter|0|0",
+      "max_relative_rank_gap": 0.0011247324588450937
+     },
+     {
+      "block": "DSO5|2035|Spring|0|0",
+      "max_relative_rank_gap": 0.001217411703774334
+     },
+     {
+      "block": "DSO5|2035|Summer|0|0",
+      "max_relative_rank_gap": 0.0011808530615164325
+     },
+     {
+      "block": "DSO5|2035|Autumn|0|0",
+      "max_relative_rank_gap": 0.0011176381664778027
+     },
+     {
+      "block": "DSO5|2035|Winter|0|0",
+      "max_relative_rank_gap": 0.0011149578512919477
+     }
+    ],
+    "oltc_rank_gap_max": 0.002457402776638845,
+    "cycle_residual_max_rad": 0.05844995767307681,
+    "cycle_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.05573550791542825
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.056466158283141166
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.057582611996419786
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.05218695210106361
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.05476162245950844
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.056217923526418634
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.054686578967287236
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.052961582380366856
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.05420693304997615
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.05844995767307681
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.05498953399437445
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.05262798471334218
+     }
+    ],
+    "ess_circulation_max": 0.004703376808596502,
+    "ess_circulation_max_MW": 0.015005972455874482,
+    "ess_S_available_max_MVA": 3.190467841838149,
+    "ess_circulation_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_circulation_over_S": 0.004492826236877322,
+      "max_circulation_MW": 0.004778072542574599,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_circulation_over_S": 0.004505456298789236,
+      "max_circulation_MW": 0.004791504478031396,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.004465719906742063,
+      "max_circulation_MW": 0.004749245251039003,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_circulation_over_S": 0.0045557914929353314,
+      "max_circulation_MW": 0.0048450354174433274,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_circulation_over_S": 0.004554215169804942,
+      "max_circulation_MW": 0.009686718029382754,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_circulation_over_S": 0.004614842690833113,
+      "max_circulation_MW": 0.009815671466829918,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.004589129015805079,
+      "max_circulation_MW": 0.009760979031314971,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_circulation_over_S": 0.004651588916070022,
+      "max_circulation_MW": 0.009893829900114783,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_circulation_over_S": 0.004687862869081132,
+      "max_circulation_MW": 0.014956475730750471,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_circulation_over_S": 0.004655238116035098,
+      "max_circulation_MW": 0.01485238750530919,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.004666468860405792,
+      "max_circulation_MW": 0.014888218834063792,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_circulation_over_S": 0.004703376808596502,
+      "max_circulation_MW": 0.015005972455874482,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO5|2025|Spring|0|0",
+      "max_circulation_over_S": 0.004492826236877325,
+      "max_circulation_MW": 0.004778072542574603,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO5|2025|Summer|0|0",
+      "max_circulation_over_S": 0.0043420220199844525,
+      "max_circulation_MW": 0.004617693874437838,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO5|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.0043858625948695355,
+      "max_circulation_MW": 0.004664317855884023,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO5|2025|Winter|0|0",
+      "max_circulation_over_S": 0.004228581694679466,
+      "max_circulation_MW": 0.004497051304486766,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO5|2030|Spring|0|0",
+      "max_circulation_over_S": 0.004484706518530521,
+      "max_circulation_MW": 0.009538874618302365,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO5|2030|Summer|0|0",
+      "max_circulation_over_S": 0.004611107541574457,
+      "max_circulation_MW": 0.009807726884433779,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO5|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.0045584954079491875,
+      "max_circulation_MW": 0.009695822004152503,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO5|2030|Winter|0|0",
+      "max_circulation_over_S": 0.004651588916070033,
+      "max_circulation_MW": 0.009893829900114807,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO5|2035|Spring|0|0",
+      "max_circulation_over_S": 0.004687862869081139,
+      "max_circulation_MW": 0.014956475730750493,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO5|2035|Summer|0|0",
+      "max_circulation_over_S": 0.004655238116035096,
+      "max_circulation_MW": 0.014852387505309182,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO5|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.004610540328324135,
+      "max_circulation_MW": 0.014709780651016052,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO5|2035|Winter|0|0",
+      "max_circulation_over_S": 0.004646194780231795,
+      "max_circulation_MW": 0.014823535033245806,
+      "S_available_MVA": 3.190467841838149
+     }
+    ],
+    "esso_min_available_over_rated": 0.9032450608870086
+   },
+   "objective_change_from_mode_control": 0.0037563717924058437,
+   "objective_change_relative": 9.74041379732786e-08
+  },
+  {
+   "variant": "capacity x100 SENSITIVITY",
+   "capacity_multiplier": 100.0,
+   "case": "full four-network oracle",
+   "restriction": {},
+   "model_size": {
+    "variables": 322596,
+    "constraints": 247608,
+    "ac_blocks": 48
+   },
+   "continuous_runs": [
+    {
+     "setting": "default",
+     "params": {},
+     "gurobi_status": 13,
+     "ObjVal": 648194778.2426965,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 0.022581957933883588,
+     "BarIterCount": 67,
+     "runtime_s": 24.268374919891357,
+     "qcp_dual_warning": true,
+     "suboptimal": true,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "homogeneous",
+     "params": {
+      "BarHomogeneous": 1
+     },
+     "gurobi_status": 13,
+     "ObjVal": 648395082.1143652,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 0.0014107273875534696,
+     "BarIterCount": 97,
+     "runtime_s": 48.22851014137268,
+     "qcp_dual_warning": true,
+     "suboptimal": true,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "homogeneous+focus",
+     "params": {
+      "BarHomogeneous": 1,
+      "NumericFocus": 3
+     },
+     "gurobi_status": 13,
+     "ObjVal": 645924272.6725322,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 0.004036692825647666,
+     "BarIterCount": 123,
+     "runtime_s": 62.07358479499817,
+     "qcp_dual_warning": true,
+     "suboptimal": true,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "focus+scale",
+     "params": {
+      "NumericFocus": 3,
+      "ScaleFlag": 2
+     },
+     "gurobi_status": 13,
+     "ObjVal": 652523557.5836648,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 0.0016124434118811885,
+     "BarIterCount": 72,
+     "runtime_s": 31.716716051101685,
+     "qcp_dual_warning": true,
+     "suboptimal": true,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "homogeneous+nopresolve",
+     "params": {
+      "BarHomogeneous": 1,
+      "Presolve": 0
+     },
+     "gurobi_status": 13,
+     "ObjVal": 646082288.1650181,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 280.80932098693427,
+     "BarIterCount": 86,
+     "runtime_s": 50.61309790611267,
+     "qcp_dual_warning": false,
+     "suboptimal": true,
+     "numerical_trouble": false
+    }
+   ],
+   "continuous_best": {
+    "setting": "homogeneous+focus",
+    "params": {
+     "BarHomogeneous": 1,
+     "NumericFocus": 3
+    },
+    "gurobi_status": 13,
+    "ObjVal": 645924272.6725322,
+    "ObjBound": -Infinity,
+    "usable": true,
+    "certified": false,
+    "MaxVio": 0.004036692825647666,
+    "BarIterCount": 123,
+    "runtime_s": 62.07358479499817,
+    "qcp_dual_warning": true,
+    "suboptimal": true,
+    "numerical_trouble": false
+   },
+   "continuous_diagnostics": {
+    "ac_rank_gap_max": 0.024169510025473902,
+    "ac_rank_gap_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_relative_rank_gap": 0.02410296598179101
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_relative_rank_gap": 0.024169510025473902
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_relative_rank_gap": 0.010238024869831748
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_relative_rank_gap": 0.012975158639968823
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_relative_rank_gap": 0.023793469977603596
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_relative_rank_gap": 0.0235276227562958
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_relative_rank_gap": 0.009110299309991025
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_relative_rank_gap": 0.009476502087763338
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_relative_rank_gap": 0.023905647590168232
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_relative_rank_gap": 0.0240477010042501
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_relative_rank_gap": 0.009368135924644807
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_relative_rank_gap": 0.009518800270616964
+     },
+     {
+      "block": "DSO5|2025|Spring|0|0",
+      "max_relative_rank_gap": 2.962247067867838e-07
+     },
+     {
+      "block": "DSO5|2025|Summer|0|0",
+      "max_relative_rank_gap": 1.7434523729495533e-06
+     },
+     {
+      "block": "DSO5|2025|Autumn|0|0",
+      "max_relative_rank_gap": 1.883898060393703e-07
+     },
+     {
+      "block": "DSO5|2025|Winter|0|0",
+      "max_relative_rank_gap": 1.606345429143968e-07
+     },
+     {
+      "block": "DSO5|2030|Spring|0|0",
+      "max_relative_rank_gap": 3.0046095410678205e-07
+     },
+     {
+      "block": "DSO5|2030|Summer|0|0",
+      "max_relative_rank_gap": 1.740947736504808e-07
+     },
+     {
+      "block": "DSO5|2030|Autumn|0|0",
+      "max_relative_rank_gap": 2.324367905626199e-07
+     },
+     {
+      "block": "DSO5|2030|Winter|0|0",
+      "max_relative_rank_gap": 2.9536233218258024e-07
+     },
+     {
+      "block": "DSO5|2035|Spring|0|0",
+      "max_relative_rank_gap": 1.8468780626375563e-07
+     },
+     {
+      "block": "DSO5|2035|Summer|0|0",
+      "max_relative_rank_gap": 2.0854755003326362e-07
+     },
+     {
+      "block": "DSO5|2035|Autumn|0|0",
+      "max_relative_rank_gap": 2.517514441587059e-07
+     },
+     {
+      "block": "DSO5|2035|Winter|0|0",
+      "max_relative_rank_gap": 2.7673568696351104e-07
+     },
+     {
+      "block": "DSO7|2025|Spring|0|0",
+      "max_relative_rank_gap": 2.7681689085514155e-07
+     },
+     {
+      "block": "DSO7|2025|Summer|0|0",
+      "max_relative_rank_gap": 1.6500477086297106e-07
+     },
+     {
+      "block": "DSO7|2025|Autumn|0|0",
+      "max_relative_rank_gap": 2.6429824393877274e-07
+     },
+     {
+      "block": "DSO7|2025|Winter|0|0",
+      "max_relative_rank_gap": 1.9021767518615013e-07
+     },
+     {
+      "block": "DSO7|2030|Spring|0|0",
+      "max_relative_rank_gap": 2.5966789310869505e-07
+     },
+     {
+      "block": "DSO7|2030|Summer|0|0",
+      "max_relative_rank_gap": 4.09626551476698e-07
+     },
+     {
+      "block": "DSO7|2030|Autumn|0|0",
+      "max_relative_rank_gap": 2.0266778401003375e-07
+     },
+     {
+      "block": "DSO7|2030|Winter|0|0",
+      "max_relative_rank_gap": 1.6475161355839206e-07
+     },
+     {
+      "block": "DSO7|2035|Spring|0|0",
+      "max_relative_rank_gap": 1.369668396758274e-07
+     },
+     {
+      "block": "DSO7|2035|Summer|0|0",
+      "max_relative_rank_gap": 1.8250748079086336e-07
+     },
+     {
+      "block": "DSO7|2035|Autumn|0|0",
+      "max_relative_rank_gap": 1.152833535280945e-07
+     },
+     {
+      "block": "DSO7|2035|Winter|0|0",
+      "max_relative_rank_gap": 1.9778418889234258e-07
+     },
+     {
+      "block": "DSO9|2025|Spring|0|0",
+      "max_relative_rank_gap": 3.6780962400786785e-07
+     },
+     {
+      "block": "DSO9|2025|Summer|0|0",
+      "max_relative_rank_gap": 2.5986361172961334e-07
+     },
+     {
+      "block": "DSO9|2025|Autumn|0|0",
+      "max_relative_rank_gap": 2.486285133882996e-07
+     },
+     {
+      "block": "DSO9|2025|Winter|0|0",
+      "max_relative_rank_gap": 2.0153333963107726e-07
+     },
+     {
+      "block": "DSO9|2030|Spring|0|0",
+      "max_relative_rank_gap": 3.0045176573750287e-07
+     },
+     {
+      "block": "DSO9|2030|Summer|0|0",
+      "max_relative_rank_gap": 3.597935243542644e-07
+     },
+     {
+      "block": "DSO9|2030|Autumn|0|0",
+      "max_relative_rank_gap": 3.512983778240169e-07
+     },
+     {
+      "block": "DSO9|2030|Winter|0|0",
+      "max_relative_rank_gap": 3.5391507731105646e-07
+     },
+     {
+      "block": "DSO9|2035|Spring|0|0",
+      "max_relative_rank_gap": 1.4191278423362375e-07
+     },
+     {
+      "block": "DSO9|2035|Summer|0|0",
+      "max_relative_rank_gap": 1.8539382277187644e-07
+     },
+     {
+      "block": "DSO9|2035|Autumn|0|0",
+      "max_relative_rank_gap": 2.0981174487133384e-07
+     },
+     {
+      "block": "DSO9|2035|Winter|0|0",
+      "max_relative_rank_gap": 3.096077551604852e-07
+     }
+    ],
+    "oltc_rank_gap_max": 7.652319016667782e-08,
+    "cycle_residual_max_rad": 0.012708006863111354,
+    "cycle_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.00865180598998938
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.006118010129752438
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.008030325211924705
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.01230398610445338
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.010062456761140925
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.005603950635816091
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.009245890781715005
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.006946977476320004
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.008913560392537434
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.008342772592666137
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.012708006863111354
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.007109133542488433
+     }
+    ],
+    "ess_circulation_max": 0.004431215764359499,
+    "ess_circulation_max_MW": 0.00471255046547841,
+    "ess_S_available_max_MVA": 3.190467841838149,
+    "ess_circulation_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_circulation_over_S": 0.0044311836301432215,
+      "max_circulation_MW": 0.004712516291083858,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_circulation_over_S": 0.0014016112881758147,
+      "max_circulation_MW": 0.0014905985805607597,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.0007533769135614622,
+      "max_circulation_MW": 0.0008012082718337079,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_circulation_over_S": 0.0008259904107130306,
+      "max_circulation_MW": 0.0008784319476822029,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_circulation_over_S": 0.0021887882611382977,
+      "max_circulation_MW": 0.004655505706503052,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_circulation_over_S": 0.0006634108638825687,
+      "max_circulation_MW": 0.001411060684762267,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.00038416108438253806,
+      "max_circulation_MW": 0.0008171023905387727,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_circulation_over_S": 0.0003618984889414527,
+      "max_circulation_MW": 0.0007697503273183491,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_circulation_over_S": 0.0006876410879562673,
+      "max_circulation_MW": 0.0021938967778510686,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_circulation_over_S": 0.0004236520923329778,
+      "max_circulation_MW": 0.0013516483767158118,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.0004246447455806033,
+      "max_circulation_MW": 0.001354815404980457,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_circulation_over_S": 0.00022603998557792364,
+      "max_circulation_MW": 0.0007211733049559243,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO5|2025|Spring|0|0",
+      "max_circulation_over_S": 0.004377719163289707,
+      "max_circulation_MW": 0.004655657403691472,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO5|2025|Summer|0|0",
+      "max_circulation_over_S": 0.00138029306017646,
+      "max_circulation_MW": 0.001467926873601788,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO5|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.0007506969237476766,
+      "max_circulation_MW": 0.0007983581313945956,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO5|2025|Winter|0|0",
+      "max_circulation_over_S": 0.0008229599916805565,
+      "max_circulation_MW": 0.000875209129525402,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO5|2030|Spring|0|0",
+      "max_circulation_over_S": 0.002162868770772409,
+      "max_circulation_MW": 0.0046003755061769175,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO5|2030|Summer|0|0",
+      "max_circulation_over_S": 0.0006547547524731737,
+      "max_circulation_MW": 0.0013926493213709053,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO5|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.0003788267693028997,
+      "max_circulation_MW": 0.0008057564167255604,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO5|2030|Winter|0|0",
+      "max_circulation_over_S": 0.0003618987505914984,
+      "max_circulation_MW": 0.0007697508838423868,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO5|2035|Spring|0|0",
+      "max_circulation_over_S": 0.0006817497127383781,
+      "max_circulation_MW": 0.0021751005346741913,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO5|2035|Summer|0|0",
+      "max_circulation_over_S": 0.00041774183095362997,
+      "max_circulation_MW": 0.0013327918778481447,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO5|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.0004246459979632741,
+      "max_circulation_MW": 0.001354819400667094,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO5|2035|Winter|0|0",
+      "max_circulation_over_S": 0.00022604038290684748,
+      "max_circulation_MW": 0.0007211745726210784,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO7|2025|Spring|0|0",
+      "max_circulation_over_S": 0.0043932802558048194,
+      "max_circulation_MW": 0.004672206458775917,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO7|2025|Summer|0|0",
+      "max_circulation_over_S": 0.0013876640517448053,
+      "max_circulation_MW": 0.00147576584412221,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO7|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.0007527336804867397,
+      "max_circulation_MW": 0.0008005242003538049,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO7|2025|Winter|0|0",
+      "max_circulation_over_S": 0.0008259837984157081,
+      "max_circulation_MW": 0.0008784249155748802,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO7|2030|Spring|0|0",
+      "max_circulation_over_S": 0.002172051646942814,
+      "max_circulation_MW": 0.004619907286921757,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO7|2030|Summer|0|0",
+      "max_circulation_over_S": 0.0006559757423637831,
+      "max_circulation_MW": 0.0013952463406917044,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO7|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.00038145179132271074,
+      "max_circulation_MW": 0.0008113397822844432,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO7|2030|Winter|0|0",
+      "max_circulation_over_S": 0.0003598075551723027,
+      "max_circulation_MW": 0.0007653029560184247,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO7|2035|Spring|0|0",
+      "max_circulation_over_S": 0.0006765095149929629,
+      "max_circulation_MW": 0.002158381852282571,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO7|2035|Summer|0|0",
+      "max_circulation_over_S": 0.00041862610892840884,
+      "max_circulation_MW": 0.0013356131382899223,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO7|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.0004236013869625256,
+      "max_circulation_MW": 0.0013514866028619757,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO7|2035|Winter|0|0",
+      "max_circulation_over_S": 0.00022168083156765944,
+      "max_circulation_MW": 0.0007072655642685566,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO9|2025|Spring|0|0",
+      "max_circulation_over_S": 0.004431215764359499,
+      "max_circulation_MW": 0.00471255046547841,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO9|2025|Summer|0|0",
+      "max_circulation_over_S": 0.001401635609688137,
+      "max_circulation_MW": 0.0014906244462284026,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO9|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.0007533923605407341,
+      "max_circulation_MW": 0.0008012246995305814,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO9|2025|Winter|0|0",
+      "max_circulation_over_S": 0.0008190675891485416,
+      "max_circulation_MW": 0.0008710696011567742,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO9|2030|Spring|0|0",
+      "max_circulation_over_S": 0.002188791109815888,
+      "max_circulation_MW": 0.004655511765579214,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO9|2030|Summer|0|0",
+      "max_circulation_over_S": 0.0006634216350938924,
+      "max_circulation_MW": 0.0014110835948978311,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO9|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.000384159467133623,
+      "max_circulation_MW": 0.0008170989506850021,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO9|2030|Winter|0|0",
+      "max_circulation_over_S": 0.00035993857167072787,
+      "max_circulation_MW": 0.0007655816253017419,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO9|2035|Spring|0|0",
+      "max_circulation_over_S": 0.0006876306550855446,
+      "max_circulation_MW": 0.00219386349211253,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO9|2035|Summer|0|0",
+      "max_circulation_over_S": 0.0004236555984263649,
+      "max_circulation_MW": 0.001351659562794014,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO9|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.00042365604390954653,
+      "max_circulation_MW": 0.0013516609840937789,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO9|2035|Winter|0|0",
+      "max_circulation_over_S": 0.0002212242733440851,
+      "max_circulation_MW": 0.0007058089299383158,
+      "S_available_MVA": 3.190467841838149
+     }
+    ],
+    "esso_min_available_over_rated": 0.9998537036408088
+   },
+   "mode_rows_applied": 1728,
+   "mode_rows_missing": 0,
+   "fixed_mode_runs": [
+    {
+     "setting": "default",
+     "params": {},
+     "gurobi_status": 13,
+     "ObjVal": 650645343.6591122,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 0.011514484258567714,
+     "BarIterCount": 83,
+     "runtime_s": 29.78578019142151,
+     "qcp_dual_warning": true,
+     "suboptimal": true,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "homogeneous",
+     "params": {
+      "BarHomogeneous": 1
+     },
+     "gurobi_status": 13,
+     "ObjVal": 647383125.4946738,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 0.002087612057051185,
+     "BarIterCount": 72,
+     "runtime_s": 37.00617814064026,
+     "qcp_dual_warning": true,
+     "suboptimal": true,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "homogeneous+focus",
+     "params": {
+      "BarHomogeneous": 1,
+      "NumericFocus": 3
+     },
+     "gurobi_status": 13,
+     "ObjVal": 645374336.9859052,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 0.010391538577172163,
+     "BarIterCount": 126,
+     "runtime_s": 66.73019599914551,
+     "qcp_dual_warning": true,
+     "suboptimal": true,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "focus+scale",
+     "params": {
+      "NumericFocus": 3,
+      "ScaleFlag": 2
+     },
+     "gurobi_status": 13,
+     "ObjVal": 652776643.8818136,
+     "ObjBound": -Infinity,
+     "usable": true,
+     "certified": false,
+     "MaxVio": 0.004534484751515709,
+     "BarIterCount": 69,
+     "runtime_s": 30.39438796043396,
+     "qcp_dual_warning": true,
+     "suboptimal": true,
+     "numerical_trouble": false
+    },
+    {
+     "setting": "homogeneous+nopresolve",
+     "params": {
+      "BarHomogeneous": 1,
+      "Presolve": 0
+     },
+     "gurobi_status": 12,
+     "ObjVal": 8788703911312711.0,
+     "ObjBound": -Infinity,
+     "usable": false,
+     "certified": false,
+     "MaxVio": 0.0,
+     "BarIterCount": 5,
+     "runtime_s": 9.839554071426392,
+     "qcp_dual_warning": false,
+     "suboptimal": false,
+     "numerical_trouble": true
+    }
+   ],
+   "fixed_mode_best": {
+    "setting": "homogeneous+focus",
+    "params": {
+     "BarHomogeneous": 1,
+     "NumericFocus": 3
+    },
+    "gurobi_status": 13,
+    "ObjVal": 645374336.9859052,
+    "ObjBound": -Infinity,
+    "usable": true,
+    "certified": false,
+    "MaxVio": 0.010391538577172163,
+    "BarIterCount": 126,
+    "runtime_s": 66.73019599914551,
+    "qcp_dual_warning": true,
+    "suboptimal": true,
+    "numerical_trouble": false
+   },
+   "fixed_mode_diagnostics": {
+    "ac_rank_gap_max": 0.022682165675849568,
+    "ac_rank_gap_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_relative_rank_gap": 0.022682165675849568
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_relative_rank_gap": 0.022488753191282202
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_relative_rank_gap": 0.01153195769924417
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_relative_rank_gap": 0.013889362256922022
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_relative_rank_gap": 0.02027074205463226
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_relative_rank_gap": 0.021192989996434108
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_relative_rank_gap": 0.009771044046488686
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_relative_rank_gap": 0.010158595265457133
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_relative_rank_gap": 0.02087225608282778
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_relative_rank_gap": 0.02094471465946607
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_relative_rank_gap": 0.010649790461893524
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_relative_rank_gap": 0.010216591545011002
+     },
+     {
+      "block": "DSO5|2025|Spring|0|0",
+      "max_relative_rank_gap": 4.028147457833868e-06
+     },
+     {
+      "block": "DSO5|2025|Summer|0|0",
+      "max_relative_rank_gap": 6.24656377141267e-07
+     },
+     {
+      "block": "DSO5|2025|Autumn|0|0",
+      "max_relative_rank_gap": 5.314061135461195e-07
+     },
+     {
+      "block": "DSO5|2025|Winter|0|0",
+      "max_relative_rank_gap": 3.695009614831966e-07
+     },
+     {
+      "block": "DSO5|2030|Spring|0|0",
+      "max_relative_rank_gap": 3.860559496807079e-06
+     },
+     {
+      "block": "DSO5|2030|Summer|0|0",
+      "max_relative_rank_gap": 4.632095980309559e-07
+     },
+     {
+      "block": "DSO5|2030|Autumn|0|0",
+      "max_relative_rank_gap": 3.5778913921126026e-07
+     },
+     {
+      "block": "DSO5|2030|Winter|0|0",
+      "max_relative_rank_gap": 2.645002146846489e-07
+     },
+     {
+      "block": "DSO5|2035|Spring|0|0",
+      "max_relative_rank_gap": 7.59829242898665e-07
+     },
+     {
+      "block": "DSO5|2035|Summer|0|0",
+      "max_relative_rank_gap": 4.2701259882277473e-07
+     },
+     {
+      "block": "DSO5|2035|Autumn|0|0",
+      "max_relative_rank_gap": 4.213842467592605e-07
+     },
+     {
+      "block": "DSO5|2035|Winter|0|0",
+      "max_relative_rank_gap": 2.0269384663788775e-07
+     },
+     {
+      "block": "DSO7|2025|Spring|0|0",
+      "max_relative_rank_gap": 3.834511727535404e-06
+     },
+     {
+      "block": "DSO7|2025|Summer|0|0",
+      "max_relative_rank_gap": 6.452983402033998e-07
+     },
+     {
+      "block": "DSO7|2025|Autumn|0|0",
+      "max_relative_rank_gap": 5.316606540558311e-07
+     },
+     {
+      "block": "DSO7|2025|Winter|0|0",
+      "max_relative_rank_gap": 3.7020335815340203e-07
+     },
+     {
+      "block": "DSO7|2030|Spring|0|0",
+      "max_relative_rank_gap": 3.436940215926396e-06
+     },
+     {
+      "block": "DSO7|2030|Summer|0|0",
+      "max_relative_rank_gap": 4.481763821862152e-07
+     },
+     {
+      "block": "DSO7|2030|Autumn|0|0",
+      "max_relative_rank_gap": 3.542372301839272e-07
+     },
+     {
+      "block": "DSO7|2030|Winter|0|0",
+      "max_relative_rank_gap": 2.6823674108586395e-07
+     },
+     {
+      "block": "DSO7|2035|Spring|0|0",
+      "max_relative_rank_gap": 7.424818006873349e-07
+     },
+     {
+      "block": "DSO7|2035|Summer|0|0",
+      "max_relative_rank_gap": 4.0810654895549244e-07
+     },
+     {
+      "block": "DSO7|2035|Autumn|0|0",
+      "max_relative_rank_gap": 3.9969595542399473e-07
+     },
+     {
+      "block": "DSO7|2035|Winter|0|0",
+      "max_relative_rank_gap": 1.968386723811711e-07
+     },
+     {
+      "block": "DSO9|2025|Spring|0|0",
+      "max_relative_rank_gap": 4.057963646311868e-06
+     },
+     {
+      "block": "DSO9|2025|Summer|0|0",
+      "max_relative_rank_gap": 7.1189560475177e-07
+     },
+     {
+      "block": "DSO9|2025|Autumn|0|0",
+      "max_relative_rank_gap": 5.378510105414986e-07
+     },
+     {
+      "block": "DSO9|2025|Winter|0|0",
+      "max_relative_rank_gap": 3.4791900504309513e-07
+     },
+     {
+      "block": "DSO9|2030|Spring|0|0",
+      "max_relative_rank_gap": 3.874289819523982e-06
+     },
+     {
+      "block": "DSO9|2030|Summer|0|0",
+      "max_relative_rank_gap": 4.7228770009805653e-07
+     },
+     {
+      "block": "DSO9|2030|Autumn|0|0",
+      "max_relative_rank_gap": 3.456013180896404e-07
+     },
+     {
+      "block": "DSO9|2030|Winter|0|0",
+      "max_relative_rank_gap": 3.2459645556668885e-07
+     },
+     {
+      "block": "DSO9|2035|Spring|0|0",
+      "max_relative_rank_gap": 7.573572056602704e-07
+     },
+     {
+      "block": "DSO9|2035|Summer|0|0",
+      "max_relative_rank_gap": 4.3078736452423317e-07
+     },
+     {
+      "block": "DSO9|2035|Autumn|0|0",
+      "max_relative_rank_gap": 4.2640793640643875e-07
+     },
+     {
+      "block": "DSO9|2035|Winter|0|0",
+      "max_relative_rank_gap": 1.983600503448397e-07
+     }
+    ],
+    "oltc_rank_gap_max": 4.2144616584148516e-07,
+    "cycle_residual_max_rad": 0.012386610965731126,
+    "cycle_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.008490116327507291
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.0061052310177975855
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.007834004023119068
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.012068709952481438
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.009765171345648582
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.005662997233674805
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.009039647058816769
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.006792636488093695
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.008451782609657066
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.008385200579986485
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.012386610965731126
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "n_cycles": 1,
+      "max_cycle_angle_residual_rad": 0.006503912793096145
+     }
+    ],
+    "ess_circulation_max": 0.0072354479741996245,
+    "ess_circulation_max_MW": 0.020616230238120207,
+    "ess_S_available_max_MVA": 3.190467841838149,
+    "ess_circulation_per_block": [
+     {
+      "block": "TSO|2025|Spring|0|0",
+      "max_circulation_over_S": 0.0072354479741996245,
+      "max_circulation_MW": 0.0076948213609922935,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2025|Summer|0|0",
+      "max_circulation_over_S": 0.006849843392714032,
+      "max_circulation_MW": 0.007284735022027212,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.006439267917935856,
+      "max_circulation_MW": 0.006848092405718147,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2025|Winter|0|0",
+      "max_circulation_over_S": 0.006691317515497657,
+      "max_circulation_MW": 0.0071161444509078705,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "TSO|2030|Spring|0|0",
+      "max_circulation_over_S": 0.006950966044627622,
+      "max_circulation_MW": 0.014784555756728893,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2030|Summer|0|0",
+      "max_circulation_over_S": 0.004879943973068215,
+      "max_circulation_MW": 0.01037953621069735,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.004961696283006045,
+      "max_circulation_MW": 0.010553421621265772,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2030|Winter|0|0",
+      "max_circulation_over_S": 0.004562192439669874,
+      "max_circulation_MW": 0.009703685511362572,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "TSO|2035|Spring|0|0",
+      "max_circulation_over_S": 0.006461820416357,
+      "max_circulation_MW": 0.020616230238120207,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "TSO|2035|Summer|0|0",
+      "max_circulation_over_S": 0.004096187768434154,
+      "max_circulation_MW": 0.013068755349319939,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "TSO|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.004145417540871463,
+      "max_circulation_MW": 0.013225821355142183,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "TSO|2035|Winter|0|0",
+      "max_circulation_over_S": 0.003001174667652512,
+      "max_circulation_MW": 0.009575151264884634,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO5|2025|Spring|0|0",
+      "max_circulation_over_S": 0.007235447974162707,
+      "max_circulation_MW": 0.0076948213609530315,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO5|2025|Summer|0|0",
+      "max_circulation_over_S": 0.006849843392667683,
+      "max_circulation_MW": 0.007284735021977921,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO5|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.006429318934185993,
+      "max_circulation_MW": 0.006837511768147177,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO5|2025|Winter|0|0",
+      "max_circulation_over_S": 0.006607367714298557,
+      "max_circulation_MW": 0.007026864737223059,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO5|2030|Spring|0|0",
+      "max_circulation_over_S": 0.006859642201708752,
+      "max_circulation_MW": 0.014590311900711738,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO5|2030|Summer|0|0",
+      "max_circulation_over_S": 0.00487994397337401,
+      "max_circulation_MW": 0.01037953621134777,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO5|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.004961696282962271,
+      "max_circulation_MW": 0.010553421621172666,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO5|2030|Winter|0|0",
+      "max_circulation_over_S": 0.00451891409048098,
+      "max_circulation_MW": 0.009611633390472569,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO5|2035|Spring|0|0",
+      "max_circulation_over_S": 0.006461820416048817,
+      "max_circulation_MW": 0.02061623023713696,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO5|2035|Summer|0|0",
+      "max_circulation_over_S": 0.0039043506296444173,
+      "max_circulation_MW": 0.012456705127141043,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO5|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.00392542447448389,
+      "max_circulation_MW": 0.012523940551405264,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO5|2035|Winter|0|0",
+      "max_circulation_over_S": 0.003001174667750524,
+      "max_circulation_MW": 0.009575151265197337,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO7|2025|Spring|0|0",
+      "max_circulation_over_S": 0.007232140172494838,
+      "max_circulation_MW": 0.007691303549336859,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO7|2025|Summer|0|0",
+      "max_circulation_over_S": 0.006701574167153192,
+      "max_circulation_MW": 0.007127052289998511,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO7|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.006416972896893336,
+      "max_circulation_MW": 0.006824381889828391,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO7|2025|Winter|0|0",
+      "max_circulation_over_S": 0.006691317515495587,
+      "max_circulation_MW": 0.007116144450905668,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO7|2030|Spring|0|0",
+      "max_circulation_over_S": 0.006851883275664479,
+      "max_circulation_MW": 0.014573808831357435,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO7|2030|Summer|0|0",
+      "max_circulation_over_S": 0.004772045427287207,
+      "max_circulation_MW": 0.010150038317033747,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO7|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.004914763931140245,
+      "max_circulation_MW": 0.010453597515019328,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO7|2030|Winter|0|0",
+      "max_circulation_over_S": 0.004487890345653265,
+      "max_circulation_MW": 0.00954564655033509,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO7|2035|Spring|0|0",
+      "max_circulation_over_S": 0.005974106602163118,
+      "max_circulation_MW": 0.019060194997914396,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO7|2035|Summer|0|0",
+      "max_circulation_over_S": 0.0040961877687559845,
+      "max_circulation_MW": 0.013068755350346729,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO7|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.004145417540761447,
+      "max_circulation_MW": 0.013225821354791181,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO7|2035|Winter|0|0",
+      "max_circulation_over_S": 0.0029610246891486826,
+      "max_circulation_MW": 0.009447054049617673,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO9|2025|Spring|0|0",
+      "max_circulation_over_S": 0.007218864839456688,
+      "max_circulation_MW": 0.007677185374954224,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO9|2025|Summer|0|0",
+      "max_circulation_over_S": 0.006748168881805397,
+      "max_circulation_MW": 0.007176605269564339,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO9|2025|Autumn|0|0",
+      "max_circulation_over_S": 0.006439267917944104,
+      "max_circulation_MW": 0.006848092405726917,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO9|2025|Winter|0|0",
+      "max_circulation_over_S": 0.006541529370624005,
+      "max_circulation_MW": 0.006956846364471878,
+      "S_available_MVA": 1.063489280612716
+     },
+     {
+      "block": "DSO9|2030|Spring|0|0",
+      "max_circulation_over_S": 0.006950966044494708,
+      "max_circulation_MW": 0.014784555756446188,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO9|2030|Summer|0|0",
+      "max_circulation_over_S": 0.0047517192334243855,
+      "max_circulation_MW": 0.010106804938456213,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO9|2030|Autumn|0|0",
+      "max_circulation_over_S": 0.00495968403930483,
+      "max_circulation_MW": 0.010549141622053327,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO9|2030|Winter|0|0",
+      "max_circulation_over_S": 0.004562192439693543,
+      "max_circulation_MW": 0.009703685511412917,
+      "S_available_MVA": 2.126978561225432
+     },
+     {
+      "block": "DSO9|2035|Spring|0|0",
+      "max_circulation_over_S": 0.0064509031411610655,
+      "max_circulation_MW": 0.02058139902268708,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO9|2035|Summer|0|0",
+      "max_circulation_over_S": 0.003880973452579572,
+      "max_circulation_MW": 0.012382120995482696,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO9|2035|Autumn|0|0",
+      "max_circulation_over_S": 0.003921949840155607,
+      "max_circulation_MW": 0.01251285484231873,
+      "S_available_MVA": 3.190467841838149
+     },
+     {
+      "block": "DSO9|2035|Winter|0|0",
+      "max_circulation_over_S": 0.002896807206854569,
+      "max_circulation_MW": 0.009242170237474492,
+      "S_available_MVA": 3.190467841838149
+     }
+    ],
+    "esso_min_available_over_rated": 0.9972267163851074
+   },
+   "objective_change_from_mode_control": -549935.6866270304,
+   "objective_change_relative": -0.0008513934371155523
+  }
+ ]
+}

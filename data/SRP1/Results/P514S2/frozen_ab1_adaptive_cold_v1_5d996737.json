@@ -1,0 +1,29 @@
+{
+  "design": "AB1 — adaptive rho (residual balancing) on the COLD path",
+  "status": "FROZEN DESIGN — costed, NOT RUN. Running it requires separate authorization.",
+  "why_this_and_not_the_warm_path": "The warm path is ALREADY ANSWERED. P5.9-B ran exactly that A/B at rho_pf = 1000 from the same template: adaptive OFF 16 cycles / 783.6 s, adaptive ON 6 cycles / 295.4 s, rho_pf driven to 131.687, objective better by 109,131. Re-running it would buy nothing. The untested case is the COLD path, which is where the cost problem actually lives and where the only trajectory was capped at 21 cycles by configuration.",
+  "single_varied_setting": "adaptive_penalty: False (control) vs True (treatment). Everything else identical: cold start, rho_pf 300, rho_v 1.5, rho_ess 1.0, production tolerances, proximal regularization as configured, RESCALED construction.",
+  "cap": "both arms uncapped, or capped identically at a value stated before the run; a cap that binds in either arm invalidates the cycle comparison and must be reported as inconclusive rather than interpreted",
+  "analytic_prediction": {
+    "derivation": "The update rule decreases rho when dual_ratio > residual_balance_ratio_pf_decrease * primal_ratio and increases it when primal_ratio > residual_balance_ratio * dual_ratio (shared_resources_planning.py:5476-5482). The dual residual is linear in rho (4938) and the primal residual is not, so the rule has negative feedback in rho with a fixed point where the two ratios sit within the dead band. P5.9-B observed that fixed point at rho_pf = 131.687 starting from 1000.",
+    "predeclared_prediction": "ATTRACTOR HYPOTHESIS — the fixed point is a property of the problem and the dead band, not of the starting value. Starting from rho_pf = 300 instead of 1000, the adaptive arm should settle in rho_pf in [80, 200], i.e. the same neighbourhood as 131.687.",
+    "falsification": "a settled rho_pf outside [80, 200], or no settling at all (oscillation between the increase and decrease branches), falsifies it. Oscillation is the specific failure mode the S1 coupling makes plausible and must be reported as a finding, not smoothed.",
+    "secondary_prediction": "if the attractor holds and 6 cycles at fixed rho_pf 300 is near the achievable floor on the warm path, the adaptive COLD arm should reduce cycles relative to the cold control; no magnitude is predicted, because no cold run has ever been allowed to converge"
+  },
+  "predeclared_outcomes": {
+    "adaptation_helps": "treatment converges in materially fewer cycles than control, with equal or better objective",
+    "adaptation_neutral": "cycle counts within one of each other",
+    "adaptation_harms": "treatment needs more cycles, or oscillates, or degrades the objective — a real possibility given that the coupling drives rho down while the primal consensus needs it up"
+  },
+  "cost": {
+    "per_arm": ">= 1071 local solves (>= 21 cycles x 51), true cost unknown because no cold run has converged",
+    "both_arms": ">= 2142 local solves",
+    "wall_clock_estimate": "the capped 21-cycle cold run took 1176 s in P5.12-R; an uncapped run is necessarily longer and cannot be bounded from existing evidence",
+    "honest_statement": "this is the most expensive item on the S2 agenda and its cost is a lower bound, not an estimate"
+  },
+  "what_it_cannot_settle": [
+    "nothing about Q(x) convexity or cut validity",
+    "nothing about the warm path, which P5.9-B already measured",
+    "nothing about whether the cold path is the right oracle — that is the formulation tension, not a tuning question"
+  ]
+}

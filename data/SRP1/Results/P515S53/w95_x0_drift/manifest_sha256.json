@@ -1,0 +1,1603 @@
+{
+ "schema": "p515_s53_w95_manifest_v1",
+ "script": {
+  "path": "p515_s53_w95_x0_drift_diagnostics.py",
+  "sha256": "6530eb22a807ea74652ed85fb4d15d4e5a230b624c6db45ff15d40f45ebd9e68"
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "python_version": "3.11.11 | packaged by conda-forge | (main, Dec  5 2024, 08:47:03) [Clang 18.1.8 ]",
+ "inputs": {
+  "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/evaluation_record.json": {
+   "sha256": "61bd5232e645112b05ad66f5683ff72760937098410dd9a1d34df728ee029d80",
+   "size_bytes": 59598,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:15:56.429896+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.347537+00:00",
+   "role": "evaluation record (certification, rule ten as recorded)"
+  },
+  "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/per_cycle_record.jsonl": {
+   "sha256": "3f0908014805cbd2e0af558cdca2d1cc07842efc55202db727539c0f9812fe80",
+   "size_bytes": 140884,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:15:56.425806+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.350020+00:00",
+   "role": "per-cycle trajectory + response fields (Q, residual ratios, row-18 aggregates)"
+  },
+  "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/g_s39_D.json": {
+   "sha256": "6ea6003e4cd1505fb67e2e13cb0f6a08d41e583c29f95db2eeb18fd292aa0c4a",
+   "size_bytes": 887179,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:15:56.366788+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.351028+00:00",
+   "role": "full stage report: cycle_trajectory with Boyd r/s/norms per channel"
+  },
+  "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/aa_per_cycle.jsonl": {
+   "sha256": "3bd8ef0817100a1f5186f936b04b6609d5bcfd6ebea4d17b4a3b2e713b460b68",
+   "size_bytes": 27208,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:15:56.346316+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.356708+00:00",
+   "role": "Anderson acceleration per cycle"
+  },
+  "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/recourse_jump_sidecar_baseline.jsonl": {
+   "sha256": "110ca037256155169ec8d77682280bddf7449b3d3c7e09ee6d9b7b52d1d733e1",
+   "size_bytes": 291216,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:10:16.682107+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.360422+00:00",
+   "role": "per-cycle block recourse deltas (top 10 by |delta|) + block totals"
+  },
+  "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/convergence_depth_tail_state.json": {
+   "sha256": "0015cd7bd66f4a9dfbdba328a06f6b001398fcfe6164b1ac39da134ecd5d7d12",
+   "size_bytes": 41888,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:10:31.037890+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.360860+00:00",
+   "role": "tail state per cycle"
+  },
+  "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/network_ipopt_solve_records.jsonl": {
+   "sha256": "4cb3f58f647f94feff46e07ae259e677fb89116c9a521b9bacf099fdff036d82",
+   "size_bytes": 4450814,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:10:31.035315+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.401149+00:00",
+   "role": "production per-solve IPOPT records (round = ADMM cycle; round 0 = initialisation)"
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2025_Autumn.log": {
+   "sha256": "cec06aa8f2f62ce0a393977ea77c02b2e93fe05a8ed684a782eb8450f9218ab2",
+   "size_bytes": 13044130,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:04:33.012776+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.409394+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12861313,
+      13044130
+     ],
+     "sha256": "c1829129a73aeaba7288e411eb380b6c967ede9d1b1c7028afaad1b020b82782"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2025_Spring.log": {
+   "sha256": "5b36df1d337128a1af972577685b98135ff1186ce62ac00bc4ff13afc490c2bd",
+   "size_bytes": 13546361,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:04:01.816132+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.418687+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13359508,
+      13546361
+     ],
+     "sha256": "069ebe829c149c9808694b6a6b9fa979ec2446bfcbbedc1800cf2520b1987bc4"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2025_Summer.log": {
+   "sha256": "3f167ad6958e669b6d0af0afd73f6c099d65bc390fc4303368bb3470789c5f56",
+   "size_bytes": 12474737,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:04:27.898036+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.427185+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12297255,
+      12474737
+     ],
+     "sha256": "da7b0e499ecd136c1418a78aee2951fb9b883bb941018e40a7bcb26cf2beb21b"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2025_Winter.log": {
+   "sha256": "185b26f409764b343c74e591852d5f5479338344e7b8454dc58ff4b4c8e2dd45",
+   "size_bytes": 13834484,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:04:38.122666+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.437012+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13651396,
+      13834484
+     ],
+     "sha256": "7662a913315a062a3ed2477ac468166ddeb5a43c9d9d60bef8a0abfced560e27"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2028_Autumn.log": {
+   "sha256": "0275b7fd68ddb891d50b571182fedcc749911b02d9d752bc4dc125ff1fcf347a",
+   "size_bytes": 12013089,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:04:53.512434+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.444341+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      11839051,
+      12013089
+     ],
+     "sha256": "dbc02765c78959d0cb99d5080fc9a91e61933308f2b9355e590ba581e45a1ff4"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2028_Spring.log": {
+   "sha256": "19bd059d0c266edb43f2a631ada3f99010bb322501aae8e3ac8806966c6e7042",
+   "size_bytes": 13758220,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:04:43.516555+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.452962+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13570507,
+      13758220
+     ],
+     "sha256": "1b1639aa400081149ddd08fe2c73209749dcacb3ad3db529e23107b7e278b7ab"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2028_Summer.log": {
+   "sha256": "42069582fff7507a8e809ed045d1f901223afa478aa763063f9e8a1922f4dd3d",
+   "size_bytes": 12607321,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:04:48.539211+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.460804+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12433400,
+      12607321
+     ],
+     "sha256": "a5fee717fa8a5d11f42bb8d58d69580f6e072c52323e4f5655c7be9773d60a90"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2028_Winter.log": {
+   "sha256": "20a1035a3f501dcacdb3ef2eb79443de86cedbfc9f8325a310ebb92d98d9ebd7",
+   "size_bytes": 11590672,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:04:58.454496+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.468665+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      11425596,
+      11590672
+     ],
+     "sha256": "3da8f2a5f895cc562a12814a091be24eff99b4ba6344108a411c662188d93712"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2031_Autumn.log": {
+   "sha256": "6f56e50862f974d4287b0e52327b75f9fcb66de64de0d7831bd139770300e804",
+   "size_bytes": 12415540,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:05:13.339982+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.476555+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12241510,
+      12415540
+     ],
+     "sha256": "d0d559d66dc771c166d89408fef6065241acd12edd5f5e2228afac150cca9036"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2031_Spring.log": {
+   "sha256": "ecfe7a319c93c54e060a257a329c2cecce48766042953691a9b4b47cf6554a4e",
+   "size_bytes": 11958350,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:05:03.344379+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.485510+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      11796233,
+      11958350
+     ],
+     "sha256": "113ad98d5a04d887a23d0433d3b833038f7f58801c3b6c98c20c8b2d28e79ec3"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2031_Summer.log": {
+   "sha256": "4785012473aa6cd67fe99d236f9231ea03d0feeec2f7470d0a5ce11e984e3da9",
+   "size_bytes": 12236179,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:05:08.356732+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.495849+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12067911,
+      12236179
+     ],
+     "sha256": "e39595aeee0b8257ba9a9b541bc9d0999f48dd1b19bf0744f3c7c6c5489d0edd"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2031_Winter.log": {
+   "sha256": "b82b449d201e164f21821da6ef0890427007c998fd2961f3692d94ded4afeefa",
+   "size_bytes": 11574772,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:05:18.136972+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.504899+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      11418585,
+      11574772
+     ],
+     "sha256": "983dc3b89480403cf917c925ba695f5505e2cd70ac7f282b9070156a9f68b205"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2034_Autumn.log": {
+   "sha256": "d44ee97762a10226b46c7634e2818f4514d0844c5bea0d558779c0b6b5be4693",
+   "size_bytes": 13254977,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:05:33.220326+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.515213+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13068332,
+      13254977
+     ],
+     "sha256": "a8cea4ef77cf846c31d29538a500263f4335fe3cc6a87cb137bd2c3b1625ab8f"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2034_Spring.log": {
+   "sha256": "8c46eed7bce35a127720b477e94ab85bd6fd57dad5e86e8b669dd6777eaee66f",
+   "size_bytes": 12700142,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:05:23.067124+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.525905+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12531860,
+      12700142
+     ],
+     "sha256": "f10f5f01fd308a4a05c7aa403b0d5fce4bcd998da4288c0650a637a15aaf92cb"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2034_Summer.log": {
+   "sha256": "4515488d05c7068769cede4349192d3ac4e11655b7bc09c0a4fa9512fd2b4ee9",
+   "size_bytes": 12374618,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:05:28.060670+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.538779+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12200487,
+      12374618
+     ],
+     "sha256": "d844a5b2f53a148169fcbacdf6d4211e8fc27b0c50dc63fdde2d6d32353ebc20"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2034_Winter.log": {
+   "sha256": "095eecc0e4878145557be295bc56c5c53a17e9e8374c4ff142aaf66663028259",
+   "size_bytes": 12586093,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:05:38.014711+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.548143+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12421323,
+      12586093
+     ],
+     "sha256": "9e6ad1ab9bc1ed4950087e3c7504b828dac71cb8288c660fdc9d710d976f9c32"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2037_Autumn.log": {
+   "sha256": "084956c7760d42fdf23d52fec96632d913bfe495e4c988ed8f984fdb84583d19",
+   "size_bytes": 12114162,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:05:52.782211+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.558049+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      11949133,
+      12114162
+     ],
+     "sha256": "cbf8aac2ff90bf4bea9812d11883a2e3a9e6b8b6504a92f5b3fbd8ed83ebd4f9"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2037_Spring.log": {
+   "sha256": "801d2ab8d68fce5674b363dd9982393219551199f2ebe43053b278a2fd3b34db",
+   "size_bytes": 13524677,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:05:43.029691+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.569244+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13350543,
+      13524677
+     ],
+     "sha256": "9f79bc903b61bfd1b083c7856e8cd4e4ba7a059fd25a42af18e5c29ed3b9c377"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2037_Summer.log": {
+   "sha256": "a33100b1ddc1d3554d514dd11177be89e8cfcdbe15f537603916b56f5335865b",
+   "size_bytes": 12747453,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:05:47.964780+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.580186+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12576507,
+      12747453
+     ],
+     "sha256": "b60a344c552236ed48fd5fb3f5d65f3623560a8487d7525020d32e3bacda63fc"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_1_2037_Winter.log": {
+   "sha256": "4317b001826e5708ccc0606dbe751c73e1bac8f8b22a010a5e93718c1928203e",
+   "size_bytes": 12069356,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:05:57.626357+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.588598+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      11901498,
+      12069356
+     ],
+     "sha256": "4e5ee7359757d23fd2b5b59906a391df4f99a91b8d6afb06b439a93ef00e42a8"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2025_Autumn.log": {
+   "sha256": "e898f814ea55303ecc0c65dd02c16b67be1507b4e62a80f3879cfa965a98d054",
+   "size_bytes": 13176567,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:06:16.217015+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.598793+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12995839,
+      13176567
+     ],
+     "sha256": "59f748c2f4afb6997a5f95cea8024a85926d6e96d20012cf4a5540fbce7dfa91"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2025_Spring.log": {
+   "sha256": "3f38b81bffff32e70e6ed6f7d769fb5a11f964dcfea81404ad4ea1b310685b47",
+   "size_bytes": 15406696,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:06:05.894863+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.613434+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      15223125,
+      15406696
+     ],
+     "sha256": "5f13b8cd68493304f15678b7ab5db399f130e61b330b64dcf716d436c535377e"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2025_Summer.log": {
+   "sha256": "6903058f8d2fee342913c1e7a4773144d40f8accc1d84679b79d7bf81ede03d1",
+   "size_bytes": 14842311,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:06:11.241737+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.628816+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      14637340,
+      14842311
+     ],
+     "sha256": "6b5d5107cf2d47f546c1af888f19e5d4933481846c107b4577de010d5ec085dd"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2025_Winter.log": {
+   "sha256": "a46cce174dd30b11599afa0a7cf6d6810e5e661c28bbe2aae4654818cc342015",
+   "size_bytes": 13874338,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:06:21.175633+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.639238+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13691258,
+      13874338
+     ],
+     "sha256": "b86c5e6a63bb658408b595b00641e85eb8b27c4e9e58e21b74a8dbbb76921133"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2028_Autumn.log": {
+   "sha256": "bb35fc59a5e89f06d2cdfe57b28c26d3266805a3b1080d2636e35f0fc04c07bd",
+   "size_bytes": 14059940,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:06:35.944730+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.648147+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13872667,
+      14059940
+     ],
+     "sha256": "158d2c6e02d0965f99ac0cef221418646b39e173440d5e7e48c5c41e1f689ba3"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2028_Spring.log": {
+   "sha256": "c24519459bd8891c9428a0597d85956e84b58f9153731be8ff1e98d87b8e2597",
+   "size_bytes": 15597605,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:06:26.042540+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.659081+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      15423259,
+      15597605
+     ],
+     "sha256": "e13578bc37fff6d564b388d87774d3c07d777c9a8a9f98365fcd19b10b51584e"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2028_Summer.log": {
+   "sha256": "7b90e98a5e672e00fc4b0d1b8d60d04f3e9c55289077cc801486a19d21fe2526",
+   "size_bytes": 13848798,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:06:30.826749+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.670605+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13680305,
+      13848798
+     ],
+     "sha256": "b7eb3be99e9b509e24a80b9156db1ceb2ddd41fb190c0db9bf209129988ab4c2"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2028_Winter.log": {
+   "sha256": "f16247306ad75f41e752ea660be06a2a4230dbdba0b9e9030ec1209cb05c70c5",
+   "size_bytes": 12495473,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:06:40.696306+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.681890+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12330075,
+      12495473
+     ],
+     "sha256": "7b2c8a0073d8217e8ed296fc037525b6c7ffbd74b0f2682dd63205b05bf15d41"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2031_Autumn.log": {
+   "sha256": "5265314679f6240765b839562ecae00178b3eecd7b98d12ad57fd80760756f69",
+   "size_bytes": 12368131,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:06:55.744237+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.690684+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12206457,
+      12368131
+     ],
+     "sha256": "e0cb0ba23eb90d145c1019b453cafd9cf492e6e6900883bf8dc94c3f6e390b84"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2031_Spring.log": {
+   "sha256": "54d746907ec68a8a907266d77ca933bae86c905c707852babf1ee56f416cb364",
+   "size_bytes": 15090337,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:06:46.190479+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.705354+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      14887598,
+      15090337
+     ],
+     "sha256": "3b8f4f7c139bd9e89a37be3b15e836945d8991df3ba066dc45cbbc86aaf140b1"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2031_Summer.log": {
+   "sha256": "c9452599b80241bb9f8478a533e0a3357cd77e969364aeb85ac66eb208d1cf55",
+   "size_bytes": 13578623,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:06:51.119609+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.717361+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13398158,
+      13578623
+     ],
+     "sha256": "26c5ca305853088aaf99fbe01f556349f578fa554a57022604fe658cb9653acf"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2031_Winter.log": {
+   "sha256": "ab32f6bf23401eb8174ba5b9733317d9a50af103cdae57a97216f55281be6a09",
+   "size_bytes": 12235302,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:07:00.224593+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.727671+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12083159,
+      12235302
+     ],
+     "sha256": "07a07fef33f8bbee1b39c4c1dd54b17e53e7d2f05c8ca64cafe9c57fbeaaad71"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2034_Autumn.log": {
+   "sha256": "cf2c2f3a04a3ccf619da6cee0a07e3acec703f376fa07ea58ae116972195c034",
+   "size_bytes": 12886402,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:07:15.997051+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.738523+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12717217,
+      12886402
+     ],
+     "sha256": "0f616a986f92f52b0c0de15d34e7072627e661b2e08f7cf14d022de44ce788bf"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2034_Spring.log": {
+   "sha256": "fb99755e6462f3b39975839fcfce383341b7cb98d9620a3f21426a6da2e2115f",
+   "size_bytes": 15096740,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:07:05.830171+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.747765+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      14883789,
+      15096740
+     ],
+     "sha256": "4d383f6a5c3af7302c9834ef0f24d3e2afe9b9d75dd5a400a459bfbcc06af9ef"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2034_Summer.log": {
+   "sha256": "59c683a32083e487649e5be7d074b2a75d7a27bca92ccc4f405ba203143836dc",
+   "size_bytes": 14216504,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:07:11.135122+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.758088+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      14026146,
+      14216504
+     ],
+     "sha256": "c1c8cf7b043dc365b5e61bf77a85ee83df0f8506fe487cadf764b8823994c697"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2034_Winter.log": {
+   "sha256": "aa12aa2192cc70a5f602524b1ca3d83eb747e94a9561671de9219ebfddc9c7df",
+   "size_bytes": 11767902,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:07:20.528677+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.770863+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      11612618,
+      11767902
+     ],
+     "sha256": "51a9cc970c9429f8e0a48cf41b41f90cf78ab858a991205cd793e9be0537565c"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2037_Autumn.log": {
+   "sha256": "30ba2defd2c209a82ff139877b59fd538062ea44f4924e7f995ea49786f4a494",
+   "size_bytes": 12879837,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:07:35.286558+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.780351+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12712258,
+      12879837
+     ],
+     "sha256": "69eaac3d231feea183dd58b9a93919c596df46c1982674e9d2767930add8b22c"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2037_Spring.log": {
+   "sha256": "bdf555fd6e22c1fcc654fa124fafbbbc86b1482bdf245d9fe63b95ce2de41456",
+   "size_bytes": 14098421,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:07:25.165214+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.792179+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13939839,
+      14098421
+     ],
+     "sha256": "141bbae8c8dd8741b65a09eafbb03e479b9c4baab203dbede00a28e98ab3bea1"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2037_Summer.log": {
+   "sha256": "3bdf73995581810381107e5f974addbb68aa8340b198e6819993824b81072e39",
+   "size_bytes": 14433415,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:07:30.565214+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.804660+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      14231067,
+      14433415
+     ],
+     "sha256": "8794b292de0eb6d3d75f504e63e46d5d649b4956aaf37204abdc981b9a78e427"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_2_2037_Winter.log": {
+   "sha256": "2bd12fc9b9fb666d16f0f57a61cb1c6f8f06a274918435d9bcbb0584d2b877e5",
+   "size_bytes": 12837452,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:07:40.509501+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.813411+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12647033,
+      12837452
+     ],
+     "sha256": "18aa224c6f06c62d56f3a58a356dd630e6eaaa91f8f26952694114692fe5cc9e"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2025_Autumn.log": {
+   "sha256": "5c66361ee0387b8ac2b15b10301bd7e139ad0535bb582840811c812c609a85c2",
+   "size_bytes": 13423352,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:07:56.512336+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.825826+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13232980,
+      13423352
+     ],
+     "sha256": "0163ee2ce82adb35e8bb1b5cd657d6744e32e5823d4833cc35f0b745abb1444f"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2025_Spring.log": {
+   "sha256": "9112bdabd58f894ef0dc2f129429a640162ec31523b6be28466ce89abecf3aae",
+   "size_bytes": 14829878,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:07:46.144024+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.836318+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      14620724,
+      14829878
+     ],
+     "sha256": "7ca1920110f46e4265e4baaa9e7b93a0d75326b70ed854fe58347c6accf66153"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2025_Summer.log": {
+   "sha256": "0cf38ed9e46afbb983585d1b9ee2d8c460f3ab70c5814ed29c9f5e272bf0b11f",
+   "size_bytes": 13756768,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:07:51.279565+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.847023+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13575727,
+      13756768
+     ],
+     "sha256": "ec99ac216fc6dfc31859c5e8daec7ddef59707f90103e87f0d5bc370536bd5c9"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2025_Winter.log": {
+   "sha256": "69f1c6e62bff42135f60ba5af079720648faefb4549143cc4d66e024ce1811d7",
+   "size_bytes": 13244399,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:08:01.501093+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.859034+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13064197,
+      13244399
+     ],
+     "sha256": "96b2032941c5962345cabb03b122931d6f32b7f21371d3f2d6bd9dc9af8efd26"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2028_Autumn.log": {
+   "sha256": "1299fd03ac35e78f469faf99b6caf85f69828c4e904113c10e033e36ec07463e",
+   "size_bytes": 14007579,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:08:17.330276+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.869965+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13811343,
+      14007579
+     ],
+     "sha256": "8e185fcb38c5f69e7bf31cb5d6ecbe3a20404fd73096888a518c0f78a8bcad4d"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2028_Spring.log": {
+   "sha256": "1374b2a3e5de9f08a75ee0deac564f29ebf7a548eb5962e6630b9fc0dec6e365",
+   "size_bytes": 14910825,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:08:06.971171+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.883426+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      14710455,
+      14910825
+     ],
+     "sha256": "3e923b1d6a1414c944754543fe3b3297d5d1fa8121ddb7a80cf2ea39b57783a3"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2028_Summer.log": {
+   "sha256": "91eafbba2be352c1f7e3a99001a2d716e3ddb0c118bbcd215c0753038185960a",
+   "size_bytes": 13640481,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:08:12.064975+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.891716+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13459115,
+      13640481
+     ],
+     "sha256": "710f5fa3aae6954ac0cb5247ad011b069a7a864fdd6ba38ee66771410487866e"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2028_Winter.log": {
+   "sha256": "92c86120b2b575a3937ba4da1d1424bb7aa666f8c796870e5855064ed832201a",
+   "size_bytes": 12276371,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:08:22.346770+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.904105+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12101768,
+      12276371
+     ],
+     "sha256": "0e356a08f13c3cec87a025f7c4f3ebb493e050db8c4e0f7633677b9ed0f2a3fc"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2031_Autumn.log": {
+   "sha256": "fcaf3dd15a60253737e0723b311d1217b0c2b2ec0dfa4c1551144f6f8deaeb30",
+   "size_bytes": 12690939,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:08:37.087633+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.918197+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12522723,
+      12690939
+     ],
+     "sha256": "3641712d4b54594681520cce3a7f9bd1a01d9659aa0a751dfedbc52c89b6eef3"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2031_Spring.log": {
+   "sha256": "5f88852f502eacdab76e16bacfe6cbdf0020b8fb71ac9ffcdfd7a4db3b6a9600",
+   "size_bytes": 13348647,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:08:27.359258+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.926536+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13176352,
+      13348647
+     ],
+     "sha256": "202dda48e7c84a5d801bccb9cfaa9a2f70103b79c2089bdcb7bb8de4aea93a0b"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2031_Summer.log": {
+   "sha256": "d23a9ee6fd005226af9139592c3c4563fb4d83bcf27563476b6cbdce5a62d876",
+   "size_bytes": 12602069,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:08:32.209584+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.938229+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12433948,
+      12602069
+     ],
+     "sha256": "862963644919f6dbda904c1ae7dbe2433c632e3e4a8f71a956aa0237c796ea68"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2031_Winter.log": {
+   "sha256": "15abe571c6c0674f9dae5f2a4fe73f15d47dd806d4faf9c24905fb0da4a1228d",
+   "size_bytes": 11883935,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:08:41.999845+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.950206+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      11715507,
+      11883935
+     ],
+     "sha256": "1cf5b279c011dda54a295ab2477e8a67699c7f8ca77c8cf735499aa55c3d28b1"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2034_Autumn.log": {
+   "sha256": "632f9b0723db0ef271407b821cbbac88996561f210c057c9e402706d487bf0aa",
+   "size_bytes": 13337375,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:08:57.264797+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.958705+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13156802,
+      13337375
+     ],
+     "sha256": "529e5b57f6ee128f297919e97dd7ae57b7a1201a2265e80983665a47aee1116d"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2034_Spring.log": {
+   "sha256": "990e1a62b7b4735a62bfe2bf9f16bd40a67f973d08d87dd7ec39dc07eae5fa53",
+   "size_bytes": 13536419,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:08:47.063798+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.973888+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13365713,
+      13536419
+     ],
+     "sha256": "d31776957485ed650ae4bab8ad4a2f30a1a0e39e80320dc3606bcd4edb463036"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2034_Summer.log": {
+   "sha256": "2fd299aaaca17bd004b7aacc269ca95768d9ce4029f12093cbf3c1539008f045",
+   "size_bytes": 14407078,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:08:52.194251+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.985776+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      14223254,
+      14407078
+     ],
+     "sha256": "a1df8beee157bc71baf8e1356e3e46fd2c88391122af2a7b3641c9acb05af308"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2034_Winter.log": {
+   "sha256": "e96bc5b741d5eb4d070980226578a43731c8b0c457f1fe9eccc50de830a718ef",
+   "size_bytes": 13443469,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:02.291688+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:46.994405+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13265718,
+      13443469
+     ],
+     "sha256": "e3f70c275704bd84cdfddca9c89feff2b7a13ba956ba5def3feaea578685f633"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2037_Autumn.log": {
+   "sha256": "d3d221322208ace335712cf97e7e593e915a501483f43b3a392942754693bb3c",
+   "size_bytes": 12684629,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:17.207419+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.006928+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      12522460,
+      12684629
+     ],
+     "sha256": "622577820a91171500a28ba1f93686505c0907cbb6c9e967f56ca7c83ef79f3e"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2037_Spring.log": {
+   "sha256": "b53d28c971005492f45b22ddeb0da3658018af518a671221f9bdbeb820a34ea6",
+   "size_bytes": 14008948,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:07.470567+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.018835+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13829134,
+      14008948
+     ],
+     "sha256": "8c0155c9d3786f855cc41ff410569ddb65c2a0af5ced543df8c40e27a0104978"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2037_Summer.log": {
+   "sha256": "d0d994774e6a2826e44068ddf8785dd890fa52d5474f1dcd2da2d67ea260b539",
+   "size_bytes": 13694838,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:12.432677+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.030753+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      13517579,
+      13694838
+     ],
+     "sha256": "7b085b2700cc32f1d5708d6719d50efb252cc10c5c89c15c34dea12c614167dd"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case33_3_2037_Winter.log": {
+   "sha256": "a33495b95adbb941589f0bb693c6974d6eb87790c0b9e97c95984563edd739c9",
+   "size_bytes": 14240057,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:22.603141+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.040716+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      14039700,
+      14240057
+     ],
+     "sha256": "b7b165a195df1f5d1718483b7ea5c15fd1138fee0cff8dc358ee00ddbbaa8c58"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2025_Autumn.log": {
+   "sha256": "787c5a1ece92367b3d6fd76b49f05728c7480ff5af94336199b36175db642fce",
+   "size_bytes": 4887233,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:28.975809+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.045440+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      4811504,
+      4887233
+     ],
+     "sha256": "f9ce4726e0d80c4630f63d3d2820452aa17460b3c91463d355b47e415c82f7c7"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2025_Spring.log": {
+   "sha256": "fff9f271da2d44e8dca8a998597baa0e9ee61b7fdb048090b0a5bb21effd7d0c",
+   "size_bytes": 5605193,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:27.216502+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.050813+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      5528197,
+      5605193
+     ],
+     "sha256": "9b092177b61e6309c1c23e256c8151b2626924eaa1b974258680d27afe8486f2"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2025_Summer.log": {
+   "sha256": "512a225b970d6b0fcddfea479e9bcc672aecafdace57e70623e84683b239ed1f",
+   "size_bytes": 5759069,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:28.125578+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.056172+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      5670732,
+      5759069
+     ],
+     "sha256": "fe7c3078d64da714e8529e9d56cbc0fe124653fd9076bd1ade130f6fa5488b09"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2025_Winter.log": {
+   "sha256": "20ca936ba6211e56b541ef75a02d8e9c758c65319bb0859511aaa2fb24b4f977",
+   "size_bytes": 5935068,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:29.881778+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.060968+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      5845890,
+      5935068
+     ],
+     "sha256": "f908796b9fa7ccc6bb82f7adb765a47e470c3b773b2ebaf8cbd3546b18c36de6"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2028_Autumn.log": {
+   "sha256": "b45f89181ffb1276f811b2ade81852917bf30df9fbba01e6ac95b138fad20e58",
+   "size_bytes": 5400825,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:32.540524+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.067760+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      5321435,
+      5400825
+     ],
+     "sha256": "5b2de057c3624bd561c1475366a5f919858a0dabdcb42bb3ec8e282843982c9f"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2028_Spring.log": {
+   "sha256": "2c80305990be8b1d5d93692cde5a79cc3f6928b4ca84844280908f64401a6fe8",
+   "size_bytes": 5745209,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:30.754643+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.072288+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      5668895,
+      5745209
+     ],
+     "sha256": "712537d58bb53fdf3325bbf6c9d0fcd60c30f9a7aedb10fc40dce8be0b1fe249"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2028_Summer.log": {
+   "sha256": "6b4856b21c5dc354e424fb7e2f3da5134c0c57a5741468ef2b89ca134866962e",
+   "size_bytes": 5923975,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:31.670218+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.076707+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      5832244,
+      5923975
+     ],
+     "sha256": "5cd09ec526be13cb7040fd1f1a791e741cf387617b042268013041bee9f518d9"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2028_Winter.log": {
+   "sha256": "dfc09d6e76293898d3fcd5dcf5d18118372f86c996ac9eb409712dd55825e71e",
+   "size_bytes": 5181547,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:33.397517+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.084672+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      5105936,
+      5181547
+     ],
+     "sha256": "c22cf6fdcb345bf16ff65ba653107d9f7888e2aa62ddbb4299e4736be67b41c8"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2031_Autumn.log": {
+   "sha256": "f7e6b3e5951dc5600050364ec7e5dfd170a19e2f00db6f4805cb7b7d7f2dbb95",
+   "size_bytes": 5813540,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:36.010779+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.090330+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      5750480,
+      5813540
+     ],
+     "sha256": "f73312485c93f4da5b8b07a893c72cd190061c2f18293921a5df6d7a641cd08d"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2031_Spring.log": {
+   "sha256": "09de39a470b56164561257a3d179298683a4e80ea22304207857334688e5f588",
+   "size_bytes": 6556929,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:34.334067+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.095371+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      6470573,
+      6556929
+     ],
+     "sha256": "8c0e4c9df4633786e6c94e1cceafe01829a7edab9de5068db8d0ff7aad5f88a0"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2031_Summer.log": {
+   "sha256": "9be38c053fe6eed422550c245d19d9416e0f0c465fd1ae357048c6730b77d8e0",
+   "size_bytes": 6186468,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:35.199543+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.102166+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      6105516,
+      6186468
+     ],
+     "sha256": "13b1c11cfc23f916fb22d18caae318a99f16bd392bf38dbbdb7e2cab4ea0c49d"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2031_Winter.log": {
+   "sha256": "be1d8ce42348ec53ef233414f8a597e3b6b652ec77d0313837b20c91f9673886",
+   "size_bytes": 5276920,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:36.890906+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.106257+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      5196997,
+      5276920
+     ],
+     "sha256": "b9d863124a8986c89516406e04d4ec47fff28069f6e3bf0effde5b108ba24c23"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2034_Autumn.log": {
+   "sha256": "f5e8c7dd91bcc118820cdedad09f39d9997f84ef98dfd8eccf7a6ca2984f225f",
+   "size_bytes": 4940033,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:39.497658+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.110111+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      4876181,
+      4940033
+     ],
+     "sha256": "318d6735bebfa14d49206cb7d84bda68ec1b353bf54875f423ba831c706010e5"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2034_Spring.log": {
+   "sha256": "b3074eff73c20ef96f9894e91fb511abb8ec8a646c42ba44da13c77de97eaa6b",
+   "size_bytes": 6919410,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:37.779110+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.120513+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      6834633,
+      6919410
+     ],
+     "sha256": "3db1ff29d33db1071ce549541bf8d788018efc908d711315fb6e8e5a0ab20a8b"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2034_Summer.log": {
+   "sha256": "308fb32fc5e08b79a5fe5c586fa4bffb8db58f99cbaf4ce21b714718fed91e3d",
+   "size_bytes": 6001883,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:38.672297+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.125227+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      5919139,
+      6001883
+     ],
+     "sha256": "599f094c04bf3519a5f8cde099225e90de39a75bcf1f00b901ea443722d3605b"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2034_Winter.log": {
+   "sha256": "fcf8f073c9b442d2baee7bf0b27e9421dda85778610500ce0387df19b3fea84d",
+   "size_bytes": 5418739,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:40.367431+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.130038+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      5339401,
+      5418739
+     ],
+     "sha256": "7960aae1f9e2020a2af989450a3bd3fb1347f508cc37791edd9220286405fc18"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2037_Autumn.log": {
+   "sha256": "f3315825b177444c52e24d134196b544e302736ff6d1b69e42c166499d678c01",
+   "size_bytes": 5348362,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:43.064388+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.135958+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      5287221,
+      5348362
+     ],
+     "sha256": "7e98385ff83bdc6d580e23a332776ab2bdddb9f53929d08380ded695fbc5385d"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2037_Spring.log": {
+   "sha256": "f519ff88a790a52a18243de6cdd3d23830f40594ae26486a2c309ed102bf6f7d",
+   "size_bytes": 6481929,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:41.304214+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.140761+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      6395312,
+      6481929
+     ],
+     "sha256": "3c7302e7c27a96127b351e476906103e9e3ad7eb2b85950921fbab5ae69b3351"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2037_Summer.log": {
+   "sha256": "5552aa0301d73a075fd437c2b42cd04aac652841e4eb26a11e11ac522ad8740c",
+   "size_bytes": 6670712,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:42.242242+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.148128+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      6575686,
+      6670712
+     ],
+     "sha256": "0e3b40e78f68e2de3ea35dceae468449016a6bac63e76f07ee952cb89c15b216"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run/logs/optim_log_case9_2037_Winter.log": {
+   "sha256": "0d916292a115a982752a6f7758dd0cb07fc090925a8664bd74aacf6ccaf6fdfa",
+   "size_bytes": 5827158,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:09:43.965817+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.153272+00:00",
+   "role": "IPOPT log (gitignored) -- terminal-round attempt byte range read",
+   "gitignored": true,
+   "segments_read": [
+    {
+     "bytes": [
+      5743411,
+      5827158
+     ],
+     "sha256": "4b7f3966290f3562ff4142778942201823e102570b4e3c934a5584de33b1f156"
+    }
+   ],
+   "file_size_equals_last_segment_end": true
+  },
+  "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/stdout_s39_D.log": {
+   "sha256": "df51c4e3c9d4f09fd92ca626b92181b75d7e4c91b71349cc2b28e166bd660dfe",
+   "size_bytes": 839085,
+   "size_unchanged_during_read": true,
+   "mtime_utc": "2026-09-26T18:10:29.089208+00:00",
+   "hashed_at_utc": "2026-09-26T19:28:47.160651+00:00",
+   "role": "production stdout: [TSO PROX] per-cycle max normalized TSO interface movement"
+  }
+ },
+ "n_inputs": 88,
+ "outputs": {
+  "data/SRP1/Results/P515S53/w95_x0_drift/w95_x0_drift_diagnostics.json": {
+   "sha256": "1ab6c6db6f585a46133dfdf776a8a728ba39eee50871fb9e3378d96c16642466",
+   "size_bytes": 460631
+  }
+ },
+ "note": "IPOPT logs under data/SRP1/Results/P56A/evals are gitignored; their whole-file sha256 and the sha256 of each byte range read are recorded here at read time"
+}

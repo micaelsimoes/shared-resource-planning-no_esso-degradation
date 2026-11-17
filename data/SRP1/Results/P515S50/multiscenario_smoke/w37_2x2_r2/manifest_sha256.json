@@ -1,0 +1,614 @@
+{
+ "stage": "P5.15 Addendum 36 W37 -- 2x2 multi-scenario SMOKE of the >1x1 hull-polish and settlement branches (quadratic scenario-deviation penalty active; NOT the pilot)",
+ "label": "w37_2x2_r2",
+ "generated_utc": "2026-09-22T20:20:46.378328+00:00",
+ "WARNING": "SMOKE UNDER THE CURRENT QUADRATIC SCENARIO-DEVIATION PENALTY (definitions.PENALTY_SCENARIO_DEVIATION = 9e4 on voltage + interface power, definitions.PENALTY_SHARED_ESS_SCENARIO_DEVIATION = 1e4 on the shared ESS, added to model.objective.expr and therefore OUTSIDE Q(x)); NOT THE PILOT INSTANCE; THE ROW-18 / alpha DECISION IS PENDING. Branch-execution and sanity evidence only -- not a result, not comparable with any SRP1 (1x1) figure.",
+ "files": {
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/W37_MULTISCENARIO_SMOKE.md": {
+   "sha256": "7683f6d6c5d7afbad5d788dd2c5e14f8911018c017f327edabe237a7fd05db77",
+   "bytes": 14366
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/launch.json": {
+   "sha256": "072d3e4ca47bc83192bba3fc4245f5fde2174e618efc6c3f4e53ffa4095e8919",
+   "bytes": 10456
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/rss_samples_w37.jsonl": {
+   "sha256": "3c9f083676cbab4828c5f4fb536bd5a874f055dcb79c2bbe700059e1807b3b24",
+   "bytes": 252639
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/solve_times.json": {
+   "sha256": "23c840099c008d0e7b58eb21e640cc4d340596059de1da364b65035ec8d91e17",
+   "bytes": 25373
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/stages_w37.jsonl": {
+   "sha256": "428fe6432daa97996d87ebd9d863dcc6ec2990e29fb41d0afd845232bec436b4",
+   "bytes": 1850
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/w37_multiscenario_smoke.json": {
+   "sha256": "5144fde0993275c0be139d2acdb52aced73647457dcf2975a3f483bd7ceac480",
+   "bytes": 142313
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/component_levels_terminal.json": {
+   "sha256": "fa5d7a4c5184ab5fe988d3a77f9f731a389f59f95869e96a09bd35bbf3900212",
+   "bytes": 35644
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/esso_models_w37_x0.pkl": {
+   "sha256": "678bb1c41938e088e407e4350b34613f636b07ded9731238692219baf1761bc3",
+   "bytes": 597546
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/esso_recovery_events_w37_x0.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/frozen_snapshots_w37_x0.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/g_w37_x0.json": {
+   "sha256": "6b889aadb2027dbdb4c982c958d90d55593a0fe8eb55a6c4f08a6afd429161bc",
+   "bytes": 36932
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/heartbeat_w37_x0.json": {
+   "sha256": "33f78fb67097727e5fd702046237b3574e2f035cfa5e3dd6e367d4ba81e4d394",
+   "bytes": 157
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/hull_bound_detail.json": {
+   "sha256": "dee524cd60af0c9e48405f9665cd2001054daca781e8a6d0b57aac764f38eaa9",
+   "bytes": 666817
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/hull_entries.json": {
+   "sha256": "01814b7c82cf341205a6efea44389e1923bb4e9f240c0caefd020a887b7006a6",
+   "bytes": 269388
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/interface_settlement_detail_s31c.json": {
+   "sha256": "332184a9dec5570a1192e484291219192ac20403d7037219377c0c2f97f0950f",
+   "bytes": 469461
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/leak_classification_w37_x0.jsonl": {
+   "sha256": "770aa86460a37d6141101cd1a59d8a3546084dcc6015d79e16a6ee9c8de75ec6",
+   "bytes": 6354
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/network_failures_w37_x0.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/stdout_w37_x0.log": {
+   "sha256": "35cbb4ef82fc27dd49d894c859ab19e67d18a97427badf9e57c3f0e0336ad725",
+   "bytes": 21817
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/esso_capture/w37_x0/node5_cycle001.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/esso_capture/w37_x0/node5_cycle002.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/esso_capture/w37_x0/node5_init.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/esso_capture/w37_x0/node7_cycle001.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/esso_capture/w37_x0/node7_cycle002.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/esso_capture/w37_x0/node7_init.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/esso_capture/w37_x0/node9_cycle001.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/esso_capture/w37_x0/node9_cycle002.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/esso_capture/w37_x0/node9_init.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/component_levels_terminal.json": {
+   "sha256": "3dfc4452e767775b98d9dcc5996d4e5476bdb01b028f2fc9beeef4e51c904fd8",
+   "bytes": 36225
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/esso_models_w37_unit.pkl": {
+   "sha256": "f30734e0120574f391cc51e91e292035e2edcba1f5e0c4605178aba4a39a9631",
+   "bytes": 618272
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/esso_recovery_events_w37_unit.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/frozen_snapshots_w37_unit.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/g_w37_unit.json": {
+   "sha256": "91bf740a41202f483caff9fb84973e9b916e1734f8a0a36e91b8d3375e1246b2",
+   "bytes": 38684
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/heartbeat_w37_unit.json": {
+   "sha256": "b17029b8b5e284fc71833f0bae06c8db3174d9b575ebdc5dc3bf6fd6230efc30",
+   "bytes": 157
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/hull_bound_detail.json": {
+   "sha256": "ab403a9063ecf23adde5e7b237d56c298ea932706a5dbf2052d54f3ccdd804ea",
+   "bytes": 685402
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/hull_entries.json": {
+   "sha256": "67bfe8b3036d53f53b0370ee72993f850f42df6d26d03f3f3a057e352465b758",
+   "bytes": 283443
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/interface_settlement_detail_s31c.json": {
+   "sha256": "29ffc69618e58e21471d1c4e8f516d51c67783d952ac3ab87fb5c1517851363c",
+   "bytes": 469290
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/leak_classification_w37_unit.jsonl": {
+   "sha256": "8f31183e664093e013228f80b1cda44356a76aeb9828d3ef44f841a9b9c121a8",
+   "bytes": 7783
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/network_failures_w37_unit.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/stdout_w37_unit.log": {
+   "sha256": "fa6eb90dfa6e5a341a6fa3d1b023a4d1a47d64456eccde57d4acf42f9a72b587",
+   "bytes": 21822
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/esso_capture/w37_unit/node5_cycle001.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/esso_capture/w37_unit/node5_cycle002.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/esso_capture/w37_unit/node5_init.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/esso_capture/w37_unit/node7_cycle001.jsonl": {
+   "sha256": "923b65b9d525a70f1d6326421f50bacd5c32cc5a8fa0259183d3686d6680acc0",
+   "bytes": 106841
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/esso_capture/w37_unit/node7_cycle002.jsonl": {
+   "sha256": "49a9cb6a7892a76bca4dc8c264460d3fdba78a995d882392a116a56a0f7446cf",
+   "bytes": 106571
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/esso_capture/w37_unit/node7_init.jsonl": {
+   "sha256": "b24d30369c48574986338c858bbeb331212e0ffb0cc3df2cff43af114d26bb53",
+   "bytes": 106846
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/esso_capture/w37_unit/node9_cycle001.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/esso_capture/w37_unit/node9_cycle002.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/esso_capture/w37_unit/node9_init.jsonl": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/SRP1_market_prices_2025_Autumn.pdf": {
+   "sha256": "a00ebefeb4b172c6feb62e58d54e0725469d8b33f1538de93c24e98864371ba6",
+   "bytes": 14652
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/SRP1_market_prices_2025_Spring.pdf": {
+   "sha256": "7ef600326ba559f033ec80a9df19ebc3347669b5dbfaa1c4a29d25bc34f64aa3",
+   "bytes": 15279
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/SRP1_market_prices_2025_Summer.pdf": {
+   "sha256": "c1a1bc1c9be856f46bef14f3587577491e8a5e1034f61c385b5c3ba21d7351d9",
+   "bytes": 14654
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/SRP1_market_prices_2025_Winter.pdf": {
+   "sha256": "72dd02275f65b54a003e84feedb505215b6be5e3c293f7efd16e6ea9983811d6",
+   "bytes": 14697
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_1_RES_generation_scenarios_2025_Autumn.pdf": {
+   "sha256": "e67e34514418bdde37e8900c3703720049051cfdf575bc8c78bca6bd16c6ef10",
+   "bytes": 14145
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_1_RES_generation_scenarios_2025_Spring.pdf": {
+   "sha256": "44376dc60306e646cd40f4a4186c1f3482ce5c67a984a14a1ba69ed5a72f8de7",
+   "bytes": 14613
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_1_RES_generation_scenarios_2025_Summer.pdf": {
+   "sha256": "0387fcb4a3f8a39a11e322b0e1c1fc21997989aa62aa1a2e911addb6c6bde020",
+   "bytes": 14648
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_1_RES_generation_scenarios_2025_Winter.pdf": {
+   "sha256": "ee62532d61eca2ced7dfab512b9dccd1d66113892c302e87e7ee7b3669b2876f",
+   "bytes": 14072
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_1_flexibility_scenarios_2025_Autumn.pdf": {
+   "sha256": "5c8a64c8a721ba0401c215d96bccbd9ca0f53ee04b8de1ab0a451394a7658365",
+   "bytes": 15334
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_1_flexibility_scenarios_2025_Spring.pdf": {
+   "sha256": "f228fe8c2173cd00ec598362ca3011940463a5fe4129e560dde6667c35e6cef9",
+   "bytes": 15328
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_1_flexibility_scenarios_2025_Summer.pdf": {
+   "sha256": "88f5cea9774316fdcb38061f669f2cf55e37ac0f4a5cc2c43ba839044b80c8d7",
+   "bytes": 15339
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_1_flexibility_scenarios_2025_Winter.pdf": {
+   "sha256": "f88dfec7a84def8f3725cd79857ad0437f9925344a701cfa37e8339da06b9b6d",
+   "bytes": 15306
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_1_load_scenarios_2025_Autumn.pdf": {
+   "sha256": "2d6889548ed13f9769b4acb86b0877203d06c091d184664100f4ece07a742aad",
+   "bytes": 48974
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_1_load_scenarios_2025_Spring.pdf": {
+   "sha256": "bbf1074162fddadf88d027ff9e69a2febb09f9446fb041c143e0c7c41f743cc7",
+   "bytes": 48954
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_1_load_scenarios_2025_Summer.pdf": {
+   "sha256": "e2c6970a94afaf7df97a80a0fdcf563e8eeb5f4edaedce359265b67b8f6630b9",
+   "bytes": 49268
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_1_load_scenarios_2025_Winter.pdf": {
+   "sha256": "aad7cc09caa8bda9e2243066e00904e4fc2bda553e4e8cdc1a66beada39cc633",
+   "bytes": 48818
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_2_RES_generation_scenarios_2025_Autumn.pdf": {
+   "sha256": "ada09e299d1c5741568b044b39984581968922850ee681b69e3d333cab62cc0a",
+   "bytes": 14417
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_2_RES_generation_scenarios_2025_Spring.pdf": {
+   "sha256": "12dee4691893e413af3fe5e068291652d64314e0a4820254d1d30134f062c3ab",
+   "bytes": 14758
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_2_RES_generation_scenarios_2025_Summer.pdf": {
+   "sha256": "67a06dbc74459a135d00bcc0451cd64c60b63e216d9c10792eb0b8a411ab3749",
+   "bytes": 14481
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_2_RES_generation_scenarios_2025_Winter.pdf": {
+   "sha256": "6db8c0ab3c2cd40c9b79a45791b27871231cbeda38c393361daa765c938152c9",
+   "bytes": 14407
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_2_flexibility_scenarios_2025_Autumn.pdf": {
+   "sha256": "dcd115ab950a40b41396d2a6cbdf2eff987ce0d45120899668c9b455f8e833fd",
+   "bytes": 15395
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_2_flexibility_scenarios_2025_Spring.pdf": {
+   "sha256": "d20b0bb7e6363377eeb960129ea25e1e78bd7890f05650e19f2a6f502e24a72b",
+   "bytes": 15421
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_2_flexibility_scenarios_2025_Summer.pdf": {
+   "sha256": "a65895169c8430ba34db17710a9e333632b248125c50b37fce71e4684b8e6af2",
+   "bytes": 15385
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_2_flexibility_scenarios_2025_Winter.pdf": {
+   "sha256": "a5691c2fa937b7e4599bdf0470aa98cd52325d000be44d866d68306c48a23d84",
+   "bytes": 15411
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_2_load_scenarios_2025_Autumn.pdf": {
+   "sha256": "12292dde7eb02b508a06a241262b167e5ed6f638cbdc9263ffea08abb64291ba",
+   "bytes": 49239
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_2_load_scenarios_2025_Spring.pdf": {
+   "sha256": "d262d6811e48128d8dc232a88c8354999b496677ec7640be62751c6f51516b01",
+   "bytes": 49297
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_2_load_scenarios_2025_Summer.pdf": {
+   "sha256": "dfe67902367c9ddbdc4d96e6f3b93dd318489db8bc89848f7877d67385dcfe26",
+   "bytes": 49164
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_2_load_scenarios_2025_Winter.pdf": {
+   "sha256": "c4e79ee20856b0046154a1f9bf508ec5f15ac3bd6eb48159c15de1f570f63733",
+   "bytes": 48662
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_3_RES_generation_scenarios_2025_Autumn.pdf": {
+   "sha256": "91b2f78148fe6a122e768ac5a5c787864c6defe8e442d794c2924b310b56fce7",
+   "bytes": 14194
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_3_RES_generation_scenarios_2025_Spring.pdf": {
+   "sha256": "6a34a22d2575ade683ad53762acd8cce859b02f31151eed843716419c0ef1338",
+   "bytes": 14589
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_3_RES_generation_scenarios_2025_Summer.pdf": {
+   "sha256": "fbf9fb41761c5e326abde78f8dff2872fa386fe9c1e3468ef162f5357d497f8c",
+   "bytes": 14345
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_3_RES_generation_scenarios_2025_Winter.pdf": {
+   "sha256": "3194089b101852f4fcf871fb0df920ffd002dc5c99ab2c1edddf0bd6f67d21f0",
+   "bytes": 14159
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_3_flexibility_scenarios_2025_Autumn.pdf": {
+   "sha256": "4e9f34e408ba0296e3f4de0848e73287f55d517519844277e137f5636ed1dbc8",
+   "bytes": 15421
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_3_flexibility_scenarios_2025_Spring.pdf": {
+   "sha256": "12aca5145d459e1c67a69e94b69c4440068dc2f153c5d0619111c7b08980659a",
+   "bytes": 15415
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_3_flexibility_scenarios_2025_Summer.pdf": {
+   "sha256": "10ce4fdc8ee1af4a536135f635e4d7efacdb7cb7a58397639f7c57ad856967fd",
+   "bytes": 15408
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_3_flexibility_scenarios_2025_Winter.pdf": {
+   "sha256": "19c8826414c774769872a09391d7fd2d3fc21e2dc7be34d2728378912e809a8b",
+   "bytes": 15415
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_3_load_scenarios_2025_Autumn.pdf": {
+   "sha256": "941deab822f705f864ea880ef41c43e851e3abf468a0bbc28924e37d582c0b93",
+   "bytes": 49139
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_3_load_scenarios_2025_Spring.pdf": {
+   "sha256": "43291ad345fd3477a1baebf6eefc1d5e33b7686835af025cba9112c75036fba7",
+   "bytes": 49151
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_3_load_scenarios_2025_Summer.pdf": {
+   "sha256": "6be080461d00fee080500dd3041ad8b2c05f65bbfc83e35aa8948e27ff34ba68",
+   "bytes": 49250
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case33_3_load_scenarios_2025_Winter.pdf": {
+   "sha256": "bf970f6dfcf7cd88ba27306cd4c3f495b687f242b06de5b74b17f316327ef48c",
+   "bytes": 48935
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case9_RES_generation_scenarios_2025_Autumn.pdf": {
+   "sha256": "7829abbac21a36e4ef68acadcfbd4f92fe45968a6af49383b9273b7575672291",
+   "bytes": 15495
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case9_RES_generation_scenarios_2025_Spring.pdf": {
+   "sha256": "9893ba3b4a1bd532b96eb9dc252a518065e3609fa172a55a4a6cd28cc3f84c5d",
+   "bytes": 15835
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case9_RES_generation_scenarios_2025_Summer.pdf": {
+   "sha256": "2f7c71e1eb1af365e581b09f6ca89d3dbb8375d89717bed866905e8b88283b62",
+   "bytes": 15681
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case9_RES_generation_scenarios_2025_Winter.pdf": {
+   "sha256": "53732529c4ca330f27404e95276e907cc4661f31c20d91558693ded90e45a0ca",
+   "bytes": 15540
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case9_flexibility_scenarios_2025_Autumn.pdf": {
+   "sha256": "99af5b1ca68467995439ed31d58f8393161a59c493133c9fa660fa442c1bbc2a",
+   "bytes": 15899
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case9_flexibility_scenarios_2025_Spring.pdf": {
+   "sha256": "6b901b88b56d4f744b3c60a1e51d14c867c115fb645a97ba1554c70121489700",
+   "bytes": 15892
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case9_flexibility_scenarios_2025_Summer.pdf": {
+   "sha256": "9d6d287bc121977627a59d1b65e432dc32d538d2b685c16b353f8909a7937065",
+   "bytes": 15887
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case9_flexibility_scenarios_2025_Winter.pdf": {
+   "sha256": "4928816e170c54456a51619491de4c441b8bed7bc1da8d1d854b140af293503e",
+   "bytes": 15890
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case9_load_scenarios_2025_Autumn.pdf": {
+   "sha256": "e745dcf73102648225cad5eed9bf3ceef6da2db3c5ea98d9d34e8b3734ad6c83",
+   "bytes": 17547
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case9_load_scenarios_2025_Spring.pdf": {
+   "sha256": "7692cc1f8e55bc4deb1e4da7261b70e4a65f093bdbb81b6829a3d1ef95afc1e7",
+   "bytes": 17144
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case9_load_scenarios_2025_Summer.pdf": {
+   "sha256": "780d148e825564038ba98727a8c66b8e8be7c2b30404e1a24abdcb04547cb261",
+   "bytes": 17048
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/planning_read/Diagrams/case9_load_scenarios_2025_Winter.pdf": {
+   "sha256": "ed54c1965d188e2763594d92eda9ccccf68f9e5ee71f0a1456656701feff5876",
+   "bytes": 17514
+  },
+  "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/case/SRP1__w37_2x2.json": {
+   "sha256": "fe054c22ff4c9e0195d0260b63986d4b697b60e3b3f8900b8329ed81d52c3688",
+   "bytes": 1390
+  }
+ },
+ "p56a_working_dir_files": {
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_case33_1_2025_Autumn.log": {
+   "sha256": "5f08690de279542c1ed92d57e565555af3b78bddfc041a5110d3b472a99f94d3",
+   "bytes": 794826
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_case33_1_2025_Spring.log": {
+   "sha256": "dddabb94182034f1a837a2ef9dcf86d0c4f33b314472c7a72a9de19a29b076f3",
+   "bytes": 1165199
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_case33_1_2025_Summer.log": {
+   "sha256": "08afac6f0df482fa252d0089abf1e87eea9e20e457f8e9d4680bb7a54aa1b3b7",
+   "bytes": 800886
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_case33_1_2025_Winter.log": {
+   "sha256": "b61a3840af6d23ca7be5cd9c112b0d9db34eb794cc28755457fa1ce163dfbea3",
+   "bytes": 813910
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_case33_2_2025_Autumn.log": {
+   "sha256": "013bc5b934a6790b559aa586bc7a3b87ea30888da70bb8807291c7563995de20",
+   "bytes": 716721
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_case33_2_2025_Spring.log": {
+   "sha256": "bb194bc7cbde74396c525f05298cbd99f27fc871cef360cd726772333858c20e",
+   "bytes": 888672
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_case33_2_2025_Summer.log": {
+   "sha256": "12ef5b87cfaae342611bd6d490fb420f43397d732ece4aa5312d9d443de1d1a3",
+   "bytes": 820544
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_case33_2_2025_Winter.log": {
+   "sha256": "1fbea993330135af168dcaab565867718e5af96ee8d6a7bc247ac415e6146373",
+   "bytes": 1429203
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_case33_3_2025_Autumn.log": {
+   "sha256": "8d75d795108ea9bc8847bed244b23e52dc54850ef4abc3d851c6091ccf9c7353",
+   "bytes": 811353
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_case33_3_2025_Spring.log": {
+   "sha256": "5418f5b2395e812ed354869e45f340a7ed7b1b0bcaf7c41061403e9561d44764",
+   "bytes": 1343020
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_case33_3_2025_Summer.log": {
+   "sha256": "344828bb371f37404fb016171ebf751702217391d986b51416b618a7aaffe19f",
+   "bytes": 865896
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_case33_3_2025_Winter.log": {
+   "sha256": "e3b886aae22152c57b773b5d9acf10806d470157541874ea8904bd244cd42e36",
+   "bytes": 892448
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_case9_2025_Autumn.log": {
+   "sha256": "24745597cda2a8ce353c1fe1ec49133768e2dd3f06e3f0e3b21ef82af2c0e1b0",
+   "bytes": 352770
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_case9_2025_Spring.log": {
+   "sha256": "316593b95a2d9c8ff0c9ca6a33087b913093e6a8cd739681dd3572241df47763",
+   "bytes": 357114
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_case9_2025_Summer.log": {
+   "sha256": "5e646b13d90cb08399a4b480e6d931c52177dc4075b2ce8526df8d90cd6c42c0",
+   "bytes": 356596
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_case9_2025_Winter.log": {
+   "sha256": "ace80296165ede2892b5b9bd9eb7bd4b773dc3d87bf9f10f1db471352c47ea41",
+   "bytes": 333490
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_esso_node5_cycle001.txt": {
+   "sha256": "1d2b7803f4d8f1547e992ec6441a5f1b811ad292f0a761513bbedda449b6548b",
+   "bytes": 3007
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_esso_node5_cycle002.txt": {
+   "sha256": "b10696db404381b0bfb356a6dd5df2e5d7b0052f5c8d6dbf16ac6311c68a6453",
+   "bytes": 3007
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_esso_node5_init.txt": {
+   "sha256": "581c185b92ffcf4391fc03a060434841a69095800762bccca74832cdc50da2a2",
+   "bytes": 3088
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_esso_node7_cycle001.txt": {
+   "sha256": "1d2b7803f4d8f1547e992ec6441a5f1b811ad292f0a761513bbedda449b6548b",
+   "bytes": 3007
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_esso_node7_cycle002.txt": {
+   "sha256": "b10696db404381b0bfb356a6dd5df2e5d7b0052f5c8d6dbf16ac6311c68a6453",
+   "bytes": 3007
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_esso_node7_init.txt": {
+   "sha256": "581c185b92ffcf4391fc03a060434841a69095800762bccca74832cdc50da2a2",
+   "bytes": 3088
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_esso_node9_cycle001.txt": {
+   "sha256": "1d2b7803f4d8f1547e992ec6441a5f1b811ad292f0a761513bbedda449b6548b",
+   "bytes": 3007
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_esso_node9_cycle002.txt": {
+   "sha256": "b10696db404381b0bfb356a6dd5df2e5d7b0052f5c8d6dbf16ac6311c68a6453",
+   "bytes": 3007
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_x0/logs/optim_log_esso_node9_init.txt": {
+   "sha256": "581c185b92ffcf4391fc03a060434841a69095800762bccca74832cdc50da2a2",
+   "bytes": 3088
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_case33_1_2025_Autumn.log": {
+   "sha256": "3c6843f7d1059b397432aa4b1dd3ae18dbc723e0c394475ba132ec882f78ad95",
+   "bytes": 780430
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_case33_1_2025_Spring.log": {
+   "sha256": "dc02267e94b0d5e8a876fe29e2185905870b14a8f33272507f8c6b56f5a4a986",
+   "bytes": 1527325
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_case33_1_2025_Summer.log": {
+   "sha256": "826a2afb38d3a8b9bed96bbadd6013f40e9456590f38e587faa1a17dee0d23bf",
+   "bytes": 812972
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_case33_1_2025_Winter.log": {
+   "sha256": "d4ab0b21e715110f0c5062e6808e90b2a614e34e2103b559ca919006a3de5be0",
+   "bytes": 956283
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_case33_2_2025_Autumn.log": {
+   "sha256": "05a84dc556b5760a4ed17b63b876530c937dc33210d0d04e726b8578f87394c9",
+   "bytes": 1067229
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_case33_2_2025_Spring.log": {
+   "sha256": "ccb1bdc0e39061f17ddd110c638f2b7945d9b84edf6fac036f30376289651f32",
+   "bytes": 1080272
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_case33_2_2025_Summer.log": {
+   "sha256": "475e949aade69578040cbfe7a39d883cd3e3aac123996070ebc932a4817cc130",
+   "bytes": 1177359
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_case33_2_2025_Winter.log": {
+   "sha256": "2c9971e104f4f28d16195bcfed7377dd8d2fb45802c76cf1b323af2a1d64b7b8",
+   "bytes": 1693557
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_case33_3_2025_Autumn.log": {
+   "sha256": "875424029131546c05d9a73cfb65c73b55c5dbe4168f1b73d73d40141f7208f1",
+   "bytes": 824238
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_case33_3_2025_Spring.log": {
+   "sha256": "0fade10261eb8650338bc5c0862e408f36b200ca9c165923ecbc94c8339ad578",
+   "bytes": 1478019
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_case33_3_2025_Summer.log": {
+   "sha256": "a60365db4e96dbe734c31a8a0549abcdd884171e79dc060244264214163479ab",
+   "bytes": 999586
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_case33_3_2025_Winter.log": {
+   "sha256": "82c982fb015413f7afb31b56e857b1a9e9d9f7f2070bc57608cd3c6befdc1afd",
+   "bytes": 1812378
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_case9_2025_Autumn.log": {
+   "sha256": "c6f6f5c23e0e2879fc362181951ff4a878a09094a2086ed563d6f03ff6431fef",
+   "bytes": 646813
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_case9_2025_Spring.log": {
+   "sha256": "7fadbeab4402d708b511fc32ac5db1502a0e46a7a674d48af266d80c699c7e03",
+   "bytes": 860632
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_case9_2025_Summer.log": {
+   "sha256": "e6cf500820417f550e045be4479a414835bbac4303e74a0a05046ba9bfd981e3",
+   "bytes": 750216
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_case9_2025_Winter.log": {
+   "sha256": "cfdaf49fcbc8624803a13977da4a63801c4a519b0ad630a2a20e678fbd3c8e7c",
+   "bytes": 809791
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_esso_node5_cycle001.txt": {
+   "sha256": "1d2b7803f4d8f1547e992ec6441a5f1b811ad292f0a761513bbedda449b6548b",
+   "bytes": 3007
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_esso_node5_cycle002.txt": {
+   "sha256": "b10696db404381b0bfb356a6dd5df2e5d7b0052f5c8d6dbf16ac6311c68a6453",
+   "bytes": 3007
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_esso_node5_init.txt": {
+   "sha256": "581c185b92ffcf4391fc03a060434841a69095800762bccca74832cdc50da2a2",
+   "bytes": 3088
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_esso_node7_cycle001.txt": {
+   "sha256": "06c957594b716cec283ee9cb7785ec93d5fc56ee0d986ea30ca8fadd0ab65937",
+   "bytes": 3825
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_esso_node7_cycle002.txt": {
+   "sha256": "25d49bbf9b10153e1fe2e098eea11e67949a676ddbe0f90be078588f504cfda4",
+   "bytes": 3906
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_esso_node7_init.txt": {
+   "sha256": "f59440763d9ff29df07773029217805c77ef9f51da59cb8a4494cd171f25b2a6",
+   "bytes": 3987
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_esso_node9_cycle001.txt": {
+   "sha256": "1d2b7803f4d8f1547e992ec6441a5f1b811ad292f0a761513bbedda449b6548b",
+   "bytes": 3007
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_esso_node9_cycle002.txt": {
+   "sha256": "b10696db404381b0bfb356a6dd5df2e5d7b0052f5c8d6dbf16ac6311c68a6453",
+   "bytes": 3007
+  },
+  "data/SRP1/Results/P56A/evals/p515s50_w37_w37_2x2_r2_unit/logs/optim_log_esso_node9_init.txt": {
+   "sha256": "581c185b92ffcf4391fc03a060434841a69095800762bccca74832cdc50da2a2",
+   "bytes": 3088
+  }
+ }
+}

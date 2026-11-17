@@ -1,0 +1,48 @@
+{
+  "stage": "P5.12-Y TSO comparator reconstruction + sensitivity",
+  "frozen_utc": "2026-09-12",
+  "authorship": "Planner-executed (Worker unavailable: external API spend limit)",
+  "fixture_id": "TSO_case9_2025_Summer_cycle7",
+  "preserved_model": "data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+  "preserved_model_sha256_prefix": "2814948e67dbb86f",
+  "metadata": {"agent":"TSO","node_id":null,"network_name":"case9","year":2025,"day":"Summer","cycle":7,"from_warm_start":true,"captured_outcome":"status=ok, termination=optimal"},
+  "historical_baseline_log": "data/SRP1/Results/P512R/evals/cold/logs/optim_log_case9_2025_Summer.log",
+  "historical_slice": {"solve_index_1based": 8, "start_line": 28780, "end_line": 31897, "n_lines": 3118},
+  "historical_effective_options": {
+    "acceptable_iter": 0, "acceptable_tol": 1e-05, "bound_frac": 1e-06, "bound_push": 1e-06,
+    "compl_inf_tol": 0.0005, "file_append": "yes", "file_print_level": 6, "linear_solver": "ma97",
+    "slack_bound_frac": 1e-06, "slack_bound_push": 1e-06, "tol": 1e-05,
+    "warm_start_bound_frac": 1e-06, "warm_start_bound_push": 1e-06, "warm_start_init_point": "yes",
+    "warm_start_mult_bound_push": 1e-06, "warm_start_slack_bound_frac": 1e-06,
+    "warm_start_slack_bound_push": 1e-06
+  },
+  "historical_option_note": "TSO regime differs from the DSO fixtures by design: acceptable_iter=0 and acceptable_tol=tol come from the production TSO warm-start override; compl_inf_tol=5e-4 and the 1e-6 push/frac family are case9's configured values. These must NOT be harmonized with DSO settings.",
+  "historical_baseline_warm_start_bound_push": 1e-06,
+  "historical_iterations": 37,
+  "historical_objective_unscaled": 337946.00264311919,
+  "historical_dual_infeasibility_unscaled": 0.00074702832439832597,
+  "historical_constraint_violation_unscaled": 7.8718115905943776e-15,
+  "historical_complementarity_unscaled": 4.5523258881811202e-05,
+  "historical_obj_fn_evaluations": 39,
+  "historical_hessian_evaluations": 37,
+  "ladder": {"LOW": 1e-07, "BASELINE": 1e-06, "HIGH": 1e-05},
+  "ladder_rationale": "The perturbation FAMILY (warm_start_bound_push) is common across all fixtures; the ABSOLUTE values differ because this fixture's historically configured baseline is 1e-6, not 1e-5. A +/-10x multiplicative perturbation around the fixture's own historical baseline is applied. 1e-4 is explicitly NOT tested on this fixture. This distinction was known and frozen before execution.",
+  "planning_weight": {"year": 2025, "day": "Summer", "N_year": 5, "D_day": 91, "annualization": 1.0, "scenario_probability": 1.0, "weight": 455,
+    "source": "SRP1.json Years/Days; shared_resources_planning.py:2690-2691 (years[year]*days[day]*annualization)",
+    "use": "descriptive reporting of planning-scale accumulation only; must NOT redefine frozen thresholds"},
+  "reconstruction": {
+    "authoritative_numerical_state": "preserved pre-solve model",
+    "reconstructed_context_only": "transmission network object and NetworkParameters from p56a_oracle.fresh_planning (canonical scenario checksum enforced by load_baseline)",
+    "acceptance_before_solve": ["network identity matches metadata and is_transmission is True", "reconstructed effective options reproduce the historical echo exactly except output_file", "preserved model reloads with a stable semantic digest", "from_warm_start taken from metadata (true)"]
+  },
+  "baseline_acceptance_rule": {
+    "method": "full-trace comparison against the historical cycle-7 slice",
+    "normalize_only": ["output_file path", "Total seconds in IPOPT", "fresh-file vs appended-file leading blank line"],
+    "require_exact": ["option echo (modulo output_file)", "iteration-0 row", "complete iteration table", "iteration count", "termination line", "final unscaled objective/dual infeasibility/constraint violation/complementarity", "evaluation counts"],
+    "on_failure": "STOP; do not run LOW or HIGH; no retry"
+  },
+  "classification_thresholds": "reused verbatim from data/SRP1/Results/P512W/frozen_sampling_plan.json; three regions preserved (EQUIVALENT <=1e-6, INDETERMINATE, MATERIALLY DIFFERENT >1e-3); branch requires BOTH primal and objective >1e-3; path-only >0.5 iteration ratio",
+  "execution_order": ["BASELINE", "LOW", "HIGH"],
+  "planned_new_solves": 3,
+  "isolation": "one fresh Python process per solve; model reloaded independently each time"
+}

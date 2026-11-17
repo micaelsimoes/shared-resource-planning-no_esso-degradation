@@ -1,0 +1,453 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 30",
+  "data/SRP1/Results/P515S47/frozen_s47_baseline_spec_v17_ff0056b8.json baseline, steps S2, S3",
+  "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json A1.ladders_2025 (the S3 points)",
+  "Planner task W21 items 2-3 (declared ESS ageing identity; launchers, concurrency 5, cap 500, 10 cycles, case-file AA declaration, no overrides / model variant / post-certification)",
+  "65525006 (harness identity + checks), 2466401d (case-file baseline edit + gate + x0 analysis)"
+ ],
+ "bar_window_cycles": 10,
+ "campaign_id": "s47_recert",
+ "candidates": [
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "070f833e1e318f85_c_star",
+   "eval_key": "070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb",
+   "key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "label": "c_star",
+   "overrides": {},
+   "post_certification": null,
+   "working_dir_ids": {
+    "precheck": "p515s44_s47_recert_070f833e1e318f85_precheck",
+    "run": "p515s44_s47_recert_070f833e1e318f85_run"
+   }
+  },
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "bd504ecf5a288d44_n7_4h_e1",
+   "eval_key": "bd504ecf5a288d447e53ef6f7e8090b017d15549b257aa095ff4f95890a06e42",
+   "key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "label": "n7_4h_e1",
+   "overrides": {},
+   "post_certification": null,
+   "working_dir_ids": {
+    "precheck": "p515s44_s47_recert_bd504ecf5a288d44_precheck",
+    "run": "p515s44_s47_recert_bd504ecf5a288d44_run"
+   }
+  }
+ ],
+ "cap": 500,
+ "concurrency": 5,
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ess_params_file": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "full_diagnostics_in_rows": true,
+  "name": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70): the case file alone (AA keep_memory adopted in data/SRP1/SRP1_params.json) with the ESS ageing parameters declared",
+  "note": "no overrides; no model variant; no post-certification; the ESS ageing declaration is checked against the loaded parameters and read back from the built ESSO models in the child; num_max_iters := cap",
+  "overrides": {}
+ },
+ "extra": {
+  "a0_spec": {
+   "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_spec_s45_a0_c7_9d08ad2f.json",
+   "sha256": "9d08ad2f144b67ea97dae8dc25d91288fc86a77dd52c7f53276a52c5f00f8b34"
+  },
+  "bar_definition": "record.bar = max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (harness W5)",
+  "baseline_inputs": {
+   "Q0_bar_eur": 9629.97833788395,
+   "Q0_certification_cycle": 132,
+   "Q0_eur": 653859461.2279255,
+   "Q0_eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0",
+   "Q0_source": {
+    "label": "x0",
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_results.json",
+    "sha256": "423678b98c0ca9a26dbc76a1b46a5e36a51c8ccccc0459253020bfe1061653b4"
+   },
+   "checks": {
+    "a0_x0_candidate_key": true,
+    "a0_x0_certified": true,
+    "declaration_matches_spec_v17_baseline": true,
+    "file_loads_to_declaration": true
+   },
+   "ess_ageing_baseline": {
+    "calendar_life_years": 15,
+    "calendar_retention_per_year": 0.985,
+    "calibration": {
+     "cycles_n": 10000,
+     "eol_retention_r": 0.8,
+     "reference_dod_d": 0.8,
+     "status": "ACTIVE"
+    },
+    "cycle_life_nominal": 10000,
+    "depth_of_discharge_nominal": 0.8,
+    "minimum_soh": 0.7
+   },
+   "k_closed_form": 35851.3609417964,
+   "q0_statement": "Q(0) is taken from the pinned A0 x0 record (not re-run): x = 0 has no storage. Evidence that it is ageing-independent: W21 case-file gate (2466401d) at x = 0 -- all 48 TSO/DSO blocks digest-identical before/after the edit and the NL file of every ESSO block (what IPOPT receives) byte-identical; the literal criterion \"every block digest identical\" FAILED because the 3 ESSO structural digests differ, and x0_diff_analysis shows the differences are only the 18 DEACTIVATED degradation rows per block and the salvage Expression, which is not in the ESSO objective and whose variables are pinned to 0 by active rows at x = 0.",
+   "spec_v17_predictions_recorded_before_run": {
+    "S2_c_star": "certifies within cap 500 (Planner)",
+    "S2_unit": "certifies; the 0.70 floor binds in the 2035 block (expert: SoH ~0.68 at the horizon without the floor; the C2+fade variant at floor 0.50 reached end-of-block SoH 0.873/0.766/0.679); value below the C2+fade/0.50 value 273,764, Planner range 255k-272k, i.e. value - I between -63k and -46k (Planner)",
+    "S3": "every ladder point has F > F(0); x = 0 remains the minimiser; value per MWh at 4 h a little above C3's 227.7k slope but well below the 253.9k energy cost (Planner)",
+    "S4": "Phase B terminates at x = 0 with no new evaluations beyond the cached unit-step neighbours, or at most a few (Planner)",
+    "Z31_expert": "the mean-profile spread is at most the average of the scenario spreads (misaligned peaks flatten it); uncertainty cannot improve the case in this model"
+   },
+   "x0_candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57"
+  },
+  "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only (not applied in S2/S3)",
+  "campaign_script": "p515_s47_baseline_campaign.py",
+  "campaign_script_sha256": "abaf503d410b94201d6bfbc2f4d2e63927f86f3294883855fc020ff1274db4e2",
+  "cost_file": {
+   "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+   "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6"
+  },
+  "ess_params_file": {
+   "commit": "2466401d",
+   "note": "the ageing BASELINE edit of W21 (Addendum 30)",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "execution": "one batch of 2 at concurrency 5; non-certified points reported with cause",
+  "investment_cost_results": {
+   "commit": "9e623dd304837f2632964f47130d0860c1f016ca",
+   "field": "candidates.<label>.I_new_eur / slack_new_eur, matched by candidate_key",
+   "path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+   "sha256": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b"
+  },
+  "label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "memory_at_freeze_non_gating": {
+   "anonymous_bytes": 6364594176,
+   "available_bytes": 24509562880,
+   "available_gib": 22.826309204101562,
+   "compressor_occupied_bytes": 1334525952,
+   "concurrency": 5,
+   "free_plus_inactive_bytes": 18762203136,
+   "free_plus_inactive_gib": 17.473663330078125,
+   "free_plus_inactive_would_pass_same_threshold": true,
+   "hw_memsize_bytes": 34359738368,
+   "missing_vm_stat_figures": [],
+   "non_reclaimable_bytes": 9850175488,
+   "non_reclaimable_gib": 9.173690795898438,
+   "page_size_bytes": 16384,
+   "pass": true,
+   "per_child_budget_gib": 2.75,
+   "required_bytes": 14763950080,
+   "required_gib": 13.75,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 5 x 2.75 GiB",
+   "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+   "utc": "2026-09-21T14:50:35.911091+00:00",
+   "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+   "vm_stat_pages": {
+    "anonymous_pages": 388464,
+    "file_backed_pages": 881808,
+    "pages_active": 635484,
+    "pages_free": 565272,
+    "pages_inactive": 579882,
+    "pages_occupied_by_compressor": 81453,
+    "pages_purgeable": 6491,
+    "pages_speculative": 54906,
+    "pages_stored_in_compressor": 176035,
+    "pages_wired_down": 131290
+   },
+   "wired_bytes": 2151055360
+  },
+  "memory_preflight_refusing_at": "--run (non-gating at --freeze)",
+  "memory_preflight_rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 5 x 2.75 GiB",
+  "memory_preflight_rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+  "mode": "full",
+  "model_variant": "none",
+  "objective_convention": "Q(x) = certified_cost = gross_operational_cost (settlement-excluded); F(x) = I(x) + Q(x); value = Q(0) - Q(x) with Q(0) from the pinned A0 x0 record; terminal_salvage_value and net_operational_recourse = gross - salvage reported, excluded (Addendum 27 item 3).",
+  "pins": {
+   "a0_results": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_results.json",
+    "sha256_on_disk": "423678b98c0ca9a26dbc76a1b46a5e36a51c8ccccc0459253020bfe1061653b4",
+    "sha256_pinned": "423678b98c0ca9a26dbc76a1b46a5e36a51c8ccccc0459253020bfe1061653b4"
+   },
+   "a0_spec": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_spec_s45_a0_c7_9d08ad2f.json",
+    "sha256_on_disk": "9d08ad2f144b67ea97dae8dc25d91288fc86a77dd52c7f53276a52c5f00f8b34",
+    "sha256_pinned": "9d08ad2f144b67ea97dae8dc25d91288fc86a77dd52c7f53276a52c5f00f8b34"
+   },
+   "a1a_spec": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_spec_s45_a1a_c71f52ee.json",
+    "sha256_on_disk": "c71f52ee535aff607927f83f52783993198b90a8ff44f5426f92e66dc160b851",
+    "sha256_pinned": "c71f52ee535aff607927f83f52783993198b90a8ff44f5426f92e66dc160b851"
+   },
+   "case_file_gate": {
+    "all_ok": false,
+    "commit": "2466401d",
+    "commit_in_HEAD": true,
+    "expect": "all_ok false with EXACTLY one failing check, b_x0_every_block_digest_identical_before_after (the literal digest criterion; see X0_ANALYSIS)",
+    "failing_checks": [
+     "b_x0_every_block_digest_identical_before_after"
+    ],
+    "git_clean": true,
+    "git_tracked": true,
+    "path": "data/SRP1/Results/P515S47/case_file_baseline/after/case_file_baseline_after.json",
+    "sha256": "867a51032c2482315c26e52c14eb32673b18fd14d0e2f90de19bb1563fbeb977"
+   },
+   "cost_file": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+    "sha256_on_disk": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+    "sha256_pinned": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6"
+   },
+   "ess_params_file": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "sha256_on_disk": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+    "sha256_pinned": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+   },
+   "identity_checks": {
+    "all_ok": true,
+    "commit": "65525006",
+    "commit_in_HEAD": true,
+    "expect": "all_ok true",
+    "failing_checks": [],
+    "git_clean": true,
+    "git_tracked": true,
+    "path": "data/SRP1/Results/P515S47/identity_checks/identity_checks.json",
+    "sha256": "f076dfb92b82edbeb794dcb443da12d817846b00b399482244cefdc9ac88b2f2"
+   },
+   "investment_cost_results": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+    "sha256_on_disk": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "sha256_pinned": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b"
+   },
+   "spec_v15": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json",
+    "sha256_on_disk": "5feefd7b642fc3d480156ad5e52ed6e1cf9d6698cfd40dbb33389bab6e6229fe",
+    "sha256_pinned": "5feefd7b642fc3d480156ad5e52ed6e1cf9d6698cfd40dbb33389bab6e6229fe"
+   },
+   "spec_v17": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S47/frozen_s47_baseline_spec_v17_ff0056b8.json",
+    "sha256_on_disk": "ff0056b850957d47cc3aa2595eab13497e100cc7bcda84514c5ca58e25d1e109",
+    "sha256_pinned": "ff0056b850957d47cc3aa2595eab13497e100cc7bcda84514c5ca58e25d1e109"
+   },
+   "x0_diff_analysis": {
+    "all_ok": true,
+    "commit": "2466401d",
+    "commit_in_HEAD": true,
+    "expect": "all_ok true",
+    "failing_checks": [],
+    "git_clean": true,
+    "git_tracked": true,
+    "path": "data/SRP1/Results/P515S47/case_file_baseline/x0_diff_analysis/x0_diff_analysis.json",
+    "sha256": "f2db3be7671efea78d0a45841fc32013361bb41ad2484afff94120793c5b69cd"
+   }
+  },
+  "points": {
+   "c_star": {
+    "I_energy_eur": 2951328.0002236445,
+    "I_power_eur": 744922.223630223,
+    "I_x_eur": 3696250.2238538675,
+    "I_x_source": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+    "budget_feasible_corrected_file": false,
+    "budget_slack_eur": -2696250.2238538675,
+    "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+    "found": true,
+    "investment_year": 2025,
+    "matched_entries": [
+     "c_star"
+    ],
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    },
+    "note": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only (not applied in S2/S3)"
+   },
+   "n7_4h_e1": {
+    "I_energy_eur": 253877.6774385931,
+    "I_power_eur": 64079.331064965416,
+    "I_x_eur": 317957.0085035586,
+    "I_x_source": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+    "budget_feasible_corrected_file": true,
+    "budget_slack_eur": 682042.9914964414,
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "found": true,
+    "investment_year": 2025,
+    "matched_entries": [
+     "n7_4h_e1",
+     "n7_p0.25_e1.0"
+    ],
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "note": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only (not applied in S2/S3)"
+   }
+  },
+  "post_certification": "none",
+  "rule_eleven_fields": [
+   "status",
+   "barrier_cause",
+   "cycles_run",
+   "certification_cycle",
+   "certified_cost_gross_settlement_excluded",
+   "bar",
+   "rule_ten",
+   "terminal_salvage_value",
+   "net_operational_recourse",
+   "I_x_eur",
+   "F_eur",
+   "budget_slack_eur",
+   "value_eur",
+   "value_minus_I_eur",
+   "investment_year",
+   "soh_floor",
+   "soh_trajectory_per_block",
+   "efc_per_day_per_block",
+   "ess_ageing_readback",
+   "wall_time",
+   "peak_rss",
+   "aa_action_counts",
+   "per_cycle_trajectory"
+  ],
+  "sensitivity_statement": "spec v17 baseline.sensitivity_set: all C3 results (A0, A1a, A1b, A2, A3, the ageing batch) are the sensitivity set and never share a table with the baseline; no C3 Q(x) appears here (Q(0) is ageing-independent, see q0_statement)",
+  "soh_floor_active_definition": "a floor row es_soh_per_unit_cumul[y_inv, y] >= soh_min is ACTIVE when |SoH - soh_min| <= 1e-06 at the terminal cycle (the production floor sidecar, boyd_terminal.json soh_floor_multiplier_and_efc_per_cohort_year_terminal); the dual is recorded beside it",
+  "spec_v15": {
+   "path": "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json",
+   "sha256": "5feefd7b642fc3d480156ad5e52ed6e1cf9d6698cfd40dbb33389bab6e6229fe"
+  },
+  "spec_v17": {
+   "path": "data/SRP1/Results/P515S47/frozen_s47_baseline_spec_v17_ff0056b8.json",
+   "sha256": "ff0056b850957d47cc3aa2595eab13497e100cc7bcda84514c5ca58e25d1e109"
+  },
+  "spec_v17_step": "S2",
+  "stage": "s2",
+  "stage_description": "P5.15 Addendum 30 S2 -- re-certification under the ageing BASELINE: C* and the smallest node-7 4 h unit, one batch of 2, concurrency 5",
+  "value_definition": "value = Q(0) - Q(x); value - I = Q(0) - Q(x) - I(x) = F(0) - F(x) (I(0) = 0)"
+ },
+ "frozen_utc": "2026-09-21T14:50:35.942161+00:00",
+ "git_head": "6642b33b6fba114076f4ab7c9bc3dd9f9696e6ed",
+ "harness": {
+  "path": "p515_s44_campaign_harness.py",
+  "sha256": "4f39e80c07459e7ebc186ef5e73b0e630a8e384f53d4ee0bf72bc2ebc9332332"
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "nlp_solver_path_env": {
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "source": "environment"
+ },
+ "required_consecutive_cycles": 10,
+ "schema": "p515_s44_campaign_spec_v2",
+ "thread_caps": {
+  "MKL_NUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1"
+ }
+}

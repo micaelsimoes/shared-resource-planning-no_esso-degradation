@@ -1,0 +1,79 @@
+% =====================================================================================================================
+% CORRECTIONS TO THE SECTION 3.6 MOVE (Overleaf a8a61e9)
+% =====================================================================================================================
+% (a) Section 3.6: insert as the FIRST paragraph, before "Certification (Subsection~\ref{subsubsec:certification}) uses":
+\textcolor{blue}{
+    Every certified evaluation reported in this paper ran the coordination procedure of \ref{app:admm_updated} under one frozen configuration, listed in \ref{app:admm_updated_settings}; the three planning-search campaigns that proposed the incumbents ran on earlier states of the code, without the tight tail, and their incumbents were re-evaluated under this configuration before being reported. In the multi-scenario instance the commitment premium of Subsection~\ref{subsubsec:commitment} is $\alpha = 0.5$.
+}
+% (b) Appendix, new subsection "Solver and Coordination Settings": add the label right under the heading,
+\label{app:admm_updated_settings}
+%     replace its first sentence ("Every certified evaluation reported in this paper ran ... before being reported.") by
+    The frozen configuration of Section~\ref{sec:case_settings} is as follows.
+%     and at the end of its second paragraph replace
+%     "In the multi-scenario instance the commitment premium is $\alpha = 0.5$ and the solver-side voltage regularisation weight is $9 \times 10^{4}$."
+%     by
+    In the multi-scenario instance the solver-side voltage regularisation weight is $9 \times 10^{4}$.
+% (c) Section 3.4 (end of "Active Distribution Networks"): delete the line
+%     "All simulations were executed on a Mac Studio workstation equipped with an Apple M2 Max processor and 32~GB of RAM."
+%     It is a leftover of the submitted version; Section 4.7 states the machine (Apple M2 Max, 32 GiB, macOS 27.0).
+
+% =====================================================================================================================
+% SECTION 2.3.5 "Objective of the Shared-ESS Agent" -> Appendix A.2
+% =====================================================================================================================
+% STEP 1 -- Main text. Delete from
+%     \subsubsection{\textcolor{blue}{Objective of the Shared-ESS Agent}}
+% down to, and including, the paragraph that ends "The values of $c^{\sigma}$ and $\varepsilon^{\text{E}}$ are given in
+% Section~\ref{sec:case_ess_params}." (the intro sentence, equation eq:esso_objective and its "subject to ..." paragraph),
+% and put this paragraph in its place. The following paragraph ("The degradation calculated by the proposed model ...")
+% stays where it is: it now closes Subsection 2.3.4, "Degradation Chain of the Shared-ESS Agent".
+\textcolor{blue}{
+    The agent has no economic objective, and its objective value is not part of $Q(\boldsymbol{x})$. Within the coordination procedure it minimizes its consensus terms, a penalty on the slack pair of \eqref{eq:esso_net_power} and a small linear penalty on its charging and discharging powers, and it enforces the converter capability inequality on its aggregate schedule (\ref{app:admm_updated_implementation}). The linear penalty makes simultaneous charging and discharging non-optimal, so complementarity in the agent follows from the problem structure and needs no nonconvex constraint.
+}
+
+% STEP 2 -- Appendix A.2 "Local Problems". Replace the paragraph that follows equation eq:admm_esso_local
+%     ("subject to the constraints of Subsections~\ref{subsubsec:network_storage}--\ref{subsubsec:commitment} that belong to
+%     it, with $f_{\text{E}}$ the auxiliary objective ... A proximal term on the TSO's consensus variables is implemented but
+%     was run with weight zero.")
+% by the following three blocks.
+\noindent
+\textcolor{blue}{
+    subject to \eqref{eq:cohort_rated}--\eqref{eq:available_capacity}, \eqref{eq:esso_net_power}--\eqref{eq:soh_floor}, the bounds $0 \le P^{\text{Ch}}, P^{\text{Dch}} \le S^{\text{Rated,Unit}}$ on each cohort's powers and the converter capability inequality $(P^{\text{Net}}_{e,y,d,t})^2 + (Q^{\text{Net}}_{e,y,d,t})^2 \le (S^{\text{Av}}_{e,y})^2$ on its aggregate schedule, where $f_{\text{E}}$ is the agent's local objective,
+}
+
+\textcolor{blue}{
+    \begin{equation}
+        \begin{aligned}
+            f_{\text{E}}(x_{\text{E}}) = \;
+            & c^{\sigma} \sum_{e \in E^S} \sum_{y \in Y} \sum_{d \in D} \sum_{t \in T}
+            \left( \sigma^{+}_{e,y,d,t} + \sigma^{-}_{e,y,d,t} \right)\\
+            & + \varepsilon^{\text{E}} \sum_{e \in E^S} \sum_{y^\text{Inv} \in Y} \sum_{y \in Y} \sum_{d \in D} \sum_{t \in T}
+            \left( P^{\text{Ch}}_{e,y^\text{Inv},y,d,t} + P^{\text{Dch}}_{e,y^\text{Inv},y,d,t} \right)
+        \end{aligned}
+        \label{eq:esso_objective}
+    \end{equation}
+}
+
+\noindent
+\textcolor{blue}{
+    a feasibility penalty on the slack pair of \eqref{eq:esso_net_power} and a linear regularization of throughput. The weight $\varepsilon^{\text{E}}$ is far below the resolution of Subsection~\ref{subsubsec:certification} and serves one purpose: with a linear, strictly positive price on $P^{\text{Ch}} + P^{\text{Dch}}$, simultaneous charging and discharging is never optimal, so complementarity in the agent follows from the problem structure and needs no nonconvex constraint; the residual $\min\{P^{\text{Ch}}, P^{\text{Dch}}\}$ is checked after every solve and recorded, not enforced, and at the certified points it was below $4 \times 10^{-5}$ of the rating. The values of $c^{\sigma}$ and $\varepsilon^{\text{E}}$ are given in Section~\ref{sec:case_ess_params}.
+    The penalty parameters $\rho^{V}$, $\rho^{\text{PF}}$ and $\rho^{\text{E}}$ are one per channel, common to all agents and to active and reactive power. A proximal term on the TSO's consensus variables is implemented but was run with weight zero.
+}
+
+% STEP 3 -- Nomenclature, "Variables and Functions": delete the row
+%     $\mathcal{L}^{E,P}$, $\mathcal{L}^{E,Q}$ & Augmented-Lagrangian terms of the storage channel
+% (these symbols no longer appear; the appendix writes the terms out in full). Keep $c^{\sigma}$, $\varepsilon^{\text{E}}$
+% and $\kappa^{\text{E}}$: they are still used in Appendix A.
+
+% STEP 4 -- Deliberately NOT carried over (paper text that read as a reply to the reviewers):
+%   "The slack pair $\sigma$ was at its lower bound at every certified point."  -> already stated in 2.3.4 (eq. esso_net_power).
+%   "The earlier investment-fixing slacks and the apparent-power aggregation are retired: investments are parameters,
+%    and reactive power enters only through the capability circle."            -> goes to the letter instead (step 5).
+
+% STEP 5 -- Letter (response_to_reviewers_draft.tex), two added clauses:
+%   (i) Reviewer 2, Benders/feasibility-cuts reply: after "Feasibility cuts are no longer needed because every lattice point
+%       is evaluated directly;" insert
+%       "the penalized slack variables that fixed the investment inside the subproblem are removed as well, the investment
+%        being a fixed parameter of the recourse (Section~2.3.2);"
+%   (ii) R2.11--R2.12 reply: append before the closing "(Section~2.3 and Appendix~A)." sentence end, or as a new last sentence:
+%       "The apparent-power aggregation of the submitted version is removed: reactive power enters only through the
+%        capability inequality."

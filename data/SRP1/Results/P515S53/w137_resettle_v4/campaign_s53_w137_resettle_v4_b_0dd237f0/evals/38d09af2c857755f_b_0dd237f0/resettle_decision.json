@@ -1,0 +1,302 @@
+{
+ "A": [
+  38747.78034007549,
+  16586.21589386463,
+  6248.539753317833,
+  2396.4328488111496
+ ],
+ "N": 103,
+ "N_definition": "the first residual pass (version 2; no non-Optimal reset)",
+ "N_old": 112,
+ "P_hat": 30,
+ "Q_N_old_recorded": 653597304.2681718,
+ "Q_cc_k_star": 653617437.7121804,
+ "Q_k_star": 653616845.7282246,
+ "T": [
+  [
+   109,
+   "min",
+   653590375.7597291
+  ],
+  [
+   123,
+   "max",
+   653629123.5400692
+  ],
+  [
+   136,
+   "min",
+   653612537.3241754
+  ],
+  [
+   151,
+   "max",
+   653618785.8639287
+  ],
+  [
+   166,
+   "min",
+   653616389.4310799
+  ]
+ ],
+ "W": 33,
+ "band": [
+  653614605.0994618,
+  653618785.8639287
+ ],
+ "band_width": 4180.764466881752,
+ "branch": "oscillatory",
+ "cap": 212,
+ "cap_ceiling": 300,
+ "cap_mode": "fixed",
+ "cell": "b_0dd237f0",
+ "certA_parts": {
+  "P_hat": 30,
+  "W": 33,
+  "at_least_3_turning_points": true,
+  "band": [
+   653614605.0994618,
+   653618785.8639287
+  ],
+  "n_turning_points": 5,
+  "range": 4180.764466881752,
+  "range_le_tau": true,
+  "swings_non_increasing_all_pairs": true,
+  "window": [
+   141,
+   173
+  ],
+  "window_inside_run": true
+ },
+ "certB_parts": {
+  "L_MONO": 60,
+  "band": [
+   653604948.0441749,
+   653629123.5400692
+  ],
+  "j_change": 169,
+  "last_step_abs": 86.16107165813446,
+  "last_step_times_L": 5169.664299488068,
+  "last_step_times_L_le_tau": false,
+  "lo_ge_k0_plus_K_EXCL": true,
+  "max_abs_dq": 4584.747856497765,
+  "mean_abs_dq_first_half": 1619.4655035297076,
+  "mean_abs_dq_second_half": 190.17256328662236,
+  "no_sign_change_in_window": false,
+  "range": 24175.49589431286,
+  "range_le_tau": false,
+  "stationary": false,
+  "steps_decreasing": true,
+  "strictly_decreasing": true,
+  "window": [
+   114,
+   173
+  ]
+ },
+ "decided_at_cycle": 173,
+ "first_residual_pass_run": 103,
+ "gap_bound": 2269.5341375000003,
+ "gap_refusals": [],
+ "gated": true,
+ "k0": 103,
+ "k_star": 173,
+ "lapse_events": [],
+ "n_vetoes": 0,
+ "non_optimal_cycles": [],
+ "out_of_window_reads": {
+  "W": 33,
+  "any_non_optimal_read_outside_window": false,
+  "any_out_of_window_read": true,
+  "branch": "oscillatory",
+  "enumeration": "settling_criterion_v4.SUB_TEST_READS",
+  "k": 173,
+  "k0": 103,
+  "non_optimal_cycles_read_outside_window": [],
+  "non_optimal_turning_points_outside_window": [],
+  "reads": {
+   "P_hat": {
+    "P_hat": 30,
+    "positions": [
+     {
+      "Q_t": 653612537.3241754,
+      "kind": "min",
+      "non_optimal": false,
+      "outside_window": true,
+      "t": 136
+     },
+     {
+      "Q_t": 653616389.4310799,
+      "kind": "min",
+      "non_optimal": false,
+      "outside_window": false,
+      "t": 166
+     }
+    ],
+    "positions_outside_window": [
+     {
+      "Q_t": 653612537.3241754,
+      "kind": "min",
+      "non_optimal": false,
+      "outside_window": true,
+      "t": 136
+     }
+    ],
+    "reads": "T[-1].t - T[-3].t"
+   },
+   "k0_no_boyd_lapse_span": {
+    "any_non_optimal_outside_window": false,
+    "cycles": [
+     103,
+     173
+    ],
+    "non_optimal_cycles_outside_window": [],
+    "outside_window": [
+     103,
+     140
+    ],
+    "reads": "boyd_k and Q not None (no lapse since k0)"
+   },
+   "sign_state_Q_span": {
+    "any_non_optimal_outside_window": false,
+    "cycles": [
+     105,
+     173
+    ],
+    "non_optimal_cycles_outside_window": [],
+    "outside_window": [
+     105,
+     140
+    ],
+    "reads": "Q (every step dQ_c, c >= k0 + K_EXCL, and the extremum search locating each turning point)"
+   },
+   "swings_non_increasing_all_pairs": {
+    "pairs_with_an_endpoint_outside_window": [
+     [
+      109,
+      123
+     ],
+     [
+      123,
+      136
+     ],
+     [
+      136,
+      151
+     ]
+    ],
+    "reads": "A[i] = |Q_T[i+1] - Q_T[i]| for every consecutive pair since k0",
+    "turning_points_outside_window": [
+     {
+      "Q_t": 653590375.7597291,
+      "kind": "min",
+      "non_optimal": false,
+      "outside_window": true,
+      "t": 109
+     },
+     {
+      "Q_t": 653629123.5400692,
+      "kind": "max",
+      "non_optimal": false,
+      "outside_window": true,
+      "t": 123
+     },
+     {
+      "Q_t": 653612537.3241754,
+      "kind": "min",
+      "non_optimal": false,
+      "outside_window": true,
+      "t": 136
+     }
+    ],
+    "turning_points_read": [
+     {
+      "Q_t": 653590375.7597291,
+      "kind": "min",
+      "non_optimal": false,
+      "outside_window": true,
+      "t": 109
+     },
+     {
+      "Q_t": 653629123.5400692,
+      "kind": "max",
+      "non_optimal": false,
+      "outside_window": true,
+      "t": 123
+     },
+     {
+      "Q_t": 653612537.3241754,
+      "kind": "min",
+      "non_optimal": false,
+      "outside_window": true,
+      "t": 136
+     },
+     {
+      "Q_t": 653618785.8639287,
+      "kind": "max",
+      "non_optimal": false,
+      "outside_window": false,
+      "t": 151
+     },
+     {
+      "Q_t": 653616389.4310799,
+      "kind": "min",
+      "non_optimal": false,
+      "outside_window": false,
+      "t": 166
+     }
+    ]
+   },
+   "turning_point_count": {
+    "n_turning_points": 5,
+    "reads": "len(T) >= 3",
+    "turning_points_outside_window": [
+     {
+      "Q_t": 653590375.7597291,
+      "kind": "min",
+      "non_optimal": false,
+      "outside_window": true,
+      "t": 109
+     },
+     {
+      "Q_t": 653629123.5400692,
+      "kind": "max",
+      "non_optimal": false,
+      "outside_window": true,
+      "t": 123
+     },
+     {
+      "Q_t": 653612537.3241754,
+      "kind": "min",
+      "non_optimal": false,
+      "outside_window": true,
+      "t": 136
+     }
+    ]
+   }
+  },
+  "turning_points_outside_window": [
+   109,
+   123,
+   136
+  ],
+  "window": [
+   141,
+   173
+  ],
+  "window_all_optimal": true
+ },
+ "range": 4180.764466881752,
+ "range_over_tau": 0.9210622563023139,
+ "reading": "gamma_window_a",
+ "spec_cap": 212,
+ "status": "certified",
+ "t_sum_k_star": 591.9839557078449,
+ "version": 4,
+ "vetoes": [],
+ "window": [
+  141,
+  173
+ ],
+ "window_all_optimal": true,
+ "window_rule": "Addendum 59 Supplement: the certifying window is the last W cycles the certification test reads at k -- oscillatory [k - W + 1, k], monotone [k - L + 1, k]; every cycle of it must be all-Optimal on all 51 blocks, otherwise certification is refused at that cycle only (certification_vetoed_non_optimal) and the state is unchanged"
+}

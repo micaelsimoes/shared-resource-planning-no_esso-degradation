@@ -1,0 +1,296 @@
+{
+ "schema": "p515_s49_memory_fix_checks_v1",
+ "stage": "P5.15 Addendum 29 W32 M2 -- release_solution_bookkeeping switch checks (zero-solve + 4-solve block A/B)",
+ "utc": "2026-09-22T12:16:46.772305+00:00",
+ "git_head": "4cf5666c2e669b77807323d0b1697a86a5d4e859",
+ "script_sha256": "de9ad8b22551c8304f86f70cd82fdae490528c0e333a803a53f704a85a68fde1",
+ "network_py_sha256": "952bec718aab892995add3fbdd915c782061860df72219d91e0c1e7047231934",
+ "solver_parameters_py_sha256": "2801ef16853d7e63752d646c4c8a789a17a6731959060112c48f9457074c8b65",
+ "instance": {
+  "candidate": "C* (0.96875/3.875 at 5, 7, 9; 2025)",
+  "block": [
+   7,
+   "2025",
+   "Spring"
+  ]
+ },
+ "part_z": {
+  "Z1_default_false": true,
+  "Z2_reads": {
+   "absent": false,
+   "true": true,
+   "false": false
+  },
+  "Z2_ok": true,
+  "Z3_case_flags": {
+   "tso": false,
+   "dso_5": false,
+   "dso_7": false,
+   "dso_9": false
+  },
+  "Z3_ok": true,
+  "Z4_on": {
+   "requested": true,
+   "before": {
+    "tso": false,
+    "dso_5": false,
+    "dso_7": false,
+    "dso_9": false
+   },
+   "read_back": {
+    "tso": true,
+    "dso_5": true,
+    "dso_7": true,
+    "dso_9": true
+   },
+   "solver_params_objects_distinct": true,
+   "took_effect": true
+  },
+  "Z4_off": {
+   "requested": false,
+   "before": {
+    "tso": true,
+    "dso_5": true,
+    "dso_7": true,
+    "dso_9": true
+   },
+   "read_back": {
+    "tso": false,
+    "dso_5": false,
+    "dso_7": false,
+    "dso_9": false
+   },
+   "solver_params_objects_distinct": true,
+   "took_effect": true
+  },
+  "Z4_esso_untouched": true,
+  "Z4_broken_raises": "AttributeError: 'NoneType' object has no attribute 'params'",
+  "Z4_ok": true,
+  "Z5_release_body_statements": [
+   "model.solutions.clear()",
+   "result.solution.clear()"
+  ],
+  "Z5_call_positions": {
+   "succeeded_branch": 3805,
+   "load_from": 3866,
+   "release_call": 4279,
+   "failure_else": 4613
+  },
+  "Z5_ok": true,
+  "Z6_fixtures": {
+   "data/SRP1/Results/FrozenSMOPF/failure_TSO_case9_2025_Spring_cycle1.pkl": "loaded dict",
+   "data/SRP1/Results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl": "loaded dict",
+   "data/SRP1/Results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl": "loaded dict",
+   "data/SRP1/Results/P512R/cycle21_pre_setup/snapshot.pkl": "loaded dict"
+  },
+  "Z6_ok": true,
+  "Z_guard_counts_at_end": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "Z_zero_solves": true
+ },
+ "part_s": {
+  "attempts": [
+   {
+    "network": "case33_2",
+    "year": 2025,
+    "day": "Spring",
+    "warm": false,
+    "log_suffix": null
+   },
+   {
+    "network": "case33_2",
+    "year": 2025,
+    "day": "Spring",
+    "warm": true,
+    "log_suffix": null
+   },
+   {
+    "network": "case33_2",
+    "year": 2025,
+    "day": "Spring",
+    "warm": false,
+    "log_suffix": null
+   },
+   {
+    "network": "case33_2",
+    "year": 2025,
+    "day": "Spring",
+    "warm": true,
+    "log_suffix": null
+   }
+  ],
+  "cold_n_vars": 10882,
+  "cold_suffix_lengths": {
+   "dual": [
+    7803,
+    7803
+   ],
+   "ipopt_zL_out": [
+    7527,
+    7527
+   ],
+   "ipopt_zU_out": [
+    7377,
+    7377
+   ],
+   "ipopt_zL_in": [
+    0,
+    0
+   ],
+   "ipopt_zU_in": [
+    0,
+    0
+   ]
+  },
+  "cold_var_diffs": [],
+  "cold_suffix_diffs": [],
+  "cold_solver_diffs": [],
+  "cold_runtime_parse": {
+   "off": {
+    "string": "0.3824431896209717",
+    "is_number": true
+   },
+   "on": {
+    "string": "0.3740060329437256",
+    "is_number": true
+   }
+  },
+  "cold_post_state": {
+   "off": {
+    "model_solutions": 1,
+    "model_symbol_maps": 0,
+    "result_solutions": 1
+   },
+   "on": {
+    "model_solutions": 0,
+    "model_symbol_maps": 0,
+    "result_solutions": 0
+   }
+  },
+  "warm_n_vars": 10882,
+  "warm_suffix_lengths": {
+   "dual": [
+    7803,
+    7803
+   ],
+   "ipopt_zL_out": [
+    7527,
+    7527
+   ],
+   "ipopt_zU_out": [
+    7377,
+    7377
+   ],
+   "ipopt_zL_in": [
+    7527,
+    7527
+   ],
+   "ipopt_zU_in": [
+    7377,
+    7377
+   ]
+  },
+  "warm_var_diffs": [],
+  "warm_suffix_diffs": [],
+  "warm_solver_diffs": [],
+  "warm_runtime_parse": {
+   "off": {
+    "string": "0.26926207542419434",
+    "is_number": true
+   },
+   "on": {
+    "string": "0.26642918586730957",
+    "is_number": true
+   }
+  },
+  "warm_post_state": {
+   "off": {
+    "model_solutions": 1,
+    "model_symbol_maps": 0,
+    "result_solutions": 1
+   },
+   "on": {
+    "model_solutions": 0,
+    "model_symbol_maps": 0,
+    "result_solutions": 0
+   }
+  },
+  "consensus_diffs": [],
+  "succeeded": {
+   "off": [
+    true,
+    true
+   ],
+   "on": [
+    true,
+    true
+   ]
+  },
+  "switch_applied": {
+   "off": {
+    "requested": false,
+    "before": {
+     "tso": false,
+     "dso_5": false,
+     "dso_7": false,
+     "dso_9": false
+    },
+    "read_back": {
+     "tso": false,
+     "dso_5": false,
+     "dso_7": false,
+     "dso_9": false
+    },
+    "solver_params_objects_distinct": true,
+    "took_effect": true
+   },
+   "on": {
+    "requested": true,
+    "before": {
+     "tso": false,
+     "dso_5": false,
+     "dso_7": false,
+     "dso_9": false
+    },
+    "read_back": {
+     "tso": true,
+     "dso_5": true,
+     "dso_7": true,
+     "dso_9": true
+    },
+    "solver_params_objects_distinct": true,
+    "took_effect": true
+   }
+  },
+  "S_ok": true
+ },
+ "guard": {
+  "declared_S": 4,
+  "recovery_attempts": 0,
+  "reconciled": 4,
+  "counts": {
+   "permitted_solve": 4,
+   "permitted_exec": 4,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "items": {
+  "Z1": true,
+  "Z2": true,
+  "Z3": true,
+  "Z4": true,
+  "Z5": true,
+  "Z6": true,
+  "Z_zero_solves": true,
+  "S_block_ab_bitwise": true,
+  "guard_verified_exactly": true
+ },
+ "all_pass": true,
+ "wall_s": 17.824776887893677
+}

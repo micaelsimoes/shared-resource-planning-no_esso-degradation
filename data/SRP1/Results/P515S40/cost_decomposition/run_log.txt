@@ -1,0 +1,43 @@
+P5.15 Addendum 22 item 1(a): zero-solve cost decomposition (S40)
+timestamp_utc = 2026-09-17T23:12:04.154923+00:00
+[run1] reading data/SRP1/Results/P515S35_REF_run/g_baseline.json
+[run1] reading data/SRP1/Results/P515S35_REF_run/component_levels_terminal.json
+[A] reading data/SRP1/Results/P515S38_A_TAU0_run/g_s38_A_tau0.json
+[A] reading data/SRP1/Results/P515S38_A_TAU0_run/component_levels_terminal.json
+[C] reading data/SRP1/Results/P515S39_C_run/g_s39_C.json
+[C] reading data/SRP1/Results/P515S39_C_run/component_levels_terminal.json
+[D] reading data/SRP1/Results/P515S39_D_run/g_s39_D.json
+[D] reading data/SRP1/Results/P515S39_D_run/component_levels_terminal.json
+instance identity across all four runs: True -- {'s_mva': 0.96875, 'e_mwh': 3.875, 'year': 2025, 'assignment': 'uniform across active nodes (control/perturbation)'}
+[run1] gross_operational_cost: g.json=651039166.0347285 component_levels=651039166.0347285 abs_diff=0.000e+00
+[A] gross_operational_cost: g.json=651000017.0637478 component_levels=651000017.0637478 abs_diff=0.000e+00
+[C] gross_operational_cost: g.json=650981422.986398 component_levels=650981422.986398 abs_diff=0.000e+00
+[D] gross_operational_cost: g.json=650966975.2943751 component_levels=650966975.2943751 abs_diff=0.000e+00
+[run1] reconciliation residual (gross - (priced_sum+detector)) = -1.192e-07; gross - net_operational_recourse = 0.0 (salvage=-4.7968020928105746e-51)
+[A] reconciliation residual (gross - (priced_sum+detector)) = 1.192e-07; gross - net_operational_recourse = 0.0 (salvage=1.1992005232026436e-51)
+[C] reconciliation residual (gross - (priced_sum+detector)) = -2.384e-07; gross - net_operational_recourse = 0.0 (salvage=5.0966022236112356e-51)
+[D] reconciliation residual (gross - (priced_sum+detector)) = -1.192e-07; gross - net_operational_recourse = 0.0 (salvage=1.4390406278431721e-50)
+[run1] block-sum check (48 blocks): max abs residual over all 19 component keys = 0.000e+00
+[A] block-sum check (48 blocks): max abs residual over all 19 component keys = 0.000e+00
+[C] block-sum check (48 blocks): max abs residual over all 19 component keys = 0.000e+00
+[D] block-sum check (48 blocks): max abs residual over all 19 component keys = 0.000e+00
+headline gross_operational_cost per run: {"run1": 651039166.0347285, "A": 651000017.0637478, "C": 650981422.986398, "D": 650966975.2943751}
+headline diff vs run1 (arm - run1): {"A": -39148.970980763435, "C": -57743.048330545425, "D": -72190.74035346508}
+headline C - D = 14447.69
+[A] headline diff vs run1 = -39148.9710; dominant-two (generation_cost+flexibility_cost_internal) = -39148.9707; other priced components = 0.0000; detector_penalty_total delta = -0.000317; unaccounted residual = 0.000000
+[C] headline diff vs run1 = -57743.0483; dominant-two (generation_cost+flexibility_cost_internal) = -57743.0479; other priced components = 0.0000; detector_penalty_total delta = -0.000390; unaccounted residual = -0.000000
+[D] headline diff vs run1 = -72190.7404; dominant-two (generation_cost+flexibility_cost_internal) = -72190.7398; other priced components = 0.0000; detector_penalty_total delta = -0.000525; unaccounted residual = 0.000000
+C - D: headline = 14447.6920; dominant-two = 14447.6919; unaccounted residual = -0.000000
+[A] error bar vs run1: arm_step=2883.8835 run1_step=256.2581 bar=3140.1416 abs_diff=39148.9710 inside_bar=False
+[C] error bar vs run1: arm_step=477.9584 run1_step=256.2581 bar=734.2165 abs_diff=57743.0483 inside_bar=False
+[D] error bar vs run1: arm_step=7898.6304 run1_step=256.2581 bar=8154.8885 abs_diff=72190.7404 inside_bar=False
+[C] cross-check vs s39_evaluation.json: evaluator abs_diff=57743.0483 bar=734.2165 vs this script's 57743.0483 / 734.2165 -- agrees=True
+[D] cross-check vs s39_evaluation.json: evaluator abs_diff=72190.7404 bar=8154.8885 vs this script's 72190.7404 / 8154.8885 -- agrees=True
+per-block aggregation computed for generation_cost: by_kind, by_dso_node, by_year
+per-block aggregation computed for flexibility_cost_internal: by_kind, by_dso_node, by_year
+[run1] interface_settlement_total = 76.42558908462524 (system-level, per-DSO-node granularity only, NOT per-block; excluded from gross_operational_cost by row-3' construction, per Addendum 12)
+[A] interface_settlement_total = -14677.526974439621 (system-level, per-DSO-node granularity only, NOT per-block; excluded from gross_operational_cost by row-3' construction, per Addendum 12)
+[C] interface_settlement_total = -6107.333452224731 (system-level, per-DSO-node granularity only, NOT per-block; excluded from gross_operational_cost by row-3' construction, per Addendum 12)
+[D] interface_settlement_total = 36679.078142642975 (system-level, per-DSO-node granularity only, NOT per-block; excluded from gross_operational_cost by row-3' construction, per Addendum 12)
+SolveProfileGuard.verify(0): OK -- zero solves for the whole script
+wrote /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S40/cost_decomposition/cost_decomposition.json

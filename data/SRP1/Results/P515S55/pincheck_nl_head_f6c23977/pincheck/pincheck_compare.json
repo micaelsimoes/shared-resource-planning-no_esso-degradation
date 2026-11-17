@@ -1,0 +1,1087 @@
+{
+ "definition": "Pin check f6c23977 (zero solves, no model build): compare the HEAD NL-digest run with the spec v1 reference\n(w183_nl_post_w183c_off, production 6f43479e), block by block, using the same equality definition as W183c gate 2\n(`p515_s53_w183c_nrf_gates._block_files_equal`, reproduced field for field below), plus three independent checks:\n(a) the gz sha256 of every NL and per-block item file in the two manifests (path re-rooted), (b) the decompressed\nsha256 of every committed ESSO NL gz recomputed from the files, (c) the determinism child of both runs.\nUsage: python pincheck_compare.py <ref_dir> <post_dir> <out_json>",
+ "determinism_child": {
+  "configs": [
+   "unit_N_2x",
+   "x0_A_1x"
+  ],
+  "n_blocks_compared": 174,
+  "n_blocks_identical": 174,
+  "per_config": {
+   "unit_N_2x": {
+    "parallel": {
+     "differences": [],
+     "n_blocks_post": 36,
+     "n_blocks_reference": 36,
+     "n_differences": 0,
+     "n_dso": 36,
+     "n_esso": 0,
+     "n_tso": 0
+    },
+    "sequential": {
+     "differences": [],
+     "n_blocks_post": 51,
+     "n_blocks_reference": 51,
+     "n_differences": 0,
+     "n_dso": 36,
+     "n_esso": 3,
+     "n_tso": 12
+    }
+   },
+   "x0_A_1x": {
+    "parallel": {
+     "differences": [],
+     "n_blocks_post": 36,
+     "n_blocks_reference": 36,
+     "n_differences": 0,
+     "n_dso": 36,
+     "n_esso": 0,
+     "n_tso": 0
+    },
+    "sequential": {
+     "differences": [],
+     "n_blocks_post": 51,
+     "n_blocks_reference": 51,
+     "n_differences": 0,
+     "n_dso": 36,
+     "n_esso": 3,
+     "n_tso": 12
+    }
+   }
+  }
+ },
+ "esso_blocks": {
+  "unit_A_1x/sequential/ESSO|node5": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "unit_A_1x/sequential/ESSO|node7": {
+   "all_equal": true,
+   "plain_sha256_post": "e3a0940f2a61be73705ed34e3d952f356d8cbedfcef218371db11401433ac6aa",
+   "plain_sha256_reference": "e3a0940f2a61be73705ed34e3d952f356d8cbedfcef218371db11401433ac6aa"
+  },
+  "unit_A_1x/sequential/ESSO|node9": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "unit_A_2x/sequential/ESSO|node5": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "unit_A_2x/sequential/ESSO|node7": {
+   "all_equal": true,
+   "plain_sha256_post": "e3a0940f2a61be73705ed34e3d952f356d8cbedfcef218371db11401433ac6aa",
+   "plain_sha256_reference": "e3a0940f2a61be73705ed34e3d952f356d8cbedfcef218371db11401433ac6aa"
+  },
+  "unit_A_2x/sequential/ESSO|node9": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "unit_N_1x/sequential/ESSO|node5": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "unit_N_1x/sequential/ESSO|node7": {
+   "all_equal": true,
+   "plain_sha256_post": "d7b467e236d9d56a750e3eeff2d3beffcfae79af57a904ea0bb73036785b7639",
+   "plain_sha256_reference": "d7b467e236d9d56a750e3eeff2d3beffcfae79af57a904ea0bb73036785b7639"
+  },
+  "unit_N_1x/sequential/ESSO|node9": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "unit_N_2x/sequential/ESSO|node5": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "unit_N_2x/sequential/ESSO|node7": {
+   "all_equal": true,
+   "plain_sha256_post": "d7b467e236d9d56a750e3eeff2d3beffcfae79af57a904ea0bb73036785b7639",
+   "plain_sha256_reference": "d7b467e236d9d56a750e3eeff2d3beffcfae79af57a904ea0bb73036785b7639"
+  },
+  "unit_N_2x/sequential/ESSO|node9": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "x0_A_1x/sequential/ESSO|node5": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "x0_A_1x/sequential/ESSO|node7": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "x0_A_1x/sequential/ESSO|node9": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "x0_A_2x/sequential/ESSO|node5": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "x0_A_2x/sequential/ESSO|node7": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "x0_A_2x/sequential/ESSO|node9": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "x0_N_1x/sequential/ESSO|node5": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "x0_N_1x/sequential/ESSO|node7": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "x0_N_1x/sequential/ESSO|node9": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "x0_N_2x/sequential/ESSO|node5": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "x0_N_2x/sequential/ESSO|node7": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "x0_N_2x/sequential/ESSO|node9": {
+   "all_equal": true,
+   "plain_sha256_post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "plain_sha256_reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  }
+ },
+ "esso_nl_gz_recomputed": {
+  "determinism_child/nl/unit_N_2x/sequential/ESSO_node5.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "determinism_child/nl/unit_N_2x/sequential/ESSO_node5.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "determinism_child/nl/unit_N_2x/sequential/ESSO_node5.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "determinism_child/nl/unit_N_2x/sequential/ESSO_node5.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "determinism_child/nl/unit_N_2x/sequential/ESSO_node7.nl.gz": {
+   "equal": true,
+   "post": "d7b467e236d9d56a750e3eeff2d3beffcfae79af57a904ea0bb73036785b7639",
+   "reference": "d7b467e236d9d56a750e3eeff2d3beffcfae79af57a904ea0bb73036785b7639"
+  },
+  "determinism_child/nl/unit_N_2x/sequential/ESSO_node7.sym.col.gz": {
+   "equal": true,
+   "post": "ade7aa65ab940c7d82084b0b476e35e0537159a5136594a3569d55a7ca005f4e",
+   "reference": "ade7aa65ab940c7d82084b0b476e35e0537159a5136594a3569d55a7ca005f4e"
+  },
+  "determinism_child/nl/unit_N_2x/sequential/ESSO_node7.sym.nl.gz": {
+   "equal": true,
+   "post": "16d77f0e861c7675909318b8d1f66c96c540e04673d8b44b6fd9b8b130269cba",
+   "reference": "16d77f0e861c7675909318b8d1f66c96c540e04673d8b44b6fd9b8b130269cba"
+  },
+  "determinism_child/nl/unit_N_2x/sequential/ESSO_node7.sym.row.gz": {
+   "equal": true,
+   "post": "9cadcba06c8bb039a80b0e8ba0a8a9fce67ce4f0fec4657eedaca5e09ec147d8",
+   "reference": "9cadcba06c8bb039a80b0e8ba0a8a9fce67ce4f0fec4657eedaca5e09ec147d8"
+  },
+  "determinism_child/nl/unit_N_2x/sequential/ESSO_node9.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "determinism_child/nl/unit_N_2x/sequential/ESSO_node9.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "determinism_child/nl/unit_N_2x/sequential/ESSO_node9.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "determinism_child/nl/unit_N_2x/sequential/ESSO_node9.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "determinism_child/nl/x0_A_1x/sequential/ESSO_node5.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "determinism_child/nl/x0_A_1x/sequential/ESSO_node5.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "determinism_child/nl/x0_A_1x/sequential/ESSO_node5.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "determinism_child/nl/x0_A_1x/sequential/ESSO_node5.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "determinism_child/nl/x0_A_1x/sequential/ESSO_node7.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "determinism_child/nl/x0_A_1x/sequential/ESSO_node7.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "determinism_child/nl/x0_A_1x/sequential/ESSO_node7.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "determinism_child/nl/x0_A_1x/sequential/ESSO_node7.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "determinism_child/nl/x0_A_1x/sequential/ESSO_node9.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "determinism_child/nl/x0_A_1x/sequential/ESSO_node9.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "determinism_child/nl/x0_A_1x/sequential/ESSO_node9.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "determinism_child/nl/x0_A_1x/sequential/ESSO_node9.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/unit_A_1x/sequential/ESSO_node5.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/unit_A_1x/sequential/ESSO_node5.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/unit_A_1x/sequential/ESSO_node5.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/unit_A_1x/sequential/ESSO_node5.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/unit_A_1x/sequential/ESSO_node7.nl.gz": {
+   "equal": true,
+   "post": "e3a0940f2a61be73705ed34e3d952f356d8cbedfcef218371db11401433ac6aa",
+   "reference": "e3a0940f2a61be73705ed34e3d952f356d8cbedfcef218371db11401433ac6aa"
+  },
+  "nl/unit_A_1x/sequential/ESSO_node7.sym.col.gz": {
+   "equal": true,
+   "post": "ade7aa65ab940c7d82084b0b476e35e0537159a5136594a3569d55a7ca005f4e",
+   "reference": "ade7aa65ab940c7d82084b0b476e35e0537159a5136594a3569d55a7ca005f4e"
+  },
+  "nl/unit_A_1x/sequential/ESSO_node7.sym.nl.gz": {
+   "equal": true,
+   "post": "b2f8133ecb62a8d574441d1020efb10f4115882da345bcb87f8a66794556c3de",
+   "reference": "b2f8133ecb62a8d574441d1020efb10f4115882da345bcb87f8a66794556c3de"
+  },
+  "nl/unit_A_1x/sequential/ESSO_node7.sym.row.gz": {
+   "equal": true,
+   "post": "9cadcba06c8bb039a80b0e8ba0a8a9fce67ce4f0fec4657eedaca5e09ec147d8",
+   "reference": "9cadcba06c8bb039a80b0e8ba0a8a9fce67ce4f0fec4657eedaca5e09ec147d8"
+  },
+  "nl/unit_A_1x/sequential/ESSO_node9.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/unit_A_1x/sequential/ESSO_node9.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/unit_A_1x/sequential/ESSO_node9.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/unit_A_1x/sequential/ESSO_node9.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/unit_A_2x/sequential/ESSO_node5.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/unit_A_2x/sequential/ESSO_node5.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/unit_A_2x/sequential/ESSO_node5.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/unit_A_2x/sequential/ESSO_node5.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/unit_A_2x/sequential/ESSO_node7.nl.gz": {
+   "equal": true,
+   "post": "e3a0940f2a61be73705ed34e3d952f356d8cbedfcef218371db11401433ac6aa",
+   "reference": "e3a0940f2a61be73705ed34e3d952f356d8cbedfcef218371db11401433ac6aa"
+  },
+  "nl/unit_A_2x/sequential/ESSO_node7.sym.col.gz": {
+   "equal": true,
+   "post": "ade7aa65ab940c7d82084b0b476e35e0537159a5136594a3569d55a7ca005f4e",
+   "reference": "ade7aa65ab940c7d82084b0b476e35e0537159a5136594a3569d55a7ca005f4e"
+  },
+  "nl/unit_A_2x/sequential/ESSO_node7.sym.nl.gz": {
+   "equal": true,
+   "post": "b2f8133ecb62a8d574441d1020efb10f4115882da345bcb87f8a66794556c3de",
+   "reference": "b2f8133ecb62a8d574441d1020efb10f4115882da345bcb87f8a66794556c3de"
+  },
+  "nl/unit_A_2x/sequential/ESSO_node7.sym.row.gz": {
+   "equal": true,
+   "post": "9cadcba06c8bb039a80b0e8ba0a8a9fce67ce4f0fec4657eedaca5e09ec147d8",
+   "reference": "9cadcba06c8bb039a80b0e8ba0a8a9fce67ce4f0fec4657eedaca5e09ec147d8"
+  },
+  "nl/unit_A_2x/sequential/ESSO_node9.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/unit_A_2x/sequential/ESSO_node9.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/unit_A_2x/sequential/ESSO_node9.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/unit_A_2x/sequential/ESSO_node9.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/unit_N_1x/sequential/ESSO_node5.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/unit_N_1x/sequential/ESSO_node5.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/unit_N_1x/sequential/ESSO_node5.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/unit_N_1x/sequential/ESSO_node5.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/unit_N_1x/sequential/ESSO_node7.nl.gz": {
+   "equal": true,
+   "post": "d7b467e236d9d56a750e3eeff2d3beffcfae79af57a904ea0bb73036785b7639",
+   "reference": "d7b467e236d9d56a750e3eeff2d3beffcfae79af57a904ea0bb73036785b7639"
+  },
+  "nl/unit_N_1x/sequential/ESSO_node7.sym.col.gz": {
+   "equal": true,
+   "post": "ade7aa65ab940c7d82084b0b476e35e0537159a5136594a3569d55a7ca005f4e",
+   "reference": "ade7aa65ab940c7d82084b0b476e35e0537159a5136594a3569d55a7ca005f4e"
+  },
+  "nl/unit_N_1x/sequential/ESSO_node7.sym.nl.gz": {
+   "equal": true,
+   "post": "16d77f0e861c7675909318b8d1f66c96c540e04673d8b44b6fd9b8b130269cba",
+   "reference": "16d77f0e861c7675909318b8d1f66c96c540e04673d8b44b6fd9b8b130269cba"
+  },
+  "nl/unit_N_1x/sequential/ESSO_node7.sym.row.gz": {
+   "equal": true,
+   "post": "9cadcba06c8bb039a80b0e8ba0a8a9fce67ce4f0fec4657eedaca5e09ec147d8",
+   "reference": "9cadcba06c8bb039a80b0e8ba0a8a9fce67ce4f0fec4657eedaca5e09ec147d8"
+  },
+  "nl/unit_N_1x/sequential/ESSO_node9.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/unit_N_1x/sequential/ESSO_node9.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/unit_N_1x/sequential/ESSO_node9.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/unit_N_1x/sequential/ESSO_node9.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/unit_N_2x/sequential/ESSO_node5.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/unit_N_2x/sequential/ESSO_node5.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/unit_N_2x/sequential/ESSO_node5.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/unit_N_2x/sequential/ESSO_node5.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/unit_N_2x/sequential/ESSO_node7.nl.gz": {
+   "equal": true,
+   "post": "d7b467e236d9d56a750e3eeff2d3beffcfae79af57a904ea0bb73036785b7639",
+   "reference": "d7b467e236d9d56a750e3eeff2d3beffcfae79af57a904ea0bb73036785b7639"
+  },
+  "nl/unit_N_2x/sequential/ESSO_node7.sym.col.gz": {
+   "equal": true,
+   "post": "ade7aa65ab940c7d82084b0b476e35e0537159a5136594a3569d55a7ca005f4e",
+   "reference": "ade7aa65ab940c7d82084b0b476e35e0537159a5136594a3569d55a7ca005f4e"
+  },
+  "nl/unit_N_2x/sequential/ESSO_node7.sym.nl.gz": {
+   "equal": true,
+   "post": "16d77f0e861c7675909318b8d1f66c96c540e04673d8b44b6fd9b8b130269cba",
+   "reference": "16d77f0e861c7675909318b8d1f66c96c540e04673d8b44b6fd9b8b130269cba"
+  },
+  "nl/unit_N_2x/sequential/ESSO_node7.sym.row.gz": {
+   "equal": true,
+   "post": "9cadcba06c8bb039a80b0e8ba0a8a9fce67ce4f0fec4657eedaca5e09ec147d8",
+   "reference": "9cadcba06c8bb039a80b0e8ba0a8a9fce67ce4f0fec4657eedaca5e09ec147d8"
+  },
+  "nl/unit_N_2x/sequential/ESSO_node9.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/unit_N_2x/sequential/ESSO_node9.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/unit_N_2x/sequential/ESSO_node9.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/unit_N_2x/sequential/ESSO_node9.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/x0_A_1x/sequential/ESSO_node5.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/x0_A_1x/sequential/ESSO_node5.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/x0_A_1x/sequential/ESSO_node5.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/x0_A_1x/sequential/ESSO_node5.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/x0_A_1x/sequential/ESSO_node7.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/x0_A_1x/sequential/ESSO_node7.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/x0_A_1x/sequential/ESSO_node7.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/x0_A_1x/sequential/ESSO_node7.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/x0_A_1x/sequential/ESSO_node9.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/x0_A_1x/sequential/ESSO_node9.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/x0_A_1x/sequential/ESSO_node9.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/x0_A_1x/sequential/ESSO_node9.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/x0_A_2x/sequential/ESSO_node5.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/x0_A_2x/sequential/ESSO_node5.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/x0_A_2x/sequential/ESSO_node5.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/x0_A_2x/sequential/ESSO_node5.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/x0_A_2x/sequential/ESSO_node7.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/x0_A_2x/sequential/ESSO_node7.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/x0_A_2x/sequential/ESSO_node7.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/x0_A_2x/sequential/ESSO_node7.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/x0_A_2x/sequential/ESSO_node9.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/x0_A_2x/sequential/ESSO_node9.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/x0_A_2x/sequential/ESSO_node9.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/x0_A_2x/sequential/ESSO_node9.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/x0_N_1x/sequential/ESSO_node5.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/x0_N_1x/sequential/ESSO_node5.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/x0_N_1x/sequential/ESSO_node5.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/x0_N_1x/sequential/ESSO_node5.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/x0_N_1x/sequential/ESSO_node7.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/x0_N_1x/sequential/ESSO_node7.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/x0_N_1x/sequential/ESSO_node7.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/x0_N_1x/sequential/ESSO_node7.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/x0_N_1x/sequential/ESSO_node9.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/x0_N_1x/sequential/ESSO_node9.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/x0_N_1x/sequential/ESSO_node9.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/x0_N_1x/sequential/ESSO_node9.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/x0_N_2x/sequential/ESSO_node5.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/x0_N_2x/sequential/ESSO_node5.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/x0_N_2x/sequential/ESSO_node5.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/x0_N_2x/sequential/ESSO_node5.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/x0_N_2x/sequential/ESSO_node7.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/x0_N_2x/sequential/ESSO_node7.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/x0_N_2x/sequential/ESSO_node7.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/x0_N_2x/sequential/ESSO_node7.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  },
+  "nl/x0_N_2x/sequential/ESSO_node9.nl.gz": {
+   "equal": true,
+   "post": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db",
+   "reference": "834c9bf5cc26b434dffabe5364de5b7d6dad1c3640a43a7316e2ae24c18774db"
+  },
+  "nl/x0_N_2x/sequential/ESSO_node9.sym.col.gz": {
+   "equal": true,
+   "post": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b",
+   "reference": "ee6a31f982e9dc83bfe984b33778f2676821e88d6045599a9f170804bc4a269b"
+  },
+  "nl/x0_N_2x/sequential/ESSO_node9.sym.nl.gz": {
+   "equal": true,
+   "post": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7",
+   "reference": "b2377635063024c477a159059a3a105317a5aba263b120236a6c0ca37dadd5c7"
+  },
+  "nl/x0_N_2x/sequential/ESSO_node9.sym.row.gz": {
+   "equal": true,
+   "post": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c",
+   "reference": "744e9473a7bb061ab63eee015b4ab81ab9c8e453fd700f8ce9c632c23035932c"
+  }
+ },
+ "esso_nl_gz_recomputed_all_equal": true,
+ "eval_keys": {
+  "unit_A_1x": {
+   "equal": true,
+   "post": "ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d",
+   "reference": "ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d"
+  },
+  "unit_A_2x": {
+   "equal": true,
+   "post": "bde9355eba3e09296aba8519573f6c256df68e06c87a33fc315cfd382c3eab03",
+   "reference": "bde9355eba3e09296aba8519573f6c256df68e06c87a33fc315cfd382c3eab03"
+  },
+  "unit_N_1x": {
+   "equal": true,
+   "post": "054976fb6f0c6adbd3175a23f60915e931e161f71e3bd59c8719e71d3ffa000a",
+   "reference": "054976fb6f0c6adbd3175a23f60915e931e161f71e3bd59c8719e71d3ffa000a"
+  },
+  "unit_N_2x": {
+   "equal": true,
+   "post": "057f9a6f427ac78e23e6e912af51d651633c469eb3336b71ee3f6f952d1cbe64",
+   "reference": "057f9a6f427ac78e23e6e912af51d651633c469eb3336b71ee3f6f952d1cbe64"
+  },
+  "x0_A_1x": {
+   "equal": true,
+   "post": "5cfe69a615ae370835a5896eaa6899f1d9973b7adf649437c2ddd94d1d2836ee",
+   "reference": "5cfe69a615ae370835a5896eaa6899f1d9973b7adf649437c2ddd94d1d2836ee"
+  },
+  "x0_A_2x": {
+   "equal": true,
+   "post": "5f6b784127e0eb2bd6fac06206f4329752a6b56b81247bafdbc660f5222c3a4a",
+   "reference": "5f6b784127e0eb2bd6fac06206f4329752a6b56b81247bafdbc660f5222c3a4a"
+  },
+  "x0_N_1x": {
+   "equal": true,
+   "post": "105c0fd3424b212ccbc3b4b21a12dd8ae1f7d2a57b471692a76ba05fd9f2f8db",
+   "reference": "105c0fd3424b212ccbc3b4b21a12dd8ae1f7d2a57b471692a76ba05fd9f2f8db"
+  },
+  "x0_N_2x": {
+   "equal": true,
+   "post": "c15eea6214da5f31653345d3a2591e90aac3e9e8105c4699579abea800b31289",
+   "reference": "c15eea6214da5f31653345d3a2591e90aac3e9e8105c4699579abea800b31289"
+  }
+ },
+ "expected_blocks": 696,
+ "inputs_differing": {
+  "data/SRP1/SRP1_5x3y_1x1.json": {
+   "post": "f916e0c6feff4ce1bdf62d843efef386b791e7649442176bacfa16cec3d55b79",
+   "reference": null
+  },
+  "data/SRP1/SharedESS/SRP1_5x3y_ESS_Params.json": {
+   "post": "08ade261858aeadd852c9f823c9f273b7490ba426c52a50f229fdbca80a50517",
+   "reference": null
+  }
+ },
+ "manifest_gz_payload": {
+  "n_payload_gz_differing_or_missing": 0,
+  "n_payload_gz_post": 4350,
+  "n_payload_gz_reference": 4350,
+  "n_post_entries": 4353,
+  "n_reference_entries": 4353,
+  "non_payload_entries_post": [
+   "determinism_child/manifest_sha256.json",
+   "determinism_child/w183_nl_digest.json",
+   "w183_nl_digest.json"
+  ],
+  "non_payload_entries_reference": [
+   "determinism_child/manifest_sha256.json",
+   "determinism_child/w183_nl_digest.json",
+   "w183_nl_digest.json"
+  ],
+  "payload_gz_differing_or_missing": []
+ },
+ "manifest_gz_payload_child": {
+  "n_payload_gz_differing_or_missing": 0,
+  "n_payload_gz_post": 870,
+  "n_payload_gz_reference": 870,
+  "n_post_entries": 871,
+  "n_reference_entries": 871,
+  "non_payload_entries_post": [
+   "w183_nl_digest.json"
+  ],
+  "non_payload_entries_reference": [
+   "w183_nl_digest.json"
+  ],
+  "payload_gz_differing_or_missing": []
+ },
+ "n_blocks_compared": 696,
+ "n_blocks_identical": 696,
+ "n_inputs_post": 83,
+ "n_inputs_reference": 81,
+ "per_config": {
+  "unit_A_1x": {
+   "parallel": {
+    "differences": [],
+    "n_blocks_post": 36,
+    "n_blocks_reference": 36,
+    "n_differences": 0,
+    "n_dso": 36,
+    "n_esso": 0,
+    "n_tso": 0
+   },
+   "sequential": {
+    "differences": [],
+    "n_blocks_post": 51,
+    "n_blocks_reference": 51,
+    "n_differences": 0,
+    "n_dso": 36,
+    "n_esso": 3,
+    "n_tso": 12
+   }
+  },
+  "unit_A_2x": {
+   "parallel": {
+    "differences": [],
+    "n_blocks_post": 36,
+    "n_blocks_reference": 36,
+    "n_differences": 0,
+    "n_dso": 36,
+    "n_esso": 0,
+    "n_tso": 0
+   },
+   "sequential": {
+    "differences": [],
+    "n_blocks_post": 51,
+    "n_blocks_reference": 51,
+    "n_differences": 0,
+    "n_dso": 36,
+    "n_esso": 3,
+    "n_tso": 12
+   }
+  },
+  "unit_N_1x": {
+   "parallel": {
+    "differences": [],
+    "n_blocks_post": 36,
+    "n_blocks_reference": 36,
+    "n_differences": 0,
+    "n_dso": 36,
+    "n_esso": 0,
+    "n_tso": 0
+   },
+   "sequential": {
+    "differences": [],
+    "n_blocks_post": 51,
+    "n_blocks_reference": 51,
+    "n_differences": 0,
+    "n_dso": 36,
+    "n_esso": 3,
+    "n_tso": 12
+   }
+  },
+  "unit_N_2x": {
+   "parallel": {
+    "differences": [],
+    "n_blocks_post": 36,
+    "n_blocks_reference": 36,
+    "n_differences": 0,
+    "n_dso": 36,
+    "n_esso": 0,
+    "n_tso": 0
+   },
+   "sequential": {
+    "differences": [],
+    "n_blocks_post": 51,
+    "n_blocks_reference": 51,
+    "n_differences": 0,
+    "n_dso": 36,
+    "n_esso": 3,
+    "n_tso": 12
+   }
+  },
+  "x0_A_1x": {
+   "parallel": {
+    "differences": [],
+    "n_blocks_post": 36,
+    "n_blocks_reference": 36,
+    "n_differences": 0,
+    "n_dso": 36,
+    "n_esso": 0,
+    "n_tso": 0
+   },
+   "sequential": {
+    "differences": [],
+    "n_blocks_post": 51,
+    "n_blocks_reference": 51,
+    "n_differences": 0,
+    "n_dso": 36,
+    "n_esso": 3,
+    "n_tso": 12
+   }
+  },
+  "x0_A_2x": {
+   "parallel": {
+    "differences": [],
+    "n_blocks_post": 36,
+    "n_blocks_reference": 36,
+    "n_differences": 0,
+    "n_dso": 36,
+    "n_esso": 0,
+    "n_tso": 0
+   },
+   "sequential": {
+    "differences": [],
+    "n_blocks_post": 51,
+    "n_blocks_reference": 51,
+    "n_differences": 0,
+    "n_dso": 36,
+    "n_esso": 3,
+    "n_tso": 12
+   }
+  },
+  "x0_N_1x": {
+   "parallel": {
+    "differences": [],
+    "n_blocks_post": 36,
+    "n_blocks_reference": 36,
+    "n_differences": 0,
+    "n_dso": 36,
+    "n_esso": 0,
+    "n_tso": 0
+   },
+   "sequential": {
+    "differences": [],
+    "n_blocks_post": 51,
+    "n_blocks_reference": 51,
+    "n_differences": 0,
+    "n_dso": 36,
+    "n_esso": 3,
+    "n_tso": 12
+   }
+  },
+  "x0_N_2x": {
+   "parallel": {
+    "differences": [],
+    "n_blocks_post": 36,
+    "n_blocks_reference": 36,
+    "n_differences": 0,
+    "n_dso": 36,
+    "n_esso": 0,
+    "n_tso": 0
+   },
+   "sequential": {
+    "differences": [],
+    "n_blocks_post": 51,
+    "n_blocks_reference": 51,
+    "n_differences": 0,
+    "n_dso": 36,
+    "n_esso": 3,
+    "n_tso": 12
+   }
+  }
+ },
+ "post": {
+  "sha256": "315ca94a8d2ccd59d5c9ee045694fcc998030995ad322fc99fa2fe49bd0da5b4",
+  "source": "data/SRP1/Results/P515S55/pincheck_nl_head_f6c23977/w183_nl_digest.json.gz"
+ },
+ "post_all_ok": true,
+ "post_checks": {
+  "capture_paths_asserted": true,
+  "determinism_byte_identical": true,
+  "determinism_child_exit_0": true,
+  "eval_key_unit_N_1x_equals_ext_v6_base_key": true,
+  "eval_keys_pairwise_distinct": true,
+  "every_build_check_passes": true,
+  "guard_zero_solves_verified": true,
+  "imported_repo_modules_unchanged_during_run": true,
+  "labelled_nl_equals_plain_after_comment_strip": true,
+  "no_nl_write_errors": true
+ },
+ "post_child_solve_profile_guard": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "verify_0_failures": []
+ },
+ "post_expected_production_commit": "f6c23977413c3dff9ee42281a4fcadab8ecfd994",
+ "post_git_head_at_run": "f7c3f601ad0b7600883a36df19ef5c978a730e06",
+ "post_solve_profile_guard": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "verify_0_failures": []
+ },
+ "production_modules_differing": {
+  "shared_energy_storage_data.py": {
+   "post": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85",
+   "reference": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  "shared_energy_storage_parameters.py": {
+   "post": "f31a2caa83a7c07f8f2375bf2016dd2180ff470ee33c1df0a04ece038d46aff6",
+   "reference": "5fe0c4fb876a9c2f1e506e982f2a120c320a3fd4198b870f877d9a310cd390bb"
+  },
+  "shared_resources_planning.py": {
+   "post": "c9336a61a713ef6890fbffcda845395d757e26c41ae2422e82dd88bb881c33e8",
+   "reference": "ade9c843bc7c5b6514ab91ecc54f327330a5249709766699ff2f50c8288473d6"
+  }
+ },
+ "reference": {
+  "sha256": "ca195bd38fe2384493012dcf7127a36a8923d8a5029c2c821b5bb0f47f57ab6a",
+  "source": "data/SRP1/Results/P515S55/w183_nl_post_w183c_off/w183_nl_digest.json.gz"
+ },
+ "reference_expected_production_commit": "6f43479ed8ece7a4a5878942ca38952ce1cae1bc",
+ "reference_git_head_at_run": "6f43479ed8ece7a4a5878942ca38952ce1cae1bc",
+ "verdict_all_identical": true
+}

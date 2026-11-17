@@ -1,0 +1,134 @@
+--- orig.tex	2026-10-15 08:43:59.515090403 +0000
++++ main.tex	2026-10-15 08:44:30.177254972 +0000
+@@ -314,6 +314,7 @@
+         \textcolor{blue}{$C^{\text{Salvage}}(\boldsymbol{x})$} & \textcolor{blue}{Terminal salvage credit (reported, not optimized)} \\
+         \textcolor{blue}{$T^{\text{Rem}}_{e,y^{\text{Inv}}}$} & \textcolor{blue}{Remaining calendar life of a cohort at $y^{\text{End}}$} \\
+         \textcolor{blue}{$S^{\text{Inv}}_{e,y^{\text{Inv}}}$, $E^{\text{Inv}}_{e,y^{\text{Inv}}}$} & \textcolor{blue}{Converter rating and energy capacity installed at $e$ in $y^{\text{Inv}}$} \\
++        \textcolor{blue}{$\hat{S}^{\text{Inv}}_{e,y^{\text{Inv}}}$, $\hat{E}^{\text{Inv}}_{e,y^{\text{Inv}}}$} & \textcolor{blue}{The same additions as fixed parameters of the operational subproblem} \\
+         $S^{\text{Rated}}_{e,y}$, $E^{\text{Rated}}_{e,y}$ & \textcolor{blue}{Total rated converter apparent power and energy capacity at node $e$ in year $y$} \\
+         \textcolor{blue}{$S^{\text{Rated,Unit}}_{e,y^\text{Inv},y}$} & \textcolor{blue}{Rated power of the cohort installed in $y^\text{Inv}$, in year $y$} \\
+         \textcolor{blue}{$E^{\text{Rated,Unit}}_{e,y^\text{Inv},y}$} & \textcolor{blue}{Rated energy of the cohort installed in $y^\text{Inv}$, in year $y$} \\
+@@ -752,7 +753,7 @@
+ \subsubsection{Shared ESS Operation Subproblem}
+ 
+ \textcolor{blue}{
+-    The ADMM-based TSO--DSO coordination framework introduced in~\cite{simoes_2023} is extended with shared-ESS agents that track state of health and available energy capacity across representative years. The local optimisation problems are detailed in Appendix~\ref{app:admm_updated_implementation}, and the coordination procedure is summarised in Algorithm~\ref{alg:operational_planning_degradation} (Appendix~\ref{app:admm_updated_algorithm}).
++    The ADMM-based TSO--DSO coordination framework introduced in~\cite{simoes_2023} is extended with shared-ESS agents that track state of health and available energy capacity across representative years. The local optimisation problems are detailed in \ref{app:admm_updated_implementation}, and the coordination procedure is summarised in Algorithm~\ref{alg:operational_planning_degradation} (\ref{app:admm_updated_algorithm}).
+ }
+ 
+ \textcolor{blue}{
+@@ -1105,7 +1106,7 @@
+ The proposed framework is evaluated on an integrated transmission--distribution test system with high RES penetration and coordinated TSO--DSO operation. The test system comprises the IEEE 9-bus transmission network coupled with three Active Distribution Networks (ADNs), each derived from the IEEE 33-bus distribution test system~\cite{zimmerman_2011,ieee_case33}. A representative single-line diagram of the integrated system is shown in Figure~\ref{fig:tso_dso_coordination_cs1_network_diagram}. 
+ Shared ESSs can be installed at the TN--DN interface nodes corresponding to the connection points of the three ADNs. 
+ \textcolor{blue}{
+-    The 15-year planning horizon is represented in two instances. The single-scenario instance, on which the planning results of Section~\ref{sec:results} are obtained, uses three representative years, 2025, 2030 and 2035, each standing for a five-year block, with one market scenario and one operation scenario of load and RES generation. The multi-scenario instance (Subsection~\ref{subsec:res_multiscenario}) uses five representative years, 2025, 2028, 2031, 2034 and 2037, each standing for a three-year block, with three market scenarios and three operation scenarios, nine operating scenarios per representative day. In both instances each year is represented by four seasonal representative days.
++    The 15-year planning horizon is represented in two instances. The single-scenario instance, on which the planning results of Section~\ref{sec:results} are obtained, uses three representative years, 2025, 2030 and 2035, each standing for a five-year block, with one market scenario and one operation scenario of load and RES generation. The multi-scenario instance (Subsection~\ref{subsec:res_multiscenario}) uses five representative years, 2025, 2028, 2031, 2034 and 2037, each standing for a three-year block, with three market scenarios and three operation scenarios, nine operating scenarios per representative day. In both instances each year is represented by four seasonal representative days, weighted by the numbers of days they stand for (92, 91, 91 and 91).
+ }
+ 
+ \textcolor{blue}{
+@@ -1138,7 +1139,7 @@
+ The total investment budget for shared ESS deployment is set to 1~M\euro, and the maximum installable energy capacity at each interface node is limited to 5.00~MWh. All shared ESSs are assumed to have a calendar lifetime of 15 years, and a discount rate of 2.00\% is used to compute the NPV of all cash flows.
+ 
+ \textcolor{blue}{
+-    Two comparisons are used throughout Section~\ref{sec:results}. Every candidate plan is compared with the plan without shared storage, $\boldsymbol{x} = \boldsymbol{0}$, under coordinated operation, which isolates the value of the storage investment; and coordinated operation at the plan without storage is compared with two static arrangements of the same system under a no-reverse-flow interface rule (Subsection~\ref{sec:case_settings}), which isolates the value of coordination.
++    Two kinds of comparison are used throughout Section~\ref{sec:results}. Storage plans are compared under coordinated operation with the plan without shared storage, $\boldsymbol{x} = \boldsymbol{0}$, which isolates the value of the storage investment, or with one another; and coordinated operation at the plan without storage is compared with two static arrangements of the same system under a no-reverse-flow interface rule (Subsection~\ref{sec:case_settings}), which isolates the value of coordination.
+ }
+ 
+ \subsection{Investment Costs}
+@@ -1356,9 +1357,6 @@
+ \textcolor{blue}{
+     where $\bar{c}^{\text{Inv,E}}_{y^\text{Inv}} = \sum_{c \in \Omega_C} \omega_c\, c^{\text{Inv,E}}_{y^\text{Inv},c}$ is the expected undiscounted energy cost per MWh in the installation year, $y^\text{End}$ the end of the planning horizon, $T^\text{Rem}$ the remaining calendar life of the cohort at $y^\text{End}$ and $SoH_{e,y^\text{Inv},y^\text{End}}$ its terminal state of health. The credit returns the energy part of the cohort's cost in proportion to its remaining calendar life and to its state of health above the end-of-life floor; the converter is not credited. 
+     The credit is reported, not optimized: the recourse does not see it, no plan is selected for it, and the net value is $Q(\boldsymbol{0}) - Q(\boldsymbol{x}) + C^\text{Salvage}(\boldsymbol{x})$.
+-    % [CONFIRM — W177] eq:salvage_credit against _get_terminal_salvage_value_*: (a) y^End is the end of the last block
+-    % (2035 + Y_y), not the last representative year; (b) the SoH is the terminal SoH of the last block; (c) the cohort
+-    % cost is the expected (probability-weighted) one; (d) the discount exponent is y^End − y_0.
+ }
+ 
+ % --------------------------------------------------------------------------------------------------------------------
+@@ -1474,7 +1472,7 @@
+ \end{table}
+ 
+ \textcolor{blue}{
+-    At twice the base flexibility price, the value of every evaluated 4~h configuration at node~7 exceeds its investment cost (Table~\ref{tab:res_energy_ladder_m2}). The surplus increases from 46.3~k\euro{} at 1~MWh to 228.4~k\euro{} at 5~MWh, with each additional 1~MWh yielding a determinate increase of 41.0--51.8~k\euro{}. The planning search under this price assumption returned a two-node investment plan installed in 2030. Its operational evaluation remained uncertified because of the consensus gap, and only seventeen of its sixty-one admissible unit neighbours were evaluated. Of these, thirteen were re-evaluated under the certification procedure, and none was determinately better than the returned plan. The returned plan is determinately better than seven of them and within resolution of the other six.
++    At twice the base flexibility price, the value of each 4~h configuration at node~7 installed in 2025 exceeds its investment cost (Table~\ref{tab:res_energy_ladder_m2}). The surplus increases from 46.3~k\euro{} at 1~MWh to 228.4~k\euro{} at 5~MWh, with each additional 1~MWh yielding a determinate increase of 41.0--51.8~k\euro{}. The planning search under this price assumption returned a two-node investment plan installed in 2030. Its operational evaluation remained uncertified because of the consensus gap, and only seventeen of its sixty-one admissible unit neighbours were evaluated. Of these, thirteen were re-evaluated under the certification procedure, and none was determinately better than the returned plan. The returned plan is determinately better than seven of them and within resolution of the other six.
+     These results demonstrate that the search can return a nonzero investment when flexibility prices increase, while the incomplete neighbourhood evaluation and unresolved consensus gap limit the conclusions that can be drawn about the selected plan.
+ }
+ 
+@@ -1537,7 +1535,7 @@
+         Datasheet 8\,000 cycles         & 272.8 & $-$45.2 & 12.6 & 3.58 & never & 0.834 & 1.13 \\
+         No ageing$^{w}$ & 313.8 & $-$4.1 & 12.9 & 0.32 & n/a & 1.000 & 1.29 \\
+         \midrule
+-        Baseline, 0.50 floor & 258.5 & $-$59.5 & 12.6 & 4.71 & never & --- & --- \\
++        Baseline, 0.50 floor & 258.5 & $-$59.5 & 12.6 & 4.71 & never & 0.778 & 1.08 \\
+         \bottomrule
+     \end{tabular}
+     \par\smallskip
+@@ -1545,13 +1543,13 @@
+         \scriptsize
+         \raggedright
+         \textcolor{blue}{%
+-            \textit{Note:} Value is the operating-cost reduction relative to the plan without storage under the same calibration; $I=318.0$~k\euro{}. Thresholds follow Subsection~\ref{subsubsec:certification}; $\times$ is the absolute investment margin divided by its threshold. $^{w}$: within resolution; all other margins are determinate. Binding year refers to the 0.70 state-of-health floor, except in the final row, which changes only the floor to 0.50. $AE$ and EFC/day are the present-value-weighted available-energy fraction and equivalent full cycles per day, respectively. ``Never'': the floor remains inactive within the horizon; n/a: not applicable; ---: not reported.
++            \textit{Note:} Value is the operating-cost reduction relative to the plan without storage under the same calibration; $I=318.0$~k\euro{}. Thresholds follow Subsection~\ref{subsubsec:certification}; $\times$ is the absolute investment margin divided by its threshold. $^{w}$: within resolution; all other margins are determinate. Binding year refers to the 0.70 state-of-health floor, except in the final row, which changes only the floor to 0.50. $AE$ and EFC/day are the present-value-weighted available-energy fraction and equivalent full cycles per day, respectively. ``Never'': the floor remains inactive within the horizon; n/a: not applicable.
+     }
+     \end{minipage}
+ \end{table}
+ 
+ \textcolor{blue}{
+-    The operational results also distinguish the effect of degradation from that of the imposed end-of-life floor. The 0.70 floor first binds in 2035 under the baseline calibration and both variants of the 50\% retention calibration, but remains inactive throughout the horizon under the cycling-only and 8{,}000-cycle datasheet calibrations. Lowering the baseline floor from 0.70 to 0.50 increases cycling by 0.18, 0.20 and 0.27 equivalent full cycles per day in 2025, 2030 and 2035, respectively. Nevertheless, the resulting increase in storage value is only 4.9~k\euro{}, within numerical resolution, and the unit still incurs a determinate shortfall of 59.5~k\euro{}. Thus, relaxing the end-of-life floor permits greater utilisation but does not restore the economic viability of the reference unit under the baseline assumptions. The negative investment margin persists across the tested ageing calibrations and both floor settings.
++    The operational results also distinguish the effect of degradation from that of the imposed end-of-life floor. The 0.70 floor first binds in 2035 under the baseline calibration and both variants of the 50\% retention calibration, but remains inactive throughout the horizon under the cycling-only and 8{,}000-cycle datasheet calibrations. Lowering the baseline floor from 0.70 to 0.50 increases cycling by 0.18, 0.20 and 0.27 equivalent full cycles per day in 2025, 2030 and 2035, respectively. Nevertheless, the resulting increase in storage value is only 4.9~k\euro{}, within numerical resolution, and the unit still incurs a determinate shortfall of 59.5~k\euro{}. Thus, relaxing the end-of-life floor permits greater utilisation but does not restore the economic viability of the reference unit under the baseline assumptions. The negative investment margin persists across the tested ageing calibrations, and under the baseline calibration at both floor settings.
+ }
+ 
+ % --------------------------------------------------------------------------------------------------------------------
+@@ -1600,7 +1598,7 @@
+ \textcolor{blue}{
+     The multi-scenario instance combines three market scenarios with three load and renewable-generation scenarios over five representative three-year blocks. 
+     The planning search was not repeated at this instance; the reference unit was evaluated against the plan without storage.
+-    As reported in Table~\ref{tab:res_multiscenario}, the reference unit provides an estimated discounted operational value of 236.7~k\euro{} against an investment cost of 318.0~k\euro{}. The resulting shortfall of 81.3~k\euro{} is 4.52 times the reported resolution of 18.0~k\euro{}, supporting the same economic conclusion as the single-scenario instance. These evaluations were stopped by the production exit of the coordination procedure (ten consecutive cycles passing the residual test with every local solve successful; Section~\ref{app:admm_updated_settings}), rather than by the certification rule of Subsection~\ref{subsubsec:certification}.
++    As reported in Table~\ref{tab:res_multiscenario}, the reference unit provides an estimated discounted operational value of 236.7~k\euro{} against an investment cost of 318.0~k\euro{}. The resulting shortfall of 81.3~k\euro{} is 4.52 times the reported resolution of 18.0~k\euro{}, supporting the same economic conclusion as the single-scenario instance. These evaluations were stopped by the production exit of the coordination procedure (ten consecutive cycles passing the residual test with every local solve successful; \ref{app:admm_updated_settings}), rather than by the certification rule of Subsection~\ref{subsubsec:certification}.
+ }
+ 
+ \textcolor{blue}{
+@@ -1709,7 +1707,6 @@
+ \textcolor{blue}{
+     The three planning searches of Algorithm~\ref{alg:shared_ess_planning_mads} made 41 new recourse evaluations in all (14, 20 and 7 against budgets of 20, 20 and 60), each stopped by the production exit of the coordination procedure and compared at the search resolution $\sigma_Q$ of Section~\ref{sec:case_settings}; the evaluations behind the tables of this section are the re-evaluations of the incumbents, their neighbours and the sensitivity cells under the certification rule, on the final code. 
+     Variant A was used for the baseline search and for the first search under the doubled flexibility price, in which every rounded poll direction was inadmissible at every evaluated poll, so that every evaluated point came from the unit-neighbour completion; variant B was used for the certificate of the plan found under that price. Two runs stopped when a unit poll failed and one was stopped for review when its completion set exceeded the cap; the first two are described by their recorded certificates, the third by its stop record and by the certificate of the variant-B run that continued from its incumbent.
+-    % [CONFIRM — W177] W173 realized use 14/20, 20/20, 7/60; "41" is their sum.
+     The 42 evaluations run under the rule took 220{,}876~s of wall time over 8{,}570 ADMM cycles, a median of 25.6~s per cycle, on an Apple M2~Max with 32~GiB of memory under macOS~27.0, one evaluation at a time and single-threaded: OMP, MKL, OpenBLAS, vecLib and NumExpr were capped at one thread in every evaluation's recorded environment, and the HSL library is built without OpenMP, so MA97 ran serially. The cost of a planning statement is the cost of its certified evaluations; the search adds the evaluations it proposes and nothing else.
+ }
+ 
+@@ -1731,7 +1728,7 @@
+ 
+ \textcolor{blue}{
+     \textbf{Scope of the study.} The planning search is a heuristic over a lattice with one investment year common to all nodes; per-node timing and staged capacity, which the master problem admits, were not searched, and no optimality certificate is claimed: the result is that no evaluated plan pays at the baseline, with every evaluated unit neighbour of the plan without storage determinately worse. The ageing arms re-evaluate a fixed plan rather than re-optimising it; since the reference unit loses determinately under every aged arm and the value is affine in size on the evaluated ladders, the plan without storage is the search's answer under each of them, but this was not run. The horizon is three representative years each standing for a five-year block (five three-year blocks at the multi-scenario instance), with four representative days per year; the discretization is a modelling choice and the degradation chain is applied at block boundaries. 
+-    The multi-scenario evidence is the $3 \times 3$ instance: the $5 \times 5$ scenario set of the submitted version could not be evaluated within the memory available and is left to future work.
++    The multi-scenario evidence is the $3 \times 3$ instance: the $5 \times 5$ scenario set of the submitted version could not be evaluated within the memory available and is left to future work. The certification bounds the stopping error of each evaluation, not the local solution that the nonconvex coordination reaches: a different penalty schedule or starting point could reach a different local solution; where this was measured, for the static arrangements of Subsection~\ref{subsec:res_coordination}, the spread over three solver starts is reported (Table~\ref{tab:res_benchmark}).
+     The test system (one 9-bus transmission network with three 33-bus distribution networks) limits the generality of the conclusions. The salvage credit is reported, not optimized, and the attribution of degradation to the transmission and distribution operators is not unique under a jointly determined schedule and is not attempted. Finally, the 0.70 state-of-health floor raises the elasticity of value to available energy ($\varepsilon_{AE}$ 1.04--1.85, against 0.41--0.62 for the same three resolvable arms at a 0.50 floor); this is read as a late-life tail effect, the floor removing the low-SoH years whose throughput is least valuable, but the decomposition that would show it has not been measured.
+ }
+ 
+@@ -1742,7 +1739,7 @@
+ \label{sec:conclusions}
+ 
+ \textcolor{blue}{
+-    This paper presented a degradation-aware framework for planning shared ESSs at TN--DN interface nodes. Planning is formulated as a two-stage stochastic program whose first stage selects a single, discrete investment plan and whose recourse is the coordinated TSO--DSO operation of that plan, a nonconvex problem with AC network models and the ageing of the storage over the horizon. Candidate plans are proposed by a derivative-free search over the lattice of commercial unit sizes and evaluated by consensus-ADMM coordination with a dedicated shared-ESS agent. Because the recourse is nonconvex, the method claims no optimality certificate; instead, each evaluation behind a reported comparison is either certified by an explicit stopping rule or reported in an uncertified form with its error bar, and every planning comparison is reported with the resolution at which it is decided.
++    This paper presented a degradation-aware framework for planning shared ESSs at TN--DN interface nodes. Planning is formulated as a two-stage stochastic program whose first stage selects a single, discrete investment plan and whose recourse is the coordinated TSO--DSO operation of that plan, a nonconvex problem with AC network models and the ageing of the storage over the horizon. Candidate plans are proposed by a derivative-free search over the lattice of commercial unit sizes and evaluated by consensus-ADMM coordination with a dedicated shared-ESS agent. Because the recourse is nonconvex, the method claims no optimality certificate; instead, each evaluation behind a reported comparison has a stated stopping status --- certified by an explicit rule, uncertified with its error bar, or, at the multi-scenario instance, stopped by the production exit with its remaining movement measured --- and every planning comparison is reported with the resolution at which it is decided.
+ }
+ 
+ \textcolor{blue}{
+@@ -1905,7 +1902,7 @@
+ }
+ 
+ \textcolor{blue}{
+-    The penalty parameters follow residual balancing~\cite{boyd_admm_2011}, per channel $g \in \{V, \text{PF}, \text{E}\}$ and with one value for all agents: with $r_g$ and $s_g$ the primal and dual residuals of the channel and $\varepsilon^{\text{pri}}_g$, $\varepsilon^{\text{dual}}_g$ their tolerances (Subsection~\ref{app:admm_updated_stopping}), $\rho_g \gets 1.5\,\rho_g$ when $r_g/\varepsilon^{\text{pri}}_g > \mu\, s_g/\varepsilon^{\text{dual}}_g$ and $\rho_g \gets \rho_g/1.5$ when $s_g/\varepsilon^{\text{dual}}_g > \mu'\, r_g/\varepsilon^{\text{pri}}_g$, with $\mu = 5$ and $\mu' = 5$ ($\mu' = 3$ for the decrease of $\rho^{\text{PF}}$), clamped to $[10^{-4}, 10^{4}]$. The storage channel is exempt from balancing until its dual ratio has been below one on five consecutive cycles (its two-phase schedule), a channel freezes once it has gone ten cycles without changing after having acted, every channel freezes at cycle 200, and a cycle with a failed solve leaves every $\rho_g$ unchanged. Any change of a $\rho_g$ clears the acceleration memory. In the certifying regime of Subsection~\ref{subsubsec:certification} all $\rho_g$ are frozen from the cycle after the first residual pass $k_0$, or, in the three reference evaluations continued from an earlier run, from that run's stopping cycle.
++    The penalty parameters follow residual balancing~\cite{boyd_admm_2011}, per channel $g \in \{V, \text{PF}, \text{E}\}$ and with one value for all agents: with $r_g$ and $s_g$ the primal and dual residuals of the channel and $\varepsilon^{\text{pri}}_g$, $\varepsilon^{\text{dual}}_g$ their tolerances (Subsection~\ref{app:admm_updated_stopping}), $\rho_g \gets 1.5\,\rho_g$ when $r_g/\varepsilon^{\text{pri}}_g > \mu\, s_g/\varepsilon^{\text{dual}}_g$ and $\rho_g \gets \rho_g/1.5$ when $s_g/\varepsilon^{\text{dual}}_g > \mu'\, r_g/\varepsilon^{\text{pri}}_g$, with $\mu = 5$ and $\mu' = 5$ ($\mu' = 3$ for the decrease of $\rho^{\text{PF}}$), clamped to $[10^{-4}, 10^{4}]$. The storage channel is exempt from balancing until its dual ratio has been below one on five consecutive cycles (its two-phase schedule), a channel freezes once it has gone ten cycles without changing after having acted, every channel freezes at cycle 200, and a cycle with a failed solve leaves every $\rho_g$ unchanged. Any change of a $\rho_g$ clears the acceleration memory. In the certifying regime of Subsection~\ref{subsubsec:certification} all $\rho_g$ are frozen from the cycle after the first residual pass $k_0$, or, in the three reference evaluations continued from an earlier run, from the cycle after that run's stopping cycle.
+ }
+ 
+ \subsection{\textcolor{blue}{Stopping Test, Acceleration and Tail}}
+@@ -1929,7 +1926,7 @@
+ \label{app:admm_updated_certification}
+ 
+ \textcolor{blue}{
+-    The certifying regime of Subsection~\ref{subsubsec:certification} opens at the residual pass $k_0$. Throughout the regime acceleration is off, the tight interior-point tail is on and the penalty parameters $\rho$ are frozen, from the cycle after $k_0$, or, in the three reference evaluations continued from an earlier run, from that run's stopping cycle (an evaluation re-run on an earlier record replays it bitwise to its first residual pass and holds from the cycle after it);
++    The certifying regime of Subsection~\ref{subsubsec:certification} opens at the residual pass $k_0$. Throughout the regime acceleration is off, the tight interior-point tail is on and the penalty parameters $\rho$ are frozen, from the cycle after $k_0$, or, in the three reference evaluations continued from an earlier run, from the cycle after that run's stopping cycle (an evaluation re-run on an earlier record replays it bitwise to its first residual pass and holds from the cycle after it);
+     a later lapse of the residual test, or a cycle with a failed solve, resets $k_0$ and the turning-point record while these holds stay. With $Q_k$ the value of the recourse objective at cycle $k$, the evaluation is certified on the oscillatory branch at the first cycle $k^{\star} > k_0$ at which:
+ }
+ 

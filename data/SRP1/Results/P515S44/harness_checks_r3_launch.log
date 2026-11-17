@@ -1,0 +1,48 @@
+[S44-HCHK] ===== C1_canonical_candidate =====
+[S44-HCHK] C1_canonical_candidate: pass=True checks={'key_independent_of_order_and_numeric_spelling': True, 'zero_spellings_same_key': True, 'gate_candidates_distinct_keys': True, 'all_invalid_candidates_rejected': True, 'canonical_c_star': True}
+[S44-HCHK] ===== C2_frozen_spec =====
+[S44-HCHK] C2_frozen_spec: pass=True checks={'file_sha256_equals_returned': True, 'file_name_carries_sha8': True, 'load_by_hash_finds_same_file': True, 'spec_records_case_file_sha256': True, 'spec_records_harness_sha256': True, 'spec_records_thread_caps': True, 'all_refusals_raised': True}
+[S44-HCHK] ===== C3_campaign_lock =====
+[S44-HCHK] C3_campaign_lock: pass=True checks={'acquire_writes_pid_and_spec': True, 'second_acquire_refused': True, 'release_by_wrong_pid_refused': True, 'release_ok_and_removed': True, 'legacy_lock_blocks_campaign': True, 'no_leftover_lock_files': True}
+[S44-HCHK] ===== C4_spawn_stub_evaluations =====
+[S44-HARNESS] launched s1 (key 578636daa6d6360d) pid=68487
+[S44-HARNESS] launched s2 (key d1a02e67107d0bac) pid=68488
+[S44-HARNESS] heartbeat s1: 0s cycle=None; s2: 0s cycle=None
+[S44-HARNESS] finished s1 pid=68487 exit=0 status=stub wall=5s
+[S44-HARNESS] finished s2 pid=68488 exit=0 status=stub wall=5s
+[S44-HARNESS] launched s3 (key e30704e6e4dd3765) pid=68489
+[S44-HARNESS] launched s4 (key cc03ce8e9b04c327) pid=68490
+[S44-HARNESS] finished s3 pid=68489 exit=0 status=stub wall=5s
+[S44-HARNESS] finished s4 pid=68490 exit=0 status=stub wall=5s
+[S44-HARNESS] launched fail1 (key 578636daa6d6360d) pid=68497
+[S44-HARNESS] heartbeat fail1: 0s cycle=None
+[S44-HARNESS] finished fail1 pid=68497 exit=3 status=harness_error wall=5s
+[S44-HARNESS] launched foreign (key 578636daa6d6360d) pid=68503
+[S44-HARNESS] heartbeat foreign: 0s cycle=None
+[S44-HARNESS] finished foreign pid=68503 exit=1 status=harness_error wall=5s
+[S44-HARNESS] launched nonstub (key 578636daa6d6360d) pid=68506
+[S44-HARNESS] heartbeat nonstub: 0s cycle=None
+[S44-HARNESS] finished nonstub pid=68506 exit=1 status=harness_error wall=5s
+[S44-HCHK] C4_spawn_stub_evaluations: pass=True checks={'four_records_in_batch_order': True, 'all_stub_ok_exit_0': True, 'spec_sha256_in_every_record': True, 'distinct_child_processes': True, 'children_are_direct_children_of_parent': True, 'child_saw_lock_naming_parent': True, 'thread_caps_in_every_child': True, 'slot_limit_respected_and_used': True, 'wall_consistent_with_2_slots': True, 'per_eval_files_present': True, 'wait4_rusage_captures_child_memory': True, 'reevaluation_in_same_campaign_refused': True, 'failing_child_gives_parent_barrier_record': True, 'child_refuses_foreign_lock': True, 'stub_refused_under_non_test_spec': True}
+[S44-HCHK] ===== C5_record_schema =====
+[S44-HCHK] C5_record_schema: pass=True checks={'all_2_5_keys_present': True, 'certified': True, 'certification_cycle_139': True, 'certified_cost_equals_D': True, 'bar_is_max_step_last_10': True, 'pf_first_pass_matches_committed_s39_evaluation': True, 'ess_terminal_ratio_matches_committed_s39_evaluation': True, 'settlement_remainder_equals_component_levels': True, 'storage_per_node_three_nodes_with_efc': True, 'record_json_serializable': True, 'truncated_uncertified_is_barrier': True, 'zero_node_marked_no_storage': True}
+[S44-HCHK] ===== C6_capture_paths =====
+[S44-HCHK] C6_capture_paths: pass=True checks={'assert_record_capture_paths_passes': True}
+[S44-HCHK] ===== C7_configuration_hook =====
+[S44-HCHK] C7_configuration_hook: pass=True checks={'d_configuration_checks_all_pass_no_override': True, 'd_leaves_aa_off': True, 'aa_override_applied': True, 'hook_records_provenance_in_rule_eleven_checklist': True, 'instance_is_per_node_map': True}
+[S44-HCHK] ===== C8_per_evaluation_spec =====
+[S44-HCHK] C8_per_evaluation_spec: pass=True checks={'three_evaluations_two_share_a_candidate': True, 'd_eval_key_is_candidate_key': True, 'd_eval_dir_as_in_s44_gate': True, 'aa_eval_key_is_hash_of_candidate_and_overrides': True, 'distinct_eval_dirs_and_working_ids': True, 'overrides_recorded_per_entry': True, 'no_post_cert_for_plain_d': True, 'reference_resolved_and_hash_recorded': True, 'two_c_star_post_cert_without_reference': True, 'label_resolves_in_batch': True, 'all_refusals_raised': True}
+[S44-HCHK] ===== C9_stub_spawn_per_evaluation =====
+[S44-HARNESS] launched c_star_d (key 578636daa6d6360d) pid=68519
+[S44-HARNESS] launched c_star_aa_keep (key 578636daa6d6360d) pid=68520
+[S44-HARNESS] heartbeat c_star_d: 0s cycle=None; c_star_aa_keep: 0s cycle=None
+[S44-HARNESS] finished c_star_d pid=68519 exit=0 status=stub wall=5s
+[S44-HARNESS] finished c_star_aa_keep pid=68520 exit=0 status=stub wall=5s
+[S44-HCHK] C9_stub_spawn_per_evaluation: pass=True checks={'two_stub_records_in_order': True, 'same_candidate_key_both': True, 'separate_dirs_each_with_record': True, 'launch_json_carries_eval_key': True, 'ran_concurrently': True}
+[S44-HCHK] ===== C10_post_certification =====
+[S44-HCHK] C10_post_certification: pass=True checks={'skip_path_clean_no_calls_no_files': True, 'certified_path_evaluated': True, 'gate_b_matches_committed_s43': True, 'gate_c_real_decomposition_reproduces_committed_s43_vs_new_reference': True, 'persist_called_before_polish': True, 'gate_d_summary_reproduces_committed_s43': True, 'non_degenerate_counts_reproduce_committed_s42_hull_counts': True, 'hull_bound_detail_written': True, 'summary_has_gates_b_c_d': True, 'not_requested_path': True}
+[S44-HCHK] ===== C11_aa_sidecar =====
+[S44-HCHK] C11_aa_sidecar: pass=True checks={'sidecar_bytes_equal_committed_s43': True, 'summary_counts_step37': True, 'summary_sees_retained_memory': True}
+[S44-HCHK] ===== C12_keep_memory_config_hook =====
+[S44-HCHK] C12_keep_memory_config_hook: pass=True checks={'settings_in_force_keep_memory': True, 'd_configuration_checks_pass': True, 'overrides_applied_recorded': True, 'state_built_from_settings_is_keep_memory': True, 'aa_layout_builds': True, 'hook_refuses_memory_override': True, 'post_certification_capture_paths_pass': True}
+[S44-HCHK] ALL PASS=True guard={'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} failures=[]

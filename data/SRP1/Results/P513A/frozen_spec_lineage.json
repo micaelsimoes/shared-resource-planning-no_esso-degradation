@@ -1,0 +1,24 @@
+{
+  "artifact": "P5.13-A throughput diagnostic specification lineage",
+  "recorded_utc": "2026-09-12T14:10Z",
+  "convention": "see data/SRP1/Results/P512Z/frozen_spec_lineage.json and the 'Evidence and artifact rules' section of CLAUDE.md: frozen artifacts are named with version and content hash and are NEVER replaced in place",
+  "versions": [
+    {"version": "v1",
+     "file": "frozen_throughput_diagnostic_spec_v1_bf56149e.json",
+     "sha256": "bf56149e43316d9a5302974c0fc113c5bd25e40d85d59afa876f23b5bf17d311",
+     "status": "PRESERVED UNMODIFIED - superseded, not deleted",
+     "committed_in": "5288fecc"},
+    {"version": "v2",
+     "file": "frozen_throughput_diagnostic_spec_v2_8b2d8f77.json",
+     "sha256": "8b2d8f77ac0194521bc2f7b3cdc7769285aa879782de4a80f01c45fcf9f3a5ed",
+     "predecessor_sha256": "bf56149e43316d9a5302974c0fc113c5bd25e40d85d59afa876f23b5bf17d311",
+     "status": "CURRENT - frozen, not executed",
+     "changes_from_v1": [
+       "sign_expectation promoted from an assertion to a preserved derivation with its three assumptions; root cause identified as |E[X-Y]| <= E[X+Y] for nonnegative directional powers, i.e. |E[z]| <= E[|z|] under per-scenario complementarity (fifth artifact rule: preserve the formula, not only the inputs)",
+       "v1's blanket rule 'report any violation as a defect in the diagnostic' CORRECTED: with complementarity slack active at shared_energy_storage_data.py:569, A < B is a genuine finding (slack absorption), not a defect",
+       "reporting obligation added: active complementarity slack must be recorded alongside every A/B pair",
+       "dependencies note added recording Option B's true implementation cost"
+     ]}
+  ],
+  "no_execution": "neither version has been executed; no configuration satisfies the precondition"
+}

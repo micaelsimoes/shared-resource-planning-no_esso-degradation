@@ -1,0 +1,16 @@
+{
+ "stage": "P5.15 Step 3.2 + 3.3(a) (s32 worker task) -- zero-solve check evidence manifest",
+ "entries": {
+  "zero_solve_checks.json": {
+   "sha256": "62f845950d226fd868cd1d588392840a8b4b04e00fe904252f2ca431fe47212e",
+   "bytes": 10244,
+   "committed": true
+  },
+  "synthetic_admm_snapshot.pkl": {
+   "sha256": "188be0d7a61b8825eab647acc599983e36818ed3f15441b3361c77efe97fffa4",
+   "bytes": 109423489,
+   "committed": false
+  }
+ },
+ "note": "synthetic_admm_snapshot.pkl (~109 MB) is hash-recorded here but NOT committed, per CLAUDE.md evidence rule six (\"Commit or hash-record the settling artifact\"): it is a synthetic zero-solve fixture constructed by p515_s32_zero_solve_checks.py for check 1 only, reproducible by re-running that script (it refuses to overwrite an existing file at the same path). zero_solve_checks.json cites it by sha256; the file itself remains on disk locally."
+}

@@ -1,0 +1,234 @@
+{
+  "stage": "P5.15 Addendum 3 item 2 (H3 rule) -- multi-cohort BUILD-ONLY construction test",
+  "authority": "PLANNER_BRIEF_2026-09-13.md, Addendum 3, \"Authorized\" item 2 / \"Verification required\" item 2",
+  "instance": {
+    "node": 7,
+    "cohort_0_investment_year": 2025,
+    "cohort_0_s_mva": 1.0,
+    "cohort_0_e_mvah": 2.0,
+    "cohort_1_investment_year": 2030,
+    "cohort_1_s_mva": 0.5,
+    "cohort_1_e_mvah": 1.0,
+    "t_cal_years": 15,
+    "years_block_width": 5,
+    "tcal_norm": 3
+  },
+  "guard_build_only_zero_solves": {
+    "permitted_call_sites": [],
+    "expected_solves_declared_in_advance": 0,
+    "observed_counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+    },
+    "verify_failures": []
+  },
+  "per_calendar_year": {
+    "0": {
+      "active_cohorts": [
+        0
+      ],
+      "n_active": 1,
+      "n_periods_total_d_times_p": 96,
+      "rows_active_count_total": 0,
+      "rows_active_count_per_period": 0.0,
+      "rows_total_count": 288,
+      "expected_active_rows_per_period_N_active_minus_1": 0,
+      "expected_active_rows_total_N_active_minus_1_times_periods": 0,
+      "row_count_matches_expectation": true,
+      "share_values_by_cohort": {
+        "0": 0.0,
+        "1": 0.0,
+        "2": 0.0
+      },
+      "sum_of_shares_over_active_cohorts": 0.0
+    },
+    "1": {
+      "active_cohorts": [
+        0,
+        1
+      ],
+      "n_active": 2,
+      "n_periods_total_d_times_p": 96,
+      "rows_active_count_total": 96,
+      "rows_active_count_per_period": 1.0,
+      "rows_total_count": 288,
+      "expected_active_rows_per_period_N_active_minus_1": 1,
+      "expected_active_rows_total_N_active_minus_1_times_periods": 96,
+      "row_count_matches_expectation": true,
+      "share_values_by_cohort": {
+        "0": 0.6666666666666666,
+        "1": 0.3333333333333333,
+        "2": 0.0
+      },
+      "sum_of_shares_over_active_cohorts": 1.0
+    },
+    "2": {
+      "active_cohorts": [
+        0,
+        1
+      ],
+      "n_active": 2,
+      "n_periods_total_d_times_p": 96,
+      "rows_active_count_total": 96,
+      "rows_active_count_per_period": 1.0,
+      "rows_total_count": 288,
+      "expected_active_rows_per_period_N_active_minus_1": 1,
+      "expected_active_rows_total_N_active_minus_1_times_periods": 96,
+      "row_count_matches_expectation": true,
+      "share_values_by_cohort": {
+        "0": 0.6666666666666666,
+        "1": 0.3333333333333333,
+        "2": 0.0
+      },
+      "sum_of_shares_over_active_cohorts": 1.0
+    }
+  },
+  "coefficients_are_plain_python_floats": true,
+  "float_coefficient_checks_sample": [
+    {
+      "y_inv": 0,
+      "y": 0,
+      "value": 0.0,
+      "is_plain_python_float": true
+    },
+    {
+      "y_inv": 1,
+      "y": 0,
+      "value": 0.0,
+      "is_plain_python_float": true
+    },
+    {
+      "y_inv": 2,
+      "y": 0,
+      "value": 0.0,
+      "is_plain_python_float": true
+    },
+    {
+      "y_inv": 0,
+      "y": 1,
+      "value": 0.6666666666666666,
+      "is_plain_python_float": true
+    },
+    {
+      "y_inv": 1,
+      "y": 1,
+      "value": 0.3333333333333333,
+      "is_plain_python_float": true
+    },
+    {
+      "y_inv": 2,
+      "y": 1,
+      "value": 0.0,
+      "is_plain_python_float": true
+    },
+    {
+      "y_inv": 0,
+      "y": 2,
+      "value": 0.6666666666666666,
+      "is_plain_python_float": true
+    },
+    {
+      "y_inv": 1,
+      "y": 2,
+      "value": 0.3333333333333333,
+      "is_plain_python_float": true
+    },
+    {
+      "y_inv": 2,
+      "y": 2,
+      "value": 0.0,
+      "is_plain_python_float": true
+    }
+  ],
+  "independence_checks": [
+    {
+      "y_inv_h3_row": 0,
+      "y": 1,
+      "d": 0,
+      "p": 0,
+      "h3_row_polynomial_degree": 1,
+      "agg_row_polynomial_degree": 1,
+      "h3_row_coeff_vector": [
+        0.33333333333333337,
+        -0.33333333333333337,
+        -0.6666666666666666,
+        0.6666666666666666,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "agg_row_coeff_vector": [
+        -1.0,
+        1.0,
+        -1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        -1.0,
+        1.0
+      ],
+      "var_order_names": [
+        "es_pch_per_unit[0,1,0,0]",
+        "es_pdch_per_unit[0,1,0,0]",
+        "es_pch_per_unit[1,1,0,0]",
+        "es_pdch_per_unit[1,1,0,0]",
+        "es_pch_per_unit[2,1,0,0]",
+        "es_pdch_per_unit[2,1,0,0]",
+        "es_pnet[1,0,0]",
+        "slack_es_pnet_up[1,0,0]",
+        "slack_es_pnet_down[1,0,0]"
+      ],
+      "stacked_matrix_rank": 2,
+      "linearly_independent": true
+    },
+    {
+      "y_inv_h3_row": 0,
+      "y": 2,
+      "d": 0,
+      "p": 0,
+      "h3_row_polynomial_degree": 1,
+      "agg_row_polynomial_degree": 1,
+      "h3_row_coeff_vector": [
+        0.33333333333333337,
+        -0.33333333333333337,
+        -0.6666666666666666,
+        0.6666666666666666,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "agg_row_coeff_vector": [
+        -1.0,
+        1.0,
+        -1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        -1.0,
+        1.0
+      ],
+      "var_order_names": [
+        "es_pch_per_unit[0,2,0,0]",
+        "es_pdch_per_unit[0,2,0,0]",
+        "es_pch_per_unit[1,2,0,0]",
+        "es_pdch_per_unit[1,2,0,0]",
+        "es_pch_per_unit[2,2,0,0]",
+        "es_pdch_per_unit[2,2,0,0]",
+        "es_pnet[2,0,0]",
+        "slack_es_pnet_up[2,0,0]",
+        "slack_es_pnet_down[2,0,0]"
+      ],
+      "stacked_matrix_rank": 2,
+      "linearly_independent": true
+    }
+  ],
+  "all_active_h3_rows_independent_of_aggregate_row": true
+}

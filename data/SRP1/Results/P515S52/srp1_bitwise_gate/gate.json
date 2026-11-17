@@ -1,0 +1,707 @@
+{
+ "schema": "p515_s52_srp1_bitwise_gate_v1",
+ "stage": "P5.15 Addendum 36/39 W48 -- SRP1 two-cycle bitwise identity: the W47 harness extension and the two scenario-indexing fixes are inert at one scenario, vs committed baseline C*",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 36",
+  "Planner task W35 item 3",
+  "data/SRP1/Results/P515S50/frozen_s50_spec_v20_69bccc62.json item 3_generalization"
+ ],
+ "timestamp_utc": "2026-09-23T20:34:38.265731+00:00",
+ "git_head_at_run": "fe0319d6011ab546cc81086922b87bd4ef8079d3",
+ "script": "p515_s50_generalization_gate.py",
+ "script_sha256": "5abfe5c2b9a67533942cc77cdfcca523e17c998f42210620f7d852d18968cc43",
+ "w10_module_sha256": "f5e103577a7dc0c465144984e28b50ab4b1efc0405c3c23f2ab3afc7f917f4a2",
+ "w32_module_sha256": "c75d26dd313b2bdec74d97854ad9a3f4d2adbf07b1a654dd15cced432ad63bfc",
+ "w35_module_sha256": {
+  "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+  "p515_s41_hull_polish.py": "e76c5921ecd1057dceb8fa8e097e960247a51d3e09f13d78ae95dec727385d5d",
+  "p515_g_g1_g4_admm_gates.py": "172260450ba167c13c8776881a01c1b0ee096baa79cb98fa2650f83385ad458b",
+  "shared_resources_planning.py": "e4336a0010355440643acc014a33e03761c41e982863fb56bb07cc5a15a81255",
+  "p515_s44_scale_measurement.py": "284abb4d12811886f5ee1c28809db34ccc8425ba4bb9eb726abafd9c764a0a3e"
+ },
+ "w35_code_presence_asserted_before_run": {
+  "row18:wiring_function_present": true,
+  "row18:wiring_returns_before_building_at_one_scenario": true,
+  "row18:wiring_builds_lp_pair": true,
+  "row18:charge_is_alpha_times_pibar_times_baseMVA": true,
+  "row18:deviation_is_against_the_coupled_expectation_var": true,
+  "row18:row18_is_inside_objective_function_rule": true,
+  "row18:voltage_pin_is_inside_objective_function_rule": true,
+  "row18:wiring_rebuilds_the_objective": true,
+  "row18:alpha_defaults_inactive": true,
+  "row18:tso_delta_is_scenario_free_in_the_interface_expression": true,
+  "row18:tso_delta_is_scenario_free_in_the_node_balance": true,
+  "row18:tso_freeing_loop_is_guarded_by_the_first_scenario_pair": true,
+  "row18:sess_alias_present": true,
+  "row18:sess_rows_skip_duplicates": true,
+  "row18:sess_balance_row_is_scenario_free": true,
+  "row18:contracted_expression_present": true,
+  "row18:recourse_excludes_only_the_contracted_part": true,
+  "row18:recourse_reports_the_identity_residual": true,
+  "row18:recourse_excludes_the_voltage_pin": true,
+  "row18:per_scenario_voltage_mismatch_reported": true,
+  "row18:retired_quadratic_retained": true,
+  "row18:retired_quadratic_unwired_in_the_tso_builder": true,
+  "row18:retired_quadratic_unwired_in_the_dso_builder": true,
+  "row18:alpha_threaded_from_admm_parameters": true,
+  "w47:run_admm_arm_passes_optimization_results_only_to_declaring_hooks": true,
+  "w47:run_admm_arm_passes_primal_evolution_only_to_declaring_hooks": true,
+  "w47:gate_post_run_hook_declares_neither_new_parameter": true,
+  "w47:s31c_flexibility_volumes_probability_weighted": true,
+  "w47:dispersion_shared_ess_read_at_the_na_pair": true,
+  "w47:config_hook_factory_takes_the_premium_argument": true,
+  "w47:config_hook_factory_premium_default_is_none": true,
+  "w47:config_hook_premium_branch_guarded": true,
+  "w47:config_hook_derived_branch_guarded": true,
+  "w47:child_capture_only_when_declared": true,
+  "w47:harness_derived_instance_validator_present": true,
+  "w47:harness_terminal_capture_present": true
+ },
+ "harness_sha256": "abf797989997535e610b614ce051848cfa780b5ead311cbe7dc169345bcedeb5",
+ "case_file": {
+  "path": "data/SRP1/SRP1_params.json",
+  "sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "anderson_acceleration_loaded": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  }
+ },
+ "ess_params_file": {
+  "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+  "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+  "recert_pin": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  }
+ },
+ "declared_substitutions": {
+  "1_reference": {
+   "report": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star/g_s39_D.json",
+   "sha256": "ced90e47873925b5bb87360984d348558d11ea11fd004e93f3a2668fdc389971",
+   "campaign": "s47_recert (spec campaign_spec_s47_recert_902f93aa.json), BASELINE (C2 + phi_cal 0.985 + soh_min 0.70), AA keep_memory from the case file, cap 500; cycles_run 87, gross_operational_cost 650912327.1956586"
+  },
+  "2_hook_declaration": {
+   "recert_spec": {
+    "path": "data/SRP1/Results/P515S47/campaign_s47_recert/campaign_spec_s47_recert_902f93aa.json",
+    "sha256": "902f93aa22093455daa50927bdfa28bc885b2c5491151d211dc943bb3de86ee4"
+   },
+   "declaration_injected": {
+    "ess_ageing_baseline": {
+     "calendar_life_years": 15,
+     "calendar_retention_per_year": 0.985,
+     "calibration": {
+      "cycles_n": 10000,
+      "eol_retention_r": 0.8,
+      "reference_dod_d": 0.8,
+      "status": "ACTIVE"
+     },
+     "cycle_life_nominal": 10000,
+     "depth_of_discharge_nominal": 0.8,
+     "minimum_soh": 0.7
+    },
+    "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+    "ess_params_file": {
+     "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+     "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+     "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+    }
+   },
+   "note": "no flex-price override, no release_solution_bookkeeping"
+  }
+ },
+ "instance": {
+  "candidate_label": "C* (0.96875 MVA / 3.875 MWh at nodes 5, 7, 9, investment year 2025)",
+  "candidate_canonical": {
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.96875,
+     3.875
+    ],
+    "7": [
+     0.96875,
+     3.875
+    ],
+    "9": [
+     0.96875,
+     3.875
+    ]
+   }
+  },
+  "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+  "candidate_key_pin_matches": true
+ },
+ "configuration": {
+  "arm": "s52w48gate",
+  "cap": 2,
+  "arm_label": "s39_D",
+  "snapshots": "on (no assignment)",
+  "flex_price_multiplier": null,
+  "release_solution_bookkeeping": "default (off)",
+  "model_variant": null,
+  "overrides": {},
+  "apply_rho": false,
+  "full_diagnostics_in_rows": true,
+  "thread_caps": {
+   "OMP_NUM_THREADS": "1",
+   "MKL_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": "1",
+   "VECLIB_MAXIMUM_THREADS": "1",
+   "NUMEXPR_NUM_THREADS": "1"
+  },
+  "nlp_solver_path": {
+   "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+   "source": "environment"
+  }
+ },
+ "objective_convention": "gross_operational_cost is the settlement-excluded gross cost; net_operational_recourse differs by the terminal salvage credit",
+ "capture_path_checklist_asserted_before_run": {
+  "record_capture_paths (campaign harness)": true,
+  "callable_p515_g_g1_g4_admm_gates.run_admm_arm": true,
+  "callable_p515_g_g1_g4_admm_gates.write_boyd_terminal_s35ref": true,
+  "callable_p515_g_g1_g4_admm_gates.s38_pf_capture_hooks": true,
+  "callable_p515_g_g1_g4_admm_gates.s39_exempt_until_capture_hooks": true,
+  "callable_p515_g_g1_g4_admm_gates._acquire_exclusive_run_lock": true,
+  "callable_p515_s44_campaign_harness._config_hook_factory": true,
+  "callable_p515_s44_campaign_harness.canonical_candidate": true,
+  "callable_p515_s44_campaign_harness.investment_map_from_canonical": true,
+  "callable_p515_s44_campaign_harness.eval_ids": true,
+  "callable_p515_s44_scale_measurement.apply_snapshot_setting": true,
+  "callable_p515_s44_scale_measurement.snapshot_hook_wrapper": true,
+  "callable_p515_s44_scale_measurement.expected_block_counts": true,
+  "callable_p515_s43_aa_run._build_aa_per_cycle_sidecar": true,
+  "callable_p515_s40_polish_gap._build_floor_rows": true,
+  "callable_p515_s40_polish_gap._derive_top_level_from_rows": true,
+  "callable_p515_s40_clone_capture_preflight._diff": true,
+  "callable_p515_s40_clone_capture_preflight._load_json": true,
+  "callable_p515_s40_clone_capture_preflight._load_jsonl": true,
+  "callable_p515_s40_clone_capture_preflight._sha256_file": true,
+  "callable_p515_s43_aa_flagoff_gate._classify_diffs": true,
+  "callable_p515_s43_aa_flagoff_gate._capture_returned_state": true,
+  "callable_p515_s44_tie_classifier.reclassify_sidecar_diffs": true,
+  "callable_shared_resources_planning._validate_snapshot_capture_modes": true,
+  "callable_shared_resources_planning._build_pristine_snapshot_bases": true,
+  "production_SNAPSHOT_CAPTURE_MODES_has_off": true,
+  "production_capture_block_mutable_state_is_module_attr": true,
+  "BlockData_clone_is_the_method_ConcreteModel_uses": true,
+  "comparator_convention_EXCLUDE_KEY_NAMES": true,
+  "comparator_convention_EXCLUDE_DOTTED_SUFFIXES": true,
+  "comparator_convention_INTENTIONAL_DIFF_SUFFIXES": true,
+  "comparator_convention_ARTIFACT_FILES": true,
+  "comparator_convention_SIDECAR_JSONL_FILES": true,
+  "trajectory_field_list_RECORD_TRAJECTORY_FIELDS": true,
+  "run_admm_arm_parameter_investment_map": true,
+  "run_admm_arm_parameter_num_max_iters_override": true,
+  "run_admm_arm_parameter_eval_id": true,
+  "run_admm_arm_parameter_apply_rho": true,
+  "run_admm_arm_parameter_full_diagnostics_in_rows": true,
+  "run_admm_arm_parameter_post_run_hook": true,
+  "run_admm_arm_parameter_pre_solve_hook": true,
+  "report_field_network_failures_summary_classes": true,
+  "report_field_solve_profile_observed": true,
+  "production_state_peak_rss": true,
+  "network_failure_events_carry_attempt_flags": true,
+  "w10_run_arm_resolves_hook_factory_via_H": true,
+  "scale_harness_event_rule_callable": true
+ },
+ "arm_summary": {
+  "arm": "s52w48gate",
+  "snapshots_requested": "on",
+  "out_dir": "data/SRP1/Results/P515S52/srp1_bitwise_gate/arm",
+  "working_dir_ids": {
+   "run": "p515s44_s45_w10_snapoff_s52w48gate_578636daa6d6360d_run",
+   "precheck": "p515s44_s45_w10_snapoff_s52w48gate_578636daa6d6360d_precheck"
+  },
+  "report_path": "data/SRP1/Results/P515S52/srp1_bitwise_gate/arm/g_s39_D.json",
+  "candidate_canonical": {
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.96875,
+     3.875
+    ],
+    "7": [
+     0.96875,
+     3.875
+    ],
+    "9": [
+     0.96875,
+     3.875
+    ]
+   }
+  },
+  "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+  "cycles_run": 2,
+  "recourse": 740922817.2425401,
+  "gross_operational_cost": 740922817.2425401,
+  "terminal_objective_change_abs": 845932257.6109526,
+  "terminal_objective_tolerance": 158685.50748534928,
+  "rule_ten_terminal_step_over_threshold": 5330.87281262313,
+  "local_solve_failures": 0,
+  "network_failures_summary": {
+   "n_blocks": 0,
+   "classes": {
+    "recovered_tier1": 0,
+    "recovered_tier2": 0,
+    "unrecovered": 0,
+    "not_attempted": 0,
+    "indeterminate": 0,
+    "recovered": 0
+   },
+   "n_frozen_snapshots": 0,
+   "n_esso_recovery_events": 0,
+   "path": "data/SRP1/Results/P515S52/srp1_bitwise_gate/arm/network_failures_s39_D.jsonl"
+  },
+  "solve_profile": {
+   "observed": {
+    "permitted_solve": 153,
+    "permitted_exec": 153,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "identity_holds": true,
+   "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+   "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+   "n_dso": 3,
+   "n_years": 3,
+   "n_days": 4,
+   "n_esso_nodes": 3,
+   "solves_per_cycle": 51,
+   "rounds": 3,
+   "rounds_note": "one initialization round + cycles_run ADMM cycles",
+   "base_solves": 153,
+   "retry_solves_credited": 0,
+   "reconciliation_supported": true,
+   "expected_solves": 153,
+   "recovered_only_identity": {
+    "expected": 153,
+    "holds": true,
+    "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+   }
+  },
+  "snapshot_setting": {
+   "requested": "on",
+   "tso_mode_before": "lightweight",
+   "dso_mode_before": "lightweight",
+   "tso_mode_after": "lightweight",
+   "dso_mode_after": "lightweight",
+   "expected": [
+    "lightweight",
+    "lightweight"
+   ],
+   "took_effect": true,
+   "persistent_workers_enabled": false
+  },
+  "configuration_checks": {
+   "rho_v_matches_D": true,
+   "rho_pf_matches_D": true,
+   "rho_ess_matches_D": true,
+   "tau_is_0": true,
+   "gamma_policy_tied_to_rho": true,
+   "balancing_exempt_until_matches_D": true,
+   "balancing_exempt_channels_empty": true,
+   "freeze_after_unchanged_cycles_is_10": true,
+   "freeze_backstop_cycle_is_200": true,
+   "minimum_consecutive_converged_cycles_matches_spec": true,
+   "shared_ess_initialization_is_standalone": true,
+   "num_max_iters_is_spec_cap": true,
+   "anderson_acceleration_case_file_matches_declaration": true,
+   "anderson_acceleration_case_file_memory_regularization_frozen": true,
+   "persistent_workers_off": true,
+   "parallel_execution_off": true
+  },
+  "anderson_acceleration_effective": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "expected_block_counts_from_planning": {
+   "tso_blocks": 12,
+   "dso_blocks": 36,
+   "network_blocks": 48,
+   "esso_models": 3,
+   "solves_per_cycle": 51
+  },
+  "frozen_smopf_dir": "data/SRP1/Results/P515S52/srp1_bitwise_gate/arm/results/FrozenSMOPF",
+  "frozen_smopf_inventory": [],
+  "frozen_smopf_n_pkl": 0,
+  "frozen_smopf_n_skipped_markers": 0,
+  "wall_clock_s": {
+   "measured_here": 92.80314183235168,
+   "reported_by_run_admm_arm": 92.11396193504333
+  },
+  "peak_rss": {
+   "units": "bytes on macOS/BSD (ru_maxrss)",
+   "process_ru_maxrss_before_arm": 470433792,
+   "process_ru_maxrss_after_arm": 2231926784,
+   "production_state_peak_rss_ru_maxrss": 2231926784,
+   "production_state_peak_rss_platform_units": "bytes on macOS/BSD, kilobytes on Linux (Python resource module, RUSAGE_SELF.ru_maxrss)",
+   "solver_subprocesses_ru_maxrss_before": 13959168,
+   "solver_subprocesses_ru_maxrss_after": 51822592,
+   "semantics": "ru_maxrss is a process high-water mark, so \"after arm 2\" is the max over both arms; the production_state figure is taken by production at the end of run_operational_planning and is per-arm"
+  },
+  "published_caps": {
+   "5": {
+    "2025": {
+     "s_available": 0.96875,
+     "e_available": 3.522770892402501
+    },
+    "2030": {
+     "s_available": 0.96875,
+     "e_available": 3.2052071842190077
+    },
+    "2035": {
+     "s_available": 0.96875,
+     "e_available": 2.9229843309217896
+    }
+   },
+   "7": {
+    "2025": {
+     "s_available": 0.96875,
+     "e_available": 3.5229205171705176
+    },
+    "2030": {
+     "s_available": 0.96875,
+     "e_available": 3.2054795756053944
+    },
+    "2035": {
+     "s_available": 0.96875,
+     "e_available": 2.9233157716159517
+    }
+   },
+   "9": {
+    "2025": {
+     "s_available": 0.96875,
+     "e_available": 3.5228210291124706
+    },
+    "2030": {
+     "s_available": 0.96875,
+     "e_available": 3.2052799172621254
+    },
+    "2035": {
+     "s_available": 0.96875,
+     "e_available": 2.9230483752000174
+    }
+   }
+  }
+ },
+ "clone_capture_counters_informational": {
+  "s52w48gate_precheck": {
+   "clone": 0,
+   "capture": 0,
+   "clone_sites": {},
+   "capture_sites": {}
+  },
+  "arm_s52w48gate": {
+   "clone": 24,
+   "capture": 48,
+   "clone_sites": {
+    "p515_s45_snapshot_off_two_cycle_gate.py:340 in counting_clone": 24
+   },
+   "capture_sites": {
+    "p515_s45_snapshot_off_two_cycle_gate.py:344 in counting_capture": 48
+   }
+  }
+ },
+ "solve_profile": {
+  "declared_before_the_run": {
+   "case_file": "data/SRP1/SRP1.json",
+   "years": [
+    "2025",
+    "2030",
+    "2035"
+   ],
+   "days": [
+    "Autumn",
+    "Spring",
+    "Summer",
+    "Winter"
+   ],
+   "n_year_day_blocks": 12,
+   "n_networks": 4,
+   "network_solves_per_cycle": 48,
+   "active_distribution_network_nodes": [
+    5,
+    7,
+    9
+   ],
+   "esso_solves_per_cycle": 3,
+   "solves_per_cycle": 51,
+   "cap": 2,
+   "declared_base_solves_per_arm": 153,
+   "declared_base_solves_both_arms": 306,
+   "identity": "observed_arm == base + 1 * recovered_tier1 + 2 * recovered_tier2 (recovery counts from the arm own network_failures_summary)"
+  },
+  "base_declared": 153,
+  "event_level_reconciliation_GATING": {
+   "definition": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted] (every retry actually attempted, recovered or NOT); unsupported when an ESSO recovery event or an 'indeterminate' network event exists, or the event file does not hold summary.n_blocks events",
+   "events_file": "data/SRP1/Results/P515S52/srp1_bitwise_gate/arm/network_failures_s39_D.jsonl",
+   "n_network_events": 0,
+   "n_events_by_class": {
+    "recovered_tier1": 0,
+    "recovered_tier2": 0,
+    "unrecovered": 0,
+    "not_attempted": 0,
+    "indeterminate": 0
+   },
+   "retry_solves_credited": 0,
+   "n_esso_recovery_events": 0,
+   "n_indeterminate": 0,
+   "supported": true,
+   "base": 153,
+   "expected": 153
+  },
+  "recovered_only_identity_reported": {
+   "recovered_tier1": 0,
+   "recovered_tier2": 0,
+   "expected": 153,
+   "holds": true
+  },
+  "observed_in_arm": 153,
+  "identity_holds": true,
+  "expected_block_counts_from_planning": {
+   "tso_blocks": 12,
+   "dso_blocks": 36,
+   "network_blocks": 48,
+   "esso_models": 3,
+   "solves_per_cycle": 51
+  },
+  "planning_derivation_agrees_with_case_file": true,
+  "arm_own_instance_derived_profile": {
+   "solves_per_cycle": 51,
+   "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+   "n_dso": 3,
+   "n_years": 3,
+   "n_days": 4,
+   "n_esso_nodes": 3,
+   "rounds": 3,
+   "base_solves": 153,
+   "retry_solves_credited": 0,
+   "reconciliation_supported": true,
+   "expected_solves": 153,
+   "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+   "identity_holds": true,
+   "recovered_only_identity": {
+    "expected": 153,
+    "holds": true,
+    "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+   }
+  },
+  "arm_profile_agrees_with_gate": true,
+  "process_guard": {
+   "permitted_call_sites": [
+    [
+     "network.py",
+     "_run_smopf_solver_attempt"
+    ],
+    [
+     "shared_energy_storage_data.py",
+     "_run_solver_attempt"
+    ]
+   ],
+   "counts": {
+    "permitted_solve": 153,
+    "permitted_exec": 153,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_exactly": 153,
+   "verify_failures": [],
+   "no_solves_outside_the_arm": true
+  }
+ },
+ "reference_comparison_GATING": {
+  "gating": true,
+  "reference_report": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star/g_s39_D.json",
+  "reference_sha256": "ced90e47873925b5bb87360984d348558d11ea11fd004e93f3a2668fdc389971",
+  "reference_campaign": "s47_recert (spec campaign_spec_s47_recert_902f93aa.json), BASELINE (C2 + phi_cal 0.985 + soh_min 0.70), AA keep_memory from the case file, cap 500; cycles_run 87, gross_operational_cost 650912327.1956586",
+  "reference_cycles_run": 87,
+  "reference_gross_operational_cost": 650912327.1956586,
+  "mode": "truncated: cycle_trajectory[:2] + the rows-derived top-level fields, vs the reference's first 2 committed rows (cycle-count-dependent artifacts -- esso_capture, solve_profile, network_failures_summary, esso_complementarity_diagnostics_by_round, esso_models_pickle -- out of scope)",
+  "n_cycles_compared": 2,
+  "diff_value_naming": "CP._diff names the reference value 'legacy' and arm ON's value 'lightweight'",
+  "n_provenance_diffs": 0,
+  "n_diffs": 0,
+  "reproduces": true,
+  "first_differing_field": null,
+  "first_diffs": [],
+  "caveat": "GATING here (W35 item 3); cap 2 vs the reference cap 500 -- W10/W20/W32/W33 (committed) reproduced committed C* rows with 0 diffs at cap 2"
+ },
+ "trajectory_field_table_vs_reference": {
+  "field_list_source": "p515_s44_campaign_harness.RECORD_TRAJECTORY_FIELDS (BY IMPORT)",
+  "n_fields": 29,
+  "n_rows_on": 2,
+  "n_rows_off": 2,
+  "rows_length_equal": true,
+  "total_mismatches": 0,
+  "fields_with_mismatch": [],
+  "per_field": {
+   "boyd_all_pass": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_ess_channel_pass": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_ess_dual_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_ess_primal_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_pf_channel_pass": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_pf_dual_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_pf_primal_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_stop": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_v_channel_pass": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_v_dual_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_v_primal_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "consecutive_converged_cycles": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "cycle": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "cycle_convergence": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "efc_per_day_max": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "gross_operational_cost": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "local_solves_ok": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "objective_change_abs": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "objective_change_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "objective_tolerance": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "recourse": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_ess_action": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_ess_after": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_freeze_active": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_pf_action": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_pf_after": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_v_action": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_v_after": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "terminal_salvage_value": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   }
+  }
+ },
+ "not_covered_by_this_gate": "the hull polish and the S31C settlement writer are post-certification steps and do not run inside a two-cycle arm; their SRP1 invariance rests on the legacy branch running verbatim below 2 scenarios and on p515_s50_generalization_checks.py (864 committed C* period entries reproduced bit for bit)",
+ "gate_items": {
+  "ran_two_cycles": true,
+  "reproduces_committed_reference_zero_diffs": true,
+  "trajectory_fields_identical_to_reference": true,
+  "solve_reconciliation_event_level_identity_holds": true,
+  "arm_instance_derived_solve_profile_agrees": true,
+  "planning_derivation_agrees_with_case_file": true,
+  "process_guard_verified_exactly": true,
+  "no_solves_outside_the_arm": true,
+  "no_blocked_solver_calls": true,
+  "shared_frozen_smopf_untouched": true,
+  "ess_ageing_declaration_verified_in_child": true,
+  "w35_code_present_in_the_modules_that_ran": true
+ },
+ "gate_pass": true,
+ "wall_clock_s": 105.08777403831482
+}

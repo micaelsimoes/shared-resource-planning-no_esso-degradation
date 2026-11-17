@@ -1,0 +1,146 @@
+{
+ "schema": "p515_s53_row18_structural_spec_v2",
+ "stage": "P5.15 Addendum 40 ruling 2, Planner tasks W54 / W56 -- row 18 inactive at the ADMM initialisation solve by STRUCTURAL inactivation; v2 re-freeze after the r1 .nl probe (P3 failed), zero-solve checks and bitwise-gate script updated to the structural mechanism",
+ "authority": [
+  "Planner task W56 (2026-09-24): rulings on W54's questions 1 (proceed; P3 restated) and 2 (re-freeze as v2; v1 not edited; failed P3 stays on the record)",
+  "Planner task W54 (2026-09-24)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 40 ruling 2",
+  "P5_15_ADDENDUM39_PILOT_REPORT.md section 6 item 2"
+ ],
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S53/row18_structural/frozen_s53_row18_structural_spec_v1_05934ab0.json",
+  "sha256": "05934ab0803a6744a5f22106865baafa27eb46f76d4240adbbc53244aac7be04",
+  "relation": "v2 supersedes v1. v1 is left unmodified on disk and in git (committed at d573e145). v2 corrects v1's P3 and its hazard/writer statements, which the r1 probe showed to be wrong; it does not erase them: v1's P3 is recorded below as FAILED.",
+  "supersession_note": "data/SRP1/Results/P515S53/row18_structural/SUPERSEDED.md"
+ },
+ "amends": {
+  "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v23_39a07fd8.json",
+  "sha256": "39a07fd85bd02aaee0f4042d9a7b201cf4df9027191ff70d7939b124061f685c",
+  "key": "ruling2_init_fix",
+  "what_is_amended": "the MECHANISM only. v23 reads 'using the existing mutable row18_alpha Param' (W51, d7962d4e: row18_alpha set to 0 at initialisation, restored from a recorded row18_alpha_admm Param at activation). Independent review rejected that as the final form; W54 replaces it with structural inactivation. The ruling itself (row 18 inactive at initialisation, activated with the settlement weight) and v23's recorded predictions are unchanged. v23 is not modified in place.",
+  "review_reason_recorded": "with the charge zeroed but the rows and the nonnegative, unbounded-above deviation pair retained, each pair admits a zero-cost ray (d+ + t, d- + t); stationarity gives z+ = -lambda, z- = lambda, both >= 0, so lambda = z+ = z- = 0, contradicting d z = mu for every mu > 0: the central path does not exist. IPOPT can still terminate on the mu = 0 error, which is attainable at finite d, so the expected outcome is a SUCCESS status at arbitrary d. The objection is determinism and confounding (alpha > 0 arms initialising from a differently-conditioned NLP than the alpha = 0 arm, on the very row about to be measured), not a crash."
+ },
+ "mechanism": {
+  "initialisation": "shared_resources_planning._set_row18_inactive_for_initialisation(block), called by both DSO initialisation builders (create_distribution_networks_models_sequential, create_distribution_network_model) right after add_scenario_commitment_terms and before the initialisation solve: per index, DEACTIVATE row18_dev_p_def / row18_dev_q_def, then FIX row18_dev_{p,q}_{up,down} at 0. row18_alpha keeps the run's value; row18_alpha_admm no longer exists. The charge folds to the constant 0.0 because every deviation Var in it is fixed at 0.",
+  "activation": "shared_resources_planning._activate_row18_with_settlement(block), called in _prepare_distribution_objectives_for_admm right after interface_settlement_weight.set_value(1.00): refuses (raises) unless every index is in the initialisation state; then per index e = value(pg_adn[s,t]) - value(expected_interface_pf_p[t]) (resp. qg_adn / expected_interface_pf_q), set the minimal split up = max(e, 0), down = max(-e, 0), UNFIX the pair, and only then ACTIVATE the row.",
+  "not_wired": "both functions return at once where row18_alpha does not exist (one scenario, or alpha = 0): SRP1 untouched.",
+  "hazard_excluded": "a deviation pair fixed while its row is ACTIVE turns the row into pg_adn[s,t] - expected_interface_pf_p[t] == 0 (resp. q): a hard non-anticipativity constraint on the interface flow. CORRECTED in v2 (v1 said Pyomo's nl_v2 linear_presolve substitutes it away, visible only in the .nl column count -- the probe refuted that, see presolve_finding): on production's writer path linear presolve is disabled, so the hazard is emitted as +2nT 2-variable equality ROWS with the column count unchanged. Ordering unchanged: deactivate before fix; unfix before activate. The operative control is the per-index assertion 'no index has a fixed pair with an active row', checked in both phases by the zero-solve checks."
+ },
+ "v1_predictions_evaluated": {
+  "run": "p515_s53_row18_structural_nl_probe.py --label r1, at git HEAD d573e145 (clean tracked tree), frozen spec v1 05934ab0; SolveProfileGuard(permitted=()) verified at exactly 0 solves",
+  "evidence": {
+   "data/SRP1/Results/P515S53/row18_structural/nl_probe/r1/nl_probe.json": "249676e980905a6dd818ddde545bc336cb91b141e3e7b64364168789de45d7b6",
+   "data/SRP1/Results/P515S53/row18_structural/nl_probe/r1/manifest_sha256.json": "17f43e3b616614d00cc38adf1a78729bc149ebac617ebf60a8dda3aec3a7d107",
+   "data/SRP1/Results/P515S53/row18_structural/nl_probe_r1_launch.log": "78da6cb349efab379cd1de681f3cd5379da8cbf858d6e421b9f05f4e626e30b1",
+   "p515_s53_row18_structural_nl_probe.py": "a15cfaefe4978177f97f029e0247bd0a5a1709a5e24864870e5ca4aac12f0e42",
+   "committed_at": "bf36d414"
+  },
+  "instance": "derive_case('srp1', {'years': {'2025': 5}, 'num_market_scenarios': 2, 'num_operation_scenarios': 2}); DSO node 5, first (year, day) block (2025, Spring); n = 4, T = 24",
+  "columns_by_arm": {
+   "A": 36232,
+   "A_repeat": 36232,
+   "B": 36232,
+   "C": 36616,
+   "D": 36232
+  },
+  "rows_by_arm": {
+   "A": 29828,
+   "A_repeat": 29828,
+   "B": 29828,
+   "C": 30020,
+   "D": 30020
+  },
+  "outcomes": {
+   "P0": "HELD -- sha256(A) == sha256(A_repeat), both label settings, .row/.col identical",
+   "P1": "HELD -- sha256(A) == sha256(B) exactly, both label settings (labels off a65a93ff..., on 8379c362...), .row/.col identical",
+   "P2": "HELD -- C - A = +384 columns (row18_dev_{p,q}_{up,down}, 96 each) and +192 rows (row18_dev_{p,q}_def, 96 each)",
+   "P3": "FAILED -- D has the SAME 36232 columns as A (identical .col) and +192 rows (row18_dev_{p,q}_def, each a 2-variable equality pg_adn|qg_adn - expected == 0). The prediction 'D has FEWER columns than A' is false. This outcome stands on the record; v2 explains why the prediction was wrong, it does not replace the outcome."
+  }
+ },
+ "presolve_finding": {
+  "statement": "Pyomo's NL writer linear presolve NEVER RUNS on production's solve path, so no Var is substituted away and a fixed-pair-with-active-row index is visible as an added row.",
+  "pyomo": "6.9.5",
+  "source_citation": [
+   "pyomo/repn/plugins/nl_writer.py, NLWriter.__call__ (the legacy 'call' API; lines 288-306 in 6.9.5, file sha256 91e8fc5c7009e192ea95ccbe8fbaa5b6c3e40f880c259f4d6985a9d9ad272925): sets config.scale_model = False and config.linear_presolve = False, with the comment that presolve information cannot be passed back through that API",
+   "pyomo/core/base/block.py, BlockData.write: problem_writer = WriterFactory(format); problem_writer(self, filename, solver_capability, io_options) -- i.e. NLWriter.__call__",
+   "pyomo/solvers/plugins/converter/model.py, PyomoMIPConverter.apply, ProblemFormat.nl branch: a non-kernel Block is written by instance.write(filename=..., format=nl, solver_capability=..., io_options=io_options)",
+   "pyomo/opt/base/solvers.py, OptSolver._presolve -> _convert_problem -> pyomo/opt/base/convert.py convert_problem"
+  ],
+  "production_path": "network.py _create_smopf_solver: po.SolverFactory(solver_params.solver, executable=solver_params.solver_path) with solver name 'ipopt' in the SRP1 network params (class pyomo.solvers.plugins.solvers.IPOPT.IPOPT, a SystemCallSolver, problem format nl); network.py _run_smopf_solver_attempt: solver.solve(model, tee=..., load_solutions=False) -- no io_options, so the converter reaches Block.write -> NLWriter.__call__ with linear_presolve forced False",
+  "probe_equivalence": "the r1 probe wrote via block.write(path, format='nl', io_options={'symbolic_solver_labels': flag}) -- the same BlockData.write -> NLWriter.__call__ path, hence the same presolve setting as production",
+  "v1_statements_corrected": [
+   "v1 mechanism.hazard_excluded: 'which Pyomo 6.9.5's nl_v2 linear_presolve (default True) substitutes away, visible only in the .nl column count' -- WRONG on production's path (see above)",
+   "v1 nl_probe.writer.flags.off: 'linear_presolve default True' -- the CONFIG default is True, but __call__ overrides it to False on this path"
+  ]
+ },
+ "predictions_restated": [
+  {
+   "id": "P0",
+   "claim": "sha256(A) == sha256(A_repeat) for both label settings (and .row/.col identical)",
+   "status": "unchanged; HELD at r1"
+  },
+  {
+   "id": "P1",
+   "claim": "sha256(A) == sha256(B) EXACTLY, for both label settings, and the .row/.col files identical",
+   "status": "unchanged; HELD at r1; licenses the structural approach"
+  },
+  {
+   "id": "P2",
+   "claim": "C has exactly 4 n T = 384 more columns and 2 n T = 192 more rows than A (n = 4, T = 24); with labels on, the extra .col names are exactly the row18_dev_{p,q}_{up,down} entries and the extra .row names exactly the row18_dev_{p,q}_def entries",
+   "status": "unchanged; HELD at r1"
+  },
+  {
+   "id": "P3_v2",
+   "replaces": "v1 P3 (FAILED at r1, kept on the record)",
+   "claim": "arm D has the same column count as A and +2nT rows, because linear presolve is disabled on production's writer path; the hazard manifests as added rows, not substituted columns",
+   "basis": "presolve_finding.source_citation",
+   "status": "restated AFTER the r1 observation (Planner ruling, W56): it is an explanation of r1, NOT a prediction recorded before a run, and it is not re-tested by a new probe run under v2",
+   "operative_control": "the per-index assertion 'fixed pair implies row inactive' (no index with a fixed pair and an active row), in both phases, in the zero-solve checks"
+  }
+ ],
+ "nl_probe": {
+  "status": "not re-run under v2; r1 (v1) is the evidence. A re-run, if ever ordered, must use a NEW label (r2) -- r1 is cited in a Planner report.",
+  "v1_section": "see predecessor"
+ },
+ "zero_solve_checks": {
+  "script": "p515_s53_init_fix_zero_solve_checks.py (updated in W56 to the structural mechanism; schema p515_s53_init_fix_zero_solve_checks_v2)",
+  "label": "r5 (r4 is W51's committed evidence and is not re-run onto; r1-r3 are W51's abandoned, uncommitted labels and are not reused)",
+  "guard": "SolveProfileGuard(permitted=()) installed before any production import and verified at exactly 0 solves; the imported W39 checks module's own zero guard verified at exactly 0 too",
+  "replaced_as_vacuous": "W51 checks A and A2's unit steps on the deviation Vars at initialisation (d is fixed, so a unit step is not an admissible move and the probe tests nothing). Removed, not left in place. Check B's unit steps AFTER activation are kept (the Vars are free there and alpha = 0.5, so they test the charge rate).",
+  "run_alpha": 0.5,
+  "asserted_per_index_every_dso_block": {
+   "initialisation (A: production's _run_operational_planning, stubbed solves; A2: create_distribution_network_model in-process)": [
+    "every row18_dev_{p,q}_def index INACTIVE",
+    "every row18_dev_{p,q}_{up,down} index FIXED with value exactly 0.0",
+    "no index with a fixed pair (either member) and an active row",
+    "value(row18_deviation_charge) == 0.0 exactly",
+    "row18_alpha == run alpha (0.5) exactly; row18_alpha_admm absent",
+    "interface_settlement_weight == 0.0"
+   ],
+   "after activation (B: _prepare_distribution_objectives_for_admm on A's models; A2: same on its node)": [
+    "every row index ACTIVE",
+    "every deviation index UNFIXED",
+    "up == max(e, 0) and down == max(-e, 0) exactly, e = value(flow[s_m,s_o,t]) - value(expectation[t]) recomputed by the harness from the block's own pg_adn/qg_adn and expected_interface_pf_p/q (the harness's own family table, compared with production's _ROW18_DEVIATION_FAMILIES)",
+    "defining-row residual value(body) - upper == 0.0 exactly",
+    "no index with a fixed pair and an active row",
+    "row18_alpha == run alpha (0.5) exactly; row18_alpha_admm absent; interface_settlement_weight == 1.0"
+   ],
+   "non_vacuity": "the minimal-split assertion counts as tested only if, over all checked blocks, at least one index has e > 0 and at least one has e < 0; the sign counts are recorded and the check FAILS if either count is zero"
+  },
+  "structure_predictions_recorded_before_run": {
+   "C_init_vs_after_activation_same_block": "component-name sets identical; n_var_data and n_constraint_data identical; n_constraint_data_active(after) - n_constraint_data_active(init) == +2nT; n_var_data_unfixed(after) - n_var_data_unfixed(init) == +4nT; n_expression_data identical",
+   "C2_vs_alpha0_same_path": "extra components exactly {row18_alpha, row18_premium, row18_dev_p_up, row18_dev_p_down, row18_dev_q_up, row18_dev_q_down, row18_dev_p_def, row18_dev_q_def, row18_deviation_charge} (no row18_alpha_admm), none missing; at initialisation: n_var_data +4nT, n_constraint_data +2nT, n_constraint_data_active +0, n_var_data_unfixed +0; after activation: n_constraint_data_active +2nT, n_var_data_unfixed +4nT",
+   "B_writers": "no Call of <expr>.row18_alpha.set_value(...) anywhere in the tracked root-level .py files (AST call scan, not a substring scan)",
+   "D_1x1": "unchanged from W51: nothing wired at one scenario, in either phase",
+   "E_benchmark": "unchanged from W51",
+   "F_fixtures": "unchanged from W51"
+  },
+  "instances": "unchanged from W51: 2 x 2 = derive_case('srp1', {years {'2025': 5}, 2 market, 2 operation}); 1 x 1 = derive_case('srp1', {})"
+ },
+ "srp1_bitwise_gate": {
+  "script": "p515_s53_srp1_bitwise_gate.py",
+  "updated_in_W56": "presence checks (w51_code_presence) re-targeted to the structural mechanism; the armed pass-through counter's acting marker for _activate_row18_with_settlement is row18_alpha (the W51 marker row18_alpha_admm no longer exists); declared count unchanged (3 DSOs x 12 (year, day) = 36 calls of each, 0 acting)",
+  "status": "WRITTEN, NOT RUN (Planner W56: the F2 certificate campaign is live in the main checkout)"
+ },
+ "not_permitted": "no solves of any kind; no edits to model_construction_helpers.py, the uncoordinated benchmark or any TSO path; the SRP1 two-cycle bitwise gate p515_s53_srp1_bitwise_gate.py is updated but NOT run"
+}

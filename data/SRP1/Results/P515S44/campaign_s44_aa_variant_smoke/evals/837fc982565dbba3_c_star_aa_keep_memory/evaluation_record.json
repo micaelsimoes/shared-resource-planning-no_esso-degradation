@@ -1,0 +1,463 @@
+{
+ "schema": "p515_s44_evaluation_record_v2",
+ "campaign_id": "s44_aa_variant_smoke",
+ "campaign_spec_path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/campaign_spec_s44_aa_variant_smoke_e3f83174.json",
+ "campaign_spec_sha256": "e3f83174b2f784e0ed4dccae61ba27e414a8c9cbe9495b3b7723a5f2512abeed",
+ "candidate_label": "c_star_aa_keep_memory",
+ "candidate_canonical": {
+  "investment_year": 2025,
+  "nodes": {
+   "5": [
+    0.96875,
+    3.875
+   ],
+   "7": [
+    0.96875,
+    3.875
+   ],
+   "9": [
+    0.96875,
+    3.875
+   ]
+  }
+ },
+ "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+ "instance_note": "candidate_key = sha256 of the canonical candidate; identifies the problem instance",
+ "working_dir_ids": {
+  "precheck": "p515s44_s44_aa_variant_smoke_837fc982565dbba3_precheck",
+  "run": "p515s44_s44_aa_variant_smoke_837fc982565dbba3_run"
+ },
+ "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/evals/837fc982565dbba3_c_star_aa_keep_memory",
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_last_commit": "fb3de341b359422dfbfb77e6bbffd7dc83a80bab",
+  "case_file_sha256": "490e5b211f5083fe6ffca11d2aa07cd26739f141654fce3a23898258d610edf8",
+  "full_diagnostics_in_rows": true,
+  "name": "per-evaluation: AA keep_memory (override) and D (case file, fb3de341)",
+  "note": "campaign-level overrides empty; each entry carries its own (AA entry only); num_max_iters := cap (run_admm_arm always sets it)",
+  "overrides": {}
+ },
+ "cap": 3,
+ "required_consecutive_cycles": 10,
+ "status": "not_certified",
+ "barrier": true,
+ "barrier_cause": "cap reached without certification",
+ "objective_convention": "gross_operational_cost: settlement-EXCLUDED gross operational cost (the oracle cost convention); net_operational_recourse = gross minus terminal salvage credit",
+ "certified_cost": null,
+ "terminal_gross_operational_cost": 704411902.1572279,
+ "terminal_net_operational_recourse": 704411902.1572279,
+ "bar": {
+  "definition": "max objective_change_abs (|gross cost step|) over the last 10 cycles",
+  "value": 845717094.9825618,
+  "n_cycles_in_window": 3,
+  "n_steps_available": 2,
+  "window": [
+   {
+    "cycle": 1,
+    "objective_change_abs": null
+   },
+   {
+    "cycle": 2,
+    "objective_change_abs": 845717094.9825618
+   },
+   {
+    "cycle": 3,
+    "objective_change_abs": 36330927.417605996
+   }
+  ]
+ },
+ "certification": {
+  "certified": false,
+  "certification_cycle": null,
+  "cycles_run": 3,
+  "cap": 3,
+  "required_consecutive_cycles": 10,
+  "terminal_cycle_convergence": false,
+  "terminal_consecutive_converged_cycles": 0,
+  "local_solve_failures_total": 0
+ },
+ "certification_cycle": null,
+ "cycles_run": 3,
+ "stopped_by_trajectory": {
+  "stopped_by": "cap",
+  "converged_at_cycle": null,
+  "stop_run_cycles": []
+ },
+ "first_pass_cycle_per_channel": {
+  "v": null,
+  "pf": null,
+  "ess": null
+ },
+ "terminal_ratios_per_channel": {
+  "v": {
+   "primal": 19.188979497414195,
+   "dual": 7.959253835872506,
+   "max": 19.188979497414195
+  },
+  "pf": {
+   "primal": 462.8972815173506,
+   "dual": 437.9871040046616,
+   "max": 462.8972815173506
+  },
+  "ess": {
+   "primal": 372.64822718963256,
+   "dual": 8.99230249870067,
+   "max": 372.64822718963256
+  }
+ },
+ "rule_ten": {
+  "reported_not_gated": true,
+  "terminal_objective_change_abs": 36330927.417605996,
+  "terminal_objective_tolerance": 74074.28295748339,
+  "terminal_step_over_threshold": 490.4661370594563,
+  "boyd_terminal_ratio_max_per_channel": {
+   "v": 19.188979497414195,
+   "pf": 462.8972815173506,
+   "ess": 372.64822718963256
+  }
+ },
+ "component_decomposition_totals_weighted": {
+  "generation_cost": 517911777.0178118,
+  "flexibility_cost_internal": 186512926.60335883,
+  "load_curtailment_cost": 0.0,
+  "res_curtailment_penalty": 0.0,
+  "ess_usage_cost": 0.0,
+  "flexibility_cost_tso_adn_interface_definitional": 0.0,
+  "voltage_slack": -11796.93954558276,
+  "node_balance_slack": 0.0,
+  "branch_flow_slack": 0.0,
+  "flexibility_p_day_balance_slack": -946.4707183582052,
+  "local_ess_day_balance_slack": 0.0,
+  "shared_ess_day_balance_slack": -58.05367860223698,
+  "detector_penalty_total": -12801.463942543198,
+  "ess_complementarity_bilinear_definitional": 19.149886277821267,
+  "orphan_flex_q_day_balance_slack_raw": 0.0,
+  "orphan_tso_adn_flex_p_day_balance_slack_raw": 0.0,
+  "orphan_flex_q_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional": 0.0,
+  "orphan_tso_adn_flex_p_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional": 0.0,
+  "res_curtailment_definitional_at_weight_1": 11377.028576301787
+ },
+ "recourse_components": {
+  "gross_operational_cost": 704411902.1572279,
+  "gross_operational_cost_including_settlement": 654053852.3409802,
+  "interface_settlement_tso": -1205765979.2277684,
+  "interface_settlement_dso": {
+   "5": 419534292.1410257,
+   "7": 343352654.0392775,
+   "9": 392520983.23121744
+  },
+  "interface_settlement_total": -50358049.8162477,
+  "terminal_salvage_value": -2.112235636416071e-37,
+  "net_operational_recourse": 704411902.1572279,
+  "detector_penalty_total": -12801.463942543198,
+  "detector_components": {
+   "voltage_slack": -11796.93954558276,
+   "node_balance_slack": 0.0,
+   "branch_flow_slack": 0.0,
+   "flexibility_p_day_balance_slack": -946.4707183582052,
+   "local_ess_day_balance_slack": 0.0,
+   "shared_ess_day_balance_slack": -58.05367860223698,
+   "detector_penalty_total": -12801.463942543198
+  },
+  "economic_recourse_all_D_excluded": 704424703.6211704,
+  "economic_recourse_voltage_excluded": 704423699.0967735
+ },
+ "settlement_remainder": {
+  "definition": "recourse_components.interface_settlement_total: T_TSO + sum(T_DSO), the non-cancelling interface settlement at the terminal point, excluded from the cost",
+  "value": -50358049.8162477
+ },
+ "storage_per_node": {
+  "5": {
+   "s_mva": 0.96875,
+   "e_mwh": 3.875,
+   "has_storage": true,
+   "efc_per_day_max": 0.7316832359471457,
+   "efc_per_day_per_cohort_year": {
+    "(0, 0)": 0.7004062382371353,
+    "(0, 1)": 0.7316832359471457,
+    "(0, 2)": 0.6964003404651031
+   },
+   "terminal_soh_per_active_cohort_year": {
+    "(0, 0)": 0.8951614584166274,
+    "(0, 1)": 0.7973608013466242,
+    "(0, 2)": 0.7142189217556612
+   },
+   "terminal_soh_min_over_active_cohort_years": 0.7142189217556612,
+   "soh_floor_rows_active_at_terminal": [],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 0.96875,
+     "e_available": 3.4687506513644313
+    },
+    "2030": {
+     "s_available": 0.96875,
+     "e_available": 3.0897731052181694
+    },
+    "2035": {
+     "s_available": 0.96875,
+     "e_available": 2.767598321803187
+    }
+   },
+   "note_zero_node": null
+  },
+  "7": {
+   "s_mva": 0.96875,
+   "e_mwh": 3.875,
+   "has_storage": true,
+   "efc_per_day_max": 0.7308709663244883,
+   "efc_per_day_per_cohort_year": {
+    "(0, 0)": 0.6992370145298524,
+    "(0, 1)": 0.7308709663244883,
+    "(0, 2)": 0.695896140664822
+   },
+   "terminal_soh_per_active_cohort_year": {
+    "(0, 0)": 0.8953269734799565,
+    "(0, 1)": 0.797610671273409,
+    "(0, 2)": 0.7144996995518079
+   },
+   "terminal_soh_min_over_active_cohort_years": 0.7144996995518079,
+   "soh_floor_rows_active_at_terminal": [],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 0.96875,
+     "e_available": 3.469392022234832
+    },
+    "2030": {
+     "s_available": 0.96875,
+     "e_available": 3.0907413511844597
+    },
+    "2035": {
+     "s_available": 0.96875,
+     "e_available": 2.7686863357632556
+    }
+   },
+   "note_zero_node": null
+  },
+  "9": {
+   "s_mva": 0.96875,
+   "e_mwh": 3.875,
+   "has_storage": true,
+   "efc_per_day_max": 0.7313836751861421,
+   "efc_per_day_per_cohort_year": {
+    "(0, 0)": 0.7008365215607966,
+    "(0, 1)": 0.7313836751861421,
+    "(0, 2)": 0.6962970650630742
+   },
+   "terminal_soh_per_active_cohort_year": {
+    "(0, 0)": 0.8951005553260488,
+    "(0, 1)": 0.7973443198137756,
+    "(0, 2)": 0.7142158221397986
+   },
+   "terminal_soh_min_over_active_cohort_years": 0.7142158221397986,
+   "soh_floor_rows_active_at_terminal": [],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 0.96875,
+     "e_available": 3.468514651888439
+    },
+    "2030": {
+     "s_available": 0.96875,
+     "e_available": 3.0897092392783803
+    },
+    "2035": {
+     "s_available": 0.96875,
+     "e_available": 2.7675863107917196
+    }
+   },
+   "note_zero_node": null
+  }
+ },
+ "local_solve_failures": 0,
+ "network_failures_summary": {
+  "n_blocks": 1,
+  "classes": {
+   "recovered_tier1": 1,
+   "recovered_tier2": 0,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 1
+  },
+  "n_frozen_snapshots": 0,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/evals/837fc982565dbba3_c_star_aa_keep_memory/network_failures_s39_D.jsonl"
+ },
+ "solve_profile": {
+  "observed": {
+   "permitted_solve": 205,
+   "permitted_exec": 205,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "identity_holds": false
+ },
+ "wall_time_s": {
+  "child_process_s": 147.03072905540466,
+  "run_admm_arm_s": 132.8556571006775,
+  "run_admm_arm_reported_wall_clock_s": 132.1689338684082
+ },
+ "peak_rss": {
+  "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+  "child_python_process_ru_maxrss": 2265464832,
+  "production_state_peak_rss_ru_maxrss": 2257125376,
+  "solver_subprocesses_max_ru_maxrss": 51888128,
+  "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+ },
+ "record_capture_checklist_asserted_before_run": {
+  "trajectory_field_boyd_all_pass": true,
+  "trajectory_field_boyd_ess_channel_pass": true,
+  "trajectory_field_boyd_ess_dual_ratio": true,
+  "trajectory_field_boyd_ess_primal_ratio": true,
+  "trajectory_field_boyd_pf_channel_pass": true,
+  "trajectory_field_boyd_pf_dual_ratio": true,
+  "trajectory_field_boyd_pf_primal_ratio": true,
+  "trajectory_field_boyd_stop": true,
+  "trajectory_field_boyd_v_channel_pass": true,
+  "trajectory_field_boyd_v_dual_ratio": true,
+  "trajectory_field_boyd_v_primal_ratio": true,
+  "trajectory_field_consecutive_converged_cycles": true,
+  "trajectory_field_cycle": true,
+  "trajectory_field_cycle_convergence": true,
+  "trajectory_field_efc_per_day_max": true,
+  "trajectory_field_gross_operational_cost": true,
+  "trajectory_field_local_solves_ok": true,
+  "trajectory_field_objective_change_abs": true,
+  "trajectory_field_objective_change_ratio": true,
+  "trajectory_field_objective_tolerance": true,
+  "trajectory_field_recourse": true,
+  "trajectory_field_rho_ess_action": true,
+  "trajectory_field_rho_ess_after": true,
+  "trajectory_field_rho_freeze_active": true,
+  "trajectory_field_rho_pf_action": true,
+  "trajectory_field_rho_pf_after": true,
+  "trajectory_field_rho_v_action": true,
+  "trajectory_field_rho_v_after": true,
+  "trajectory_field_terminal_salvage_value": true,
+  "esso_capture_attr_es_avg_ch_dch_per_unit": true,
+  "esso_capture_attr_es_soh_per_unit_cumul": true,
+  "esso_capture_attr_es_e_rated_per_unit": true,
+  "harness_fn_run_admm_arm": true,
+  "harness_fn_write_boyd_terminal_s35ref": true,
+  "harness_fn_s38_pf_capture_hooks": true,
+  "harness_fn_s39_exempt_until_capture_hooks": true,
+  "harness_fn__s35ref_terminal_floor_and_efc": true,
+  "harness_fn__derive_stopped_by_from_trajectory": true,
+  "harness_fn__identify_soh_floor_rows": true,
+  "evaluator_fn__certification_from_trajectory": true,
+  "evaluator_fn__first_pass_cycle": true,
+  "evaluator_fn__terminal_ratios": true,
+  "component_levels_recourse_key_interface_settlement_total": true,
+  "run_admm_arm_accepts_investment_map": true,
+  "run_admm_arm_post_run_hook_gets_state": true,
+  "production_state_has_peak_rss": true
+ },
+ "eval_key": "837fc982565dbba32241ed21a46da14984395006e3dbb4b03d5f72b9b72c50a7",
+ "evaluation_overrides_effective": {
+  "anderson_acceleration": {
+   "enabled": true,
+   "reject_policy": "keep_memory"
+  }
+ },
+ "post_certification_capture_checklist_asserted_before_run": {
+  "certification_fn": true,
+  "stopped_by_fn": true,
+  "hull_polish_fn": true,
+  "persist_fn": true,
+  "decomposition_fn_accepts_reference_dir": true,
+  "cost_band_constant_1_5e_4": true,
+  "reconciliation_tol_1_0": true,
+  "hull_gate_threshold_0_1_pct": true,
+  "aa_sidecar_fn": true,
+  "run_admm_arm_passes_state_to_hook": true,
+  "reference_hashes_verified_before_run": {
+   "evaluation_record_sha256": "f7722fc44a2785f1d085dbc2f72703bc0962d06cf9a3796dbd4bce89d9ed7870",
+   "component_levels_terminal_sha256": "ff9050bb1759cff14f9d4e94d7e095b7a9b7fc3fa7ca8439f2a9ed5c0aa0444d"
+  }
+ },
+ "post_certification": {
+  "status": "skipped",
+  "evaluated": false,
+  "skip_reason": "trajectory not certified under the spec's bar (cycles_run=3, cap=3, required_consecutive=10, terminal_consecutive_converged_cycles=0, stopped_by='cap'); post-certification items are never evaluated at an uncertified point",
+  "error": null,
+  "certified_cost": null,
+  "gate_c_pass": null,
+  "persisted_models": null,
+  "hull_bound_detail_path": null,
+  "requested": {
+   "hull_polish": true,
+   "persist_certified_models": true,
+   "reference": {
+    "campaign_spec_sha256": "4047b4e3f1852c3616a80ad26f2d43f2aa4b333847e447fb5b9323fb3bce7f33",
+    "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+    "certification_cycle": 139,
+    "certified_cost": 650966975.2943751,
+    "component_levels_terminal_sha256": "ff9050bb1759cff14f9d4e94d7e095b7a9b7fc3fa7ca8439f2a9ed5c0aa0444d",
+    "configuration_overrides": {},
+    "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star",
+    "evaluation_record_sha256": "f7722fc44a2785f1d085dbc2f72703bc0962d06cf9a3796dbd4bce89d9ed7870"
+   }
+  },
+  "gate_b": null,
+  "gate_c": null,
+  "gate_d": null
+ },
+ "post_certification_path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/evals/837fc982565dbba3_c_star_aa_keep_memory/post_certification.json",
+ "aa_per_cycle": {
+  "path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/evals/837fc982565dbba3_c_star_aa_keep_memory/aa_per_cycle.jsonl",
+  "n_rows": 3,
+  "action_counts": {
+   "insufficient memory (m_k=0)": 3
+  },
+  "n_accepted": 0,
+  "n_rejected": 0,
+  "rejections_with_memory_retained": [],
+  "first_accept_cycle": null,
+  "first_reject_cycle": null
+ },
+ "configuration_checks_in_child": {
+  "rho_v_matches_D": true,
+  "rho_pf_matches_D": true,
+  "rho_ess_matches_D": true,
+  "tau_is_0": true,
+  "gamma_policy_tied_to_rho": true,
+  "balancing_exempt_until_matches_D": true,
+  "balancing_exempt_channels_empty": true,
+  "freeze_after_unchanged_cycles_is_10": true,
+  "freeze_backstop_cycle_is_200": true,
+  "minimum_consecutive_converged_cycles_matches_spec": true,
+  "shared_ess_initialization_is_standalone": true,
+  "num_max_iters_is_spec_cap": true,
+  "anderson_acceleration_off_before_overrides": true,
+  "persistent_workers_off": true,
+  "parallel_execution_off": true
+ },
+ "overrides_applied_in_child": {
+  "anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  }
+ },
+ "thread_caps_seen_by_child": {
+  "OMP_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1"
+ },
+ "PYTHONHASHSEED_in_child": null,
+ "nlp_solver_path_in_child": "/usr/local/bin/ipopt",
+ "campaign_lock_seen_by_child": {
+  "pid": 69421,
+  "campaign_id": "s44_aa_variant_smoke",
+  "campaign_spec_sha256": "e3f83174b2f784e0ed4dccae61ba27e414a8c9cbe9495b3b7723a5f2512abeed",
+  "started_utc": "2026-09-19T12:28:36.752591+00:00"
+ },
+ "child_pid": 69447,
+ "parent_pid": 69421,
+ "report_path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/evals/837fc982565dbba3_c_star_aa_keep_memory/g_s39_D.json",
+ "per_cycle_record_path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/evals/837fc982565dbba3_c_star_aa_keep_memory/per_cycle_record.jsonl"
+}

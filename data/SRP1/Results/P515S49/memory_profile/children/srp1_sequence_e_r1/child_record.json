@@ -1,0 +1,2656 @@
+{
+ "schema": "p515_s49_memory_profile_v1",
+ "stage": "P5.15 Addendum 29 W32 M1 -- per-solve memory profile of one network block (classification)",
+ "child_id": "srp1_sequence_e_r1",
+ "instance": "srp1",
+ "mode": "sequence",
+ "variant": "e",
+ "rep": 1,
+ "variant_text": "c + gc.collect()",
+ "declared_solves_before_run": 12,
+ "pid": 97740,
+ "utc_start": "2026-09-22T11:08:25.465195+00:00",
+ "thread_caps": {
+  "OMP_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1"
+ },
+ "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+ "planning_dimensions": {
+  "years": {
+   "2025": 5,
+   "2030": 5,
+   "2035": 5
+  },
+  "days": {
+   "Spring": 92,
+   "Summer": 91,
+   "Autumn": 91,
+   "Winter": 91
+  },
+  "num_instants": 24,
+  "random_seed": 2026,
+  "num_market_scenarios": 1,
+  "num_operation_scenarios": {
+   "case9": 1,
+   "case33_1": 1,
+   "case33_2": 1,
+   "case33_3": 1
+  },
+  "active_distribution_network_nodes": [
+   5,
+   7,
+   9
+  ],
+  "scenario_metadata": {
+   "random_seed": 2026,
+   "deterministic_scenarios": true,
+   "market_scenario_checksum": "a8c958289c1e0bdaaf0df36ce56fb4da6734621bf34be7711babcae94d79d907",
+   "operational_scenario_checksum": "502de30606ff8f0290498c56559b59ea01436ce43d9c21a0fc87c876a17ce30e",
+   "combined_scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358"
+  }
+ },
+ "provenance": {
+  "timestamp_utc": "2026-09-22T11:08:36.494403+00:00",
+  "git_head": "d68c814d75b57096943757690da771ff36ef9b21",
+  "sys_executable": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "exists": true,
+   "version": "3.14.18",
+   "asl": "20241111",
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)",
+   "path_ipopt_not_used": {
+    "path": "/usr/local/bin/ipopt",
+    "version": "3.14.18",
+    "shadows_canonical": false
+   }
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-14",
+   "available": true,
+   "licence_id": "2807206",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "canonical_ipopt_path": "/usr/local/bin/ipopt",
+  "canonical_ipopt_version": "3.14.18",
+  "canonical_ipopt_asl": "20241111",
+  "canonical_hsl_linear_solver": "ma97",
+  "gate_failures": [],
+  "checksum_expected_to_differ": false,
+  "gate_passes_for_this_instance": true
+ },
+ "d_configuration_checks": {
+  "configuration_checks": {
+   "rho_v_matches_D": true,
+   "rho_pf_matches_D": true,
+   "rho_ess_matches_D": true,
+   "tau_is_0": true,
+   "gamma_policy_tied_to_rho": true,
+   "balancing_exempt_until_matches_D": true,
+   "balancing_exempt_channels_empty": true,
+   "freeze_after_unchanged_cycles_is_10": true,
+   "freeze_backstop_cycle_is_200": true,
+   "minimum_consecutive_converged_cycles_matches_spec": true,
+   "shared_ess_initialization_is_standalone": true,
+   "num_max_iters_is_spec_cap": true,
+   "anderson_acceleration_case_file_matches_declaration": true,
+   "anderson_acceleration_case_file_memory_regularization_frozen": true,
+   "persistent_workers_off": true,
+   "parallel_execution_off": true
+  },
+  "case_file_anderson_acceleration_declared": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "anderson_acceleration_effective": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "overrides_applied": {},
+  "declaration_note": "spec_like declares configuration.case_file_anderson_acceleration; the harness hook checks the loaded AA equals it exactly and raises otherwise (p515_s44_campaign_harness._config_hook_factory)"
+ },
+ "snapshot_setting": {
+  "requested": "off",
+  "tso_mode_before": "lightweight",
+  "dso_mode_before": "lightweight",
+  "tso_mode_after": "off",
+  "dso_mode_after": "off",
+  "expected": [
+   "off",
+   "off"
+  ],
+  "took_effect": true,
+  "persistent_workers_enabled": false
+ },
+ "block_selection": {
+  "node": 7,
+  "network": "case33_2",
+  "year": 2025,
+  "days": [
+   "Spring",
+   "Summer",
+   "Autumn",
+   "Winter"
+  ],
+  "method": "the arm planning object restricted to this node/year/days (NetworkData.years / .days), then production builders"
+ },
+ "block_sizes": [
+  {
+   "vars": 10882,
+   "constraints_active": 7803
+  },
+  {
+   "vars": 10882,
+   "constraints_active": 7803
+  },
+  {
+   "vars": 10882,
+   "constraints_active": 7779
+  },
+  {
+   "vars": 10882,
+   "constraints_active": 7779
+  }
+ ],
+ "status": "complete",
+ "guard": {
+  "permitted": [
+   [
+    "network.py",
+    "_run_smopf_solver_attempt"
+   ],
+   [
+    "shared_energy_storage_data.py",
+    "_run_solver_attempt"
+   ]
+  ],
+  "counts": {
+   "permitted_solve": 12,
+   "permitted_exec": 12,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "declared": 12,
+  "recovery_attempts": 0,
+  "reconciled": 12,
+  "verify_failures": [],
+  "n_wrapped_run_smopf_calls": 12
+ },
+ "attempts": [
+  {
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Spring",
+   "from_warm_start": false,
+   "log_suffix": null
+  },
+  {
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Summer",
+   "from_warm_start": false,
+   "log_suffix": null
+  },
+  {
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Autumn",
+   "from_warm_start": false,
+   "log_suffix": null
+  },
+  {
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Winter",
+   "from_warm_start": false,
+   "log_suffix": null
+  },
+  {
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Spring",
+   "from_warm_start": true,
+   "log_suffix": null
+  },
+  {
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Summer",
+   "from_warm_start": true,
+   "log_suffix": null
+  },
+  {
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Autumn",
+   "from_warm_start": true,
+   "log_suffix": null
+  },
+  {
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Winter",
+   "from_warm_start": true,
+   "log_suffix": null
+  },
+  {
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Spring",
+   "from_warm_start": true,
+   "log_suffix": null
+  },
+  {
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Summer",
+   "from_warm_start": true,
+   "log_suffix": null
+  },
+  {
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Autumn",
+   "from_warm_start": true,
+   "log_suffix": null
+  },
+  {
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Winter",
+   "from_warm_start": true,
+   "log_suffix": null
+  }
+ ],
+ "checkpoints": [
+  {
+   "label": "before build",
+   "t_utc": "2026-09-22T11:08:37.099405+00:00",
+   "samples": [
+    {
+     "rss_self": 361218048,
+     "footprint_self": 250938472,
+     "rss_children": 0,
+     "n_children": 0,
+     "allocated_blocks": 1190593
+    },
+    {
+     "rss_self": 361218048,
+     "footprint_self": 250938472,
+     "rss_children": 0,
+     "n_children": 0,
+     "allocated_blocks": 1191377
+    },
+    {
+     "rss_self": 361218048,
+     "footprint_self": 250938472,
+     "rss_children": 0,
+     "n_children": 0,
+     "allocated_blocks": 1190647
+    },
+    {
+     "rss_self": 361218048,
+     "footprint_self": 250938472,
+     "rss_children": 0,
+     "n_children": 0,
+     "allocated_blocks": 1190663
+    },
+    {
+     "rss_self": 361250816,
+     "footprint_self": 251561088,
+     "rss_children": 0,
+     "n_children": 0,
+     "allocated_blocks": 1190680
+    }
+   ],
+   "rss_self": 361218048,
+   "rss_self_range": 32768,
+   "footprint_self": 250938472,
+   "footprint_self_range": 622616,
+   "rss_children": 0,
+   "rss_children_range": 0,
+   "allocated_blocks": 1190663,
+   "allocated_blocks_range": 784,
+   "sys_available": 19115737088,
+   "swap_used": 928776192,
+   "ru_maxrss_self": 361824256,
+   "ru_maxrss_children": 9175040
+  },
+  {
+   "label": "after all solves (results and models alive)",
+   "t_utc": "2026-09-22T11:09:02.649565+00:00",
+   "samples": [
+    {
+     "rss_self": 459603968,
+     "footprint_self": 329614704,
+     "rss_children": 0,
+     "n_children": 0,
+     "allocated_blocks": 2344113
+    },
+    {
+     "rss_self": 459603968,
+     "footprint_self": 329614704,
+     "rss_children": 0,
+     "n_children": 0,
+     "allocated_blocks": 2344117
+    },
+    {
+     "rss_self": 459603968,
+     "footprint_self": 329614704,
+     "rss_children": 0,
+     "n_children": 0,
+     "allocated_blocks": 2344121
+    },
+    {
+     "rss_self": 459603968,
+     "footprint_self": 329614704,
+     "rss_children": 0,
+     "n_children": 0,
+     "allocated_blocks": 2344124
+    },
+    {
+     "rss_self": 459603968,
+     "footprint_self": 329614704,
+     "rss_children": 0,
+     "n_children": 0,
+     "allocated_blocks": 2344127
+    }
+   ],
+   "rss_self": 459603968,
+   "rss_self_range": 0,
+   "footprint_self": 329614704,
+   "footprint_self_range": 0,
+   "rss_children": 0,
+   "rss_children_range": 0,
+   "allocated_blocks": 2344121,
+   "allocated_blocks_range": 14,
+   "sys_available": 17438605312,
+   "swap_used": 928776192,
+   "ru_maxrss_self": 459603968,
+   "ru_maxrss_children": 48775168
+  },
+  {
+   "label": "after del models/results + gc.collect",
+   "t_utc": "2026-09-22T11:09:03.276431+00:00",
+   "samples": [
+    {
+     "rss_self": 434438144,
+     "footprint_self": 301532528,
+     "rss_children": 0,
+     "n_children": 0,
+     "allocated_blocks": 1124690
+    },
+    {
+     "rss_self": 434454528,
+     "footprint_self": 301221232,
+     "rss_children": 0,
+     "n_children": 0,
+     "allocated_blocks": 1124742
+    },
+    {
+     "rss_self": 434454528,
+     "footprint_self": 301237616,
+     "rss_children": 0,
+     "n_children": 0,
+     "allocated_blocks": 1124759
+    },
+    {
+     "rss_self": 434470912,
+     "footprint_self": 301237616,
+     "rss_children": 0,
+     "n_children": 0,
+     "allocated_blocks": 1124777
+    },
+    {
+     "rss_self": 434470912,
+     "footprint_self": 301237616,
+     "rss_children": 0,
+     "n_children": 0,
+     "allocated_blocks": 1124795
+    }
+   ],
+   "rss_self": 434454528,
+   "rss_self_range": 32768,
+   "footprint_self": 301237616,
+   "footprint_self_range": 311296,
+   "rss_children": 0,
+   "rss_children_range": 0,
+   "allocated_blocks": 1124759,
+   "allocated_blocks_range": 105,
+   "sys_available": 17462362112,
+   "swap_used": 928776192,
+   "ru_maxrss_self": 459603968,
+   "ru_maxrss_children": 48775168
+  }
+ ],
+ "solves": [
+  {
+   "k": 1,
+   "pass": "init (cold)",
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Spring",
+   "from_warm_start": false,
+   "wall_s": 0.562,
+   "succeeded": true,
+   "summary": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_peak_rss_sampled": 46252032,
+   "ipopt_sampler_n": 17,
+   "ru_maxrss_children_before": 9175040,
+   "ru_maxrss_children_after": 46301184,
+   "action": [
+    "model.solutions.clear()",
+    "result.solution.clear(); result._smap = None",
+    "gc.collect() -> 0"
+   ],
+   "pre": {
+    "label": "solve 1 pre",
+    "t_utc": "2026-09-22T11:08:38.188173+00:00",
+    "samples": [
+     {
+      "rss_self": 400556032,
+      "footprint_self": 290292888,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 1883681
+     },
+     {
+      "rss_self": 400588800,
+      "footprint_self": 290309272,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 1883724
+     },
+     {
+      "rss_self": 400588800,
+      "footprint_self": 290309272,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 1883740
+     },
+     {
+      "rss_self": 400588800,
+      "footprint_self": 290309272,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 1883756
+     },
+     {
+      "rss_self": 400588800,
+      "footprint_self": 290899120,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 1883771
+     }
+    ],
+    "rss_self": 400588800,
+    "rss_self_range": 32768,
+    "footprint_self": 290309272,
+    "footprint_self_range": 606232,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 1883740,
+    "allocated_blocks_range": 90,
+    "sys_available": 19117752320,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 401162240,
+    "ru_maxrss_children": 9175040
+   },
+   "post_raw": {
+    "label": "solve 1 post (raw)",
+    "t_utc": "2026-09-22T11:08:39.214259+00:00",
+    "samples": [
+     {
+      "rss_self": 413925376,
+      "footprint_self": 303695072,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2045500
+     },
+     {
+      "rss_self": 413925376,
+      "footprint_self": 303695072,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2045515
+     },
+     {
+      "rss_self": 413925376,
+      "footprint_self": 303695072,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2045518
+     },
+     {
+      "rss_self": 413958144,
+      "footprint_self": 304334072,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2045522
+     },
+     {
+      "rss_self": 414547968,
+      "footprint_self": 304334072,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2045526
+     }
+    ],
+    "rss_self": 413925376,
+    "rss_self_range": 622592,
+    "footprint_self": 303695072,
+    "footprint_self_range": 639000,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2045518,
+    "allocated_blocks_range": 26,
+    "sys_available": 19266600960,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 415432704,
+    "ru_maxrss_children": 46301184
+   },
+   "post_action": {
+    "label": "solve 1 post (after action)",
+    "t_utc": "2026-09-22T11:08:39.779239+00:00",
+    "samples": [
+     {
+      "rss_self": 413499392,
+      "footprint_self": 303285496,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 1953369
+     },
+     {
+      "rss_self": 413499392,
+      "footprint_self": 303285496,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 1953420
+     },
+     {
+      "rss_self": 413499392,
+      "footprint_self": 303285496,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 1953437
+     },
+     {
+      "rss_self": 413499392,
+      "footprint_self": 303285496,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 1953455
+     },
+     {
+      "rss_self": 413499392,
+      "footprint_self": 303285496,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 1953473
+     }
+    ],
+    "rss_self": 413499392,
+    "rss_self_range": 0,
+    "footprint_self": 303285496,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 1953437,
+    "allocated_blocks_range": 104,
+    "sys_available": 19266600960,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 415432704,
+    "ru_maxrss_children": 46301184
+   },
+   "attribution": null
+  },
+  {
+   "k": 2,
+   "pass": "init (cold)",
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Summer",
+   "from_warm_start": false,
+   "wall_s": 0.547,
+   "succeeded": true,
+   "summary": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_peak_rss_sampled": 46137344,
+   "ipopt_sampler_n": 15,
+   "ru_maxrss_children_before": 46301184,
+   "ru_maxrss_children_after": 46301184,
+   "action": [
+    "model.solutions.clear()",
+    "result.solution.clear(); result._smap = None",
+    "gc.collect() -> 0"
+   ],
+   "pre": {
+    "label": "solve 2 pre",
+    "t_utc": "2026-09-22T11:08:40.270699+00:00",
+    "samples": [
+     {
+      "rss_self": 413499392,
+      "footprint_self": 303285496,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 1953453
+     },
+     {
+      "rss_self": 413499392,
+      "footprint_self": 303285496,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 1953462
+     },
+     {
+      "rss_self": 413499392,
+      "footprint_self": 303285496,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 1953466
+     },
+     {
+      "rss_self": 413499392,
+      "footprint_self": 303285496,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 1953471
+     },
+     {
+      "rss_self": 413499392,
+      "footprint_self": 303285496,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 1953476
+     }
+    ],
+    "rss_self": 413499392,
+    "rss_self_range": 0,
+    "footprint_self": 303285496,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 1953466,
+    "allocated_blocks_range": 23,
+    "sys_available": 19411861504,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 415432704,
+    "ru_maxrss_children": 46301184
+   },
+   "post_raw": {
+    "label": "solve 2 post (raw)",
+    "t_utc": "2026-09-22T11:08:41.283288+00:00",
+    "samples": [
+     {
+      "rss_self": 420708352,
+      "footprint_self": 309691664,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2115367
+     },
+     {
+      "rss_self": 420708352,
+      "footprint_self": 309691664,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2115382
+     },
+     {
+      "rss_self": 420708352,
+      "footprint_self": 309691664,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2115386
+     },
+     {
+      "rss_self": 420708352,
+      "footprint_self": 309691664,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2115391
+     },
+     {
+      "rss_self": 420708352,
+      "footprint_self": 309691664,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2115396
+     }
+    ],
+    "rss_self": 420708352,
+    "rss_self_range": 0,
+    "footprint_self": 309691664,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2115386,
+    "allocated_blocks_range": 29,
+    "sys_available": 19490750464,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 420823040,
+    "ru_maxrss_children": 46301184
+   },
+   "post_action": {
+    "label": "solve 2 post (after action)",
+    "t_utc": "2026-09-22T11:08:41.862406+00:00",
+    "samples": [
+     {
+      "rss_self": 420708352,
+      "footprint_self": 309691664,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2023244
+     },
+     {
+      "rss_self": 420708352,
+      "footprint_self": 309691664,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2023295
+     },
+     {
+      "rss_self": 420708352,
+      "footprint_self": 309691664,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2023312
+     },
+     {
+      "rss_self": 420708352,
+      "footprint_self": 310281512,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2023330
+     },
+     {
+      "rss_self": 421281792,
+      "footprint_self": 310281512,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2023348
+     }
+    ],
+    "rss_self": 420708352,
+    "rss_self_range": 573440,
+    "footprint_self": 309691664,
+    "footprint_self_range": 589848,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2023312,
+    "allocated_blocks_range": 104,
+    "sys_available": 19490750464,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 421281792,
+    "ru_maxrss_children": 46301184
+   },
+   "attribution": null
+  },
+  {
+   "k": 3,
+   "pass": "init (cold)",
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Autumn",
+   "from_warm_start": false,
+   "wall_s": 0.486,
+   "succeeded": true,
+   "summary": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_peak_rss_sampled": 46039040,
+   "ipopt_sampler_n": 13,
+   "ru_maxrss_children_before": 46301184,
+   "ru_maxrss_children_after": 46301184,
+   "action": [
+    "model.solutions.clear()",
+    "result.solution.clear(); result._smap = None",
+    "gc.collect() -> 0"
+   ],
+   "pre": {
+    "label": "solve 3 pre",
+    "t_utc": "2026-09-22T11:08:42.351600+00:00",
+    "samples": [
+     {
+      "rss_self": 421281792,
+      "footprint_self": 310281512,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2023337
+     },
+     {
+      "rss_self": 421281792,
+      "footprint_self": 310281512,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2023345
+     },
+     {
+      "rss_self": 421281792,
+      "footprint_self": 310281512,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2023349
+     },
+     {
+      "rss_self": 421281792,
+      "footprint_self": 310297896,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2023354
+     },
+     {
+      "rss_self": 421298176,
+      "footprint_self": 310297896,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2023359
+     }
+    ],
+    "rss_self": 421281792,
+    "rss_self_range": 16384,
+    "footprint_self": 310281512,
+    "footprint_self_range": 16384,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2023349,
+    "allocated_blocks_range": 22,
+    "sys_available": 19440730112,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 421298176,
+    "ru_maxrss_children": 46301184
+   },
+   "post_raw": {
+    "label": "solve 3 post (raw)",
+    "t_utc": "2026-09-22T11:08:43.305173+00:00",
+    "samples": [
+     {
+      "rss_self": 425885696,
+      "footprint_self": 314885416,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2185033
+     },
+     {
+      "rss_self": 425885696,
+      "footprint_self": 314885416,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2185037
+     },
+     {
+      "rss_self": 425885696,
+      "footprint_self": 314885416,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2185053
+     },
+     {
+      "rss_self": 425885696,
+      "footprint_self": 314885416,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2185057
+     },
+     {
+      "rss_self": 425885696,
+      "footprint_self": 314885416,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2185062
+     }
+    ],
+    "rss_self": 425885696,
+    "rss_self_range": 0,
+    "footprint_self": 314885416,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2185053,
+    "allocated_blocks_range": 29,
+    "sys_available": 19480117248,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 426000384,
+    "ru_maxrss_children": 46301184
+   },
+   "post_action": {
+    "label": "solve 3 post (after action)",
+    "t_utc": "2026-09-22T11:08:43.883844+00:00",
+    "samples": [
+     {
+      "rss_self": 425885696,
+      "footprint_self": 314885416,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2093030
+     },
+     {
+      "rss_self": 425885696,
+      "footprint_self": 314885416,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2093081
+     },
+     {
+      "rss_self": 425885696,
+      "footprint_self": 314885416,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2093098
+     },
+     {
+      "rss_self": 425885696,
+      "footprint_self": 314901800,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2093116
+     },
+     {
+      "rss_self": 425902080,
+      "footprint_self": 314901800,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2093134
+     }
+    ],
+    "rss_self": 425885696,
+    "rss_self_range": 16384,
+    "footprint_self": 314885416,
+    "footprint_self_range": 16384,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2093098,
+    "allocated_blocks_range": 104,
+    "sys_available": 19479117824,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 426000384,
+    "ru_maxrss_children": 46301184
+   },
+   "attribution": null
+  },
+  {
+   "k": 4,
+   "pass": "init (cold)",
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Winter",
+   "from_warm_start": false,
+   "wall_s": 0.564,
+   "succeeded": true,
+   "summary": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_peak_rss_sampled": 47169536,
+   "ipopt_sampler_n": 16,
+   "ru_maxrss_children_before": 46301184,
+   "ru_maxrss_children_after": 47218688,
+   "action": [
+    "model.solutions.clear()",
+    "result.solution.clear(); result._smap = None",
+    "gc.collect() -> 0"
+   ],
+   "pre": {
+    "label": "solve 4 pre",
+    "t_utc": "2026-09-22T11:08:44.381313+00:00",
+    "samples": [
+     {
+      "rss_self": 425902080,
+      "footprint_self": 314901800,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2093122
+     },
+     {
+      "rss_self": 425902080,
+      "footprint_self": 314901800,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2093128
+     },
+     {
+      "rss_self": 425902080,
+      "footprint_self": 314901800,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2093135
+     },
+     {
+      "rss_self": 425902080,
+      "footprint_self": 314918184,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2093139
+     },
+     {
+      "rss_self": 425918464,
+      "footprint_self": 314918184,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2093144
+     }
+    ],
+    "rss_self": 425902080,
+    "rss_self_range": 16384,
+    "footprint_self": 314901800,
+    "footprint_self_range": 16384,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2093135,
+    "allocated_blocks_range": 22,
+    "sys_available": 19419774976,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 426000384,
+    "ru_maxrss_children": 46301184
+   },
+   "post_raw": {
+    "label": "solve 4 post (raw)",
+    "t_utc": "2026-09-22T11:08:45.415614+00:00",
+    "samples": [
+     {
+      "rss_self": 428310528,
+      "footprint_self": 315688232,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2254829
+     },
+     {
+      "rss_self": 428310528,
+      "footprint_self": 315688232,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2254833
+     },
+     {
+      "rss_self": 428310528,
+      "footprint_self": 315688232,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2254849
+     },
+     {
+      "rss_self": 428310528,
+      "footprint_self": 315688232,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2254853
+     },
+     {
+      "rss_self": 428310528,
+      "footprint_self": 315688232,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2254858
+     }
+    ],
+    "rss_self": 428310528,
+    "rss_self_range": 0,
+    "footprint_self": 315688232,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2254849,
+    "allocated_blocks_range": 29,
+    "sys_available": 19472875520,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 428949504,
+    "ru_maxrss_children": 47218688
+   },
+   "post_action": {
+    "label": "solve 4 post (after action)",
+    "t_utc": "2026-09-22T11:08:46.005054+00:00",
+    "samples": [
+     {
+      "rss_self": 428310528,
+      "footprint_self": 315688232,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2162826
+     },
+     {
+      "rss_self": 428310528,
+      "footprint_self": 315688232,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2162877
+     },
+     {
+      "rss_self": 428310528,
+      "footprint_self": 315688232,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2162894
+     },
+     {
+      "rss_self": 428310528,
+      "footprint_self": 315688232,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2162912
+     },
+     {
+      "rss_self": 428310528,
+      "footprint_self": 315688232,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2162930
+     }
+    ],
+    "rss_self": 428310528,
+    "rss_self_range": 0,
+    "footprint_self": 315688232,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2162894,
+    "allocated_blocks_range": 104,
+    "sys_available": 19444416512,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 428949504,
+    "ru_maxrss_children": 47218688
+   },
+   "attribution": null
+  },
+  {
+   "k": 5,
+   "pass": "warm pass 1",
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Spring",
+   "from_warm_start": true,
+   "wall_s": 0.479,
+   "succeeded": true,
+   "summary": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_peak_rss_sampled": 45744128,
+   "ipopt_sampler_n": 13,
+   "ru_maxrss_children_before": 47218688,
+   "ru_maxrss_children_after": 47218688,
+   "action": [
+    "model.solutions.clear()",
+    "result.solution.clear(); result._smap = None",
+    "gc.collect() -> 0"
+   ],
+   "pre": {
+    "label": "solve 5 pre",
+    "t_utc": "2026-09-22T11:08:46.503550+00:00",
+    "samples": [
+     {
+      "rss_self": 428310528,
+      "footprint_self": 315688232,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2163406
+     },
+     {
+      "rss_self": 428310528,
+      "footprint_self": 315688232,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2163413
+     },
+     {
+      "rss_self": 428310528,
+      "footprint_self": 315688232,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2163417
+     },
+     {
+      "rss_self": 428310528,
+      "footprint_self": 315688232,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2163421
+     },
+     {
+      "rss_self": 428310528,
+      "footprint_self": 315688232,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2163426
+     }
+    ],
+    "rss_self": 428310528,
+    "rss_self_range": 0,
+    "footprint_self": 315688232,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2163417,
+    "allocated_blocks_range": 20,
+    "sys_available": 19412762624,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 428949504,
+    "ru_maxrss_children": 47218688
+   },
+   "post_raw": {
+    "label": "solve 5 post (raw)",
+    "t_utc": "2026-09-22T11:08:47.449882+00:00",
+    "samples": [
+     {
+      "rss_self": 433979392,
+      "footprint_self": 321373504,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2300530
+     },
+     {
+      "rss_self": 433979392,
+      "footprint_self": 321373504,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2300534
+     },
+     {
+      "rss_self": 433979392,
+      "footprint_self": 321373504,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2300550
+     },
+     {
+      "rss_self": 433979392,
+      "footprint_self": 321373504,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2300554
+     },
+     {
+      "rss_self": 433979392,
+      "footprint_self": 321373504,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2300559
+     }
+    ],
+    "rss_self": 433979392,
+    "rss_self_range": 0,
+    "footprint_self": 321373504,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2300550,
+    "allocated_blocks_range": 29,
+    "sys_available": 19430326272,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 434094080,
+    "ru_maxrss_children": 47218688
+   },
+   "post_action": {
+    "label": "solve 5 post (after action)",
+    "t_utc": "2026-09-22T11:08:48.024737+00:00",
+    "samples": [
+     {
+      "rss_self": 431882240,
+      "footprint_self": 318195008,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2208339
+     },
+     {
+      "rss_self": 431882240,
+      "footprint_self": 318195008,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2208359
+     },
+     {
+      "rss_self": 431882240,
+      "footprint_self": 318195008,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2208408
+     },
+     {
+      "rss_self": 431882240,
+      "footprint_self": 318195008,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2208425
+     },
+     {
+      "rss_self": 431882240,
+      "footprint_self": 318195008,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2208443
+     }
+    ],
+    "rss_self": 431882240,
+    "rss_self_range": 0,
+    "footprint_self": 318195008,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2208408,
+    "allocated_blocks_range": 104,
+    "sys_available": 19466403840,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 434094080,
+    "ru_maxrss_children": 47218688
+   },
+   "attribution": null
+  },
+  {
+   "k": 6,
+   "pass": "warm pass 1",
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Summer",
+   "from_warm_start": true,
+   "wall_s": 0.448,
+   "succeeded": true,
+   "summary": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_peak_rss_sampled": 45973504,
+   "ipopt_sampler_n": 12,
+   "ru_maxrss_children_before": 47218688,
+   "ru_maxrss_children_after": 47218688,
+   "action": [
+    "model.solutions.clear()",
+    "result.solution.clear(); result._smap = None",
+    "gc.collect() -> 0"
+   ],
+   "pre": {
+    "label": "solve 6 pre",
+    "t_utc": "2026-09-22T11:08:48.519608+00:00",
+    "samples": [
+     {
+      "rss_self": 431882240,
+      "footprint_self": 318195008,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2208430
+     },
+     {
+      "rss_self": 431882240,
+      "footprint_self": 318195008,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2208437
+     },
+     {
+      "rss_self": 431882240,
+      "footprint_self": 318195008,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2208444
+     },
+     {
+      "rss_self": 431882240,
+      "footprint_self": 318195008,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2208448
+     },
+     {
+      "rss_self": 431882240,
+      "footprint_self": 318195008,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2208453
+     }
+    ],
+    "rss_self": 431882240,
+    "rss_self_range": 0,
+    "footprint_self": 318195008,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2208444,
+    "allocated_blocks_range": 23,
+    "sys_available": 19417645056,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 434094080,
+    "ru_maxrss_children": 47218688
+   },
+   "post_raw": {
+    "label": "solve 6 post (raw)",
+    "t_utc": "2026-09-22T11:08:49.427331+00:00",
+    "samples": [
+     {
+      "rss_self": 437190656,
+      "footprint_self": 321258816,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2345550
+     },
+     {
+      "rss_self": 437190656,
+      "footprint_self": 321258816,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2345554
+     },
+     {
+      "rss_self": 437190656,
+      "footprint_self": 321258816,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2345559
+     },
+     {
+      "rss_self": 437190656,
+      "footprint_self": 321258816,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2345575
+     },
+     {
+      "rss_self": 437190656,
+      "footprint_self": 321258816,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2345579
+     }
+    ],
+    "rss_self": 437190656,
+    "rss_self_range": 0,
+    "footprint_self": 321258816,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2345559,
+    "allocated_blocks_range": 29,
+    "sys_available": 19472285696,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 439320576,
+    "ru_maxrss_children": 47218688
+   },
+   "post_action": {
+    "label": "solve 6 post (after action)",
+    "t_utc": "2026-09-22T11:08:50.005119+00:00",
+    "samples": [
+     {
+      "rss_self": 437190656,
+      "footprint_self": 321258816,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2253359
+     },
+     {
+      "rss_self": 437190656,
+      "footprint_self": 321258816,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2253379
+     },
+     {
+      "rss_self": 437190656,
+      "footprint_self": 321258816,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2253439
+     },
+     {
+      "rss_self": 437190656,
+      "footprint_self": 321258816,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2253455
+     },
+     {
+      "rss_self": 437190656,
+      "footprint_self": 321258816,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2253472
+     }
+    ],
+    "rss_self": 437190656,
+    "rss_self_range": 0,
+    "footprint_self": 321258816,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2253439,
+    "allocated_blocks_range": 113,
+    "sys_available": 19472285696,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 439320576,
+    "ru_maxrss_children": 47218688
+   },
+   "attribution": null
+  },
+  {
+   "k": 7,
+   "pass": "warm pass 1",
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Autumn",
+   "from_warm_start": true,
+   "wall_s": 0.444,
+   "succeeded": true,
+   "summary": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_peak_rss_sampled": 46596096,
+   "ipopt_sampler_n": 12,
+   "ru_maxrss_children_before": 47218688,
+   "ru_maxrss_children_after": 47218688,
+   "action": [
+    "model.solutions.clear()",
+    "result.solution.clear(); result._smap = None",
+    "gc.collect() -> 0"
+   ],
+   "pre": {
+    "label": "solve 7 pre",
+    "t_utc": "2026-09-22T11:08:50.492908+00:00",
+    "samples": [
+     {
+      "rss_self": 437190656,
+      "footprint_self": 321258816,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2253455
+     },
+     {
+      "rss_self": 437190656,
+      "footprint_self": 321258816,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2253460
+     },
+     {
+      "rss_self": 437190656,
+      "footprint_self": 321258816,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2253465
+     },
+     {
+      "rss_self": 437190656,
+      "footprint_self": 321258816,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2253472
+     },
+     {
+      "rss_self": 437190656,
+      "footprint_self": 321258816,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2253476
+     }
+    ],
+    "rss_self": 437190656,
+    "rss_self_range": 0,
+    "footprint_self": 321258816,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2253465,
+    "allocated_blocks_range": 21,
+    "sys_available": 19494141952,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 439320576,
+    "ru_maxrss_children": 47218688
+   },
+   "post_raw": {
+    "label": "solve 7 post (raw)",
+    "t_utc": "2026-09-22T11:08:51.419522+00:00",
+    "samples": [
+     {
+      "rss_self": 441909248,
+      "footprint_self": 323274048,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2390392
+     },
+     {
+      "rss_self": 441909248,
+      "footprint_self": 323274048,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2390396
+     },
+     {
+      "rss_self": 441909248,
+      "footprint_self": 323274048,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2390401
+     },
+     {
+      "rss_self": 441909248,
+      "footprint_self": 323274048,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2390406
+     },
+     {
+      "rss_self": 441909248,
+      "footprint_self": 323274048,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2390422
+     }
+    ],
+    "rss_self": 441909248,
+    "rss_self_range": 0,
+    "footprint_self": 323274048,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2390401,
+    "allocated_blocks_range": 30,
+    "sys_available": 19514425344,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 442990592,
+    "ru_maxrss_children": 47218688
+   },
+   "post_action": {
+    "label": "solve 7 post (after action)",
+    "t_utc": "2026-09-22T11:08:52.006421+00:00",
+    "samples": [
+     {
+      "rss_self": 441909248,
+      "footprint_self": 323274048,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2298319
+     },
+     {
+      "rss_self": 441909248,
+      "footprint_self": 323274048,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2298339
+     },
+     {
+      "rss_self": 441909248,
+      "footprint_self": 323274048,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2298357
+     },
+     {
+      "rss_self": 441909248,
+      "footprint_self": 323274048,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2298406
+     },
+     {
+      "rss_self": 441909248,
+      "footprint_self": 323274048,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2298423
+     }
+    ],
+    "rss_self": 441909248,
+    "rss_self_range": 0,
+    "footprint_self": 323274048,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2298357,
+    "allocated_blocks_range": 104,
+    "sys_available": 19507183616,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 442990592,
+    "ru_maxrss_children": 47218688
+   },
+   "attribution": null
+  },
+  {
+   "k": 8,
+   "pass": "warm pass 1",
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Winter",
+   "from_warm_start": true,
+   "wall_s": 0.485,
+   "succeeded": true,
+   "summary": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_peak_rss_sampled": 45809664,
+   "ipopt_sampler_n": 14,
+   "ru_maxrss_children_before": 47218688,
+   "ru_maxrss_children_after": 47218688,
+   "action": [
+    "model.solutions.clear()",
+    "result.solution.clear(); result._smap = None",
+    "gc.collect() -> 0"
+   ],
+   "pre": {
+    "label": "solve 8 pre",
+    "t_utc": "2026-09-22T11:08:52.506381+00:00",
+    "samples": [
+     {
+      "rss_self": 441909248,
+      "footprint_self": 323274048,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2298410
+     },
+     {
+      "rss_self": 441909248,
+      "footprint_self": 323274048,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2298416
+     },
+     {
+      "rss_self": 441909248,
+      "footprint_self": 323274048,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2298421
+     },
+     {
+      "rss_self": 441909248,
+      "footprint_self": 323274048,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2299190
+     },
+     {
+      "rss_self": 441909248,
+      "footprint_self": 323274048,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2298441
+     }
+    ],
+    "rss_self": 441909248,
+    "rss_self_range": 0,
+    "footprint_self": 323274048,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2298421,
+    "allocated_blocks_range": 780,
+    "sys_available": 19510984704,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 442990592,
+    "ru_maxrss_children": 47218688
+   },
+   "post_raw": {
+    "label": "solve 8 post (raw)",
+    "t_utc": "2026-09-22T11:08:53.449040+00:00",
+    "samples": [
+     {
+      "rss_self": 444416000,
+      "footprint_self": 325076288,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2435359
+     },
+     {
+      "rss_self": 444416000,
+      "footprint_self": 325076288,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2435363
+     },
+     {
+      "rss_self": 444416000,
+      "footprint_self": 325076288,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2435367
+     },
+     {
+      "rss_self": 444416000,
+      "footprint_self": 325076288,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2435371
+     },
+     {
+      "rss_self": 444416000,
+      "footprint_self": 325076288,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2435386
+     }
+    ],
+    "rss_self": 444416000,
+    "rss_self_range": 0,
+    "footprint_self": 325076288,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2435367,
+    "allocated_blocks_range": 27,
+    "sys_available": 19554304000,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 445497344,
+    "ru_maxrss_children": 47218688
+   },
+   "post_action": {
+    "label": "solve 8 post (after action)",
+    "t_utc": "2026-09-22T11:08:54.031850+00:00",
+    "samples": [
+     {
+      "rss_self": 444416000,
+      "footprint_self": 325076288,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343282
+     },
+     {
+      "rss_self": 444416000,
+      "footprint_self": 325076288,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343302
+     },
+     {
+      "rss_self": 444416000,
+      "footprint_self": 325076288,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343320
+     },
+     {
+      "rss_self": 444416000,
+      "footprint_self": 325076288,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343338
+     },
+     {
+      "rss_self": 444416000,
+      "footprint_self": 325076288,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343387
+     }
+    ],
+    "rss_self": 444416000,
+    "rss_self_range": 0,
+    "footprint_self": 325076288,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2343320,
+    "allocated_blocks_range": 105,
+    "sys_available": 19545014272,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 445497344,
+    "ru_maxrss_children": 47218688
+   },
+   "attribution": null
+  },
+  {
+   "k": 9,
+   "pass": "warm pass 2",
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Spring",
+   "from_warm_start": true,
+   "wall_s": 0.463,
+   "succeeded": true,
+   "summary": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_peak_rss_sampled": 45793280,
+   "ipopt_sampler_n": 13,
+   "ru_maxrss_children_before": 47218688,
+   "ru_maxrss_children_after": 47218688,
+   "action": [
+    "model.solutions.clear()",
+    "result.solution.clear(); result._smap = None",
+    "gc.collect() -> 0"
+   ],
+   "pre": {
+    "label": "solve 9 pre",
+    "t_utc": "2026-09-22T11:08:54.526162+00:00",
+    "samples": [
+     {
+      "rss_self": 444416000,
+      "footprint_self": 325076288,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343387
+     },
+     {
+      "rss_self": 444416000,
+      "footprint_self": 325076288,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343393
+     },
+     {
+      "rss_self": 444416000,
+      "footprint_self": 325076288,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343397
+     },
+     {
+      "rss_self": 444416000,
+      "footprint_self": 325076288,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343401
+     },
+     {
+      "rss_self": 444416000,
+      "footprint_self": 325076288,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343408
+     }
+    ],
+    "rss_self": 444416000,
+    "rss_self_range": 0,
+    "footprint_self": 325076288,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2343397,
+    "allocated_blocks_range": 21,
+    "sys_available": 19511787520,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 445497344,
+    "ru_maxrss_children": 47218688
+   },
+   "post_raw": {
+    "label": "solve 9 post (raw)",
+    "t_utc": "2026-09-22T11:08:55.465556+00:00",
+    "samples": [
+     {
+      "rss_self": 445579264,
+      "footprint_self": 326174016,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2435775
+     },
+     {
+      "rss_self": 445579264,
+      "footprint_self": 326174016,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2435791
+     },
+     {
+      "rss_self": 445579264,
+      "footprint_self": 326174016,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2435795
+     },
+     {
+      "rss_self": 445579264,
+      "footprint_self": 326174016,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2435800
+     },
+     {
+      "rss_self": 445579264,
+      "footprint_self": 326174016,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2435805
+     }
+    ],
+    "rss_self": 445579264,
+    "rss_self_range": 0,
+    "footprint_self": 326174016,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2435795,
+    "allocated_blocks_range": 30,
+    "sys_available": 19542786048,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 445693952,
+    "ru_maxrss_children": 47218688
+   },
+   "post_action": {
+    "label": "solve 9 post (after action)",
+    "t_utc": "2026-09-22T11:08:56.060197+00:00",
+    "samples": [
+     {
+      "rss_self": 445579264,
+      "footprint_self": 326174016,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343614
+     },
+     {
+      "rss_self": 445579264,
+      "footprint_self": 326174016,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343633
+     },
+     {
+      "rss_self": 445579264,
+      "footprint_self": 326174016,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343651
+     },
+     {
+      "rss_self": 445579264,
+      "footprint_self": 326174016,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343669
+     },
+     {
+      "rss_self": 445579264,
+      "footprint_self": 326174016,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343687
+     }
+    ],
+    "rss_self": 445579264,
+    "rss_self_range": 0,
+    "footprint_self": 326174016,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2343651,
+    "allocated_blocks_range": 73,
+    "sys_available": 19194363904,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 445693952,
+    "ru_maxrss_children": 47218688
+   },
+   "attribution": null
+  },
+  {
+   "k": 10,
+   "pass": "warm pass 2",
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Summer",
+   "from_warm_start": true,
+   "wall_s": 0.48,
+   "succeeded": true,
+   "summary": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_peak_rss_sampled": 48644096,
+   "ipopt_sampler_n": 13,
+   "ru_maxrss_children_before": 47218688,
+   "ru_maxrss_children_after": 48775168,
+   "action": [
+    "model.solutions.clear()",
+    "result.solution.clear(); result._smap = None",
+    "gc.collect() -> 0"
+   ],
+   "pre": {
+    "label": "solve 10 pre",
+    "t_utc": "2026-09-22T11:08:56.562111+00:00",
+    "samples": [
+     {
+      "rss_self": 445579264,
+      "footprint_self": 326174016,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343674
+     },
+     {
+      "rss_self": 446251008,
+      "footprint_self": 326862168,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343683
+     },
+     {
+      "rss_self": 446251008,
+      "footprint_self": 326862168,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343687
+     },
+     {
+      "rss_self": 446251008,
+      "footprint_self": 326862168,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343692
+     },
+     {
+      "rss_self": 446251008,
+      "footprint_self": 327370072,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343697
+     }
+    ],
+    "rss_self": 446251008,
+    "rss_self_range": 671744,
+    "footprint_self": 326862168,
+    "footprint_self_range": 1196056,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2343687,
+    "allocated_blocks_range": 23,
+    "sys_available": 18374393856,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 446758912,
+    "ru_maxrss_children": 47218688
+   },
+   "post_raw": {
+    "label": "solve 10 post (raw)",
+    "t_utc": "2026-09-22T11:08:57.524551+00:00",
+    "samples": [
+     {
+      "rss_self": 454950912,
+      "footprint_self": 329336176,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2436067
+     },
+     {
+      "rss_self": 455458816,
+      "footprint_self": 329336176,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2436088
+     },
+     {
+      "rss_self": 455458816,
+      "footprint_self": 329336176,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2436091
+     },
+     {
+      "rss_self": 455458816,
+      "footprint_self": 329844080,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2436095
+     },
+     {
+      "rss_self": 455966720,
+      "footprint_self": 329844080,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2436099
+     }
+    ],
+    "rss_self": 455458816,
+    "rss_self_range": 1015808,
+    "footprint_self": 329336176,
+    "footprint_self_range": 507904,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2436091,
+    "allocated_blocks_range": 32,
+    "sys_available": 17665736704,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 455966720,
+    "ru_maxrss_children": 48775168
+   },
+   "post_action": {
+    "label": "solve 10 post (after action)",
+    "t_utc": "2026-09-22T11:08:58.110836+00:00",
+    "samples": [
+     {
+      "rss_self": 455966720,
+      "footprint_self": 329844080,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343876
+     },
+     {
+      "rss_self": 455966720,
+      "footprint_self": 329844080,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343927
+     },
+     {
+      "rss_self": 455966720,
+      "footprint_self": 329844080,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343944
+     },
+     {
+      "rss_self": 455966720,
+      "footprint_self": 330351984,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343962
+     },
+     {
+      "rss_self": 456474624,
+      "footprint_self": 330859888,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343980
+     }
+    ],
+    "rss_self": 455966720,
+    "rss_self_range": 507904,
+    "footprint_self": 329844080,
+    "footprint_self_range": 1015808,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2343944,
+    "allocated_blocks_range": 104,
+    "sys_available": 17590861824,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 456982528,
+    "ru_maxrss_children": 48775168
+   },
+   "attribution": null
+  },
+  {
+   "k": 11,
+   "pass": "warm pass 2",
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Autumn",
+   "from_warm_start": true,
+   "wall_s": 0.453,
+   "succeeded": true,
+   "summary": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_peak_rss_sampled": 46809088,
+   "ipopt_sampler_n": 13,
+   "ru_maxrss_children_before": 48775168,
+   "ru_maxrss_children_after": 48775168,
+   "action": [
+    "model.solutions.clear()",
+    "result.solution.clear(); result._smap = None",
+    "gc.collect() -> 0"
+   ],
+   "pre": {
+    "label": "solve 11 pre",
+    "t_utc": "2026-09-22T11:08:58.593525+00:00",
+    "samples": [
+     {
+      "rss_self": 456982528,
+      "footprint_self": 330859888,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343969
+     },
+     {
+      "rss_self": 456982528,
+      "footprint_self": 330859888,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343977
+     },
+     {
+      "rss_self": 456982528,
+      "footprint_self": 330859888,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343981
+     },
+     {
+      "rss_self": 456982528,
+      "footprint_self": 330859888,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343986
+     },
+     {
+      "rss_self": 456982528,
+      "footprint_self": 330859888,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2343991
+     }
+    ],
+    "rss_self": 456982528,
+    "rss_self_range": 0,
+    "footprint_self": 330859888,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2343981,
+    "allocated_blocks_range": 22,
+    "sys_available": 17578442752,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 456982528,
+    "ru_maxrss_children": 48775168
+   },
+   "post_raw": {
+    "label": "solve 11 post (raw)",
+    "t_utc": "2026-09-22T11:08:59.516980+00:00",
+    "samples": [
+     {
+      "rss_self": 459046912,
+      "footprint_self": 331728240,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2436285
+     },
+     {
+      "rss_self": 459079680,
+      "footprint_self": 331728240,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2436289
+     },
+     {
+      "rss_self": 459079680,
+      "footprint_self": 331728240,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2436303
+     },
+     {
+      "rss_self": 459079680,
+      "footprint_self": 331728240,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2436306
+     },
+     {
+      "rss_self": 459079680,
+      "footprint_self": 331728240,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2436310
+     }
+    ],
+    "rss_self": 459079680,
+    "rss_self_range": 32768,
+    "footprint_self": 331728240,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2436303,
+    "allocated_blocks_range": 25,
+    "sys_available": 17565220864,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 459079680,
+    "ru_maxrss_children": 48775168
+   },
+   "post_action": {
+    "label": "solve 11 post (after action)",
+    "t_utc": "2026-09-22T11:09:00.106571+00:00",
+    "samples": [
+     {
+      "rss_self": 459079680,
+      "footprint_self": 331728240,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2344209
+     },
+     {
+      "rss_self": 459079680,
+      "footprint_self": 331728240,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2344229
+     },
+     {
+      "rss_self": 459079680,
+      "footprint_self": 331728240,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2344278
+     },
+     {
+      "rss_self": 459079680,
+      "footprint_self": 331728240,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2344295
+     },
+     {
+      "rss_self": 459079680,
+      "footprint_self": 331728240,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2344313
+     }
+    ],
+    "rss_self": 459079680,
+    "rss_self_range": 0,
+    "footprint_self": 331728240,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2344278,
+    "allocated_blocks_range": 104,
+    "sys_available": 17514954752,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 459079680,
+    "ru_maxrss_children": 48775168
+   },
+   "attribution": null
+  },
+  {
+   "k": 12,
+   "pass": "warm pass 2",
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Winter",
+   "from_warm_start": true,
+   "wall_s": 0.509,
+   "succeeded": true,
+   "summary": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_peak_rss_sampled": 45907968,
+   "ipopt_sampler_n": 15,
+   "ru_maxrss_children_before": 48775168,
+   "ru_maxrss_children_after": 48775168,
+   "action": [
+    "model.solutions.clear()",
+    "result.solution.clear(); result._smap = None",
+    "gc.collect() -> 0"
+   ],
+   "pre": {
+    "label": "solve 12 pre",
+    "t_utc": "2026-09-22T11:09:00.592852+00:00",
+    "samples": [
+     {
+      "rss_self": 459079680,
+      "footprint_self": 331728240,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2344299
+     },
+     {
+      "rss_self": 459079680,
+      "footprint_self": 331728240,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2344305
+     },
+     {
+      "rss_self": 459079680,
+      "footprint_self": 331728240,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2344312
+     },
+     {
+      "rss_self": 459079680,
+      "footprint_self": 331728240,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2344316
+     },
+     {
+      "rss_self": 459079680,
+      "footprint_self": 331728240,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2344321
+     }
+    ],
+    "rss_self": 459079680,
+    "rss_self_range": 0,
+    "footprint_self": 331728240,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2344312,
+    "allocated_blocks_range": 22,
+    "sys_available": 17476911104,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 459079680,
+    "ru_maxrss_children": 48775168
+   },
+   "post_raw": {
+    "label": "solve 12 post (raw)",
+    "t_utc": "2026-09-22T11:09:01.581216+00:00",
+    "samples": [
+     {
+      "rss_self": 459096064,
+      "footprint_self": 329614704,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2436608
+     },
+     {
+      "rss_self": 459603968,
+      "footprint_self": 329614704,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2436612
+     },
+     {
+      "rss_self": 459603968,
+      "footprint_self": 329614704,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2437398
+     },
+     {
+      "rss_self": 459603968,
+      "footprint_self": 329614704,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2436632
+     },
+     {
+      "rss_self": 459603968,
+      "footprint_self": 329614704,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2436635
+     }
+    ],
+    "rss_self": 459603968,
+    "rss_self_range": 507904,
+    "footprint_self": 329614704,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2436632,
+    "allocated_blocks_range": 790,
+    "sys_available": 17498423296,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 459603968,
+    "ru_maxrss_children": 48775168
+   },
+   "post_action": {
+    "label": "solve 12 post (after action)",
+    "t_utc": "2026-09-22T11:09:02.161946+00:00",
+    "samples": [
+     {
+      "rss_self": 459603968,
+      "footprint_self": 329614704,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2344533
+     },
+     {
+      "rss_self": 459603968,
+      "footprint_self": 329614704,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2344553
+     },
+     {
+      "rss_self": 459603968,
+      "footprint_self": 329614704,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2344602
+     },
+     {
+      "rss_self": 459603968,
+      "footprint_self": 329614704,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2344619
+     },
+     {
+      "rss_self": 459603968,
+      "footprint_self": 329614704,
+      "rss_children": 0,
+      "n_children": 0,
+      "allocated_blocks": 2344637
+     }
+    ],
+    "rss_self": 459603968,
+    "rss_self_range": 0,
+    "footprint_self": 329614704,
+    "footprint_self_range": 0,
+    "rss_children": 0,
+    "rss_children_range": 0,
+    "allocated_blocks": 2344602,
+    "allocated_blocks_range": 104,
+    "sys_available": 17442177024,
+    "swap_used": 928776192,
+    "ru_maxrss_self": 459603968,
+    "ru_maxrss_children": 48775168
+   },
+   "attribution": null
+  }
+ ],
+ "watchdog": {
+  "peak": {
+   "measure": 490143744,
+   "rss_tree": 490143744,
+   "rss_self": 459603968,
+   "footprint_self": 331728240,
+   "stage_at_peak_measure": "warm pass 1 (NetworkData.optimize from_warm_start=True)",
+   "t_at_peak_measure": 28.704,
+   "gating_measure": "rss_tree",
+   "gating_value": 490143744,
+   "stage_at_peak_gating_value": "warm pass 1 (NetworkData.optimize from_warm_start=True)",
+   "t_at_peak_gating_value": 28.704,
+   "swap_used": 928776192,
+   "stage_at_peak_swap_used": "child start"
+  },
+  "final": {
+   "t": 39.088,
+   "stage": "child start",
+   "rss_self": 434470912,
+   "rss_children": 0,
+   "n_children": 0,
+   "rss_tree": 434470912,
+   "footprint_self": 301204848,
+   "measure": 434470912,
+   "sys_available": 17461968896,
+   "sys_used_pct": 49.2,
+   "swap_used": 928776192,
+   "gating_measure": "rss_tree",
+   "gating_value": 434470912
+  },
+  "thresholds": {
+   "gating_measure": "rss_tree",
+   "gating_measure_sample_field": "rss_tree",
+   "gating_measures_available": [
+    "rss_tree",
+    "footprint"
+   ],
+   "rss_limit_bytes": 21474836480,
+   "rss_limit_gib": 20.0,
+   "min_available_bytes": 1073741824,
+   "swap_used_limit_bytes": 2147483648,
+   "swap_growth_limit_bytes": 1073741824,
+   "swap_growth_window_s": 60.0,
+   "sample_interval_s": 0.5
+  }
+ },
+ "utc_end": "2026-09-22T11:09:03.285822+00:00"
+}

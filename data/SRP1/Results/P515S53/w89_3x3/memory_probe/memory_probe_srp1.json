@@ -1,0 +1,121 @@
+{
+ "schema": "p515_s53_w89_memory_probe_v1",
+ "stage": "P5.15 Addendum 46, W89 step 2 -- the 3 x 3 pair (x = 0 and the smallest node-7 unit) on the prefix-draw 3 x 3 instance under production + the tight tail {True, 1e-6}; certified-model persistence and concurrency decided by the declared memory rule",
+ "which": "srp1",
+ "utc": "2026-09-25T19:43:10.894630+00:00",
+ "git_head": "fb73b9b0d0a6819d2bb3dea18e09b74c7d26635d",
+ "script_sha256": "efab5da1ee67d4c3fa5df3e990e192aa99c8fca9e921f578cfc8c5bbb9a1cf2d",
+ "case_path": "../../../../private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w89_probe2/w89_case_srp1_60chuoxd/SRP1__srp1.json",
+ "case_sha256": "45e8e700a547de22b2c9cd2f9373c4307da30764461e647424eca7eb2d1594b3",
+ "candidate": "n7_4h_e1 (node 7: 0.25 MVA / 1.0 MWh, 2025) -- the larger of the two cells",
+ "premium_in_force": {
+  "alpha": 0.0,
+  "floor": null,
+  "source": "default"
+ },
+ "interceptor_calls": {
+  "dso": 3,
+  "tso": 1,
+  "esso_init": 1
+ },
+ "n_network_blocks_built": 48,
+ "scenario_combinations": 1,
+ "marks": [
+  {
+   "stage": "start (launcher, harness and production modules imported)",
+   "t_s": 0.0,
+   "rss_bytes": 220987392,
+   "ru_maxrss_bytes": 220987392
+  },
+  {
+   "stage": "planning read (production reader)",
+   "t_s": 11.806,
+   "rss_bytes": 458948608,
+   "ru_maxrss_bytes": 458948608
+  },
+  {
+   "stage": "ADMM models built (network blocks + 3 ESSO; no pristine clones, no solver state)",
+   "t_s": 18.191,
+   "rss_bytes": 941621248,
+   "ru_maxrss_bytes": 941621248
+  },
+  {
+   "stage": "certified-model pickle written (EF._persist_certified_models, the child post-certification callable)",
+   "t_s": 24.281,
+   "rss_bytes": 1816788992,
+   "ru_maxrss_bytes": 1818886144
+  }
+ ],
+ "build_wall_s": 6.3847479820251465,
+ "models_built_rss_bytes": 941621248,
+ "models_increment_over_read_bytes": 482672640,
+ "pickle": {
+  "size_bytes": 104164186,
+  "wall_s": 6.090414762496948,
+  "rss_before_bytes": 941621248,
+  "ru_maxrss_after_bytes": 1818886144,
+  "transient_over_rss_before_bytes": 877264896,
+  "retained_after_bytes": 875167744,
+  "file": "written to scratch, measured, DELETED (never in the repository)"
+ },
+ "not_measured": "solver state: pristine snapshot clones, multiplier suffixes, SolverResults, AA memory, the terminal capture / workbook transients -- they need solves; the memory rule calibrates them against measured runtime peaks (RUNTIME_PEAKS)",
+ "read_redirected_to": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w89_probe2/w89_probe_srp1_mzk7ah9_",
+ "solve_claim": "ZERO SOLVES, guard-verified (every armed permitted=() guard verify(0))",
+ "guards": {
+  "alpha_row_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w86_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w87": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w88": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_step1": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_3x3_parent": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  }
+ },
+ "wall_s": 25.58533215522766
+}

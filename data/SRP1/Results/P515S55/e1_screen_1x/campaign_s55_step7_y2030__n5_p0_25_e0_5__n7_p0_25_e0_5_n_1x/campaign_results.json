@@ -1,0 +1,211 @@
+{
+ "STOP_FOR_REVIEW": false,
+ "alias": null,
+ "batch_info": {
+  "max_concurrent_observed": 1,
+  "timeline": [
+   {
+    "event": "start",
+    "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5_N_1x",
+    "pid": 51481,
+    "t": 1794535885.921345
+   },
+   {
+    "event": "end",
+    "exit_code": 0,
+    "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5_N_1x",
+    "pid": 51481,
+    "t": 1794539277.3974469
+   }
+  ]
+ },
+ "campaign_spec_path": "data/SRP1/Results/P515S55/e1_screen_1x/campaign_s55_step7_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5_n_1x/campaign_spec_s55_step7_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5_n_1x_0034245a.json",
+ "campaign_spec_sha256": "0034245a7d1ef949f5d35a89509cd045b483776054ba181d7de90b7fdefc66f3",
+ "candidate_key": "a5bb68bf2bd1e2bfc301f53960da3d6e8410f465d3e30d27d727d7da2aaeb8b2",
+ "cell": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5_N_1x",
+ "eval_key": "5bd7af4da36d296357972b0aed0ea0fa8d323b26143d556bfd71a7ddce78b67c",
+ "exit_code": 0,
+ "git_head_at_run": "0a81c619d5e7c9a39219c399a789e0a2a223bf17",
+ "guards": {
+  "all_zero": true,
+  "model_build_tripwire": {
+   "ConcreteModel.__init__": 0
+  },
+  "pickle": {
+   "blocked": true,
+   "counts": {
+    "load": 0,
+    "loads": 0
+   }
+  },
+  "solve_guards_ok": true,
+  "solve_profile_guards": {
+   "__main__.PARENT_GUARD": {
+    "counts": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 0,
+     "permitted_solve": 0
+    },
+    "verify_0_failures": []
+   },
+   "p515_s47_phase_b_record.PARENT_GUARD": {
+    "counts": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 0,
+     "permitted_solve": 0
+    },
+    "verify_0_failures": []
+   }
+  }
+ },
+ "launch_index_1_based": 13,
+ "memory_preflight_at_run": {
+  "available_gib": 16.590606689453125,
+  "concurrency": 1,
+  "hw_memsize_gib": 32.0,
+  "page_size": 16384,
+  "pages": {
+   "Anonymous pages": 826424,
+   "Pages free": 158920,
+   "Pages inactive": 1121625,
+   "Pages occupied by compressor": 60715,
+   "Pages wired down": 122731
+  },
+  "pass": true,
+  "per_slot_gib": 2.75,
+  "required_gib": 2.75,
+  "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x 2.75 GiB (the S47 launcher rule)",
+  "utc": "2026-11-13T02:11:25.863277+00:00"
+ },
+ "objective_convention": "Q = certified gross_operational_cost, contracted interface settlement EXCLUDED (Addendum 83 ruling 2); salvage reported separately; net = gross - terminal salvage",
+ "outcome": {
+  "cell": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5_N_1x",
+  "eval_key": "5bd7af4da36d296357972b0aed0ea0fa8d323b26143d556bfd71a7ddce78b67c",
+  "faults": [],
+  "phase": "screen",
+  "record_status": "certified",
+  "screen": {
+   "bar_eur": 11057.098555088043,
+   "certified_cost": 653611984.3533765,
+   "cycles_run": 129,
+   "objective_convention": "Q = certified gross_operational_cost, contracted interface settlement EXCLUDED (Addendum 83 ruling 2); salvage reported separately; net = gross - terminal salvage",
+   "rule_ten": {
+    "boyd_terminal_ratio_max_per_channel": {
+     "ess": 0.21003777019911127,
+     "pf": 0.591370005901938,
+     "v": 0.09827857808374135
+    },
+    "reported_not_gated": true,
+    "terminal_objective_change_abs": 1686.9156223535538,
+    "terminal_objective_tolerance": 65356.210636265256,
+    "terminal_step_over_threshold": 0.025811098990147198
+   },
+   "status": "certified"
+  },
+  "stops": []
+ },
+ "parent_capture_checklist": {
+  "record_capture_paths": {
+   "component_levels_recourse_key_interface_settlement_total": true,
+   "esso_capture_attr_es_avg_ch_dch_per_unit": true,
+   "esso_capture_attr_es_e_rated_per_unit": true,
+   "esso_capture_attr_es_soh_per_unit_cumul": true,
+   "evaluator_fn__certification_from_trajectory": true,
+   "evaluator_fn__first_pass_cycle": true,
+   "evaluator_fn__terminal_ratios": true,
+   "harness_fn__derive_stopped_by_from_trajectory": true,
+   "harness_fn__identify_soh_floor_rows": true,
+   "harness_fn__s35ref_terminal_floor_and_efc": true,
+   "harness_fn_run_admm_arm": true,
+   "harness_fn_s38_pf_capture_hooks": true,
+   "harness_fn_s39_exempt_until_capture_hooks": true,
+   "harness_fn_write_boyd_terminal_s35ref": true,
+   "production_state_has_peak_rss": true,
+   "run_admm_arm_accepts_investment_map": true,
+   "run_admm_arm_post_run_hook_gets_state": true,
+   "trajectory_field_boyd_all_pass": true,
+   "trajectory_field_boyd_ess_channel_pass": true,
+   "trajectory_field_boyd_ess_dual_ratio": true,
+   "trajectory_field_boyd_ess_primal_ratio": true,
+   "trajectory_field_boyd_pf_channel_pass": true,
+   "trajectory_field_boyd_pf_dual_ratio": true,
+   "trajectory_field_boyd_pf_primal_ratio": true,
+   "trajectory_field_boyd_stop": true,
+   "trajectory_field_boyd_v_channel_pass": true,
+   "trajectory_field_boyd_v_dual_ratio": true,
+   "trajectory_field_boyd_v_primal_ratio": true,
+   "trajectory_field_consecutive_converged_cycles": true,
+   "trajectory_field_cycle": true,
+   "trajectory_field_cycle_convergence": true,
+   "trajectory_field_efc_per_day_max": true,
+   "trajectory_field_gross_operational_cost": true,
+   "trajectory_field_local_solves_ok": true,
+   "trajectory_field_objective_change_abs": true,
+   "trajectory_field_objective_change_ratio": true,
+   "trajectory_field_objective_tolerance": true,
+   "trajectory_field_recourse": true,
+   "trajectory_field_rho_ess_action": true,
+   "trajectory_field_rho_ess_after": true,
+   "trajectory_field_rho_freeze_active": true,
+   "trajectory_field_rho_pf_action": true,
+   "trajectory_field_rho_pf_after": true,
+   "trajectory_field_rho_v_action": true,
+   "trajectory_field_rho_v_after": true,
+   "trajectory_field_terminal_salvage_value": true
+  }
+ },
+ "parent_view": {
+  "exit_code": 0,
+  "wait4_ru_maxrss": 2580299776,
+  "wall_s": 3391.476101875305
+ },
+ "phase": "screen",
+ "pre_launch_assertion": {
+  "base_key": "5bd7af4da36d296357972b0aed0ea0fa8d323b26143d556bfd71a7ddce78b67c",
+  "campaign_id": "s55_step7_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5_n_1x",
+  "committed_holder_rule": "E3 / E2: refused if held (key collision); screen: reported, never reused (no cost is carried across code states)",
+  "committed_holders_outside_the_stage_roots": [],
+  "eval_dir_name": "5bd7af4da36d2963_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5_n_1x",
+  "eval_key": "5bd7af4da36d296357972b0aed0ea0fa8d323b26143d556bfd71a7ddce78b67c",
+  "excluded_roots": [
+   "data/SRP1/Results/P515S55/e3_cnrf",
+   "data/SRP1/Results/P515S55/e2_rho",
+   "data/SRP1/Results/P515S55/e1_screen_1x",
+   "data/SRP1/Results/P515S55/e1_2x/cross"
+  ],
+  "holds": true,
+  "parts": {
+   "base_payload_carries_model_variant": true,
+   "frozen_entry_equals_recomputed": true,
+   "harness_base_equals_independent_base": true,
+   "harness_key_equals_independent_payload_key": true,
+   "key_differs_without_model_variant": true,
+   "screen_1x_no_price_in_key": true,
+   "screen_model_as_declared": true,
+   "working_dirs_absent": true
+  },
+  "working_dir_ids": {
+   "precheck": "p515s44_s55_step7_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5_n_1x_5bd7af4da36d2963_precheck",
+   "run": "p515s44_s55_step7_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5_n_1x_5bd7af4da36d2963_run"
+  }
+ },
+ "retry": false,
+ "solver": {
+  "expected": "/usr/local/bin/ipopt",
+  "ok": true,
+  "resolved": {
+   "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+   "source": "environment"
+  },
+  "sha256": "b316abbe38cd851d9a9a87a6a1a1714a4334304c9539df1976d2f7101360ff05"
+ },
+ "stage": "P5.15 Addendum 86 ruling 1, W183i (b) -- the Step-7 fixed-plan launcher: E3 (C_NRF), E2 stage 1 (rho0 x s), the 1x unit-neighbourhood screen, the cross-evaluations (declared after W186)",
+ "stage_spec": {
+  "name": "frozen_s55_step7_screen_spec_v1_5cbf4a55.json",
+  "sha256": "5cbf4a5555466d9e561cfaaa48c76a0fa2eebbbabde74b606e3e52190d9e4f1f"
+ },
+ "utc": "2026-11-13T03:07:57.414249+00:00",
+ "wall_clock_s": 3393.9406599998474
+}
