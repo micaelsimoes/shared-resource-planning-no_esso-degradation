@@ -1,0 +1,31 @@
+16:05:48 OK   cost file sha256 == PB.COST_FILE pin
+16:05:48 OK   W2 results sha256 == PB.INVESTMENT_COST_RESULTS pin
+16:05:48 OK   lattice years == case-file representative years
+16:05:48 OK   W2 master facts: budget 1e6, max_capacity 5 MWh
+16:05:48 OK   (c) Lattice I(x) == W2 production-master I_new_eur (<= 1e-6)
+16:05:48 OK   production params == lattice constants (budget, E cap, ratio 2..4)
+16:05:48 OK   discounted expected unit costs (production-read workbook) == lattice unit costs (<= 1e-6)
+16:05:49 OK   domain()[0] is x = 0 and appears once
+16:05:49 OK   every admissible point has Lattice.reasons == []
+16:05:49 OK   admissible points distinct
+16:05:49 grid: zP, zE in 0..11 per node x 3 years = 8957952 points
+16:07:27 OK   (a) grid reason-free storage points == domain() minus x = 0
+16:07:27 OK   (b) production master check feasible set == lattice admissible set
+16:07:27 OK   no admissible point has zP or zE at the grid edge (grid is wide enough)
+16:07:27 OK   lattice I(x) == closed form from production-read workbook, all admissible plans (<= 1e-6)
+16:07:27 OK   (d) s51 frozen spec domain: same 1705 labels (x0 incl.)
+16:07:27 OK   (d) s51 frozen spec domain: I(x) within 1e-6
+16:07:27 OK   per-year split == s47 and s51 frozen spec domain_summary
+16:07:27 OK   (e) 2030 plan I == B - s53 EXPECTED_BUDGET_SLACK_EUR (<= 1e-6) and in the set
+16:07:27 OK   (e) 2030 plan I rounds to 992,268.11
+16:07:27 OK   reference unit 7: 0.25/1 @2025 in the set
+16:07:27 OK   s51 recorded budget verdicts agree with membership (incl. n7_4h_e4/e5 over budget)
+16:07:27 OK   (f) W182g 47-plan inventory: verdict == membership and I within 1e-6 for every plan
+16:07:27 OK   (f) the W182g over-budget plans (recorded) are outside the set
+16:07:28 OK   no plan within the production tolerance 1e-8 of B (<=, <, <= +1e-8 give one count)
+16:07:35 OK   informational per-node-year enumeration: its common-year subset == primary count
+16:07:35 OK   own SolveProfileGuard(permitted=()) verify(0) == []
+16:07:35 OK   PB parent guard verify(0) == []
+16:07:35 OK   pickle load/loads 0
+16:07:35 COUNT (excluding x = 0) = 1704; by year {2025: 149, 2030: 522, 2035: 1033}; by n_nodes {1: 183, 2: 873, 3: 648}
+16:07:35 all_checks_ok = True; failed = []

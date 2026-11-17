@@ -31,6 +31,10 @@ CHANGES (Expert, 2026-11-16; only with --v2, so that the 2026-11-13 files still 
     labels 7.5 pt, legend 7 pt, as printed at the inclusion widths (0.48 and 1.00 \\textwidth). The pages keep their size
     (geometry, data and line styles unchanged); each font size is divided by the inclusion scale of its figure.
 
+CHANGES (Expert, 2026-11-17; only with --us, which implies --v2, so that the 2026-11-16 files still reproduce):
+  - US English in printed text: SoH legend entry 'No ageing' -> 'No aging'. The record key (calibration_table6
+    'No ageing') is unchanged. No other printed string in the SoC or SoH figures has a British spelling.
+
 CHECKS: every text artist (tick labels, axis labels, legend entries) must lie inside the page; the run fails if one is
 clipped. --preview-dir writes the two figures at their inclusion sizes in main.tex: each seasonal file at
 0.48 \\textwidth (\\subfloat, two per row, \\hfill) and the SoH file at 1.00 \\textwidth, with \\textwidth = 390 pt
@@ -84,6 +88,8 @@ SOH_MIN_LINE = 0.70                 # --v2: the minimum SoH of the aged calibrat
 SOH_MIN_STYLE = {'color': '#555555', 'lw': 0.8, 'ls': (0, (6, 2, 1, 2)), 'label': 'Minimum SoH, 0.70'}
 PRINTED_PT = {'tick': 7.5, 'label': 8.0, 'legend': 7.0}   # --v2: common printed sizes (SoC, SoH, flexibility figures)
 V2 = {'on': False}
+US_LEGEND = {'No ageing': 'No aging'}   # --us: printed legend text only; the record keys are unchanged
+US = {'on': False}
 
 
 def style():
@@ -162,6 +168,8 @@ def draw_soh(sohs):
     fig, ax = _axes(SOH_PAGE_PT, SOH_AXES_PT)
     ax.grid(True)
     for lab, key, c, ls, mk in SOH_SERIES:
+        if US['on']:
+            lab = US_LEGEND.get(lab, lab)
         ax.plot(SOH_X, sohs[key], color=c, ls=ls, lw=1.4, marker=mk, ms=3.5, mfc='white', mec=c, mew=1.0, label=lab)
     if V2['on']:
         ax.axhline(SOH_MIN_LINE, zorder=1.5, **SOH_MIN_STYLE)
@@ -240,10 +248,14 @@ def main():
     ap.add_argument('--png-dir', default=None)
     ap.add_argument('--preview-dir', default=None)
     ap.add_argument('--v2', action='store_true', help='2026-11-16: SoH 0.70 line; common printed font sizes')
+    ap.add_argument('--us', action='store_true', help='2026-11-17: US spelling in printed text (implies --v2)')
     args = ap.parse_args()
+    if args.us:
+        args.v2 = True
     if args.v2 and args.legacy_labels:
         raise SystemExit('--v2 and --legacy-labels are exclusive')
     V2['on'] = args.v2
+    US['on'] = args.us
     labels = LABELS['legacy' if args.legacy_labels else 'current']
     global BOUND_DASH
     if args.legacy_labels:
