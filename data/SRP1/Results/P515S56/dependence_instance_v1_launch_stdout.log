@@ -1,0 +1,112 @@
+16:57:53 output /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/dependence_instance_v1; code /private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/dep_export_v1_20261121T165726Z; provenance /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation HEAD 9acc085afc5228ec4fb62af4a6a5f5f0241255a7
+16:57:53 OK   every tracked data input == its committed (HEAD) bytes
+16:57:53 === grid srp1grid_3x3 ===
+16:57:53 OK   [srp1grid_3x3] base case sha256 == its instance record
+16:57:53 OK   [srp1grid_3x3] pinned base checksum starts with the Planner-given prefix
+16:58:06 [srp1grid_3x3] base read: checksum 73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7 (12.6 s)
+16:58:06 OK   [srp1grid_3x3] base read: combined scenario checksum == pinned
+16:58:06 OK   [srp1grid_3x3] derive() operation keys == audit A enumeration (operation keys, in order)
+16:58:06 OK   [srp1grid_3x3] no two operation keys share an ndarray (in-place permutation is safe)
+16:58:06 OK   [srp1grid_3x3] derive() on the post-read object == at the checksum point (permutations; statistic bitwise)
+16:58:06 OK   [srp1grid_3x3] base read: arrays production changes after the checksum point == TSO ADN loads pd / qd (zeroed)
+16:58:06 OK   [srp1grid_3x3] statistic ADN-load exclusion == the loads production zeroes (every TSO block)
+16:58:06 OK   [srp1grid_3x3] coverage: no (3 x 24) array reachable from the planning object outside the enumerated scenario arrays
+16:58:06 OK   [srp1grid_3x3] profiles file round trip (permutations, statistic bitwise, keys)
+16:58:18 [srp1grid_3x3] dependence read: checksum 1d54ddc99f6f1a8109cf60e8c775ab88ed84e15c54475d583f163e6625d21bb7 (11.8 s)
+16:58:18 OK   [srp1grid_3x3] hook: applied once, every operation array permuted, market arrays untouched
+16:58:18 OK   [srp1grid_3x3] dependence checksum != base checksum
+16:58:18 OK   [srp1grid_3x3] in-child assertion PASSES at the checksum point
+16:58:18 OK   [srp1grid_3x3] checksum point: every operation array == base[perm, :] bitwise
+16:58:18 OK   [srp1grid_3x3] checksum point: every market array == base bitwise (not permuted)
+16:58:18 OK   [srp1grid_3x3] checksum point: key list == base key list
+16:58:18 OK   [srp1grid_3x3] after the read: every operation array == base[perm, :] bitwise
+16:58:18 OK   [srp1grid_3x3] after the read: every market array == base bitwise (not permuted)
+16:58:18 OK   [srp1grid_3x3] after the read: key list == base key list
+16:58:18 OK   [srp1grid_3x3] number of operation arrays whose bytes change == profiles n_arrays_changed[checksum]
+16:58:18 OK   [srp1grid_3x3] every network block's own market arrays (cost_energy_p / cost_flex) == base bitwise
+16:58:18 OK   [srp1grid_3x3] multiset of complete per-scenario block profiles (all of a block's operation arrays, row s) unchanged in every network block, bitwise, both points
+16:58:18 OK   [srp1grid_3x3] multiset of rows of every operation array unchanged, bitwise, both points
+16:58:18 OK   [srp1grid_3x3] within-block coherence: scenario j of the re-paired block == scenario perm[j] of the base block for EVERY array of the block (the daily profile moves as a unit)
+16:58:18 OK   [srp1grid_3x3] probabilities unchanged: operation and market [1/3]*3 on every block (== base), planning market [1/3]*3 every year, _scenario_probability == 1/9 for every pair
+16:58:19 OK   [srp1grid_3x3] EV means (audit A compute_means) unchanged: bitwise, or differing only by summation order (reorder-reproduced bitwise, fsum-identical, |diff| <= 4 ulp of sum_s |w_s A[s,t]|)
+16:58:19 PRED FAILED [srp1grid_3x3] EV: Planner expectation "bitwise or to 1 ulp": every element of every mean within 1 ulp of the result -- expected <= 1 ulp; observed {'max_ulp_of_result': 16.0, 'histogram_ulp_of_result': {'1.0': 17412, '2.0': 610, '4.0': 1, '8.0': 1, '16.0': 1}}
+16:58:19 OK   [srp1grid_3x3] EV: base mean recomputed with the rows in the permuted order == dependence mean, bitwise (every operation array)
+16:58:19 OK   [srp1grid_3x3] EV: exactly-rounded mean (math.fsum per hour) bitwise identical, base vs dependence (every operation array)
+16:58:19 OK   [srp1grid_3x3] stored EV profiles file was derived from this base instance (source checksum == base checksum)
+16:58:19 OK   [srp1grid_3x3] stored EV profiles == base means bitwise (every stored key)
+16:58:19 OK   [srp1grid_3x3] statistic non-decreasing in the new index in every network block (recomputed after the read)
+16:58:19 OK   [srp1grid_3x3] recomputed statistic == base statistic taken in permuted order (bitwise, every block)
+16:58:19 OK   [srp1grid_3x3] derive() on the re-paired instance is the identity in every block
+16:58:19 OK   [srp1grid_3x3] object walk vs base, audit A declared exclusions (scenario fields): 0 differences
+16:58:19 OK   [srp1grid_3x3] object walk vs base, bookkeeping exclusions only: the differences are EXACTLY the operation arrays the permutation changes (nothing else)
+16:58:19 OK   [srp1grid_3x3] in-child assertion PASSES on the dependence read (post_read, with its checksum)
+16:58:19 OK   [srp1grid_3x3] in-child assertion RAISES on the base (index-paired) read, with 0 arrays differing from the base
+16:58:19 OK   [srp1grid_3x3] in-child assertion RAISES on the dependence read when the expected checksum is the base one
+16:58:31 OK   [srp1grid_3x3] second read with the hook: same checksum, assertion passes
+16:58:31 OK   [srp1grid_3x3] ties in the statistic (exact equality within a block): count recorded; tie rule declared
+16:58:31 OK   [srp1grid_3x3] alternative TSO statistic: only TSO blocks can differ
+16:58:31 OK   [srp1grid_3x3] system net-demand range (all networks) under comonotone pairing >= index pairing in every block (sum of maxima / minima)
+16:58:31 PRED HELD   [srp1grid_3x3] task expectation "the spread of total system net demand widens": system_all_std_MWh comonotone >= index-paired in every block and > in at least one
+16:58:31 PRED HELD   [srp1grid_3x3] task expectation "the spread of total system net demand widens": system_dso_std_MWh comonotone >= index-paired in every block and > in at least one
+16:58:31 PRED HELD   [srp1grid_3x3] task expectation "the spread of total system net demand widens": system_all_range_MWh comonotone >= index-paired in every block and > in at least one
+16:58:31 PRED HELD   [srp1grid_3x3] task expectation "the spread of total system net demand widens": system_dso_range_MWh comonotone >= index-paired in every block and > in at least one
+16:58:31 OK   [srp1grid_3x3] comonotone pairing: Spearman == 1 for every network pair in every block (no ties)
+16:58:31 === grid five_block_3x3 ===
+16:58:31 OK   [five_block_3x3] base case sha256 == its instance record
+16:58:31 OK   [five_block_3x3] pinned base checksum starts with the Planner-given prefix
+16:58:44 [five_block_3x3] base read: checksum 0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193 (12.8 s)
+16:58:44 OK   [five_block_3x3] base read: combined scenario checksum == pinned
+16:58:44 OK   [five_block_3x3] derive() operation keys == audit A enumeration (operation keys, in order)
+16:58:44 OK   [five_block_3x3] no two operation keys share an ndarray (in-place permutation is safe)
+16:58:44 OK   [five_block_3x3] derive() on the post-read object == at the checksum point (permutations; statistic bitwise)
+16:58:44 OK   [five_block_3x3] base read: arrays production changes after the checksum point == TSO ADN loads pd / qd (zeroed)
+16:58:44 OK   [five_block_3x3] statistic ADN-load exclusion == the loads production zeroes (every TSO block)
+16:58:44 OK   [five_block_3x3] coverage: no (3 x 24) array reachable from the planning object outside the enumerated scenario arrays
+16:58:45 OK   [five_block_3x3] profiles file round trip (permutations, statistic bitwise, keys)
+16:58:57 [five_block_3x3] dependence read: checksum 8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a (12.8 s)
+16:58:57 OK   [five_block_3x3] hook: applied once, every operation array permuted, market arrays untouched
+16:58:57 OK   [five_block_3x3] dependence checksum != base checksum
+16:58:57 OK   [five_block_3x3] in-child assertion PASSES at the checksum point
+16:58:57 OK   [five_block_3x3] checksum point: every operation array == base[perm, :] bitwise
+16:58:57 OK   [five_block_3x3] checksum point: every market array == base bitwise (not permuted)
+16:58:57 OK   [five_block_3x3] checksum point: key list == base key list
+16:58:57 OK   [five_block_3x3] after the read: every operation array == base[perm, :] bitwise
+16:58:57 OK   [five_block_3x3] after the read: every market array == base bitwise (not permuted)
+16:58:57 OK   [five_block_3x3] after the read: key list == base key list
+16:58:57 OK   [five_block_3x3] number of operation arrays whose bytes change == profiles n_arrays_changed[checksum]
+16:58:57 OK   [five_block_3x3] every network block's own market arrays (cost_energy_p / cost_flex) == base bitwise
+16:58:58 OK   [five_block_3x3] multiset of complete per-scenario block profiles (all of a block's operation arrays, row s) unchanged in every network block, bitwise, both points
+16:58:58 OK   [five_block_3x3] multiset of rows of every operation array unchanged, bitwise, both points
+16:58:58 OK   [five_block_3x3] within-block coherence: scenario j of the re-paired block == scenario perm[j] of the base block for EVERY array of the block (the daily profile moves as a unit)
+16:58:58 OK   [five_block_3x3] probabilities unchanged: operation and market [1/3]*3 on every block (== base), planning market [1/3]*3 every year, _scenario_probability == 1/9 for every pair
+16:58:58 OK   [five_block_3x3] EV means (audit A compute_means) unchanged: bitwise, or differing only by summation order (reorder-reproduced bitwise, fsum-identical, |diff| <= 4 ulp of sum_s |w_s A[s,t]|)
+16:58:58 PRED FAILED [five_block_3x3] EV: Planner expectation "bitwise or to 1 ulp": every element of every mean within 1 ulp of the result -- expected <= 1 ulp; observed {'max_ulp_of_result': 8.0, 'histogram_ulp_of_result': {'1.0': 27730, '2.0': 947, '8.0': 2}}
+16:58:58 OK   [five_block_3x3] EV: base mean recomputed with the rows in the permuted order == dependence mean, bitwise (every operation array)
+16:58:58 OK   [five_block_3x3] EV: exactly-rounded mean (math.fsum per hour) bitwise identical, base vs dependence (every operation array)
+16:58:58 OK   [five_block_3x3] stored EV profiles file was derived from this base instance (source checksum == base checksum)
+16:58:59 OK   [five_block_3x3] stored EV profiles == base means bitwise (every stored key)
+16:58:59 OK   [five_block_3x3] statistic non-decreasing in the new index in every network block (recomputed after the read)
+16:58:59 OK   [five_block_3x3] recomputed statistic == base statistic taken in permuted order (bitwise, every block)
+16:58:59 OK   [five_block_3x3] derive() on the re-paired instance is the identity in every block
+16:58:59 OK   [five_block_3x3] object walk vs base, audit A declared exclusions (scenario fields): 0 differences
+16:58:59 OK   [five_block_3x3] object walk vs base, bookkeeping exclusions only: the differences are EXACTLY the operation arrays the permutation changes (nothing else)
+16:58:59 OK   [five_block_3x3] in-child assertion PASSES on the dependence read (post_read, with its checksum)
+16:58:59 OK   [five_block_3x3] in-child assertion RAISES on the base (index-paired) read, with 0 arrays differing from the base
+16:58:59 OK   [five_block_3x3] in-child assertion RAISES on the dependence read when the expected checksum is the base one
+16:59:13 OK   [five_block_3x3] second read with the hook: same checksum, assertion passes
+16:59:13 OK   [five_block_3x3] ties in the statistic (exact equality within a block): count recorded; tie rule declared
+16:59:13 OK   [five_block_3x3] alternative TSO statistic: only TSO blocks can differ
+16:59:13 OK   [five_block_3x3] system net-demand range (all networks) under comonotone pairing >= index pairing in every block (sum of maxima / minima)
+16:59:13 PRED HELD   [five_block_3x3] task expectation "the spread of total system net demand widens": system_all_std_MWh comonotone >= index-paired in every block and > in at least one
+16:59:13 PRED HELD   [five_block_3x3] task expectation "the spread of total system net demand widens": system_dso_std_MWh comonotone >= index-paired in every block and > in at least one
+16:59:13 PRED HELD   [five_block_3x3] task expectation "the spread of total system net demand widens": system_all_range_MWh comonotone >= index-paired in every block and > in at least one
+16:59:13 PRED HELD   [five_block_3x3] task expectation "the spread of total system net demand widens": system_dso_range_MWh comonotone >= index-paired in every block and > in at least one
+16:59:13 OK   [five_block_3x3] comonotone pairing: Spearman == 1 for every network pair in every block (no ties)
+16:59:13 OK   audit A module guard verify(0) == []
+16:59:13 OK   own SolveProfileGuard(permitted=()) verify(0) == []
+16:59:13 OK   every loaded tracked repository module == its committed (HEAD) bytes
+16:59:13 OK   no repository module loaded from outside the code directory
+16:59:13 OK   provenance: HEAD unchanged during the run
+16:59:13 srp1grid_3x3: s56_srp1grid_3x3_comonotone checksum 1d54ddc99f6f1a8109cf60e8c775ab88ed84e15c54475d583f163e6625d21bb7 (base 73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7); profiles sha256 ae2b8e9f4ccd0f5f46cbbce244392b3262d746a9b54122893db6296a0214600f; blocks changed {'per_network_non_identity': {'TSO': 10, 'DSO5': 11, 'DSO7': 11, 'DSO9': 11}, 'per_network_blocks': {'TSO': 12, 'DSO5': 12, 'DSO7': 12, 'DSO9': 12}, 'total_non_identity': 43, 'total_blocks': 48}
+16:59:13 five_block_3x3: s53_3x3_comonotone checksum 8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a (base 0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193); profiles sha256 4743e37160ed8a50d77a7c6de1c2a9d3827001639a079913f6b2bde9cd23e422; blocks changed {'per_network_non_identity': {'TSO': 19, 'DSO5': 18, 'DSO7': 18, 'DSO9': 17}, 'per_network_blocks': {'TSO': 20, 'DSO5': 20, 'DSO7': 20, 'DSO9': 20}, 'total_non_identity': 72, 'total_blocks': 80}
+16:59:13 all_checks_ok = True; 92 checks; failed = []; predictions failed = ['[srp1grid_3x3] EV: Planner expectation "bitwise or to 1 ulp": every element of every mean within 1 ulp of the result', '[five_block_3x3] EV: Planner expectation "bitwise or to 1 ulp": every element of every mean within 1 ulp of the result']
