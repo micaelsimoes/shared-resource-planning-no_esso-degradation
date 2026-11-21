@@ -1,0 +1,151 @@
+{
+ "authority": [
+  "S56_PLAN_v2.md validation step 2 and Expert item X7 (R8 applicability; use of 1e4 waits on X7)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 89 ruling 3 (R8 option (a): PENALTY_ESSO_SLACK 1e4 on the new instance through the ESS-params file, default 1e3 unchanged, one gate re-run)",
+  "reuse audit I (data/SRP1/Results/P515S56/reuse_audit_I/reuse_audit_I.json, sha256 0e91eb18...): ESSO slack bar fails with TV in objective (4.78x on SRP1); no params key existed",
+  "Planner task to Worker 2026-11-21: params key, default unchanged; gates G1-G4 zero-solve; spec + script committed before running; production change committed after G1-G3 pass"
+ ],
+ "build": {
+  "nl_forms": "plain .nl (symbolic_solver_labels False: the production form) and labelled .nl + .row + .col",
+  "node_models_per_tree": "2 grids x 2 plans x 2 in_objective x 2 stages x 3 nodes = 48",
+  "path": "production read (SharedResourcesPlanning.read_planning_problem, plots/logs redirected to scratch) -> get_initial_candidate_solution + plan + _rebuild_candidate_total_capacities -> create_admm_variables -> create_shared_energy_storage_model with the ESSO instance's optimize stubbed (stub called exactly once per build; NL written inside the stub) -> stage 'init'; then _resolve_esso_al_scale + update_shared_energy_storage_model_to_admm(al_scale, objective_scale = params.admm.objective_scale (sigma_fixed)), p_req/q_req/dual_p_req/dual_q_req set to 0.0 -> stage 'admm'",
+  "salvage_in_objective": "False (as read) and True (in-memory override of params.salvage_value.in_objective for the build, restored after)"
+ },
+ "change_under_test": {
+  "committed": "after G1-G3 pass, by filename",
+  "files": [
+   "shared_energy_storage_parameters.py",
+   "shared_energy_storage_data.py"
+  ],
+  "key": "esso_slack_penalty",
+  "key_location": "top level of the ESS params JSON (data/<case>/SharedESS/<params_file>)",
+  "not_changed": [
+   "definitions.PENALTY_ESSO_SLACK = 1e3",
+   "every committed params file (no file sets the key)",
+   "every other production module"
+  ],
+  "read_rule": "JSON number only (bool, string, null, list, object refused), float(value) finite and > 0, stored as float; absent -> the attribute default definitions.PENALTY_ESSO_SLACK (1e3)",
+  "use_site": "shared_energy_storage_data._build_subproblem: slack_penalty += getattr(params, 'esso_slack_penalty', PENALTY_ESSO_SLACK) * (slack_es_pnet_up + slack_es_pnet_down); the only production use of PENALTY_ESSO_SLACK (repository grep of *.py, 2026-11-21: definitions.py:63 definition; shared_energy_storage_data.py l. 833 use; other hits are comments/docstrings in shared_energy_storage_data.py / shared_resources_planning.py and diagnostic p5* scripts)"
+ },
+ "environment": {
+  "LP_SOLVER_PATH": "/Users/micaelsimoes/coin-or/dist/bin/clp",
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "note": "solver paths are required by the parameter readers; nothing is solved"
+ },
+ "frozen_utc": "2026-11-21",
+ "g0": {
+  "definition": "after-tree reader on scratch copies of SRP1_ESS_Params.json: absent -> 1e3; 1e4 -> 10000.0; 10000 -> 10000.0; 1.0 -> 1.0 (all float); true, '1e4', null, 0, -1e4, NaN, Infinity, [1e4], {} -> ValueError; SharedEnergyStorageParameters() default attribute = 1e3; definitions.PENALTY_ESSO_SLACK = 1e3"
+ },
+ "g1": {
+  "control_G1c": "before vs a second before child (separate process): byte-identical (determinism of the comparison itself)",
+  "definition": "before vs after, default path (key absent): all four NL files byte-identical for every node model of every cell",
+  "n_node_models_per_tree": 48
+ },
+ "g2": {
+  "definition": "after tree, key 1e4 parsed by the production reader from a scratch copy of SRP1_ESS_Params.json with the key added, assigned to the read params object in memory; per node model, after-default vs after-1e4: .row and .col identical; plain and labelled NL: every differing line lies in the G0 (objective gradient) segment, belongs to a slack_es_pnet_{up,down} column, and reads exactly 1000.0 -> exactly 10000.0; the number of differing lines equals the number of slack columns = expected_slack_columns_per_node; the plain and labelled files change the same columns",
+  "key_value": 10000.0,
+  "n_pairs": 48
+ },
+ "g3": {
+  "declared_list": "union, fixed and written before any load: every *.pkl tracked in git; W183c NAMED_FIXTURES (p515_s53_w183c_nrf_gates.py at BASE, read by ast); every *.pkl under data/SRP1/Results/FrozenSMOPF/ (the W183c / p516 gate-1 scope)",
+  "definition": "unpickled under the before modules and the after modules (one child each, tree modules asserted by __file__); load count = present count exactly in each; per-path outcome identical before vs after (no fixture newly failing)",
+  "known_preexisting": "P516CC g_cc1 post_off (data/SRP1/Results/P516CC/g_cc1/post_off/fixtures_unpickle.json, sha256 818c7a9c...): 139 declared, 112 loaded, 22 failed with AttributeError: Can't get attribute 's_bounds' on model_construction_helpers (identically under its HEAD modules), 5 absent in that checkout. Such pre-existing failures are recorded, carried, and not re-scoped; G3 gates on 'no outcome changes'."
+ },
+ "g3c": {
+  "definition": "the before child pickles its read SharedEnergyStorageParameters (pre-change class: no esso_slack_penalty attribute); the after child unpickles it with the after modules, checks the attribute is absent, substitutes it for the read params object, and builds the SRP1 ESSO (x0 and ref_unit, in_objective False): init-stage NL files bitwise equal to the after-default build (the getattr fallback)",
+  "grid": "srp1",
+  "n_node_models": 6
+ },
+ "g4": {
+  "definition": "per grid and per node (in_objective True, ref_unit plan, ADMM stage): marginal(cohort) = kappa * max over (y, d, direction) of the cohort's _salvage_throughput_coefficients * phi_cal ** age_at_terminal (calendar-only terminal SoH, _get_remaining_calendar_life), kappa = the built model's salvage_objective_kappa (set by update_shared_energy_storage_model_to_admm); peak = max over cohorts; bar = 1e-3 * the slack objective coefficient read from the built model (generate_standard_repn of model.objective, unique over all slack terms); ratio = peak / bar. Reported at 1e3 (before; after default) and at 1e4 (after, key set). Same definition as reuse audit I B7 and p516_cc_gates G-CC-3 slack_safety (max_marginal_at_calendar_soh_ub)",
+  "gated": false,
+  "reference_peaks": {
+   "fiveblock_3x3": {
+    "cohort": "2037",
+    "source": "data/SRP1/Results/P516CC/g_cc3/unit2028/g_cc_results.json slack_safety.max_marginal_at_calendar_soh_ub (sha256 ada590de358c513b47dd7c6611f2475cbda14203318cbfd4e04be1602c64bbfc; that run used SRP1_5x3y_1x1 with the 'mid' params file; kappa and the coefficients do not depend on the SoH point or the scenario count)",
+    "value": 5.841446062406405
+   },
+   "srp1": {
+    "cohort": "2035",
+    "source": "data/SRP1/Results/P515S56/reuse_audit_I/reuse_audit_I.json B_esso_structure.kappa_and_slack_safety.peak (sha256 0e91eb18d782ac821d4d6f79b522b094c23c7638ca800d59ca72d7732247b89d)",
+    "value": 4.784168921046508
+   }
+  }
+ },
+ "grids": {
+  "fiveblock_3x3": {
+   "case_file": "SRP1__s53_3x3.json",
+   "ess_params_file": "SRP1_ESS_Params.json ('end'; NOT SRP1_5x3y_ESS_Params.json, which bundles 'mid')",
+   "expected_slack_columns_per_node": 960,
+   "expected_slack_columns_rule": "2 x 5 years x 4 days x 24 periods",
+   "scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+   "scenario_checksum_source": "data/SRP1/Results/P515S53/w89_3x3/instance/instance_record.json",
+   "source_case_rel": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+   "source_case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+   "years": {
+    "2025": 3,
+    "2028": 3,
+    "2031": 3,
+    "2034": 3,
+    "2037": 3
+   }
+  },
+  "srp1": {
+   "case_file": "SRP1.json",
+   "ess_params_file": "SRP1_ESS_Params.json ('end', salvage enabled, in_objective absent -> False)",
+   "expected_slack_columns_per_node": 576,
+   "expected_slack_columns_rule": "2 (up, down) x 3 years x 4 days x 24 periods",
+   "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+   "scenario_checksum_source": "reuse_audit_I.json B_esso_structure.config.scenario_checksum",
+   "years": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   }
+  }
+ },
+ "not_permitted": [
+  "solves",
+  "setting the key in any committed file",
+  "changing definitions.PENALTY_ESSO_SLACK",
+  "other production changes",
+  "push"
+ ],
+ "outputs": {
+  "files": "r8_key_gates.json (gate_result_io), fixtures_declared.json, child_*.json, child_*_{stdout,stderr}.log, nl/<tag>/... .gz (mtime 0), manifest_sha256.json (--manifest)",
+  "launch_logs": "data/SRP1/Results/P515S56/r8_key_v1_launch_stdout.log / _stderr.log",
+  "out": "data/SRP1/Results/P515S56/r8_key_v1/ (must not exist; created by the script)"
+ },
+ "pass_rule": "exit 0 iff children_ok, G0, G1, G1c, G2, G3 and G3c pass; G4 is a measurement reported against its prediction",
+ "plans": {
+  "ref_unit": [
+   [
+    7,
+    2025,
+    0.25,
+    1.0
+   ]
+  ],
+  "x0": []
+ },
+ "plans_note": "(node, installation year, MVA, MWh); ref_unit = the reference unit n7 0.25 MVA / 1 MWh 2025 (p515_s56_build_instances.REF_UNIT_Z), applied on both grids",
+ "predecessor": null,
+ "predictions": {
+  "G0": "all reader cases as declared",
+  "G1": "bitwise: 48/48 node models, all four files identical (Planner); G1c control bitwise",
+  "G2": "only the slack-penalty objective coefficients change, exactly x10 (1000.0 -> 10000.0): 576 lines per SRP1 node model, 960 per five-block node model; no other row, column or coefficient changes (Planner)",
+  "G3": "all fixtures that load under the pre-change modules still load under the post-change modules; no outcome changes (Planner: 'all load'; pre-existing failures, if any, are recorded as such -- the Worker expects the P516CC 's_bounds' failures to recur identically in both trees); G3c holds",
+  "G4": "ratio < 1 at 1e4 on both grids (Planner). Worker's quantitative expectation: SRP1 4.7842 at 1e3 -> 0.47842 at 1e4 (cohort 2035); five-block 5.8414 at 1e3 -> 0.58414 at 1e4 (cohort 2037); peaks equal the references to <= 1e-12 relative; before_1e3 = after_1e3"
+ },
+ "schema": "p515_s56_r8_key_gate_spec_v1",
+ "solve_profile": "SolveProfileGuard(permitted=()) installed before any project import in the parent and in every child; verified at exactly 0 solves and 0 executions",
+ "trees": {
+  "after": "the same export + the two changed files overlaid from the working tree at launch (sha256 recorded)",
+  "base_commit": "the commit that adds this spec and p515_s56_r8_key_gates.py (passed as --base-commit; the script refuses unless both files at BASE equal the files run)",
+  "before": "git archive BASE of every tracked root-level *.py + tracked data/SRP1 inputs (data/SRP1/Results excluded), into the scratchpad",
+  "fiveblock_case": "copied from BASE into each tree's data/SRP1/ under its basename",
+  "why": "another Worker edits shared_resources_planning.py, model_construction_helpers.py and p515_s44_campaign_harness.py concurrently; both trees come from BASE, so before and after differ only in the two files under test"
+ },
+ "version": 1
+}
