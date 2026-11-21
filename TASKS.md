@@ -2,6 +2,19 @@
 
 **Authority (2026-11-13):** `PLANNER_BRIEF_2026-09-13.md` Addendum 92 (W187 held; presentation pass; W190b, W190). Previously Addendum 91 (editorial window: **upload 2026-11-19**, numbers freeze **11-15 12:00**; W187 go; round 9c). Overleaf HEAD **`3c379fa`** (round 9c: main.tex md5 cd1433d7 = `main_46c9d77_round9c.tex`, letter v13 74e88c78, cover letter v4 63b7ddee, highlights v3 4cedd45c; verified byte-identical by the Planner 13:26 UTC). Realignment (Addenda 87–88) parked.
 
+## S56 order (author, 2026-11-21) — operational uncertainty and investment: expected-profile vs stochastic planning
+
+Author's request (verbatim in the S56 report when written): matched investment searches on the 3 × 3 instance, expected-profile (probability-weighted mean profiles, constructed and verified) vs stochastic (full ensemble, nonanticipativity kept); common stochastic evaluation of both selected plans + x = 0; 1× then 2× flexibility price, kept separate; safe parallelism (within-poll first, within-ADMM-stage second; measured serial vs parallel before scaling); input audit and runtime pilot first, pause on a modelling inconsistency or unreliable comparison; existing results preserved.
+
+- [x] **Audit A** (zero-solve): 3 × 3 instance definition, probabilities and provenance; SRP1 single scenario vs ensemble mean; expected profiles constructed as a new case variant and verified through the production reader; single- vs multi-scenario formulation (interface commitment, deviation cost, row 18, nonanticipativity, degradation coupling); installation years on the 3 × 3 grid — `p515_s56_expected_profiles.py`, `input_audit_A.json` 94081c16; 35/35 checks; SRP1 single = draw row 0 (not the mean); EV variant built and verified bitwise (checksum d0d3a600; loads via injection hook, not wired); row 18 / deviation / pin not built at 1 scenario; 3,281 plans on the five-block grid
+- [x] **Audit B** (zero-solve): search as run, launch/isolation, runtime and memory per evaluation (SRP1, 3 × 3), existing parallelism and the 5× → 1.1× shortfall, within-ADMM independence, rough projection — `audit_B_extract.json` 7d93e40f; 3 × 3 7.9/8.4 h, 19–20.5 GiB footprint, concurrency 1; launchers SRP1-only; projection (extrapolated) 260–1,000 h for the matched searches on the five-block grid
+- [x] **Audit C** (zero-solve; author's 2nd request 2026-11-21, unified core rerun): persistent workers vs the tight-tail final-solve tolerances; inventory of existing core simulations (benchmarks, reference-unit ageing variants, flexibility-price comparisons) and their reuse under each candidate grid; grid facts (2025/2030/2035 vs five-block 3 × 3); runtimes of those run types; the "≈ 8 h per 3 × 3 evaluation" figure checked — `audit_C_facts.json` 15a1e1fe; 8 h confirmed; persistent workers refused with the tail (srp:3049), harness refuses both within-cycle paths; benchmark single-scenario only; all core results reusable only on 2025/2030/2035 single scenario
+- [ ] Design note `S56_DESIGN_NOTE_v0.md` (common grid, study spec draft, parallel design, measured core-package runtime/memory estimate) → **Advisor review** before any harness is built — **active** (Advisor reviewing v0)
+- [ ] Runtime pilot (serial vs parallel, same inputs) under a frozen pilot spec with recorded predictions
+- [ ] **Stop and report** with the measured projection: elapsed time, machine allocation, any formulation ruling (expected > 4 h runs and machine allocation are the author's)
+- [ ] Matched searches 1× (expected-profile, stochastic) → common stochastic evaluation → 2× likewise
+- [ ] Results table, provenance, manuscript and supplement updates
+
 ## Addendum 92 order — W190b (interim, now), then W190 after the prose freeze (2026-11-16 12:00)
 
 - [x] W187 held (P3) — ruled by Addendum 92: printed form = search criterion (8 worse / 6 within; 2.7–100.6 k€); salvage sensitivity and the 59.9 k€ bar not printed
