@@ -1,0 +1,36 @@
+15:53:59 Q1: network files, params, constants
+15:53:59 OK   Q1 TSO: every fl_reg load sits at an ADN interface bus (2025/2030/2035), so flexibility_cost charges none
+15:53:59 OK   Q1 every network obj_type COST and fl_reg True (the harness precondition OBJ_MIN_COST + fl_reg)
+15:53:59 OK   Q1 no ESSO module references cost_flex (the ESSO prices no flexibility)
+15:53:59 Q1: production market read of the 3 x 3 case and the 2x composition
+15:54:00 OK   Q1 SP cost_flex draws are (3 x 24) float64 per (year, day), 12 blocks
+15:54:00 OK   Q1 the probability-weighted mean of the production draws == the stored EV flex means bitwise (12/12)
+15:54:00 OK   Q1 the same for the energy price (12/12) (the read reproduces the instance)
+15:54:00 OK   Q1 m = 2: mean(2 x draws) == 2 x mean(draws) bitwise in every block (EV-at-2x = mean of SP-at-2x exactly)
+15:54:00 OK   Q1 published 2x records s51_f2_phase_b: every record m = 2, every applied check True (TSO / planning / energy arrays unchanged), terminal read-back all_match and TSO arrays still the planning arrays
+15:54:00 OK   Q1 published 2x records s55_e2_unit_2x_rho0p5: every record m = 2, every applied check True (TSO / planning / energy arrays unchanged), terminal read-back all_match and TSO arrays still the planning arrays
+15:54:00 Q2: executable facts
+15:54:00 OK   Q2 PB Halton table cannot serve 18 variables (IndexError expected)
+15:54:00 OK   Q2 PB.Lattice refuses any node set other than 3 nodes (N_VARS = 7 hard-wired)
+15:54:00 OK   Q2 harness canonical candidate = {investment_year, nodes} (one year per candidate)
+15:54:00 Q3: committed search records
+15:54:00 Q3: production ESS data (3 x 3 case) and the general lattice
+15:54:00 OK   Q3 instance nodes / years
+15:54:00 OK   Q3 the 2030 plan I(x) == 992,268.11 EUR (general lattice, master term order)
+15:54:00 OK   Q3 incumbent x0 admissible by production
+15:54:00 OK   Q3 x0: per-cohort local rule == production per-cohort reasons (box enumeration is exact)
+15:54:00 OK   Q3 x0: every R3 point admissible by production, every dropped R3 point rejected
+15:54:00 OK   Q3 incumbent reference_unit_n7_0.25_1_y2025 admissible by production
+15:54:00 OK   Q3 reference_unit_n7_0.25_1_y2025: per-cohort local rule == production per-cohort reasons (box enumeration is exact)
+15:54:00 OK   Q3 reference_unit_n7_0.25_1_y2025: every R3 point admissible by production, every dropped R3 point rejected
+15:54:00 OK   Q3 incumbent plan_2030_n5_0.25_0.5__n7_1_3.5 admissible by production
+15:54:00 OK   Q3 plan_2030_n5_0.25_0.5__n7_1_3.5: per-cohort local rule == production per-cohort reasons (box enumeration is exact)
+15:54:00 OK   Q3 plan_2030_n5_0.25_0.5__n7_1_3.5: every R3 point admissible by production, every dropped R3 point rejected
+15:54:00 Q3: whole staged admissible domain (production-decided)
+15:54:01 OK   Q3 all cohorts alive in 2035 on this grid (cumulative cap = sum over cohorts)
+15:54:01 OK   Q3 staged domain: common-year single-cohort subset == 1,705 (x = 0 incl.; the s47/s51 domain)
+15:54:01 OK   Q3 staged domain: <= 1 cohort per node subset == G-CC-4 general_le1_year_per_node_admissible
+15:54:01 OK   own SolveProfileGuard(permitted=()) verify(0) == []
+15:54:01 OK   PB parent guard verify(0) == []
+15:54:01 OK   pickle load/loads 0
+15:54:01 all_checks_ok = True; failed = []
