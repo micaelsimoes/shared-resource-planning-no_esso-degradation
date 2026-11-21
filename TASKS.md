@@ -41,7 +41,7 @@ Author's six points: (1) option (a) per-scenario coupling, P/Q/V consistent per 
   6. **System-cost convention confirmed** for the per-scenario formulation: the complete internal TN–DN settlement excluded from aggregate cost; the deviation-component-as-economic-cost treatment (Addendum 38 (C)) withdrawn in this mode; verify local objectives consistent with the system objective; investment, operating cost and terminal value each counted once; consensus residuals reported separately.
   7. Cohort formulation, acceptance criteria, search policy, voltage coupling, R8 verification stay with the technical work; five-block pilot, grid and SP search configuration decided from measurements; step 4 and the EV + three-block SP pilots remain authorized.
 - [ ] **Dependence instance** (zero-solve): comonotone re-pairing of operation scenarios within each network, invariants verified, for both candidate grids — **active**
-- [ ] **Disclosure text** for the archived 3 × 3 results (main-text sentence + supporting-material paragraph) — Planner draft
+- [x] **Disclosure text** for the archived 3 × 3 results — `S56_ARCHIVED_3X3_DISCLOSURE_DRAFT.md` (main-text sentence, supporting-material paragraph, sources, wording to avoid); for the author to place
 - [ ] **Cohort formulation** (Advisor → Expert): smallest consistent multi-cohort ESSO (per-cohort schedules, SoC, converter P/Q, aggregation, per-cohort degradation, TV) — **active**
 - [ ] **Search policy review** (Advisor): opportunistic polling, evaluation budget, accuracy-first tolerances, claim wording — **active**
 - [ ] **Step 3** centralized comparator, x0 (no storage), α = 0, two blocks — **active**
