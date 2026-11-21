@@ -1,0 +1,157 @@
+{
+ "V0": {
+  "build": "centralized_coordination.combine_networks(TN, DNs) + Network.build_model(merged.params) of the 2025 Spring merged day network (Step-1 probe call), x = 0, no candidate",
+  "day": "Spring",
+  "instance_3x3": {
+   "case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+   "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+   "instance_label": "s53_3x3",
+   "reader": "p515_s44_scale_measurement.read_planning_from_derived_case (production SharedResourcesPlanning), as the 3 x 3 harness (install_derived_instance)",
+   "scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193"
+  },
+  "predicted_vars_3x3": 343656,
+  "prediction_tolerance_rel": 0.01,
+  "records": [
+   "scenario sets and probabilities TN vs every DN (every block)",
+   "per-scenario DN data preserved in the merged network",
+   "variables / free / constraints, by component",
+   "what the merge drops (shared ESS at centralized_coordination.py:74-75, ADN node list, DN reference buses and generators, TN ADN loads; row 18 / pin / expected-value Vars / interface_delta absent)"
+  ],
+  "srp1_expected_vars": 38184,
+  "year": 2025
+ },
+ "authority": [
+  "Planner task after audit D (f80ec8a9, interface_consistency.json da5d365e), 2026-11-21: D0 + V0",
+  "TASKS.md S56 order: Consistency absent (Audit D) -> sizing diagnostics; NO formulation change"
+ ],
+ "blocks": "20 TSO (year, day) blocks per cell: years 2025/2028/2031/2034/2037 x Spring/Summer/Autumn/Winter; 9 joint scenarios (3 market x 3 operation) each",
+ "cells": [
+  {
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "eval_dir": "f6e9cd53fdbb8ee8_x0",
+   "label": "x0"
+  },
+  {
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "eval_dir": "c82522f470b35b58_n7_4h_e1",
+   "label": "unit"
+  }
+ ],
+ "cells_root": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals (campaign spec campaign_spec_s53_w91_3x3_pair_231558f0.json); inputs multiscenario_terminal.json, evaluation_record.json, component_levels_terminal.json, each sha256-checked against child_manifest_sha256.json",
+ "failure_policy": "no re-run, no tuning, no other settings; a failed solve is recorded (its block excluded from D1 and reported); a pre-solve gate failure refuses the run with zero solves",
+ "guards": {
+  "SolveProfileGuard": "permitted call site p515_s56_tn_realized_resolve.py:_solve_one; exactly 80 solves and 80 executions (2 cells x 2 arms x 20 blocks); 0 under --trial or a pre-solve refusal",
+  "V0": "SolveProfileGuard(permitted=()) verified 0",
+  "expected_solves": 80,
+  "lock": "single instance; refuses if .p515_s44_campaign.lock exists or a campaign harness / concurrency gate / other copy runs",
+  "output": "data/SRP1/Results/P515S56/tn_realized_resolve/run_v1 and .../v0_build_v1 (must not exist)",
+  "pickle": "pickle.load/loads blocked for the whole run in both scripts (no pickle is read), verified 0",
+  "run": "attached, stdout and stderr captured to sibling logs; D0 and V0 run one after the other, never concurrently"
+ },
+ "harness": {
+  "D0": "p515_s56_tn_realized_resolve.py",
+  "V0": "p515_s56_central_ms_build.py"
+ },
+ "instance": {
+  "case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+  "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+  "instance_label": "s53_3x3",
+  "reader": "p515_s44_scale_measurement.read_planning_from_derived_case (production SharedResourcesPlanning), as the 3 x 3 harness (install_derived_instance)",
+  "scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193"
+ },
+ "model": {
+  "absent": "no ADMM augmented-Lagrangian or proximal terms, no interface-voltage pin, no row 18 (the TSO never carries it), no expected-value Vars, no consensus voltage target: the TN interface voltage is free within its bounds in both arms",
+  "adn_setup": "as create_transmission_network_model: slack_v_sqr_down/up at the ADN bus fixed 0 (when voltage slacks are on); pc/qc bounds removed and the value fixed; ADN flexibility legs fixed 0; interface_delta_p/q fixed 0 in every scenario",
+  "arm_A": "control: ADN pc/qc fixed in every scenario at the TSO terminal scenario-common exchange (interface_profiles.per_scenario, TSO side = pc + interface_delta; asserted scenario-common to 1e-9 MW)",
+  "arm_B": "ADN pc/qc fixed per scenario at the DN realized pg_adn/qg_adn of that scenario (DSO block interface_profiles.per_scenario, key <s_m>_<s_o>, the formulation pairing); everything else as A",
+  "build": "production NetworkData.build_model() of the TN (deep copy of the instance per cell); candidate applied as production: update_data_with_candidate_solution(total_capacity), update_model_with_candidate_solution(total_capacity), then update_model_with_candidate_solution(terminal published available capacity per node and year, evaluation_record storage_per_node.published_available_capacity_terminal -- the value the TSO block carried at the terminal cycle); production _prepare_transmission_objectives_for_admm (penalty_shared_ess_usage 0, penalty_gen_curtailment 0, cost_load_curtailment ADMM value); interface_settlement_weight then set to 0",
+  "no_code_change_basis": "the TN node balance (mch compute_node_load) and interface expression read pc[c, s_m, s_o, p] per scenario (verified: mch interface_pf_p_transmission_def, compute_node_load; srp create_transmission_network_model fixes the same Var per scenario)",
+  "shared_ess": "pnet/qnet of the scenario-free copy (sess_na_scenario) fixed at the TSO block terminal shared_ess_schedule in both arms"
+ },
+ "objective": {
+  "reported_C": "C = total_gen_cost + total_flex_cost: TN generation (controllable units at the scenario market price) + TN flexibility, EUR per representative day, probability-weighted over the 9 scenarios; gross, settlement-EXCLUDED, no salvage; the full objective and the slack/detector terms reported beside",
+  "solved": "production objective_function_rule = total_gen_cost + total_flex_cost + total_load_curt_cost + total_gen_curt_penalty (weight 0) + total_ess_utilization_cost_penalty (shared weight 0) + total_slack_penalties + total_ess_complementarity_penalties (shared-ESS day-balance slack) + 0 x interface_settlement; checked equal to model.objective and to the sum of parts at the built point"
+ },
+ "predecessor": null,
+ "predictions": {
+  "P1": "Arm A and Arm B solve Optimal on 80/80 (termination optimal and IPOPT exit \"Optimal Solution Found.\"; \"Solved To Acceptable Level\" counts as a failure)",
+  "P2": "TN slack/detector terms zero (within relaxation) in Arm B: read as every slack Var <= 1e-6 p.u. in every Arm B block, detector totals reported",
+  "P3": "|D1| per cell between 0.05 and 1 MEUR weighted (sign not predicted)",
+  "P4": "|D1(x0) - D1(unit)| < 18 kEUR (low confidence)",
+  "P5": "V0 builds; about 343,656 variables (read as within 1 %; exact count reported); reproduces 38,184 at one scenario (SRP1 2025 Spring, exact)",
+  "recorded_by": "Advisor, before the run (Planner task)"
+ },
+ "reported": [
+  "C_A",
+  "C_B",
+  "status_iterations_time",
+  "slack_detector_terms",
+  "max_constraint_violation",
+  "dso_covariance_per_block",
+  "D1",
+  "C_A_vs_saved_tso_cost",
+  "bus_duals_adn",
+  "curtailment_binding_limits_per_hour"
+ ],
+ "solver": {
+  "attempts_per_block": 1,
+  "call": "Network.run_smopf(model, params, from_warm_start=False), from the model own initial values",
+  "executable": "/usr/local/bin/ipopt (NLP_SOLVER_PATH)",
+  "inherited_unchanged": "every other TN case-file option (as the central check, spec 0e00f6a8)",
+  "logs": "<out>/logs/<cell>/<arm>",
+  "option_overrides": {
+   "compl_inf_tol": 1e-06,
+   "linear_solver": "ma97",
+   "tol": 1e-05
+  },
+  "recovery_enabled": false,
+  "recovery_tier2_enabled": false
+ },
+ "stage": "P5.15 S56 D0 TN realized-exchange re-solve + V0 merged multi-scenario build (frozen spec v1)",
+ "statistics": {
+  "D1_b": "(C_B,b - C_A,b) - cov_b; D1 = sum_b w_b D1_b per cell",
+  "auxiliary": {
+   "V_b": "sum_DN sum_s omega_s sum_t pi[s_m,t] (P_DSO[s,t] - P_TSO[t]) = cov_b + the priced consensus residual; D1prime_b = (C_B - C_A) - V_b",
+   "first_order": "sum dual_A(node_balance_p/q at the ADN bus) x (Arm B - Arm A) interface P/Q (p.u.): first-order prediction of C_B - C_A from Arm A duals",
+   "mc": "per-scenario TN marginal cost at the ADN bus = dual(node_balance_p[i, s_m, s_o, t]) / (omega_s x baseMVA) EUR/MWh (Pyomo/IPOPT sign: dual = d obj / d load, verified on a toy model)",
+   "sanity": "C_A vs the saved TN generation cost of the cell (component_levels_terminal generation_cost) and objective A vs block_recourse_production_local: reported, not gated; the ADMM block carried the augmented/proximal terms, the voltage pin and the consensus voltage target, absent here"
+  },
+  "cov_b": "sum over DN of the DSO block covariance settlement (settlement deviation, unweighted), recomputed from per-scenario pg_adn and the DSO block price array and checked (abs <= 1e-6 max(1,|x|)); sum_b w_b cov_b checked against the summary dso_deviation_part (x0: -748,745.77 EUR)",
+  "pair": "D1(x0) - D1(unit)",
+  "resolution": "reported beside: each cell certification bar (evaluation_record bar: x0 13,954.38 EUR, unit 4,010.57 EUR); the D1 inputs C_A, C_B are IPOPT re-solves at tol 1e-5, cov_b is the ADMM terminal value",
+  "weighting": "weighted = sum_b w_b x_b, w_b = production _get_admm_block_weight(TN, year, day) = years x days x 1.02^-(y-2025) (the Q weighting; checked equal to the saved admm_block_weight); x_b unweighted per representative day, probability-weighted over scenarios"
+ },
+ "version": 1
+}
