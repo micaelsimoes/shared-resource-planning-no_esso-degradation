@@ -1,0 +1,33 @@
+{
+ "schema": "p515_s56_step0_gates_v1_predictions",
+ "utc": "2026-11-21T16:36:00Z",
+ "recorded_before_any_computation": true,
+ "predictions": {
+  "P1_derating_only_at_mixed_duration_nodes": {
+   "source": "Planner task (S56 step 0) / S56_PLAN_v2.md step 0 key prediction",
+   "statement": "derating < 1 only at nodes with mixed-duration cohorts",
+   "operationalised": "(a) node-year level: L/sum s < 1 iff the active cohorts of that node-year have at least two distinct E/P durations; (b) plan level: a plan has some node-year ratio < 1 iff it has >= 1 mixed-duration node. Exact rational arithmetic on the granule integers."
+  },
+  "P2_2025_TV_zero": {
+   "source": "Planner task / S56_PLAN_v2.md step 0",
+   "statement": "2025 TV = 0 (remaining-life fraction 0 hence S = 0)",
+   "operationalised": "on both grids: rlf(2025) == 0 exactly; on a built ESSO with only a 2025 cohort and in_objective on, the salvage credit expression has no variable and constant 0.0, and the reporting salvage expression evaluates to 0.0 at two synthetic terminal SoH values"
+  },
+  "P3_converter_residual_per_0p25_MVA": {
+   "source": "Planner task (Advisor estimate) / S56_PLAN_v2.md \"Formulation as planned\"",
+   "statement": "converter residual ~13 kEUR for 2030 and ~24 kEUR for 2035 per 0.25 MVA (SRP1 grid)",
+   "operationalised": "disc_T * E_m[c^S(y)] * rlf(y) * 0.25 MVA, pro-rata calendar life, installation-year expected converter cost, discounted from the horizon end like S; \"~\" read as within +-10 % (Worker operationalisation, declared here before computing)",
+   "expected_eur": {
+    "2030": 13000.0,
+    "2035": 24000.0
+   },
+   "rel_tol": 0.1
+  },
+  "expectation_not_prediction": {
+   "staged_domain_incl_x0": 37042,
+   "advisor_soc_excursion_estimate": "about 4 % at a 5-year age gap, 8 % at 10 (equal-energy reading, X6)"
+  }
+ },
+ "git_head": "",
+ "script_sha256": "4d5536e191aa7e57a9577e9d7c62cbade6dc44a96e0685e33d1b5ed659e7bdc8"
+}
