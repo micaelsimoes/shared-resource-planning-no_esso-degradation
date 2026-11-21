@@ -1,0 +1,3578 @@
+{
+ "capture_path_checklist_at_run": {
+  "all_hold": true,
+  "checks": {
+   "G1_three_per_cycle_files_parse_with_rows": true,
+   "G2_esso_log_final_blocks_parse": true,
+   "G2_network_log_final_blocks_parse": true,
+   "G2_one_final_block_per_solve_start": true,
+   "G2_solve_records_have_iterations_exit_mu": true,
+   "G3_record_has_solve_profile_and_peak_rss": true,
+   "footprint_capture_selftest": true,
+   "harness_sha256_is_the_one_that_wrote_these": true,
+   "memory_available_measure": true,
+   "per_cycle_wall_from_drained_events": true,
+   "per_cycle_wall_from_production_stdout": true,
+   "wait4_rusage_written_by_harness": true
+  },
+  "detail": {
+   "G1_rows": {
+    "aa_per_cycle.jsonl": 132,
+    "g_s39_D.json#cycle_trajectory": 132,
+    "per_cycle_record.jsonl": 132
+   },
+   "footprint_selftest": {
+    "all_hold": true,
+    "allocation_bytes": 268435456,
+    "checks": {
+     "capture_exact": true,
+     "final_read_after_exit": true,
+     "identity_verified": true,
+     "lifetime_max_ge_allocation": true,
+     "negative_control_refuses_other_eval_key": true,
+     "reaped_by_wait4_exit_0": true
+    },
+    "lifetime_max_phys_footprint_bytes": 273597040
+   },
+   "logs": {
+    "dir": "data/SRP1/Results/P56A/evals/p515s44_s55_step7_x0_a_1x_5cfe69a615ae3708_run/logs",
+    "first_network_log_solves": 133,
+    "first_network_log_starts": 133,
+    "n_esso_logs": 399,
+    "n_network_logs": 48
+   },
+   "memory_now": {
+    "available_bytes": 15433056256,
+    "available_gib": 14.373153686523438,
+    "hw_memsize_gib": 32.0,
+    "page_size": 16384,
+    "pages": {
+     "Anonymous pages": 932471,
+     "Pages free": 4228,
+     "Pages inactive": 909408,
+     "Pages occupied by compressor": 76606,
+     "Pages wired down": 146116
+    },
+    "utc": "2026-11-21T11:29:01.870537+00:00"
+   },
+   "walls_first3": {
+    "1": 22.53,
+    "2": 23.48,
+    "3": 23.48
+   }
+  },
+  "source_eval_dir": "data/SRP1/Results/P515S55/e1_screen_1x/campaign_s55_step7_x0_a_1x/evals/5cfe69a615ae3708_x0_a_1x"
+ },
+ "failure_policy": "a bitwise mismatch is investigated (which field, which cycle), never re-run or tuned; the first differing field per compared file is recorded in gate_result.json",
+ "gate": {
+  "G0_test_condition": {
+   "A_max_concurrent_observed": 1,
+   "B_max_concurrent_observed": 5,
+   "children": {
+    "A:y2025__n7_p0.25_e1": {
+     "cycles_run": 3,
+     "exit_code": 0,
+     "status": "not_certified"
+    },
+    "B:x0": {
+     "cycles_run": 3,
+     "exit_code": 0,
+     "status": "not_certified"
+    },
+    "B:y2025__n5_p0.25_e0.5": {
+     "cycles_run": 3,
+     "exit_code": 0,
+     "status": "not_certified"
+    },
+    "B:y2025__n7_p0.25_e1": {
+     "cycles_run": 3,
+     "exit_code": 0,
+     "status": "not_certified"
+    },
+    "B:y2025__n7_p0.5_e1": {
+     "cycles_run": 3,
+     "exit_code": 0,
+     "status": "not_certified"
+    },
+    "B:y2025__n9_p0.25_e1": {
+     "cycles_run": 3,
+     "exit_code": 0,
+     "status": "not_certified"
+    }
+   },
+   "holds": true
+  },
+  "G1_holds": true,
+  "G2_holds": true,
+  "G3_holds": false,
+  "G4_holds": true,
+  "G4_solve_counts": {
+   "A": {
+    "y2025__n7_p0.25_e1": {
+     "base_solves": 204,
+     "expected_solves": 204,
+     "holds": true,
+     "observed_permitted_solve": 204,
+     "retry_solves_credited": 0,
+     "rounds": 4
+    }
+   },
+   "B": {
+    "x0": {
+     "base_solves": 204,
+     "expected_solves": 204,
+     "holds": true,
+     "observed_permitted_solve": 204,
+     "retry_solves_credited": 0,
+     "rounds": 4
+    },
+    "y2025__n5_p0.25_e0.5": {
+     "base_solves": 204,
+     "expected_solves": 204,
+     "holds": true,
+     "observed_permitted_solve": 204,
+     "retry_solves_credited": 0,
+     "rounds": 4
+    },
+    "y2025__n7_p0.25_e1": {
+     "base_solves": 204,
+     "expected_solves": 204,
+     "holds": true,
+     "observed_permitted_solve": 204,
+     "retry_solves_credited": 0,
+     "rounds": 4
+    },
+    "y2025__n7_p0.5_e1": {
+     "base_solves": 204,
+     "expected_solves": 204,
+     "holds": true,
+     "observed_permitted_solve": 204,
+     "retry_solves_credited": 0,
+     "rounds": 4
+    },
+    "y2025__n9_p0.25_e1": {
+     "base_solves": 204,
+     "expected_solves": 204,
+     "holds": true,
+     "observed_permitted_solve": 204,
+     "retry_solves_credited": 0,
+     "rounds": 4
+    }
+   }
+  },
+  "GATE_PASS": false,
+  "comparison": {
+   "G1_per_cycle_record": {
+    "files": {
+     "aa_per_cycle.jsonl": {
+      "excluded_fields_that_differed": [],
+      "first_differences": [],
+      "first_differing_cycle_field": null,
+      "identical": true,
+      "n_differences": 0,
+      "n_rows_A": 3,
+      "n_rows_B": 3
+     },
+     "g_s39_D.json#cycle_trajectory": {
+      "excluded_fields_that_differed": [],
+      "first_differences": [],
+      "first_differing_cycle_field": null,
+      "identical": true,
+      "n_differences": 0,
+      "n_rows_A": 3,
+      "n_rows_B": 3
+     },
+     "per_cycle_record.jsonl": {
+      "excluded_fields_that_differed": [],
+      "first_differences": [],
+      "first_differing_cycle_field": null,
+      "identical": true,
+      "n_differences": 0,
+      "n_rows_A": 3,
+      "n_rows_B": 3
+     }
+    },
+    "holds": true
+   },
+   "G2_ipopt_solves": {
+    "holds": true,
+    "ipopt_log_final_blocks": {
+     "files_a": 60,
+     "files_b": 60,
+     "full_text_normalised_supplementary": {
+      "differing_files": [
+       {
+        "file": "optim_log_case33_1_2025_Autumn.log",
+        "lines_A": 14877,
+        "lines_B": 14877
+       },
+       {
+        "file": "optim_log_case33_1_2025_Spring.log",
+        "lines_A": 14145,
+        "lines_B": 14145
+       },
+       {
+        "file": "optim_log_case33_1_2025_Summer.log",
+        "lines_A": 15607,
+        "lines_B": 15607
+       },
+       {
+        "file": "optim_log_case33_1_2025_Winter.log",
+        "lines_A": 15554,
+        "lines_B": 15554
+       },
+       {
+        "file": "optim_log_case33_1_2030_Autumn.log",
+        "lines_A": 15266,
+        "lines_B": 15266
+       },
+       {
+        "file": "optim_log_case33_1_2030_Spring.log",
+        "lines_A": 14466,
+        "lines_B": 14466
+       },
+       {
+        "file": "optim_log_case33_1_2030_Summer.log",
+        "lines_A": 13749,
+        "lines_B": 13749
+       },
+       {
+        "file": "optim_log_case33_1_2030_Winter.log",
+        "lines_A": 14324,
+        "lines_B": 14324
+       },
+       {
+        "file": "optim_log_case33_1_2035_Autumn.log",
+        "lines_A": 13368,
+        "lines_B": 13368
+       },
+       {
+        "file": "optim_log_case33_1_2035_Spring.log",
+        "lines_A": 15393,
+        "lines_B": 15393
+       },
+       {
+        "file": "optim_log_case33_1_2035_Summer.log",
+        "lines_A": 15028,
+        "lines_B": 15028
+       },
+       {
+        "file": "optim_log_case33_1_2035_Winter.log",
+        "lines_A": 13830,
+        "lines_B": 13830
+       },
+       {
+        "file": "optim_log_case33_2_2025_Autumn.log",
+        "lines_A": 18971,
+        "lines_B": 18971
+       },
+       {
+        "file": "optim_log_case33_2_2025_Spring.log",
+        "lines_A": 22800,
+        "lines_B": 22800
+       },
+       {
+        "file": "optim_log_case33_2_2025_Summer.log",
+        "lines_A": 22637,
+        "lines_B": 22637
+       },
+       {
+        "file": "optim_log_case33_2_2025_Winter.log",
+        "lines_A": 19670,
+        "lines_B": 19670
+       },
+       {
+        "file": "optim_log_case33_2_2030_Autumn.log",
+        "lines_A": 21120,
+        "lines_B": 21120
+       },
+       {
+        "file": "optim_log_case33_2_2030_Spring.log",
+        "lines_A": 19250,
+        "lines_B": 19250
+       },
+       {
+        "file": "optim_log_case33_2_2030_Summer.log",
+        "lines_A": 21062,
+        "lines_B": 21062
+       },
+       {
+        "file": "optim_log_case33_2_2030_Winter.log",
+        "lines_A": 20072,
+        "lines_B": 20072
+       },
+       {
+        "file": "optim_log_case33_2_2035_Autumn.log",
+        "lines_A": 20408,
+        "lines_B": 20408
+       },
+       {
+        "file": "optim_log_case33_2_2035_Spring.log",
+        "lines_A": 19652,
+        "lines_B": 19652
+       },
+       {
+        "file": "optim_log_case33_2_2035_Summer.log",
+        "lines_A": 20732,
+        "lines_B": 20732
+       },
+       {
+        "file": "optim_log_case33_2_2035_Winter.log",
+        "lines_A": 18368,
+        "lines_B": 18368
+       },
+       {
+        "file": "optim_log_case33_3_2025_Autumn.log",
+        "lines_A": 13392,
+        "lines_B": 13392
+       },
+       {
+        "file": "optim_log_case33_3_2025_Spring.log",
+        "lines_A": 14503,
+        "lines_B": 14503
+       },
+       {
+        "file": "optim_log_case33_3_2025_Summer.log",
+        "lines_A": 14822,
+        "lines_B": 14822
+       },
+       {
+        "file": "optim_log_case33_3_2025_Winter.log",
+        "lines_A": 14923,
+        "lines_B": 14923
+       },
+       {
+        "file": "optim_log_case33_3_2030_Autumn.log",
+        "lines_A": 16370,
+        "lines_B": 16370
+       },
+       {
+        "file": "optim_log_case33_3_2030_Spring.log",
+        "lines_A": 15854,
+        "lines_B": 15854
+       },
+       {
+        "file": "optim_log_case33_3_2030_Summer.log",
+        "lines_A": 17038,
+        "lines_B": 17038
+       },
+       {
+        "file": "optim_log_case33_3_2030_Winter.log",
+        "lines_A": 16814,
+        "lines_B": 16814
+       },
+       {
+        "file": "optim_log_case33_3_2035_Autumn.log",
+        "lines_A": 16801,
+        "lines_B": 16801
+       },
+       {
+        "file": "optim_log_case33_3_2035_Spring.log",
+        "lines_A": 17189,
+        "lines_B": 17189
+       },
+       {
+        "file": "optim_log_case33_3_2035_Summer.log",
+        "lines_A": 14145,
+        "lines_B": 14145
+       },
+       {
+        "file": "optim_log_case33_3_2035_Winter.log",
+        "lines_A": 15864,
+        "lines_B": 15864
+       },
+       {
+        "file": "optim_log_case9_2025_Autumn.log",
+        "lines_A": 15221,
+        "lines_B": 15221
+       },
+       {
+        "file": "optim_log_case9_2025_Spring.log",
+        "lines_A": 21096,
+        "lines_B": 21096
+       },
+       {
+        "file": "optim_log_case9_2025_Summer.log",
+        "lines_A": 17622,
+        "lines_B": 17622
+       },
+       {
+        "file": "optim_log_case9_2025_Winter.log",
+        "lines_A": 18008,
+        "lines_B": 18008
+       },
+       {
+        "file": "optim_log_case9_2030_Autumn.log",
+        "lines_A": 21163,
+        "lines_B": 21163
+       },
+       {
+        "file": "optim_log_case9_2030_Spring.log",
+        "lines_A": 22737,
+        "lines_B": 22737
+       },
+       {
+        "file": "optim_log_case9_2030_Summer.log",
+        "lines_A": 24051,
+        "lines_B": 24051
+       },
+       {
+        "file": "optim_log_case9_2030_Winter.log",
+        "lines_A": 18523,
+        "lines_B": 18523
+       },
+       {
+        "file": "optim_log_case9_2035_Autumn.log",
+        "lines_A": 19342,
+        "lines_B": 19342
+       },
+       {
+        "file": "optim_log_case9_2035_Spring.log",
+        "lines_A": 20263,
+        "lines_B": 20263
+       },
+       {
+        "file": "optim_log_case9_2035_Summer.log",
+        "lines_A": 23003,
+        "lines_B": 23003
+       },
+       {
+        "file": "optim_log_case9_2035_Winter.log",
+        "lines_A": 15955,
+        "lines_B": 15955
+       }
+      ],
+      "identical_files": 12
+     },
+     "identical": true,
+     "logs_a": "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_v1_roota_serial_ca8927e75d628bd1_run/logs",
+     "logs_b": "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_v1_rootb_concurrent_ca8927e75d628bd1_run/logs",
+     "n_files_compared": 60,
+     "n_solves_compared": 204,
+     "per_file_differences": [],
+     "same_file_names": true,
+     "summary_by_file": {
+      "optim_log_case33_1_2025_Autumn.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 26,
+        "objective_scaled": "-8.8486896997189959e-04",
+        "objective_unscaled": "-8.8486896997189957e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 49,
+        "objective_scaled": "1.7857314310860230e+02",
+        "objective_unscaled": "1.7857314310860229e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 50,
+        "objective_scaled": "1.2145791031671222e+02",
+        "objective_unscaled": "1.2145791031671221e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 43,
+        "objective_scaled": "1.0407145795235316e+02",
+        "objective_unscaled": "1.0407145795235316e+05"
+       }
+      ],
+      "optim_log_case33_1_2025_Spring.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 25,
+        "objective_scaled": "-8.5898661987078963e-04",
+        "objective_unscaled": "-8.5898661987078961e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 49,
+        "objective_scaled": "1.6562073060352972e+02",
+        "objective_unscaled": "1.6562073060352972e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 51,
+        "objective_scaled": "9.7911679877672114e+01",
+        "objective_unscaled": "9.7911679877672112e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 43,
+        "objective_scaled": "6.8169136630031062e+01",
+        "objective_unscaled": "6.8169136630031062e+04"
+       }
+      ],
+      "optim_log_case33_1_2025_Summer.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 26,
+        "objective_scaled": "-8.7360378817907824e-04",
+        "objective_unscaled": "-8.7360378817907824e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 60,
+        "objective_scaled": "1.6779311615465841e+02",
+        "objective_unscaled": "1.6779311615465840e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 47,
+        "objective_scaled": "1.1624571462411953e+02",
+        "objective_unscaled": "1.1624571462411953e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 47,
+        "objective_scaled": "9.1669923629257099e+01",
+        "objective_unscaled": "9.1669923629257100e+04"
+       }
+      ],
+      "optim_log_case33_1_2025_Winter.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 26,
+        "objective_scaled": "-8.5262527244638498e-04",
+        "objective_unscaled": "-8.5262527244638497e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 51,
+        "objective_scaled": "1.8583161327115351e+02",
+        "objective_unscaled": "1.8583161327115350e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 49,
+        "objective_scaled": "1.1959442699664616e+02",
+        "objective_unscaled": "1.1959442699664616e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 53,
+        "objective_scaled": "9.9173880492375559e+01",
+        "objective_unscaled": "9.9173880492375552e+04"
+       }
+      ],
+      "optim_log_case33_1_2030_Autumn.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 26,
+        "objective_scaled": "-8.9337539298374566e-04",
+        "objective_unscaled": "-8.9337539298374569e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 51,
+        "objective_scaled": "1.5013459295585346e+02",
+        "objective_unscaled": "1.5013459295585350e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 44,
+        "objective_scaled": "1.2110379831104598e+02",
+        "objective_unscaled": "1.2110379831104600e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 50,
+        "objective_scaled": "1.1540870660909336e+02",
+        "objective_unscaled": "1.1540870660909338e+05"
+       }
+      ],
+      "optim_log_case33_1_2030_Spring.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 23,
+        "objective_scaled": "-8.6424149412587408e-04",
+        "objective_unscaled": "-8.6424149412587403e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 49,
+        "objective_scaled": "1.3912479162477251e+02",
+        "objective_unscaled": "1.3912479162477251e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 50,
+        "objective_scaled": "9.6526783593791322e+01",
+        "objective_unscaled": "9.6526783593791319e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 42,
+        "objective_scaled": "7.2808295946415001e+01",
+        "objective_unscaled": "7.2808295946415004e+04"
+       }
+      ],
+      "optim_log_case33_1_2030_Summer.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 27,
+        "objective_scaled": "-8.7971794605353848e-04",
+        "objective_unscaled": "-8.7971794605353848e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 46,
+        "objective_scaled": "1.4001840512132523e+02",
+        "objective_unscaled": "1.4001840512132525e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 44,
+        "objective_scaled": "1.1561510507945054e+02",
+        "objective_unscaled": "1.1561510507945057e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 48,
+        "objective_scaled": "9.8601975764763196e+01",
+        "objective_unscaled": "9.8601975764763221e+04"
+       }
+      ],
+      "optim_log_case33_1_2030_Winter.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 26,
+        "objective_scaled": "-8.5748512053459181e-04",
+        "objective_unscaled": "-8.5748512053459180e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 49,
+        "objective_scaled": "1.6265878794151203e+02",
+        "objective_unscaled": "1.6265878794151207e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 44,
+        "objective_scaled": "1.2124210221471711e+02",
+        "objective_unscaled": "1.2124210221471713e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 49,
+        "objective_scaled": "1.1124691305894507e+02",
+        "objective_unscaled": "1.1124691305894509e+05"
+       }
+      ],
+      "optim_log_case33_1_2035_Autumn.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 24,
+        "objective_scaled": "-9.0121018234236825e-04",
+        "objective_unscaled": "-9.0121018234236827e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 43,
+        "objective_scaled": "1.3087610430142479e+02",
+        "objective_unscaled": "1.3087610430142478e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 50,
+        "objective_scaled": "9.6276432540987059e+01",
+        "objective_unscaled": "9.6276432540987051e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 41,
+        "objective_scaled": "8.7947988221258470e+01",
+        "objective_unscaled": "8.7947988221258463e+04"
+       }
+      ],
+      "optim_log_case33_1_2035_Spring.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 23,
+        "objective_scaled": "-8.7072835783840309e-04",
+        "objective_unscaled": "-8.7072835783840308e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 48,
+        "objective_scaled": "1.4321010600340003e+02",
+        "objective_unscaled": "1.4321010600340000e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 55,
+        "objective_scaled": "1.2282474810631948e+02",
+        "objective_unscaled": "1.2282474810631944e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 53,
+        "objective_scaled": "9.5981062363067920e+01",
+        "objective_unscaled": "9.5981062363067904e+04"
+       }
+      ],
+      "optim_log_case33_1_2035_Summer.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 27,
+        "objective_scaled": "-8.8828801844646798e-04",
+        "objective_unscaled": "-8.8828801844646799e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 50,
+        "objective_scaled": "1.6031506684402007e+02",
+        "objective_unscaled": "1.6031506684402007e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 47,
+        "objective_scaled": "1.3561154907396417e+02",
+        "objective_unscaled": "1.3561154907396415e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 50,
+        "objective_scaled": "1.1272007181527604e+02",
+        "objective_unscaled": "1.1272007181527604e+05"
+       }
+      ],
+      "optim_log_case33_1_2035_Winter.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 26,
+        "objective_scaled": "-8.6482116735678879e-04",
+        "objective_unscaled": "-8.6482116735678882e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 48,
+        "objective_scaled": "1.8523516477486871e+02",
+        "objective_unscaled": "1.8523516477486870e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 42,
+        "objective_scaled": "1.4147358212297323e+02",
+        "objective_unscaled": "1.4147358212297322e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 45,
+        "objective_scaled": "1.3317902223552812e+02",
+        "objective_unscaled": "1.3317902223552813e+05"
+       }
+      ],
+      "optim_log_case33_2_2025_Autumn.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 54,
+        "objective_scaled": "-8.8398829257598996e-04",
+        "objective_unscaled": "-8.8398829257598999e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 49,
+        "objective_scaled": "8.5378606816730667e+01",
+        "objective_unscaled": "8.5378606816730666e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 61,
+        "objective_scaled": "6.4957404579876822e+01",
+        "objective_unscaled": "6.4957404579876820e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 60,
+        "objective_scaled": "5.8052734031967368e+01",
+        "objective_unscaled": "5.8052734031967368e+04"
+       }
+      ],
+      "optim_log_case33_2_2025_Spring.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 46,
+        "objective_scaled": "-8.5963063395810043e-04",
+        "objective_unscaled": "-8.5963063395810047e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 56,
+        "objective_scaled": "1.1631713999752667e+02",
+        "objective_unscaled": "1.1631713999752667e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 68,
+        "objective_scaled": "8.1608209271325094e+01",
+        "objective_unscaled": "8.1608209271325090e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 89,
+        "objective_scaled": "6.3761660200157522e+01",
+        "objective_unscaled": "6.3761660200157523e+04"
+       }
+      ],
+      "optim_log_case33_2_2025_Summer.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 46,
+        "objective_scaled": "-8.7329769447386555e-04",
+        "objective_unscaled": "-8.7329769447386552e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 59,
+        "objective_scaled": "1.2230188503899473e+02",
+        "objective_unscaled": "1.2230188503899472e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 71,
+        "objective_scaled": "9.5731307522039856e+01",
+        "objective_unscaled": "9.5731307522039860e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 89,
+        "objective_scaled": "8.3904090992799624e+01",
+        "objective_unscaled": "8.3904090992799625e+04"
+       }
+      ],
+      "optim_log_case33_2_2025_Winter.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 39,
+        "objective_scaled": "-8.5163626670982709e-04",
+        "objective_unscaled": "-8.5163626670982706e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 58,
+        "objective_scaled": "1.1090400218664848e+02",
+        "objective_unscaled": "1.1090400218664847e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 58,
+        "objective_scaled": "8.3386267200462527e+01",
+        "objective_unscaled": "8.3386267200462520e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 74,
+        "objective_scaled": "7.3974586715618273e+01",
+        "objective_unscaled": "7.3974586715618265e+04"
+       }
+      ],
+      "optim_log_case33_2_2030_Autumn.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 48,
+        "objective_scaled": "-8.9273562157063640e-04",
+        "objective_unscaled": "-8.9273562157063635e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 62,
+        "objective_scaled": "8.0625510943901560e+01",
+        "objective_unscaled": "8.0625510943901580e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 66,
+        "objective_scaled": "7.1001215128138213e+01",
+        "objective_unscaled": "7.1001215128138225e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 67,
+        "objective_scaled": "6.9095415585079337e+01",
+        "objective_unscaled": "6.9095415585079347e+04"
+       }
+      ],
+      "optim_log_case33_2_2030_Spring.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 44,
+        "objective_scaled": "-8.6530368558551402e-04",
+        "objective_unscaled": "-8.6530368558551396e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 58,
+        "objective_scaled": "1.0515376589011885e+02",
+        "objective_unscaled": "1.0515376589011884e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 62,
+        "objective_scaled": "8.2929648664819211e+01",
+        "objective_unscaled": "8.2929648664819208e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 64,
+        "objective_scaled": "6.8181861639328744e+01",
+        "objective_unscaled": "6.8181861639328738e+04"
+       }
+      ],
+      "optim_log_case33_2_2030_Summer.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 53,
+        "objective_scaled": "-8.7989164833206278e-04",
+        "objective_unscaled": "-8.7989164833206279e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 52,
+        "objective_scaled": "1.3110073509002305e+02",
+        "objective_unscaled": "1.3110073509002308e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 64,
+        "objective_scaled": "1.1776762528104004e+02",
+        "objective_unscaled": "1.1776762528104006e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 78,
+        "objective_scaled": "1.0977493496427648e+02",
+        "objective_unscaled": "1.0977493496427650e+05"
+       }
+      ],
+      "optim_log_case33_2_2030_Winter.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 52,
+        "objective_scaled": "-8.5737235046517491e-04",
+        "objective_unscaled": "-8.5737235046517490e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 59,
+        "objective_scaled": "7.4216743619789639e+01",
+        "objective_unscaled": "7.4216743619789660e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 59,
+        "objective_scaled": "6.3813168411281922e+01",
+        "objective_unscaled": "6.3813168411281935e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 66,
+        "objective_scaled": "6.0486216366800505e+01",
+        "objective_unscaled": "6.0486216366800516e+04"
+       }
+      ],
+      "optim_log_case33_2_2035_Autumn.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 48,
+        "objective_scaled": "-9.0204686625556000e-04",
+        "objective_unscaled": "-9.0204686625555996e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 45,
+        "objective_scaled": "7.8872256469197922e+01",
+        "objective_unscaled": "7.8872256469197921e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 76,
+        "objective_scaled": "6.8943670083235432e+01",
+        "objective_unscaled": "6.8943670083235425e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 70,
+        "objective_scaled": "6.4393986173017353e+01",
+        "objective_unscaled": "6.4393986173017351e+04"
+       }
+      ],
+      "optim_log_case33_2_2035_Spring.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 41,
+        "objective_scaled": "-8.7163119229389152e-04",
+        "objective_unscaled": "-8.7163119229389152e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 51,
+        "objective_scaled": "1.3795577155724581e+02",
+        "objective_unscaled": "1.3795577155724578e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 71,
+        "objective_scaled": "1.2802366727142626e+02",
+        "objective_unscaled": "1.2802366727142624e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 69,
+        "objective_scaled": "1.1254069120688338e+02",
+        "objective_unscaled": "1.1254069120688335e+05"
+       }
+      ],
+      "optim_log_case33_2_2035_Summer.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 40,
+        "objective_scaled": "-8.8855017329565853e-04",
+        "objective_unscaled": "-8.8855017329565855e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 53,
+        "objective_scaled": "1.1814369183808019e+02",
+        "objective_unscaled": "1.1814369183808018e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 68,
+        "objective_scaled": "1.2327447757504066e+02",
+        "objective_unscaled": "1.2327447757504066e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 81,
+        "objective_scaled": "1.1455612942955925e+02",
+        "objective_unscaled": "1.1455612942955925e+05"
+       }
+      ],
+      "optim_log_case33_2_2035_Winter.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 53,
+        "objective_scaled": "-8.6475902556531993e-04",
+        "objective_unscaled": "-8.6475902556531992e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 44,
+        "objective_scaled": "9.8232918812758996e+01",
+        "objective_unscaled": "9.8232918812758988e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 57,
+        "objective_scaled": "8.6396649104733243e+01",
+        "objective_unscaled": "8.6396649104733238e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 63,
+        "objective_scaled": "8.3562127394840246e+01",
+        "objective_unscaled": "8.3562127394840238e+04"
+       }
+      ],
+      "optim_log_case33_3_2025_Autumn.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 26,
+        "objective_scaled": "-8.8222097325159246e-04",
+        "objective_unscaled": "-8.8222097325159243e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 40,
+        "objective_scaled": "1.8179354667027891e+02",
+        "objective_unscaled": "1.8179354667027891e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 51,
+        "objective_scaled": "1.3160019877909744e+02",
+        "objective_unscaled": "1.3160019877909744e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 40,
+        "objective_scaled": "1.1559542878485996e+02",
+        "objective_unscaled": "1.1559542878485996e+05"
+       }
+      ],
+      "optim_log_case33_3_2025_Spring.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 23,
+        "objective_scaled": "-8.5750512135921331e-04",
+        "objective_unscaled": "-8.5750512135921331e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 47,
+        "objective_scaled": "1.5159777206940245e+02",
+        "objective_unscaled": "1.5159777206940245e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 45,
+        "objective_scaled": "9.8484930268170530e+01",
+        "objective_unscaled": "9.8484930268170530e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 54,
+        "objective_scaled": "7.0306202018870906e+01",
+        "objective_unscaled": "7.0306202018870899e+04"
+       }
+      ],
+      "optim_log_case33_3_2025_Summer.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 26,
+        "objective_scaled": "-8.7139158978707498e-04",
+        "objective_unscaled": "-8.7139158978707498e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 52,
+        "objective_scaled": "1.4268706784113206e+02",
+        "objective_unscaled": "1.4268706784113206e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 51,
+        "objective_scaled": "1.0567269613560765e+02",
+        "objective_unscaled": "1.0567269613560765e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 46,
+        "objective_scaled": "8.3752814419602899e+01",
+        "objective_unscaled": "8.3752814419602902e+04"
+       }
+      ],
+      "optim_log_case33_3_2025_Winter.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 25,
+        "objective_scaled": "-8.5110439561385622e-04",
+        "objective_unscaled": "-8.5110439561385620e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 52,
+        "objective_scaled": "1.9796487392147139e+02",
+        "objective_unscaled": "1.9796487392147139e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 49,
+        "objective_scaled": "1.4117208624172756e+02",
+        "objective_unscaled": "1.4117208624172755e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 47,
+        "objective_scaled": "1.2158647267863242e+02",
+        "objective_unscaled": "1.2158647267863242e+05"
+       }
+      ],
+      "optim_log_case33_3_2030_Autumn.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 24,
+        "objective_scaled": "-8.9064156303612647e-04",
+        "objective_unscaled": "-8.9064156303612640e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 50,
+        "objective_scaled": "1.2307677798973218e+02",
+        "objective_unscaled": "1.2307677798973220e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 57,
+        "objective_scaled": "9.6907262765258039e+01",
+        "objective_unscaled": "9.6907262765258056e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 50,
+        "objective_scaled": "9.3743670517488283e+01",
+        "objective_unscaled": "9.3743670517488295e+04"
+       }
+      ],
+      "optim_log_case33_3_2030_Spring.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 23,
+        "objective_scaled": "-8.6363067586456570e-04",
+        "objective_unscaled": "-8.6363067586456566e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 51,
+        "objective_scaled": "1.1978697704945429e+02",
+        "objective_unscaled": "1.1978697704945429e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 47,
+        "objective_scaled": "8.7596209410330175e+01",
+        "objective_unscaled": "8.7596209410330179e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 62,
+        "objective_scaled": "6.5822194891008124e+01",
+        "objective_unscaled": "6.5822194891008126e+04"
+       }
+      ],
+      "optim_log_case33_3_2030_Summer.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 26,
+        "objective_scaled": "-8.7896276065370957e-04",
+        "objective_unscaled": "-8.7896276065370960e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 61,
+        "objective_scaled": "1.1027641502903731e+02",
+        "objective_unscaled": "1.1027641502903734e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 56,
+        "objective_scaled": "9.7737720011368211e+01",
+        "objective_unscaled": "9.7737720011368234e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 53,
+        "objective_scaled": "8.3832128025123950e+01",
+        "objective_unscaled": "8.3832128025123966e+04"
+       }
+      ],
+      "optim_log_case33_3_2030_Winter.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 26,
+        "objective_scaled": "-8.5692079458444018e-04",
+        "objective_unscaled": "-8.5692079458444015e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 49,
+        "objective_scaled": "1.3873658108318179e+02",
+        "objective_unscaled": "1.3873658108318181e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 49,
+        "objective_scaled": "1.0870367718605762e+02",
+        "objective_unscaled": "1.0870367718605764e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 62,
+        "objective_scaled": "1.0266431956314015e+02",
+        "objective_unscaled": "1.0266431956314018e+05"
+       }
+      ],
+      "optim_log_case33_3_2035_Autumn.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 24,
+        "objective_scaled": "-9.0047498248929669e-04",
+        "objective_unscaled": "-9.0047498248929669e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 50,
+        "objective_scaled": "1.2749711223564080e+02",
+        "objective_unscaled": "1.2749711223564080e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 60,
+        "objective_scaled": "9.7888330908830213e+01",
+        "objective_unscaled": "9.7888330908830205e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 56,
+        "objective_scaled": "9.0295845959250187e+01",
+        "objective_unscaled": "9.0295845959250189e+04"
+       }
+      ],
+      "optim_log_case33_3_2035_Spring.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 23,
+        "objective_scaled": "-8.7034573761903108e-04",
+        "objective_unscaled": "-8.7034573761903111e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 58,
+        "objective_scaled": "1.1694702987377836e+02",
+        "objective_unscaled": "1.1694702987377833e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 58,
+        "objective_scaled": "1.1328189538872320e+02",
+        "objective_unscaled": "1.1328189538872318e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 56,
+        "objective_scaled": "8.8932366216416540e+01",
+        "objective_unscaled": "8.8932366216416514e+04"
+       }
+      ],
+      "optim_log_case33_3_2035_Summer.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 27,
+        "objective_scaled": "-8.8714695086076426e-04",
+        "objective_unscaled": "-8.8714695086076423e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 47,
+        "objective_scaled": "9.9814039259848471e+01",
+        "objective_unscaled": "9.9814039259848476e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 45,
+        "objective_scaled": "1.1243932987153137e+02",
+        "objective_unscaled": "1.1243932987153137e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 50,
+        "objective_scaled": "9.5029181648813605e+01",
+        "objective_unscaled": "9.5029181648813610e+04"
+       }
+      ],
+      "optim_log_case33_3_2035_Winter.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 26,
+        "objective_scaled": "-8.6451368589882051e-04",
+        "objective_unscaled": "-8.6451368589882049e-01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 51,
+        "objective_scaled": "1.6343462242030139e+02",
+        "objective_unscaled": "1.6343462242030140e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 60,
+        "objective_scaled": "1.3226119997858584e+02",
+        "objective_unscaled": "1.3226119997858582e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 43,
+        "objective_scaled": "1.2740165672190484e+02",
+        "objective_unscaled": "1.2740165672190484e+05"
+       }
+      ],
+      "optim_log_case9_2025_Autumn.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 39,
+        "objective_scaled": "-7.6208001848302549e-03",
+        "objective_unscaled": "-7.6208001848302551e+00"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 48,
+        "objective_scaled": "-1.7589956673212731e+02",
+        "objective_unscaled": "-1.7589956673212731e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 41,
+        "objective_scaled": "-1.0767823157349287e+02",
+        "objective_unscaled": "-1.0767823157349287e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 50,
+        "objective_scaled": "-1.0776123940021377e+02",
+        "objective_unscaled": "-1.0776123940021376e+05"
+       }
+      ],
+      "optim_log_case9_2025_Spring.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 32,
+        "objective_scaled": "-6.1263024358224833e-03",
+        "objective_unscaled": "-6.1263024358224829e+00"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 84,
+        "objective_scaled": "-1.4767404507066129e+02",
+        "objective_unscaled": "-1.4767404507066129e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 66,
+        "objective_scaled": "-5.2137560016654909e+01",
+        "objective_unscaled": "-5.2137560016654905e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 62,
+        "objective_scaled": "-5.2097904848152375e+01",
+        "objective_unscaled": "-5.2097904848152371e+04"
+       }
+      ],
+      "optim_log_case9_2025_Summer.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 31,
+        "objective_scaled": "-6.6347659813748893e-03",
+        "objective_unscaled": "-6.6347659813748887e+00"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 61,
+        "objective_scaled": "-1.6456330053277313e+02",
+        "objective_unscaled": "-1.6456330053277314e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 53,
+        "objective_scaled": "-7.1334048748128893e+01",
+        "objective_unscaled": "-7.1334048748128887e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 61,
+        "objective_scaled": "-7.1376455584939350e+01",
+        "objective_unscaled": "-7.1376455584939351e+04"
+       }
+      ],
+      "optim_log_case9_2025_Winter.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 37,
+        "objective_scaled": "-7.5376610076722068e-03",
+        "objective_unscaled": "-7.5376610076722068e+00"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 60,
+        "objective_scaled": "-1.9016689222124290e+02",
+        "objective_unscaled": "-1.9016689222124289e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 50,
+        "objective_scaled": "-1.0990791897978021e+02",
+        "objective_unscaled": "-1.0990791897978021e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 62,
+        "objective_scaled": "-1.1002459521115982e+02",
+        "objective_unscaled": "-1.1002459521115982e+05"
+       }
+      ],
+      "optim_log_case9_2030_Autumn.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 39,
+        "objective_scaled": "-8.7436971302277296e-03",
+        "objective_unscaled": "-8.7436971302277300e+00"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 67,
+        "objective_scaled": "-2.6139543581147632e+02",
+        "objective_unscaled": "-2.6139543581147637e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 72,
+        "objective_scaled": "-2.1348333045065993e+02",
+        "objective_unscaled": "-2.1348333045065997e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 63,
+        "objective_scaled": "-2.1338470840485667e+02",
+        "objective_unscaled": "-2.1338470840485670e+05"
+       }
+      ],
+      "optim_log_case9_2030_Spring.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 46,
+        "objective_scaled": "-6.9169880913849636e-03",
+        "objective_unscaled": "-6.9169880913849635e+00"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 65,
+        "objective_scaled": "-1.7884487727532766e+02",
+        "objective_unscaled": "-1.7884487727532766e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 79,
+        "objective_scaled": "-9.3738587244779836e+01",
+        "objective_unscaled": "-9.3738587244779832e+04"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 70,
+        "objective_scaled": "-9.2306082378566629e+01",
+        "objective_unscaled": "-9.2306082378566629e+04"
+       }
+      ],
+      "optim_log_case9_2030_Summer.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 38,
+        "objective_scaled": "-8.1332801688147553e-03",
+        "objective_unscaled": "-8.1332801688147551e+00"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 77,
+        "objective_scaled": "-2.2940208812307708e+02",
+        "objective_unscaled": "-2.2940208812307712e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 58,
+        "objective_scaled": "-1.3861136340085849e+02",
+        "objective_unscaled": "-1.3861136340085851e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 107,
+        "objective_scaled": "-1.3814078738717566e+02",
+        "objective_unscaled": "-1.3814078738717569e+05"
+       }
+      ],
+      "optim_log_case9_2030_Winter.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 43,
+        "objective_scaled": "-8.3167456310810108e-03",
+        "objective_unscaled": "-8.3167456310810106e+00"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 55,
+        "objective_scaled": "-2.3891707867352579e+02",
+        "objective_unscaled": "-2.3891707867352583e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 65,
+        "objective_scaled": "-1.7998789001382841e+02",
+        "objective_unscaled": "-1.7998789001382844e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 51,
+        "objective_scaled": "-1.7968761850340479e+02",
+        "objective_unscaled": "-1.7968761850340484e+05"
+       }
+      ],
+      "optim_log_case9_2035_Autumn.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 38,
+        "objective_scaled": "-6.5677996593733684e-03",
+        "objective_unscaled": "-6.5677996593733683e+00"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 62,
+        "objective_scaled": "-2.2023387432399772e+02",
+        "objective_unscaled": "-2.2023387432399773e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 64,
+        "objective_scaled": "-1.5411513038718684e+02",
+        "objective_unscaled": "-1.5411513038718683e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 61,
+        "objective_scaled": "-1.5295337767016673e+02",
+        "objective_unscaled": "-1.5295337767016672e+05"
+       }
+      ],
+      "optim_log_case9_2035_Spring.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 40,
+        "objective_scaled": "-1.0019887972488926e-02",
+        "objective_unscaled": "-1.0019887972488926e+01"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 57,
+        "objective_scaled": "-2.7918413135445343e+02",
+        "objective_unscaled": "-2.7918413135445333e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 71,
+        "objective_scaled": "-1.6168770457607630e+02",
+        "objective_unscaled": "-1.6168770457607627e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 69,
+        "objective_scaled": "-1.5938657269239553e+02",
+        "objective_unscaled": "-1.5938657269239551e+05"
+       }
+      ],
+      "optim_log_case9_2035_Summer.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 51,
+        "objective_scaled": "-8.4101752079396054e-03",
+        "objective_unscaled": "-8.4101752079396057e+00"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 61,
+        "objective_scaled": "-3.0541247584183191e+02",
+        "objective_unscaled": "-3.0541247584183188e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 78,
+        "objective_scaled": "-1.5586979162821851e+02",
+        "objective_unscaled": "-1.5586979162821852e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 74,
+        "objective_scaled": "-1.5766927542995734e+02",
+        "objective_unscaled": "-1.5766927542995734e+05"
+       }
+      ],
+      "optim_log_case9_2035_Winter.log": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 36,
+        "objective_scaled": "-9.9697228837826984e-03",
+        "objective_unscaled": "-9.9697228837826977e+00"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 46,
+        "objective_scaled": "-3.1564645834698507e+02",
+        "objective_unscaled": "-3.1564645834698505e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 52,
+        "objective_scaled": "-2.4934786092335628e+02",
+        "objective_unscaled": "-2.4934786092335626e+05"
+       },
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 52,
+        "objective_scaled": "-2.4938157543513302e+02",
+        "objective_unscaled": "-2.4938157543513301e+05"
+       }
+      ],
+      "optim_log_esso_node5_cycle001.txt": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 7,
+        "objective_scaled": "-5.7599476363636782e-04",
+        "objective_unscaled": "-5.7599476363636775e-03"
+       }
+      ],
+      "optim_log_esso_node5_cycle002.txt": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 7,
+        "objective_scaled": "-5.7599476363636782e-04",
+        "objective_unscaled": "-5.7599476363636775e-03"
+       }
+      ],
+      "optim_log_esso_node5_cycle003.txt": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 7,
+        "objective_scaled": "-5.7599476363636782e-04",
+        "objective_unscaled": "-5.7599476363636775e-03"
+       }
+      ],
+      "optim_log_esso_node5_init.txt": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 8,
+        "objective_scaled": "-5.7599476363636782e-04",
+        "objective_unscaled": "-5.7599476363636775e-03"
+       }
+      ],
+      "optim_log_esso_node7_cycle001.txt": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 16,
+        "objective_scaled": "-5.7597708244908616e-04",
+        "objective_unscaled": "-5.7597708244908610e-03"
+       }
+      ],
+      "optim_log_esso_node7_cycle002.txt": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 21,
+        "objective_scaled": "-1.5341007379341645e+00",
+        "objective_unscaled": "-1.5341007379341644e+01"
+       }
+      ],
+      "optim_log_esso_node7_cycle003.txt": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 27,
+        "objective_scaled": "-1.8650408772363372e+00",
+        "objective_unscaled": "-1.8650408772363370e+01"
+       }
+      ],
+      "optim_log_esso_node7_init.txt": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 18,
+        "objective_scaled": "-5.7597202275036822e-04",
+        "objective_unscaled": "-5.7597202275036820e-03"
+       }
+      ],
+      "optim_log_esso_node9_cycle001.txt": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 7,
+        "objective_scaled": "-5.7599476363636782e-04",
+        "objective_unscaled": "-5.7599476363636775e-03"
+       }
+      ],
+      "optim_log_esso_node9_cycle002.txt": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 7,
+        "objective_scaled": "-5.7599476363636782e-04",
+        "objective_unscaled": "-5.7599476363636775e-03"
+       }
+      ],
+      "optim_log_esso_node9_cycle003.txt": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 7,
+        "objective_scaled": "-5.7599476363636782e-04",
+        "objective_unscaled": "-5.7599476363636775e-03"
+       }
+      ],
+      "optim_log_esso_node9_init.txt": [
+       {
+        "exit": "EXIT: Optimal Solution Found.",
+        "iterations": 8,
+        "objective_scaled": "-5.7599476363636782e-04",
+        "objective_unscaled": "-5.7599476363636775e-03"
+       }
+      ]
+     }
+    },
+    "network_ipopt_solve_records": {
+     "excluded_fields_that_differed": [
+      "[*].log_bytes",
+      "[*].log_path"
+     ],
+     "first_differences": [],
+     "identical": true,
+     "n_differences": 0,
+     "n_records_A": 192,
+     "n_records_B": 192
+    }
+   },
+   "G3_evaluation_record": {
+    "excluded_fields_that_differed": [
+     "aa_per_cycle.path",
+     "campaign_id",
+     "campaign_lock_seen_by_child",
+     "campaign_spec_path",
+     "campaign_spec_sha256",
+     "child_pid",
+     "convergence_depth_capture.convergence_depth_tail_state_path",
+     "convergence_depth_capture.network_ipopt_solve_records_path",
+     "convergence_depth_capture.network_ipopt_solve_records_sha256",
+     "convergence_depth_per_round_append.end_of_run_records_sha256",
+     "convergence_depth_per_round_append.events_path",
+     "convergence_depth_per_round_append.records_append_path",
+     "convergence_depth_per_round_append.records_append_sha256",
+     "eval_dir",
+     "network_failures_summary.path",
+     "peak_rss",
+     "per_cycle_record_path",
+     "report_path",
+     "wall_time_s",
+     "working_dir_ids"
+    ],
+    "first_differences": [
+     [
+      "interface_dual_capture.bytes_written",
+      240617,
+      240615
+     ],
+     [
+      "interface_dual_capture.bytes_per_cycle_line_max",
+      76215,
+      76214
+     ]
+    ],
+    "holds": false,
+    "identical": false,
+    "n_differences": 2
+   },
+   "dir_a": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootA_serial/evals/ca8927e75d628bd1_y2025__n7_p0_25_e1",
+   "dir_b": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootB_concurrent/evals/ca8927e75d628bd1_y2025__n7_p0_25_e1",
+   "supplementary_not_gated": {
+    "all_json_identical": false,
+    "file_names_equal": true,
+    "json_files": {
+     "boyd_terminal.json": {
+      "excluded_fields_that_differed": [
+       "timestamp_utc"
+      ],
+      "first_differences": [],
+      "identical": true,
+      "n_differences": 0
+     },
+     "component_levels_terminal.json": {
+      "excluded_fields_that_differed": [
+       "timestamp_utc"
+      ],
+      "first_differences": [],
+      "identical": true,
+      "n_differences": 0
+     },
+     "convergence_depth_append_events.jsonl": {
+      "excluded_fields_that_differed": [
+       "[*].pid",
+       "[*].utc"
+      ],
+      "first_differences": [
+       [
+        "[1].records_file_bytes",
+        36276,
+        36468
+       ],
+       [
+        "[5].records_file_bytes",
+        72943,
+        73327
+       ],
+       [
+        "[8].records_file_bytes",
+        109634,
+        110210
+       ],
+       [
+        "[11].records_file_bytes",
+        146326,
+        147094
+       ]
+      ],
+      "identical": false,
+      "n_differences": 4
+     },
+     "convergence_depth_tail_state.json": {
+      "excluded_fields_that_differed": [],
+      "first_differences": [],
+      "identical": true,
+      "n_differences": 0
+     },
+     "ess_entry_stride_baseline.jsonl": {
+      "excluded_fields_that_differed": [],
+      "first_differences": [],
+      "identical": true,
+      "n_differences": 0
+     },
+     "ess_exempt_until_state_s39_D.jsonl": {
+      "excluded_fields_that_differed": [],
+      "first_differences": [],
+      "identical": true,
+      "n_differences": 0
+     },
+     "esso_recovery_events_s39_D.jsonl": {
+      "excluded_fields_that_differed": [],
+      "first_differences": [],
+      "identical": true,
+      "n_differences": 0
+     },
+     "frozen_snapshots_s39_D.jsonl": {
+      "excluded_fields_that_differed": [],
+      "first_differences": [],
+      "identical": true,
+      "n_differences": 0
+     },
+     "g_s39_D.json": {
+      "excluded_fields_that_differed": [
+       "esso_complementarity_diagnostics_by_round.flat_diagnostics[*].log_path",
+       "esso_complementarity_diagnostics_by_round.per_round[*].entries[*].log_path",
+       "timestamp_utc",
+       "wall_clock_s"
+      ],
+      "first_differences": [],
+      "identical": true,
+      "n_differences": 0
+     },
+     "interface_duals_per_cycle.jsonl": {
+      "excluded_fields_that_differed": [],
+      "first_differences": [
+       [
+        "[1].capture_s",
+        0.0009968280792236328,
+        0.0010249614715576172
+       ],
+       [
+        "[2].capture_s",
+        0.00014710426330566406,
+        0.0001239776611328125
+       ],
+       [
+        "[3].capture_s",
+        0.00010395050048828125,
+        0.0001609325408935547
+       ]
+      ],
+      "identical": false,
+      "n_differences": 3
+     },
+     "interface_settlement_detail_s31c.json": {
+      "excluded_fields_that_differed": [
+       "timestamp_utc"
+      ],
+      "first_differences": [],
+      "identical": true,
+      "n_differences": 0
+     },
+     "interface_voltage_terminal.json": {
+      "excluded_fields_that_differed": [
+       "summary.timestamp_utc"
+      ],
+      "first_differences": [],
+      "identical": true,
+      "n_differences": 0
+     },
+     "leak_classification_s39_D.jsonl": {
+      "excluded_fields_that_differed": [
+       "[*].log_path"
+      ],
+      "first_differences": [],
+      "identical": true,
+      "n_differences": 0
+     },
+     "network_failures_s39_D.jsonl": {
+      "excluded_fields_that_differed": [],
+      "first_differences": [],
+      "identical": true,
+      "n_differences": 0
+     },
+     "network_ipopt_solve_records_append.jsonl": {
+      "excluded_fields_that_differed": [
+       "[*].log_bytes",
+       "[*].log_path"
+      ],
+      "first_differences": [],
+      "identical": true,
+      "n_differences": 0
+     },
+     "pf_entry_stride_s39_D.jsonl": {
+      "excluded_fields_that_differed": [],
+      "first_differences": [],
+      "identical": true,
+      "n_differences": 0
+     },
+     "recourse_jump_sidecar_baseline.jsonl": {
+      "excluded_fields_that_differed": [],
+      "first_differences": [],
+      "identical": true,
+      "n_differences": 0
+     },
+     "soh_floor_sidecar_baseline.jsonl": {
+      "excluded_fields_that_differed": [],
+      "first_differences": [],
+      "identical": true,
+      "n_differences": 0
+     }
+    },
+    "note": "NOT GATED. Root tokens (campaign id, campaign spec sha256) normalised in every string; keys excluded by the generic rule: pid, ppid, child_pid, parent_pid, log_path, log_bytes or containing utc, timestamp, wall, rss, footprint, elapsed, runtime, seconds, _path, path_, sha256",
+    "only_in_A": [],
+    "only_in_B": [],
+    "other_files_sha_equal": {
+     "child_stderr.log": true,
+     "child_stdout.log": false,
+     "esso_models_s39_D.pkl": false,
+     "stdout_s39_D.log": false
+    }
+   }
+  },
+  "evaluated": true,
+  "historical_cross_check_not_gated": {
+   "x0": {
+    "G1_cycles_1_3": {
+     "files": {
+      "aa_per_cycle.jsonl": {
+       "excluded_fields_that_differed": [],
+       "first_differences": [],
+       "first_differing_cycle_field": null,
+       "identical": true,
+       "n_differences": 0,
+       "n_rows_A": 132,
+       "n_rows_B": 3
+      },
+      "g_s39_D.json#cycle_trajectory": {
+       "excluded_fields_that_differed": [],
+       "first_differences": [],
+       "first_differing_cycle_field": null,
+       "identical": true,
+       "n_differences": 0,
+       "n_rows_A": 132,
+       "n_rows_B": 3
+      },
+      "per_cycle_record.jsonl": {
+       "excluded_fields_that_differed": [],
+       "first_differences": [],
+       "first_differing_cycle_field": null,
+       "identical": true,
+       "n_differences": 0,
+       "n_rows_A": 132,
+       "n_rows_B": 3
+      }
+     },
+     "holds": true
+    },
+    "historical": {
+     "eval_dir": "data/SRP1/Results/P515S55/e1_screen_1x/campaign_s55_step7_x0_a_1x/evals/5cfe69a615ae3708_x0_a_1x",
+     "note": "W187 screen x0_A_1x (same harness d9a944f2, production f6c23977), cycles 1-3"
+    }
+   },
+   "y2025__n7_p0.25_e1": {
+    "G1_cycles_1_3": {
+     "files": {
+      "aa_per_cycle.jsonl": {
+       "excluded_fields_that_differed": [],
+       "first_differences": [],
+       "first_differing_cycle_field": null,
+       "identical": true,
+       "n_differences": 0,
+       "n_rows_A": 112,
+       "n_rows_B": 3
+      },
+      "g_s39_D.json#cycle_trajectory": {
+       "excluded_fields_that_differed": [],
+       "first_differences": [],
+       "first_differing_cycle_field": null,
+       "identical": true,
+       "n_differences": 0,
+       "n_rows_A": 112,
+       "n_rows_B": 3
+      },
+      "per_cycle_record.jsonl": {
+       "excluded_fields_that_differed": [],
+       "first_differences": [],
+       "first_differing_cycle_field": null,
+       "identical": true,
+       "n_differences": 0,
+       "n_rows_A": 112,
+       "n_rows_B": 3
+      }
+     },
+     "holds": true
+    },
+    "historical": {
+     "eval_dir": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1",
+     "note": "W86 tail re-certification n7_4h_e1 (older harness and production), cycles 1-3"
+    }
+   }
+  }
+ },
+ "gate_spec": {
+  "path": "data/SRP1/Results/P515S56/concurrency_gate_v1/frozen_concurrency_gate_spec_v1_0dce2472.json",
+  "sha256": "0dce2472aeed38ee6f5c1d0be2f18f2e1e6e9dfad9037263de930e39c128da7d"
+ },
+ "git_head_at_run": "2684dcbf73ec2cfad2382bc527da60b7ec6c68ff",
+ "guards": {
+  "all_zero": true,
+  "parent_guard": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "pickle": {
+   "blocked": true,
+   "counts": {
+    "load": 0,
+    "loads": 0
+   }
+  }
+ },
+ "harness": {
+  "path": "p515_s44_campaign_harness.py",
+  "sha256": "d9a944f220e791b82147f08d0e606126ad454b8b6b2994024f94e106798fb191"
+ },
+ "measurements": {
+  "contention_every_B_child_vs_A_shared": {
+   "x0": {
+    "A_s": {
+     "1": 27.9,
+     "2": 26.29,
+     "3": 27.93
+    },
+    "B_s": {
+     "1": 28.75,
+     "2": 30.5,
+     "3": 30.02
+    },
+    "cycles": [
+     1,
+     2,
+     3
+    ],
+    "per_cycle_ratio_B_over_A": {
+     "1": 1.0304659498207887,
+     "2": 1.1601369341955117,
+     "3": 1.0748299319727892
+    },
+    "primary_sum_ratio_B_over_A": 1.0870677057963953
+   },
+   "y2025__n5_p0.25_e0.5": {
+    "A_s": {
+     "1": 27.9,
+     "2": 26.29,
+     "3": 27.93
+    },
+    "B_s": {
+     "1": 36.32,
+     "2": 31.23,
+     "3": 34.17
+    },
+    "cycles": [
+     1,
+     2,
+     3
+    ],
+    "per_cycle_ratio_B_over_A": {
+     "1": 1.3017921146953406,
+     "2": 1.1879041460631419,
+     "3": 1.2234156820622988
+    },
+    "primary_sum_ratio_B_over_A": 1.2386751095957136
+   },
+   "y2025__n7_p0.25_e1": {
+    "A_s": {
+     "1": 27.9,
+     "2": 26.29,
+     "3": 27.93
+    },
+    "B_s": {
+     "1": 32.33,
+     "2": 31.08,
+     "3": 33.71
+    },
+    "cycles": [
+     1,
+     2,
+     3
+    ],
+    "per_cycle_ratio_B_over_A": {
+     "1": 1.1587813620071685,
+     "2": 1.1821985545834919,
+     "3": 1.2069459362692445
+    },
+    "primary_sum_ratio_B_over_A": 1.1826595226497807
+   },
+   "y2025__n7_p0.5_e1": {
+    "A_s": {
+     "1": 27.9,
+     "2": 26.29,
+     "3": 27.93
+    },
+    "B_s": {
+     "1": 31.56,
+     "2": 29.89,
+     "3": 33.05
+    },
+    "cycles": [
+     1,
+     2,
+     3
+    ],
+    "per_cycle_ratio_B_over_A": {
+     "1": 1.1311827956989247,
+     "2": 1.1369341955116015,
+     "3": 1.1833154314357321
+    },
+    "primary_sum_ratio_B_over_A": 1.1507549926936191
+   },
+   "y2025__n9_p0.25_e1": {
+    "A_s": {
+     "1": 27.9,
+     "2": 26.29,
+     "3": 27.93
+    },
+    "B_s": {
+     "1": 31.06,
+     "2": 34.37,
+     "3": 33.43
+    },
+    "cycles": [
+     1,
+     2,
+     3
+    ],
+    "per_cycle_ratio_B_over_A": {
+     "1": 1.1132616487455198,
+     "2": 1.3073411943704831,
+     "3": 1.196920873612603
+    },
+    "primary_sum_ratio_B_over_A": 1.2038480272771552
+   }
+  },
+  "contention_shared_candidate": {
+   "A_s": {
+    "1": 27.9,
+    "2": 26.29,
+    "3": 27.93
+   },
+   "B_s": {
+    "1": 32.33,
+    "2": 31.08,
+    "3": 33.71
+   },
+   "cycles": [
+    1,
+    2,
+    3
+   ],
+   "per_cycle_ratio_B_over_A": {
+    "1": 1.1587813620071685,
+    "2": 1.1821985545834919,
+    "3": 1.2069459362692445
+   },
+   "primary_sum_ratio_B_over_A": 1.1826595226497807
+  },
+  "footprint_child_gib": {
+   "A:y2025__n7_p0.25_e1": {
+    "capture_exact": true,
+    "gib": 1.7378716319799423
+   },
+   "B:x0": {
+    "capture_exact": true,
+    "gib": 1.9039330780506134
+   },
+   "B:y2025__n5_p0.25_e0.5": {
+    "capture_exact": true,
+    "gib": 1.8968987092375755
+   },
+   "B:y2025__n7_p0.25_e1": {
+    "capture_exact": true,
+    "gib": 1.9046197012066841
+   },
+   "B:y2025__n7_p0.5_e1": {
+    "capture_exact": true,
+    "gib": 1.9047264903783798
+   },
+   "B:y2025__n9_p0.25_e1": {
+    "capture_exact": true,
+    "gib": 1.9105401113629341
+   }
+  },
+  "memory_available_during_B": {
+   "errors": [],
+   "first_available_gib": 15.223419189453125,
+   "last_available_gib": 17.736251831054688,
+   "max_available_gib": 17.736251831054688,
+   "measure": "hw.memsize - (wired + anonymous + compressor-occupied) x page size (vm_stat)",
+   "min_available_gib": 10.223007202148438,
+   "n_samples": 32,
+   "period_s": 5.0,
+   "thread_alive_after_stop": false
+  },
+  "memory_preflight": {
+   "A": {
+    "available_bytes": 15404318720,
+    "available_gib": 14.346389770507812,
+    "concurrency": 1,
+    "hw_memsize_gib": 32.0,
+    "page_size": 16384,
+    "pages": {
+     "Anonymous pages": 910566,
+     "Pages free": 4758,
+     "Pages inactive": 898266,
+     "Pages occupied by compressor": 76606,
+     "Pages wired down": 169775
+    },
+    "pass": true,
+    "required_gib": 2.75,
+    "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x 2.75 GiB (the S47 launcher rule); gating before each root",
+    "utc": "2026-11-21T11:29:04.991066+00:00"
+   },
+   "B": {
+    "available_bytes": 16346857472,
+    "available_gib": 15.224197387695312,
+    "concurrency": 5,
+    "hw_memsize_gib": 32.0,
+    "page_size": 16384,
+    "pages": {
+     "Anonymous pages": 878484,
+     "Pages free": 29330,
+     "Pages inactive": 898286,
+     "Pages occupied by compressor": 85961,
+     "Pages wired down": 134974
+    },
+    "pass": true,
+    "required_gib": 13.75,
+    "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x 2.75 GiB (the S47 launcher rule); gating before each root",
+    "utc": "2026-11-21T11:31:22.001171+00:00"
+   }
+  },
+  "peak_rss_child_gib": {
+   "A:y2025__n7_p0.25_e1": 2.124786376953125,
+   "B:x0": 1.943695068359375,
+   "B:y2025__n5_p0.25_e0.5": 1.97613525390625,
+   "B:y2025__n7_p0.25_e1": 1.9691314697265625,
+   "B:y2025__n7_p0.5_e1": 1.9707489013671875,
+   "B:y2025__n9_p0.25_e1": 1.9652862548828125
+  },
+  "root_wall_s": {
+   "A": 135.14060401916504,
+   "B": 160.1792938709259
+  }
+ },
+ "note_manifest": "run_launch.log is excluded from the manifest (still being written); hash it after exit",
+ "objective_convention": "Q = gross_operational_cost (contracted interface settlement excluded; salvage reported separately); no objective difference is quoted -- records are compared bitwise",
+ "predictions": {
+  "P1": {
+   "evaluated_as": "G1 and G2 and G3 hold (every compared field bitwise equal)",
+   "held": false,
+   "outcome": {
+    "G1": true,
+    "G2": true,
+    "G3": false
+   },
+   "source": "Advisor",
+   "text": "the shared candidate's per-cycle record is bitwise identical in A and B"
+  },
+  "P2": {
+   "evaluated_as": "primary: sum over cycles 1-3 of the shared candidate's production \"Iteration k: X s\" wall in B / the same sum in A, held iff in [1.12, 1.22]; per-cycle ratios reported beside",
+   "held": true,
+   "outcome": 1.1826595226497807,
+   "per_cycle": {
+    "1": 1.1587813620071685,
+    "2": 1.1821985545834919,
+    "3": 1.2069459362692445
+   },
+   "range": [
+    1.12,
+    1.22
+   ],
+   "source": "Advisor",
+   "text": "contention 1.12-1.22x per cycle in B vs A"
+  },
+  "P3": {
+   "evaluated_as": "every one of the 6 children: evaluation_record peak_rss.child_python_process_ru_maxrss (bytes, macOS) / 2^30 in [2.3, 3.5]",
+   "held": false,
+   "outcome": {
+    "A:y2025__n7_p0.25_e1": 2.124786376953125,
+    "B:x0": 1.943695068359375,
+    "B:y2025__n5_p0.25_e0.5": 1.97613525390625,
+    "B:y2025__n7_p0.25_e1": 1.9691314697265625,
+    "B:y2025__n7_p0.5_e1": 1.9707489013671875,
+    "B:y2025__n9_p0.25_e1": 1.9652862548828125
+   },
+   "range_gib": [
+    2.3,
+    3.5
+   ],
+   "source": "Advisor",
+   "text": "peak RSS per SRP1 child 2.3-3.5 GiB"
+  }
+ },
+ "roots": {
+  "A": {
+   "batch_info": {
+    "max_concurrent_observed": 1,
+    "timeline": [
+     {
+      "event": "start",
+      "label": "y2025__n7_p0.25_e1",
+      "pid": 96567,
+      "t": 1795260546.766594
+     },
+     {
+      "event": "end",
+      "exit_code": 0,
+      "label": "y2025__n7_p0.25_e1",
+      "pid": 96567,
+      "t": 1795260681.900934
+     }
+    ]
+   },
+   "campaign_root": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootA_serial",
+   "campaign_spec": {
+    "path": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootA_serial/campaign_spec_s56_cgate_v1_roota_serial_5768257a.json",
+    "sha256": "5768257aee0f40ead1cf1812033608d74fd78b3e0ae9c4d5299380d4b37e20dd"
+   },
+   "configuration_equal_declaration": true,
+   "entries_equal_declaration": true,
+   "harness_error": null,
+   "launched": true,
+   "memory_during": {
+    "errors": [],
+    "first_available_gib": 14.273910522460938,
+    "last_available_gib": 13.186981201171875,
+    "max_available_gib": 14.351226806640625,
+    "measure": "hw.memsize - (wired + anonymous + compressor-occupied) x page size (vm_stat)",
+    "min_available_gib": 12.661346435546875,
+    "n_samples": 27,
+    "period_s": 5.0,
+    "samples": [
+     {
+      "available_bytes": 15326494720,
+      "t": 1795260546.768796,
+      "utc": "2026-11-21T11:29:06.768771+00:00"
+     },
+     {
+      "available_bytes": 15409512448,
+      "t": 1795260551.784321,
+      "utc": "2026-11-21T11:29:11.784253+00:00"
+     },
+     {
+      "available_bytes": 15163965440,
+      "t": 1795260556.795514,
+      "utc": "2026-11-21T11:29:16.795456+00:00"
+     },
+     {
+      "available_bytes": 14970077184,
+      "t": 1795260561.80941,
+      "utc": "2026-11-21T11:29:21.809353+00:00"
+     },
+     {
+      "available_bytes": 14803959808,
+      "t": 1795260566.8233888,
+      "utc": "2026-11-21T11:29:26.823328+00:00"
+     },
+     {
+      "available_bytes": 14561329152,
+      "t": 1795260571.839211,
+      "utc": "2026-11-21T11:29:31.839153+00:00"
+     },
+     {
+      "available_bytes": 14366998528,
+      "t": 1795260576.853497,
+      "utc": "2026-11-21T11:29:36.853419+00:00"
+     },
+     {
+      "available_bytes": 14322171904,
+      "t": 1795260581.8671181,
+      "utc": "2026-11-21T11:29:41.867051+00:00"
+     },
+     {
+      "available_bytes": 14009253888,
+      "t": 1795260586.8812082,
+      "utc": "2026-11-21T11:29:46.881154+00:00"
+     },
+     {
+      "available_bytes": 13595017216,
+      "t": 1795260591.8966668,
+      "utc": "2026-11-21T11:29:51.896613+00:00"
+     },
+     {
+      "available_bytes": 13816037376,
+      "t": 1795260596.910801,
+      "utc": "2026-11-21T11:29:56.910754+00:00"
+     },
+     {
+      "available_bytes": 14139899904,
+      "t": 1795260601.92225,
+      "utc": "2026-11-21T11:30:01.922175+00:00"
+     },
+     {
+      "available_bytes": 14081900544,
+      "t": 1795260606.938174,
+      "utc": "2026-11-21T11:30:06.938092+00:00"
+     },
+     {
+      "available_bytes": 14227177472,
+      "t": 1795260611.952299,
+      "utc": "2026-11-21T11:30:11.952216+00:00"
+     },
+     {
+      "available_bytes": 14172454912,
+      "t": 1795260616.965478,
+      "utc": "2026-11-21T11:30:16.965430+00:00"
+     },
+     {
+      "available_bytes": 13892976640,
+      "t": 1795260621.98133,
+      "utc": "2026-11-21T11:30:21.981266+00:00"
+     },
+     {
+      "available_bytes": 13922254848,
+      "t": 1795260626.9949892,
+      "utc": "2026-11-21T11:30:26.994935+00:00"
+     },
+     {
+      "available_bytes": 14103887872,
+      "t": 1795260632.011319,
+      "utc": "2026-11-21T11:30:32.011246+00:00"
+     },
+     {
+      "available_bytes": 14073757696,
+      "t": 1795260637.026232,
+      "utc": "2026-11-21T11:30:37.026170+00:00"
+     },
+     {
+      "available_bytes": 14327562240,
+      "t": 1795260642.0400991,
+      "utc": "2026-11-21T11:30:42.040051+00:00"
+     },
+     {
+      "available_bytes": 14308261888,
+      "t": 1795260647.055666,
+      "utc": "2026-11-21T11:30:47.055605+00:00"
+     },
+     {
+      "available_bytes": 14336966656,
+      "t": 1795260652.0708869,
+      "utc": "2026-11-21T11:30:52.070826+00:00"
+     },
+     {
+      "available_bytes": 14242004992,
+      "t": 1795260657.086832,
+      "utc": "2026-11-21T11:30:57.086735+00:00"
+     },
+     {
+      "available_bytes": 14154842112,
+      "t": 1795260662.101301,
+      "utc": "2026-11-21T11:31:02.101244+00:00"
+     },
+     {
+      "available_bytes": 14066089984,
+      "t": 1795260667.117172,
+      "utc": "2026-11-21T11:31:07.117109+00:00"
+     },
+     {
+      "available_bytes": 13968637952,
+      "t": 1795260672.131379,
+      "utc": "2026-11-21T11:31:12.131331+00:00"
+     },
+     {
+      "available_bytes": 14159413248,
+      "t": 1795260677.1475022,
+      "utc": "2026-11-21T11:31:17.147434+00:00"
+     }
+    ],
+    "thread_alive_after_stop": false
+   },
+   "memory_preflight": {
+    "available_bytes": 15404318720,
+    "available_gib": 14.346389770507812,
+    "concurrency": 1,
+    "hw_memsize_gib": 32.0,
+    "page_size": 16384,
+    "pages": {
+     "Anonymous pages": 910566,
+     "Pages free": 4758,
+     "Pages inactive": 898266,
+     "Pages occupied by compressor": 76606,
+     "Pages wired down": 169775
+    },
+    "pass": true,
+    "required_gib": 2.75,
+    "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x 2.75 GiB (the S47 launcher rule); gating before each root",
+    "utc": "2026-11-21T11:29:04.991066+00:00"
+   },
+   "per_evaluation": {
+    "y2025__n7_p0.25_e1": {
+     "cycle_walls": {
+      "drained_event_interval_s": {
+       "1": 34.635818004608154,
+       "2": 26.284005880355835,
+       "3": 27.92940902709961
+      },
+      "production_iteration_wall_s": {
+       "1": 27.9,
+       "2": 26.29,
+       "3": 27.93
+      }
+     },
+     "cycles_run": 3,
+     "eval_dir": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootA_serial/evals/ca8927e75d628bd1_y2025__n7_p0_25_e1",
+     "eval_key": "ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d",
+     "exit_code": 0,
+     "footprint": {
+      "capture_exact": true,
+      "errors": [],
+      "eval_key": "ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d",
+      "exit_event_received": true,
+      "exit_read": {
+       "ri_interval_max_phys_footprint": 1866025456,
+       "ri_lifetime_max_phys_footprint": 1866025456,
+       "ri_phys_footprint": 0,
+       "ri_proc_exit_abstime": 79033676946711,
+       "ri_proc_start_abstime": 79030538232059,
+       "ri_resident_size": 853917696
+      },
+      "final_read_after_exit": true,
+      "identity": {
+       "cmdline_has_child_flag": true,
+       "cmdline_has_eval_key": true,
+       "launcher_pid": 96529,
+       "ppid": 96529,
+       "ppid_is_launcher": true
+      },
+      "identity_verified": true,
+      "launch_json": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootA_serial/evals/ca8927e75d628bd1_y2025__n7_p0_25_e1/launch.json",
+      "lifetime_max_phys_footprint_bytes": 1866025456,
+      "lifetime_max_phys_footprint_gib": 1.7378716319799423,
+      "lifetime_max_phys_footprint_last_live_bytes": 1866025456,
+      "live_max_phys_footprint_sampled_bytes": 1866025456,
+      "measure": "ri_lifetime_max_phys_footprint of the evaluation child (the harness's --child Python process; its IPOPT subprocesses are NOT included -- the same scope as child_python_process_ru_maxrss), read by this launcher with proc_pid_rusage(pid, RUSAGE_INFO_V4); FINAL value = the read on the exited, not-yet-reaped child, taken on the kqueue EVFILT_PROC NOTE_EXIT event; identity: pid from the harness launch.json, parent pid == this launcher, command line holds --child and the eval key (W91 ChildFootprintMonitor, copied)",
+      "n_live_reads": 131,
+      "pid": 96567,
+      "poll_s": 1.0,
+      "registered_exit_event": true,
+      "thread_alive_after_stop": false
+     },
+     "gross_operational_cost_terminal": 705756745.6324317,
+     "local_solve_failures": 0,
+     "peak_rss": {
+      "child_python_process_ru_maxrss": 2281472000,
+      "production_state_peak_rss_ru_maxrss": 2281472000,
+      "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)",
+      "solver_subprocesses_max_ru_maxrss": 52264960,
+      "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)"
+     },
+     "peak_rss_child_gib": 2.124786376953125,
+     "solve_profile": {
+      "base_solves": 204,
+      "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+      "expected_solves": 204,
+      "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+      "identity_holds": true,
+      "n_days": 4,
+      "n_dso": 3,
+      "n_esso_nodes": 3,
+      "n_years": 3,
+      "observed": {
+       "blocked_exec": 0,
+       "blocked_solve": 0,
+       "permitted_exec": 204,
+       "permitted_solve": 204
+      },
+      "reconciliation_supported": true,
+      "recovered_only_identity": {
+       "expected": 204,
+       "holds": true,
+       "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+      },
+      "retry_solves_credited": 0,
+      "rounds": 4,
+      "rounds_note": "one initialization round + cycles_run ADMM cycles",
+      "solves_per_cycle": 51
+     },
+     "status": "not_certified",
+     "wait4": {
+      "exit_code": 0,
+      "ru_maxrss_units": "bytes on macOS/BSD, kilobytes on Linux",
+      "rusage": {
+       "ru_majflt": 2342,
+       "ru_maxrss": 2281472000,
+       "ru_minflt": 1973614,
+       "ru_nivcsw": 9939,
+       "ru_nvcsw": 17273,
+       "ru_stime": 8.201348,
+       "ru_utime": 121.123829
+      },
+      "semantics": "os.wait4 rusage of the child process as reaped by the parent",
+      "wall_s_parent_view": 135.1343400478363
+     },
+     "wait4_ru_maxrss_gib": 2.124786376953125,
+     "wall_time_s": {
+      "child_process_s": 127.3382830619812,
+      "run_admm_arm_reported_wall_clock_s": 112.57924294471741,
+      "run_admm_arm_s": 113.55845093727112
+     },
+     "working_dir_run": "p515s44_s56_cgate_v1_roota_serial_ca8927e75d628bd1_run"
+    }
+   },
+   "root_wall_s": 135.14060401916504
+  },
+  "B": {
+   "batch_info": {
+    "max_concurrent_observed": 5,
+    "timeline": [
+     {
+      "event": "start",
+      "label": "y2025__n7_p0.25_e1",
+      "pid": 97419,
+      "t": 1795260682.7373
+     },
+     {
+      "event": "start",
+      "label": "x0",
+      "pid": 97421,
+      "t": 1795260682.740543
+     },
+     {
+      "event": "start",
+      "label": "y2025__n5_p0.25_e0.5",
+      "pid": 97422,
+      "t": 1795260682.743562
+     },
+     {
+      "event": "start",
+      "label": "y2025__n9_p0.25_e1",
+      "pid": 97423,
+      "t": 1795260682.7475562
+     },
+     {
+      "event": "start",
+      "label": "y2025__n7_p0.5_e1",
+      "pid": 97424,
+      "t": 1795260682.7514932
+     },
+     {
+      "event": "end",
+      "exit_code": 0,
+      "label": "x0",
+      "pid": 97421,
+      "t": 1795260827.88943
+     },
+     {
+      "event": "end",
+      "exit_code": 0,
+      "label": "y2025__n7_p0.5_e1",
+      "pid": 97424,
+      "t": 1795260832.8942132
+     },
+     {
+      "event": "end",
+      "exit_code": 0,
+      "label": "y2025__n7_p0.25_e1",
+      "pid": 97419,
+      "t": 1795260837.8992589
+     },
+     {
+      "event": "end",
+      "exit_code": 0,
+      "label": "y2025__n9_p0.25_e1",
+      "pid": 97423,
+      "t": 1795260837.900458
+     },
+     {
+      "event": "end",
+      "exit_code": 0,
+      "label": "y2025__n5_p0.25_e0.5",
+      "pid": 97422,
+      "t": 1795260842.906276
+     }
+    ]
+   },
+   "campaign_root": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootB_concurrent",
+   "campaign_spec": {
+    "path": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootB_concurrent/campaign_spec_s56_cgate_v1_rootb_concurrent_462fbeab.json",
+    "sha256": "462fbeab05adaf3c6c5b9a27393bc62a6c872c17f900cc0c41e19e6cca2e4b6d"
+   },
+   "configuration_equal_declaration": true,
+   "entries_equal_declaration": true,
+   "harness_error": null,
+   "launched": true,
+   "memory_during": {
+    "errors": [],
+    "first_available_gib": 15.223419189453125,
+    "last_available_gib": 17.736251831054688,
+    "max_available_gib": 17.736251831054688,
+    "measure": "hw.memsize - (wired + anonymous + compressor-occupied) x page size (vm_stat)",
+    "min_available_gib": 10.223007202148438,
+    "n_samples": 32,
+    "period_s": 5.0,
+    "samples": [
+     {
+      "available_bytes": 16346021888,
+      "t": 1795260682.740104,
+      "utc": "2026-11-21T11:31:22.740062+00:00"
+     },
+     {
+      "available_bytes": 15267905536,
+      "t": 1795260687.75497,
+      "utc": "2026-11-21T11:31:27.754920+00:00"
+     },
+     {
+      "available_bytes": 14859599872,
+      "t": 1795260692.769962,
+      "utc": "2026-11-21T11:31:32.769913+00:00"
+     },
+     {
+      "available_bytes": 14687338496,
+      "t": 1795260697.786415,
+      "utc": "2026-11-21T11:31:37.786352+00:00"
+     },
+     {
+      "available_bytes": 13612662784,
+      "t": 1795260702.802828,
+      "utc": "2026-11-21T11:31:42.802776+00:00"
+     },
+     {
+      "available_bytes": 12740739072,
+      "t": 1795260707.818176,
+      "utc": "2026-11-21T11:31:47.818110+00:00"
+     },
+     {
+      "available_bytes": 11959189504,
+      "t": 1795260712.834049,
+      "utc": "2026-11-21T11:31:52.833964+00:00"
+     },
+     {
+      "available_bytes": 11183783936,
+      "t": 1795260717.849292,
+      "utc": "2026-11-21T11:31:57.849231+00:00"
+     },
+     {
+      "available_bytes": 11156062208,
+      "t": 1795260722.868758,
+      "utc": "2026-11-21T11:32:02.868674+00:00"
+     },
+     {
+      "available_bytes": 11156504576,
+      "t": 1795260727.880934,
+      "utc": "2026-11-21T11:32:07.880874+00:00"
+     },
+     {
+      "available_bytes": 11131830272,
+      "t": 1795260732.896214,
+      "utc": "2026-11-21T11:32:12.896141+00:00"
+     },
+     {
+      "available_bytes": 11182915584,
+      "t": 1795260737.913715,
+      "utc": "2026-11-21T11:32:17.913625+00:00"
+     },
+     {
+      "available_bytes": 11187060736,
+      "t": 1795260742.929112,
+      "utc": "2026-11-21T11:32:22.929041+00:00"
+     },
+     {
+      "available_bytes": 11188305920,
+      "t": 1795260747.945777,
+      "utc": "2026-11-21T11:32:27.945725+00:00"
+     },
+     {
+      "available_bytes": 11199348736,
+      "t": 1795260752.962188,
+      "utc": "2026-11-21T11:32:32.962085+00:00"
+     },
+     {
+      "available_bytes": 11218518016,
+      "t": 1795260757.978249,
+      "utc": "2026-11-21T11:32:37.978174+00:00"
+     },
+     {
+      "available_bytes": 11174051840,
+      "t": 1795260762.993163,
+      "utc": "2026-11-21T11:32:42.993085+00:00"
+     },
+     {
+      "available_bytes": 11256365056,
+      "t": 1795260768.016007,
+      "utc": "2026-11-21T11:32:48.015836+00:00"
+     },
+     {
+      "available_bytes": 11248009216,
+      "t": 1795260773.031462,
+      "utc": "2026-11-21T11:32:53.031405+00:00"
+     },
+     {
+      "available_bytes": 11222630400,
+      "t": 1795260778.043487,
+      "utc": "2026-11-21T11:32:58.043421+00:00"
+     },
+     {
+      "available_bytes": 11367890944,
+      "t": 1795260783.058064,
+      "utc": "2026-11-21T11:33:03.057992+00:00"
+     },
+     {
+      "available_bytes": 11228364800,
+      "t": 1795260788.074181,
+      "utc": "2026-11-21T11:33:08.074110+00:00"
+     },
+     {
+      "available_bytes": 11278942208,
+      "t": 1795260793.090336,
+      "utc": "2026-11-21T11:33:13.090267+00:00"
+     },
+     {
+      "available_bytes": 11283906560,
+      "t": 1795260798.1019578,
+      "utc": "2026-11-21T11:33:18.101882+00:00"
+     },
+     {
+      "available_bytes": 11314233344,
+      "t": 1795260803.120641,
+      "utc": "2026-11-21T11:33:23.120545+00:00"
+     },
+     {
+      "available_bytes": 11114430464,
+      "t": 1795260808.1363719,
+      "utc": "2026-11-21T11:33:28.136293+00:00"
+     },
+     {
+      "available_bytes": 11130290176,
+      "t": 1795260813.1544042,
+      "utc": "2026-11-21T11:33:33.154319+00:00"
+     },
+     {
+      "available_bytes": 11151622144,
+      "t": 1795260818.170696,
+      "utc": "2026-11-21T11:33:38.170623+00:00"
+     },
+     {
+      "available_bytes": 10976870400,
+      "t": 1795260823.1863208,
+      "utc": "2026-11-21T11:33:43.186241+00:00"
+     },
+     {
+      "available_bytes": 12795396096,
+      "t": 1795260828.201757,
+      "utc": "2026-11-21T11:33:48.201684+00:00"
+     },
+     {
+      "available_bytes": 14891057152,
+      "t": 1795260833.216196,
+      "utc": "2026-11-21T11:33:53.216138+00:00"
+     },
+     {
+      "available_bytes": 19044155392,
+      "t": 1795260838.232291,
+      "utc": "2026-11-21T11:33:58.232190+00:00"
+     }
+    ],
+    "thread_alive_after_stop": false
+   },
+   "memory_preflight": {
+    "available_bytes": 16346857472,
+    "available_gib": 15.224197387695312,
+    "concurrency": 5,
+    "hw_memsize_gib": 32.0,
+    "page_size": 16384,
+    "pages": {
+     "Anonymous pages": 878484,
+     "Pages free": 29330,
+     "Pages inactive": 898286,
+     "Pages occupied by compressor": 85961,
+     "Pages wired down": 134974
+    },
+    "pass": true,
+    "required_gib": 13.75,
+    "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x 2.75 GiB (the S47 launcher rule); gating before each root",
+    "utc": "2026-11-21T11:31:22.001171+00:00"
+   },
+   "per_evaluation": {
+    "x0": {
+     "cycle_walls": {
+      "drained_event_interval_s": {
+       "1": 36.37055802345276,
+       "2": 30.49950909614563,
+       "3": 30.0228488445282
+      },
+      "production_iteration_wall_s": {
+       "1": 28.75,
+       "2": 30.5,
+       "3": 30.02
+      }
+     },
+     "cycles_run": 3,
+     "eval_dir": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootB_concurrent/evals/5cfe69a615ae3708_x0",
+     "eval_key": "5cfe69a615ae370835a5896eaa6899f1d9973b7adf649437c2ddd94d1d2836ee",
+     "exit_code": 0,
+     "footprint": {
+      "capture_exact": true,
+      "errors": [],
+      "eval_key": "5cfe69a615ae370835a5896eaa6899f1d9973b7adf649437c2ddd94d1d2836ee",
+      "exit_event_received": true,
+      "exit_read": {
+       "ri_interval_max_phys_footprint": 2044332576,
+       "ri_lifetime_max_phys_footprint": 2044332576,
+       "ri_phys_footprint": 0,
+       "ri_proc_exit_abstime": 79037201211821,
+       "ri_proc_start_abstime": 79033801638230,
+       "ri_resident_size": 724992000
+      },
+      "final_read_after_exit": true,
+      "identity": {
+       "cmdline_has_child_flag": true,
+       "cmdline_has_eval_key": true,
+       "launcher_pid": 96529,
+       "ppid": 96529,
+       "ppid_is_launcher": true
+      },
+      "identity_verified": true,
+      "launch_json": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootB_concurrent/evals/5cfe69a615ae3708_x0/launch.json",
+      "lifetime_max_phys_footprint_bytes": 2044332576,
+      "lifetime_max_phys_footprint_gib": 1.9039330780506134,
+      "lifetime_max_phys_footprint_last_live_bytes": 2044332576,
+      "live_max_phys_footprint_sampled_bytes": 2039745056,
+      "measure": "ri_lifetime_max_phys_footprint of the evaluation child (the harness's --child Python process; its IPOPT subprocesses are NOT included -- the same scope as child_python_process_ru_maxrss), read by this launcher with proc_pid_rusage(pid, RUSAGE_INFO_V4); FINAL value = the read on the exited, not-yet-reaped child, taken on the kqueue EVFILT_PROC NOTE_EXIT event; identity: pid from the harness launch.json, parent pid == this launcher, command line holds --child and the eval key (W91 ChildFootprintMonitor, copied)",
+      "n_live_reads": 142,
+      "pid": 97421,
+      "poll_s": 1.0,
+      "registered_exit_event": true,
+      "thread_alive_after_stop": false
+     },
+     "gross_operational_cost_terminal": 705917222.5964739,
+     "local_solve_failures": 0,
+     "peak_rss": {
+      "child_python_process_ru_maxrss": 2087026688,
+      "production_state_peak_rss_ru_maxrss": 2087026688,
+      "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)",
+      "solver_subprocesses_max_ru_maxrss": 52396032,
+      "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)"
+     },
+     "peak_rss_child_gib": 1.943695068359375,
+     "solve_profile": {
+      "base_solves": 204,
+      "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+      "expected_solves": 204,
+      "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+      "identity_holds": true,
+      "n_days": 4,
+      "n_dso": 3,
+      "n_esso_nodes": 3,
+      "n_years": 3,
+      "observed": {
+       "blocked_exec": 0,
+       "blocked_solve": 0,
+       "permitted_exec": 204,
+       "permitted_solve": 204
+      },
+      "reconciliation_supported": true,
+      "recovered_only_identity": {
+       "expected": 204,
+       "holds": true,
+       "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+      },
+      "retry_solves_credited": 0,
+      "rounds": 4,
+      "rounds_note": "one initialization round + cycles_run ADMM cycles",
+      "solves_per_cycle": 51
+     },
+     "status": "not_certified",
+     "wait4": {
+      "exit_code": 0,
+      "ru_maxrss_units": "bytes on macOS/BSD, kilobytes on Linux",
+      "rusage": {
+       "ru_majflt": 1418,
+       "ru_maxrss": 2090156032,
+       "ru_minflt": 2024559,
+       "ru_nivcsw": 24506,
+       "ru_nvcsw": 14425,
+       "ru_stime": 9.743274,
+       "ru_utime": 130.525905
+      },
+      "semantics": "os.wait4 rusage of the child process as reaped by the parent",
+      "wall_s_parent_view": 145.14888715744019
+     },
+     "wait4_ru_maxrss_gib": 1.9466094970703125,
+     "wall_time_s": {
+      "child_process_s": 137.497328042984,
+      "run_admm_arm_reported_wall_clock_s": 121.06485509872437,
+      "run_admm_arm_s": 122.15184593200684
+     },
+     "working_dir_run": "p515s44_s56_cgate_v1_rootb_concurrent_5cfe69a615ae3708_run"
+    },
+    "y2025__n5_p0.25_e0.5": {
+     "cycle_walls": {
+      "drained_event_interval_s": {
+       "1": 43.97047805786133,
+       "2": 31.229559898376465,
+       "3": 34.17437291145325
+      },
+      "production_iteration_wall_s": {
+       "1": 36.32,
+       "2": 31.23,
+       "3": 34.17
+      }
+     },
+     "cycles_run": 3,
+     "eval_dir": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootB_concurrent/evals/70e25ba765d954f0_y2025__n5_p0_25_e0_5",
+     "eval_key": "70e25ba765d954f0d3199591caf4fec436c40e19b7122088f7ad28c096da280a",
+     "exit_code": 0,
+     "footprint": {
+      "capture_exact": true,
+      "errors": [],
+      "eval_key": "70e25ba765d954f0d3199591caf4fec436c40e19b7122088f7ad28c096da280a",
+      "exit_event_received": true,
+      "exit_read": {
+       "ri_interval_max_phys_footprint": 2036779480,
+       "ri_lifetime_max_phys_footprint": 2036779480,
+       "ri_phys_footprint": 0,
+       "ri_proc_exit_abstime": 79037549650463,
+       "ri_proc_start_abstime": 79033801705072,
+       "ri_resident_size": 750010368
+      },
+      "final_read_after_exit": true,
+      "identity": {
+       "cmdline_has_child_flag": true,
+       "cmdline_has_eval_key": true,
+       "launcher_pid": 96529,
+       "ppid": 96529,
+       "ppid_is_launcher": true
+      },
+      "identity_verified": true,
+      "launch_json": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootB_concurrent/evals/70e25ba765d954f0_y2025__n5_p0_25_e0_5/launch.json",
+      "lifetime_max_phys_footprint_bytes": 2036779480,
+      "lifetime_max_phys_footprint_gib": 1.8968987092375755,
+      "lifetime_max_phys_footprint_last_live_bytes": 2036779480,
+      "live_max_phys_footprint_sampled_bytes": 2031864280,
+      "measure": "ri_lifetime_max_phys_footprint of the evaluation child (the harness's --child Python process; its IPOPT subprocesses are NOT included -- the same scope as child_python_process_ru_maxrss), read by this launcher with proc_pid_rusage(pid, RUSAGE_INFO_V4); FINAL value = the read on the exited, not-yet-reaped child, taken on the kqueue EVFILT_PROC NOTE_EXIT event; identity: pid from the harness launch.json, parent pid == this launcher, command line holds --child and the eval key (W91 ChildFootprintMonitor, copied)",
+      "n_live_reads": 156,
+      "pid": 97422,
+      "poll_s": 1.0,
+      "registered_exit_event": true,
+      "thread_alive_after_stop": false
+     },
+     "gross_operational_cost_terminal": 705821956.6553445,
+     "local_solve_failures": 0,
+     "peak_rss": {
+      "child_python_process_ru_maxrss": 2121859072,
+      "production_state_peak_rss_ru_maxrss": 2112651264,
+      "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)",
+      "solver_subprocesses_max_ru_maxrss": 53723136,
+      "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)"
+     },
+     "peak_rss_child_gib": 1.97613525390625,
+     "solve_profile": {
+      "base_solves": 204,
+      "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+      "expected_solves": 204,
+      "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+      "identity_holds": true,
+      "n_days": 4,
+      "n_dso": 3,
+      "n_esso_nodes": 3,
+      "n_years": 3,
+      "observed": {
+       "blocked_exec": 0,
+       "blocked_solve": 0,
+       "permitted_exec": 204,
+       "permitted_solve": 204
+      },
+      "reconciliation_supported": true,
+      "recovered_only_identity": {
+       "expected": 204,
+       "holds": true,
+       "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+      },
+      "retry_solves_credited": 0,
+      "rounds": 4,
+      "rounds_note": "one initialization round + cycles_run ADMM cycles",
+      "solves_per_cycle": 51
+     },
+     "status": "not_certified",
+     "wait4": {
+      "exit_code": 0,
+      "ru_maxrss_units": "bytes on macOS/BSD, kilobytes on Linux",
+      "rusage": {
+       "ru_majflt": 1333,
+       "ru_maxrss": 2131066880,
+       "ru_minflt": 2025011,
+       "ru_nivcsw": 28160,
+       "ru_nvcsw": 17454,
+       "ru_stime": 9.944339,
+       "ru_utime": 144.709165
+      },
+      "semantics": "os.wait4 rusage of the child process as reaped by the parent",
+      "wall_s_parent_view": 160.1627140045166
+     },
+     "wait4_ru_maxrss_gib": 1.984710693359375,
+     "wall_time_s": {
+      "child_process_s": 152.73328399658203,
+      "run_admm_arm_reported_wall_clock_s": 136.49693894386292,
+      "run_admm_arm_s": 137.4965341091156
+     },
+     "working_dir_run": "p515s44_s56_cgate_v1_rootb_concurrent_70e25ba765d954f0_run"
+    },
+    "y2025__n7_p0.25_e1": {
+     "cycle_walls": {
+      "drained_event_interval_s": {
+       "1": 39.944018840789795,
+       "2": 31.080743074417114,
+       "3": 33.70845699310303
+      },
+      "production_iteration_wall_s": {
+       "1": 32.33,
+       "2": 31.08,
+       "3": 33.71
+      }
+     },
+     "cycles_run": 3,
+     "eval_dir": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootB_concurrent/evals/ca8927e75d628bd1_y2025__n7_p0_25_e1",
+     "eval_key": "ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d",
+     "exit_code": 0,
+     "footprint": {
+      "capture_exact": true,
+      "errors": [],
+      "eval_key": "ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d",
+      "exit_event_received": true,
+      "exit_read": {
+       "ri_interval_max_phys_footprint": 2045069832,
+       "ri_lifetime_max_phys_footprint": 2045069832,
+       "ri_phys_footprint": 0,
+       "ri_proc_exit_abstime": 79037449907204,
+       "ri_proc_start_abstime": 79033801528488,
+       "ri_resident_size": 736772096
+      },
+      "final_read_after_exit": true,
+      "identity": {
+       "cmdline_has_child_flag": true,
+       "cmdline_has_eval_key": true,
+       "launcher_pid": 96529,
+       "ppid": 96529,
+       "ppid_is_launcher": true
+      },
+      "identity_verified": true,
+      "launch_json": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootB_concurrent/evals/ca8927e75d628bd1_y2025__n7_p0_25_e1/launch.json",
+      "lifetime_max_phys_footprint_bytes": 2045069832,
+      "lifetime_max_phys_footprint_gib": 1.9046197012066841,
+      "lifetime_max_phys_footprint_last_live_bytes": 2045069832,
+      "live_max_phys_footprint_sampled_bytes": 2042120712,
+      "measure": "ri_lifetime_max_phys_footprint of the evaluation child (the harness's --child Python process; its IPOPT subprocesses are NOT included -- the same scope as child_python_process_ru_maxrss), read by this launcher with proc_pid_rusage(pid, RUSAGE_INFO_V4); FINAL value = the read on the exited, not-yet-reaped child, taken on the kqueue EVFILT_PROC NOTE_EXIT event; identity: pid from the harness launch.json, parent pid == this launcher, command line holds --child and the eval key (W91 ChildFootprintMonitor, copied)",
+      "n_live_reads": 152,
+      "pid": 97419,
+      "poll_s": 1.0,
+      "registered_exit_event": true,
+      "thread_alive_after_stop": false
+     },
+     "gross_operational_cost_terminal": 705756745.6324317,
+     "local_solve_failures": 0,
+     "peak_rss": {
+      "child_python_process_ru_maxrss": 2114338816,
+      "production_state_peak_rss_ru_maxrss": 2107686912,
+      "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)",
+      "solver_subprocesses_max_ru_maxrss": 53723136,
+      "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)"
+     },
+     "peak_rss_child_gib": 1.9691314697265625,
+     "solve_profile": {
+      "base_solves": 204,
+      "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+      "expected_solves": 204,
+      "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+      "identity_holds": true,
+      "n_days": 4,
+      "n_dso": 3,
+      "n_esso_nodes": 3,
+      "n_years": 3,
+      "observed": {
+       "blocked_exec": 0,
+       "blocked_solve": 0,
+       "permitted_exec": 204,
+       "permitted_solve": 204
+      },
+      "reconciliation_supported": true,
+      "recovered_only_identity": {
+       "expected": 204,
+       "holds": true,
+       "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+      },
+      "retry_solves_credited": 0,
+      "rounds": 4,
+      "rounds_note": "one initialization round + cycles_run ADMM cycles",
+      "solves_per_cycle": 51
+     },
+     "status": "not_certified",
+     "wait4": {
+      "exit_code": 0,
+      "ru_maxrss_units": "bytes on macOS/BSD, kilobytes on Linux",
+      "rusage": {
+       "ru_majflt": 1368,
+       "ru_maxrss": 2120515584,
+       "ru_minflt": 2034105,
+       "ru_nivcsw": 25940,
+       "ru_nvcsw": 16926,
+       "ru_stime": 9.980083,
+       "ru_utime": 140.635813
+      },
+      "semantics": "os.wait4 rusage of the child process as reaped by the parent",
+      "wall_s_parent_view": 155.1619589328766
+     },
+     "wait4_ru_maxrss_gib": 1.974884033203125,
+     "wall_time_s": {
+      "child_process_s": 148.11824917793274,
+      "run_admm_arm_reported_wall_clock_s": 131.84348511695862,
+      "run_admm_arm_s": 132.85949325561523
+     },
+     "working_dir_run": "p515s44_s56_cgate_v1_rootb_concurrent_ca8927e75d628bd1_run"
+    },
+    "y2025__n7_p0.5_e1": {
+     "cycle_walls": {
+      "drained_event_interval_s": {
+       "1": 39.04535102844238,
+       "2": 29.884451150894165,
+       "3": 33.04595899581909
+      },
+      "production_iteration_wall_s": {
+       "1": 31.56,
+       "2": 29.89,
+       "3": 33.05
+      }
+     },
+     "cycles_run": 3,
+     "eval_dir": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootB_concurrent/evals/de43dc7fca2732df_y2025__n7_p0_5_e1",
+     "eval_key": "de43dc7fca2732df139f718db2467812c50ee94810a602bebf790f62b97db777",
+     "exit_code": 0,
+     "footprint": {
+      "capture_exact": true,
+      "errors": [],
+      "eval_key": "de43dc7fca2732df139f718db2467812c50ee94810a602bebf790f62b97db777",
+      "exit_event_received": true,
+      "exit_read": {
+       "ri_interval_max_phys_footprint": 2045184496,
+       "ri_lifetime_max_phys_footprint": 2045184496,
+       "ri_phys_footprint": 0,
+       "ri_proc_exit_abstime": 79037380730447,
+       "ri_proc_start_abstime": 79033801875839,
+       "ri_resident_size": 747962368
+      },
+      "final_read_after_exit": true,
+      "identity": {
+       "cmdline_has_child_flag": true,
+       "cmdline_has_eval_key": true,
+       "launcher_pid": 96529,
+       "ppid": 96529,
+       "ppid_is_launcher": true
+      },
+      "identity_verified": true,
+      "launch_json": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootB_concurrent/evals/de43dc7fca2732df_y2025__n7_p0_5_e1/launch.json",
+      "lifetime_max_phys_footprint_bytes": 2045184496,
+      "lifetime_max_phys_footprint_gib": 1.9047264903783798,
+      "lifetime_max_phys_footprint_last_live_bytes": 2045184496,
+      "live_max_phys_footprint_sampled_bytes": 2040154608,
+      "measure": "ri_lifetime_max_phys_footprint of the evaluation child (the harness's --child Python process; its IPOPT subprocesses are NOT included -- the same scope as child_python_process_ru_maxrss), read by this launcher with proc_pid_rusage(pid, RUSAGE_INFO_V4); FINAL value = the read on the exited, not-yet-reaped child, taken on the kqueue EVFILT_PROC NOTE_EXIT event; identity: pid from the harness launch.json, parent pid == this launcher, command line holds --child and the eval key (W91 ChildFootprintMonitor, copied)",
+      "n_live_reads": 149,
+      "pid": 97424,
+      "poll_s": 1.0,
+      "registered_exit_event": true,
+      "thread_alive_after_stop": false
+     },
+     "gross_operational_cost_terminal": 705754147.8091812,
+     "local_solve_failures": 0,
+     "peak_rss": {
+      "child_python_process_ru_maxrss": 2116075520,
+      "production_state_peak_rss_ru_maxrss": 2103803904,
+      "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)",
+      "solver_subprocesses_max_ru_maxrss": 52543488,
+      "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)"
+     },
+     "peak_rss_child_gib": 1.9707489013671875,
+     "solve_profile": {
+      "base_solves": 204,
+      "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+      "expected_solves": 204,
+      "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+      "identity_holds": true,
+      "n_days": 4,
+      "n_dso": 3,
+      "n_esso_nodes": 3,
+      "n_years": 3,
+      "observed": {
+       "blocked_exec": 0,
+       "blocked_solve": 0,
+       "permitted_exec": 204,
+       "permitted_solve": 204
+      },
+      "reconciliation_supported": true,
+      "recovered_only_identity": {
+       "expected": 204,
+       "holds": true,
+       "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+      },
+      "retry_solves_credited": 0,
+      "rounds": 4,
+      "rounds_note": "one initialization round + cycles_run ADMM cycles",
+      "solves_per_cycle": 51
+     },
+     "status": "not_certified",
+     "wait4": {
+      "exit_code": 0,
+      "ru_maxrss_units": "bytes on macOS/BSD, kilobytes on Linux",
+      "rusage": {
+       "ru_majflt": 1346,
+       "ru_maxrss": 2121138176,
+       "ru_minflt": 2026394,
+       "ru_nivcsw": 24445,
+       "ru_nvcsw": 16228,
+       "ru_stime": 9.927953,
+       "ru_utime": 137.76866
+      },
+      "semantics": "os.wait4 rusage of the child process as reaped by the parent",
+      "wall_s_parent_view": 150.14271998405457
+     },
+     "wait4_ru_maxrss_gib": 1.9754638671875,
+     "wall_time_s": {
+      "child_process_s": 145.29438710212708,
+      "run_admm_arm_reported_wall_clock_s": 128.83563113212585,
+      "run_admm_arm_s": 129.8872377872467
+     },
+     "working_dir_run": "p515s44_s56_cgate_v1_rootb_concurrent_de43dc7fca2732df_run"
+    },
+    "y2025__n9_p0.25_e1": {
+     "cycle_walls": {
+      "drained_event_interval_s": {
+       "1": 38.61451816558838,
+       "2": 34.36450791358948,
+       "3": 33.434062004089355
+      },
+      "production_iteration_wall_s": {
+       "1": 31.06,
+       "2": 34.37,
+       "3": 33.43
+      }
+     },
+     "cycles_run": 3,
+     "eval_dir": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootB_concurrent/evals/dcaa525e7ecd1a95_y2025__n9_p0_25_e1",
+     "eval_key": "dcaa525e7ecd1a950622f0c3043b3cacac25f5d0ba39c84bcd45edd060de4a51",
+     "exit_code": 0,
+     "footprint": {
+      "capture_exact": true,
+      "errors": [],
+      "eval_key": "dcaa525e7ecd1a950622f0c3043b3cacac25f5d0ba39c84bcd45edd060de4a51",
+      "exit_event_received": true,
+      "exit_read": {
+       "ri_interval_max_phys_footprint": 2051426824,
+       "ri_lifetime_max_phys_footprint": 2051426824,
+       "ri_phys_footprint": 0,
+       "ri_proc_exit_abstime": 79037487743294,
+       "ri_proc_start_abstime": 79033801782245,
+       "ri_resident_size": 734003200
+      },
+      "final_read_after_exit": true,
+      "identity": {
+       "cmdline_has_child_flag": true,
+       "cmdline_has_eval_key": true,
+       "launcher_pid": 96529,
+       "ppid": 96529,
+       "ppid_is_launcher": true
+      },
+      "identity_verified": true,
+      "launch_json": "data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootB_concurrent/evals/dcaa525e7ecd1a95_y2025__n9_p0_25_e1/launch.json",
+      "lifetime_max_phys_footprint_bytes": 2051426824,
+      "lifetime_max_phys_footprint_gib": 1.9105401113629341,
+      "lifetime_max_phys_footprint_last_live_bytes": 2051426824,
+      "live_max_phys_footprint_sampled_bytes": 2042350088,
+      "measure": "ri_lifetime_max_phys_footprint of the evaluation child (the harness's --child Python process; its IPOPT subprocesses are NOT included -- the same scope as child_python_process_ru_maxrss), read by this launcher with proc_pid_rusage(pid, RUSAGE_INFO_V4); FINAL value = the read on the exited, not-yet-reaped child, taken on the kqueue EVFILT_PROC NOTE_EXIT event; identity: pid from the harness launch.json, parent pid == this launcher, command line holds --child and the eval key (W91 ChildFootprintMonitor, copied)",
+      "n_live_reads": 154,
+      "pid": 97423,
+      "poll_s": 1.0,
+      "registered_exit_event": true,
+      "thread_alive_after_stop": false
+     },
+     "gross_operational_cost_terminal": 705750483.9926884,
+     "local_solve_failures": 0,
+     "peak_rss": {
+      "child_python_process_ru_maxrss": 2110210048,
+      "production_state_peak_rss_ru_maxrss": 2099462144,
+      "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)",
+      "solver_subprocesses_max_ru_maxrss": 54001664,
+      "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)"
+     },
+     "peak_rss_child_gib": 1.9652862548828125,
+     "solve_profile": {
+      "base_solves": 204,
+      "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+      "expected_solves": 204,
+      "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+      "identity_holds": true,
+      "n_days": 4,
+      "n_dso": 3,
+      "n_esso_nodes": 3,
+      "n_years": 3,
+      "observed": {
+       "blocked_exec": 0,
+       "blocked_solve": 0,
+       "permitted_exec": 204,
+       "permitted_solve": 204
+      },
+      "reconciliation_supported": true,
+      "recovered_only_identity": {
+       "expected": 204,
+       "holds": true,
+       "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+      },
+      "retry_solves_credited": 0,
+      "rounds": 4,
+      "rounds_note": "one initialization round + cycles_run ADMM cycles",
+      "solves_per_cycle": 51
+     },
+     "status": "not_certified",
+     "wait4": {
+      "exit_code": 0,
+      "ru_maxrss_units": "bytes on macOS/BSD, kilobytes on Linux",
+      "rusage": {
+       "ru_majflt": 1546,
+       "ru_maxrss": 2113454080,
+       "ru_minflt": 2042492,
+       "ru_nivcsw": 25096,
+       "ru_nvcsw": 17273,
+       "ru_stime": 10.033907,
+       "ru_utime": 142.239785
+      },
+      "semantics": "os.wait4 rusage of the child process as reaped by the parent",
+      "wall_s_parent_view": 155.15290188789368
+     },
+     "wait4_ru_maxrss_gib": 1.9683074951171875,
+     "wall_time_s": {
+      "child_process_s": 149.88677883148193,
+      "run_admm_arm_reported_wall_clock_s": 133.60260915756226,
+      "run_admm_arm_s": 134.62784934043884
+     },
+     "working_dir_run": "p515s44_s56_cgate_v1_rootb_concurrent_dcaa525e7ecd1a95_run"
+    }
+   },
+   "root_wall_s": 160.1792938709259
+  }
+ },
+ "schema": "p515_s56_concurrency_gate_result_v1",
+ "script": {
+  "path": "p515_s56_concurrency_gate.py",
+  "sha256": "203ef37e400e8398d5b09c0b9ab2cb058ad7701549f7c94ac20186ef165ac76b"
+ },
+ "shared_candidate": "y2025__n7_p0.25_e1",
+ "stage": "P5.15 S56 D6 -- serial-vs-concurrent bitwise equivalence gate for candidate-level poll parallelism (SRP1 single scenario, published configuration, 3-cycle cap; root A concurrency 1 x 1, root B concurrency 5 x 5)",
+ "utc": "2026-11-21T11:34:04.441019+00:00",
+ "wall_clock_s": 302.9010410308838
+}

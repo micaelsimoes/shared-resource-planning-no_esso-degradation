@@ -1,0 +1,42 @@
+11:29:01 [S56-CGATE] P5.15 S56 D6 -- serial-vs-concurrent bitwise equivalence gate for candidate-level poll parallelism (SRP1 single scenario, published configuration, 3-cycle cap; root A concurrency 1 x 1, root B concurrency 5 x 5); pid 96529; interpreter /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python
+11:29:01 [S56-CGATE] memory now 14.397659301757812 GiB; B requires 13.75 GiB
+11:29:01 [S56-CGATE] capture-path checklist (zero solves, before any launch)
+11:29:04 [S56-CGATE] every precondition holds; HEAD 2684dcbf73ec2cfad2382bc527da60b7ec6c68ff; gate spec data/SRP1/Results/P515S56/concurrency_gate_v1/frozen_concurrency_gate_spec_v1_0dce2472.json
+11:29:04 [S56-CGATE] [ROOT A] serial: the shared candidate alone: launching
+11:29:06 [S56-CGATE] [ROOT A] lock {'pid': 96529, 'campaign_id': 's56_cgate_v1_rootA_serial', 'campaign_spec_sha256': '5768257aee0f40ead1cf1812033608d74fd78b3e0ae9c4d5299380d4b37e20dd', 'started_utc': '2026-11-21T11:29:06.759319+00:00'}; 1 evaluation(s) at concurrency 1, cap 3; spec data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootA_serial/campaign_spec_s56_cgate_v1_roota_serial_5768257a.json
+11:29:06 [S56-CGATE] [S44-HARNESS] launched y2025__n7_p0.25_e1 (key db77e1549af855bc) pid=96567
+11:29:06 [S56-CGATE] [S44-HARNESS] heartbeat y2025__n7_p0.25_e1: 0s cycle=None
+11:30:06 [S56-CGATE] [S44-HARNESS] heartbeat y2025__n7_p0.25_e1: 60s cycle=None
+11:31:06 [S56-CGATE] [S44-HARNESS] heartbeat y2025__n7_p0.25_e1: 120s cycle=2
+11:31:21 [S56-CGATE] [S44-HARNESS] finished y2025__n7_p0.25_e1 pid=96567 exit=0 status=not_certified wall=135s
+11:31:21 [S56-CGATE] [ROOT A] campaign lock released: True
+11:31:21 [S56-CGATE] [ROOT A] y2025__n7_p0.25_e1: exit 0 status not_certified cycles 3 walls {'1': 27.9, '2': 26.29, '3': 27.93} peak RSS 2.124786376953125 GiB footprint 1.7378716319799423 GiB
+11:31:21 [S56-CGATE] [ROOT B] concurrent: the shared candidate inside a full batch of five: launching
+11:31:22 [S56-CGATE] [ROOT B] lock {'pid': 96529, 'campaign_id': 's56_cgate_v1_rootB_concurrent', 'campaign_spec_sha256': '462fbeab05adaf3c6c5b9a27393bc62a6c872c17f900cc0c41e19e6cca2e4b6d', 'started_utc': '2026-11-21T11:31:22.729841+00:00'}; 5 evaluation(s) at concurrency 5, cap 3; spec data/SRP1/Results/P515S56/concurrency_gate_v1/campaign_s56_cgate_v1_rootB_concurrent/campaign_spec_s56_cgate_v1_rootb_concurrent_462fbeab.json
+11:31:22 [S56-CGATE] [S44-HARNESS] launched y2025__n7_p0.25_e1 (key db77e1549af855bc) pid=97419
+11:31:22 [S56-CGATE] [S44-HARNESS] launched x0 (key 8435c71859ddde68) pid=97421
+11:31:22 [S56-CGATE] [S44-HARNESS] launched y2025__n5_p0.25_e0.5 (key 33031c083b68c655) pid=97422
+11:31:22 [S56-CGATE] [S44-HARNESS] launched y2025__n9_p0.25_e1 (key a361ac9321459482) pid=97423
+11:31:22 [S56-CGATE] [S44-HARNESS] launched y2025__n7_p0.5_e1 (key 3993aebc641d4dad) pid=97424
+11:31:22 [S56-CGATE] [S44-HARNESS] heartbeat y2025__n7_p0.25_e1: 0s cycle=None; x0: 0s cycle=None; y2025__n5_p0.25_e0.5: 0s cycle=None; y2025__n9_p0.25_e1: 0s cycle=None; y2025__n7_p0.5_e1: 0s cycle=None
+11:32:22 [S56-CGATE] [S44-HARNESS] heartbeat y2025__n7_p0.25_e1: 60s cycle=None; x0: 60s cycle=None; y2025__n5_p0.25_e0.5: 60s cycle=None; y2025__n9_p0.25_e1: 60s cycle=None; y2025__n7_p0.5_e1: 60s cycle=None
+11:33:22 [S56-CGATE] [S44-HARNESS] heartbeat y2025__n7_p0.25_e1: 120s cycle=2; x0: 120s cycle=2; y2025__n5_p0.25_e0.5: 120s cycle=2; y2025__n9_p0.25_e1: 120s cycle=2; y2025__n7_p0.5_e1: 120s cycle=2
+11:33:47 [S56-CGATE] [S44-HARNESS] finished x0 pid=97421 exit=0 status=not_certified wall=145s
+11:33:52 [S56-CGATE] [S44-HARNESS] finished y2025__n7_p0.5_e1 pid=97424 exit=0 status=not_certified wall=150s
+11:33:57 [S56-CGATE] [S44-HARNESS] finished y2025__n7_p0.25_e1 pid=97419 exit=0 status=not_certified wall=155s
+11:33:57 [S56-CGATE] [S44-HARNESS] finished y2025__n9_p0.25_e1 pid=97423 exit=0 status=not_certified wall=155s
+11:34:02 [S56-CGATE] [S44-HARNESS] finished y2025__n5_p0.25_e0.5 pid=97422 exit=0 status=not_certified wall=160s
+11:34:02 [S56-CGATE] [ROOT B] campaign lock released: True
+11:34:02 [S56-CGATE] [ROOT B] y2025__n7_p0.25_e1: exit 0 status not_certified cycles 3 walls {'1': 32.33, '2': 31.08, '3': 33.71} peak RSS 1.9691314697265625 GiB footprint 1.9046197012066841 GiB
+11:34:02 [S56-CGATE] [ROOT B] x0: exit 0 status not_certified cycles 3 walls {'1': 28.75, '2': 30.5, '3': 30.02} peak RSS 1.943695068359375 GiB footprint 1.9039330780506134 GiB
+11:34:02 [S56-CGATE] [ROOT B] y2025__n5_p0.25_e0.5: exit 0 status not_certified cycles 3 walls {'1': 36.32, '2': 31.23, '3': 34.17} peak RSS 1.97613525390625 GiB footprint 1.8968987092375755 GiB
+11:34:02 [S56-CGATE] [ROOT B] y2025__n9_p0.25_e1: exit 0 status not_certified cycles 3 walls {'1': 31.06, '2': 34.37, '3': 33.43} peak RSS 1.9652862548828125 GiB footprint 1.9105401113629341 GiB
+11:34:02 [S56-CGATE] [ROOT B] y2025__n7_p0.5_e1: exit 0 status not_certified cycles 3 walls {'1': 31.56, '2': 29.89, '3': 33.05} peak RSS 1.9707489013671875 GiB footprint 1.9047264903783798 GiB
+11:34:02 [S56-CGATE] comparing the shared candidate (G1-G3, supplementary) -- zero solves
+11:34:04 [S56-CGATE] gate_result.json sha256 879ea7b33ed7d0de4c71ec00350181b6d7acd6b1071e3bd84657b35e0c04c8f4
+11:34:04 [S56-CGATE] G0 True G1 True G2 True G3 False G4 True -> GATE_PASS False
+11:34:04 [S56-CGATE] P1: held False outcome {'G1': True, 'G2': True, 'G3': False}
+11:34:04 [S56-CGATE] P2: held True outcome 1.1826595226497807
+11:34:04 [S56-CGATE] P3: held False outcome {'A:y2025__n7_p0.25_e1': 2.124786376953125, 'B:y2025__n7_p0.25_e1': 1.9691314697265625, 'B:x0': 1.943695068359375, 'B:y2025__n5_p0.25_e0.5': 1.97613525390625, 'B:y2025__n9_p0.25_e1': 1.9652862548828125, 'B:y2025__n7_p0.5_e1': 1.9707489013671875}
+11:34:04 [S56-CGATE] guards {'parent_guard': {'counts': {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}, 'verify_0_failures': []}, 'pickle': {'counts': {'load': 0, 'loads': 0}, 'blocked': True}, 'all_zero': True}
+11:34:04 [S56-CGATE] exit 2
