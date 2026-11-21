@@ -1,0 +1,392 @@
+{
+ "schema": "p515_s56_srp1grid_3x3_instance_record_v1",
+ "stage": "P5.15 S56 input preparation (task E): SRP1-3x3 on the common grid 2025/2030/2035 (zero solves)",
+ "utc": "2026-11-21T11:28:06.601371+00:00",
+ "git_head": "f80ec8a9d61c0f1e18d022c2289f712d7e9dc0f9",
+ "script": "p515_s56_build_instances.py",
+ "script_sha256": "fa8547aed52129bfbc62d02d5747653d3c9e36c980cc0d79788d36820f0e14c2",
+ "instance_label": "s56_srp1grid_3x3",
+ "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+ "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+ "derive_base": "srp1",
+ "derive_overrides": {
+  "num_market_scenarios": 3,
+  "num_operation_scenarios": 3
+ },
+ "derive_description": "the current SRP1 case file unchanged (3 years x 4 days x 1 x 1 scenario)",
+ "derive_route": "p515_s44_scale_measurement.derive_case(base, overrides) + json.dumps(case, indent=\"\\t\") -- the route of p515_s53_w89_3x3_campaign.derive_instance_text; re-checked: it reproduces the committed W89 case bytes",
+ "changes_vs_source": [
+  {
+   "key": "NumMarketScenarios",
+   "from": 1,
+   "to": 3
+  },
+  {
+   "key": "TransmissionNetwork[case9].num_operation_scenarios",
+   "from": 1,
+   "to": 3
+  },
+  {
+   "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+   "from": 1,
+   "to": 3
+  },
+  {
+   "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+   "from": 1,
+   "to": 3
+  },
+  {
+   "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+   "from": 1,
+   "to": 3
+  }
+ ],
+ "source_case": {
+  "path": "data/SRP1/SRP1.json",
+  "sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+ },
+ "derived_instance_declaration": {
+  "instance_label": "s56_srp1grid_3x3",
+  "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+  "scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+  "source_case_path": "data/SRP1/SRP1.json",
+  "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+  "changes_vs_source": [
+   {
+    "key": "NumMarketScenarios",
+    "from": 1,
+    "to": 3
+   },
+   {
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "from": 1,
+    "to": 3
+   },
+   {
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "from": 1,
+    "to": 3
+   },
+   {
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "from": 1,
+    "to": 3
+   },
+   {
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "from": 1,
+    "to": 3
+   }
+  ]
+ },
+ "prefix_verification": {
+  "vs_srp1_json_checksum_point": {
+   "point": "checksum point (entry of _compute_scenario_metadata)",
+   "definition": "for every scenario array of the SRP1-3x3 read (market energy / flexibility prices per (year, day); per network block, per load pd, qd, flexibility P up / down, Q up / down; per generator pg, qg), row 0 as float64 bytes == the SRP1.json read's single row",
+   "same_key_list_in_order": true,
+   "shapes_3x24_and_1x24": true,
+   "n_arrays": 7728,
+   "n_compared": 7728,
+   "n_equal": 7728,
+   "n_by_year": {
+    "2025": 2576,
+    "2030": 2576,
+    "2035": 2576
+   },
+   "n_equal_by_year": {
+    "2025": 2576,
+    "2030": 2576,
+    "2035": 2576
+   },
+   "n_equal_by_family": {
+    "DSO.gen0.pg": 36,
+    "DSO.gen0.qg": 36,
+    "DSO.gen2.pg": 48,
+    "DSO.gen2.qg": 48,
+    "DSO.gen3.pg": 96,
+    "DSO.gen3.qg": 96,
+    "DSO.load.flex_p_down": 1152,
+    "DSO.load.flex_p_up": 1152,
+    "DSO.load.flex_q_down": 1152,
+    "DSO.load.flex_q_up": 1152,
+    "DSO.load.pd": 1152,
+    "DSO.load.qd": 1152,
+    "TSO.gen1.pg": 36,
+    "TSO.gen1.qg": 36,
+    "TSO.gen2.pg": 36,
+    "TSO.gen2.qg": 36,
+    "TSO.gen3.pg": 36,
+    "TSO.gen3.qg": 36,
+    "TSO.load.flex_p_down": 36,
+    "TSO.load.flex_p_up": 36,
+    "TSO.load.flex_q_down": 36,
+    "TSO.load.flex_q_up": 36,
+    "TSO.load.pd": 36,
+    "TSO.load.qd": 36,
+    "market.energy": 12,
+    "market.flex": 12
+   },
+   "n_mismatches": 0,
+   "mismatches_first": [],
+   "holds": true
+  },
+  "vs_srp1_json_after_read": {
+   "point": "after read_planning_problem",
+   "definition": "for every scenario array of the SRP1-3x3 read (market energy / flexibility prices per (year, day); per network block, per load pd, qd, flexibility P up / down, Q up / down; per generator pg, qg), row 0 as float64 bytes == the SRP1.json read's single row",
+   "same_key_list_in_order": true,
+   "shapes_3x24_and_1x24": true,
+   "n_arrays": 7728,
+   "n_compared": 7728,
+   "n_equal": 7728,
+   "n_by_year": {
+    "2025": 2576,
+    "2030": 2576,
+    "2035": 2576
+   },
+   "n_equal_by_year": {
+    "2025": 2576,
+    "2030": 2576,
+    "2035": 2576
+   },
+   "n_equal_by_family": {
+    "DSO.gen0.pg": 36,
+    "DSO.gen0.qg": 36,
+    "DSO.gen2.pg": 48,
+    "DSO.gen2.qg": 48,
+    "DSO.gen3.pg": 96,
+    "DSO.gen3.qg": 96,
+    "DSO.load.flex_p_down": 1152,
+    "DSO.load.flex_p_up": 1152,
+    "DSO.load.flex_q_down": 1152,
+    "DSO.load.flex_q_up": 1152,
+    "DSO.load.pd": 1152,
+    "DSO.load.qd": 1152,
+    "TSO.gen1.pg": 36,
+    "TSO.gen1.qg": 36,
+    "TSO.gen2.pg": 36,
+    "TSO.gen2.qg": 36,
+    "TSO.gen3.pg": 36,
+    "TSO.gen3.qg": 36,
+    "TSO.load.flex_p_down": 36,
+    "TSO.load.flex_p_up": 36,
+    "TSO.load.flex_q_down": 36,
+    "TSO.load.flex_q_up": 36,
+    "TSO.load.pd": 36,
+    "TSO.load.qd": 36,
+    "market.energy": 12,
+    "market.flex": 12
+   },
+   "n_mismatches": 0,
+   "mismatches_first": [],
+   "holds": true
+  },
+  "vs_5x5_on_this_grid": {
+   "exists": false,
+   "searched": "every *.json <= 5 MB under data/ (working tree, tracked and untracked) carrying NumMarketScenarios and Years: no case with Years 2025/2030/2035 and more than one scenario exists (multi-scenario cases are on {2025} only or on the five-block grid 2025/2028/2031/2034/2037)",
+   "consequence": "the 5 x 5 first-rows comparison was not made on this grid"
+  }
+ },
+ "object_walk_vs_srp1_json": {
+  "n_leaves_compared": 41169,
+  "n_diffs": 0,
+  "diffs_first": [],
+  "uncompared_types": {},
+  "excluded_attribute_hits": {
+   "SharedResourcesPlanning.cost_energy_p": 1,
+   "SharedResourcesPlanning.cost_flex": 1,
+   "SharedResourcesPlanning.diagrams_dir": 1,
+   "SharedResourcesPlanning.filename": 1,
+   "SharedResourcesPlanning.logs_dir": 1,
+   "SharedResourcesPlanning.num_market_scenarios": 1,
+   "SharedResourcesPlanning.prob_market_scenarios": 1,
+   "SharedResourcesPlanning.results_dir": 1,
+   "SharedResourcesPlanning.scenario_metadata": 1,
+   "NetworkData.cost_energy_p": 4,
+   "NetworkData.cost_flex": 4,
+   "NetworkData.diagrams_dir": 4,
+   "NetworkData.logs_dir": 4,
+   "NetworkData.num_oper_scenarios": 4,
+   "NetworkData.results_dir": 4,
+   "Network.cost_energy_p": 48,
+   "Network.cost_flex": 48,
+   "Network.diagrams_dir": 48,
+   "Network.logs_dir": 48,
+   "Network.num_oper_scenarios": 48,
+   "Network.prob_market_scenarios": 48,
+   "Network.prob_operation_scenarios": 48,
+   "Network.results_dir": 48,
+   "Load.pd": 1188,
+   "Load.qd": 1188,
+   "LoadFlexibilityDirection.downward": 2376,
+   "LoadFlexibilityDirection.upward": 2376,
+   "Generator.pg": 288,
+   "Generator.qg": 288,
+   "SharedEnergyStorageData.cost_energy_p": 1,
+   "SharedEnergyStorageData.logs_dir": 1,
+   "SharedEnergyStorageData.results_dir": 1
+  }
+ },
+ "facts": {
+  "scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+  "planning_dimensions": {
+   "years": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "days": {
+    "Spring": 92,
+    "Summer": 91,
+    "Autumn": 91,
+    "Winter": 91
+   },
+   "num_instants": 24,
+   "random_seed": 2026,
+   "num_market_scenarios": 3,
+   "num_operation_scenarios": {
+    "case9": 3,
+    "case33_1": 3,
+    "case33_2": 3,
+    "case33_3": 3
+   },
+   "active_distribution_network_nodes": [
+    5,
+    7,
+    9
+   ],
+   "scenario_metadata": {
+    "random_seed": 2026,
+    "deterministic_scenarios": true,
+    "market_scenario_checksum": "cd0313b883fb0ca855ff283189b46f57349ff30d2781af5d4edc0ad1940fca28",
+    "operational_scenario_checksum": "e1c36b76d3660ae32f307f47a88d91afc6d3322faa72696ade763c2046736c72",
+    "combined_scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7"
+   }
+  },
+  "expected_block_counts": {
+   "tso_blocks": 12,
+   "dso_blocks": 36,
+   "network_blocks": 48,
+   "esso_models": 3,
+   "solves_per_cycle": 51
+  },
+  "declared_solve_profile_per_cycle": 51,
+  "block_weights_tso": {
+   "2025|Spring": 460.0,
+   "2025|Summer": 455.0,
+   "2025|Autumn": 455.0,
+   "2025|Winter": 455.0,
+   "2030|Spring": 416.63617252176135,
+   "2030|Summer": 412.10751847261173,
+   "2030|Autumn": 412.10751847261173,
+   "2030|Winter": 412.10751847261173,
+   "2035|Spring": 377.36021794257135,
+   "2035|Summer": 373.2584764431956,
+   "2035|Autumn": 373.2584764431956,
+   "2035|Winter": 373.2584764431956
+  },
+  "median_block_weight_production": 412.10751847261173,
+  "min_hourly_mean_price": 5.474382556698091,
+  "min_hourly_mean_price_at": "DSO5|2030|Spring|h14",
+  "premium_floor_needed": false,
+  "investment_cost": {
+   "x0": {
+    "label": "x0",
+    "I_x_eur_master_expression": 0.0,
+    "I_x_eur_lattice": 0.0
+   },
+   "ref_unit_n7_0.25_1_2025": {
+    "label": "y2025__n7_p0.25_e1",
+    "I_x_eur_master_expression": 317957.0085035586,
+    "I_x_eur_lattice": 317957.0085035585
+   },
+   "cheapest_2025": {
+    "label": "y2025__n9_p0.25_e0.5",
+    "I_x_eur_master_expression": 191018.169784262,
+    "I_x_eur_lattice": 191018.16978426196
+   },
+   "dearest_2025": {
+    "label": "y2025__n5_p1.25_e2.5",
+    "I_x_eur_master_expression": 955090.8489213098,
+    "I_x_eur_lattice": 955090.8489213098
+   },
+   "cheapest_2030": {
+    "label": "y2030__n9_p0.25_e0.5",
+    "I_x_eur_master_expression": 141882.02186349593,
+    "I_x_eur_lattice": 141882.02186349596
+   },
+   "dearest_2030": {
+    "label": "y2030__n5_p1.75_e3.5",
+    "I_x_eur_master_expression": 993174.1530444716,
+    "I_x_eur_lattice": 993174.1530444718
+   },
+   "cheapest_2035": {
+    "label": "y2035__n9_p0.25_e0.5",
+    "I_x_eur_master_expression": 118945.62424178196,
+    "I_x_eur_lattice": 118945.62424178196
+   },
+   "dearest_2035": {
+    "label": "y2035__n5_p1.5_e4__n7_p0.25_e0.5",
+    "I_x_eur_master_expression": 990707.1519076042,
+    "I_x_eur_lattice": 990707.1519076043
+   }
+  },
+  "admissible_domain": {
+   "count": 1704,
+   "split_by_year": {
+    "2025": 149,
+    "2030": 522,
+    "2035": 1033
+   }
+  }
+ },
+ "all_checks_pass": true,
+ "failed_checks": [],
+ "solve_claim": "ZERO SOLVES, guard-verified (every armed permitted=() guard verify(0))",
+ "guards": {
+  "own": {
+   "label": "P5.15 S56 build instances (never solves)",
+   "permitted": [],
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0": []
+  },
+  "audit_A_module": {
+   "label": "P5.15 S56 input audit A (never solves)",
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0": []
+  },
+  "s55_module": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0": []
+  },
+  "pb_parent": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0": []
+  },
+  "s55_pickle_counts": {
+   "load": 0,
+   "loads": 0
+  }
+ }
+}
