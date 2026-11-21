@@ -1,0 +1,4337 @@
+{
+ "stage": "P5.15 S56 D0 post-check (zero solves)",
+ "script": "p515_s56_tn_realized_postcheck.py",
+ "script_sha256": "d316142aa249b79cfc6b2e4dd9bb9a1794ed5ff1ac1ba93dfa6e587ba961b6f5",
+ "run_record": {
+  "path": "data/SRP1/Results/P515S56/tn_realized_resolve/run_v1/tn_realized_resolve_results.json",
+  "sha256": "09226f0b11067ada022d9d2142cf49dbc10074fc2c4b219e0898b548fd40ee8b"
+ },
+ "spec": {
+  "path": "data/SRP1/Results/P515S56/tn_realized_resolve/frozen_tn_realized_spec_v1_5d35b048.json",
+  "sha256": "5d35b04866b7c919165b44bfa44b4a4b1683e2c3a30b856240bb24852de0dfe5"
+ },
+ "utc": "2026-11-21T11:53:53.731397+00:00",
+ "harness_defect": "run_v1 solution_loaded = (result is not None): true for failed solves, so the harness extracted costs at unloaded values and its statistics include them; blocks/arms affected listed in blocks_marked_loaded_but_not_loaded_by_production",
+ "blocks_marked_loaded_but_not_loaded_by_production": {
+  "x0": [],
+  "unit": [
+   "2025|Spring",
+   "2025|Spring",
+   "2025|Summer",
+   "2028|Spring",
+   "2028|Summer",
+   "2028|Summer",
+   "2031|Autumn",
+   "2031|Autumn",
+   "2031|Spring",
+   "2034|Spring",
+   "2034|Summer"
+  ]
+ },
+ "objective_convention": "C = total_gen_cost + total_flex_cost: TN generation (controllable units at the scenario market price) + TN flexibility, EUR per representative day, probability-weighted over the 9 scenarios; gross, settlement-EXCLUDED, no salvage; the full objective and the slack/detector terms reported beside",
+ "weighting": "weighted = sum_b w_b x_b, w_b = production _get_admm_block_weight(TN, year, day) = years x days x 1.02^-(y-2025) (the Q weighting; checked equal to the saved admm_block_weight); x_b unweighted per representative day, probability-weighted over scenarios",
+ "statistics_v2": {
+  "x0": {
+   "blocks": {
+    "2025|Spring": {
+     "w": 276.0,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 40,
+      "wall_s": 1.0704032499343157
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 29,
+      "wall_s": 0.7642380828037858
+     },
+     "cov": -49.70165614929283,
+     "V_price_valued_draw_change": -48.610433687991204,
+     "valid": true,
+     "strict": true,
+     "C_A": 81392.38759343802,
+     "C_B": 81345.46675235413,
+     "dC": -46.92084108389099,
+     "D1": 2.780815065401839,
+     "D1prime": 1.6895926041002127,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.999803105772323e-09,
+     "max_violation_B": 3.0941704753928434e-08,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.97494096451321e-09,
+     "detector_A": -0.11969929157280394,
+     "detector_B": -0.11969929157281606,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 556.5834558180319,
+       "B curtails more": -0.00531701621438737,
+       "A curtails more | bound set changed": 238.81452679550586,
+       "no curtailment change | bound set changed": -27.88770753997725
+      },
+      "tn_flex_change": 0.0,
+      "sum": 767.5049580573457
+     }
+    },
+    "2025|Summer": {
+     "w": 273.0,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 33,
+      "wall_s": 0.8590185833163559
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 33,
+      "wall_s": 0.8148652920499444
+     },
+     "cov": -67.5745667105657,
+     "V_price_valued_draw_change": -69.22649513973016,
+     "valid": true,
+     "strict": true,
+     "C_A": 136992.4879700242,
+     "C_B": 136927.61824787196,
+     "dC": -64.86972215224523,
+     "D1": 2.704844558320474,
+     "D1prime": 4.356772987484931,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.999877282734397e-09,
+     "max_violation_B": 9.999877282734397e-09,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.974940964408722e-09,
+     "detector_A": -0.11969929157282176,
+     "detector_B": -0.11969929157282183,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 738.4244094719076,
+       "B curtails more": -0.0018450408046987784
+      },
+      "tn_flex_change": 0.0,
+      "sum": 738.4225644311028
+     }
+    },
+    "2025|Autumn": {
+     "w": 273.0,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 30,
+      "wall_s": 0.8270773747935891
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 31,
+      "wall_s": 0.793248875066638
+     },
+     "cov": -269.92052394661005,
+     "V_price_valued_draw_change": -270.50804612401026,
+     "valid": true,
+     "strict": true,
+     "C_A": 154555.07507997885,
+     "C_B": 154287.71700591908,
+     "dC": -267.3580740597681,
+     "D1": 2.5624498868419323,
+     "D1prime": 3.1499720642421494,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.999875690271216e-09,
+     "max_violation_B": 9.999875688785362e-09,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.974940964408735e-09,
+     "detector_A": -0.11969929157281078,
+     "detector_B": -0.11969929157280966,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 462.7085839089919,
+       "no curtailment change | bound set changed": 236.84023523538147
+      },
+      "tn_flex_change": 0.0,
+      "sum": 699.5488191443741
+     }
+    },
+    "2025|Winter": {
+     "w": 273.0,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 37,
+      "wall_s": 1.0333943329751492
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 33,
+      "wall_s": 0.7855369579046965
+     },
+     "cov": -15.203318283070985,
+     "V_price_valued_draw_change": -15.170407800095916,
+     "valid": true,
+     "strict": true,
+     "C_A": 160560.79628510095,
+     "C_B": 160547.36323017871,
+     "dC": -13.433054922235897,
+     "D1": 1.770263360835088,
+     "D1prime": 1.737352877860019,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.999875622256641e-09,
+     "max_violation_B": 9.999875622256641e-09,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.97494096440873e-09,
+     "detector_A": -0.11969929157282234,
+     "detector_B": -0.1196992915728219,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 349.7149072850288,
+       "no curtailment change | bound set changed": 133.56699025752158
+      },
+      "tn_flex_change": 0.0,
+      "sum": 483.28189754255067
+     }
+    },
+    "2028|Spring": {
+     "w": 260.08096433498423,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 81,
+      "wall_s": 1.7921830830164254
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 31,
+      "wall_s": 0.7550515001639724
+     },
+     "cov": -4.904222115830635,
+     "V_price_valued_draw_change": -4.441414027140262,
+     "valid": true,
+     "strict": true,
+     "C_A": 104815.98420529517,
+     "C_B": 104813.12749600875,
+     "dC": -2.85670928642503,
+     "D1": 2.047512829405605,
+     "D1prime": 1.5847047407152317,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.999796939837912e-09,
+     "max_violation_B": 9.999796939838123e-09,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.974940964408757e-09,
+     "detector_A": -0.11969929157279632,
+     "detector_B": -0.11969929157279559,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 480.96773982818354,
+       "no curtailment change | bound set changed": 51.54973890104344,
+       "A curtails more": 0.0014548725991874836,
+       "B curtails more": 0.00017757934567736556
+      },
+      "tn_flex_change": 0.0,
+      "sum": 532.5191111811722
+     }
+    },
+    "2028|Summer": {
+     "w": 257.2539973313431,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 32,
+      "wall_s": 0.9061327921226621
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 33,
+      "wall_s": 0.8564889580011368
+     },
+     "cov": -67.71207631001016,
+     "V_price_valued_draw_change": -74.35004504491327,
+     "valid": true,
+     "strict": true,
+     "C_A": 183883.77100124073,
+     "C_B": 183815.9421983147,
+     "dC": -67.82880292602931,
+     "D1": -0.11672661601915024,
+     "D1prime": 6.521242118883961,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.99989367592159e-09,
+     "max_violation_B": 9.999893740469525e-09,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.974940964408729e-09,
+     "detector_A": -0.1196992915728176,
+     "detector_B": -0.11969929157281801,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 124.87497016319267,
+       "B curtails more": 0.002940425472923586,
+       "no curtailment change | bound set changed": -154.90629913899735
+      },
+      "tn_flex_change": 0.0,
+      "sum": -30.02838855033175
+     }
+    },
+    "2028|Autumn": {
+     "w": 257.2539973313431,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 31,
+      "wall_s": 0.8500868752598763
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 31,
+      "wall_s": 0.7691425001248717
+     },
+     "cov": -293.43805970955873,
+     "V_price_valued_draw_change": -293.4547504619545,
+     "valid": true,
+     "strict": true,
+     "C_A": 211484.78983014522,
+     "C_B": 211197.78651708667,
+     "dC": -287.0033130585507,
+     "D1": 6.434746651008027,
+     "D1prime": 6.4514374034038156,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.99988777846216e-09,
+     "max_violation_B": 9.99988777846216e-09,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.974940964408734e-09,
+     "detector_A": -0.11969929157280931,
+     "detector_B": -0.11969929157280929,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 2034.0736795723708,
+       "no curtailment change | bound set changed": -378.7093817869411
+      },
+      "tn_flex_change": 0.0,
+      "sum": 1655.3642977854304
+     }
+    },
+    "2028|Winter": {
+     "w": 257.2539973313431,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 31,
+      "wall_s": 0.8198381657712162
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 31,
+      "wall_s": 0.79668387491256
+     },
+     "cov": -320.91101854282897,
+     "V_price_valued_draw_change": -321.27710705712434,
+     "valid": true,
+     "strict": true,
+     "C_A": 216372.86553609808,
+     "C_B": 216058.24102662038,
+     "dC": -314.62450947769685,
+     "D1": 6.2865090651321225,
+     "D1prime": 6.652597579427493,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 3.3898083229289e-08,
+     "max_violation_B": 3.664211245535398e-08,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.974940964518398e-09,
+     "detector_A": -0.11969929157281413,
+     "detector_B": -0.11969929157282566,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 1999.0972966319437,
+       "no curtailment change | bound set changed": -381.8677103904279
+      },
+      "tn_flex_change": 0.0,
+      "sum": 1617.229586241516
+     }
+    },
+    "2031|Spring": {
+     "w": 245.080101483389,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 33,
+      "wall_s": 0.9221973749808967
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 30,
+      "wall_s": 0.8566942079924047
+     },
+     "cov": -78.10382688608661,
+     "V_price_valued_draw_change": -86.73220845379774,
+     "valid": true,
+     "strict": true,
+     "C_A": 52970.44778203229,
+     "C_B": 52888.21423155372,
+     "dC": -82.2335504785733,
+     "D1": -4.129723592486698,
+     "D1prime": 4.4986579752244324,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 1.7145524111583654e-08,
+     "max_violation_B": 4.687032761907517e-08,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.974940964408749e-09,
+     "detector_A": -0.11969929157281822,
+     "detector_B": -0.11969929157281911,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": -1012.1127386781047,
+       "B curtails more": -0.0003384751517433176
+      },
+      "tn_flex_change": 0.0,
+      "sum": -1012.1130771532564
+     }
+    },
+    "2031|Summer": {
+     "w": 242.4161873368304,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 37,
+      "wall_s": 0.9527544169686735
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 38,
+      "wall_s": 0.8999300412833691
+     },
+     "cov": -104.53156818066782,
+     "V_price_valued_draw_change": -96.34551831124179,
+     "valid": true,
+     "strict": true,
+     "C_A": 132128.19546601368,
+     "C_B": 133232.311956999,
+     "dC": 1104.116490985325,
+     "D1": 1208.648059165993,
+     "D1prime": 1200.462009296567,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.999877773584431e-09,
+     "max_violation_B": 9.999877773641765e-09,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.97494096440873e-09,
+     "detector_A": -0.11969929157281581,
+     "detector_B": -0.11969929157281677,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 5544.351897719537,
+       "A curtails more": 0.0025809397412280516,
+       "B curtails more": 165259.35449234146,
+       "B curtails more | bound set changed": 122125.25933863614,
+       "no curtailment change | bound set changed": 34.48073569392082,
+       "A curtails more | bound set changed": 32.40528973053251
+      },
+      "tn_flex_change": 0.0,
+      "sum": 292995.85433506116
+     }
+    },
+    "2031|Autumn": {
+     "w": 242.4161873368304,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 32,
+      "wall_s": 2.221527374815196
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 32,
+      "wall_s": 0.8676124173216522
+     },
+     "cov": -456.05384374115965,
+     "V_price_valued_draw_change": -456.0340453463135,
+     "valid": true,
+     "strict": true,
+     "C_A": 104791.88676506518,
+     "C_B": 105089.01634044627,
+     "dC": 297.1295753810846,
+     "D1": 753.1834191222442,
+     "D1prime": 753.1636207273981,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.999914482844689e-09,
+     "max_violation_B": 9.999914482868512e-09,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.974940964408729e-09,
+     "detector_A": -0.11969929157281281,
+     "detector_B": -0.11969929157281527,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 2522.6126715316764,
+       "B curtails more | bound set changed": 177252.73029963265,
+       "no curtailment change | bound set changed": 2814.060393729791,
+       "A curtails more | bound set changed": -5.550535947947257
+      },
+      "tn_flex_change": 0.0,
+      "sum": 182583.8528289462
+     }
+    },
+    "2031|Winter": {
+     "w": 242.4161873368304,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 32,
+      "wall_s": 0.8573964168317616
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 33,
+      "wall_s": 0.8200765838846564
+     },
+     "cov": -6.841895221688901,
+     "V_price_valued_draw_change": -7.253390331950243,
+     "valid": true,
+     "strict": true,
+     "C_A": 107996.41851305487,
+     "C_B": 108331.17157960468,
+     "dC": 334.7530665498052,
+     "D1": 341.5949617714941,
+     "D1prime": 342.00645688175547,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.999843720211756e-09,
+     "max_violation_B": 9.999843720179463e-09,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.974940964408747e-09,
+     "detector_A": -0.11969929157280884,
+     "detector_B": -0.11969929157281119,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 2036.9091689604402,
+       "B curtails more": 76606.83520687067,
+       "B curtails more | bound set changed": 2582.567554500264,
+       "no curtailment change | bound set changed": 1581.8363157871268
+      },
+      "tn_flex_change": 0.0,
+      "sum": 82808.14824611851
+     }
+    },
+    "2034|Spring": {
+     "w": 230.94445338085367,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 34,
+      "wall_s": 0.9864662080071867
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 35,
+      "wall_s": 2.4060420002788305
+     },
+     "cov": -101.96939917882264,
+     "V_price_valued_draw_change": -102.05552494849024,
+     "valid": true,
+     "strict": true,
+     "C_A": 73868.0969502108,
+     "C_B": 74055.70410131343,
+     "dC": 187.6071511026239,
+     "D1": 289.57655028144654,
+     "D1prime": 289.66267605111415,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.999705718996293e-09,
+     "max_violation_B": 9.999705718996293e-09,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.974940966237087e-09,
+     "detector_A": -0.11969929157280773,
+     "detector_B": -0.11969929157280766,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 388.23844989831406,
+       "B curtails more": 44441.08456621656,
+       "B curtails more | bound set changed": 22021.018131590135,
+       "no curtailment change | bound set changed": 25.756968966806483
+      },
+      "tn_flex_change": 0.0,
+      "sum": 66876.09811667178
+     }
+    },
+    "2034|Summer": {
+     "w": 228.4341875832357,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 33,
+      "wall_s": 0.9209097912535071
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 32,
+      "wall_s": 0.8128048330545425
+     },
+     "cov": -150.78920491278404,
+     "V_price_valued_draw_change": -151.98852556667856,
+     "valid": true,
+     "strict": true,
+     "C_A": 149892.40671452595,
+     "C_B": 149748.15145567543,
+     "dC": -144.25525885052048,
+     "D1": 6.533946062263567,
+     "D1prime": 7.733266716158084,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.999907035686865e-09,
+     "max_violation_B": 1.3818283628452832e-08,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.974940964408737e-09,
+     "detector_A": -0.11969929157285433,
+     "detector_B": -0.11969929157282083,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 2874.032092663321,
+       "A curtails more": -0.0011081532238995373,
+       "no curtailment change | bound set changed": -1381.4563699599234,
+       "B curtails more": 0.0020459290351904523
+      },
+      "tn_flex_change": 0.0,
+      "sum": 1492.576660479209
+     }
+    },
+    "2034|Autumn": {
+     "w": 228.4341875832357,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 33,
+      "wall_s": 0.9560732496902347
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 31,
+      "wall_s": 0.803677000105381
+     },
+     "cov": -510.3563159361365,
+     "V_price_valued_draw_change": -510.18875600674596,
+     "valid": true,
+     "strict": true,
+     "C_A": 130451.67153331946,
+     "C_B": 129959.22901153413,
+     "dC": -492.4425217853277,
+     "D1": 17.913794150808826,
+     "D1prime": 17.746234221418263,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.99992090995811e-09,
+     "max_violation_B": 9.999920906562884e-09,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.97494096440874e-09,
+     "detector_A": -0.11969929157280926,
+     "detector_B": -0.11969929157280679,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 474.7702982884548,
+       "no curtailment change | bound set changed": 2595.4581787224934,
+       "B curtails more | bound set changed": 1021.8945363924211
+      },
+      "tn_flex_change": 0.0,
+      "sum": 4092.1230134033713
+     }
+    },
+    "2034|Winter": {
+     "w": 228.4341875832357,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 32,
+      "wall_s": 0.9062761249952018
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 34,
+      "wall_s": 0.78340437496081
+     },
+     "cov": -131.52566300454782,
+     "V_price_valued_draw_change": -132.49612977042713,
+     "valid": true,
+     "strict": true,
+     "C_A": 130945.71374562028,
+     "C_B": 130925.52217269517,
+     "dC": -20.191572925104992,
+     "D1": 111.33409007944283,
+     "D1prime": 112.30455684532214,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.999893923118415e-09,
+     "max_violation_B": 9.999893923118415e-09,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.974940964408745e-09,
+     "detector_A": -0.11969929157280935,
+     "detector_B": -0.11969929157281152,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 2846.1070267483074,
+       "no curtailment change | bound set changed": 1231.6270600184648,
+       "B curtails more | bound set changed": 21354.772636447495,
+       "B curtails more": 0.005694402810884448
+      },
+      "tn_flex_change": 0.0,
+      "sum": 25432.51241761708
+     }
+    },
+    "2037|Spring": {
+     "w": 217.62411646053712,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 36,
+      "wall_s": 0.9622276667505503
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 33,
+      "wall_s": 0.8663200000301003
+     },
+     "cov": -171.9201830636157,
+     "V_price_valued_draw_change": -173.2520738108667,
+     "valid": true,
+     "strict": true,
+     "C_A": 43390.69536484766,
+     "C_B": 43266.61509088909,
+     "dC": -124.08027395857061,
+     "D1": 47.83990910504508,
+     "D1prime": 49.17179985229609,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.999756055698635e-09,
+     "max_violation_B": 1.5753104443128052e-07,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.974940971666767e-09,
+     "detector_A": -0.11969929157282276,
+     "detector_B": -0.11969929157385782,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": -246.9008045049681,
+       "B curtails more": 0.0029796919225361772,
+       "A curtails more": -0.0003277585045647487,
+       "no curtailment change | bound set changed": -393.4445163731448,
+       "B curtails more | bound set changed": 9383.40278346,
+       "A curtails more | bound set changed": 1668.0578360277314
+      },
+      "tn_flex_change": 0.0,
+      "sum": 10411.117950543045
+     }
+    },
+    "2037|Summer": {
+     "w": 215.25863693379213,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 34,
+      "wall_s": 0.9305325420573354
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 36,
+      "wall_s": 0.8426912911236286
+     },
+     "cov": -44.333693220018176,
+     "V_price_valued_draw_change": -36.51848055987685,
+     "valid": true,
+     "strict": true,
+     "C_A": 79671.3302038221,
+     "C_B": 80338.85969404851,
+     "dC": 667.529490226414,
+     "D1": 711.8631834464322,
+     "D1prime": 704.0479707862909,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 1.552733261966921e-07,
+     "max_violation_B": 2.8039374377897275e-08,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.974940964408732e-09,
+     "detector_A": -0.11969929157282769,
+     "detector_B": -0.11969929157282941,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 1488.3931154922889,
+       "B curtails more | bound set changed": 87530.35812510122,
+       "B curtails more": 63341.34081672241,
+       "no curtailment change | bound set changed": 874.6064947106456
+      },
+      "tn_flex_change": 0.0,
+      "sum": 153234.69855202656
+     }
+    },
+    "2037|Autumn": {
+     "w": 215.25863693379213,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 31,
+      "wall_s": 0.8895219173282385
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 34,
+      "wall_s": 0.861452916637063
+     },
+     "cov": -162.65272100750008,
+     "V_price_valued_draw_change": -162.70058941837237,
+     "valid": true,
+     "strict": true,
+     "C_A": 144588.59877351852,
+     "C_B": 144732.02747339517,
+     "dC": 143.42869987664744,
+     "D1": 306.0814208841475,
+     "D1prime": 306.1292892950198,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.9998969012357e-09,
+     "max_violation_B": 9.999896901232207e-09,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.974940964408734e-09,
+     "detector_A": -0.11969929157281003,
+     "detector_B": -0.11969929157281053,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 1434.2749219714283,
+       "no curtailment change | bound set changed": 1536.5411060041831,
+       "B curtails more | bound set changed": 2777.7326070440704,
+       "B curtails more": 60138.12081522838
+      },
+      "tn_flex_change": 0.0,
+      "sum": 65886.66945024808
+     }
+    },
+    "2037|Winter": {
+     "w": 215.25863693379213,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 33,
+      "wall_s": 1.7404691250994802
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 32,
+      "wall_s": 0.7800934999249876
+     },
+     "cov": -86.94509316701442,
+     "V_price_valued_draw_change": -90.14983952928321,
+     "valid": true,
+     "strict": true,
+     "C_A": 133381.09931655516,
+     "C_B": 133463.0054957272,
+     "dC": 81.90617917204509,
+     "D1": 168.8512723390595,
+     "D1prime": 172.0560187013283,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.999848812169906e-09,
+     "max_violation_B": 9.99984881217033e-09,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.97494096440875e-09,
+     "detector_A": -0.11969929157280941,
+     "detector_B": -0.11969929157281155,
+     "attribution": {
+      "by_class": {
+       "no curtailment change | bound set changed": -597.4299161941981,
+       "no curtailment change": 4225.836738482109,
+       "B curtails more": 22786.12740802493,
+       "B curtails more | bound set changed": 9932.16049786399
+      },
+      "tn_flex_change": 0.0,
+      "sum": 36346.69472817682
+     }
+    }
+   },
+   "totals": {
+    "valid": {
+     "n_blocks": 20,
+     "weight_share": 1.0,
+     "blocks": [
+      "2025|Autumn",
+      "2025|Spring",
+      "2025|Summer",
+      "2025|Winter",
+      "2028|Autumn",
+      "2028|Spring",
+      "2028|Summer",
+      "2028|Winter",
+      "2031|Autumn",
+      "2031|Spring",
+      "2031|Summer",
+      "2031|Winter",
+      "2034|Autumn",
+      "2034|Spring",
+      "2034|Summer",
+      "2034|Winter",
+      "2037|Autumn",
+      "2037|Spring",
+      "2037|Summer",
+      "2037|Winter"
+     ],
+     "C_A_w": 624559055.1395966,
+     "C_B_w": 624737921.4428319,
+     "dC_w": 178866.30323545518,
+     "cov_w": -748745.7728324482,
+     "D1_w": 927612.0760679037,
+     "D1prime_w": 929609.179715862,
+     "V_w": -750742.876480407
+    },
+    "strict": {
+     "n_blocks": 20,
+     "weight_share": 1.0,
+     "blocks": [
+      "2025|Autumn",
+      "2025|Spring",
+      "2025|Summer",
+      "2025|Winter",
+      "2028|Autumn",
+      "2028|Spring",
+      "2028|Summer",
+      "2028|Winter",
+      "2031|Autumn",
+      "2031|Spring",
+      "2031|Summer",
+      "2031|Winter",
+      "2034|Autumn",
+      "2034|Spring",
+      "2034|Summer",
+      "2034|Winter",
+      "2037|Autumn",
+      "2037|Spring",
+      "2037|Summer",
+      "2037|Winter"
+     ],
+     "C_A_w": 624559055.1395966,
+     "C_B_w": 624737921.4428319,
+     "dC_w": 178866.30323545518,
+     "cov_w": -748745.7728324482,
+     "D1_w": 927612.0760679037,
+     "D1prime_w": 929609.179715862,
+     "V_w": -750742.876480407
+    }
+   },
+   "n_loaded": {
+    "A": 20,
+    "B": 20
+   },
+   "n_strict": {
+    "A": 20,
+    "B": 20
+   },
+   "cov_w_all_blocks": -748745.7728324482
+  },
+  "unit": {
+   "blocks": {
+    "2025|Spring": {
+     "w": 276.0,
+     "A": {
+      "loaded_by_production": false,
+      "strict_optimal": false,
+      "termination_condition": "internalSolverError",
+      "solver_status": "error",
+      "exit": "Restoration Failed!",
+      "iterations": 118,
+      "wall_s": 1.8998099160380661
+     },
+     "B": {
+      "loaded_by_production": false,
+      "strict_optimal": false,
+      "termination_condition": "internalSolverError",
+      "solver_status": "error",
+      "exit": "Restoration Failed!",
+      "iterations": 168,
+      "wall_s": 2.47331904200837
+     },
+     "cov": -49.7089748461658,
+     "V_price_valued_draw_change": -49.60586522448179,
+     "valid": false,
+     "strict": false
+    },
+    "2025|Summer": {
+     "w": 273.0,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": false,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Solved To Acceptable Level.",
+      "iterations": 259,
+      "wall_s": 3.4921609591692686
+     },
+     "B": {
+      "loaded_by_production": false,
+      "strict_optimal": false,
+      "termination_condition": "internalSolverError",
+      "solver_status": "error",
+      "exit": "Error in step computation!",
+      "iterations": 183,
+      "wall_s": 2.626304958947003
+     },
+     "cov": -67.61866390367504,
+     "V_price_valued_draw_change": -62.42876190711949,
+     "valid": false,
+     "strict": false
+    },
+    "2025|Autumn": {
+     "w": 273.0,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 44,
+      "wall_s": 1.0018834578804672
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 44,
+      "wall_s": 2.1241024998016655
+     },
+     "cov": -269.9302742508662,
+     "V_price_valued_draw_change": -270.79719327008485,
+     "valid": true,
+     "strict": true,
+     "C_A": 154516.99147010446,
+     "C_B": 154249.33998470003,
+     "dC": -267.65148540443624,
+     "D1": 2.2787888464299613,
+     "D1prime": 3.1457078656486033,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 1.0058870189913471e-08,
+     "max_violation_B": 1.006287604458922e-08,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.999546428204481e-09,
+     "detector_A": -0.12141535045632593,
+     "detector_B": -0.12141444054123773,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 259.22905709830525,
+       "no curtailment change | bound set changed": 362.88029796654894
+      },
+      "tn_flex_change": 0.0,
+      "sum": 622.1093550648541
+     }
+    },
+    "2025|Winter": {
+     "w": 273.0,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 172,
+      "wall_s": 3.3881440828554332
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": false,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Solved To Acceptable Level.",
+      "iterations": 60,
+      "wall_s": 1.267251499928534
+     },
+     "cov": -14.99046285116492,
+     "V_price_valued_draw_change": -14.85725768673575,
+     "valid": true,
+     "strict": false,
+     "C_A": 160556.38379563132,
+     "C_B": 160546.22771697544,
+     "dC": -10.156078655883903,
+     "D1": 4.834384195281018,
+     "D1prime": 4.701179030851847,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 1.0002655878929567e-08,
+     "max_violation_B": 4.392740182192212e-08,
+     "max_slack_var_B": 3.92250641399514e-08,
+     "min_slack_var_B": -9.987467292847484e-09,
+     "detector_A": -0.12140516315426463,
+     "detector_B": -0.11166348862085287,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 227.42043128975746,
+       "no curtailment change | bound set changed": 244.89511741196281,
+       "B curtails more": 847.4713366113851
+      },
+      "tn_flex_change": 0.0,
+      "sum": 1319.7868853131054
+     }
+    },
+    "2028|Spring": {
+     "w": 260.08096433498423,
+     "A": {
+      "loaded_by_production": false,
+      "strict_optimal": false,
+      "termination_condition": "internalSolverError",
+      "solver_status": "error",
+      "exit": "Restoration Failed!",
+      "iterations": 34,
+      "wall_s": 0.9860995002090931
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": false,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Solved To Acceptable Level.",
+      "iterations": 66,
+      "wall_s": 1.4434145828709006
+     },
+     "cov": -4.663947370558162,
+     "V_price_valued_draw_change": -22.944780151896577,
+     "valid": false,
+     "strict": false
+    },
+    "2028|Summer": {
+     "w": 257.2539973313431,
+     "A": {
+      "loaded_by_production": false,
+      "strict_optimal": false,
+      "termination_condition": "internalSolverError",
+      "solver_status": "error",
+      "exit": "Restoration Failed!",
+      "iterations": 31,
+      "wall_s": 0.9250650000758469
+     },
+     "B": {
+      "loaded_by_production": false,
+      "strict_optimal": false,
+      "termination_condition": "internalSolverError",
+      "solver_status": "error",
+      "exit": "Restoration Failed!",
+      "iterations": 35,
+      "wall_s": 0.9651458342559636
+     },
+     "cov": -67.69780488887045,
+     "V_price_valued_draw_change": -71.49454805208569,
+     "valid": false,
+     "strict": false
+    },
+    "2028|Autumn": {
+     "w": 257.2539973313431,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 50,
+      "wall_s": 0.9946553749032319
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 50,
+      "wall_s": 1.0814759591594338
+     },
+     "cov": -293.43778113398,
+     "V_price_valued_draw_change": -293.45059521462736,
+     "valid": true,
+     "strict": true,
+     "C_A": 211442.00634190175,
+     "C_B": 211155.0067511775,
+     "dC": -286.999590724241,
+     "D1": 6.438190409739036,
+     "D1prime": 6.451004490386367,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 1.0002425855464014e-08,
+     "max_violation_B": 1.0002159078412176e-08,
+     "max_slack_var_B": 7.65703908823071e-09,
+     "min_slack_var_B": -9.999545442847156e-09,
+     "detector_A": -0.12003794631568526,
+     "detector_B": -0.12003788699908545,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 1779.6864906477845,
+       "no curtailment change | bound set changed": -123.43627219073082
+      },
+      "tn_flex_change": 0.0,
+      "sum": 1656.2502184570528
+     }
+    },
+    "2028|Winter": {
+     "w": 257.2539973313431,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 40,
+      "wall_s": 0.8820847501046956
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 40,
+      "wall_s": 0.9415110419504344
+     },
+     "cov": -320.07924424398516,
+     "V_price_valued_draw_change": -320.46563367807084,
+     "valid": true,
+     "strict": true,
+     "C_A": 216377.59643335798,
+     "C_B": 216063.79380929525,
+     "dC": -313.8026240627223,
+     "D1": 6.276620181262842,
+     "D1prime": 6.663009615348528,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 1.3268568022084537e-08,
+     "max_violation_B": 1.3237604568061556e-08,
+     "max_slack_var_B": 6.840547577368833e-09,
+     "min_slack_var_B": -9.999545487957583e-09,
+     "detector_A": -0.12011972853764702,
+     "detector_B": -0.12011953615468704,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 1999.9369533470583,
+       "no curtailment change | bound set changed": -385.25132200837504
+      },
+      "tn_flex_change": 0.0,
+      "sum": 1614.685631338685
+     }
+    },
+    "2031|Spring": {
+     "w": 245.080101483389,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": false,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Solved To Acceptable Level.",
+      "iterations": 130,
+      "wall_s": 2.0955519159324467
+     },
+     "B": {
+      "loaded_by_production": false,
+      "strict_optimal": false,
+      "termination_condition": "maxIterations",
+      "solver_status": "warning",
+      "exit": "Maximum Number of Iterations Exceeded.",
+      "iterations": 500,
+      "wall_s": 6.556774915661663
+     },
+     "cov": -78.10126311430213,
+     "V_price_valued_draw_change": -86.8652973181675,
+     "valid": false,
+     "strict": false
+    },
+    "2031|Summer": {
+     "w": 242.4161873368304,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": false,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Solved To Acceptable Level.",
+      "iterations": 59,
+      "wall_s": 1.2039884999394417
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 96,
+      "wall_s": 1.6556517081335187
+     },
+     "cov": -104.53166213356599,
+     "V_price_valued_draw_change": -86.07015613400927,
+     "valid": true,
+     "strict": false,
+     "C_A": 132084.95605030822,
+     "C_B": 133193.952468331,
+     "dC": 1108.9964180227835,
+     "D1": 1213.5280801563495,
+     "D1prime": 1195.0665741567927,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 2.3924128209756867e-08,
+     "max_violation_B": 1.08523995204831e-08,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.99954575336741e-09,
+     "detector_A": -0.11373670930809575,
+     "detector_B": -0.1213671203115927,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 7059.323946533286,
+       "A curtails more": -875.9324489258137,
+       "A curtails more | bound set changed": -164.22363084079325,
+       "B curtails more": 164846.31043171886,
+       "B curtails more | bound set changed": 122548.31729288417,
+       "no curtailment change | bound set changed": 765.0548263004358
+      },
+      "tn_flex_change": 0.0,
+      "sum": 294178.85041767027
+     }
+    },
+    "2031|Autumn": {
+     "w": 242.4161873368304,
+     "A": {
+      "loaded_by_production": false,
+      "strict_optimal": false,
+      "termination_condition": "internalSolverError",
+      "solver_status": "error",
+      "exit": "Restoration Failed!",
+      "iterations": 405,
+      "wall_s": 5.157308124937117
+     },
+     "B": {
+      "loaded_by_production": false,
+      "strict_optimal": false,
+      "termination_condition": "internalSolverError",
+      "solver_status": "error",
+      "exit": "Error in step computation!",
+      "iterations": 350,
+      "wall_s": 4.654130917042494
+     },
+     "cov": -455.35245044590556,
+     "V_price_valued_draw_change": -455.33788278069323,
+     "valid": false,
+     "strict": false
+    },
+    "2031|Winter": {
+     "w": 242.4161873368304,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 50,
+      "wall_s": 1.0757060418836772
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 54,
+      "wall_s": 1.1729470831342041
+     },
+     "cov": -6.8532917832781095,
+     "V_price_valued_draw_change": -7.625546693046957,
+     "valid": true,
+     "strict": true,
+     "C_A": 107995.0108047006,
+     "C_B": 108329.45818468116,
+     "dC": 334.44737998055643,
+     "D1": 341.30067176383454,
+     "D1prime": 342.0729266736034,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 1.0005998906173486e-08,
+     "max_violation_B": 1.0005999163779922e-08,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.999545404585283e-09,
+     "detector_A": -0.12139103679497067,
+     "detector_B": -0.12139103685518975,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 1749.712252223799,
+       "B curtails more": 76605.21759315985,
+       "B curtails more | bound set changed": 2582.66995473478,
+       "no curtailment change | bound set changed": 1799.2077843630036
+      },
+      "tn_flex_change": 0.0,
+      "sum": 82736.80758448142
+     }
+    },
+    "2034|Spring": {
+     "w": 230.94445338085367,
+     "A": {
+      "loaded_by_production": false,
+      "strict_optimal": false,
+      "termination_condition": "internalSolverError",
+      "solver_status": "error",
+      "exit": "Restoration Failed!",
+      "iterations": 36,
+      "wall_s": 0.9913006667047739
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": false,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Solved To Acceptable Level.",
+      "iterations": 96,
+      "wall_s": 1.8271312499418855
+     },
+     "cov": -99.45157493423903,
+     "V_price_valued_draw_change": -87.37120639669584,
+     "valid": false,
+     "strict": false
+    },
+    "2034|Summer": {
+     "w": 228.4341875832357,
+     "A": {
+      "loaded_by_production": false,
+      "strict_optimal": false,
+      "termination_condition": "maxIterations",
+      "solver_status": "warning",
+      "exit": "Maximum Number of Iterations Exceeded.",
+      "iterations": 500,
+      "wall_s": 6.664121124893427
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": false,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Solved To Acceptable Level.",
+      "iterations": 125,
+      "wall_s": 2.183208083268255
+     },
+     "cov": -147.97308352866094,
+     "V_price_valued_draw_change": -153.97328500221508,
+     "valid": false,
+     "strict": false
+    },
+    "2034|Autumn": {
+     "w": 228.4341875832357,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 47,
+      "wall_s": 1.0315081248991191
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 46,
+      "wall_s": 1.0282808747142553
+     },
+     "cov": -510.19422158499947,
+     "V_price_valued_draw_change": -509.98591997382186,
+     "valid": true,
+     "strict": true,
+     "C_A": 130425.38286703987,
+     "C_B": 129933.08821742528,
+     "dC": -492.2946496145887,
+     "D1": 17.89957197041076,
+     "D1prime": 17.691270359233158,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 1.002593060482615e-08,
+     "max_violation_B": 1.0002627262063746e-08,
+     "max_slack_var_B": 6.444411754591851e-10,
+     "min_slack_var_B": -9.999545435135435e-09,
+     "detector_A": -0.120756895359759,
+     "detector_B": -0.12073914678959045,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 472.96348950098286,
+       "no curtailment change | bound set changed": 2593.6083362314075,
+       "B curtails more | bound set changed": 1022.3023554172127
+      },
+      "tn_flex_change": 0.0,
+      "sum": 4088.874181149606
+     }
+    },
+    "2034|Winter": {
+     "w": 228.4341875832357,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 43,
+      "wall_s": 0.9799725408665836
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 41,
+      "wall_s": 0.9902919167652726
+     },
+     "cov": -131.50363330583787,
+     "V_price_valued_draw_change": -132.28045000494092,
+     "valid": true,
+     "strict": true,
+     "C_A": 130939.23233902993,
+     "C_B": 130918.97216117376,
+     "dC": -20.260177856165683,
+     "D1": 111.24345544967218,
+     "D1prime": 112.02027214877523,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 1.0028981208866361e-08,
+     "max_violation_B": 1.0028326268354815e-08,
+     "max_slack_var_B": 1.6402489051625406e-10,
+     "min_slack_var_B": -9.999545697057405e-09,
+     "detector_A": -0.12078738949663792,
+     "detector_B": -0.1207871884442797,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 2819.551154806592,
+       "no curtailment change | bound set changed": 1272.4905186038159,
+       "B curtails more | bound set changed": 21319.762523503232,
+       "B curtails more": 0.004172691200673595
+      },
+      "tn_flex_change": 0.0,
+      "sum": 25411.808369604838
+     }
+    },
+    "2037|Spring": {
+     "w": 217.62411646053712,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 51,
+      "wall_s": 1.0924377078190446
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 59,
+      "wall_s": 1.1911905421875417
+     },
+     "cov": -171.96318112230801,
+     "V_price_valued_draw_change": -182.46679316496943,
+     "valid": true,
+     "strict": true,
+     "C_A": 43347.815877683825,
+     "C_B": 43220.94211902173,
+     "dC": -126.87375866209186,
+     "D1": 45.089422460216156,
+     "D1prime": 55.59303450287757,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 1.0037057625138235e-08,
+     "max_violation_B": 9.999840703964171e-09,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.999185456877912e-09,
+     "detector_A": -0.12180164212702244,
+     "detector_B": -0.12180345206463071,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": -610.3111240174978,
+       "B curtails more": 0.0019157605439370316,
+       "A curtails more": -0.00012798846777518019,
+       "no curtailment change | bound set changed": -392.8850551733575,
+       "B curtails more | bound set changed": 10710.36492837791,
+       "A curtails more | bound set changed": 105.37518766831897
+      },
+      "tn_flex_change": 0.0,
+      "sum": 9812.545724627455
+     }
+    },
+    "2037|Summer": {
+     "w": 215.25863693379213,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 71,
+      "wall_s": 1.3277323339134455
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": false,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Solved To Acceptable Level.",
+      "iterations": 96,
+      "wall_s": 1.6307432907633483
+     },
+     "cov": -43.99417200258176,
+     "V_price_valued_draw_change": -65.70839030799367,
+     "valid": true,
+     "strict": false,
+     "C_A": 79634.36293309944,
+     "C_B": 80298.07706158125,
+     "dC": 663.7141284818063,
+     "D1": 707.708300484388,
+     "D1prime": 729.4225187897999,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.999932506737754e-09,
+     "max_violation_B": 1.0436793088076067e-08,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.987314618247662e-09,
+     "detector_A": -0.12180344876139755,
+     "detector_B": -0.11648472294299032,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": -2770.7223254086593,
+       "B curtails more": 64820.665222874755,
+       "B curtails more | bound set changed": 90180.03416112147,
+       "no curtailment change | bound set changed": 110.34705041041022
+      },
+      "tn_flex_change": 0.0,
+      "sum": 152340.32410899803
+     }
+    },
+    "2037|Autumn": {
+     "w": 215.25863693379213,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": false,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Solved To Acceptable Level.",
+      "iterations": 172,
+      "wall_s": 3.238883708138019
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": false,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Solved To Acceptable Level.",
+      "iterations": 185,
+      "wall_s": 3.3712067077867687
+     },
+     "cov": -162.6570386243693,
+     "V_price_valued_draw_change": -162.6727321672746,
+     "valid": true,
+     "strict": false,
+     "C_A": 144587.84032242477,
+     "C_B": 144730.2318450565,
+     "dC": 142.39152263171854,
+     "D1": 305.04856125608785,
+     "D1prime": 305.06425479899315,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.998143482029454e-09,
+     "max_violation_B": 9.998143482411995e-09,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.987227428841745e-09,
+     "detector_A": -0.11652008135672576,
+     "detector_B": -0.11652012806603922,
+     "attribution": {
+      "by_class": {
+       "no curtailment change": 850.7763184306416,
+       "no curtailment change | bound set changed": 2126.9744853099114,
+       "B curtails more | bound set changed": 2797.2840493426997,
+       "B curtails more": 59889.30264152185
+      },
+      "tn_flex_change": 0.0,
+      "sum": 65664.33749460513
+     }
+    },
+    "2037|Winter": {
+     "w": 215.25863693379213,
+     "A": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 56,
+      "wall_s": 1.0519311670213938
+     },
+     "B": {
+      "loaded_by_production": true,
+      "strict_optimal": true,
+      "termination_condition": "optimal",
+      "solver_status": "ok",
+      "exit": "Optimal Solution Found.",
+      "iterations": 49,
+      "wall_s": 1.0526914158836007
+     },
+     "cov": -87.24898080674757,
+     "V_price_valued_draw_change": -90.67827895415735,
+     "valid": true,
+     "strict": true,
+     "C_A": 133380.84154023218,
+     "C_B": 133461.7523765934,
+     "dC": 80.91083636120311,
+     "D1": 168.15981716795068,
+     "D1prime": 171.58911531536046,
+     "C_A_minus_saved_gen": null,
+     "max_violation_A": 9.999901274341976e-09,
+     "max_violation_B": 9.999901274432608e-09,
+     "max_slack_var_B": 0.0,
+     "min_slack_var_B": -9.999402191695717e-09,
+     "detector_A": -0.12180345151064526,
+     "detector_B": -0.12180318364289927,
+     "attribution": {
+      "by_class": {
+       "no curtailment change | bound set changed": -608.8699792442661,
+       "no curtailment change": 4196.834412680769,
+       "B curtails more": 22740.326444518723,
+       "B curtails more | bound set changed": 9869.562152634546
+      },
+      "tn_flex_change": 0.0,
+      "sum": 36197.85303058977
+     }
+    }
+   },
+   "totals": {
+    "valid": {
+     "n_blocks": 12,
+     "weight_share": 0.5873570980144123,
+     "blocks": [
+      "2025|Autumn",
+      "2025|Winter",
+      "2028|Autumn",
+      "2028|Winter",
+      "2031|Summer",
+      "2031|Winter",
+      "2034|Autumn",
+      "2034|Winter",
+      "2037|Autumn",
+      "2037|Spring",
+      "2037|Summer",
+      "2037|Winter"
+     ],
+     "C_A_w": 400387892.2737196,
+     "C_B_w": 400553648.3043141,
+     "dC_w": 165756.03059462327,
+     "cov_w": -509888.2024073586,
+     "D1_w": 675644.2330019819,
+     "D1prime_w": 679490.5176009019,
+     "V_w": -513734.4870062785
+    },
+    "strict": {
+     "n_blocks": 8,
+     "weight_share": 0.39347133867344075,
+     "blocks": [
+      "2025|Autumn",
+      "2028|Autumn",
+      "2028|Winter",
+      "2031|Winter",
+      "2034|Autumn",
+      "2034|Winter",
+      "2037|Spring",
+      "2037|Winter"
+     ],
+     "C_A_w": 276270702.20416784,
+     "C_B_w": 275996870.95712495,
+     "dC_w": -273831.2470429297,
+     "cov_w": -435972.1811383144,
+     "D1_w": 162140.93409538467,
+     "D1prime_w": 165821.40039594198,
+     "V_w": -439652.6474388717
+    }
+   },
+   "n_loaded": {
+    "A": 14,
+    "B": 15
+   },
+   "n_strict": {
+    "A": 10,
+    "B": 9
+   },
+   "cov_w_all_blocks": -746992.0807112876
+  }
+ },
+ "pair_v2": {
+  "valid": {
+   "common_blocks": [
+    "2025|Autumn",
+    "2025|Winter",
+    "2028|Autumn",
+    "2028|Winter",
+    "2031|Summer",
+    "2031|Winter",
+    "2034|Autumn",
+    "2034|Winter",
+    "2037|Autumn",
+    "2037|Spring",
+    "2037|Summer",
+    "2037|Winter"
+   ],
+   "n": 12,
+   "weight_share": 0.5873570980144123,
+   "D1_x0_on_common": 675663.2432939417,
+   "D1_unit_on_common": 675644.2330019819,
+   "pair_D1_x0_minus_unit": 19.010291959857568
+  },
+  "strict": {
+   "common_blocks": [
+    "2025|Autumn",
+    "2028|Autumn",
+    "2028|Winter",
+    "2031|Winter",
+    "2034|Autumn",
+    "2034|Winter",
+    "2037|Spring",
+    "2037|Winter"
+   ],
+   "n": 8,
+   "weight_share": 0.39347133867344075,
+   "D1_x0_on_common": 163062.73905904498,
+   "D1_unit_on_common": 162140.93409538467,
+   "pair_D1_x0_minus_unit": 921.80496366031
+  }
+ },
+ "attribution": {
+  "x0": {
+   "by_class": {
+    "no curtailment change": {
+     "n_scenario_hours": 3781,
+     "sum_eur_weighted": 29322.957881252416
+    },
+    "B curtails more": {
+     "n_scenario_hours": 176,
+     "sum_eur_weighted": 432572.8696429009
+    },
+    "A curtails more | bound set changed": {
+     "n_scenario_hours": 11,
+     "sum_eur_weighted": 1933.7271166058226
+    },
+    "no curtailment change | bound set changed": {
+     "n_scenario_hours": 289,
+     "sum_eur_weighted": 7800.622316643765
+    },
+    "A curtails more": {
+     "n_scenario_hours": 24,
+     "sum_eur_weighted": 0.0025999006119512484
+    },
+    "B curtails more | bound set changed": {
+     "n_scenario_hours": 39,
+     "sum_eur_weighted": 455981.8965106684
+    }
+   },
+   "top_scenario_hours": [
+    {
+     "scenario": "2_0",
+     "hour": 10,
+     "contribution_eur_weighted": 81058.1677520471,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 43.42945326995638,
+     "d_draw_mw": -43.37376425310228,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 69.38375406003051,
+     "mc_p_A": {
+      "5": 0.016232767119008597,
+      "7": 0.016182634283616673,
+      "9": 0.01617118386007662
+     },
+     "mc_p_B": {
+      "5": -2.0592663800248593e-07,
+      "7": -2.0496174071700883e-07,
+      "9": -2.055397683894786e-07
+     },
+     "block": "2031|Summer"
+    },
+    {
+     "scenario": "1_0",
+     "hour": 10,
+     "contribution_eur_weighted": 70270.54543310235,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 34.80611880259964,
+     "d_draw_mw": -34.739558578272636,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 75.0998297394905,
+     "mc_p_A": {
+      "5": 0.016232859201796974,
+      "7": 0.01618272608311118,
+      "9": 0.01617127559433988
+     },
+     "mc_p_B": {
+      "5": -6.779943014316577e-08,
+      "7": -6.622528534752888e-08,
+      "9": -6.819830131711293e-08
+     },
+     "block": "2031|Summer"
+    },
+    {
+     "scenario": "0_0",
+     "hour": 16,
+     "contribution_eur_weighted": 68447.51505907482,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 30.78335056500371,
+     "d_draw_mw": -32.74523654343781,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 82.8843385127679,
+     "mc_p_A": {
+      "5": 83.23279766100971,
+      "7": 82.67132141657834,
+      "9": 82.95948440687988
+     },
+     "mc_p_B": {
+      "5": 1.4524902976951333e-08,
+      "7": 1.5967882344939222e-08,
+      "9": 1.391000083416301e-08
+     },
+     "block": "2031|Summer"
+    },
+    {
+     "scenario": "2_1",
+     "hour": 12,
+     "contribution_eur_weighted": 51954.25536570214,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 18.67303480481282,
+     "d_draw_mw": -18.62553257944304,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 116.62608852172553,
+     "mc_p_A": {
+      "5": 0.012563254121330775,
+      "7": 0.012430154232280523,
+      "9": 0.012520733464472645
+     },
+     "mc_p_B": {
+      "5": 4.669699259520608e-07,
+      "7": 4.6212469917114074e-07,
+      "9": 4.630312062822684e-07
+     },
+     "block": "2037|Autumn"
+    },
+    {
+     "scenario": "0_1",
+     "hour": 23,
+     "contribution_eur_weighted": 44441.08412882622,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 8.808020771392167,
+     "d_draw_mw": -8.775173426279679,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 197.2963556938223,
+     "mc_p_A": {
+      "5": 0.011029105118129445,
+      "7": 0.010932153349035948,
+      "9": 0.011017165325348525
+     },
+     "mc_p_B": {
+      "5": 4.6041641054605005e-07,
+      "7": 4.5947065575422875e-07,
+      "9": 4.6163296513714336e-07
+     },
+     "block": "2034|Spring"
+    },
+    {
+     "scenario": "1_0",
+     "hour": 10,
+     "contribution_eur_weighted": 34447.983121278936,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 10.058866042892987,
+     "d_draw_mw": -10.041779361429299,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 127.36824134724608,
+     "mc_p_A": {
+      "5": 0.021351068710333893,
+      "7": 0.021106122296132075,
+      "9": 0.021314781960246967
+     },
+     "mc_p_B": {
+      "5": 1.0842622852903578e-06,
+      "7": 1.0713468122841776e-06,
+      "9": 1.0803238042410285e-06
+     },
+     "block": "2031|Winter"
+    },
+    {
+     "scenario": "0_0",
+     "hour": 10,
+     "contribution_eur_weighted": 30049.341243385414,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 8.823652622505714,
+     "d_draw_mw": -8.817761313674342,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 126.52851498834112,
+     "mc_p_A": {
+      "5": 0.02135105962808528,
+      "7": 0.021106113317984013,
+      "9": 0.0213147728934958
+     },
+     "mc_p_B": {
+      "5": 1.2986767965499832e-06,
+      "7": 1.282685985307494e-06,
+      "9": 1.294321256451417e-06
+     },
+     "block": "2031|Winter"
+    },
+    {
+     "scenario": "2_0",
+     "hour": 16,
+     "contribution_eur_weighted": 29077.430641016206,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 13.674505906042246,
+     "d_draw_mw": -15.324227907538123,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 89.08353460452135,
+     "mc_p_A": {
+      "5": 89.51518488934394,
+      "7": 88.90324203394431,
+      "9": 89.23832924113808
+     },
+     "mc_p_B": {
+      "5": 7.932473474660312e-07,
+      "7": 7.886968931314336e-07,
+      "9": 7.88139797333971e-07
+     },
+     "block": "2037|Summer"
+    },
+    {
+     "scenario": "1_0",
+     "hour": 10,
+     "contribution_eur_weighted": 27160.665818410664,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 8.46402673339475,
+     "d_draw_mw": -15.984478567432754,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 119.10534767913316,
+     "mc_p_A": {
+      "5": 119.61843228716262,
+      "7": 118.81256169531936,
+      "9": 119.34945019292144
+     },
+     "mc_p_B": {
+      "5": 1.2087098907462494e-06,
+      "7": 1.1972999149821892e-06,
+      "9": 1.2034996262743208e-06
+     },
+     "block": "2031|Autumn"
+    },
+    {
+     "scenario": "2_0",
+     "hour": 8,
+     "contribution_eur_weighted": 24040.191593274812,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 7.621314015942322,
+     "d_draw_mw": -7.623175066901518,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 131.8549729877121,
+     "mc_p_A": {
+      "5": 0.16200878787250655,
+      "7": 0.16152634053975823,
+      "9": 0.1614895706612196
+     },
+     "mc_p_B": {
+      "5": 1.4117880454010298e-06,
+      "7": 1.4090145394319151e-06,
+      "9": 1.4039077270506742e-06
+     },
+     "block": "2037|Summer"
+    },
+    {
+     "scenario": "0_0",
+     "hour": 10,
+     "contribution_eur_weighted": 23443.52286132376,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 12.543979487584041,
+     "d_draw_mw": -15.462746175914567,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 78.18939086851424,
+     "mc_p_A": {
+      "5": 78.55775501534146,
+      "7": 78.05575974423125,
+      "9": 78.2829863398474
+     },
+     "mc_p_B": {
+      "5": 6.848468485113588e-07,
+      "7": 6.807620761351503e-07,
+      "9": 6.795881103981302e-07
+     },
+     "block": "2037|Summer"
+    },
+    {
+     "scenario": "2_0",
+     "hour": 11,
+     "contribution_eur_weighted": 22786.149133378865,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 6.502271845307694,
+     "d_draw_mw": -6.57323668638924,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 144.9915211846718,
+     "mc_p_A": {
+      "5": 0.016929582285185523,
+      "7": 0.01674562527379103,
+      "9": 0.016907936936855848
+     },
+     "mc_p_B": {
+      "5": 1.9807936373861596e-06,
+      "7": 1.9534123201472927e-06,
+      "9": 1.9775987533816103e-06
+     },
+     "block": "2037|Winter"
+    },
+    {
+     "scenario": "1_0",
+     "hour": 11,
+     "contribution_eur_weighted": 22259.777349633725,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 7.343454629088096,
+     "d_draw_mw": -31.1456973316312,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 113.03089371705045,
+     "mc_p_A": {
+      "5": 113.72265504616796,
+      "7": 113.22028080573466,
+      "9": 113.44467263518762
+     },
+     "mc_p_B": {
+      "5": 1.5996078342762413e-06,
+      "7": 1.5853999189192586e-06,
+      "9": 1.5959365578966748e-06
+     },
+     "block": "2031|Autumn"
+    },
+    {
+     "scenario": "2_0",
+     "hour": 23,
+     "contribution_eur_weighted": 22185.276820129307,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 5.57316016207991,
+     "d_draw_mw": -25.70892223183294,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 149.4737856467848,
+     "mc_p_A": {
+      "5": 150.0242543262516,
+      "7": 148.73973458651793,
+      "9": 149.75065413332396
+     },
+     "mc_p_B": {
+      "5": 8.772190706022995e-07,
+      "7": 8.714172101291475e-07,
+      "9": 8.762618479537639e-07
+     },
+     "block": "2031|Summer"
+    },
+    {
+     "scenario": "1_0",
+     "hour": 16,
+     "contribution_eur_weighted": 21770.136399307456,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 10.090482694571023,
+     "d_draw_mw": -12.139635698816525,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 80.39043186706878,
+     "mc_p_A": {
+      "5": 80.72840621018435,
+      "7": 80.18382421429625,
+      "9": 80.46331667908478
+     },
+     "mc_p_B": {
+      "5": 1.1056934916518734e-06,
+      "7": 1.1002922741478397e-06,
+      "9": 1.0997438698921436e-06
+     },
+     "block": "2031|Summer"
+    },
+    {
+     "scenario": "2_2",
+     "hour": 16,
+     "contribution_eur_weighted": 20082.600088742864,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 9.451969104133719,
+     "d_draw_mw": -9.427915679735467,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 89.08353460452135,
+     "mc_p_A": {
+      "5": 1.6336799021830741,
+      "7": 1.6234593317495172,
+      "9": 1.628617314258305
+     },
+     "mc_p_B": {
+      "5": 1.3013482441223031e-06,
+      "7": 1.2957321827669411e-06,
+      "9": 1.296502609151954e-06
+     },
+     "block": "2037|Summer"
+    },
+    {
+     "scenario": "1_0",
+     "hour": 10,
+     "contribution_eur_weighted": 19300.905934180988,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 9.326262879308606,
+     "d_draw_mw": -12.25635368805489,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 86.49658321046435,
+     "mc_p_A": {
+      "5": 86.90408407170014,
+      "7": 86.3487545895016,
+      "9": 86.60012273053395
+     },
+     "mc_p_B": {
+      "5": 1.0758840487282036e-06,
+      "7": 1.0692844559862817e-06,
+      "9": 1.068231544382171e-06
+     },
+     "block": "2037|Summer"
+    },
+    {
+     "scenario": "2_0",
+     "hour": 11,
+     "contribution_eur_weighted": 16987.85081473871,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 7.343197151955329,
+     "d_draw_mw": -31.145441365590536,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 86.26407891868871,
+     "mc_p_A": {
+      "5": 86.7920243544237,
+      "7": 86.40861697430329,
+      "9": 86.57987089707575
+     },
+     "mc_p_B": {
+      "5": 1.5996814119710995e-06,
+      "7": 1.585472721166376e-06,
+      "9": 1.5960099810914443e-06
+     },
+     "block": "2031|Autumn"
+    },
+    {
+     "scenario": "2_0",
+     "hour": 5,
+     "contribution_eur_weighted": 16208.156990744015,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 6.129954695517403,
+     "d_draw_mw": -19.544832788146675,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 97.07537927380216,
+     "mc_p_A": {
+      "5": 97.41890135132724,
+      "7": 96.49491624561064,
+      "9": 97.32494705192236
+     },
+     "mc_p_B": {
+      "5": 9.87917807758342e-07,
+      "7": 9.755516901847041e-07,
+      "9": 9.876648255607187e-07
+     },
+     "block": "2031|Autumn"
+    },
+    {
+     "scenario": "2_0",
+     "hour": 4,
+     "contribution_eur_weighted": 15894.015397785135,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 6.202722366418129,
+     "d_draw_mw": -26.840969883188603,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 93.88933849760056,
+     "mc_p_A": {
+      "5": 94.27373071448125,
+      "7": 93.53550739794213,
+      "9": 94.21109841767827
+     },
+     "mc_p_B": {
+      "5": 9.705518328798877e-07,
+      "7": 9.584436698746283e-07,
+      "9": 9.70301644812282e-07
+     },
+     "block": "2031|Autumn"
+    }
+   ],
+   "n_scenario_hours": 4320
+  },
+  "unit": {
+   "by_class": {
+    "no curtailment change": {
+     "n_scenario_hours": 2201,
+     "sum_eur_weighted": 18034.401057132844
+    },
+    "no curtailment change | bound set changed": {
+     "n_scenario_hours": 204,
+     "sum_eur_weighted": 7765.0157879807675
+    },
+    "B curtails more": {
+     "n_scenario_hours": 138,
+     "sum_eur_weighted": 389749.2997588572
+    },
+    "A curtails more": {
+     "n_scenario_hours": 15,
+     "sum_eur_weighted": -875.9325769142815
+    },
+    "A curtails more | bound set changed": {
+     "n_scenario_hours": 11,
+     "sum_eur_weighted": -58.84844317247431
+    },
+    "B curtails more | bound set changed": {
+     "n_scenario_hours": 23,
+     "sum_eur_weighted": 261030.297418016
+    }
+   },
+   "top_scenario_hours": [
+    {
+     "scenario": "2_0",
+     "hour": 10,
+     "contribution_eur_weighted": 81059.97516103533,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 43.42801016383195,
+     "d_draw_mw": -43.37140190045314,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 69.38375406003051,
+     "mc_p_A": {
+      "5": 0.08509158713399734,
+      "7": 0.08482517132907187,
+      "9": 0.08476451673681691
+     },
+     "mc_p_B": {
+      "5": -1.0772147728120112e-08,
+      "7": -9.578896208811627e-09,
+      "9": -1.116105490147219e-08
+     },
+     "block": "2031|Summer"
+    },
+    {
+     "scenario": "1_0",
+     "hour": 10,
+     "contribution_eur_weighted": 69989.24213604633,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 34.664994357911446,
+     "d_draw_mw": -34.597164380682365,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 75.0998297394905,
+     "mc_p_A": {
+      "5": 0.08509300252225574,
+      "7": 0.08482658243198724,
+      "9": 0.08476592686101773
+     },
+     "mc_p_B": {
+      "5": 7.261887452667622e-08,
+      "7": 7.393350840923533e-08,
+      "9": 7.174907670558476e-08
+     },
+     "block": "2031|Summer"
+    },
+    {
+     "scenario": "0_0",
+     "hour": 16,
+     "contribution_eur_weighted": 68250.11439424146,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 30.691862963299418,
+     "d_draw_mw": -32.65276493247201,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 82.8843385127679,
+     "mc_p_A": {
+      "5": 83.23238350307231,
+      "7": 82.67238335697155,
+      "9": 82.95969575098151
+     },
+     "mc_p_B": {
+      "5": 1.1570358456700158e-07,
+      "7": 1.1637821253574282e-07,
+      "9": 1.1484187127417473e-07
+     },
+     "block": "2031|Summer"
+    },
+    {
+     "scenario": "2_1",
+     "hour": 12,
+     "contribution_eur_weighted": 51666.088905553566,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 18.569297227318586,
+     "d_draw_mw": -18.522237159480564,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 116.62608852172553,
+     "mc_p_A": {
+      "5": 0.22416512239201034,
+      "7": 0.22179664719175274,
+      "9": 0.2234050427850591
+     },
+     "mc_p_B": {
+      "5": 8.488278968310325e-06,
+      "7": 8.400466902560382e-06,
+      "9": 8.416954549127648e-06
+     },
+     "block": "2037|Autumn"
+    },
+    {
+     "scenario": "1_0",
+     "hour": 10,
+     "contribution_eur_weighted": 34449.39931927243,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 10.059256943738031,
+     "d_draw_mw": -10.04216826239156,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 127.36824134724608,
+     "mc_p_A": {
+      "5": 0.013943297793511195,
+      "7": 0.013783335966156064,
+      "9": 0.013919600879907557
+     },
+     "mc_p_B": {
+      "5": 7.079880942650288e-07,
+      "7": 6.995548880882747e-07,
+      "9": 7.05416340488864e-07
+     },
+     "block": "2031|Winter"
+    },
+    {
+     "scenario": "0_0",
+     "hour": 10,
+     "contribution_eur_weighted": 30049.54499751395,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 8.823687273385026,
+     "d_draw_mw": -8.817797196726659,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 126.52851498834112,
+     "mc_p_A": {
+      "5": 0.013943294200435016,
+      "7": 0.013783332414261008,
+      "9": 0.013919597292961203
+     },
+     "mc_p_B": {
+      "5": 8.480359318240284e-07,
+      "7": 8.37594024261743e-07,
+      "9": 8.451917706779755e-07
+     },
+     "block": "2031|Winter"
+    },
+    {
+     "scenario": "2_0",
+     "hour": 16,
+     "contribution_eur_weighted": 29152.191581699128,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 13.714463967800015,
+     "d_draw_mw": -15.363740712042897,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 89.08353460452135,
+     "mc_p_A": {
+      "5": 89.51361304675441,
+      "7": 88.93937512561749,
+      "9": 89.23936779884461
+     },
+     "mc_p_B": {
+      "5": 1.4213581679220154e-05,
+      "7": 1.4140521883160004e-05,
+      "9": 1.4122897466373508e-05
+     },
+     "block": "2037|Summer"
+    },
+    {
+     "scenario": "2_0",
+     "hour": 8,
+     "contribution_eur_weighted": 24026.6675809434,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 7.621164493030251,
+     "d_draw_mw": -7.622986280442989,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 131.8549729877121,
+     "mc_p_A": {
+      "5": 0.022312112036235246,
+      "7": 0.02224559930507889,
+      "9": 0.02224056335566278
+     },
+     "mc_p_B": {
+      "5": 2.541202700870465e-05,
+      "7": 2.536211343791079e-05,
+      "9": 2.5270181648611412e-05
+     },
+     "block": "2037|Summer"
+    },
+    {
+     "scenario": "0_0",
+     "hour": 10,
+     "contribution_eur_weighted": 23428.682324934267,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 12.539611161247688,
+     "d_draw_mw": -15.458173799415771,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 78.18939086851424,
+     "mc_p_A": {
+      "5": 78.55556595619797,
+      "7": 78.04050533755667,
+      "9": 78.28419821497481
+     },
+     "mc_p_B": {
+      "5": 1.2335628077531361e-05,
+      "7": 1.2259169039951982e-05,
+      "9": 1.224140062111136e-05
+     },
+     "block": "2037|Summer"
+    },
+    {
+     "scenario": "2_0",
+     "hour": 23,
+     "contribution_eur_weighted": 22866.25868554731,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 5.7433851423485205,
+     "d_draw_mw": -25.798278101126293,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 149.4737856467848,
+     "mc_p_A": {
+      "5": 150.02229938572748,
+      "7": 148.73559651016765,
+      "9": 149.74982750043887
+     },
+     "mc_p_B": {
+      "5": 6.682589421373554e-07,
+      "7": 6.641328315755965e-07,
+      "9": 6.675090288872107e-07
+     },
+     "block": "2031|Summer"
+    },
+    {
+     "scenario": "2_0",
+     "hour": 11,
+     "contribution_eur_weighted": 22740.344099966936,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 6.489254543723713,
+     "d_draw_mw": -6.560021236539384,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 144.9915211846718,
+     "mc_p_A": {
+      "5": 0.011062147690057613,
+      "7": 0.010942084725070637,
+      "9": 0.01104792930671627
+     },
+     "mc_p_B": {
+      "5": 1.2965399322232542e-06,
+      "7": 1.27863924654928e-06,
+      "9": 1.294438810740387e-06
+     },
+     "block": "2037|Winter"
+    },
+    {
+     "scenario": "1_0",
+     "hour": 10,
+     "contribution_eur_weighted": 21911.745363345533,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 10.595534410099852,
+     "d_draw_mw": -13.521728048336936,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 86.49658321046435,
+     "mc_p_A": {
+      "5": 86.90166241907798,
+      "7": 86.33187945994536,
+      "9": 86.60146334493811
+     },
+     "mc_p_B": {
+      "5": 1.6045569743529722e-05,
+      "7": 1.594276803727268e-05,
+      "9": 1.5928660228076048e-05
+     },
+     "block": "2037|Summer"
+    },
+    {
+     "scenario": "1_0",
+     "hour": 16,
+     "contribution_eur_weighted": 21669.25709754615,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 10.040668217742876,
+     "d_draw_mw": -12.088997000941802,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 80.39043186706878,
+     "mc_p_A": {
+      "5": 80.72800419551301,
+      "7": 80.18485373523112,
+      "9": 80.46352136662419
+     },
+     "mc_p_B": {
+      "5": 8.376127913789205e-07,
+      "7": 8.336942112292982e-07,
+      "9": 8.331695213951367e-07
+     },
+     "block": "2031|Summer"
+    },
+    {
+     "scenario": "2_2",
+     "hour": 16,
+     "contribution_eur_weighted": 20281.697049543876,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 9.550221122376595,
+     "d_draw_mw": -9.526419080160395,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 89.08353460452135,
+     "mc_p_A": {
+      "5": 1.0396961146946262,
+      "7": 1.0336300494379413,
+      "9": 1.0365043752317098
+     },
+     "mc_p_B": {
+      "5": 2.3115659210678264e-05,
+      "7": 2.302949105489935e-05,
+      "9": 2.3030370993603935e-05
+     },
+     "block": "2037|Summer"
+    },
+    {
+     "scenario": "0_0",
+     "hour": 10,
+     "contribution_eur_weighted": 12143.920133680682,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 5.956334478497539,
+     "d_draw_mw": -5.961502835276854,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 75.59518758001259,
+     "mc_p_A": {
+      "5": 0.08509311508808934,
+      "7": 0.08482669465700751,
+      "9": 0.08476603900820082
+     },
+     "mc_p_B": {
+      "5": 1.4060034640780878e-06,
+      "7": 1.4030629548927023e-06,
+      "9": 1.3977226217536948e-06
+     },
+     "block": "2031|Summer"
+    },
+    {
+     "scenario": "2_0",
+     "hour": 10,
+     "contribution_eur_weighted": 12106.273276373468,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": false,
+     "d_curt_mw": 3.588425421941814,
+     "d_draw_mw": -3.6289032229013003,
+     "gens_at_lb_A": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 123.87629514718816,
+     "mc_p_A": {
+      "5": 0.013943282529608468,
+      "7": 0.013783320877196631,
+      "9": 0.013919585642045196
+     },
+     "mc_p_B": {
+      "5": 2.500119351681924e-06,
+      "7": 2.4658065202134876e-06,
+      "9": 2.4944421973250394e-06
+     },
+     "block": "2031|Winter"
+    },
+    {
+     "scenario": "1_1",
+     "hour": 22,
+     "contribution_eur_weighted": 9875.178516602156,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 2.0603716938139023,
+     "d_draw_mw": -2.4050335686335718,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 199.04276848327527,
+     "mc_p_A": {
+      "5": 199.33567189568865,
+      "7": 197.46405166996067,
+      "9": 199.2124356118095
+     },
+     "mc_p_B": {
+      "5": 2.2014841264659565e-06,
+      "7": 2.180203585888241e-06,
+      "9": 2.2018669348134614e-06
+     },
+     "block": "2037|Spring"
+    },
+    {
+     "scenario": "1_1",
+     "hour": 10,
+     "contribution_eur_weighted": 9870.839800210419,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 2.740947497600749,
+     "d_draw_mw": -8.539941905398194,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 140.56159616073168,
+     "mc_p_A": {
+      "5": 141.29508980192276,
+      "7": 139.77310210456218,
+      "9": 140.81117393140693
+     },
+     "mc_p_B": {
+      "5": 3.3560609723059443e-06,
+      "7": 3.311742869466753e-06,
+      "9": 3.3464240523269575e-06
+     },
+     "block": "2034|Winter"
+    },
+    {
+     "scenario": "2_1",
+     "hour": 12,
+     "contribution_eur_weighted": 9869.562152634546,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 2.9661036587912424,
+     "d_draw_mw": -20.035461086953458,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 140.94735140802578,
+     "mc_p_A": {
+      "5": 141.6321711879987,
+      "7": 140.66971614919973,
+      "9": 141.33879301644467
+     },
+     "mc_p_B": {
+      "5": 3.0461756612569867e-06,
+      "7": 3.0219277208561233e-06,
+      "9": 3.0388588472128244e-06
+     },
+     "block": "2037|Winter"
+    },
+    {
+     "scenario": "2_2",
+     "hour": 10,
+     "contribution_eur_weighted": 9547.195292716324,
+     "class": "B curtails more",
+     "controllable_bound_set_changed": true,
+     "d_curt_mw": 5.109400234531108,
+     "d_draw_mw": -10.430950755191182,
+     "gens_at_lb_A": [
+      1,
+      2
+     ],
+     "gens_at_lb_B": [
+      0,
+      1,
+      2
+     ],
+     "gens_at_ub_A": [],
+     "gens_at_ub_B": [],
+     "price": 69.38375406003051,
+     "mc_p_A": {
+      "5": 69.73700462554706,
+      "7": 69.57775386867671,
+      "9": 69.45953425980386
+     },
+     "mc_p_B": {
+      "5": 1.5063069018260359e-06,
+      "7": 1.4981041657809822e-06,
+      "9": 1.4988932650261375e-06
+     },
+     "block": "2031|Summer"
+    }
+   ],
+   "n_scenario_hours": 2592
+  }
+ },
+ "unit_failure_diagnosis": {
+  "2025|Spring": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.009280064040002202,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 2.168404344971009e-19,
+    "sess_pdch_hat_link": 2.5849394142282115e-26,
+    "sess_converter_capability": 1.3224300024400256e-09,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 0.0,
+    "sess_soc_limit_upper": 1.464969852892073e-08,
+    "sess_soc_limit_lower": 1.4139077536274962e-08,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 1.0001057888045597,
+   "soc_min_minus_lb_pu": -1.4139077536274962e-08,
+   "soc_ub_minus_max_pu": -1.464969852892073e-08,
+   "final_soc_residual_pu": 4.4735559787817403e-10,
+   "day_balance_slack_ub_pu": 0.0004740032020001102,
+   "status_A": {
+    "loaded_by_production": false,
+    "strict_optimal": false,
+    "termination_condition": "internalSolverError",
+    "solver_status": "error",
+    "exit": "Restoration Failed!",
+    "iterations": 118,
+    "wall_s": 1.8998099160380661
+   },
+   "status_B": {
+    "loaded_by_production": false,
+    "strict_optimal": false,
+    "termination_condition": "internalSolverError",
+    "solver_status": "error",
+    "exit": "Restoration Failed!",
+    "iterations": 168,
+    "wall_s": 2.47331904200837
+   }
+  },
+  "2025|Summer": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.009280064040002202,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 2.168404344971009e-19,
+    "sess_pdch_hat_link": 0.0,
+    "sess_converter_capability": 0.0,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 0.0,
+    "sess_soc_limit_upper": 1.4467613884683317e-08,
+    "sess_soc_limit_lower": 1.4075047878180265e-08,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 0.9996240913733117,
+   "soc_min_minus_lb_pu": -1.4075047878180265e-08,
+   "soc_ub_minus_max_pu": -1.4467613884683317e-08,
+   "final_soc_residual_pu": 3.0196955613098764e-10,
+   "day_balance_slack_ub_pu": 0.0004740032020001102,
+   "status_A": {
+    "loaded_by_production": true,
+    "strict_optimal": false,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Solved To Acceptable Level.",
+    "iterations": 259,
+    "wall_s": 3.4921609591692686
+   },
+   "status_B": {
+    "loaded_by_production": false,
+    "strict_optimal": false,
+    "termination_condition": "internalSolverError",
+    "solver_status": "error",
+    "exit": "Error in step computation!",
+    "iterations": 183,
+    "wall_s": 2.626304958947003
+   }
+  },
+  "2025|Autumn": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.009280064040002202,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 0.0,
+    "sess_pdch_hat_link": 2.5849394142282115e-26,
+    "sess_converter_capability": 2.335201182276476e-09,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 4.336808689942018e-19,
+    "sess_soc_limit_upper": 1.4340941522847372e-08,
+    "sess_soc_limit_lower": 0.0,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 1.0001867986477146,
+   "soc_min_minus_lb_pu": 0.0009102045344077994,
+   "soc_ub_minus_max_pu": -1.4340941522847372e-08,
+   "final_soc_residual_pu": 2.458874015856538e-10,
+   "day_balance_slack_ub_pu": 0.0004740032020001102,
+   "status_A": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 44,
+    "wall_s": 1.0018834578804672
+   },
+   "status_B": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 44,
+    "wall_s": 2.1241024998016655
+   }
+  },
+  "2025|Winter": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.009280064040002202,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 2.168404344971009e-19,
+    "sess_pdch_hat_link": 1.0339757656912846e-25,
+    "sess_converter_capability": 9.997758451525766e-09,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 0.0,
+    "sess_soc_limit_upper": 1.4205109090739687e-08,
+    "sess_soc_limit_lower": 0.0,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 1.0007995010751376,
+   "soc_min_minus_lb_pu": 0.0010601908726891275,
+   "soc_ub_minus_max_pu": -1.4205109090739687e-08,
+   "final_soc_residual_pu": 2.128930720948774e-10,
+   "day_balance_slack_ub_pu": 0.0004740032020001102,
+   "status_A": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 172,
+    "wall_s": 3.3881440828554332
+   },
+   "status_B": {
+    "loaded_by_production": true,
+    "strict_optimal": false,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Solved To Acceptable Level.",
+    "iterations": 60,
+    "wall_s": 1.267251499928534
+   }
+  },
+  "2028|Spring": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.008627029959837803,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 5.421010862427522e-20,
+    "sess_pdch_hat_link": 0.0,
+    "sess_converter_capability": 0.0,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 0.0,
+    "sess_soc_limit_upper": 2.7987464037287912e-08,
+    "sess_soc_limit_lower": 2.772166980864743e-08,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 0.9996688065022298,
+   "soc_min_minus_lb_pu": -2.772166980864743e-08,
+   "soc_ub_minus_max_pu": -2.7987464037287912e-08,
+   "final_soc_residual_pu": 2.1581843517165522e-10,
+   "day_balance_slack_ub_pu": 0.00044135149799189017,
+   "status_A": {
+    "loaded_by_production": false,
+    "strict_optimal": false,
+    "termination_condition": "internalSolverError",
+    "solver_status": "error",
+    "exit": "Restoration Failed!",
+    "iterations": 34,
+    "wall_s": 0.9860995002090931
+   },
+   "status_B": {
+    "loaded_by_production": true,
+    "strict_optimal": false,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Solved To Acceptable Level.",
+    "iterations": 66,
+    "wall_s": 1.4434145828709006
+   }
+  },
+  "2028|Summer": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.008627029959837803,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 0.0,
+    "sess_pdch_hat_link": 1.2924697071141057e-26,
+    "sess_converter_capability": 0.0,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 0.0,
+    "sess_soc_limit_upper": 2.7849949920874528e-08,
+    "sess_soc_limit_lower": 2.7744543835430367e-08,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 0.9994444753344419,
+   "soc_min_minus_lb_pu": -2.7744543835430367e-08,
+   "soc_ub_minus_max_pu": -2.7849949920874528e-08,
+   "final_soc_residual_pu": 9.654818437787593e-11,
+   "day_balance_slack_ub_pu": 0.00044135149799189017,
+   "status_A": {
+    "loaded_by_production": false,
+    "strict_optimal": false,
+    "termination_condition": "internalSolverError",
+    "solver_status": "error",
+    "exit": "Restoration Failed!",
+    "iterations": 31,
+    "wall_s": 0.9250650000758469
+   },
+   "status_B": {
+    "loaded_by_production": false,
+    "strict_optimal": false,
+    "termination_condition": "internalSolverError",
+    "solver_status": "error",
+    "exit": "Restoration Failed!",
+    "iterations": 35,
+    "wall_s": 0.9651458342559636
+   }
+  },
+  "2028|Autumn": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.008627029959837803,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 1.2924697071141057e-26,
+    "sess_pdch_hat_link": 5.421010862427522e-20,
+    "sess_converter_capability": 2.8389465672933606e-09,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 2.168404344971009e-19,
+    "sess_soc_limit_upper": 2.787408934310648e-08,
+    "sess_soc_limit_lower": 0.0,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 1.0002270899404628,
+   "soc_min_minus_lb_pu": 0.00018257388836579673,
+   "soc_ub_minus_max_pu": -2.787408934310648e-08,
+   "final_soc_residual_pu": 2.091210546742439e-10,
+   "day_balance_slack_ub_pu": 0.00044135149799189017,
+   "status_A": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 50,
+    "wall_s": 0.9946553749032319
+   },
+   "status_B": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 50,
+    "wall_s": 1.0814759591594338
+   }
+  },
+  "2028|Winter": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.008627029959837803,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 5.421010862427522e-20,
+    "sess_pdch_hat_link": 2.168404344971009e-19,
+    "sess_converter_capability": 0.0,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 0.0,
+    "sess_soc_limit_upper": 2.761524092818185e-08,
+    "sess_soc_limit_lower": 0.0,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 0.9999717297450587,
+   "soc_min_minus_lb_pu": 0.0011667201131140507,
+   "soc_ub_minus_max_pu": -2.761524092818185e-08,
+   "final_soc_residual_pu": 1.7936646612426443e-10,
+   "day_balance_slack_ub_pu": 0.00044135149799189017,
+   "status_A": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 40,
+    "wall_s": 0.8820847501046956
+   },
+   "status_B": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 40,
+    "wall_s": 0.9415110419504344
+   }
+  },
+  "2031|Spring": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.008042796092867777,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 1.2924697071141057e-26,
+    "sess_pdch_hat_link": 2.168404344971009e-19,
+    "sess_converter_capability": 1.2711959284684993e-10,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 0.0,
+    "sess_soc_limit_upper": 1.464609866979466e-08,
+    "sess_soc_limit_lower": 1.436488723295399e-08,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 1.0000101695157182,
+   "soc_min_minus_lb_pu": -1.436488723295399e-08,
+   "soc_ub_minus_max_pu": -1.464609866979466e-08,
+   "final_soc_residual_pu": 2.4565469797233064e-10,
+   "day_balance_slack_ub_pu": 0.0004121398046433889,
+   "status_A": {
+    "loaded_by_production": true,
+    "strict_optimal": false,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Solved To Acceptable Level.",
+    "iterations": 130,
+    "wall_s": 2.0955519159324467
+   },
+   "status_B": {
+    "loaded_by_production": false,
+    "strict_optimal": false,
+    "termination_condition": "maxIterations",
+    "solver_status": "warning",
+    "exit": "Maximum Number of Iterations Exceeded.",
+    "iterations": 500,
+    "wall_s": 6.556774915661663
+   }
+  },
+  "2031|Summer": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.008042796092867777,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 0.0,
+    "sess_pdch_hat_link": 0.0,
+    "sess_converter_capability": 9.970753932579047e-09,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 0.0,
+    "sess_soc_limit_upper": 1.4671408228930649e-08,
+    "sess_soc_limit_lower": 1.4344627860757644e-08,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 1.0007973424371253,
+   "soc_min_minus_lb_pu": -1.4344627860757644e-08,
+   "soc_ub_minus_max_pu": -1.4671408228930649e-08,
+   "final_soc_residual_pu": 2.658922700071731e-10,
+   "day_balance_slack_ub_pu": 0.0004121398046433889,
+   "status_A": {
+    "loaded_by_production": true,
+    "strict_optimal": false,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Solved To Acceptable Level.",
+    "iterations": 59,
+    "wall_s": 1.2039884999394417
+   },
+   "status_B": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 96,
+    "wall_s": 1.6556517081335187
+   }
+  },
+  "2031|Autumn": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.008042796092867777,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 5.421010862427522e-20,
+    "sess_pdch_hat_link": 0.0,
+    "sess_converter_capability": 6.68537389761655e-09,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 1.0842021724855044e-19,
+    "sess_soc_limit_upper": 1.4568256439737026e-08,
+    "sess_soc_limit_lower": 1.3704858923060947e-08,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 1.000534686966733,
+   "soc_min_minus_lb_pu": -1.3704858923060947e-08,
+   "soc_ub_minus_max_pu": -1.4568256439737026e-08,
+   "final_soc_residual_pu": 2.1593875298986376e-10,
+   "day_balance_slack_ub_pu": 0.0004121398046433889,
+   "status_A": {
+    "loaded_by_production": false,
+    "strict_optimal": false,
+    "termination_condition": "internalSolverError",
+    "solver_status": "error",
+    "exit": "Restoration Failed!",
+    "iterations": 405,
+    "wall_s": 5.157308124937117
+   },
+   "status_B": {
+    "loaded_by_production": false,
+    "strict_optimal": false,
+    "termination_condition": "internalSolverError",
+    "solver_status": "error",
+    "exit": "Error in step computation!",
+    "iterations": 350,
+    "wall_s": 4.654130917042494
+   }
+  },
+  "2031|Winter": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.008042796092867777,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 1.0842021724855044e-19,
+    "sess_pdch_hat_link": 0.0,
+    "sess_converter_capability": 4.447296230763911e-09,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 0.0,
+    "sess_soc_limit_upper": 1.4332217023425853e-08,
+    "sess_soc_limit_lower": 0.0,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 1.000355720429949,
+   "soc_min_minus_lb_pu": 0.0007933961753805757,
+   "soc_ub_minus_max_pu": -1.4332217023425853e-08,
+   "final_soc_residual_pu": 1.9528131629115153e-10,
+   "day_balance_slack_ub_pu": 0.0004121398046433889,
+   "status_A": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 50,
+    "wall_s": 1.0757060418836772
+   },
+   "status_B": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 54,
+    "wall_s": 1.1729470831342041
+   }
+  },
+  "2034|Spring": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.007495409764081452,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 2.117582368135751e-22,
+    "sess_pdch_hat_link": 0.0,
+    "sess_converter_capability": 1.5344608648832866e-11,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 0.0,
+    "sess_soc_limit_upper": 2.0941305572431956e-08,
+    "sess_soc_limit_lower": 2.064458375452584e-08,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 1.0000012275679384,
+   "soc_min_minus_lb_pu": -2.064458375452584e-08,
+   "soc_ub_minus_max_pu": -2.0941305572431956e-08,
+   "final_soc_residual_pu": 2.4455650395396877e-10,
+   "day_balance_slack_ub_pu": 0.00038477048820407264,
+   "status_A": {
+    "loaded_by_production": false,
+    "strict_optimal": false,
+    "termination_condition": "internalSolverError",
+    "solver_status": "error",
+    "exit": "Restoration Failed!",
+    "iterations": 36,
+    "wall_s": 0.9913006667047739
+   },
+   "status_B": {
+    "loaded_by_production": true,
+    "strict_optimal": false,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Solved To Acceptable Level.",
+    "iterations": 96,
+    "wall_s": 1.8271312499418855
+   }
+  },
+  "2034|Summer": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.007495409764081452,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 1.0842021724855044e-19,
+    "sess_pdch_hat_link": 0.0,
+    "sess_converter_capability": 3.259187863676198e-10,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 2.168404344971009e-19,
+    "sess_soc_limit_upper": 2.0911088319253146e-08,
+    "sess_soc_limit_lower": 2.060468524891102e-08,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 1.0000260731630044,
+   "soc_min_minus_lb_pu": -2.060468524891102e-08,
+   "soc_ub_minus_max_pu": -2.0911088319253146e-08,
+   "final_soc_residual_pu": 2.432814926074667e-10,
+   "day_balance_slack_ub_pu": 0.00038477048820407264,
+   "status_A": {
+    "loaded_by_production": false,
+    "strict_optimal": false,
+    "termination_condition": "maxIterations",
+    "solver_status": "warning",
+    "exit": "Maximum Number of Iterations Exceeded.",
+    "iterations": 500,
+    "wall_s": 6.664121124893427
+   },
+   "status_B": {
+    "loaded_by_production": true,
+    "strict_optimal": false,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Solved To Acceptable Level.",
+    "iterations": 125,
+    "wall_s": 2.183208083268255
+   }
+  },
+  "2034|Autumn": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.007495409764081452,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 2.168404344971009e-19,
+    "sess_pdch_hat_link": 2.0679515313825692e-25,
+    "sess_converter_capability": 6.5255512397491825e-09,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 8.673617379884035e-19,
+    "sess_soc_limit_upper": 2.0828023734528744e-08,
+    "sess_soc_limit_lower": 0.0,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 1.0005219079052492,
+   "soc_min_minus_lb_pu": 0.00040206236448406133,
+   "soc_ub_minus_max_pu": -2.0828023734528744e-08,
+   "final_soc_residual_pu": 1.7507621394297068e-10,
+   "day_balance_slack_ub_pu": 0.00038477048820407264,
+   "status_A": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 47,
+    "wall_s": 1.0315081248991191
+   },
+   "status_B": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 46,
+    "wall_s": 1.0282808747142553
+   }
+  },
+  "2034|Winter": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.007495409764081452,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 1.0842021724855044e-19,
+    "sess_pdch_hat_link": 0.0,
+    "sess_converter_capability": 0.0,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 4.336808689942018e-19,
+    "sess_soc_limit_upper": 2.0506372545338325e-08,
+    "sess_soc_limit_lower": 0.0,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 0.9998839454352796,
+   "soc_min_minus_lb_pu": 0.0006542167030168151,
+   "soc_ub_minus_max_pu": -2.0506372545338325e-08,
+   "final_soc_residual_pu": 1.8031334671902988e-10,
+   "day_balance_slack_ub_pu": 0.00038477048820407264,
+   "status_A": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 43,
+    "wall_s": 0.9799725408665836
+   },
+   "status_B": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 41,
+    "wall_s": 0.9902919167652726
+   }
+  },
+  "2037|Spring": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.00699999990000031,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 0.0,
+    "sess_pdch_hat_link": 5.421010862427522e-20,
+    "sess_converter_capability": 0.0,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 0.0,
+    "sess_soc_limit_upper": 1.027375609152087e-08,
+    "sess_soc_limit_lower": 9.877174536598865e-09,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 0.9998535217231015,
+   "soc_min_minus_lb_pu": -9.877174536598865e-09,
+   "soc_ub_minus_max_pu": -1.027375609152087e-08,
+   "final_soc_residual_pu": 3.549335057632941e-10,
+   "day_balance_slack_ub_pu": 0.00035999999500001555,
+   "status_A": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 51,
+    "wall_s": 1.0924377078190446
+   },
+   "status_B": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 59,
+    "wall_s": 1.1911905421875417
+   }
+  },
+  "2037|Summer": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.00699999990000031,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 0.0,
+    "sess_pdch_hat_link": 2.168404344971009e-19,
+    "sess_converter_capability": 3.120219343638505e-10,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 4.336808689942018e-19,
+    "sess_soc_limit_upper": 1.0149459907064784e-08,
+    "sess_soc_limit_lower": 9.887299469717344e-09,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 1.0000249614432122,
+   "soc_min_minus_lb_pu": -9.887299469717344e-09,
+   "soc_ub_minus_max_pu": -1.0149459907064784e-08,
+   "final_soc_residual_pu": 2.2904986848176767e-10,
+   "day_balance_slack_ub_pu": 0.00035999999500001555,
+   "status_A": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 71,
+    "wall_s": 1.3277323339134455
+   },
+   "status_B": {
+    "loaded_by_production": true,
+    "strict_optimal": false,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Solved To Acceptable Level.",
+    "iterations": 96,
+    "wall_s": 1.6307432907633483
+   }
+  },
+  "2037|Autumn": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.00699999990000031,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 1.0842021724855044e-19,
+    "sess_pdch_hat_link": 5.169878828456423e-26,
+    "sess_converter_capability": 9.991599691952678e-09,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 0.0,
+    "sess_soc_limit_upper": 1.00644021927207e-08,
+    "sess_soc_limit_lower": 9.66343292809358e-09,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 1.0007990087678507,
+   "soc_min_minus_lb_pu": -9.66343292809358e-09,
+   "soc_ub_minus_max_pu": -1.00644021927207e-08,
+   "final_soc_residual_pu": 1.6861175910348747e-10,
+   "day_balance_slack_ub_pu": 0.00035999999500001555,
+   "status_A": {
+    "loaded_by_production": true,
+    "strict_optimal": false,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Solved To Acceptable Level.",
+    "iterations": 172,
+    "wall_s": 3.238883708138019
+   },
+   "status_B": {
+    "loaded_by_production": true,
+    "strict_optimal": false,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Solved To Acceptable Level.",
+    "iterations": 185,
+    "wall_s": 3.3712067077867687
+   }
+  },
+  "2037|Winter": {
+   "S_rated_pu": 0.0025,
+   "E_rated_pu": 0.00699999990000031,
+   "max_violation_by_sess_row": {
+    "sess_pnet_def": 0.0,
+    "sess_pch_hat_link": 1.0842021724855044e-19,
+    "sess_pdch_hat_link": 2.168404344971009e-19,
+    "sess_converter_capability": 3.053900170150367e-09,
+    "sess_active_sum_limit": 0.0,
+    "sess_soc_def": 0.0,
+    "sess_soc_limit_upper": 9.80919032198685e-09,
+    "sess_soc_limit_lower": 0.0,
+    "sess_soc_final": 0.0,
+    "sess_comp": 0.0
+   },
+   "capability_max_ratio": 1.0002442821767212,
+   "soc_min_minus_lb_pu": 0.0005172634274796358,
+   "soc_ub_minus_max_pu": -9.80919032198685e-09,
+   "final_soc_residual_pu": 1.5033695295596505e-10,
+   "day_balance_slack_ub_pu": 0.00035999999500001555,
+   "status_A": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 56,
+    "wall_s": 1.0519311670213938
+   },
+   "status_B": {
+    "loaded_by_production": true,
+    "strict_optimal": true,
+    "termination_condition": "optimal",
+    "solver_status": "ok",
+    "exit": "Optimal Solution Found.",
+    "iterations": 49,
+    "wall_s": 1.0526914158836007
+   }
+  }
+ },
+ "guard": {
+  "label": "P5.15 S56 D0 post-check (never solves)",
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "pickle": {
+  "load": 0,
+  "loads": 0
+ },
+ "guards_ok": true,
+ "checks": [
+  {
+   "check": "run record sha256 == run manifest",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "spec sha256 == run record spec sha256",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "x0 2025|Spring: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    767.5049580573457,
+    767.5049580509076
+   ]
+  },
+  {
+   "check": "x0 2025|Summer: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    738.4225644311028,
+    738.4225644214894
+   ]
+  },
+  {
+   "check": "x0 2025|Autumn: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    699.5488191443741,
+    699.5488191078475
+   ]
+  },
+  {
+   "check": "x0 2025|Winter: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    483.28189754255067,
+    483.281897507979
+   ]
+  },
+  {
+   "check": "x0 2028|Spring: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    532.5191111811722,
+    532.5191111600618
+   ]
+  },
+  {
+   "check": "x0 2028|Summer: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    -30.02838855033175,
+    -30.028388565887187
+   ]
+  },
+  {
+   "check": "x0 2028|Autumn: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    1655.3642977854304,
+    1655.3642977862878
+   ]
+  },
+  {
+   "check": "x0 2028|Winter: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    1617.229586241516,
+    1617.2295862649632
+   ]
+  },
+  {
+   "check": "x0 2031|Spring: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    -1012.1130771532564,
+    -1012.1130771449858
+   ]
+  },
+  {
+   "check": "x0 2031|Summer: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    292995.85433506116,
+    292995.8543350798
+   ]
+  },
+  {
+   "check": "x0 2031|Autumn: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    182583.8528289462,
+    182583.8528289324
+   ]
+  },
+  {
+   "check": "x0 2031|Winter: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    82808.14824611851,
+    82808.14824611595
+   ]
+  },
+  {
+   "check": "x0 2034|Spring: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    66876.09811667178,
+    66876.09811666196
+   ]
+  },
+  {
+   "check": "x0 2034|Summer: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    1492.576660479209,
+    1492.57666044586
+   ]
+  },
+  {
+   "check": "x0 2034|Autumn: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    4092.1230134033713,
+    4092.1230133733343
+   ]
+  },
+  {
+   "check": "x0 2034|Winter: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    25432.51241761708,
+    25432.512417616304
+   ]
+  },
+  {
+   "check": "x0 2037|Spring: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    10411.117950543045,
+    10411.11795053784
+   ]
+  },
+  {
+   "check": "x0 2037|Summer: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    153234.69855202656,
+    153234.69855202903
+   ]
+  },
+  {
+   "check": "x0 2037|Autumn: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    65886.66945024808,
+    65886.66945027994
+   ]
+  },
+  {
+   "check": "x0 2037|Winter: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    36346.69472817682,
+    36346.694728242466
+   ]
+  },
+  {
+   "check": "unit 2025|Autumn: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    622.1093550648541,
+    622.1093550753794
+   ]
+  },
+  {
+   "check": "unit 2025|Winter: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    1319.7868853131054,
+    1319.786885311718
+   ]
+  },
+  {
+   "check": "unit 2028|Autumn: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    1656.2502184570528,
+    1656.2502184856846
+   ]
+  },
+  {
+   "check": "unit 2028|Winter: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    1614.685631338685,
+    1614.6856313604455
+   ]
+  },
+  {
+   "check": "unit 2031|Summer: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    294178.85041767027,
+    294178.85041768575
+   ]
+  },
+  {
+   "check": "unit 2031|Winter: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    82736.80758448142,
+    82736.80758448777
+   ]
+  },
+  {
+   "check": "unit 2034|Autumn: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    4088.874181149606,
+    4088.87418114844
+   ]
+  },
+  {
+   "check": "unit 2034|Winter: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    25411.808369604838,
+    25411.80836959774
+   ]
+  },
+  {
+   "check": "unit 2037|Spring: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    9812.545724627455,
+    9812.545724620439
+   ]
+  },
+  {
+   "check": "unit 2037|Summer: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    152340.32410899803,
+    152340.32410899995
+   ]
+  },
+  {
+   "check": "unit 2037|Autumn: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    65664.33749460513,
+    65664.33749459987
+   ]
+  },
+  {
+   "check": "unit 2037|Winter: attribution sums to w_b D1_b (abs <= 1e-6 max(1,|x|))",
+   "ok": true,
+   "detail": [
+    36197.85303058977,
+    36197.85303060876
+   ]
+  }
+ ],
+ "failed_checks": [],
+ "wall_s": 22.48564600944519
+}
