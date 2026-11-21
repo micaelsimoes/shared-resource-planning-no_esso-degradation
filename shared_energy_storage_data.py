@@ -822,6 +822,9 @@ def _build_subproblem(shared_ess_data, node_id):
     # complementarity slack are all retired along with the variables/constraints
     # they used to relax. The remaining slack family (`slack_es_pnet_{up,down}`,
     # the aggregate operation-definition slack) is unaffected and unchanged.
+    # P5.15 S56 step 2 (R8): the slack penalty comes from the ESS params key 'esso_slack_penalty' when set; absent, and
+    # for parameter objects pickled before the key existed, it is the constant PENALTY_ESSO_SLACK (1e3), unchanged.
+    esso_slack_penalty = getattr(shared_ess_data.params, 'esso_slack_penalty', PENALTY_ESSO_SLACK)
     slack_penalty = 0.0
     for y_inv in model.years:
 
@@ -830,7 +833,7 @@ def _build_subproblem(shared_ess_data, node_id):
             # Expected power slacks
             for d in model.days:
                 for p in model.periods:
-                    slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_pnet_up[y_inv, d, p] + model.slack_es_pnet_down[y_inv, d, p])
+                    slack_penalty += esso_slack_penalty * (model.slack_es_pnet_up[y_inv, d, p] + model.slack_es_pnet_down[y_inv, d, p])
 
     # P5.15-1 (Step 1 item 3): throughput regularization. Complementarity is no
     # longer an explicit constraint; it follows from LP structure because both

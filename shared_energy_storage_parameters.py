@@ -1,7 +1,8 @@
-from math import log
+from math import log, isfinite
 
 from solver_parameters import SolverParameters
 from helper_functions import *
+from definitions import PENALTY_ESSO_SLACK
 
 
 # ======================================================================================================================
@@ -247,6 +248,12 @@ class SharedEnergyStorageParameters:
         # ('end' or 'mid'). None = not declared: `SharedEnergyStorageData.available_energy_soh_point` keeps its own
         # default ('end') and is not assigned at all, so files without the key build exactly as before.
         self.available_energy_soh_point = None
+        # P5.15 S56 step 2 (S56_PLAN_v2.md X7; Addendum 89 ruling 3, R8): the ESSO P-net slack penalty, read from the
+        # optional top-level key 'esso_slack_penalty' (a positive finite JSON number). Absent -> the constant
+        # `definitions.PENALTY_ESSO_SLACK` (1e3), so files without the key build exactly as before. Read with
+        # getattr(..., PENALTY_ESSO_SLACK) by `shared_energy_storage_data._build_subproblem`, because parameter
+        # objects pickled before this key existed do not carry the attribute.
+        self.esso_slack_penalty = PENALTY_ESSO_SLACK
         self.solver_params = SolverParameters(
             default_solver='ipopt',
             path_env_vars=('NLP_SOLVER_PATH', 'SOLVER_PATH'),
@@ -285,3 +292,16 @@ def _read_parameters_from_file(planning_parameters, filename):
         if soh_point not in ('end', 'mid'):
             raise ValueError(f"available_energy_soh_point must be 'end' or 'mid', got {soh_point!r}.")
         planning_parameters.available_energy_soh_point = soh_point
+    if 'esso_slack_penalty' in params_data:
+        planning_parameters.esso_slack_penalty = _read_esso_slack_penalty(params_data['esso_slack_penalty'])
+
+
+def _read_esso_slack_penalty(value):
+    """The 'esso_slack_penalty' key, read strictly: a JSON number (not a boolean, not a string, not null), finite and
+    > 0. Returned as float, so 10000 and 1e4 build the same model."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f'esso_slack_penalty must be a JSON number, got {value!r}.')
+    value = float(value)
+    if not (isfinite(value) and value > 0.00):
+        raise ValueError(f'esso_slack_penalty must be finite and positive, got {value!r}.')
+    return value
