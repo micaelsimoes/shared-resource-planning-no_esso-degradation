@@ -34,7 +34,8 @@ MODES (zero solves except --run, whose solves happen in the harness children):
                                                      by the caller)
   --look40 --spec S --instance A|B                   the declared cycle-40 look on V-1 (spec item (iv)); reads the
                                                      running campaign's capture (complete lines only)
-  --vmstat --tag T                                   one vm_stat snapshot (raw text + free / inactive GiB)
+  --vmstat --tag T [--spec S]                        one vm_stat snapshot (raw text + free / inactive GiB); with a v2
+                                                     spec, into the spec's main directory
 Usage: NLP_SOLVER_PATH=/usr/local/bin/ipopt <canonical python> -u p515_s56_step4_main.py --run --spec S --phase main
        --instance B > <stdout log> 2> <stderr log>
 Objective convention (every Q): EUR of total discounted cost. Coupled arms: production's primary gross_operational_cost
@@ -75,6 +76,10 @@ RES = os.path.join('data', 'SRP1', 'Results', 'P515S56')
 MAIN_DIR = os.path.join(RES, 'step4_main_v1')
 SPEC_PREFIX = 'frozen_step4_main_spec_v1_'
 ROOT_TAG = 'v1'
+# Spec v2 (2026-11-23, relaunch after the v1 attempt was killed by the session exit): the ONLY launcher change is that
+# the campaign roots are taken from the spec. A spec carrying a 'roots' block (v2) sets MAIN_DIR, ROOT_TAG and the
+# absolute campaign roots (apply_spec_roots); a spec without one (v1) leaves the v1 construction unchanged.
+SPEC_ROOTS = None
 SMOKE_SPEC = os.path.join(SM.SMOKE_DIR, 'frozen_step4_smoke_spec_v2_e36c29bd.json')
 SMOKE_EVALUATION = os.path.join(SM.SMOKE_DIR, 'smoke_evaluation_20261123T135123.json')
 SMOKE_LAUNCHER = 'p515_s56_step4_smoke.py'
@@ -188,8 +193,28 @@ def root_name(phase, inst):
 
 
 def root_path(phase, inst):
-    """ABSOLUTE (the child's rule-eleven assertion requires absolute results dirs)."""
+    """ABSOLUTE (the child's rule-eleven assertion requires absolute results dirs). Taken from the spec's 'roots' block
+    when the spec has one (v2)."""
+    if SPEC_ROOTS is not None:
+        return SPEC_ROOTS[phase][inst]
     return os.path.join(REPO, MAIN_DIR, f'campaign_{root_name(phase, inst)}')
+
+
+def apply_spec_roots(spec):
+    """Spec v2: take MAIN_DIR, ROOT_TAG and the absolute campaign roots from the spec's 'roots' block, after checking
+    that every root is absolute, inside MAIN_DIR and named campaign_<root_name(phase, inst)>. No-op for a v1 spec."""
+    global MAIN_DIR, ROOT_TAG, SPEC_ROOTS
+    roots = spec.get('roots')
+    if roots is None:
+        return
+    main_dir, tag, campaign_roots = roots['main_dir'], roots['root_tag'], roots['campaign_roots']
+    for phase in PHASES:
+        for inst in INSTANCES:
+            p = campaign_roots[phase][inst]
+            want = os.path.join(REPO, main_dir, f'campaign_s56s4main_{tag}_{phase}_{inst}')
+            if not os.path.isabs(p) or p != want:
+                raise RuntimeError(f'spec root {phase}/{inst} {p!r} is not the absolute version-tagged root {want!r}')
+    MAIN_DIR, ROOT_TAG, SPEC_ROOTS = main_dir, tag, campaign_roots
 
 
 def label_of(phase, arm):
@@ -560,9 +585,10 @@ def freeze(args):
 def _spec(path):
     spec = _load(path)
     sha = _sha(path)
-    tag = os.path.basename(path)[len(SPEC_PREFIX):].split('.')[0]
+    tag = os.path.basename(path).rsplit('_', 1)[-1].split('.')[0]
     if not sha.startswith(tag):
         raise RuntimeError(f'spec sha256 {sha[:8]} does not match its name tag {tag}')
+    apply_spec_roots(spec)
     return spec, sha, os.path.relpath(os.path.abspath(path), REPO)
 
 
@@ -819,6 +845,8 @@ def look40(args):
 #  vm_stat snapshot
 # ======================================================================================================================
 def vmstat(args):
+    if args.spec:
+        _spec(args.spec)   # v2: the snapshot goes to the spec's main directory
     text = subprocess.run(['vm_stat'], capture_output=True, text=True, check=True).stdout
     page = int(text.split('page size of ')[1].split(' ')[0])
     vals = {}
