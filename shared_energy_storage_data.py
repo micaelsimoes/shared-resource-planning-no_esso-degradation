@@ -7,7 +7,9 @@ import pyomo.environ as pe
 from openpyxl import Workbook
 from shared_energy_storage import SharedEnergyStorage
 from shared_energy_storage_parameters import SharedEnergyStorageParameters
-from model_construction_helpers import period_duration_hours
+from shared_energy_storage_parameters import COHORT_FORMULATIONS, COHORT_FORMULATION_DEFAULT, \
+    COHORT_FORMULATION_INDEPENDENT_UNITS
+from model_construction_helpers import period_duration_hours, ESS_DAY_BALANCE_SLACK_FRACTION
 from helper_functions import *
 
 
@@ -440,6 +442,14 @@ def _build_subproblem(shared_ess_data, node_id):
         y_inv: False for y_inv in model.years
     }
 
+    # P5.15 S56 cohort formulation (arrangement A, Expert E1-E7): 'legacy_h3' (default) builds today's model and
+    # constructs none of the components below marked "independent_units only"; 'independent_units' builds them, with
+    # every new Var fixed at 0 and every new row deactivated, in their OWN registry (`_esso_cohort_units_rows`, not
+    # `_esso_cohort_constraints`); `_configure_esso_cohort_units_rows` activates them per (node, year) only when >= 2
+    # cohorts are active.
+    cohort_formulation = _esso_cohort_formulation(shared_ess_data)
+    independent_units = (cohort_formulation == COHORT_FORMULATION_INDEPENDENT_UNITS)
+
     # ------------------------------------------------------------------------------------------------------------------
     # Variables
     # P5.15-1 (PLANNER_BRIEF_2026-09-13.md Step 1 item 1): investments are now
@@ -552,6 +562,25 @@ def _build_subproblem(shared_ess_data, node_id):
     model.es_soh_per_unit_cumul = pe.Var(model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))
     model.es_D_per_unit = pe.Var(model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)
     model.es_soh_per_unit_cumul.fix(1.00)
+
+    if independent_units:
+        # P5.15 S56 (independent_units only; proposal rows 3-8): per-cohort stored energy (MWh, end of period p),
+        # per-cohort reactive power, the per-cohort day-closure slack pair and the aggregate Q-slack pair (E5). All
+        # fixed at 0 here; unfixed by `_configure_esso_cohort_units_rows` on multi-cohort node-years only.
+        model._esso_cohort_formulation = cohort_formulation
+        model.es_soc_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+        model.es_q_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.00)
+        model.es_soc_per_unit.fix(0.00)
+        model.es_q_per_unit.fix(0.00)
+        if shared_ess_data.params.slacks:
+            model.slack_es_soc_final_per_unit_up = pe.Var(model.years, model.years, model.days, domain=pe.NonNegativeReals, initialize=0.00)
+            model.slack_es_soc_final_per_unit_down = pe.Var(model.years, model.years, model.days, domain=pe.NonNegativeReals, initialize=0.00)
+            model.slack_es_qnet_up = pe.Var(model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+            model.slack_es_qnet_down = pe.Var(model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
+            model.slack_es_soc_final_per_unit_up.fix(0.00)
+            model.slack_es_soc_final_per_unit_down.fix(0.00)
+            model.slack_es_qnet_up.fix(0.00)
+            model.slack_es_qnet_down.fix(0.00)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
@@ -766,6 +795,7 @@ def _build_subproblem(shared_ess_data, node_id):
 
     # - Shared ESS operation, aggregated
     model.energy_storage_operation_agg = pe.ConstraintList()
+    circle_rows_by_year = {y: [] for y in model.years}
     for y in model.years:
         for d in model.days:
             for p in model.periods:
@@ -789,6 +819,11 @@ def _build_subproblem(shared_ess_data, node_id):
 
                 model.energy_storage_operation_agg.add(
                     model.es_pnet[y, d, p] ** 2 + model.es_qnet[y, d, p] ** 2 <= model.es_s_rated[y] ** 2)
+                if independent_units:
+                    # P5.15 S56 (proposal row 9): the aggregate circle is implied by the cohort circles + the P/Q
+                    # aggregation rows on multi-cohort years (keeping it there fails LICQ at binding hours), so
+                    # `_configure_esso_cohort_units_rows` deactivates it on those years. Index recorded here.
+                    circle_rows_by_year[y].append(len(model.energy_storage_operation_agg))
 
                 # P5.15 Addendum 3 item 2 (H3 rule): one candidate pro-rata row
                 # per cohort, built against the SAME `agg_pnet` expression used
@@ -802,11 +837,16 @@ def _build_subproblem(shared_ess_data, node_id):
                 # what leaves at most N_active(y)-1 of these ACTIVE at any
                 # time (never N), deactivating the rest (including all of them
                 # whenever <=1 cohort is active for year y).
-                for y_inv in model.years:
-                    _add_esso_cohort_constraint(
-                        model, 'energy_storage_cohort_pnet_share_h3', y_inv, y,
-                        model.es_pch_per_unit[y_inv, y, d, p] - model.es_pdch_per_unit[y_inv, y, d, p]
-                        == model.es_pnet_cohort_share_h3[y_inv, y] * agg_pnet)
+                #
+                # P5.15 S56 (proposal row 12): under 'independent_units' the H3 rows are UNWIRED -- not added to
+                # newly built models. The Param, the (empty) ConstraintList and `_configure_esso_cohort_pnet_share_rows`
+                # are retained (preserved pickles and the 'legacy_h3' key still use them).
+                if not independent_units:
+                    for y_inv in model.years:
+                        _add_esso_cohort_constraint(
+                            model, 'energy_storage_cohort_pnet_share_h3', y_inv, y,
+                            model.es_pch_per_unit[y_inv, y, d, p] - model.es_pdch_per_unit[y_inv, y, d, p]
+                            == model.es_pnet_cohort_share_h3[y_inv, y] * agg_pnet)
 
                 # P5.15-1 (Step 1 item 3): the aggregate complementarity link
                 # (agg_pch/agg_pdch vs. es_pch_hat_agg/es_pdch_hat_agg and the
@@ -814,6 +854,9 @@ def _build_subproblem(shared_ess_data, node_id):
                 # the per-cohort complementarity it mirrored. Aggregate
                 # complementarity now follows, like the per-cohort case, from
                 # the LP throughput regularization in `feasibility_penalty`.
+
+    if independent_units:
+        _build_esso_cohort_units_rows(shared_ess_data, model, shared_ess_idx, circle_rows_by_year)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Objective function
@@ -849,6 +892,20 @@ def _build_subproblem(shared_ess_data, node_id):
                 for p in model.periods:
                     throughput += model.es_pch_per_unit[y_inv, y, d, p] + model.es_pdch_per_unit[y_inv, y, d, p]
     slack_penalty += EPS_ESSO_THROUGHPUT * throughput
+
+    if independent_units and shared_ess_data.params.slacks:
+        # P5.15 S56 (independent_units only). E5: the aggregate Q-slack pair, priced like the P-slack pair
+        # (`esso_slack_penalty` per MVAr per period). Day closure: the per-cohort closure-slack pair, priced like the
+        # network's shared-ESS day-balance slack (`shared_ess_day_balance_slack_penalty`: baseMVA *
+        # PENALTY_SHARED_ESS_BALANCE * slack_pu = PENALTY_SHARED_ESS_BALANCE per MWh). Both Var families are fixed at
+        # 0 outside multi-cohort node-years, so they add nothing there.
+        for y in model.years:
+            for d in model.days:
+                for p in model.periods:
+                    slack_penalty += esso_slack_penalty * (model.slack_es_qnet_up[y, d, p] + model.slack_es_qnet_down[y, d, p])
+        for (y_inv, y) in model._esso_cohort_units_rows['pairs']:
+            for d in model.days:
+                slack_penalty += PENALTY_SHARED_ESS_BALANCE * (model.slack_es_soc_final_per_unit_up[y_inv, y, d] + model.slack_es_soc_final_per_unit_down[y_inv, y, d])
 
     salvage_value = _build_terminal_salvage_value_expression(shared_ess_data, model, shared_ess_idx)
 
@@ -1545,6 +1602,10 @@ def _update_model_with_candidate_solution(shared_ess_data, models, candidate_sol
         # cohort set for each calendar year, not just this one cohort.
         _configure_esso_cohort_pnet_share_rows(model)
 
+        # P5.15 S56 (independent_units): the arrangement-A rows, after the same full active-cohort set is known.
+        # No-op without the registry (legacy builds; models pickled before S56).
+        _configure_esso_cohort_units_rows(model)
+
 
 def _get_candidate_solution(self, model):
     years = [year for year in self.years]
@@ -1831,6 +1892,193 @@ def _configure_esso_cohort_pnet_share_rows(model):
                     constraint.activate()
                 else:
                     constraint.deactivate()
+
+
+def _esso_cohort_formulation(shared_ess_data):
+    """P5.15 S56: the validated cohort formulation of this ESSO ('legacy_h3' or 'independent_units').
+
+    `getattr` default: `SharedEnergyStorageParameters` objects pickled before the key existed carry no
+    `cohort_formulation` attribute; for them the default ('legacy_h3') IS the model they were built with."""
+    value = getattr(shared_ess_data.params, 'cohort_formulation', COHORT_FORMULATION_DEFAULT)
+    if value not in COHORT_FORMULATIONS:
+        raise ValueError(f'cohort_formulation must be one of {COHORT_FORMULATIONS}, got {value!r}.')
+    return value
+
+
+def _build_esso_cohort_units_rows(shared_ess_data, model, shared_ess_idx, circle_rows_by_year):
+    """P5.15 S56 arrangement A (S56_COHORT_FORMULATION_PROPOSAL.md rows 3-9; Expert rulings E1, E2, E5), built only
+    under cohort_formulation 'independent_units'. Every row is built DEACTIVATED and recorded in
+    `model._esso_cohort_units_rows`; `_configure_esso_cohort_units_rows` activates the rows of a (node, year) only
+    when >= 2 cohorts are active in that year. Built for every (y_inv, y) inside the cohort's calendar-life window
+    (`es_s_rated_per_unit[y_inv, y]` unfixed at build -- the existing lifetime gate).
+
+    Per cohort c = y_inv, block y, day d, period p (MW / MVAr / MWh; dt = period_duration_hours):
+      row 3 SoC:     e[c,y,d,p] == e_prev + eta_ch(c) * pch * dt - pdch * dt / eta_dch(c),
+                     e_prev = ENERGY_STORAGE_RELATIVE_INIT_SOC * E_av[c,y] at p = 0 (the network `sess_soc_rule`
+                     coefficients; eta from the cohort's installation-year SharedEnergyStorage, as the throughput row)
+      row 4 window:  e >= ENERGY_STORAGE_MIN_ENERGY_STORED * E_av[c,y];  e <= ENERGY_STORAGE_MAX_ENERGY_STORED * E_av[c,y]
+                     (E_av = es_e_available_per_unit, the Var the networks' aggregate E is the sum of)
+      row 5 closure: the network `sess_soc_final_rule` form, per cohort and day:
+                     params.slacks True:  e[c,y,d,T] == INIT * E_av[c,y] + s_up[c,y,d] - s_down[c,y,d],
+                                          0 <= s <= ESS_DAY_BALANCE_SLACK_FRACTION * E_rated(c) + EQUALITY_TOLERANCE
+                                          (bound set by `_configure_esso_cohort_units_rows`), priced
+                                          PENALTY_SHARED_ESS_BALANCE per MWh in `feasibility_penalty`
+                     params.slacks False: -EQUALITY_TOLERANCE <= e[c,y,d,T] - INIT * E_av[c,y] <= EQUALITY_TOLERANCE
+      row 6 converter: (pch - pdch)^2 + q^2 <= es_s_rated_per_unit[c,y]^2
+    Per block y, day d, period p:
+      row 8 aggregation Q: es_qnet == sum_c q[c] (+ slack_es_qnet_up - slack_es_qnet_down when params.slacks; E5)
+      row 9: the aggregate circle rows of `energy_storage_operation_agg` (indices in `circle_rows_by_year`) are
+             deactivated by `_configure_esso_cohort_units_rows` on multi-cohort years.
+    Within-cohort simultaneous charge/discharge is restricted exactly as in the single-cohort ESSO: by no row; the
+    EPS_ESSO_THROUGHPUT throughput regularization and the remedy-(h) tolerances, detector-checked
+    (`p515_s56_cohort_diagnostics.py`). Inter-cohort transfer is allowed (E2)."""
+    repr_years = [year for year in shared_ess_data.years]
+    dt = period_duration_hours(model)
+    final_p = model.periods[-1]
+    slacks = shared_ess_data.params.slacks
+    registry = {'pairs': [], 'cohort': dict(), 'aggregate': {y: [] for y in model.years},
+                'aggregate_circle': {y: list(circle_rows_by_year[y]) for y in model.years}}
+
+    model.energy_storage_cohort_soc = pe.ConstraintList()
+    model.energy_storage_cohort_soc_window = pe.ConstraintList()
+    model.energy_storage_cohort_soc_final = pe.ConstraintList()
+    model.energy_storage_cohort_converter = pe.ConstraintList()
+    model.energy_storage_operation_agg_q = pe.ConstraintList()
+
+    def _add(name, expr, key):
+        constraint_list = getattr(model, name)
+        constraint_list.add(expr)
+        idx = len(constraint_list)
+        constraint_list[idx].deactivate()
+        key.append((name, idx))
+
+    for y_inv in model.years:
+        shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][shared_ess_idx]
+        eff_ch = shared_energy_storage.eff_ch
+        eff_dch = shared_energy_storage.eff_dch
+        for y in model.years:
+            if not _esso_cohort_pair_is_within_lifetime(model, y_inv, y):
+                continue
+            registry['pairs'].append((y_inv, y))
+            rows = registry['cohort'][(y_inv, y)] = []
+            e_av = model.es_e_available_per_unit[y_inv, y]
+            s_max = model.es_s_rated_per_unit[y_inv, y]
+            for d in model.days:
+                for p in model.periods:
+                    pch = model.es_pch_per_unit[y_inv, y, d, p]
+                    pdch = model.es_pdch_per_unit[y_inv, y, d, p]
+                    soc = model.es_soc_per_unit[y_inv, y, d, p]
+                    if p == 0:
+                        soc_prev = ENERGY_STORAGE_RELATIVE_INIT_SOC * e_av
+                    else:
+                        soc_prev = model.es_soc_per_unit[y_inv, y, d, p - 1]
+                    _add('energy_storage_cohort_soc', soc == soc_prev + (eff_ch * pch * dt - pdch * dt / eff_dch), rows)
+                    _add('energy_storage_cohort_soc_window', soc >= ENERGY_STORAGE_MIN_ENERGY_STORED * e_av, rows)
+                    _add('energy_storage_cohort_soc_window', soc <= ENERGY_STORAGE_MAX_ENERGY_STORED * e_av, rows)
+                    _add('energy_storage_cohort_converter',
+                         (pch - pdch) ** 2 + model.es_q_per_unit[y_inv, y, d, p] ** 2 <= s_max ** 2, rows)
+                soc_final = model.es_soc_per_unit[y_inv, y, d, final_p]
+                if slacks:
+                    _add('energy_storage_cohort_soc_final',
+                         soc_final == ENERGY_STORAGE_RELATIVE_INIT_SOC * e_av
+                         + model.slack_es_soc_final_per_unit_up[y_inv, y, d]
+                         - model.slack_es_soc_final_per_unit_down[y_inv, y, d], rows)
+                else:
+                    _add('energy_storage_cohort_soc_final',
+                         pe.inequality(-EQUALITY_TOLERANCE, soc_final - ENERGY_STORAGE_RELATIVE_INIT_SOC * e_av,
+                                       EQUALITY_TOLERANCE), rows)
+
+    for y in model.years:
+        for d in model.days:
+            for p in model.periods:
+                agg_qnet = 0.00
+                for y_inv in model.years:
+                    if (y_inv, y) in registry['cohort']:
+                        agg_qnet += model.es_q_per_unit[y_inv, y, d, p]
+                if slacks:
+                    expr = model.es_qnet[y, d, p] == agg_qnet + model.slack_es_qnet_up[y, d, p] - model.slack_es_qnet_down[y, d, p]
+                else:
+                    expr = model.es_qnet[y, d, p] == agg_qnet
+                _add('energy_storage_operation_agg_q', expr, registry['aggregate'][y])
+
+    model._esso_cohort_units_rows = registry
+
+
+def _configure_esso_cohort_units_rows(model):
+    """P5.15 S56: (re)establish the arrangement-A rows and Vars for the current candidate. Runs after every
+    cohort's `_configure_esso_cohort_state` (it needs the full active-cohort set of each year, by the same test as
+    `_configure_esso_cohort_pnet_share_rows`). A no-op on models built without the registry ('legacy_h3' builds and
+    models pickled before S56) -- the `hasattr` guard.
+
+    For each block y: multi = (>= 2 cohorts active in y). Then
+      cohort rows of (y_inv, y) active  iff multi and y_inv active in y;  else deactivated
+      es_soc / es_q / closure slacks     unfixed iff the same;              else fixed at 0
+      aggregate Q rows of y              active  iff multi;                 else deactivated
+      Q-slack pair of y                  unfixed iff multi (and slacks);    else fixed at 0
+      aggregate circle rows of y         active  iff NOT multi (today's row on single-cohort years)
+    Closure-slack bounds: [0, ESS_DAY_BALANCE_SLACK_FRACTION * E_rated(y_inv) + EQUALITY_TOLERANCE] (the network's
+    `configure_shared_ess_operational_state` rule, with the cohort's rated energy Param in place of the available
+    energy the network receives, since E_av is a Var in the ESSO). A newly active SoC Var is given the value
+    INIT * E_rated (the network's re-initialisation of `shared_es_soc`)."""
+    if not hasattr(model, '_esso_cohort_units_rows'):
+        return
+    registry = model._esso_cohort_units_rows
+    years = list(model.years)
+    has_slacks = hasattr(model, 'slack_es_qnet_up')
+    multi_years = []
+    for y in years:
+        active_cohorts = [
+            y_inv for y_inv in years
+            if (not model._esso_cohort_inactive.get(y_inv, False))
+            and _esso_cohort_pair_is_within_lifetime(model, y_inv, y)
+        ]
+        multi = len(active_cohorts) >= 2
+        if multi:
+            multi_years.append(y)
+        for y_inv in years:
+            pair_on = multi and (y_inv in active_cohorts)
+            e_rated = pe.value(model.es_e_investment_fixed[y_inv])
+            for d in model.days:
+                for p in model.periods:
+                    soc = model.es_soc_per_unit[y_inv, y, d, p]
+                    if pair_on:
+                        if soc.fixed:
+                            soc.unfix()
+                            soc.set_value(ENERGY_STORAGE_RELATIVE_INIT_SOC * e_rated)
+                    else:
+                        soc.fix(0.00)
+                    _set_esso_variable_state(model.es_q_per_unit[y_inv, y, d, p], pair_on, 0.00)
+                if has_slacks:
+                    slack_ub = (ESS_DAY_BALANCE_SLACK_FRACTION * e_rated + EQUALITY_TOLERANCE) if pair_on else 0.00
+                    for name in ('slack_es_soc_final_per_unit_up', 'slack_es_soc_final_per_unit_down'):
+                        var = getattr(model, name)[y_inv, y, d]
+                        _set_esso_variable_state(var, pair_on, 0.00)
+                        var.setlb(0.00)
+                        var.setub(slack_ub)
+            for name, idx in registry['cohort'].get((y_inv, y), []):
+                row = getattr(model, name)[idx]
+                if pair_on:
+                    row.activate()
+                else:
+                    row.deactivate()
+        for name, idx in registry['aggregate'][y]:
+            row = getattr(model, name)[idx]
+            if multi:
+                row.activate()
+            else:
+                row.deactivate()
+        if has_slacks:
+            for d in model.days:
+                for p in model.periods:
+                    _set_esso_variable_state(model.slack_es_qnet_up[y, d, p], multi, 0.00)
+                    _set_esso_variable_state(model.slack_es_qnet_down[y, d, p], multi, 0.00)
+        for idx in registry['aggregate_circle'][y]:
+            row = model.energy_storage_operation_agg[idx]
+            if multi:
+                row.deactivate()
+            else:
+                row.activate()
+    model._esso_cohort_units_multi_years = multi_years
 
 
 # ======================================================================================================================

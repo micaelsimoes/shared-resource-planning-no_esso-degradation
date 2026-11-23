@@ -5,6 +5,13 @@ from helper_functions import *
 from definitions import PENALTY_ESSO_SLACK
 
 
+# P5.15 S56 cohort formulation: the admissible values of `SharedEnergyStorageParameters.cohort_formulation`.
+COHORT_FORMULATION_LEGACY_H3 = 'legacy_h3'
+COHORT_FORMULATION_INDEPENDENT_UNITS = 'independent_units'
+COHORT_FORMULATIONS = (COHORT_FORMULATION_LEGACY_H3, COHORT_FORMULATION_INDEPENDENT_UNITS)
+COHORT_FORMULATION_DEFAULT = COHORT_FORMULATION_LEGACY_H3
+
+
 # ======================================================================================================================
 #  Salvage Value Parameters
 # ======================================================================================================================
@@ -254,6 +261,16 @@ class SharedEnergyStorageParameters:
         # getattr(..., PENALTY_ESSO_SLACK) by `shared_energy_storage_data._build_subproblem`, because parameter
         # objects pickled before this key existed do not carry the attribute.
         self.esso_slack_penalty = PENALTY_ESSO_SLACK
+        # P5.15 S56 cohort formulation (S56_COHORT_FORMULATION_PROPOSAL.md; Expert rulings E1-E7, TASKS.md S56): the
+        # ESSO storage-cohort formulation, read from the optional top-level key 'cohort_formulation'.
+        #   'legacy_h3' (default; key absent): today's model -- no per-cohort SoC or Q, the H3 pro-rata share rows
+        #       configured on multi-cohort years (kept to reproduce the archived results, author A-c2).
+        #   'independent_units': arrangement A -- each cohort a complete unit (own SoC, window, closure, converter
+        #       P/Q) on node-years with >= 2 active cohorts; H3 rows unwired. See
+        #       `shared_energy_storage_data._build_subproblem`.
+        # Read with getattr(..., COHORT_FORMULATION_DEFAULT) by the builder, because parameter objects pickled before
+        # this key existed do not carry the attribute.
+        self.cohort_formulation = COHORT_FORMULATION_DEFAULT
         self.solver_params = SolverParameters(
             default_solver='ipopt',
             path_env_vars=('NLP_SOLVER_PATH', 'SOLVER_PATH'),
@@ -294,6 +311,15 @@ def _read_parameters_from_file(planning_parameters, filename):
         planning_parameters.available_energy_soh_point = soh_point
     if 'esso_slack_penalty' in params_data:
         planning_parameters.esso_slack_penalty = _read_esso_slack_penalty(params_data['esso_slack_penalty'])
+    if 'cohort_formulation' in params_data:
+        planning_parameters.cohort_formulation = _read_cohort_formulation(params_data['cohort_formulation'])
+
+
+def _read_cohort_formulation(value):
+    """The 'cohort_formulation' key, read strictly: one of COHORT_FORMULATIONS (a JSON string; nothing else)."""
+    if not isinstance(value, str) or value not in COHORT_FORMULATIONS:
+        raise ValueError(f'cohort_formulation must be one of {COHORT_FORMULATIONS}, got {value!r}.')
+    return value
 
 
 def _read_esso_slack_penalty(value):
