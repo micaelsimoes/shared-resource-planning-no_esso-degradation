@@ -32,10 +32,16 @@ TESTS (spec = the frozen JSON; predictions are in the spec, recorded before laun
 OUTPUT (write-once): `--out` must NOT exist. Launch (attached, alone, both streams captured; spec + script committed
 first as BASE):
   /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s56_cohort_esso_tests.py \\
-      --spec data/SRP1/Results/P515S56/frozen_cohort_esso_spec_v1_<h>.json \\
-      --out data/SRP1/Results/P515S56/cohort_esso_v1 --scratch <scratchpad>/cohort_esso_v1 --base-commit <BASE> \\
-      > data/SRP1/Results/P515S56/cohort_esso_v1_launch_stdout.log 2> data/SRP1/Results/P515S56/cohort_esso_v1_launch_stderr.log
-then  ... p515_s56_cohort_esso_tests.py --manifest --out data/SRP1/Results/P515S56/cohort_esso_v1
+      --spec data/SRP1/Results/P515S56/frozen_cohort_esso_spec_v2_<h>.json \\
+      --out data/SRP1/Results/P515S56/cohort_esso_v2 --scratch <scratchpad>/cohort_esso_v2 --base-commit <BASE> \\
+      > data/SRP1/Results/P515S56/cohort_esso_v2_launch_stdout.log 2> data/SRP1/Results/P515S56/cohort_esso_v2_launch_stderr.log
+then  ... p515_s56_cohort_esso_tests.py --manifest --out data/SRP1/Results/P515S56/cohort_esso_v2
+
+HISTORY. v1 (spec v1 2b41cf8a, BASE 2126a206, out cohort_esso_v1, preserved as left): HARNESS FAULT -- the solve
+child stringified the solver-parameter booleans; gate_result_io refused the write (StringFlagError), leaving a 0-byte
+child_solves.json, and the parent crashed reading it, so no cohort_esso_tests.json was written. The 10 solves ran;
+their record was lost. Fixed here: JSON-native values kept, `_typed_flags` on the solve record, `_load_child` in the
+parent. Predictions unchanged (spec v2 records v1 as predecessor).
 """
 import os
 import sys
@@ -580,6 +586,19 @@ def _succeeded(res):
     return solver_result_succeeded(res)
 
 
+def _typed_flags(node, path, converted):
+    """Recursively turn a string-typed flag ('True' / 'False' text, the gate_result_io refusal rule) captured from a
+    production object into a JSON boolean, recording each path converted (v1 lost its solve record to such a flag)."""
+    if isinstance(node, dict):
+        return {k: _typed_flags(v, f'{path}.{k}', converted) for k, v in node.items()}
+    if isinstance(node, (list, tuple)):
+        return [_typed_flags(v, f'{path}[{i}]', converted) for i, v in enumerate(node)]
+    if isinstance(node, str) and node.strip().lower() in ('true', 'false'):
+        converted.append(path)
+        return node.strip().lower() == 'true'
+    return node
+
+
 def child_solves(args):
     spec = json.load(open(args.spec))
     import pyomo.environ as pe
@@ -609,7 +628,8 @@ def child_solves(args):
     idx = sed.get_shared_energy_storage_idx(node)
     rec['efficiencies'] = {str(y): [sed.shared_energy_storages[y][idx].eff_ch, sed.shared_energy_storages[y][idx].eff_dch]
                            for y in years}
-    rec['solver_options'] = {'solver_params': {k: str(v) for k, v in vars(sed.params.solver_params).items()},
+    rec['solver_options'] = {'solver_params': {k: (v if isinstance(v, (bool, int, float, type(None), dict, list)) else str(v))
+                                               for k, v in vars(sed.params.solver_params).items()},
                              'esso_overrides': dict(SED.ESSO_TOL_OVERRIDES)}
     counter = {'cycle': 0}
 
@@ -884,6 +904,9 @@ def child_solves(args):
     declared = sspec['declared_count']
     rec['guard'] = {'counts': dict(GUARD.counts), 'permitted_sites': dict(GUARD.permitted_sites),
                     'declared': declared, 'verify_failures': GUARD.verify(declared)}
+    converted = []
+    rec = _typed_flags(rec, '$', converted)
+    rec['string_flags_converted_to_bool'] = converted
     _dump(rec, os.path.join(work, 'child_solves.json'))
     return 0
 
@@ -1298,6 +1321,18 @@ def _oldest_share_excess(tvspec, thr):
     return sum(diffs) / len(diffs) if diffs else None
 
 
+def _load_child(path):
+    """A child's record, or None when absent or unreadable (v1: a refused write left a 0-byte file and the parent
+    crashed before writing its own record)."""
+    if not os.path.isfile(path):
+        return None
+    try:
+        with open(path) as handle:
+            return json.load(handle)
+    except ValueError:
+        return None
+
+
 def parent(args):
     t_start = time.time()
     spec_path = os.path.abspath(args.spec)
@@ -1387,12 +1422,10 @@ def parent(args):
                                             '--repo', HERE], f'child_fixtures_{tag}', out, env)
     children = {}
     for tag in ('before', 'before_rerun', 'after'):
-        p = os.path.join(works[tag], f'child_build_{tag}.json')
-        children[tag] = json.load(open(p)) if os.path.isfile(p) else None
+        children[tag] = _load_child(os.path.join(works[tag], f'child_build_{tag}.json'))
     fx = {}
     for tag in ('before', 'after'):
-        p = os.path.join(works[f'fixtures_{tag}'], f'child_fixtures_{tag}.json')
-        fx[tag] = json.load(open(p)) if os.path.isfile(p) else None
+        fx[tag] = _load_child(os.path.join(works[f'fixtures_{tag}'], f'child_fixtures_{tag}.json'))
     result = {'schema': SCHEMA, 'script': SCRIPT, 'rehearsal': bool(args.rehearsal), 'spec': spec_rel,
               'spec_sha256': _sha_bytes(spec_bytes), 'base_commit': base,
               'git_head_at_launch': _git('rev-parse', 'HEAD').strip(),
@@ -1416,8 +1449,7 @@ def parent(args):
         os.makedirs(works['solves'])
         rc['solves'] = _run_child(trees['after']['path'], ['solves', '--spec', spec_copy, '--work', works['solves']],
                                   'child_solves', out, env)
-        p = os.path.join(works['solves'], 'child_solves.json')
-        solves = json.load(open(p)) if os.path.isfile(p) else None
+        solves = _load_child(os.path.join(works['solves'], 'child_solves.json'))
         if solves is None:
             result['errors']['solves'] = 'the solve child wrote no record; see child_solves_stderr.log'
         else:
