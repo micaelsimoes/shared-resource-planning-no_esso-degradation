@@ -142,3 +142,58 @@ The wall time is T ≈ κ·[ψ·t_exit·Σ blocks + t_set·(confirmation batches
    re-derives every decision from the records.
 3. **Failures read as "worse" or dropped from |N|** (the D0 precedent). Checks: an exact class partition, a strict
    `status == 'certified'` test, and a stop on harness_error.
+
+## Oracle mapping and key rules (Planner decisions, 2026-11-23; after the driver build `dcea9628` / `1d3b6cdb`)
+
+These definitions follow `S56_PLAN_v4_1.md` (D3/D4 as accepted) and `S56_DECOMPOSITION_NOTE.md` ("The R/4 terms").
+They are implemented in one function, `HarnessOracle.summary_from_dir`.
+
+**F.** F = `total` = I(x) + gross − TV credit, in € of total discounted planning cost. The cost-breakdown schema v2
+convention is stated on every record.
+
+**Exit bar.** bar_F = max |F(k) − F(k−1)| over the last 10 cycles, from the per-cycle F series.
+- If the records do not hold the per-cycle TV credit, add a capture for it (an opt-in harness key, keyed only on S56
+  EV-plan entries).
+- Until that capture exists, use bar_F = bar_gross + the range of the TV credit over the last 10 cycles (a triangle
+  bound). The record's gross-only `bar` alone is not used.
+
+**Settled run.**
+- Run with `s56_settled_stop_disabled` True, to the declared cap K, with the tail on.
+- "Settled" means all of the following:
+  - the run reached K;
+  - every one of the last W = 10 cycles is at tail depth;
+  - the production Boyd test would have certified each of those cycles ("would-have-certified");
+  - guards are exact and there are no local-solve failures.
+- Otherwise the class is uncertified.
+
+**V components** (€ of total discounted planning cost):
+- **S(x):** the range of F over the last W = 10 cycles. The validated-extrapolation gap is not used in the EV arm until
+  the pilot validates it.
+- **PR(x):** the signed priced consensus residual over all channels: the interface P, Q and V expectation channels,
+  and the three ESS channels, each times its consensus multiplier in physical units.
+  - Sign convention per Expert ruling 3: the estimate is Q − (settlement price part contained in Q's convention) +
+    dual.
+  - Derive from the code which settlement price part the EV record's Q contains, and state it.
+  - PR only withholds determinacy.
+- **A(x):** the absolute form of PR. Guard: A(x) + A(x′) ≤ 5,000 €.
+- **G(x):** three parts:
+  - the ESSO P and Q slacks priced at the ESS multiplier (not the penalty);
+  - the within-cohort leak priced as the conversion loss (TASKS `8f2a878a`);
+  - the network closure slack priced at its row dual.
+
+**Gates for `gates_pass`:**
+- status ok and guards exact;
+- the 12.5 kW interface ceiling;
+- the ESSO slack gate;
+- network closure slack ≤ τ_cl;
+- the D1 efficiency-equality gate.
+
+**The leak ceiling (λ·L ≤ 25 €)** is reported and flagged per evaluation. It is **not** in `gates_pass` until the pilot
+measures it at the settled point (TASKS `28ba36b4`).
+
+**Cap in the eval key.** For entries that carry any S56 EV-plan key, the cycle cap enters the eval key. This is a
+harness change, option (a). Entries without S56 keys keep their keys bitwise. This removes the alias with the
+`ev_harness_v1/smoke` spec and between settled runs with different K.
+
+**K for the pilot:** K_pilot = 300 cycles, stop-disabled. The exit value is read at the would-be certification cycle.
+K_EV for the search is set from the pilot as the smallest K at which S meets its share. K_EV is frozen with e_EV.
