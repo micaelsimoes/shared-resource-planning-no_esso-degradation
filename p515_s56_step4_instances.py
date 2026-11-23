@@ -47,9 +47,18 @@ build: the 12-block reference (NL of both target blocks) and one per derived ins
 GUARDS: importing p515_s56_coupling_gates installs SolveProfileGuard(permitted=()) and its pickle guard on every
 process; each is verified at exactly 0 solves. Output: NEW directory (refuses if it exists).
 
+INSTANCE B (--instance-b; Planner ruling 2 of 2026-11-23): the 2035-only instance failed G1 (production grows prices
+and loads from the instance's first year), so it is retired (artifacts kept, not used) and replaced by ONE derived case
+with Years {"2025": 5, "2035": 5} x Days {"Summer": 91} (years[0] stays 2025: data and weights equal the 12-block
+instance's by construction; 2025|Summer rides along). Gates G1-G5 run for BOTH blocks against the 12-block instance;
+one build child for the instance (NL of both blocks) against a 12-block reference build of the same block keys.
+Output `step4_instance_b.json` in a NEW directory.
+
 Usage (repo root, canonical interpreter, attached, alone, both streams captured):
   NLP_SOLVER_PATH=/usr/local/bin/ipopt <python> -u p515_s56_step4_instances.py --out-dir <new dir> \
       > <log> 2> <err>
+  NLP_SOLVER_PATH=/usr/local/bin/ipopt <python> -u p515_s56_step4_instances.py --instance-b --out-dir <new dir> \
+      --scratch <scratch dir> > <log> 2> <err>
 """
 import argparse
 import io
@@ -153,7 +162,9 @@ def gate_data(p12, pd, year, day):
     def in_block(k):
         return (k[2] == y and k[3] == day) if k[0] == 'market' else (k[1] == y and k[2] == day)
     keys12 = [k for k in s12 if in_block(k)]
-    keys_d = list(sd)
+    # the derived snapshot restricted to the same block (a no-op for a single-block instance, whose every key is in
+    # the block; needed for the two-block instance B, Planner ruling 2 of 2026-11-23)
+    keys_d = [k for k in sd if in_block(k)]
     arrays = {'n_arrays_12_block_restricted': len(keys12), 'n_arrays_derived': len(keys_d),
               'same_key_list_in_order': keys12 == keys_d, 'n_bitwise_equal': 0, 'n_prob_equal': 0, 'mismatches': []}
     for k in keys_d:
@@ -242,6 +253,9 @@ def sigma_window(pd):
 
 
 def sigma_proxy(step3, bk, w_derived, window):
+    if bk not in step3.get('solves', {}):  # instance B: 2025|Summer has no step 3 run_v1 solve (G3 settles at D-3)
+        return {'verdict': 'not available zero-solve (the block has no step 3 run_v1 solve); settled only by the '
+                           'initialisation round', 'window_lower': window[0], 'window_upper': window[1]}
     md = step3['solves'][bk]['merged_default']['costs']
     tn_gen = sum(v['probability'] * v['gen_cost_TN_generators'] for v in md['per_scenario'].values())
     lo, hi = w_derived * tn_gen, w_derived * md['objective']
@@ -591,10 +605,186 @@ def main_parent(args):
                  and not (res.get('guard_audit_A_module') or {}).get('verify_0')) else 1
 
 
+# ======================================================================================================================
+#  instance B (Planner ruling 2 of 2026-11-23): ONE derived case, Years {2025, 2035} x Days {Summer}
+# ======================================================================================================================
+# The 2035-only instance failed G1 because production grows prices and loads from the instance's FIRST year; keeping
+# 2025 as years[0] makes every block's data and weight equal to the 12-block instance's by construction. 2025|Summer
+# rides along. Same gates G1-G5, per block, against the 12-block instance; the 2035-only artifacts are retired (kept).
+INSTANCE_B = {'label': 's56_step4_2025_2035_Summer', 'years': ('2025', '2035'), 'days': ('Summer',),
+              'blocks': (('2025', 'Summer'), ('2035', 'Summer'))}
+
+
+def derive_multi(source_case, years, days):
+    case = json.loads(json.dumps(source_case))
+    changes = [{'key': 'Years', 'from': case['Years'], 'to': {y: case['Years'][y] for y in years}},
+               {'key': 'Days', 'from': case['Days'], 'to': {d: case['Days'][d] for d in days}}]
+    case['Years'] = {y: case['Years'][y] for y in years}
+    case['Days'] = {d: case['Days'][d] for d in days}
+    return case, changes
+
+
+def main_parent_instance_b(args):
+    t_start = time.time()
+    out_dir = os.path.abspath(args.out_dir)
+    pre = []
+    if os.environ.get('NLP_SOLVER_PATH') != CG.SOLVER_PATH:
+        pre.append(f'NLP_SOLVER_PATH must be {CG.SOLVER_PATH}')
+    if os.path.exists(out_dir):
+        pre.append(f'{out_dir} exists')
+    if os.path.exists(os.path.join(REPO, '.p515_s44_campaign.lock')):
+        pre.append('campaign lock exists')
+    others = other_processes()
+    if others:
+        pre.append(f'other project processes: {others}')
+    if pre:
+        _log(f'REFUSED: {pre}')
+        return 2
+    os.makedirs(out_dir)
+    inst = INSTANCE_B
+    res = {'schema': SCHEMA + '_instance_b', 'utc_start': _utc(), 'script': SCRIPT, 'script_sha256': CG._sha_file(SCRIPT),
+           'provenance': CG.provenance(), 'R_eur': R_EUR, 'coupling': COUPLING, 'premium': PREMIUM,
+           'instance_b': {k: list(v) if isinstance(v, tuple) else v for k, v in inst.items()},
+           'authority': 'Planner ruling 2 of 2026-11-23 (TASKS.md fc5dc766): instance B = SRP1-grid 3 x 3 restricted '
+                        'to Years {2025, 2035} x Days {Summer}; gates G1-G5 for both blocks against the 12-block '
+                        'instance; the 2035-only instance is retired (kept, not used)',
+           'objective_convention': ('allowances in EUR of total discounted planning cost: (R/4) w_b / sum_12 w, '
+                                    'R = 10,000 EUR, w_b the 12-block instance weight'),
+           'error': None}
+    try:
+        with open(SOURCE_RECORD) as handle:
+            src_rec = json.load(handle)
+        src_decl = H.validate_derived_instance(src_rec['derived_instance_declaration'])
+        src_path = src_decl['case_path']
+        src_bytes = open(src_path, 'rb').read()
+        res['source'] = {'record': SOURCE_RECORD, 'declaration': src_decl,
+                         'case_sha256_now': CG._sha_file(src_path),
+                         'case_sha256_matches': CG._sha_file(src_path) == src_decl['case_sha256'],
+                         'checksum_declared_matches_task': src_decl['scenario_checksum'] == SOURCE_CHECKSUM}
+        src_case = json.loads(src_bytes)
+        res['route_check_no_change_reproduces_source_bytes'] = json.dumps(src_case, indent='\t').encode() == src_bytes
+        case, changes = derive_multi(src_case, inst['years'], inst['days'])
+        path = os.path.join(out_dir, f"SRP1__{inst['label']}.json")
+        with open(path, 'x') as handle:
+            handle.write(json.dumps(case, indent='\t'))
+        case_rel = os.path.relpath(path, REPO)
+        _log('reading the 12-block source')
+        p12, r12 = production_read(src_path, os.path.join(out_dir, 'reads', 's56_srp1grid_3x3'))
+        res['read_12_block'] = r12
+        res['read_12_block']['checksum_matches'] = r12['combined_scenario_checksum'] == SOURCE_CHECKSUM
+        res['sum12'] = sum12_weights(p12)
+        with open(STEP3_RESULTS) as handle:
+            step3 = json.load(handle)
+        res['step3_results'] = {'path': STEP3_RESULTS, 'sha256': CG._sha_file(STEP3_RESULTS)}
+        _log(f"reading derived {inst['label']}")
+        pdv, rd = production_read(case_rel, os.path.join(out_dir, 'reads', inst['label']))
+        decl = H.validate_derived_instance({
+            'instance_label': inst['label'], 'case_path': case_rel, 'case_sha256': CG._sha_file(case_rel),
+            'scenario_checksum': rd['combined_scenario_checksum'], 'source_case_path': src_path,
+            'source_case_sha256': src_decl['case_sha256'], 'changes_vs_source': changes})
+        res['derived_instance_declaration'] = decl
+        res['read'] = rd
+        res['planning_years'] = [int(y) for y in pdv.transmission_network.years]
+        res['planning_days'] = list(pdv.transmission_network.days)
+        res['shared_ess_years'] = [int(y) for y in pdv.shared_ess_data.years]
+        res['blocks'] = {}
+        sigma_primes = {}
+        for year, day in inst['blocks']:
+            bk = f'{year}|{day}'
+            b = {}
+            _log(f'{bk}: G1 data')
+            b['G1_data'] = gate_data(p12, pdv, year, day)
+            b['G2_weights'] = weights(p12, pdv, year, day)
+            w12 = b['G2_weights']['w_b_12_block']
+            b['allowance_eur'] = (R_EUR / 4.0) * w12 / res['sum12']['sum_12']
+            b['allowance_definition'] = '(R/4) * w_b(12-block) / sum_12 w, R = 10,000 EUR'
+            win = sigma_window(pdv)
+            b['G3_sigma'] = {'window_from_code': win,
+                             'proxy': sigma_proxy(step3, bk, b['G2_weights']['w_b_derived'], win['window']),
+                             'note': ('instance B: sigma is the max over BOTH blocks\' agents at the initialisation '
+                                      'solution; settled by the D-3 initialisation round')}
+            sp, sprec = compensated_sigma(win['sigma_fixed'], w12, b['G2_weights']['w_b_derived'])
+            b['G5_scale'] = dict(sprec, recorded_scale_sigma_prime_over_sigma=(sp / win['sigma_fixed']) if sp else None)
+            sigma_primes[bk] = sp
+            res['blocks'][bk] = b
+        del pdv
+        del p12
+        # one sigma per derived build: every block must ask for the same sigma' (weight ratio 1 by construction)
+        distinct = sorted({v for v in sigma_primes.values() if v is not None})
+        res['sigma_prime_single_value_for_the_instance'] = {'per_block': sigma_primes, 'distinct': distinct,
+                                                            'holds': len(distinct) == 1
+                                                            and None not in sigma_primes.values()}
+        sigma_prime = distinct[0] if len(distinct) == 1 else None
+        scratch_root = os.path.abspath(args.scratch)
+        b_keys = [k for y, d in inst['blocks'] for k in block_keys(y, d)]
+        rc, ref, ref_path = run_child('ref12', {'name': 'ref12', 'derived': src_decl, 'sigma_prime': None,
+                                                'nl_blocks': b_keys,
+                                                'scratch': os.path.join(scratch_root, 'ref12')}, out_dir)
+        res['build_ref12'] = {'exit': rc, 'path': ref_path, 'error': ref.get('error'),
+                              'build_checks': ref.get('build_checks'), 'guard': ref.get('guard'),
+                              'acceptance': ref.get('acceptance')}
+        rc, new, new_path = run_child(inst['label'], {'name': inst['label'], 'derived': decl,
+                                                      'sigma_prime': sigma_prime, 'nl_blocks': b_keys,
+                                                      'scratch': os.path.join(scratch_root, inst['label'])}, out_dir)
+        g4 = {'exit': rc, 'path': new_path, 'error': new.get('error'), 'acceptance': new.get('acceptance'),
+              'investment_year_used': new.get('investment_year_used'), 'build_checks': new.get('build_checks'),
+              'guard': new.get('guard'), 'sigma_used': new.get('sigma_used'),
+              'effective_scale_p58': new.get('effective_scale'),
+              'ref_effective_scale_p58': {k: v for k, v in (ref.get('effective_scale') or {}).items() if k in b_keys}}
+        g4['holds'] = (rc == 0 and new.get('error') is None and all((new.get('build_checks') or {}).values())
+                       and (new.get('guard') or {}).get('verified_zero') is True)
+        res['G4_acceptance'] = g4
+        for year, day in inst['blocks']:
+            bk = f'{year}|{day}'
+            b = res['blocks'][bk]
+            b['G4_acceptance'] = {'holds': g4['holds'], 'note': 'one build for the instance (both blocks)'}
+            b['G5_nl'] = nl_compare(ref, new, block_keys(year, day))
+            b['G5_nl']['effective_scales_equal'] = all(
+                (g4['effective_scale_p58'] or {}).get(k) == g4['ref_effective_scale_p58'].get(k)
+                for k in block_keys(year, day))
+        res['gates_summary'] = {bk: {'G1_data_bitwise': b['G1_data']['holds'],
+                                     'G2_weight_ratio': b['G2_weights']['ratio_derived_over_12'],
+                                     'G3_sigma_proxy_verdict': b['G3_sigma']['proxy']['verdict'],
+                                     'G4_accepted': b['G4_acceptance']['holds'],
+                                     'G4_default_investment_year_accepted':
+                                         ((g4.get('acceptance') or {}).get('harness_default') or {}).get('accepted'),
+                                     'G5_nl_identical_up_to_scale': b['G5_nl']['all_identical'],
+                                     'G5_effective_scales_equal': b['G5_nl']['effective_scales_equal'],
+                                     'allowance_eur': b['allowance_eur']}
+                                for bk, b in res['blocks'].items()}
+    except Exception as error:  # noqa: BLE001 -- recorded
+        res['error'] = f'{type(error).__name__}: {error}'
+        res['traceback'] = traceback.format_exc()
+        _log(res['traceback'])
+    res['guard'] = CG.guard_report()
+    if 'p515_s56_expected_profiles' in sys.modules:
+        aa = sys.modules['p515_s56_expected_profiles']
+        res['guard_audit_A_module'] = {'label': aa.GUARD.label, 'counts': dict(aa.GUARD.counts),
+                                       'verify_0': aa.GUARD.verify(0)}
+    res['wall_s'] = time.time() - t_start
+    res['utc_end'] = _utc()
+    path = os.path.join(out_dir, 'step4_instance_b.json')
+    with open(path, 'x') as handle:
+        GRIO.dump(res, handle, indent=1, default=GRIO.json_default_item)
+    outputs = {}
+    for root, _dirs, files in os.walk(out_dir):
+        for fn in sorted(files):
+            p = os.path.join(root, fn)
+            outputs[os.path.relpath(p, REPO)] = CG._sha_file(p)
+    with open(os.path.join(out_dir, 'manifest_sha256.json'), 'x') as handle:
+        GRIO.dump({'outputs': outputs, 'script': {'path': SCRIPT, 'sha256': res['script_sha256']},
+                   'source_case': {'path': SOURCE_RECORD}}, handle, indent=1)
+    _log(f"wrote {path}; error {res['error']}; summary {res.get('gates_summary')}; guard {res['guard']['verified_zero']}")
+    return 0 if (res['error'] is None and res['guard']['verified_zero']
+                 and not (res.get('guard_audit_A_module') or {}).get('verify_0')) else 1
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--out-dir')
     ap.add_argument('--scratch')
+    ap.add_argument('--instance-b', action='store_true',
+                    help='build instance B (Years {2025, 2035} x Days {Summer}) and its gates G1-G5 (both blocks)')
     ap.add_argument('--child-build', action='store_true')
     ap.add_argument('--child-in')
     ap.add_argument('--child-out')
@@ -603,6 +793,8 @@ def main():
         return child_build(args)
     if not (args.out_dir and args.scratch):
         ap.error('--out-dir and --scratch are required')
+    if args.instance_b:
+        return main_parent_instance_b(args)
     return main_parent(args)
 
 
