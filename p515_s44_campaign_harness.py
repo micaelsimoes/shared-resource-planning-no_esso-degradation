@@ -364,6 +364,9 @@ EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification', 'investme
                                     'settling_continuation', 'settling_extension', 'settling_resettle',
                                     'rho0_scale', 'nrf_option', 'interface_coupling',
                                     's56_cycle_capture_pinned'})
+# S56 step 4 calibration re-run (Expert handback 3 decision 1 (a)): the two entry keys (default absent; never keyed)
+EVALUATION_OPTION_KEYS = EVALUATION_OPTION_KEYS | frozenset({'s56_certification_stop_disabled',
+                                                             's56_interface_v_multiplier_capture'})
 # P5.15 Addendum 39 (W47): a DERIVED INSTANCE (see the module docstring) and row 18's premium. The identity keys
 # of a derived instance enter the eval key; the other keys are provenance. Absent -> nothing changes.
 DERIVED_INSTANCE_KEYS = frozenset({'instance_label', 'case_path', 'case_sha256', 'scenario_checksum',
@@ -1270,6 +1273,396 @@ def s56_cycle_capture_hooks(eval_dir, holder, arm=S56_CAPTURE_ARM_COUPLED):
         holder[S56_CYCLE_CAPTURE_SUMMARY_KEY] = capture.summary()
 
 
+# ======================================================================================================================
+#  S56 step 4 CALIBRATION RE-RUN (Expert handback 3, decision 1 (a), 2026-11-23): two entry keys, each DEFAULT ABSENT.
+#  Absent / False: nothing is installed, asserted or recorded -- every evaluation without them runs and writes exactly
+#  as before. Both are refused on an entry that does not declare the per-scenario coupling. Neither enters the eval key.
+# ----------------------------------------------------------------------------------------------------------------------
+#  * `S56_CERTIFICATION_STOP_DISABLED_KEY` True: production's certificate length
+#    `admm_parameters.minimum_consecutive_converged_cycles` is raised to `S56_CERTIFICATION_DISABLED_THRESHOLD`
+#    (10**9 > any cap) right after production's `_capture_convergence_depth_tail_baseline` returns (called once,
+#    before ADMM cycle 1, and only when the convergence-depth tail is enabled -- which the key requires), and put back
+#    when the run returns. In production that parameter is read ONLY by the loop's exit test, the in-memory
+#    diagnostics row's `required_consecutive_cycles` field (a record of the value in force; not a per_cycle_record
+#    field) and the cycle's INFO print -- asserted module-wide before any solve (`S56_CERTIFICATE_LENGTH_READS`;
+#    `admm_parameters.py` only loads and validates it). The per-cycle Boyd test, the consecutive count and every
+#    computed quantity are untouched: the ONLY effect is that the loop runs to the cap. The W98 rule applies: the cap
+#    and the certificate length are spec-level and enter no key.
+#  * `S56_INTERFACE_V_MULTIPLIER_CAPTURE_KEY` True: per cycle, at the S56 capture's call point (production's
+#    `get_admm_boyd_residual_metrics` returned: every TSO / DSO block solved this cycle), the multipliers of the
+#    interface-voltage UPPER limit on both sides are READ from the import suffixes production already declares on
+#    every network block (`network.py` build: `model.dual` IMPORT_EXPORT, `model.ipopt_zU_out` IMPORT; filled by
+#    `model.solutions.load_from(result)` after each successful solve) and written to
+#    `S56_INTERFACE_V_MULTIPLIER_FILE`. The upper limit is BOTH a constraint row and variable bounds:
+#      row  `voltage_magnitude_upper_cons[i, s_m, s_o, p]`: vmag_sqr - slack_v_sqr_up <= v_max^2 (the interface
+#           slack is fixed at 0 on the TSO side and bounded [0, 0] on the DSO reference node in the ADMM models);
+#      bounds `vmag_sqr` <= v_max^2 (hard at the DSO reference node; v_max + allowance on a relaxed TSO bus),
+#           `vmag` <= v_max (same rule), `e` <= v_max + allowance + tolerance.
+#    So every one of them is captured per (block, scenario, period): the row dual (`model.dual`) and the upper-bound
+#    multipliers `ipopt_zU_out` of vmag_sqr, vmag and e, with the primal vmag_sqr and e. Pure reads (`Suffix.get`,
+#    `pe.value`): no model, suffix, solver option or NL changes. Capture only: never keyed.
+S56_CERTIFICATION_STOP_DISABLED_KEY = 's56_certification_stop_disabled'
+S56_CERTIFICATION_DISABLED_THRESHOLD = 10 ** 9
+S56_CERTIFICATION_STOP_SUMMARY_KEY = 's56_certification_stop'
+S56_CERTIFICATE_LENGTH_READS = (
+    'convergence = (consecutive_converged_cycles >= admm_parameters.minimum_consecutive_converged_cycles)',
+    "'required_consecutive_cycles': admm_parameters.minimum_consecutive_converged_cycles,",
+    "f'{admm_parameters.minimum_consecutive_converged_cycles} | '",
+)
+S56_INTERFACE_V_MULTIPLIER_CAPTURE_KEY = 's56_interface_v_multiplier_capture'
+S56_INTERFACE_V_MULTIPLIER_FILE = 's56_interface_v_multipliers.jsonl'
+S56_INTERFACE_V_MULTIPLIER_SCHEMA = 's56_interface_v_multipliers_v1'
+S56_INTERFACE_V_MULTIPLIER_SUMMARY_KEY = 's56_interface_v_multiplier_capture'
+S56_INTERFACE_V_MULTIPLIER_ARRAYS = ('row_dual', 'zU_vmag_sqr', 'zU_vmag', 'zU_e', 'vmag_sqr', 'e')
+
+
+def validate_s56_calibration_key(name, value):
+    """Either calibration key. None = not declared (default: nothing installed, entry and record keep their format);
+    otherwise a bool."""
+    if value is None:
+        return None
+    if not isinstance(value, bool):
+        raise ValueError(f'{name} must be a bool, got {value!r}')
+    return value
+
+
+def s56_calibration_keys_in_force(entry_or_options, coupling_on):
+    """(stop_disabled, v_multiplier_capture) as bools; True on an entry without the coupling is refused."""
+    stop = validate_s56_calibration_key(S56_CERTIFICATION_STOP_DISABLED_KEY,
+                                        entry_or_options.get(S56_CERTIFICATION_STOP_DISABLED_KEY)) is True
+    vcap = validate_s56_calibration_key(S56_INTERFACE_V_MULTIPLIER_CAPTURE_KEY,
+                                        entry_or_options.get(S56_INTERFACE_V_MULTIPLIER_CAPTURE_KEY)) is True
+    if (stop or vcap) and not coupling_on:
+        raise ValueError(f'{S56_CERTIFICATION_STOP_DISABLED_KEY} / {S56_INTERFACE_V_MULTIPLIER_CAPTURE_KEY} True are '
+                         f'defined for entries declaring the per-scenario coupling only')
+    return stop, vcap
+
+
+def s56_calibration_record_fields(entry, holder):
+    """The evaluation-record fields of the two keys: empty unless the entry declares one (format unchanged)."""
+    out = {}
+    if S56_CERTIFICATION_STOP_DISABLED_KEY in entry:
+        out[S56_CERTIFICATION_STOP_DISABLED_KEY] = entry[S56_CERTIFICATION_STOP_DISABLED_KEY]
+        out['s56_certification_stop_checklist_asserted_before_run'] = holder.get('s56_certification_stop_checklist')
+        out['s56_certification_stop_summary'] = holder.get(S56_CERTIFICATION_STOP_SUMMARY_KEY)
+    if S56_INTERFACE_V_MULTIPLIER_CAPTURE_KEY in entry:
+        out[S56_INTERFACE_V_MULTIPLIER_CAPTURE_KEY] = entry[S56_INTERFACE_V_MULTIPLIER_CAPTURE_KEY]
+        out['s56_interface_v_multiplier_checklist_asserted_before_run'] = holder.get(
+            's56_interface_v_multiplier_checklist')
+        out['s56_interface_v_multiplier_summary'] = holder.get(S56_INTERFACE_V_MULTIPLIER_SUMMARY_KEY)
+    return out
+
+
+def _source_lines_with(text, needle):
+    """[(line number, stripped line)] of the NON-comment lines of `text` that contain `needle`."""
+    out = []
+    for i, line in enumerate(text.splitlines(), start=1):
+        s = line.strip()
+        if needle in s and not s.startswith('#'):
+            out.append((i, s))
+    return out
+
+
+def assert_s56_certification_stop_path(tail_checklist, expected_length):
+    """Rule eleven, BEFORE any solve of an entry with `S56_CERTIFICATION_STOP_DISABLED_KEY` True: the certificate
+    length is read in production only where the module comment says (module-wide scan, line numbers recorded), the
+    hook point exists with its signature and is reached (tail enabled), and the loop's only early exit is the
+    convergence break. Raises on any failure; returns the checklist (bools) and the recorded lines."""
+    import inspect
+    import admm_parameters as AP
+    import shared_resources_planning as srp
+    srp_text = inspect.getsource(srp)
+    loop_src = inspect.getsource(srp._run_operational_planning)
+    ap_text = inspect.getsource(AP)
+    needle = 'minimum_consecutive_converged_cycles'
+    srp_lines = _source_lines_with(srp_text, needle)
+    srp_reads = sorted(s for _i, s in srp_lines if 'REMOVED:' not in s)
+    production_files = sorted(f for f in os.listdir(REPO) if f.endswith('.py') and not f[:2] in ('p0', 'p1', 'p2',
+                              'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9') and not f.startswith('test'))
+    files_reading = []
+    for name in production_files:
+        with open(os.path.join(REPO, name), encoding='utf-8') as handle:
+            if needle in handle.read():
+                files_reading.append(name)
+    checks = {
+        'production_reads_are_the_three_declared': srp_reads == sorted(S56_CERTIFICATE_LENGTH_READS),
+        'the_three_reads_are_in_the_admm_loop': all(r in loop_src for r in S56_CERTIFICATE_LENGTH_READS),
+        'only_srp_and_admm_parameters_name_it': files_reading == ['admm_parameters.py', 'shared_resources_planning.py'],
+        'admm_parameters_only_loads_and_validates': all(
+            ('params_data.get(' in s or s.startswith('if admm_params.') or s.startswith('raise ValueError')
+             or s.startswith('self.' + needle)) for _i, s in _source_lines_with(ap_text, needle)),
+        'baseline_hook_signature': list(inspect.signature(srp._capture_convergence_depth_tail_baseline).parameters)
+                                   == ['planning_problem', 'admm_parameters'],
+        'baseline_hook_called_once_before_the_loop': (
+            loop_src.count('_capture_convergence_depth_tail_baseline(planning_problem, admm_parameters)') == 1
+            and loop_src.find('_capture_convergence_depth_tail_baseline(planning_problem, admm_parameters)')
+            < loop_src.find('for iter in range(1, admm_parameters.num_max_iters + 1):')),
+        'loop_exit_is_the_convergence_break': 'if convergence:\n            print(f"[INFO] \\t - ADMM converged' in loop_src,
+        'tail_enabled_for_this_run': bool((tail_checklist or {}).get('tail_enabled_for_this_run')),
+        'expected_length_is_int': isinstance(expected_length, int) and not isinstance(expected_length, bool),
+    }
+    failed = sorted(k for k, v in checks.items() if not v)
+    if failed:
+        raise RuntimeError(f'S56 certification-stop key: precondition fails (before any solve): {failed}; '
+                           f'production lines {srp_lines}; files {files_reading}')
+    checks['recorded_lines'] = {'shared_resources_planning.py': [[i, s] for i, s in srp_lines],
+                                'admm_parameters.py': [[i, s] for i, s in _source_lines_with(ap_text, needle)]}
+    checks['threshold'] = S56_CERTIFICATION_DISABLED_THRESHOLD
+    checks['expected_length_before'] = expected_length
+    return checks
+
+
+@contextmanager
+def s56_certification_stop_disabled_hooks(holder, expected_length):
+    """Pass-through wrapper over production's `_capture_convergence_depth_tail_baseline` (same argument objects, return
+    value unchanged) that then raises the certificate length (module comment). Refuses a second call and a length in
+    force != `expected_length` (the spec's). Restores production and the length on exit; records the summary."""
+    import shared_resources_planning as srp
+    state = {'calls': 0, 'length_before': None, 'length_set': None, 'restored_to': None, 'errors': []}
+    params_ref = []
+    original = srp._capture_convergence_depth_tail_baseline
+
+    def w_baseline(planning_problem, admm_parameters):
+        out = original(planning_problem, admm_parameters)
+        state['calls'] += 1
+        if state['calls'] > 1:
+            state['errors'].append('baseline captured twice')
+            raise RuntimeError('S56 certification-stop key: tail baseline captured twice in one run')
+        before = admm_parameters.minimum_consecutive_converged_cycles
+        state['length_before'] = before
+        if before != expected_length:
+            state['errors'].append(f'length in force {before!r} != spec {expected_length!r}')
+            raise RuntimeError(f'S56 certification-stop key: length in force {before!r} != spec {expected_length!r}')
+        admm_parameters.minimum_consecutive_converged_cycles = S56_CERTIFICATION_DISABLED_THRESHOLD
+        state['length_set'] = admm_parameters.minimum_consecutive_converged_cycles
+        params_ref.append(admm_parameters)
+        return out
+    srp._capture_convergence_depth_tail_baseline = w_baseline
+    try:
+        yield state
+    finally:
+        srp._capture_convergence_depth_tail_baseline = original
+        if params_ref:
+            params_ref[0].minimum_consecutive_converged_cycles = state['length_before']
+            state['restored_to'] = params_ref[0].minimum_consecutive_converged_cycles
+        holder[S56_CERTIFICATION_STOP_SUMMARY_KEY] = {
+            **state, 'threshold': S56_CERTIFICATION_DISABLED_THRESHOLD,
+            'ok': (state['calls'] == 1 and not state['errors'] and state['length_before'] == expected_length
+                   and state['length_set'] == S56_CERTIFICATION_DISABLED_THRESHOLD
+                   and state['restored_to'] == expected_length)}
+
+
+def assert_s56_interface_v_multiplier_path():
+    """Rule eleven, BEFORE any solve of an entry with `S56_INTERFACE_V_MULTIPLIER_CAPTURE_KEY` True: the suffixes, the
+    solution load, the row and the ADMM-path interface settings the capture reads exist as the module comment says,
+    and every data array is written by the line builder. Raises on failure; returns the checklist (bools)."""
+    import inspect
+    import interface_dual_capture as IDC
+    import model_construction_helpers as MCH
+    import network as NET
+    import shared_resources_planning as srp
+    net_text = inspect.getsource(NET)
+    row_src = inspect.getsource(MCH.voltage_magnitude_upper_cons_rule)
+    tso_src = inspect.getsource(srp.create_transmission_network_model)
+    dso_src = inspect.getsource(srp.update_distribution_models_to_admm)
+    line_src = inspect.getsource(s56_interface_v_multiplier_line)
+    checks = {
+        'boyd_call_point': bool(IDC.assert_capture_path()),
+        'suffix_zU_out_import': 'model.ipopt_zU_out = pe.Suffix(direction=pe.Suffix.IMPORT)' in net_text,
+        'suffix_dual_import_export': 'model.dual = pe.Suffix(direction=pe.Suffix.IMPORT_EXPORT)' in net_text,
+        'solution_and_suffixes_loaded_after_solve': 'model.solutions.load_from(result)' in net_text,
+        'upper_row_built_per_node_scenario_period': (
+            'model.voltage_magnitude_upper_cons = pe.Constraint(model.nodes, model.scenarios_market, '
+            'model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_upper_cons_rule' in net_text),
+        'upper_row_form': 'return m.vmag_sqr[i, s_m, s_o, p] - slack <= node.v_max ** 2' in row_src,
+        'tso_interface_slack_fixed_0': 'tso_model[year][day].slack_v_sqr_up[adn_node_idx, s_m, s_o, p].fix(0.00)'
+                                       in tso_src,
+        'dso_reference_slack_ub_0': 'dso_model[year][day].slack_v_sqr_up[ref_node_idx, s_m, s_o, p].setub(0.00)'
+                                    in dso_src,
+        'dso_reference_e_ub': 'dso_model[year][day].e[ref_node_idx, s_m, s_o, p].setub(voltage_upper)' in dso_src,
+        'network_index_helpers': all(callable(getattr(NET.Network, n, None)) for n in (
+            'get_node_idx', 'get_reference_node_id')),
+        'writer_is_gate_result_io': callable(getattr(GRIO, 'dumps', None)),
+    }
+    for name in S56_INTERFACE_V_MULTIPLIER_ARRAYS:
+        checks[f'array_written:{name}'] = f"'{name}'" in line_src
+    failed = sorted(k for k, v in checks.items() if not v)
+    if failed:
+        raise RuntimeError(f'S56 interface-V multiplier capture path missing (before any solve): {failed}')
+    return checks
+
+
+def _suffix_value(suffix, component):
+    v = suffix.get(component)
+    return None if v is None else float(v)
+
+
+def s56_interface_v_side_index(planning, side, node_id, year, day):
+    """(block holder network, interface node index) of one side of one interface block."""
+    if side == 'tso':
+        net = planning.transmission_network.network[year][day]
+        return net, net.get_node_idx(node_id)
+    net = planning.distribution_networks[node_id].network[year][day]
+    return net, net.get_node_idx(net.get_reference_node_id())
+
+
+def s56_interface_v_multiplier_line(planning, tso_model, dso_models, blocks, scenarios):
+    """One cycle: per side, per block (`blocks` order), per scenario (`scenarios` order), per period -- the arrays of
+    `S56_INTERFACE_V_MULTIPLIER_ARRAYS` (None where the suffix holds no entry / the component does not exist). Pure
+    reads."""
+    import pyomo.environ as pe
+    out = {}
+    for side in ('tso', 'dso'):
+        arr = {name: [] for name in S56_INTERFACE_V_MULTIPLIER_ARRAYS}
+        for node_id, year, day in blocks:
+            model = tso_model[year][day] if side == 'tso' else dso_models[node_id][year][day]
+            _net, idx = s56_interface_v_side_index(planning, side, node_id, year, day)
+            row = model.voltage_magnitude_upper_cons
+            vm_ok = idx in model.vmag_nodes
+            per = {name: [] for name in S56_INTERFACE_V_MULTIPLIER_ARRAYS}
+            for s_m, s_o in scenarios:
+                vals = {name: [] for name in S56_INTERFACE_V_MULTIPLIER_ARRAYS}
+                for p in model.periods:
+                    key = (idx, s_m, s_o, p)
+                    vals['row_dual'].append(_suffix_value(model.dual, row[key]) if key in row else None)
+                    vals['zU_vmag_sqr'].append(_suffix_value(model.ipopt_zU_out, model.vmag_sqr[key]))
+                    vals['zU_vmag'].append(_suffix_value(model.ipopt_zU_out, model.vmag[key]) if vm_ok else None)
+                    vals['zU_e'].append(_suffix_value(model.ipopt_zU_out, model.e[key]))
+                    vals['vmag_sqr'].append(float(pe.value(model.vmag_sqr[key])))
+                    vals['e'].append(float(pe.value(model.e[key])))
+                for name in S56_INTERFACE_V_MULTIPLIER_ARRAYS:
+                    per[name].append(vals[name])
+            for name in S56_INTERFACE_V_MULTIPLIER_ARRAYS:
+                arr[name].append(per[name])
+        out[side] = arr
+    return out
+
+
+def s56_interface_v_multiplier_header(planning, tso_model, dso_models, blocks, scenarios):
+    """Constant per-block facts (read once, first cycle): the interface node, v_max, the bounds in force of vmag_sqr,
+    vmag, e and the slack at (first scenario, first period), and whether the row exists there."""
+    import pyomo.environ as pe
+    per_block = {}
+    for side in ('tso', 'dso'):
+        for node_id, year, day in blocks:
+            model = tso_model[year][day] if side == 'tso' else dso_models[node_id][year][day]
+            net, idx = s56_interface_v_side_index(planning, side, node_id, year, day)
+            node = net.nodes[idx]
+            s_m, s_o = scenarios[0]
+            p0 = next(iter(model.periods))
+            key = (idx, s_m, s_o, p0)
+            slack = getattr(model, 'slack_v_sqr_up', None)
+            per_block[f'{side}|{node_id}|{year}|{day}'] = {
+                'node_index': idx, 'bus_i': node.bus_i, 'node_type': node.type, 'v_max_pu': float(node.v_max),
+                'v_min_pu': float(node.v_min), 'row_exists': key in model.voltage_magnitude_upper_cons,
+                'row_active': (bool(model.voltage_magnitude_upper_cons[key].active)
+                               if key in model.voltage_magnitude_upper_cons else None),
+                'vmag_sqr_bounds': [model.vmag_sqr[key].lb, model.vmag_sqr[key].ub],
+                'vmag_bounds': ([model.vmag[key].lb, model.vmag[key].ub] if idx in model.vmag_nodes else None),
+                'e_bounds': [model.e[key].lb, model.e[key].ub],
+                'slack_up': ({'fixed': bool(slack[key].fixed), 'lb': slack[key].lb, 'ub': slack[key].ub,
+                              'value': pe.value(slack[key])} if slack is not None and key in slack else None)}
+    return per_block
+
+
+class S56InterfaceVMultiplierCapture:
+    def __init__(self, eval_dir):
+        self.eval_dir = eval_dir
+        self.calls = 0
+        self.lines = 0
+        self.errors = []
+        self.header = None
+        self.blocks = None
+        self.scenarios = None
+        self.closed = False
+        self.bytes_written = 0
+
+    def _write(self, obj):
+        text = GRIO.dumps(obj, default=GRIO.json_default) + '\n'
+        with open(os.path.join(self.eval_dir, S56_INTERFACE_V_MULTIPLIER_FILE), 'a') as handle:
+            handle.write(text)
+            handle.flush()
+            os.fsync(handle.fileno())
+        self.bytes_written += len(text.encode())
+
+    def on_boyd(self, planning, tso_model, dso_models):
+        """Called after production's get_admm_boyd_residual_metrics returned. Never raises."""
+        if self.closed:
+            return
+        import interface_dual_capture as IDC
+        self.calls += 1
+        t0 = time.time()
+        line = {'cycle': self.calls, 'captured': False, 'error': None}
+        try:
+            if self.header is None:
+                self.blocks = IDC.block_order(planning)
+                _n, y0, d0 = self.blocks[0]
+                b0 = tso_model[y0][d0]
+                self.scenarios = [(s_m, s_o) for s_m in b0.scenarios_market for s_o in b0.scenarios_operation]
+                self.header = {
+                    'schema': S56_INTERFACE_V_MULTIPLIER_SCHEMA, 'header': True, 'first_cycle': self.calls,
+                    'blocks': [[n, y, d] for n, y, d in self.blocks], 'scenarios': [list(s) for s in self.scenarios],
+                    'n_periods': planning.num_instants, 'arrays': list(S56_INTERFACE_V_MULTIPLIER_ARRAYS),
+                    'layout': 'line[side][array][block][scenario][period]; side tso = the TN interface bus of the '
+                              'block\'s DN, dso = the DN reference bus',
+                    'sources': {'row_dual': "model.dual[voltage_magnitude_upper_cons[i, s_m, s_o, p]] (raw, as loaded "
+                                            "by pyomo from IPOPT; None = no suffix entry or no row)",
+                                'zU_vmag_sqr': "model.ipopt_zU_out[vmag_sqr[i, s_m, s_o, p]] (raw)",
+                                'zU_vmag': "model.ipopt_zU_out[vmag[i, s_m, s_o, p]] (raw; None = not a vmag node)",
+                                'zU_e': "model.ipopt_zU_out[e[i, s_m, s_o, p]] (raw)",
+                                'vmag_sqr': 'pe.value(vmag_sqr[i, s_m, s_o, p]) (pu^2)',
+                                'e': 'pe.value(e[i, s_m, s_o, p]) (pu)',
+                                'read_point': 'get_admm_boyd_residual_metrics (after the cycle\'s solves)'},
+                    'units_note': ('raw multipliers in each block\'s own objective units (the ADMM-scaled local '
+                                   'objective as IPOPT returned them); sign as pyomo loads them'),
+                    'per_block': s56_interface_v_multiplier_header(planning, tso_model, dso_models, self.blocks,
+                                                                   self.scenarios)}
+                self._write(self.header)
+            line.update(s56_interface_v_multiplier_line(planning, tso_model, dso_models, self.blocks, self.scenarios))
+            line['captured'] = True
+        except Exception as error:  # noqa: BLE001 -- write-only capture: recorded, never raised
+            line['error'] = f'{type(error).__name__}: {error}'
+            self.errors.append({'cycle': self.calls, 'error': line['error']})
+        line['capture_s'] = time.time() - t0
+        try:
+            self._write(line)
+            self.lines += 1
+        except Exception as error:  # noqa: BLE001
+            self.errors.append({'cycle': self.calls, 'error': f'write failed: {type(error).__name__}: {error}'})
+
+    def summary(self):
+        return {'schema': S56_INTERFACE_V_MULTIPLIER_SCHEMA, 'file': S56_INTERFACE_V_MULTIPLIER_FILE,
+                'boyd_calls_captured': self.calls, 'cycle_lines_written': self.lines,
+                'header_written': self.header is not None, 'bytes_written': self.bytes_written,
+                'errors': list(self.errors),
+                'ok': not self.errors and self.lines == self.calls and (self.calls == 0 or self.header is not None)}
+
+
+@contextmanager
+def s56_interface_v_multiplier_hooks(eval_dir, holder):
+    """Pass-through wrapper over production's `get_admm_boyd_residual_metrics` (same argument objects, return value
+    unchanged); restores production on exit; `holder[S56_INTERFACE_V_MULTIPLIER_SUMMARY_KEY]` gets the summary.
+    Refuses to overwrite an existing sidecar."""
+    import shared_resources_planning as srp
+    path = os.path.join(eval_dir, S56_INTERFACE_V_MULTIPLIER_FILE)
+    if os.path.exists(path):
+        raise RuntimeError(f'refusing to overwrite existing artifact: {path}')
+    capture = S56InterfaceVMultiplierCapture(eval_dir)
+    original = srp.get_admm_boyd_residual_metrics
+
+    def w_boyd(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters):
+        result = original(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars,
+                          admm_parameters)
+        capture.on_boyd(planning_problem, tso_model, dso_models)
+        return result
+    srp.get_admm_boyd_residual_metrics = w_boyd
+    try:
+        yield capture
+    finally:
+        srp.get_admm_boyd_residual_metrics = original
+        holder[S56_INTERFACE_V_MULTIPLIER_SUMMARY_KEY] = capture.summary()
+
+
 _HEX64 = frozenset('0123456789abcdef')
 
 
@@ -2006,6 +2399,7 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         coupling = validate_interface_coupling(options.get('interface_coupling'))  # S56: keyed only when non-default
         s56_pinned = validate_s56_cycle_capture_pinned(options.get(S56_CYCLE_CAPTURE_PINNED_KEY))  # S56 s4: not keyed
         s56_cycle_capture_arm(interface_coupling_in_key(coupling) is not None, s56_pinned)  # refuses key on coupled
+        s56_calibration_keys_in_force(options, interface_coupling_in_key(coupling) is not None)  # S56 s4 calib
         ekey = evaluation_key(key, eff_overrides, case_file_aa=case_file_aa, model_variant=model_variant,
                               ess_ageing_baseline=ess_ageing, flex_price_multiplier=flex_m,
                               derived_instance=derived, interface_deviation_premium=premium,
@@ -2062,6 +2456,9 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
                 any_interface_coupling = True
         if s56_pinned is not None:  # S56 step 4 preparation: only when given, so every other entry keeps its format
             cand_entry[S56_CYCLE_CAPTURE_PINNED_KEY] = s56_pinned
+        for s56_key in (S56_CERTIFICATION_STOP_DISABLED_KEY, S56_INTERFACE_V_MULTIPLIER_CAPTURE_KEY):  # S56 s4 calib
+            if s56_key in options:  # only when given, so every other entry keeps its format
+                cand_entry[s56_key] = validate_s56_calibration_key(s56_key, options[s56_key])
         cand_entries.append(cand_entry)
     os.makedirs(campaign_root, exist_ok=True)  # only after every validation above has passed
     try:
@@ -6360,6 +6757,16 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     if s56_capture_arm == S56_CAPTURE_ARM_PINNED:
         holder['s56_cycle_capture_checklist'] = assert_s56_cycle_capture_path(arm=S56_CAPTURE_ARM_PINNED)
         progress['s56_cycle_capture_checklist'] = holder['s56_cycle_capture_checklist']
+    # S56 step 4 calibration re-run: the two keys (absent / False: nothing asserted, installed or recorded); each one's
+    # path is asserted here, before any solve (rule eleven).
+    s56_stop_disabled, s56_v_capture = s56_calibration_keys_in_force(entry, coupling_on)
+    if s56_stop_disabled:
+        holder['s56_certification_stop_checklist'] = assert_s56_certification_stop_path(
+            tail_checklist, int(spec['required_consecutive_cycles']))
+        progress['s56_certification_stop_checklist'] = holder['s56_certification_stop_checklist']
+    if s56_v_capture:
+        holder['s56_interface_v_multiplier_checklist'] = assert_s56_interface_v_multiplier_path()
+        progress['s56_interface_v_multiplier_checklist'] = holder['s56_interface_v_multiplier_checklist']
     post_request = entry.get('post_certification')
     post_checklist = None
     if post_request:
@@ -6620,12 +7027,18 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     s56_cycle_cm = s56_cycle_capture_hooks(eval_dir, holder) if coupling_on else nullcontext()
     if s56_capture_arm == S56_CAPTURE_ARM_PINNED:  # S56 step 4 preparation: option off with the key only
         s56_cycle_cm = s56_cycle_capture_hooks(eval_dir, holder, arm=S56_CAPTURE_ARM_PINNED)
+    # S56 step 4 calibration re-run: installed only for an entry declaring the key True
+    s56_stop_cm = (s56_certification_stop_disabled_hooks(holder, int(spec['required_consecutive_cycles']))
+                   if s56_stop_disabled else nullcontext())
+    s56_vmult_cm = s56_interface_v_multiplier_hooks(eval_dir, holder) if s56_v_capture else nullcontext()
     with continuation_cm, \
          settling_cm, \
          extension_cm, \
          resettle_cm, \
          IDC.interface_dual_capture_hooks(eval_dir, holder) as dual_capture, \
          s56_cycle_cm, \
+         s56_stop_cm, \
+         s56_vmult_cm, \
          G.s38_pf_capture_hooks(paths['recourse_jump'], paths['ess_stride'], paths['floor'],
                                 paths['pf_stride'], floor_rows_by_node, stride=1), \
          G.s39_exempt_until_capture_hooks(paths['exempt']), \
@@ -6780,6 +7193,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         })
     # S56 step 4 preparation: empty unless the entry declares the key (so every other record keeps its format)
     variant_extra.update(s56_cycle_capture_pinned_record_fields(entry, holder, s56_capture_arm))
+    # S56 step 4 calibration re-run: empty unless the entry declares a key (so every other record keeps its format)
+    variant_extra.update(s56_calibration_record_fields(entry, holder))
     record = build_evaluation_record(
         spec=spec, spec_path=spec_path, spec_sha256=args.spec_sha256, entry=entry, report=report,
         component_levels=component_levels,
@@ -6842,6 +7257,9 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     resettle_error = resettle is not None and not (holder.get('settling_resettle') or {}).get('ok')
     interface_dual_error = not (holder.get('interface_dual_capture') or {}).get('ok')
     nrf_error = nrf_on and (holder.get('nrf_terminal') or {}).get('status') != 'written'  # W183c
+    s56_calibration_error = ((s56_stop_disabled and not (holder.get(S56_CERTIFICATION_STOP_SUMMARY_KEY) or {}).get('ok'))
+                             or (s56_v_capture
+                                 and not (holder.get(S56_INTERFACE_V_MULTIPLIER_SUMMARY_KEY) or {}).get('ok')))
     return {'post_certification_error': (holder.get('post_certification') or {}).get('status') == 'error',
             'multiscenario_capture_error': capture_error,
             'convergence_depth_capture_error': convergence_depth_error,
@@ -6850,7 +7268,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'settling_extension_error': extension_error,
             'settling_resettle_error': resettle_error,
             'interface_dual_capture_error': interface_dual_error,
-            'nrf_capture_error': nrf_error}
+            'nrf_capture_error': nrf_error,
+            's56_calibration_error': s56_calibration_error}
 
 
 def main_child(argv):
@@ -6918,6 +7337,10 @@ def main_child(argv):
             if outcome and outcome.get('nrf_capture_error'):  # W183c
                 print('[S44-CHILD] NRF terminal capture FAILED (recorded in evaluation_record.json); exiting 2',
                       file=sys.stderr, flush=True)
+                sys.exit(2)
+            if outcome and outcome.get('s56_calibration_error'):  # S56 step 4 calibration re-run
+                print('[S44-CHILD] S56 certification-stop / interface-V multiplier summary not ok (recorded in '
+                      'evaluation_record.json); exiting 2', file=sys.stderr, flush=True)
                 sys.exit(2)
     except SystemExit:
         raise
@@ -7000,6 +7423,8 @@ def main_child(argv):
                    if 'settling_resettle' in entry else {}),
                 # W183a: an entry declaring rho0_scale / nrf_option carries it, its label and what was applied.
                 **_w183a_record_fields(entry, progress.get('holder') or {}),
+                # S56 step 4 calibration re-run: an entry declaring a key carries it, its checklist and its summary.
+                **s56_calibration_record_fields(entry, progress.get('holder') or {}),
                 # W101: the interface-dual capture checklist and summary, on every path (None when not reached).
                 'interface_dual_capture_checklist_asserted_before_run': progress.get(
                     'interface_dual_capture_checklist'),
