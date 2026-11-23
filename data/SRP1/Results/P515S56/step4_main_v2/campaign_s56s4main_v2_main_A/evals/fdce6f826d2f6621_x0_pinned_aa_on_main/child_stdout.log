@@ -1,0 +1,1652 @@
+[S44-CHILD] pid=99409 ppid=99377 label=x0_pinned_aa_on_main key=8435c71859ddde68 caps={'OMP_NUM_THREADS': '1', 'MKL_NUM_THREADS': '1', 'OPENBLAS_NUM_THREADS': '1', 'VECLIB_MAXIMUM_THREADS': '1', 'NUMEXPR_NUM_THREADS': '1'} PYTHONHASHSEED=None
+[S44-CHILD] convergence-depth tail enabled for this run: True (campaign spec configuration.convergence_depth_tail; declared {'enabled': True, 'compl_inf_tol': 1e-06})
+[INFO] Scenario random seed: 2026
+[INFO] Reading MARKET DATA from file(s)...
+[INFO] 	 - Generating market scenarios...
+[INFO] 	 - Plotting market scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading TRANSMISSION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Scenario checksum: 58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e
+[INFO] Reading SHARED ESS DATA from file(s)...
+[INFO] Reading PLANNING PARAMETERS from file...
+[S44-CHILD] derived instance s56_step4_2025_Winter installed: case sha256 92e6283bdb1dafcb328ec951095ebf2173d314754e7f946c0c2210694ca7537e scenario checksum 58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e
+[INFO] Running OPERATIONAL PLANNING (DISTRIBUTED)...
+[INFO]	 - Initializing...
+[INFO] 		 - Distribution Network node 5...
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 		 - Distribution Network node 7...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 		 - Distribution Network node 9...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Transmission Network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[S44-CHILD] activation read-back all_ok=True (failing []); initialisation gross 14199.249387379268 (0x1.bbb9febecf6ffp+13) compared with 5 record(s), all_equal=True
+[ADMM OF SCALE] n=4 | min=3.157934e+07 | median=4.171759e+07 | max=5.518264e+07 | selected=5.518264e+07
+[ADMM OF SCALE] Largest weighted objectives:
+  DSO node=9 year=2025 day=Winter | base=5.518264e+07 | scenario=1.629525e-13 | total=5.518264e+07
+  DSO node=5 year=2025 day=Winter | base=4.483017e+07 | scenario=2.254472e-13 | total=4.483017e+07
+  TSO node=None year=2025 day=Winter | base=-3.860582e+07 | scenario=8.089336e+02 | total=-3.860501e+07
+  DSO node=7 year=2025 day=Winter | base=3.157934e+07 | scenario=1.911355e-13 | total=3.157934e+07
+[ADMM OF SCALE] Fixed sigma in force sigma_fixed=9.363536e+07 | sigma_computed=5.518264e+07 | ratio=5.893354e-01 | assert_factor=3.000
+[ADMM ESSO AL SCALE] mode=sigma_over_median_block_weight | sigma=9.363536e+07 | median_block_weight=4.550000e+02 | al_scale_esso=2.057920e+05
+[INFO] 	 - ADMM Iteration 1
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=1 | updated_blocks=1 | held_failed_blocks=0 | V max=0.194296 | PF max=1.958642 | ESS max=0.000000
+[TSO PROX][V MAX] node=7, year=2025, day=Winter, period=11 | dV=67.032218 kV | normalized=0.194296
+[TSO PROX][PF MAX] node=9, year=2025, day=Winter, period=4, type=P | delta=293.796256 MW | normalized=1.958642
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[DIAG][V MAX] node=5, year=2025, day=Winter, period=6 | TSO=379.499742 kV, DSO=310.500694 kV, diff=68.999049 kV, base=345.000000 kV, normalized=0.199997, rho(TSO/DSO)=0.007700/0.007700
+[DIAG][PF MAX] node=7, year=2025, day=Winter, period=11, type=P | TSO=64.685888 MW, DSO=-35.078219 MW, diff=99.764107 MW, rating=100.000000 MVA, normalized=0.997641, rho(TSO/DSO)=0.198000/0.198000
+[INFO]		 - interface Vmag max primal residual failed. 0.199997 > 0.010000
+[INFO]		 - interface Vmag mean primal residual failed. 0.124034 > 0.001000
+[INFO]		 - interface PF max primal residual failed. 0.997641 > 0.010000
+[INFO]		 - interface PF mean primal residual failed. 0.668265 > 0.001000
+[INFO]		 - interface PF mean dual residual failed. 0.135422 > 0.010000
+[INFO]		 - Recourse stationarity requires one previous successful cycle.
+[ADMM RHO] V | primal max ratio=20.000 | primal mean ratio=124.034 | primal selected=124.034 | dual mean ratio=0.076 | increase threshold=5.0 | decrease threshold=5.0 | action=increased
+[ADMM RHO BOYD] V | r=1.177715e+00 | s=8.969870e-03 | eps_pri=9.899407e-04 | eps_dual=8.534152e-05 | primal_ratio=1.189682e+03 | dual_ratio=1.051056e+02 | dual_ratio_balance=1.051056e+02 | rho_before=7.700000e-03 | rho_after=1.155000e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[ADMM RHO] PF | primal max ratio=99.764 | primal mean ratio=668.265 | primal selected=668.265 | dual mean ratio=13.542 | increase threshold=5.0 | decrease threshold=3.0 | action=held
+[ADMM RHO BOYD] PF | r=8.966809e+00 | s=3.145498e+00 | eps_pri=9.275359e-04 | eps_dual=1.217202e-04 | primal_ratio=9.667343e+03 | dual_ratio=2.584204e+04 | dual_ratio_balance=2.584204e+04 | rho_before=1.980000e-01 | rho_after=1.980000e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=exempt (fixed)
+[ADMM RHO BOYD] ESS | r=8.179513e-25 | s=5.783789e-27 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=3.935370e-21 | dual_ratio=2.782727e-23 | dual_ratio_balance=2.782727e-23 | rho_before=1.000000e-02 | rho_after=1.000000e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=exempt (fixed)
+[INFO]		 - ADMM cycle 1 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.199997/0.124034 | 0.997641/0.668265 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.001496/0.000759 | 0.387811/0.135422 | 0.000000/0.000000 | Recourse change = N/A (tol. N/A) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = increased/held/exempt (fixed)
+[INFO] 	 - Iteration 1: 44.08 s
+[INFO] 	 - ADMM Iteration 2
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=2 | updated_blocks=1 | held_failed_blocks=0 | V max=0.062177 | PF max=0.807671 | ESS max=0.000000
+[TSO PROX][V MAX] node=5, year=2025, day=Winter, period=14 | dV=21.451150 kV | normalized=0.062177
+[TSO PROX][PF MAX] node=9, year=2025, day=Winter, period=20, type=P | delta=121.150639 MW | normalized=0.807671
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[DIAG][V MAX] node=9, year=2025, day=Winter, period=2 | TSO=348.535797 kV, DSO=323.794081 kV, diff=24.741717 kV, base=345.000000 kV, normalized=0.071715, rho(TSO/DSO)=0.011550/0.011550
+[DIAG][PF MAX] node=5, year=2025, day=Winter, period=23, type=Q | TSO=-27.014429 MVAr, DSO=-24.811510 MVAr, diff=2.202919 MVAr, rating=200.000000 MVA, normalized=0.011015, rho(TSO/DSO)=0.198000/0.198000
+[INFO]		 - interface Vmag max primal residual failed. 0.071715 > 0.010000
+[INFO]		 - interface Vmag mean primal residual failed. 0.034232 > 0.001000
+[INFO]		 - interface PF max primal residual failed. 0.011015 > 0.010000
+[INFO]		 - interface PF mean primal residual failed. 0.003508 > 0.001000
+[INFO]		 - interface PF mean dual residual failed. 0.069488 > 0.010000
+[RECOURSE JUMP] cycle=2 | abs_change=9.162285e+07 | tol=2.090747e+04 | signed_change=-9.162285e+07
+[RECOURSE JUMP] Reconciliation | previous=2.090747e+08 | current=1.174519e+08 | block_delta=-9.162285e+07 | mismatch=-2.980232e-08
+[RECOURSE JUMP] Aggregate signed changes:
+  TSO | delta=-8.690756e+07
+  DSO node=5 | delta=-2.848301e+06
+  DSO node=9 | delta=-1.725250e+06
+  DSO node=7 | delta=-1.417403e+05
+  SALVAGE | delta=+0.000000e+00
+[RECOURSE JUMP] Largest 5 block changes:
+  TSO node=None year=2025 day=Winter | previous=1.933896e+08 | current=1.064821e+08 | delta=-8.690756e+07 | abs_delta=8.690756e+07
+    [RECOURSE JUMP][TSO PROX] year=2025 day=Winter | V max=0.062177 | PF max=0.807671 | ESS max=0.000000
+    [RECOURSE COMPONENTS] gen=-8.690756e+07 | flex=+0.000000e+00 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-3.087140e-07 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-3.087140e-07 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+0.000000e+00 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-3.087140e-07 | objective_slack_delta=-3.087140e-07 | mismatch=-5.329071e-15
+    [RECOURSE COMPONENT CHECK] classified_delta=-8.690756e+07 | block_delta=-8.690756e+07 | mismatch=+8.940697e-08
+  DSO node=5 year=2025 day=Winter | previous=5.641237e+06 | current=2.792936e+06 | delta=-2.848301e+06 | abs_delta=2.848301e+06
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-2.848676e+06 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-1.284133e-02 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-4.423447e-03 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-8.417880e-03 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-1.284133e-02 | objective_slack_delta=-1.284133e-02 | mismatch=-1.296740e-12
+    [RECOURSE COMPONENT CHECK] classified_delta=-2.848676e+06 | block_delta=-2.848301e+06 | mismatch=-3.747830e+02
+  DSO node=9 year=2025 day=Winter | previous=4.148554e+06 | current=2.423303e+06 | delta=-1.725250e+06 | abs_delta=1.725250e+06
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-1.685999e+06 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-1.313156e+00 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-3.645251e-03 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-1.309511e+00 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-1.313156e+00 | objective_slack_delta=-1.313156e+00 | mismatch=+1.527667e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-1.686000e+06 | block_delta=-1.725250e+06 | mismatch=+3.925000e+04
+  DSO node=7 year=2025 day=Winter | previous=5.895303e+06 | current=5.753563e+06 | delta=-1.417403e+05 | abs_delta=1.417403e+05
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-2.267956e+05 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-7.875161e-01 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+2.958579e-03 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-7.904747e-01 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-7.875161e-01 | objective_slack_delta=-7.875161e-01 | mismatch=+3.872458e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-2.267964e+05 | block_delta=-1.417403e+05 | mismatch=-8.505609e+04
+  SALVAGE node=None year=None day=None | previous=7.039033e-35 | current=7.039033e-35 | delta=+0.000000e+00 | abs_delta=0.000000e+00
+[INFO]		 - Recourse stationarity failed. 91622852.730493 > 20907.473376
+[ADMM RHO] V | primal max ratio=7.172 | primal mean ratio=34.232 | primal selected=34.232 | dual mean ratio=0.090 | increase threshold=5.0 | decrease threshold=5.0 | action=increased
+[ADMM RHO BOYD] V | r=3.270324e-01 | s=2.969340e-03 | eps_pri=9.953286e-04 | eps_dual=8.510944e-05 | primal_ratio=3.285672e+02 | dual_ratio=3.488849e+01 | dual_ratio_balance=3.488849e+01 | rho_before=1.155000e-02 | rho_after=1.732500e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[ADMM RHO] PF | primal max ratio=1.101 | primal mean ratio=3.508 | primal selected=3.508 | dual mean ratio=6.949 | increase threshold=5.0 | decrease threshold=3.0 | action=decreased
+[ADMM RHO BOYD] PF | r=5.500773e-02 | s=1.073649e+00 | eps_pri=4.941211e-04 | eps_dual=1.207831e-04 | primal_ratio=1.113244e+02 | dual_ratio=8.889061e+03 | dual_ratio_balance=8.889061e+03 | rho_before=1.980000e-01 | rho_after=1.320000e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=decreased
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=exempt (fixed)
+[ADMM RHO BOYD] ESS | r=4.552784e-25 | s=9.003093e-27 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=2.190459e-21 | dual_ratio=4.331615e-23 | dual_ratio_balance=4.331615e-23 | rho_before=1.000000e-02 | rho_after=1.000000e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=exempt (fixed)
+[INFO]		 - ADMM cycle 2 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.071715/0.034232 | 0.011015/0.003508 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.002310/0.000904 | 0.249491/0.069488 | 0.000000/0.000000 | Recourse change = 91622852.730493 (tol. 20907.473376) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = increased/decreased/exempt (fixed)
+[INFO] 	 - Iteration 2: 45.78 s
+[INFO] 	 - ADMM Iteration 3
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=3 | updated_blocks=1 | held_failed_blocks=0 | V max=0.015672 | PF max=0.192008 | ESS max=0.000000
+[TSO PROX][V MAX] node=9, year=2025, day=Winter, period=2 | dV=5.406668 kV | normalized=0.015672
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=21, type=P | delta=19.200802 MW | normalized=0.192008
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[DIAG][V MAX] node=5, year=2025, day=Winter, period=16 | TSO=364.434902 kV, DSO=375.919457 kV, diff=11.484555 kV, base=345.000000 kV, normalized=0.033289, rho(TSO/DSO)=0.017325/0.017325
+[INFO]		 - interface Vmag max primal residual failed. 0.033289 > 0.010000
+[INFO]		 - interface Vmag mean primal residual failed. 0.013821 > 0.001000
+[INFO]		 - interface PF mean primal residual failed. 0.001272 > 0.001000
+[INFO]		 - Dual residuals ok!
+[RECOURSE JUMP] cycle=3 | abs_change=3.091399e+07 | tol=1.174519e+04 | signed_change=-3.091399e+07
+[RECOURSE JUMP] Reconciliation | previous=1.174519e+08 | current=8.653789e+07 | block_delta=-3.091399e+07 | mismatch=+1.490116e-08
+[RECOURSE JUMP] Aggregate signed changes:
+  TSO | delta=-2.860685e+07
+  DSO node=5 | delta=-1.467581e+06
+  DSO node=7 | delta=-1.005899e+06
+  DSO node=9 | delta=+1.663417e+05
+  SALVAGE | delta=+0.000000e+00
+[RECOURSE JUMP] Largest 5 block changes:
+  TSO node=None year=2025 day=Winter | previous=1.064821e+08 | current=7.787523e+07 | delta=-2.860685e+07 | abs_delta=2.860685e+07
+    [RECOURSE JUMP][TSO PROX] year=2025 day=Winter | V max=0.015672 | PF max=0.192008 | ESS max=0.000000
+    [RECOURSE COMPONENTS] gen=-2.860685e+07 | flex=+0.000000e+00 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+8.026128e-08 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+8.026127e-08 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+0.000000e+00 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+8.026127e-08 | objective_slack_delta=+8.026128e-08 | mismatch=-1.065814e-14
+    [RECOURSE COMPONENT CHECK] classified_delta=-2.860685e+07 | block_delta=-2.860685e+07 | mismatch=+3.725290e-08
+  DSO node=5 year=2025 day=Winter | previous=2.792936e+06 | current=1.325355e+06 | delta=-1.467581e+06 | abs_delta=1.467581e+06
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-1.395525e+06 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-3.863032e-03 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-8.450707e-04 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-3.017961e-03 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-3.863032e-03 | objective_slack_delta=-3.863032e-03 | mismatch=+1.605827e-12
+    [RECOURSE COMPONENT CHECK] classified_delta=-1.395525e+06 | block_delta=-1.467581e+06 | mismatch=+7.205528e+04
+  DSO node=7 year=2025 day=Winter | previous=5.753563e+06 | current=4.747664e+06 | delta=-1.005899e+06 | abs_delta=1.005899e+06
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-9.648117e+05 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-1.274689e-01 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-3.225346e-03 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-1.242436e-01 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-1.274689e-01 | objective_slack_delta=-1.274689e-01 | mismatch=+6.821210e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-9.648119e+05 | block_delta=-1.005899e+06 | mismatch=+4.108678e+04
+  DSO node=9 year=2025 day=Winter | previous=2.423303e+06 | current=2.589645e+06 | delta=+1.663417e+05 | abs_delta=1.663417e+05
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+2.160340e+05 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-1.315079e-02 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-1.535310e-03 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-1.161548e-02 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-1.315079e-02 | objective_slack_delta=-1.315079e-02 | mismatch=+3.268497e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=+2.160340e+05 | block_delta=+1.663417e+05 | mismatch=+4.969227e+04
+  SALVAGE node=None year=None day=None | previous=7.039033e-35 | current=7.039033e-35 | delta=+0.000000e+00 | abs_delta=0.000000e+00
+[INFO]		 - Recourse stationarity failed. 30913990.789534 > 11745.188103
+[ADMM RHO] V | primal max ratio=3.329 | primal mean ratio=13.821 | primal selected=13.821 | dual mean ratio=0.033 | increase threshold=5.0 | decrease threshold=5.0 | action=increased
+[ADMM RHO BOYD] V | r=1.388797e-01 | s=1.066338e-03 | eps_pri=9.866809e-04 | eps_dual=8.495970e-05 | primal_ratio=1.407544e+02 | dual_ratio=1.255110e+01 | dual_ratio_balance=1.255110e+01 | rho_before=1.732500e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[ADMM RHO] PF | primal max ratio=0.645 | primal mean ratio=1.272 | primal selected=1.272 | dual mean ratio=0.928 | increase threshold=5.0 | decrease threshold=3.0 | action=decreased
+[ADMM RHO BOYD] PF | r=2.186166e-02 | s=1.361052e-01 | eps_pri=4.168579e-04 | eps_dual=1.206253e-04 | primal_ratio=5.244390e+01 | dual_ratio=1.128330e+03 | dual_ratio_balance=1.128330e+03 | rho_before=1.320000e-01 | rho_after=8.800000e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=decreased
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=exempt (fixed)
+[ADMM RHO BOYD] ESS | r=4.503089e-25 | s=3.513994e-29 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=2.166550e-21 | dual_ratio=1.690671e-25 | dual_ratio_balance=1.690671e-25 | rho_before=1.000000e-02 | rho_after=1.000000e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=exempt (fixed)
+[INFO]		 - ADMM cycle 3 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.033289/0.013821 | 0.006452/0.001272 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.001761/0.000325 | 0.025409/0.009281 | 0.000000/0.000000 | Recourse change = 30913990.789534 (tol. 11745.188103) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = increased/decreased/exempt (fixed)
+[INFO] 	 - Iteration 3: 22.45 s
+[INFO] 	 - ADMM Iteration 4
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=4 | updated_blocks=1 | held_failed_blocks=0 | V max=0.008331 | PF max=0.181589 | ESS max=0.000000
+[TSO PROX][V MAX] node=7, year=2025, day=Winter, period=4 | dV=2.874030 kV | normalized=0.008331
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=21, type=P | delta=18.158882 MW | normalized=0.181589
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[DIAG][PF MAX] node=5, year=2025, day=Winter, period=9, type=P | TSO=23.710695 MW, DSO=18.763093 MW, diff=4.947601 MW, rating=200.000000 MVA, normalized=0.024738, rho(TSO/DSO)=0.088000/0.088000
+[INFO]		 - interface Vmag mean primal residual failed. 0.001435 > 0.001000
+[INFO]		 - interface PF max primal residual failed. 0.024738 > 0.010000
+[INFO]		 - interface PF mean primal residual failed. 0.001046 > 0.001000
+[INFO]		 - Dual residuals ok!
+[RECOURSE JUMP] cycle=4 | abs_change=4.065304e+06 | tol=8.653789e+03 | signed_change=-4.065304e+06
+[RECOURSE JUMP] Reconciliation | previous=8.653789e+07 | current=8.247259e+07 | block_delta=-4.065304e+06 | mismatch=+0.000000e+00
+[RECOURSE JUMP] Aggregate signed changes:
+  TSO | delta=-2.832453e+06
+  DSO node=7 | delta=-9.011227e+05
+  DSO node=9 | delta=-4.453032e+05
+  DSO node=5 | delta=+1.135747e+05
+  SALVAGE | delta=+0.000000e+00
+[RECOURSE JUMP] Largest 5 block changes:
+  TSO node=None year=2025 day=Winter | previous=7.787523e+07 | current=7.504277e+07 | delta=-2.832453e+06 | abs_delta=2.832453e+06
+    [RECOURSE JUMP][TSO PROX] year=2025 day=Winter | V max=0.008331 | PF max=0.181589 | ESS max=0.000000
+    [RECOURSE COMPONENTS] gen=-2.832453e+06 | flex=+0.000000e+00 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+6.273150e-08 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+6.273151e-08 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+0.000000e+00 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+6.273151e-08 | objective_slack_delta=+6.273150e-08 | mismatch=+3.552714e-15
+    [RECOURSE COMPONENT CHECK] classified_delta=-2.832453e+06 | block_delta=-2.832453e+06 | mismatch=-1.606531e-07
+  DSO node=7 year=2025 day=Winter | previous=4.747664e+06 | current=3.846541e+06 | delta=-9.011227e+05 | abs_delta=9.011227e+05
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-9.018075e+05 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+6.696692e-03 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+3.464664e-05 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+6.662046e-03 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+6.696692e-03 | objective_slack_delta=+6.696692e-03 | mismatch=-9.805490e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-9.018075e+05 | block_delta=-9.011227e+05 | mismatch=-6.847810e+02
+  DSO node=9 year=2025 day=Winter | previous=2.589645e+06 | current=2.144342e+06 | delta=-4.453032e+05 | abs_delta=4.453032e+05
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-4.447197e+05 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+6.954486e-03 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+2.175885e-04 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+6.736897e-03 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+6.954486e-03 | objective_slack_delta=+6.954486e-03 | mismatch=-2.415845e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-4.447197e+05 | block_delta=-4.453032e+05 | mismatch=+5.835682e+02
+  DSO node=5 year=2025 day=Winter | previous=1.325355e+06 | current=1.438930e+06 | delta=+1.135747e+05 | abs_delta=1.135747e+05
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+1.065191e+05 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+1.810715e-03 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-2.016426e-05 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+1.830880e-03 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+1.810715e-03 | objective_slack_delta=+1.810715e-03 | mismatch=-1.435296e-12
+    [RECOURSE COMPONENT CHECK] classified_delta=+1.065191e+05 | block_delta=+1.135747e+05 | mismatch=-7.055591e+03
+  SALVAGE node=None year=None day=None | previous=7.039033e-35 | current=7.039033e-35 | delta=+0.000000e+00 | abs_delta=0.000000e+00
+[INFO]		 - Recourse stationarity failed. 4065304.162863 > 8653.789024
+[ADMM RHO] V | primal max ratio=0.426 | primal mean ratio=1.435 | primal selected=1.435 | dual mean ratio=0.024 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=1.441977e-02 | s=8.639168e-04 | eps_pri=9.856972e-04 | eps_dual=8.493923e-05 | primal_ratio=1.462901e+01 | dual_ratio=1.017100e+01 | dual_ratio_balance=1.017100e+01 | rho_before=2.598750e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=2.474 | primal mean ratio=1.046 | primal selected=2.474 | dual mean ratio=0.287 | increase threshold=5.0 | decrease threshold=3.0 | action=decreased
+[ADMM RHO BOYD] PF | r=3.831961e-02 | s=5.101637e-02 | eps_pri=3.930696e-04 | eps_dual=1.206944e-04 | primal_ratio=9.748808e+01 | dual_ratio=4.226903e+02 | dual_ratio_balance=4.226903e+02 | rho_before=8.800000e-02 | rho_after=5.866667e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=decreased
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=exempt (fixed)
+[ADMM RHO BOYD] ESS | r=5.073876e-25 | s=4.036071e-28 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=2.441169e-21 | dual_ratio=1.941856e-24 | dual_ratio_balance=1.941856e-24 | rho_before=1.000000e-02 | rho_after=1.000000e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=exempt (fixed)
+[INFO]		 - ADMM cycle 4 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.004258/0.001435 | 0.024738/0.001046 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000869/0.000241 | 0.016007/0.002874 | 0.000000/0.000000 | Recourse change = 4065304.162863 (tol. 8653.789024) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/decreased/exempt (fixed)
+[INFO] 	 - Iteration 4: 19.51 s
+[INFO] 	 - ADMM Iteration 5
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=5 | updated_blocks=1 | held_failed_blocks=0 | V max=0.007878 | PF max=0.150295 | ESS max=0.000000
+[TSO PROX][V MAX] node=7, year=2025, day=Winter, period=4 | dV=2.718051 kV | normalized=0.007878
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=21, type=P | delta=15.029473 MW | normalized=0.150295
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[DIAG][PF MAX] node=5, year=2025, day=Winter, period=19, type=P | TSO=21.178468 MW, DSO=15.500148 MW, diff=5.678320 MW, rating=200.000000 MVA, normalized=0.028392, rho(TSO/DSO)=0.058667/0.058667
+[INFO]		 - interface PF max primal residual failed. 0.028392 > 0.010000
+[INFO]		 - interface PF mean primal residual failed. 0.001072 > 0.001000
+[INFO]		 - Dual residuals ok!
+[RECOURSE JUMP] cycle=5 | abs_change=1.193567e+06 | tol=8.247259e+03 | signed_change=-1.193567e+06
+[RECOURSE JUMP] Reconciliation | previous=8.247259e+07 | current=8.127902e+07 | block_delta=-1.193567e+06 | mismatch=+2.980232e-08
+[RECOURSE JUMP] Aggregate signed changes:
+  DSO node=7 | delta=-7.227749e+05
+  TSO | delta=-4.365300e+05
+  DSO node=9 | delta=-2.095318e+05
+  DSO node=5 | delta=+1.752699e+05
+  SALVAGE | delta=+0.000000e+00
+[RECOURSE JUMP] Largest 5 block changes:
+  DSO node=7 year=2025 day=Winter | previous=3.846541e+06 | current=3.123766e+06 | delta=-7.227749e+05 | abs_delta=7.227749e+05
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-7.319560e+05 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+1.970865e-03 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-6.749518e-05 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+2.038360e-03 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+1.970865e-03 | objective_slack_delta=+1.970865e-03 | mismatch=+9.201528e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-7.319560e+05 | block_delta=-7.227749e+05 | mismatch=-9.181196e+03
+  TSO node=None year=2025 day=Winter | previous=7.504277e+07 | current=7.460624e+07 | delta=-4.365300e+05 | abs_delta=4.365300e+05
+    [RECOURSE JUMP][TSO PROX] year=2025 day=Winter | V max=0.007878 | PF max=0.150295 | ESS max=0.000000
+    [RECOURSE COMPONENTS] gen=-4.365300e+05 | flex=+0.000000e+00 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+7.736359e-08 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+7.736360e-08 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+0.000000e+00 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+7.736360e-08 | objective_slack_delta=+7.736359e-08 | mismatch=+5.329071e-15
+    [RECOURSE COMPONENT CHECK] classified_delta=-4.365300e+05 | block_delta=-4.365300e+05 | mismatch=+2.852175e-09
+  DSO node=9 year=2025 day=Winter | previous=2.144342e+06 | current=1.934810e+06 | delta=-2.095318e+05 | abs_delta=2.095318e+05
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-2.468986e+05 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+4.151421e-04 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-9.080031e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+4.242222e-04 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+4.151421e-04 | objective_slack_delta=+4.151421e-04 | mismatch=-7.531753e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-2.468986e+05 | block_delta=-2.095318e+05 | mismatch=-3.736674e+04
+  DSO node=5 year=2025 day=Winter | previous=1.438930e+06 | current=1.614200e+06 | delta=+1.752699e+05 | abs_delta=1.752699e+05
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+1.507371e+05 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-1.028423e-04 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-1.726255e-05 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-8.557971e-05 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-1.028423e-04 | objective_slack_delta=-1.028423e-04 | mismatch=+2.486900e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=+1.507371e+05 | block_delta=+1.752699e+05 | mismatch=-2.453273e+04
+  SALVAGE node=None year=None day=None | previous=7.039033e-35 | current=7.039033e-35 | delta=+0.000000e+00 | abs_delta=0.000000e+00
+[INFO]		 - Recourse stationarity failed. 1193566.796552 > 8247.258608
+[ADMM RHO] V | primal max ratio=0.272 | primal mean ratio=0.903 | primal selected=0.903 | dual mean ratio=0.008 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=9.690437e-03 | s=7.727703e-04 | eps_pri=9.881203e-04 | eps_dual=8.493012e-05 | primal_ratio=9.806940e+00 | dual_ratio=9.098896e+00 | dual_ratio_balance=9.098896e+00 | rho_before=2.598750e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=2.839 | primal mean ratio=1.072 | primal selected=2.839 | dual mean ratio=0.115 | increase threshold=5.0 | decrease threshold=3.0 | action=held
+[ADMM RHO BOYD] PF | r=4.303255e-02 | s=2.335372e-02 | eps_pri=3.824419e-04 | eps_dual=1.208085e-04 | primal_ratio=1.125205e+02 | dual_ratio=1.933118e+02 | dual_ratio_balance=1.933118e+02 | rho_before=5.866667e-02 | rho_after=5.866667e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=increased
+[ADMM RHO BOYD] ESS | r=6.875789e-26 | s=4.073963e-27 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=3.308115e-22 | dual_ratio=1.960087e-23 | dual_ratio_balance=1.960087e-23 | rho_before=1.000000e-02 | rho_after=1.500000e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[INFO]		 - ADMM cycle 5 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.002722/0.000903 | 0.028392/0.001072 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000217/0.000079 | 0.008832/0.001146 | 0.000000/0.000000 | Recourse change = 1193566.796552 (tol. 8247.258608) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held/increased
+[INFO] 	 - Iteration 5: 18.90 s
+[INFO] 	 - ADMM Iteration 6
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=6 | updated_blocks=1 | held_failed_blocks=0 | V max=0.007503 | PF max=0.075761 | ESS max=0.000000
+[TSO PROX][V MAX] node=7, year=2025, day=Winter, period=4 | dV=2.588436 kV | normalized=0.007503
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=10, type=P | delta=7.576126 MW | normalized=0.075761
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[DIAG][PF MAX] node=5, year=2025, day=Winter, period=19, type=P | TSO=20.239314 MW, DSO=17.846932 MW, diff=2.392382 MW, rating=200.000000 MVA, normalized=0.011962, rho(TSO/DSO)=0.058667/0.058667
+[INFO]		 - interface PF max primal residual failed. 0.011962 > 0.010000
+[INFO]		 - Dual residuals ok!
+[RECOURSE JUMP] cycle=6 | abs_change=6.894597e+05 | tol=8.127902e+03 | signed_change=-6.894597e+05
+[RECOURSE JUMP] Reconciliation | previous=8.127902e+07 | current=8.058956e+07 | block_delta=-6.894597e+05 | mismatch=-1.490116e-08
+[RECOURSE JUMP] Aggregate signed changes:
+  DSO node=7 | delta=-3.994715e+05
+  TSO | delta=-2.674869e+05
+  DSO node=9 | delta=-7.758562e+04
+  DSO node=5 | delta=+5.508427e+04
+  SALVAGE | delta=+0.000000e+00
+[RECOURSE JUMP] Largest 5 block changes:
+  DSO node=7 year=2025 day=Winter | previous=3.123766e+06 | current=2.724295e+06 | delta=-3.994715e+05 | abs_delta=3.994715e+05
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-3.976794e+05 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-1.463752e-04 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-4.808765e-05 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-9.828754e-05 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-1.463752e-04 | objective_slack_delta=-1.463752e-04 | mismatch=+5.719869e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-3.976794e+05 | block_delta=-3.994715e+05 | mismatch=+1.792141e+03
+  TSO node=None year=2025 day=Winter | previous=7.460624e+07 | current=7.433876e+07 | delta=-2.674869e+05 | abs_delta=2.674869e+05
+    [RECOURSE JUMP][TSO PROX] year=2025 day=Winter | V max=0.007503 | PF max=0.075761 | ESS max=0.000000
+    [RECOURSE COMPONENTS] gen=-2.674869e+05 | flex=+0.000000e+00 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+9.718769e-08 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+9.718769e-08 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+0.000000e+00 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+9.718769e-08 | objective_slack_delta=+9.718769e-08 | mismatch=+0.000000e+00
+    [RECOURSE COMPONENT CHECK] classified_delta=-2.674869e+05 | block_delta=-2.674869e+05 | mismatch=+1.270091e-07
+  DSO node=9 year=2025 day=Winter | previous=1.934810e+06 | current=1.857225e+06 | delta=-7.758562e+04 | abs_delta=7.758562e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-9.112093e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+1.418048e-04 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+4.916544e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+1.368883e-04 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+1.418048e-04 | objective_slack_delta=+1.418048e-04 | mismatch=+4.121148e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-9.112093e+04 | block_delta=-7.758562e+04 | mismatch=-1.353531e+04
+  DSO node=5 year=2025 day=Winter | previous=1.614200e+06 | current=1.669284e+06 | delta=+5.508427e+04 | abs_delta=5.508427e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+4.866214e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-1.887759e-04 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-5.219327e-07 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-1.882540e-04 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-1.887759e-04 | objective_slack_delta=-1.887759e-04 | mismatch=-7.283063e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=+4.866214e+04 | block_delta=+5.508427e+04 | mismatch=-6.422132e+03
+  SALVAGE node=None year=None day=None | previous=7.039033e-35 | current=7.039033e-35 | delta=+0.000000e+00 | abs_delta=0.000000e+00
+[INFO]		 - Recourse stationarity failed. 689459.692268 > 8127.901929
+[ADMM RHO] V | primal max ratio=0.125 | primal mean ratio=0.460 | primal selected=0.460 | dual mean ratio=0.008 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=4.796269e-03 | s=7.484319e-04 | eps_pri=9.905331e-04 | eps_dual=8.492769e-05 | primal_ratio=4.842109e+00 | dual_ratio=8.812579e+00 | dual_ratio_balance=8.812579e+00 | rho_before=2.598750e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=1.196 | primal mean ratio=0.564 | primal selected=1.196 | dual mean ratio=0.053 | increase threshold=5.0 | decrease threshold=3.0 | action=held
+[ADMM RHO BOYD] PF | r=2.161348e-02 | s=1.326710e-02 | eps_pri=3.770551e-04 | eps_dual=1.208740e-04 | primal_ratio=5.732180e+01 | dual_ratio=1.097597e+02 | dual_ratio_balance=1.097597e+02 | rho_before=5.866667e-02 | rho_after=5.866667e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=increased
+[ADMM RHO BOYD] ESS | r=8.329117e-25 | s=9.563650e-27 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=4.007348e-21 | dual_ratio=4.601313e-23 | dual_ratio_balance=4.601313e-23 | rho_before=1.500000e-02 | rho_after=2.250000e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[INFO]		 - ADMM cycle 6 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.001246/0.000460 | 0.011962/0.000564 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000199/0.000077 | 0.004445/0.000534 | 0.000000/0.000000 | Recourse change = 689459.692268 (tol. 8127.901929) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held/increased
+[INFO] 	 - Iteration 6: 19.58 s
+[INFO] 	 - ADMM Iteration 7
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=7 | updated_blocks=1 | held_failed_blocks=0 | V max=0.007487 | PF max=0.062786 | ESS max=0.000000
+[TSO PROX][V MAX] node=7, year=2025, day=Winter, period=4 | dV=2.583061 kV | normalized=0.007487
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=11, type=P | delta=6.278576 MW | normalized=0.062786
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[RECOURSE JUMP] cycle=7 | abs_change=7.198566e+05 | tol=8.058956e+03 | signed_change=-7.198566e+05
+[RECOURSE JUMP] Reconciliation | previous=8.058956e+07 | current=7.986970e+07 | block_delta=-7.198566e+05 | mismatch=+0.000000e+00
+[RECOURSE JUMP] Aggregate signed changes:
+  TSO | delta=-4.601171e+05
+  DSO node=7 | delta=-3.161866e+05
+  DSO node=5 | delta=+3.423783e+04
+  DSO node=9 | delta=+2.220933e+04
+  SALVAGE | delta=+0.000000e+00
+[RECOURSE JUMP] Largest 5 block changes:
+  TSO node=None year=2025 day=Winter | previous=7.433876e+07 | current=7.387864e+07 | delta=-4.601171e+05 | abs_delta=4.601171e+05
+    [RECOURSE JUMP][TSO PROX] year=2025 day=Winter | V max=0.007487 | PF max=0.062786 | ESS max=0.000000
+    [RECOURSE COMPONENTS] gen=-4.601171e+05 | flex=+0.000000e+00 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+1.261075e-07 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+1.261075e-07 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+0.000000e+00 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+1.261075e-07 | objective_slack_delta=+1.261075e-07 | mismatch=-3.552714e-15
+    [RECOURSE COMPONENT CHECK] classified_delta=-4.601171e+05 | block_delta=-4.601171e+05 | mismatch=+2.155430e-07
+  DSO node=7 year=2025 day=Winter | previous=2.724295e+06 | current=2.408108e+06 | delta=-3.161866e+05 | abs_delta=3.161866e+05
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-3.186249e+05 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+2.641544e-04 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-2.537052e-05 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+2.895250e-04 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+2.641544e-04 | objective_slack_delta=+2.641544e-04 | mismatch=-8.029133e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-3.186249e+05 | block_delta=-3.161866e+05 | mismatch=-2.438331e+03
+  DSO node=5 year=2025 day=Winter | previous=1.669284e+06 | current=1.703522e+06 | delta=+3.423783e+04 | abs_delta=3.423783e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+2.999510e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-4.604930e-05 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+1.459448e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-4.750875e-05 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-4.604930e-05 | objective_slack_delta=-4.604930e-05 | mismatch=+1.431744e-12
+    [RECOURSE COMPONENT CHECK] classified_delta=+2.999510e+04 | block_delta=+3.423783e+04 | mismatch=-4.242729e+03
+  DSO node=9 year=2025 day=Winter | previous=1.857225e+06 | current=1.879434e+06 | delta=+2.220933e+04 | abs_delta=2.220933e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+1.820930e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+2.002107e-04 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+2.596245e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+1.976145e-04 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+2.002107e-04 | objective_slack_delta=+2.002107e-04 | mismatch=+3.161915e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=+1.820930e+04 | block_delta=+2.220933e+04 | mismatch=-4.000025e+03
+  SALVAGE node=None year=None day=None | previous=7.039033e-35 | current=7.039033e-35 | delta=+0.000000e+00 | abs_delta=0.000000e+00
+[INFO]		 - Recourse stationarity failed. 719856.589601 > 8058.955959
+[ADMM RHO] V | primal max ratio=0.071 | primal mean ratio=0.232 | primal selected=0.232 | dual mean ratio=0.007 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=2.437682e-03 | s=7.371274e-04 | eps_pri=9.929252e-04 | eps_dual=8.492657e-05 | primal_ratio=2.455051e+00 | dual_ratio=8.679585e+00 | dual_ratio_balance=8.679585e+00 | rho_before=2.598750e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.273 | primal mean ratio=0.181 | primal selected=0.273 | dual mean ratio=0.034 | increase threshold=5.0 | decrease threshold=3.0 | action=decreased
+[ADMM RHO BOYD] PF | r=5.655863e-03 | s=9.524485e-03 | eps_pri=3.732441e-04 | eps_dual=1.208633e-04 | primal_ratio=1.515326e+01 | dual_ratio=7.880379e+01 | dual_ratio_balance=7.880379e+01 | rho_before=5.866667e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=decreased
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=increased
+[ADMM RHO BOYD] ESS | r=6.734701e-25 | s=2.396638e-26 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=3.240235e-21 | dual_ratio=1.153083e-22 | dual_ratio_balance=1.153083e-22 | rho_before=2.250000e-02 | rho_after=3.375000e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[INFO]		 - ADMM cycle 7 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.000708/0.000232 | 0.002730/0.000181 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000205/0.000074 | 0.003683/0.000341 | 0.000000/0.000000 | Recourse change = 719856.589601 (tol. 8058.955959) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/decreased/increased
+[INFO] 	 - Iteration 7: 19.66 s
+[INFO] 	 - ADMM Iteration 8
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=8 | updated_blocks=1 | held_failed_blocks=0 | V max=0.006733 | PF max=0.078193 | ESS max=0.000000
+[TSO PROX][V MAX] node=5, year=2025, day=Winter, period=3 | dV=2.322835 kV | normalized=0.006733
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=11, type=P | delta=7.819319 MW | normalized=0.078193
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[RECOURSE JUMP] cycle=8 | abs_change=3.491096e+05 | tol=7.986970e+03 | signed_change=-3.491096e+05
+[RECOURSE JUMP] Reconciliation | previous=7.986970e+07 | current=7.952059e+07 | block_delta=-3.491096e+05 | mismatch=+1.490116e-08
+[RECOURSE JUMP] Aggregate signed changes:
+  DSO node=7 | delta=-2.616176e+05
+  TSO | delta=-2.101094e+05
+  DSO node=9 | delta=+6.431022e+04
+  DSO node=5 | delta=+5.830712e+04
+  SALVAGE | delta=+0.000000e+00
+[RECOURSE JUMP] Largest 5 block changes:
+  DSO node=7 year=2025 day=Winter | previous=2.408108e+06 | current=2.146491e+06 | delta=-2.616176e+05 | abs_delta=2.616176e+05
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-2.609253e+05 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-6.662215e-05 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-2.453574e-05 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-4.208641e-05 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-6.662215e-05 | objective_slack_delta=-6.662215e-05 | mismatch=+6.394885e-14
+    [RECOURSE COMPONENT CHECK] classified_delta=-2.609253e+05 | block_delta=-2.616176e+05 | mismatch=+6.922576e+02
+  TSO node=None year=2025 day=Winter | previous=7.387864e+07 | current=7.366853e+07 | delta=-2.101094e+05 | abs_delta=2.101094e+05
+    [RECOURSE JUMP][TSO PROX] year=2025 day=Winter | V max=0.006733 | PF max=0.078193 | ESS max=0.000000
+    [RECOURSE COMPONENTS] gen=-2.101094e+05 | flex=+0.000000e+00 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+1.457427e-07 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+1.457427e-07 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+0.000000e+00 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+1.457427e-07 | objective_slack_delta=+1.457427e-07 | mismatch=+5.329071e-15
+    [RECOURSE COMPONENT CHECK] classified_delta=-2.101094e+05 | block_delta=-2.101094e+05 | mismatch=-2.267770e-07
+  DSO node=9 year=2025 day=Winter | previous=1.879434e+06 | current=1.943744e+06 | delta=+6.431022e+04 | abs_delta=6.431022e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+6.047920e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+6.071408e-05 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+8.151740e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+5.256234e-05 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+6.071408e-05 | objective_slack_delta=+6.071408e-05 | mismatch=+6.394885e-14
+    [RECOURSE COMPONENT CHECK] classified_delta=+6.047920e+04 | block_delta=+6.431022e+04 | mismatch=-3.831012e+03
+  DSO node=5 year=2025 day=Winter | previous=1.703522e+06 | current=1.761829e+06 | delta=+5.830712e+04 | abs_delta=5.830712e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+5.509532e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+7.574982e-05 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+4.236168e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+7.151366e-05 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+7.574982e-05 | objective_slack_delta=+7.574982e-05 | mismatch=+2.735590e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=+5.509532e+04 | block_delta=+5.830712e+04 | mismatch=-3.211802e+03
+  SALVAGE node=None year=None day=None | previous=7.039033e-35 | current=7.039033e-35 | delta=+0.000000e+00 | abs_delta=0.000000e+00
+[INFO]		 - Recourse stationarity failed. 349109.642946 > 7986.970300
+[ADMM RHO] V | primal max ratio=0.408 | primal mean ratio=0.275 | primal selected=0.408 | dual mean ratio=0.007 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=5.877099e-03 | s=6.636269e-04 | eps_pri=9.951694e-04 | eps_dual=8.492154e-05 | primal_ratio=5.905626e+00 | dual_ratio=7.814589e+00 | dual_ratio_balance=7.814589e+00 | rho_before=2.598750e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.749 | primal mean ratio=0.327 | primal selected=0.749 | dual mean ratio=0.020 | increase threshold=5.0 | decrease threshold=3.0 | action=held
+[ADMM RHO BOYD] PF | r=1.214728e-02 | s=6.508926e-03 | eps_pri=3.697023e-04 | eps_dual=1.208347e-04 | primal_ratio=3.285692e+01 | dual_ratio=5.386637e+01 | dual_ratio_balance=5.386637e+01 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=increased
+[ADMM RHO BOYD] ESS | r=6.059767e-25 | s=1.634514e-27 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=2.915507e-21 | dual_ratio=7.864057e-24 | dual_ratio_balance=7.864057e-24 | rho_before=3.375000e-02 | rho_after=5.062500e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[INFO]		 - ADMM cycle 8 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.004078/0.000275 | 0.007491/0.000327 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000198/0.000068 | 0.003073/0.000197 | 0.000000/0.000000 | Recourse change = 349109.642946 (tol. 7986.970300) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held/increased
+[INFO] 	 - Iteration 8: 20.19 s
+[INFO] 	 - ADMM Iteration 9
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=9 | updated_blocks=1 | held_failed_blocks=0 | V max=0.004929 | PF max=0.059235 | ESS max=0.000000
+[TSO PROX][V MAX] node=9, year=2025, day=Winter, period=5 | dV=1.700602 kV | normalized=0.004929
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=11, type=P | delta=5.923483 MW | normalized=0.059235
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[RECOURSE JUMP] cycle=9 | abs_change=5.692237e+04 | tol=7.952059e+03 | signed_change=-5.692237e+04
+[RECOURSE JUMP] Reconciliation | previous=7.952059e+07 | current=7.946367e+07 | block_delta=-5.692237e+04 | mismatch=-1.490116e-08
+[RECOURSE JUMP] Aggregate signed changes:
+  DSO node=7 | delta=-1.722491e+05
+  DSO node=9 | delta=+6.271444e+04
+  DSO node=5 | delta=+4.108894e+04
+  TSO | delta=+1.152336e+04
+  SALVAGE | delta=+0.000000e+00
+[RECOURSE JUMP] Largest 5 block changes:
+  DSO node=7 year=2025 day=Winter | previous=2.146491e+06 | current=1.974242e+06 | delta=-1.722491e+05 | abs_delta=1.722491e+05
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-1.798544e+05 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-6.988846e-06 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-1.709101e-05 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+1.010216e-05 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-6.988845e-06 | objective_slack_delta=-6.988846e-06 | mismatch=+7.531753e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-1.798544e+05 | block_delta=-1.722491e+05 | mismatch=-7.605326e+03
+  DSO node=9 year=2025 day=Winter | previous=1.943744e+06 | current=2.006459e+06 | delta=+6.271444e+04 | abs_delta=6.271444e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+6.060829e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+2.556262e-05 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+8.837716e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+1.672490e-05 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+2.556262e-05 | objective_slack_delta=+2.556262e-05 | mismatch=+1.019629e-12
+    [RECOURSE COMPONENT CHECK] classified_delta=+6.060829e+04 | block_delta=+6.271444e+04 | mismatch=-2.106155e+03
+  DSO node=5 year=2025 day=Winter | previous=1.761829e+06 | current=1.802918e+06 | delta=+4.108894e+04 | abs_delta=4.108894e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+4.014459e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+4.004194e-05 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+3.768408e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+3.627353e-05 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+4.004194e-05 | objective_slack_delta=+4.004194e-05 | mismatch=-6.430412e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=+4.014459e+04 | block_delta=+4.108894e+04 | mismatch=-9.443433e+02
+  TSO node=None year=2025 day=Winter | previous=7.366853e+07 | current=7.368005e+07 | delta=+1.152336e+04 | abs_delta=1.152336e+04
+    [RECOURSE JUMP][TSO PROX] year=2025 day=Winter | V max=0.004929 | PF max=0.059235 | ESS max=0.000000
+    [RECOURSE COMPONENTS] gen=+1.131535e+04 | flex=+0.000000e+00 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+2.080097e+02 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+2.080097e+02 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+0.000000e+00 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+2.080097e+02 | objective_slack_delta=+2.080097e+02 | mismatch=-2.842171e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=+1.152336e+04 | block_delta=+1.152336e+04 | mismatch=-1.880690e-07
+  SALVAGE node=None year=None day=None | previous=7.039033e-35 | current=7.039033e-35 | delta=+0.000000e+00 | abs_delta=0.000000e+00
+[INFO]		 - Recourse stationarity failed. 56922.369547 > 7952.059336
+[ADMM RHO] V | primal max ratio=0.507 | primal mean ratio=0.376 | primal selected=0.507 | dual mean ratio=0.006 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=8.467657e-03 | s=5.465935e-04 | eps_pri=9.970206e-04 | eps_dual=8.491350e-05 | primal_ratio=8.492961e+00 | dual_ratio=6.437062e+00 | dual_ratio_balance=6.437062e+00 | rho_before=2.598750e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.707 | primal mean ratio=0.275 | primal selected=0.707 | dual mean ratio=0.015 | increase threshold=5.0 | decrease threshold=3.0 | action=held
+[ADMM RHO BOYD] PF | r=1.071650e-02 | s=5.300191e-03 | eps_pri=3.677587e-04 | eps_dual=1.208130e-04 | primal_ratio=2.914002e+01 | dual_ratio=4.387105e+01 | dual_ratio_balance=4.387105e+01 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=increased
+[ADMM RHO BOYD] ESS | r=2.903360e-25 | s=3.167511e-26 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=1.396880e-21 | dual_ratio=1.523969e-22 | dual_ratio_balance=1.523969e-22 | rho_before=5.062500e-02 | rho_after=7.593750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[INFO]		 - ADMM cycle 9 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.005066/0.000376 | 0.007074/0.000275 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000181/0.000056 | 0.002317/0.000149 | 0.000000/0.000000 | Recourse change = 56922.369547 (tol. 7952.059336) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held/increased
+[INFO] 	 - Iteration 9: 19.62 s
+[INFO] 	 - ADMM Iteration 10
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=10 | updated_blocks=1 | held_failed_blocks=0 | V max=0.004629 | PF max=0.047557 | ESS max=0.000000
+[TSO PROX][V MAX] node=9, year=2025, day=Winter, period=2 | dV=1.597163 kV | normalized=0.004629
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=12, type=P | delta=4.755707 MW | normalized=0.047557
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[RECOURSE JUMP] cycle=10 | abs_change=4.906127e+04 | tol=7.951273e+03 | signed_change=+4.906127e+04
+[RECOURSE JUMP] Reconciliation | previous=7.946367e+07 | current=7.951273e+07 | block_delta=+4.906127e+04 | mismatch=+2.980232e-08
+[RECOURSE JUMP] Aggregate signed changes:
+  DSO node=7 | delta=-9.382719e+04
+  TSO | delta=+7.074328e+04
+  DSO node=9 | delta=+4.815006e+04
+  DSO node=5 | delta=+2.399512e+04
+  SALVAGE | delta=+0.000000e+00
+[RECOURSE JUMP] Largest 5 block changes:
+  DSO node=7 year=2025 day=Winter | previous=1.974242e+06 | current=1.880414e+06 | delta=-9.382719e+04 | abs_delta=9.382719e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-1.005670e+05 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-1.115977e-04 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-8.618882e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-1.029788e-04 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-1.115977e-04 | objective_slack_delta=-1.115977e-04 | mismatch=-8.775203e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-1.005670e+05 | block_delta=-9.382719e+04 | mismatch=-6.739773e+03
+  TSO node=None year=2025 day=Winter | previous=7.368005e+07 | current=7.375080e+07 | delta=+7.074328e+04 | abs_delta=7.074328e+04
+    [RECOURSE JUMP][TSO PROX] year=2025 day=Winter | V max=0.004629 | PF max=0.047557 | ESS max=0.000000
+    [RECOURSE COMPONENTS] gen=+7.074328e+04 | flex=+0.000000e+00 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+3.116146e-06 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+3.116146e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+0.000000e+00 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+3.116146e-06 | objective_slack_delta=+3.116146e-06 | mismatch=+2.842171e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=+7.074328e+04 | block_delta=+7.074328e+04 | mismatch=+1.955195e-07
+  DSO node=9 year=2025 day=Winter | previous=2.006459e+06 | current=2.054609e+06 | delta=+4.815006e+04 | abs_delta=4.815006e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+4.690070e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+1.026249e-05 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+7.669714e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+2.592780e-06 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+1.026249e-05 | objective_slack_delta=+1.026249e-05 | mismatch=-3.552714e-15
+    [RECOURSE COMPONENT CHECK] classified_delta=+4.690070e+04 | block_delta=+4.815006e+04 | mismatch=-1.249362e+03
+  DSO node=5 year=2025 day=Winter | previous=1.802918e+06 | current=1.826913e+06 | delta=+2.399512e+04 | abs_delta=2.399512e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+2.412559e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+1.584363e-05 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+2.728750e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+1.311488e-05 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+1.584363e-05 | objective_slack_delta=+1.584363e-05 | mismatch=+2.451372e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=+2.412559e+04 | block_delta=+2.399512e+04 | mismatch=+1.304651e+02
+  SALVAGE node=None year=None day=None | previous=7.039033e-35 | current=7.039033e-35 | delta=+0.000000e+00 | abs_delta=0.000000e+00
+[INFO]		 - Recourse stationarity failed. 49061.271870 > 7951.273226
+[ADMM RHO] V | primal max ratio=0.431 | primal mean ratio=0.255 | primal selected=0.431 | dual mean ratio=0.005 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=6.459099e-03 | s=4.808890e-04 | eps_pri=9.983593e-04 | eps_dual=8.490915e-05 | primal_ratio=6.469714e+00 | dual_ratio=5.663572e+00 | dual_ratio_balance=5.663572e+00 | rho_before=2.598750e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.511 | primal mean ratio=0.188 | primal selected=0.511 | dual mean ratio=0.010 | increase threshold=5.0 | decrease threshold=3.0 | action=held
+[ADMM RHO BOYD] PF | r=7.393827e-03 | s=3.970885e-03 | eps_pri=3.667731e-04 | eps_dual=1.208020e-04 | primal_ratio=2.015913e+01 | dual_ratio=3.287102e+01 | dual_ratio_balance=3.287102e+01 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=increased
+[ADMM RHO BOYD] ESS | r=5.692530e-25 | s=4.183192e-26 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=2.738820e-21 | dual_ratio=2.012639e-22 | dual_ratio_balance=2.012639e-22 | rho_before=7.593750e-02 | rho_after=1.139063e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[INFO]		 - ADMM cycle 10 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.004309/0.000255 | 0.005112/0.000188 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000120/0.000049 | 0.001860/0.000103 | 0.000000/0.000000 | Recourse change = 49061.271870 (tol. 7951.273226) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held/increased
+[INFO] 	 - Iteration 10: 19.68 s
+[INFO] 	 - ADMM Iteration 11
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=11 | updated_blocks=1 | held_failed_blocks=0 | V max=0.004514 | PF max=0.037352 | ESS max=0.000000
+[TSO PROX][V MAX] node=9, year=2025, day=Winter, period=2 | dV=1.557162 kV | normalized=0.004514
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=12, type=P | delta=3.735214 MW | normalized=0.037352
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.091 | primal mean ratio=0.103 | primal selected=0.103 | dual mean ratio=0.005 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=1.588786e-03 | s=4.654410e-04 | eps_pri=9.995897e-04 | eps_dual=8.490782e-05 | primal_ratio=1.589438e+00 | dual_ratio=5.481721e+00 | dual_ratio_balance=5.481721e+00 | rho_before=2.598750e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.396 | primal mean ratio=0.149 | primal selected=0.396 | dual mean ratio=0.008 | increase threshold=5.0 | decrease threshold=3.0 | action=held
+[ADMM RHO BOYD] PF | r=5.830808e-03 | s=3.258020e-03 | eps_pri=3.662075e-04 | eps_dual=1.207948e-04 | primal_ratio=1.592214e+01 | dual_ratio=2.697152e+01 | dual_ratio_balance=2.697152e+01 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=1.245390e-25 | s=5.378725e-26 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=5.991886e-22 | dual_ratio=2.587840e-22 | dual_ratio_balance=2.587840e-22 | rho_before=1.139063e-01 | rho_after=1.139063e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 11 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.000907/0.000103 | 0.003957/0.000149 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000117/0.000045 | 0.001461/0.000078 | 0.000000/0.000000 | Recourse change = 2173.731701 (tol. 7951.490599) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held/held
+[INFO] 	 - Iteration 11: 19.84 s
+[INFO] 	 - ADMM Iteration 12
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=12 | updated_blocks=1 | held_failed_blocks=0 | V max=0.004401 | PF max=0.032507 | ESS max=0.000000
+[TSO PROX][V MAX] node=9, year=2025, day=Winter, period=2 | dV=1.518352 kV | normalized=0.004401
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=4, type=P | delta=3.250713 MW | normalized=0.032507
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.050 | primal mean ratio=0.067 | primal selected=0.067 | dual mean ratio=0.004 | increase threshold=5.0 | decrease threshold=5.0 | action=decreased
+[ADMM RHO BOYD] V | r=8.954290e-04 | s=4.527318e-04 | eps_pri=1.000858e-03 | eps_dual=8.490671e-05 | primal_ratio=8.946610e-01 | dual_ratio=5.332109e+00 | dual_ratio_balance=5.332109e+00 | rho_before=2.598750e-02 | rho_after=1.732500e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=decreased
+[ADMM RHO] PF | primal max ratio=0.298 | primal mean ratio=0.122 | primal selected=0.298 | dual mean ratio=0.006 | increase threshold=5.0 | decrease threshold=3.0 | action=held
+[ADMM RHO BOYD] PF | r=4.526671e-03 | s=2.796952e-03 | eps_pri=3.659469e-04 | eps_dual=1.207907e-04 | primal_ratio=1.236975e+01 | dual_ratio=2.315536e+01 | dual_ratio_balance=2.315536e+01 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=increased
+[ADMM RHO BOYD] ESS | r=1.079804e-24 | s=8.285161e-26 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=5.195207e-21 | dual_ratio=3.986200e-22 | dual_ratio_balance=3.986200e-22 | rho_before=1.139063e-01 | rho_after=1.708594e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[INFO]		 - ADMM cycle 12 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.000496/0.000067 | 0.002979/0.000122 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000114/0.000042 | 0.001271/0.000063 | 0.000000/0.000000 | Recourse change = 7430.874070 (tol. 7952.233687) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = decreased/held/increased
+[INFO] 	 - Iteration 12: 19.62 s
+[INFO] 	 - ADMM Iteration 13
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=13 | updated_blocks=1 | held_failed_blocks=0 | V max=0.015454 | PF max=0.142155 | ESS max=0.000000
+[TSO PROX][V MAX] node=9, year=2025, day=Winter, period=23 | dV=5.331513 kV | normalized=0.015454
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=14, type=P | delta=14.215530 MW | normalized=0.142155
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[RECOURSE JUMP] cycle=13 | abs_change=4.111346e+05 | tol=7.993347e+03 | signed_change=+4.111346e+05
+[RECOURSE JUMP] Reconciliation | previous=7.952234e+07 | current=7.993347e+07 | block_delta=+4.111346e+05 | mismatch=-2.980232e-08
+[RECOURSE JUMP] Aggregate signed changes:
+  TSO | delta=+2.369279e+05
+  DSO node=7 | delta=+8.492598e+04
+  DSO node=9 | delta=+7.071231e+04
+  DSO node=5 | delta=+1.856843e+04
+  SALVAGE | delta=+0.000000e+00
+[RECOURSE JUMP] Largest 5 block changes:
+  TSO node=None year=2025 day=Winter | previous=7.374898e+07 | current=7.398591e+07 | delta=+2.369279e+05 | abs_delta=2.369279e+05
+    [RECOURSE JUMP][TSO PROX] year=2025 day=Winter | V max=0.015454 | PF max=0.142155 | ESS max=0.000000
+    [RECOURSE COMPONENTS] gen=+2.369279e+05 | flex=+0.000000e+00 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+2.003696e-05 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+2.003696e-05 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+0.000000e+00 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+2.003696e-05 | objective_slack_delta=+2.003696e-05 | mismatch=-2.273737e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=+2.369279e+05 | block_delta=+2.369279e+05 | mismatch=+2.035231e-07
+  DSO node=7 year=2025 day=Winter | previous=1.819959e+06 | current=1.904885e+06 | delta=+8.492598e+04 | abs_delta=8.492598e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+7.471281e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-9.892321e-04 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+1.257013e-05 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-1.001802e-03 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-9.892321e-04 | objective_slack_delta=-9.892321e-04 | mismatch=-1.261213e-12
+    [RECOURSE COMPONENT CHECK] classified_delta=+7.471281e+04 | block_delta=+8.492598e+04 | mismatch=-1.021317e+04
+  DSO node=9 year=2025 day=Winter | previous=2.107427e+06 | current=2.178139e+06 | delta=+7.071231e+04 | abs_delta=7.071231e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+6.935675e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+4.370686e-06 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+1.459823e-05 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-1.022754e-05 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+4.370685e-06 | objective_slack_delta=+4.370686e-06 | mismatch=-3.019807e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=+6.935675e+04 | block_delta=+7.071231e+04 | mismatch=-1.355555e+03
+  DSO node=5 year=2025 day=Winter | previous=1.845972e+06 | current=1.864541e+06 | delta=+1.856843e+04 | abs_delta=1.856843e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+2.080826e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+5.443141e-06 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+3.335073e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+2.108068e-06 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+5.443142e-06 | objective_slack_delta=+5.443141e-06 | mismatch=+8.135714e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=+2.080826e+04 | block_delta=+1.856843e+04 | mismatch=+2.239836e+03
+  SALVAGE node=None year=None day=None | previous=7.039033e-35 | current=7.039033e-35 | delta=+0.000000e+00 | abs_delta=0.000000e+00
+[INFO]		 - Recourse stationarity failed. 411134.642609 > 7993.347151
+[ADMM RHO] V | primal max ratio=0.969 | primal mean ratio=0.951 | primal selected=0.969 | dual mean ratio=0.008 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=1.792275e-02 | s=4.504306e-04 | eps_pri=1.006479e-03 | eps_dual=8.489663e-05 | primal_ratio=1.780738e+01 | dual_ratio=5.305636e+00 | dual_ratio_balance=5.305636e+00 | rho_before=1.732500e-02 | rho_after=1.732500e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.606 | primal mean ratio=0.403 | primal selected=0.606 | dual mean ratio=0.016 | increase threshold=5.0 | decrease threshold=3.0 | action=held
+[ADMM RHO BOYD] PF | r=1.444376e-02 | s=6.267191e-03 | eps_pri=3.676364e-04 | eps_dual=1.208091e-04 | primal_ratio=3.928817e+01 | dual_ratio=5.187681e+01 | dual_ratio_balance=5.187681e+01 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=decreased
+[ADMM RHO BOYD] ESS | r=8.769148e-26 | s=6.195630e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=4.219058e-22 | dual_ratio=2.980874e-21 | dual_ratio_balance=2.980874e-21 | rho_before=1.708594e-01 | rho_after=1.139063e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=decreased
+[INFO]		 - ADMM cycle 13 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.009688/0.000951 | 0.006058/0.000403 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000402/0.000080 | 0.005557/0.000158 | 0.000000/0.000000 | Recourse change = 411134.642609 (tol. 7993.347151) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held/decreased
+[INFO] 	 - Iteration 13: 19.98 s
+[INFO] 	 - ADMM Iteration 14
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=14 | updated_blocks=1 | held_failed_blocks=0 | V max=0.003832 | PF max=0.014704 | ESS max=0.000000
+[TSO PROX][V MAX] node=9, year=2025, day=Winter, period=23 | dV=1.322041 kV | normalized=0.003832
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=2, type=P | delta=1.470393 MW | normalized=0.014704
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[RECOURSE JUMP] cycle=14 | abs_change=2.565882e+05 | tol=7.993347e+03 | signed_change=-2.565882e+05
+[RECOURSE JUMP] Reconciliation | previous=7.993347e+07 | current=7.967688e+07 | block_delta=-2.565882e+05 | mismatch=+2.980232e-08
+[RECOURSE JUMP] Aggregate signed changes:
+  TSO | delta=-1.943807e+05
+  DSO node=5 | delta=-3.127886e+04
+  DSO node=9 | delta=-3.000151e+04
+  DSO node=7 | delta=-9.270981e+02
+  SALVAGE | delta=+0.000000e+00
+[RECOURSE JUMP] Largest 5 block changes:
+  TSO node=None year=2025 day=Winter | previous=7.398591e+07 | current=7.379153e+07 | delta=-1.943807e+05 | abs_delta=1.943807e+05
+    [RECOURSE JUMP][TSO PROX] year=2025 day=Winter | V max=0.003832 | PF max=0.014704 | ESS max=0.000000
+    [RECOURSE COMPONENTS] gen=-1.943807e+05 | flex=+0.000000e+00 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+3.306084e-06 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+3.306083e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+0.000000e+00 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+3.306083e-06 | objective_slack_delta=+3.306084e-06 | mismatch=-4.547474e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-1.943807e+05 | block_delta=-1.943807e+05 | mismatch=+4.272442e-08
+  DSO node=5 year=2025 day=Winter | previous=1.864541e+06 | current=1.833262e+06 | delta=-3.127886e+04 | abs_delta=3.127886e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-3.123081e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-5.868926e-05 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-3.159660e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-5.552960e-05 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-5.868926e-05 | objective_slack_delta=-5.868926e-05 | mismatch=-9.343637e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-3.123081e+04 | block_delta=-3.127886e+04 | mismatch=+4.804245e+01
+  DSO node=9 year=2025 day=Winter | previous=2.178139e+06 | current=2.148137e+06 | delta=-3.000151e+04 | abs_delta=3.000151e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-3.004772e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-5.168838e-05 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-4.416514e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-4.727187e-05 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-5.168838e-05 | objective_slack_delta=-5.168838e-05 | mismatch=-2.380318e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-3.004772e+04 | block_delta=-3.000151e+04 | mismatch=-4.621597e+01
+  DSO node=7 year=2025 day=Winter | previous=1.904885e+06 | current=1.903958e+06 | delta=-9.270981e+02 | abs_delta=9.270981e+02
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-1.602300e+03 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+5.824245e-04 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-8.334668e-07 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+5.832580e-04 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+5.824245e-04 | objective_slack_delta=+5.824245e-04 | mismatch=-3.943512e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-1.602299e+03 | block_delta=-9.270981e+02 | mismatch=-6.752014e+02
+  SALVAGE node=None year=None day=None | previous=7.039033e-35 | current=7.039033e-35 | delta=+0.000000e+00 | abs_delta=0.000000e+00
+[INFO]		 - Recourse stationarity failed. 256588.195144 > 7993.347151
+[ADMM RHO] V | primal max ratio=0.342 | primal mean ratio=0.386 | primal selected=0.386 | dual mean ratio=0.003 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=6.435516e-03 | s=2.184853e-04 | eps_pri=1.006685e-03 | eps_dual=8.489376e-05 | primal_ratio=6.392780e+00 | dual_ratio=2.573632e+00 | dual_ratio_balance=2.573632e+00 | rho_before=1.732500e-02 | rho_after=1.732500e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.344 | primal mean ratio=0.135 | primal selected=0.344 | dual mean ratio=0.002 | increase threshold=5.0 | decrease threshold=3.0 | action=held
+[ADMM RHO BOYD] PF | r=5.324989e-03 | s=7.928443e-04 | eps_pri=3.673376e-04 | eps_dual=1.208182e-04 | primal_ratio=1.449617e+01 | dual_ratio=6.562291e+00 | dual_ratio_balance=6.562291e+00 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=increased
+[ADMM RHO BOYD] ESS | r=7.243275e-25 | s=5.880085e-26 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=3.484922e-21 | dual_ratio=2.829057e-22 | dual_ratio_balance=2.829057e-22 | rho_before=1.139063e-01 | rho_after=1.708594e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[INFO]		 - ADMM cycle 14 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.003418/0.000386 | 0.003439/0.000135 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000233/0.000025 | 0.000575/0.000023 | 0.000000/0.000000 | Recourse change = 256588.195144 (tol. 7993.347151) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held/increased
+[INFO] 	 - Iteration 14: 18.49 s
+[INFO] 	 - ADMM Iteration 15
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=15 | updated_blocks=1 | held_failed_blocks=0 | V max=0.003297 | PF max=0.013066 | ESS max=0.000000
+[TSO PROX][V MAX] node=9, year=2025, day=Winter, period=23 | dV=1.137621 kV | normalized=0.003297
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=2, type=P | delta=1.306579 MW | normalized=0.013066
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[RECOURSE JUMP] cycle=15 | abs_change=1.021522e+05 | tol=7.967688e+03 | signed_change=-1.021522e+05
+[RECOURSE JUMP] Reconciliation | previous=7.967688e+07 | current=7.957473e+07 | block_delta=-1.021522e+05 | mismatch=+0.000000e+00
+[RECOURSE JUMP] Aggregate signed changes:
+  TSO | delta=-8.165458e+04
+  DSO node=9 | delta=-1.301911e+04
+  DSO node=5 | delta=-1.164167e+04
+  DSO node=7 | delta=+4.163182e+03
+  SALVAGE | delta=+0.000000e+00
+[RECOURSE JUMP] Largest 5 block changes:
+  TSO node=None year=2025 day=Winter | previous=7.379153e+07 | current=7.370987e+07 | delta=-8.165458e+04 | abs_delta=8.165458e+04
+    [RECOURSE JUMP][TSO PROX] year=2025 day=Winter | V max=0.003297 | PF max=0.013066 | ESS max=0.000000
+    [RECOURSE COMPONENTS] gen=-8.165458e+04 | flex=+0.000000e+00 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+2.334679e-06 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+2.334680e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+0.000000e+00 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+2.334680e-06 | objective_slack_delta=+2.334679e-06 | mismatch=+2.842171e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-8.165458e+04 | block_delta=-8.165458e+04 | mismatch=-4.220346e-07
+  DSO node=9 year=2025 day=Winter | previous=2.148137e+06 | current=2.135118e+06 | delta=-1.301911e+04 | abs_delta=1.301911e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-1.303053e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+1.062055e-05 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-1.913442e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+1.253399e-05 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+1.062055e-05 | objective_slack_delta=+1.062055e-05 | mismatch=+4.867218e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-1.303053e+04 | block_delta=-1.301911e+04 | mismatch=-1.141207e+01
+  DSO node=5 year=2025 day=Winter | previous=1.833262e+06 | current=1.821620e+06 | delta=-1.164167e+04 | abs_delta=1.164167e+04
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-1.156267e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+9.158284e-06 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-7.869704e-07 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+9.945255e-06 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+9.158285e-06 | objective_slack_delta=+9.158284e-06 | mismatch=+9.663381e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-1.156267e+04 | block_delta=-1.164167e+04 | mismatch=+7.900210e+01
+  DSO node=7 year=2025 day=Winter | previous=1.903958e+06 | current=1.908121e+06 | delta=+4.163182e+03 | abs_delta=4.163182e+03
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+3.686060e+03 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+3.085473e-05 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+6.625496e-07 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+3.019218e-05 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+3.085473e-05 | objective_slack_delta=+3.085473e-05 | mismatch=+1.065814e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=+3.686060e+03 | block_delta=+4.163182e+03 | mismatch=-4.771221e+02
+  SALVAGE node=None year=None day=None | previous=7.039033e-35 | current=7.039033e-35 | delta=+0.000000e+00 | abs_delta=0.000000e+00
+[INFO]		 - Recourse stationarity failed. 102152.184738 > 7967.688332
+[ADMM RHO] V | primal max ratio=0.161 | primal mean ratio=0.167 | primal selected=0.167 | dual mean ratio=0.002 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=2.967164e-03 | s=1.867804e-04 | eps_pri=1.007393e-03 | eps_dual=8.489235e-05 | primal_ratio=2.945390e+00 | dual_ratio=2.200203e+00 | dual_ratio_balance=2.200203e+00 | rho_before=1.732500e-02 | rho_after=1.732500e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.197 | primal mean ratio=0.060 | primal selected=0.197 | dual mean ratio=0.001 | increase threshold=5.0 | decrease threshold=3.0 | action=held
+[ADMM RHO BOYD] PF | r=2.683575e-03 | s=6.733935e-04 | eps_pri=3.672560e-04 | eps_dual=1.208202e-04 | primal_ratio=7.307098e+00 | dual_ratio=5.573518e+00 | dual_ratio_balance=5.573518e+00 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=1.022833e-24 | s=2.108402e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=4.921108e-21 | dual_ratio=1.014405e-21 | dual_ratio_balance=1.014405e-21 | rho_before=1.708594e-01 | rho_after=1.708594e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 15 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.001615/0.000167 | 0.001972/0.000060 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000064/0.000016 | 0.000511/0.000015 | 0.000000/0.000000 | Recourse change = 102152.184738 (tol. 7967.688332) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held/held
+[INFO] 	 - Iteration 15: 19.42 s
+[INFO] 	 - ADMM Iteration 16
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=16 | updated_blocks=1 | held_failed_blocks=0 | V max=0.003004 | PF max=0.011967 | ESS max=0.000000
+[TSO PROX][V MAX] node=9, year=2025, day=Winter, period=0 | dV=1.036290 kV | normalized=0.003004
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=2, type=P | delta=1.196701 MW | normalized=0.011967
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[RECOURSE JUMP] cycle=16 | abs_change=3.665846e+04 | tol=7.957473e+03 | signed_change=-3.665846e+04
+[RECOURSE JUMP] Reconciliation | previous=7.957473e+07 | current=7.953807e+07 | block_delta=-3.665846e+04 | mismatch=+0.000000e+00
+[RECOURSE JUMP] Aggregate signed changes:
+  TSO | delta=-3.117426e+04
+  DSO node=9 | delta=-6.169798e+03
+  DSO node=7 | delta=+4.199333e+03
+  DSO node=5 | delta=-3.513736e+03
+  SALVAGE | delta=+0.000000e+00
+[RECOURSE JUMP] Largest 5 block changes:
+  TSO node=None year=2025 day=Winter | previous=7.370987e+07 | current=7.367870e+07 | delta=-3.117426e+04 | abs_delta=3.117426e+04
+    [RECOURSE JUMP][TSO PROX] year=2025 day=Winter | V max=0.003004 | PF max=0.011967 | ESS max=0.000000
+    [RECOURSE COMPONENTS] gen=-3.096625e+04 | flex=+0.000000e+00 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-2.080097e+02 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-2.080097e+02 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+0.000000e+00 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-2.080097e+02 | objective_slack_delta=-2.080097e+02 | mismatch=+1.136868e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-3.117426e+04 | block_delta=-3.117426e+04 | mismatch=+1.464250e-07
+  DSO node=9 year=2025 day=Winter | previous=2.135118e+06 | current=2.128949e+06 | delta=-6.169798e+03 | abs_delta=6.169798e+03
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-6.182008e+03 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+5.720553e-06 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-1.162664e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+6.883215e-06 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+5.720551e-06 | objective_slack_delta=+5.720553e-06 | mismatch=-1.310951e-12
+    [RECOURSE COMPONENT CHECK] classified_delta=-6.182008e+03 | block_delta=-6.169798e+03 | mismatch=-1.221031e+01
+  DSO node=7 year=2025 day=Winter | previous=1.908121e+06 | current=1.912321e+06 | delta=+4.199333e+03 | abs_delta=4.199333e+03
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+3.797712e+03 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+6.782111e-06 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+5.155410e-07 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+6.266570e-06 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+6.782111e-06 | objective_slack_delta=+6.782111e-06 | mismatch=+2.842171e-14
+    [RECOURSE COMPONENT CHECK] classified_delta=+3.797712e+03 | block_delta=+4.199333e+03 | mismatch=-4.016214e+02
+  DSO node=5 year=2025 day=Winter | previous=1.821620e+06 | current=1.818107e+06 | delta=-3.513736e+03 | abs_delta=3.513736e+03
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-3.574451e+03 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+6.699091e-06 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-3.040658e-07 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+7.003157e-06 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+6.699091e-06 | objective_slack_delta=+6.699091e-06 | mismatch=-2.913225e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-3.574451e+03 | block_delta=-3.513736e+03 | mismatch=-6.071468e+01
+  SALVAGE node=None year=None day=None | previous=7.039033e-35 | current=7.039033e-35 | delta=+0.000000e+00 | abs_delta=0.000000e+00
+[INFO]		 - Recourse stationarity failed. 36658.457771 > 7957.473113
+[ADMM RHO] V | primal max ratio=0.264 | primal mean ratio=0.150 | primal selected=0.264 | dual mean ratio=0.001 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=3.895089e-03 | s=1.586750e-04 | eps_pri=1.007856e-03 | eps_dual=8.489156e-05 | primal_ratio=3.864728e+00 | dual_ratio=1.869149e+00 | dual_ratio_balance=1.869149e+00 | rho_before=1.732500e-02 | rho_after=1.732500e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.110 | primal mean ratio=0.043 | primal selected=0.110 | dual mean ratio=0.001 | increase threshold=5.0 | decrease threshold=3.0 | action=held
+[ADMM RHO BOYD] PF | r=1.630328e-03 | s=5.995600e-04 | eps_pri=3.672709e-04 | eps_dual=1.208203e-04 | primal_ratio=4.439033e+00 | dual_ratio=4.962412e+00 | dual_ratio_balance=4.962412e+00 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=2.251965e-25 | s=1.502702e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=1.083477e-21 | dual_ratio=7.229878e-22 | dual_ratio_balance=7.229878e-22 | rho_before=1.708594e-01 | rho_after=1.708594e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 16 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.002638/0.000150 | 0.001096/0.000043 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000052/0.000012 | 0.000468/0.000011 | 0.000000/0.000000 | Recourse change = 36658.457771 (tol. 7957.473113) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held/held
+[INFO] 	 - Iteration 16: 19.12 s
+[INFO] 	 - ADMM Iteration 17
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=17 | updated_blocks=1 | held_failed_blocks=0 | V max=0.004383 | PF max=0.016505 | ESS max=0.000000
+[TSO PROX][V MAX] node=9, year=2025, day=Winter, period=0 | dV=1.512073 kV | normalized=0.004383
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=2, type=P | delta=1.650473 MW | normalized=0.016505
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[RECOURSE JUMP] cycle=17 | abs_change=1.267697e+04 | tol=7.953807e+03 | signed_change=-1.267697e+04
+[RECOURSE JUMP] Reconciliation | previous=7.953807e+07 | current=7.952540e+07 | block_delta=-1.267697e+04 | mismatch=-1.490116e-08
+[RECOURSE JUMP] Aggregate signed changes:
+  TSO | delta=-1.204526e+04
+  DSO node=7 | delta=+5.554068e+03
+  DSO node=9 | delta=-5.033945e+03
+  DSO node=5 | delta=-1.151825e+03
+  SALVAGE | delta=+0.000000e+00
+[RECOURSE JUMP] Largest 5 block changes:
+  TSO node=None year=2025 day=Winter | previous=7.367870e+07 | current=7.366665e+07 | delta=-1.204526e+04 | abs_delta=1.204526e+04
+    [RECOURSE JUMP][TSO PROX] year=2025 day=Winter | V max=0.004383 | PF max=0.016505 | ESS max=0.000000
+    [RECOURSE COMPONENTS] gen=-1.225327e+04 | flex=+0.000000e+00 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+2.080097e+02 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+2.080097e+02 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+0.000000e+00 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+2.080097e+02 | objective_slack_delta=+2.080097e+02 | mismatch=+3.126388e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-1.204526e+04 | block_delta=-1.204526e+04 | mismatch=+1.835870e-07
+  DSO node=7 year=2025 day=Winter | previous=1.912321e+06 | current=1.917875e+06 | delta=+5.554068e+03 | abs_delta=5.554068e+03
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+5.060735e+03 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+5.386859e-06 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+8.237845e-07 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+4.563075e-06 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+5.386860e-06 | objective_slack_delta=+5.386859e-06 | mismatch=+9.023893e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=+5.060735e+03 | block_delta=+5.554068e+03 | mismatch=-4.933333e+02
+  DSO node=9 year=2025 day=Winter | previous=2.128949e+06 | current=2.123915e+06 | delta=-5.033945e+03 | abs_delta=5.033945e+03
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-5.014449e+03 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+3.666592e-06 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-1.043798e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+4.710391e-06 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+3.666593e-06 | objective_slack_delta=+3.666592e-06 | mismatch=+6.394885e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-5.014449e+03 | block_delta=-5.033945e+03 | mismatch=+1.949585e+01
+  DSO node=5 year=2025 day=Winter | previous=1.818107e+06 | current=1.816955e+06 | delta=-1.151825e+03 | abs_delta=1.151825e+03
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-1.280032e+03 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+4.509922e-06 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=-1.916574e-07 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+4.701579e-06 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+4.509922e-06 | objective_slack_delta=+4.509922e-06 | mismatch=-1.776357e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-1.280032e+03 | block_delta=-1.151825e+03 | mismatch=-1.282067e+02
+  SALVAGE node=None year=None day=None | previous=7.039033e-35 | current=7.039033e-35 | delta=+0.000000e+00 | abs_delta=0.000000e+00
+[INFO]		 - Recourse stationarity failed. 12676.965052 > 7953.807267
+[ADMM RHO] V | primal max ratio=0.187 | primal mean ratio=0.189 | primal selected=0.189 | dual mean ratio=0.001 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=2.963941e-03 | s=1.324313e-04 | eps_pri=1.008485e-03 | eps_dual=8.489048e-05 | primal_ratio=2.939005e+00 | dual_ratio=1.560025e+00 | dual_ratio_balance=1.560025e+00 | rho_before=1.732500e-02 | rho_after=1.732500e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.031 | primal mean ratio=0.023 | primal selected=0.031 | dual mean ratio=0.001 | increase threshold=5.0 | decrease threshold=3.0 | action=held
+[ADMM RHO BOYD] PF | r=6.047686e-04 | s=5.051478e-04 | eps_pri=3.673612e-04 | eps_dual=1.208199e-04 | primal_ratio=1.646251e+00 | dual_ratio=4.180999e+00 | dual_ratio_balance=4.180999e+00 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=increased
+[ADMM RHO BOYD] ESS | r=1.033541e-24 | s=2.614676e-26 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=4.972625e-21 | dual_ratio=1.257986e-22 | dual_ratio_balance=1.257986e-22 | rho_before=1.708594e-01 | rho_after=2.562891e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[INFO]		 - ADMM cycle 17 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.001866/0.000189 | 0.000314/0.000023 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000079/0.000013 | 0.000645/0.000011 | 0.000000/0.000000 | Recourse change = 12676.965052 (tol. 7953.807267) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held/increased
+[INFO] 	 - Iteration 17: 19.50 s
+[INFO] 	 - ADMM Iteration 18
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=18 | updated_blocks=1 | held_failed_blocks=0 | V max=0.005624 | PF max=0.019633 | ESS max=0.000000
+[TSO PROX][V MAX] node=9, year=2025, day=Winter, period=0 | dV=1.940229 kV | normalized=0.005624
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=2, type=P | delta=1.963279 MW | normalized=0.019633
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.156 | primal mean ratio=0.181 | primal selected=0.181 | dual mean ratio=0.001 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=3.209500e-03 | s=1.305592e-04 | eps_pri=1.008992e-03 | eps_dual=8.488997e-05 | primal_ratio=3.180896e+00 | dual_ratio=1.537981e+00 | dual_ratio_balance=1.537981e+00 | rho_before=1.732500e-02 | rho_after=1.732500e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.025 | primal mean ratio=0.019 | primal selected=0.025 | dual mean ratio=0.001 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=5.163495e-04 | s=3.957347e-04 | eps_pri=3.675044e-04 | eps_dual=1.208198e-04 | primal_ratio=1.405016e+00 | dual_ratio=3.275412e+00 | dual_ratio_balance=3.275412e+00 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=7.410713e-25 | s=2.079030e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=3.565481e-21 | dual_ratio=1.000274e-21 | dual_ratio_balance=1.000274e-21 | rho_before=2.562891e-01 | rho_after=2.562891e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 18 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.001557/0.000181 | 0.000245/0.000019 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000096/0.000013 | 0.000767/0.000011 | 0.000000/0.000000 | Recourse change = 5235.051777 (tol. 7952.539571) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held (frozen after 10 unchanged cycles)/held
+[INFO] 	 - Iteration 18: 18.14 s
+[INFO] 	 - ADMM Iteration 19
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=19 | updated_blocks=1 | held_failed_blocks=0 | V max=0.002736 | PF max=0.007574 | ESS max=0.000000
+[TSO PROX][V MAX] node=9, year=2025, day=Winter, period=0 | dV=0.944045 kV | normalized=0.002736
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=2, type=P | delta=0.757443 MW | normalized=0.007574
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.143 | primal mean ratio=0.110 | primal selected=0.143 | dual mean ratio=0.001 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=2.109328e-03 | s=1.284043e-04 | eps_pri=1.009363e-03 | eps_dual=8.489002e-05 | primal_ratio=2.089761e+00 | dual_ratio=1.512596e+00 | dual_ratio_balance=1.512596e+00 | rho_before=1.732500e-02 | rho_after=1.732500e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.018 | primal mean ratio=0.015 | primal selected=0.018 | dual mean ratio=0.001 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=4.002702e-04 | s=3.514427e-04 | eps_pri=3.675647e-04 | eps_dual=1.208199e-04 | primal_ratio=1.088979e+00 | dual_ratio=2.908816e+00 | dual_ratio_balance=2.908816e+00 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=9.858011e-25 | s=3.125924e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=4.742938e-21 | dual_ratio=1.503961e-21 | dual_ratio_balance=1.503961e-21 | rho_before=2.562891e-01 | rho_after=2.562891e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 19 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.001426/0.000110 | 0.000182/0.000015 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000047/0.000009 | 0.000296/0.000005 | 0.000000/0.000000 | Recourse change = 1108.580440 (tol. 7952.126924) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held (frozen after 10 unchanged cycles)/held
+[INFO] 	 - Iteration 19: 19.54 s
+[INFO] 	 - ADMM Iteration 20
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=20 | updated_blocks=1 | held_failed_blocks=0 | V max=0.001883 | PF max=0.007131 | ESS max=0.000000
+[TSO PROX][V MAX] node=7, year=2025, day=Winter, period=0 | dV=0.649715 kV | normalized=0.001883
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=2, type=P | delta=0.713139 MW | normalized=0.007131
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.099 | primal mean ratio=0.159 | primal selected=0.159 | dual mean ratio=0.001 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=2.033045e-03 | s=9.665572e-05 | eps_pri=1.009726e-03 | eps_dual=8.488893e-05 | primal_ratio=2.013462e+00 | dual_ratio=1.138614e+00 | dual_ratio_balance=1.138614e+00 | rho_before=1.732500e-02 | rho_after=1.732500e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.015 | primal mean ratio=0.012 | primal selected=0.015 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=3.001641e-04 | s=3.093219e-04 | eps_pri=3.676141e-04 | eps_dual=1.208197e-04 | primal_ratio=8.165195e-01 | dual_ratio=2.560194e+00 | dual_ratio_balance=2.560194e+00 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=9.984029e-25 | s=3.736574e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=4.803568e-21 | dual_ratio=1.797760e-21 | dual_ratio_balance=1.797760e-21 | rho_before=2.562891e-01 | rho_after=2.562891e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 20 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.000993/0.000159 | 0.000146/0.000012 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000050/0.000008 | 0.000279/0.000005 | 0.000000/0.000000 | Recourse change = 120.118886 (tol. 7952.138936) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held (frozen after 10 unchanged cycles)/held
+[INFO] 	 - Iteration 20: 19.20 s
+[INFO] 	 - ADMM Iteration 21
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=21 | updated_blocks=1 | held_failed_blocks=0 | V max=0.003263 | PF max=0.015294 | ESS max=0.000000
+[TSO PROX][V MAX] node=5, year=2025, day=Winter, period=10 | dV=1.125606 kV | normalized=0.003263
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=2, type=P | delta=1.529433 MW | normalized=0.015294
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[RECOURSE JUMP] cycle=21 | abs_change=8.676300e+03 | tol=7.952139e+03 | signed_change=-8.676300e+03
+[RECOURSE JUMP] Reconciliation | previous=7.952139e+07 | current=7.951271e+07 | block_delta=-8.676300e+03 | mismatch=+4.470348e-08
+[RECOURSE JUMP] Aggregate signed changes:
+  TSO | delta=-6.271278e+03
+  DSO node=7 | delta=-8.797087e+02
+  DSO node=9 | delta=-8.245073e+02
+  DSO node=5 | delta=-7.008064e+02
+  SALVAGE | delta=+0.000000e+00
+[RECOURSE JUMP] Largest 5 block changes:
+  TSO node=None year=2025 day=Winter | previous=7.366204e+07 | current=7.365577e+07 | delta=-6.271278e+03 | abs_delta=6.271278e+03
+    [RECOURSE JUMP][TSO PROX] year=2025 day=Winter | V max=0.003263 | PF max=0.015294 | ESS max=0.000000
+    [RECOURSE COMPONENTS] gen=-6.271278e+03 | flex=+0.000000e+00 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+2.458961e-06 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+2.458961e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+0.000000e+00 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+2.458961e-06 | objective_slack_delta=+2.458961e-06 | mismatch=-8.526513e-14
+    [RECOURSE COMPONENT CHECK] classified_delta=-6.271278e+03 | block_delta=-6.271278e+03 | mismatch=-1.463104e-08
+  DSO node=7 year=2025 day=Winter | previous=1.924611e+06 | current=1.923731e+06 | delta=-8.797087e+02 | abs_delta=8.797087e+02
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-8.628664e+02 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+2.269324e-06 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+1.111268e-06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+1.158057e-06 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+2.269325e-06 | objective_slack_delta=+2.269324e-06 | mismatch=+4.298784e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-8.628664e+02 | block_delta=-8.797087e+02 | mismatch=+1.684239e+01
+  DSO node=9 year=2025 day=Winter | previous=2.118838e+06 | current=2.118014e+06 | delta=-8.245073e+02 | abs_delta=8.245073e+02
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-6.808223e+02 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+3.693117e-08 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+4.455904e-08 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-7.628000e-09 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+3.693104e-08 | objective_slack_delta=+3.693117e-08 | mismatch=-1.243450e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-6.808223e+02 | block_delta=-8.245073e+02 | mismatch=+1.436850e+02
+  DSO node=5 year=2025 day=Winter | previous=1.815900e+06 | current=1.815199e+06 | delta=-7.008064e+02 | abs_delta=7.008064e+02
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-5.599337e+02 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+2.347321e-08 | ess_comp=+0.000000e+00
+    [SLACK COMPONENTS] voltage=+5.961539e-08 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-3.614231e-08 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+2.347308e-08 | objective_slack_delta=+2.347321e-08 | mismatch=-1.243450e-13
+    [RECOURSE COMPONENT CHECK] classified_delta=-5.599337e+02 | block_delta=-7.008064e+02 | mismatch=+1.408726e+02
+  SALVAGE node=None year=None day=None | previous=7.039033e-35 | current=7.039033e-35 | delta=+0.000000e+00 | abs_delta=0.000000e+00
+[INFO]		 - Recourse stationarity failed. 8676.300283 > 7952.138936
+[ADMM RHO] V | primal max ratio=0.349 | primal mean ratio=0.249 | primal selected=0.349 | dual mean ratio=0.001 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=5.602501e-03 | s=1.014752e-04 | eps_pri=1.010055e-03 | eps_dual=8.488824e-05 | primal_ratio=5.546726e+00 | dual_ratio=1.195398e+00 | dual_ratio_balance=1.195398e+00 | rho_before=1.732500e-02 | rho_after=1.732500e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.036 | primal mean ratio=0.016 | primal selected=0.036 | dual mean ratio=0.001 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=5.184941e-04 | s=2.286151e-04 | eps_pri=3.677137e-04 | eps_dual=1.208196e-04 | primal_ratio=1.410048e+00 | dual_ratio=1.892203e+00 | dual_ratio_balance=1.892203e+00 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=5.960468e-25 | s=2.159590e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=2.867732e-21 | dual_ratio=1.039033e-21 | dual_ratio_balance=1.039033e-21 | rho_before=2.562891e-01 | rho_after=2.562891e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 21 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.003486/0.000249 | 0.000356/0.000016 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000064/0.000009 | 0.000598/0.000007 | 0.000000/0.000000 | Recourse change = 8676.300283 (tol. 7952.138936) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held (frozen after 10 unchanged cycles)/held
+[INFO] 	 - Iteration 21: 20.56 s
+[INFO] 	 - ADMM Iteration 22
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=22 | updated_blocks=1 | held_failed_blocks=0 | V max=0.001233 | PF max=0.004567 | ESS max=0.000000
+[TSO PROX][V MAX] node=5, year=2025, day=Winter, period=10 | dV=0.425496 kV | normalized=0.001233
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=2, type=P | delta=0.456731 MW | normalized=0.004567
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.234 | primal mean ratio=0.120 | primal selected=0.234 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=increased
+[ADMM RHO BOYD] V | r=3.422143e-03 | s=4.539300e-05 | eps_pri=1.010019e-03 | eps_dual=8.488731e-05 | primal_ratio=3.388195e+00 | dual_ratio=5.347442e-01 | dual_ratio_balance=5.347442e-01 | rho_before=1.732500e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[ADMM RHO] PF | primal max ratio=0.016 | primal mean ratio=0.010 | primal selected=0.016 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=3.429971e-04 | s=2.026798e-04 | eps_pri=3.677393e-04 | eps_dual=1.208193e-04 | primal_ratio=9.327180e-01 | dual_ratio=1.677545e+00 | dual_ratio_balance=1.677545e+00 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=2.434958e-25 | s=7.282467e-26 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=1.171520e-21 | dual_ratio=3.503779e-22 | dual_ratio_balance=3.503779e-22 | rho_before=2.562891e-01 | rho_after=2.562891e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 22 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.002343/0.000120 | 0.000164/0.000010 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000105/0.000005 | 0.000179/0.000003 | 0.000000/0.000000 | Recourse change = 690.214648 (tol. 7951.340327) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = increased/held (frozen after 10 unchanged cycles)/held
+[INFO] 	 - Iteration 22: 17.63 s
+[INFO] 	 - ADMM Iteration 23
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=23 | updated_blocks=1 | held_failed_blocks=0 | V max=0.000804 | PF max=0.003994 | ESS max=0.000000
+[TSO PROX][V MAX] node=5, year=2025, day=Winter, period=10 | dV=0.277229 kV | normalized=0.000804
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=2, type=P | delta=0.399387 MW | normalized=0.003994
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.019 | primal mean ratio=0.029 | primal selected=0.029 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=4.691165e-04 | s=4.385742e-05 | eps_pri=1.010088e-03 | eps_dual=8.488689e-05 | primal_ratio=4.644315e-01 | dual_ratio=5.166571e-01 | dual_ratio_balance=5.166571e-01 | rho_before=2.598750e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.012 | primal mean ratio=0.006 | primal selected=0.012 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=2.346721e-04 | s=1.768131e-04 | eps_pri=3.677639e-04 | eps_dual=1.208191e-04 | primal_ratio=6.381052e-01 | dual_ratio=1.463453e+00 | dual_ratio_balance=1.463453e+00 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=4.196975e-25 | s=1.088271e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=2.019271e-21 | dual_ratio=5.235946e-22 | dual_ratio_balance=5.235946e-22 | rho_before=2.562891e-01 | rho_after=2.562891e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 23 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.000194/0.000029 | 0.000122/0.000006 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000057/0.000003 | 0.000156/0.000003 | 0.000000/0.000000 | Recourse change = 1248.162401 (tol. 7951.465143) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held (frozen after 10 unchanged cycles)/held
+[INFO] 	 - Iteration 23: 18.26 s
+[INFO] 	 - ADMM Iteration 24
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=24 | updated_blocks=1 | held_failed_blocks=0 | V max=0.000782 | PF max=0.003490 | ESS max=0.000000
+[TSO PROX][V MAX] node=5, year=2025, day=Winter, period=10 | dV=0.269642 kV | normalized=0.000782
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=2, type=P | delta=0.349020 MW | normalized=0.003490
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.013 | primal mean ratio=0.019 | primal selected=0.019 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=3.070100e-04 | s=4.282387e-05 | eps_pri=1.010139e-03 | eps_dual=8.488652e-05 | primal_ratio=3.039286e-01 | dual_ratio=5.044838e-01 | dual_ratio_balance=5.044838e-01 | rho_before=2.598750e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.009 | primal mean ratio=0.005 | primal selected=0.009 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=1.872451e-04 | s=1.544325e-04 | eps_pri=3.677857e-04 | eps_dual=1.208190e-04 | primal_ratio=5.091147e-01 | dual_ratio=1.278214e+00 | dual_ratio_balance=1.278214e+00 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=2.161126e-25 | s=8.686693e-26 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=1.039772e-21 | dual_ratio=4.179387e-22 | dual_ratio_balance=4.179387e-22 | rho_before=2.562891e-01 | rho_after=2.562891e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 24 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.000135/0.000019 | 0.000089/0.000005 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000020/0.000002 | 0.000137/0.000002 | 0.000000/0.000000 | Recourse change = 898.339608 (tol. 7951.554977) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held (frozen after 10 unchanged cycles)/held
+[INFO] 	 - Iteration 24: 18.46 s
+[INFO] 	 - ADMM Iteration 25
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=25 | updated_blocks=1 | held_failed_blocks=0 | V max=0.003353 | PF max=0.020071 | ESS max=0.000000
+[TSO PROX][V MAX] node=7, year=2025, day=Winter, period=10 | dV=1.156733 kV | normalized=0.003353
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=2, type=P | delta=2.007148 MW | normalized=0.020071
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.175 | primal mean ratio=0.073 | primal selected=0.175 | dual mean ratio=0.001 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=2.479042e-03 | s=5.480783e-05 | eps_pri=1.010428e-03 | eps_dual=8.488463e-05 | primal_ratio=2.453459e+00 | dual_ratio=6.456743e-01 | dual_ratio_balance=6.456743e-01 | rho_before=2.598750e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.017 | primal mean ratio=0.007 | primal selected=0.017 | dual mean ratio=0.001 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=2.764547e-04 | s=2.607945e-05 | eps_pri=3.679226e-04 | eps_dual=1.208186e-04 | primal_ratio=7.513936e-01 | dual_ratio=2.158562e-01 | dual_ratio_balance=2.158562e-01 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=1.004448e-24 | s=6.873945e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=4.832651e-21 | dual_ratio=3.307228e-21 | dual_ratio_balance=3.307228e-21 | rho_before=2.562891e-01 | rho_after=2.562891e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 25 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.001751/0.000073 | 0.000167/0.000007 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000131/0.000008 | 0.000784/0.000007 | 0.000000/0.000000 | Recourse change = 4472.364892 (tol. 7952.002214) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held (frozen after 10 unchanged cycles)/held
+[INFO] 	 - Iteration 25: 18.93 s
+[INFO] 	 - ADMM Iteration 26
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=26 | updated_blocks=1 | held_failed_blocks=0 | V max=0.000278 | PF max=0.000390 | ESS max=0.000000
+[TSO PROX][V MAX] node=5, year=2025, day=Winter, period=17 | dV=0.095846 kV | normalized=0.000278
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=5, type=P | delta=0.038961 MW | normalized=0.000390
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.093 | primal mean ratio=0.041 | primal selected=0.093 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=1.288975e-03 | s=2.340000e-05 | eps_pri=1.010401e-03 | eps_dual=8.488419e-05 | primal_ratio=1.275706e+00 | dual_ratio=2.756697e-01 | dual_ratio_balance=2.756697e-01 | rho_before=2.598750e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.008 | primal mean ratio=0.003 | primal selected=0.008 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=1.394784e-04 | s=2.332652e-05 | eps_pri=3.679242e-04 | eps_dual=1.208187e-04 | primal_ratio=3.790954e-01 | dual_ratio=1.930704e-01 | dual_ratio_balance=1.930704e-01 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=4.102653e-25 | s=1.152855e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=1.973890e-21 | dual_ratio=5.546674e-22 | dual_ratio_balance=5.546674e-22 | rho_before=2.562891e-01 | rho_after=2.562891e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 26 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.000933/0.000041 | 0.000079/0.000003 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000074/0.000002 | 0.000015/0.000000 | 0.000000/0.000000 | Recourse change = 251.488039 (tol. 7952.002214) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/held (frozen after 10 unchanged cycles)/held
+[INFO] 	 - Iteration 26: 18.57 s
+[INFO] 	 - ADMM Iteration 27
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=27 | updated_blocks=1 | held_failed_blocks=0 | V max=0.000276 | PF max=0.000346 | ESS max=0.000000
+[TSO PROX][V MAX] node=5, year=2025, day=Winter, period=17 | dV=0.095184 kV | normalized=0.000276
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=5, type=P | delta=0.034572 MW | normalized=0.000346
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.015 | primal mean ratio=0.015 | primal selected=0.015 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=2.737280e-04 | s=2.225166e-05 | eps_pri=1.010420e-03 | eps_dual=8.488398e-05 | primal_ratio=2.709052e-01 | dual_ratio=2.621420e-01 | dual_ratio_balance=2.621420e-01 | rho_before=2.598750e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.003 | primal mean ratio=0.002 | primal selected=0.003 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=6.115708e-05 | s=1.789733e-05 | eps_pri=3.679246e-04 | eps_dual=1.208188e-04 | primal_ratio=1.662218e-01 | dual_ratio=1.481337e-01 | dual_ratio_balance=1.481337e-01 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=increased
+[ADMM RHO BOYD] ESS | r=4.666908e-25 | s=2.828629e-26 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=2.245367e-21 | dual_ratio=1.360925e-22 | dual_ratio_balance=1.360925e-22 | rho_before=2.562891e-01 | rho_after=3.844336e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[INFO]		 - ADMM cycle 27 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.000147/0.000015 | 0.000034/0.000002 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000020/0.000002 | 0.000014/0.000000 | 0.000000/0.000000 | Recourse change = 669.905702 (tol. 7951.977065) | Stable cycles = 1/10 | Penalty actions (V/PF/ESS) = held/held (frozen after 10 unchanged cycles)/increased
+[INFO] 	 - Iteration 27: 16.82 s
+[INFO] 	 - ADMM Iteration 28
+[INFO]		 - Convergence-depth tail ON for cycle 28: compl_inf_tol=1e-06 on every TSO/DSO solve.
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=28 | updated_blocks=1 | held_failed_blocks=0 | V max=0.000331 | PF max=0.000307 | ESS max=0.000000
+[TSO PROX][V MAX] node=5, year=2025, day=Winter, period=8 | dV=0.114255 kV | normalized=0.000331
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=5, type=P | delta=0.030733 MW | normalized=0.000307
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.026 | primal mean ratio=0.063 | primal selected=0.063 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=7.345983e-04 | s=3.558275e-05 | eps_pri=1.010519e-03 | eps_dual=8.488408e-05 | primal_ratio=7.269518e-01 | dual_ratio=4.191923e-01 | dual_ratio_balance=4.191923e-01 | rho_before=2.598750e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.009 | primal mean ratio=0.007 | primal selected=0.009 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=1.862632e-04 | s=1.971576e-05 | eps_pri=3.679237e-04 | eps_dual=1.208188e-04 | primal_ratio=5.062549e-01 | dual_ratio=1.631845e-01 | dual_ratio_balance=1.631845e-01 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=increased
+[ADMM RHO BOYD] ESS | r=9.937194e-25 | s=1.432988e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=4.781035e-21 | dual_ratio=6.894465e-22 | dual_ratio_balance=6.894465e-22 | rho_before=3.844336e-01 | rho_after=5.766504e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[INFO]		 - ADMM cycle 28 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.000263/0.000063 | 0.000089/0.000007 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000009/0.000003 | 0.000012/0.000001 | 0.000000/0.000000 | Recourse change = 2776.147048 (tol. 7951.910074) | Stable cycles = 2/10 | Penalty actions (V/PF/ESS) = held/held (frozen after 10 unchanged cycles)/increased
+[INFO] 	 - Iteration 28: 18.38 s
+[INFO] 	 - ADMM Iteration 29
+[INFO]		 - Convergence-depth tail ON for cycle 29: compl_inf_tol=1e-06 on every TSO/DSO solve.
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=29 | updated_blocks=1 | held_failed_blocks=0 | V max=0.000329 | PF max=0.000277 | ESS max=0.000000
+[TSO PROX][V MAX] node=5, year=2025, day=Winter, period=8 | dV=0.113480 kV | normalized=0.000329
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=5, type=P | delta=0.027666 MW | normalized=0.000277
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.025 | primal mean ratio=0.050 | primal selected=0.050 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=6.634269e-04 | s=2.540649e-05 | eps_pri=1.010590e-03 | eps_dual=8.488403e-05 | primal_ratio=6.564751e-01 | dual_ratio=2.993083e-01 | dual_ratio_balance=2.993083e-01 | rho_before=2.598750e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.003 | primal mean ratio=0.004 | primal selected=0.004 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=7.898893e-05 | s=1.466196e-05 | eps_pri=3.679255e-04 | eps_dual=1.208189e-04 | primal_ratio=2.146873e-01 | dual_ratio=1.213549e-01 | dual_ratio_balance=1.213549e-01 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=2.538144e-25 | s=5.007731e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=1.221165e-21 | dual_ratio=2.409346e-21 | dual_ratio_balance=2.409346e-21 | rho_before=5.766504e-01 | rho_after=5.766504e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 29 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.000250/0.000050 | 0.000029/0.000004 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000014/0.000003 | 0.000011/0.000000 | 0.000000/0.000000 | Recourse change = 1169.164470 (tol. 7951.749376) | Stable cycles = 3/10 | Penalty actions (V/PF/ESS) = held/held (frozen after 10 unchanged cycles)/held
+[INFO] 	 - Iteration 29: 18.56 s
+[INFO] 	 - ADMM Iteration 30
+[INFO]		 - Convergence-depth tail ON for cycle 30: compl_inf_tol=1e-06 on every TSO/DSO solve.
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=30 | updated_blocks=1 | held_failed_blocks=0 | V max=0.000326 | PF max=0.000243 | ESS max=0.000000
+[TSO PROX][V MAX] node=5, year=2025, day=Winter, period=8 | dV=0.112563 kV | normalized=0.000326
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=5, type=P | delta=0.024311 MW | normalized=0.000243
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.002 | primal mean ratio=0.005 | primal selected=0.005 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=5.995049e-05 | s=2.516051e-05 | eps_pri=1.010578e-03 | eps_dual=8.488403e-05 | primal_ratio=5.932297e-02 | dual_ratio=2.964103e-01 | dual_ratio_balance=2.964103e-01 | rho_before=2.598750e-02 | rho_after=2.598750e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.001 | primal mean ratio=0.001 | primal selected=0.001 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=2.800831e-05 | s=1.232496e-05 | eps_pri=3.679270e-04 | eps_dual=1.208189e-04 | primal_ratio=7.612464e-02 | dual_ratio=1.020118e-01 | dual_ratio_balance=1.020118e-01 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=9.117156e-25 | s=2.752259e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=4.386494e-21 | dual_ratio=1.324181e-21 | dual_ratio_balance=1.324181e-21 | rho_before=5.766504e-01 | rho_after=5.766504e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 30 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.000020/0.000005 | 0.000013/0.000001 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000008/0.000002 | 0.000010/0.000000 | 0.000000/0.000000 | Recourse change = 20.631626 (tol. 7951.751439) | Stable cycles = 4/10 | Penalty actions (V/PF/ESS) = held/held (frozen after 10 unchanged cycles)/held
+[INFO] 	 - Iteration 30: 18.68 s
+[INFO] 	 - ADMM Iteration 31
+[INFO]		 - Convergence-depth tail ON for cycle 31: compl_inf_tol=1e-06 on every TSO/DSO solve.
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=31 | updated_blocks=1 | held_failed_blocks=0 | V max=0.000324 | PF max=0.000215 | ESS max=0.000000
+[TSO PROX][V MAX] node=5, year=2025, day=Winter, period=8 | dV=0.111677 kV | normalized=0.000324
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=5, type=P | delta=0.021548 MW | normalized=0.000215
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.001 | primal mean ratio=0.001 | primal selected=0.001 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=decreased
+[ADMM RHO BOYD] V | r=1.551772e-05 | s=2.495533e-05 | eps_pri=1.010601e-03 | eps_dual=8.488404e-05 | primal_ratio=1.535495e-02 | dual_ratio=2.939932e-01 | dual_ratio_balance=2.939932e-01 | rho_before=2.598750e-02 | rho_after=1.732500e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=decreased
+[ADMM RHO] PF | primal max ratio=0.001 | primal mean ratio=0.001 | primal selected=0.001 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=2.012010e-05 | s=1.069339e-05 | eps_pri=3.679284e-04 | eps_dual=1.208189e-04 | primal_ratio=5.468484e-02 | dual_ratio=8.850756e-02 | dual_ratio_balance=8.850756e-02 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=9.311322e-25 | s=7.460737e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=4.479912e-21 | dual_ratio=3.589549e-21 | dual_ratio_balance=3.589549e-21 | rho_before=5.766504e-01 | rho_after=5.766504e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 31 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.000005/0.000001 | 0.000010/0.000001 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000008/0.000001 | 0.000008/0.000000 | 0.000000/0.000000 | Recourse change = 28.542743 (tol. 7951.751439) | Stable cycles = 5/10 | Penalty actions (V/PF/ESS) = decreased/held (frozen after 10 unchanged cycles)/held
+[INFO] 	 - Iteration 31: 17.52 s
+[INFO] 	 - ADMM Iteration 32
+[INFO]		 - Convergence-depth tail ON for cycle 32: compl_inf_tol=1e-06 on every TSO/DSO solve.
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=32 | updated_blocks=1 | held_failed_blocks=0 | V max=0.000480 | PF max=0.000191 | ESS max=0.000000
+[TSO PROX][V MAX] node=5, year=2025, day=Winter, period=8 | dV=0.165428 kV | normalized=0.000480
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=5, type=P | delta=0.019130 MW | normalized=0.000191
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.001 | primal mean ratio=0.002 | primal selected=0.002 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=decreased
+[ADMM RHO BOYD] V | r=2.214293e-05 | s=2.464223e-05 | eps_pri=1.010639e-03 | eps_dual=8.488404e-05 | primal_ratio=2.190983e-02 | dual_ratio=2.903046e-01 | dual_ratio_balance=2.903046e-01 | rho_before=1.732500e-02 | rho_after=1.155000e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=decreased
+[ADMM RHO] PF | primal max ratio=0.001 | primal mean ratio=0.001 | primal selected=0.001 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=2.334491e-05 | s=9.464948e-06 | eps_pri=3.679295e-04 | eps_dual=1.208189e-04 | primal_ratio=6.344940e-02 | dual_ratio=7.833993e-02 | dual_ratio_balance=7.833993e-02 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=4.427425e-25 | s=5.534931e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=2.130146e-21 | dual_ratio=2.662995e-21 | dual_ratio_balance=2.662995e-21 | rho_before=5.766504e-01 | rho_after=5.766504e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 32 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.000006/0.000002 | 0.000009/0.000001 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000008/0.000001 | 0.000007/0.000000 | 0.000000/0.000000 | Recourse change = 11.963777 (tol. 7951.749781) | Stable cycles = 6/10 | Penalty actions (V/PF/ESS) = decreased/held (frozen after 10 unchanged cycles)/held
+[INFO] 	 - Iteration 32: 19.23 s
+[INFO] 	 - ADMM Iteration 33
+[INFO]		 - Convergence-depth tail ON for cycle 33: compl_inf_tol=1e-06 on every TSO/DSO solve.
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=33 | updated_blocks=1 | held_failed_blocks=0 | V max=0.000706 | PF max=0.000171 | ESS max=0.000000
+[TSO PROX][V MAX] node=5, year=2025, day=Winter, period=8 | dV=0.243409 kV | normalized=0.000706
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=5, type=P | delta=0.017114 MW | normalized=0.000171
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.001 | primal mean ratio=0.003 | primal selected=0.003 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=decreased
+[ADMM RHO BOYD] V | r=4.254424e-05 | s=2.417342e-05 | eps_pri=1.010697e-03 | eps_dual=8.488404e-05 | primal_ratio=4.209396e-02 | dual_ratio=2.847817e-01 | dual_ratio_balance=2.847817e-01 | rho_before=1.155000e-02 | rho_after=7.700000e-03 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=decreased
+[ADMM RHO] PF | primal max ratio=0.001 | primal mean ratio=0.001 | primal selected=0.001 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=3.181456e-05 | s=8.479421e-06 | eps_pri=3.679307e-04 | eps_dual=1.208190e-04 | primal_ratio=8.646889e-02 | dual_ratio=7.018287e-02 | dual_ratio_balance=7.018287e-02 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=9.778591e-25 | s=5.673867e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=4.704727e-21 | dual_ratio=2.729840e-21 | dual_ratio_balance=2.729840e-21 | rho_before=5.766504e-01 | rho_after=5.766504e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 33 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.000014/0.000003 | 0.000011/0.000001 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000008/0.000001 | 0.000007/0.000000 | 0.000000/0.000000 | Recourse change = 48.500353 (tol. 7951.754631) | Stable cycles = 7/10 | Penalty actions (V/PF/ESS) = decreased/held (frozen after 10 unchanged cycles)/held
+[INFO] 	 - Iteration 33: 20.14 s
+[INFO] 	 - ADMM Iteration 34
+[INFO]		 - Convergence-depth tail ON for cycle 34: compl_inf_tol=1e-06 on every TSO/DSO solve.
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=34 | updated_blocks=1 | held_failed_blocks=0 | V max=0.001028 | PF max=0.000154 | ESS max=0.000000
+[TSO PROX][V MAX] node=5, year=2025, day=Winter, period=8 | dV=0.354542 kV | normalized=0.001028
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=5, type=P | delta=0.015429 MW | normalized=0.000154
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.003 | primal mean ratio=0.005 | primal selected=0.005 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=9.056689e-05 | s=2.348432e-05 | eps_pri=1.010781e-03 | eps_dual=8.488403e-05 | primal_ratio=8.960090e-02 | dual_ratio=2.766636e-01 | dual_ratio_balance=2.766636e-01 | rho_before=7.700000e-03 | rho_after=7.700000e-03 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.002 | primal mean ratio=0.001 | primal selected=0.002 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=4.524530e-05 | s=7.765313e-06 | eps_pri=3.679318e-04 | eps_dual=1.208190e-04 | primal_ratio=1.229720e-01 | dual_ratio=6.427230e-02 | dual_ratio_balance=6.427230e-02 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=6.401735e-25 | s=6.592642e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=3.080036e-21 | dual_ratio=3.171886e-21 | dual_ratio_balance=3.171886e-21 | rho_before=5.766504e-01 | rho_after=5.766504e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 34 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.000031/0.000005 | 0.000016/0.000001 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000008/0.000001 | 0.000006/0.000000 | 0.000000/0.000000 | Recourse change = 89.716429 (tol. 7951.763603) | Stable cycles = 8/10 | Penalty actions (V/PF/ESS) = held/held (frozen after 10 unchanged cycles)/held
+[INFO] 	 - Iteration 34: 21.51 s
+[INFO] 	 - ADMM Iteration 35
+[INFO]		 - Convergence-depth tail ON for cycle 35: compl_inf_tol=1e-06 on every TSO/DSO solve.
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=35 | updated_blocks=1 | held_failed_blocks=0 | V max=0.000998 | PF max=0.000141 | ESS max=0.000000
+[TSO PROX][V MAX] node=5, year=2025, day=Winter, period=8 | dV=0.344373 kV | normalized=0.000998
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=5, type=P | delta=0.014075 MW | normalized=0.000141
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.003 | primal mean ratio=0.005 | primal selected=0.005 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=8.781859e-05 | s=2.281648e-05 | eps_pri=1.010861e-03 | eps_dual=8.488403e-05 | primal_ratio=8.687502e-02 | dual_ratio=2.687959e-01 | dual_ratio_balance=2.687959e-01 | rho_before=7.700000e-03 | rho_after=7.700000e-03 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.002 | primal mean ratio=0.001 | primal selected=0.002 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=4.477291e-05 | s=7.096576e-06 | eps_pri=3.679328e-04 | eps_dual=1.208190e-04 | primal_ratio=1.216877e-01 | dual_ratio=5.873726e-02 | dual_ratio_balance=5.873726e-02 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] ESS | r=1.024069e-24 | s=6.782949e-25 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=4.927052e-21 | dual_ratio=3.263448e-21 | dual_ratio_balance=3.263448e-21 | rho_before=5.766504e-01 | rho_after=5.766504e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[INFO]		 - ADMM cycle 35 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.000030/0.000005 | 0.000016/0.000001 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000008/0.000001 | 0.000006/0.000000 | 0.000000/0.000000 | Recourse change = 42.591098 (tol. 7951.767862) | Stable cycles = 9/10 | Penalty actions (V/PF/ESS) = held/held (frozen after 10 unchanged cycles)/held
+[INFO] 	 - Iteration 35: 20.97 s
+[INFO] 	 - ADMM Iteration 36
+[INFO]		 - Convergence-depth tail ON for cycle 36: compl_inf_tol=1e-06 on every TSO/DSO solve.
+[INFO] 		 - Updating distribution networks:
+[INFO] 			 - Running SMOPF, Network case33_1, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Winter...
+[INFO] 			 - Running SMOPF, Network case33_3, 2025, Winter...
+[INFO] 		 - Updating transmission network...
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[TSO PROX] cycle=36 | updated_blocks=1 | held_failed_blocks=0 | V max=0.000970 | PF max=0.000127 | ESS max=0.000000
+[TSO PROX][V MAX] node=5, year=2025, day=Winter, period=8 | dV=0.334483 kV | normalized=0.000970
+[TSO PROX][PF MAX] node=7, year=2025, day=Winter, period=5, type=P | delta=0.012697 MW | normalized=0.000127
+[TSO PROX][ESS MAX] node=5, year=2025, day=Winter, period=0, type=P | delta=0.000000 MW | normalized=0.000000
+[INFO] 		 - Updating SharedESS...
+[INFO] 		 - Running Shared ESS optimization (subproblem)...
+[INFO] 			 - Node 5...
+[INFO] Shared ESS complementarity diagnostics for ESS node=5: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 7...
+[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO] 			 - Node 9...
+[INFO] Shared ESS complementarity diagnostics for ESS node=9: ratio_max=0.000000e+00 n_periods=0 mu_final=9.090909e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=0.000000e+00 measured=0.000000e+00
+[INFO]		 - Primal residuals ok!
+[INFO]		 - Dual residuals ok!
+[INFO]		 - Recourse stationarity ok!
+[ADMM RHO] V | primal max ratio=0.003 | primal mean ratio=0.005 | primal selected=0.005 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=8.499227e-05 | s=2.217049e-05 | eps_pri=1.010939e-03 | eps_dual=8.488403e-05 | primal_ratio=8.407261e-02 | dual_ratio=2.611857e-01 | dual_ratio_balance=2.611857e-01 | rho_before=7.700000e-03 | rho_after=7.700000e-03 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=0.002 | primal mean ratio=0.001 | primal selected=0.002 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=3.0 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO BOYD] PF | r=4.399374e-05 | s=6.519669e-06 | eps_pri=3.679338e-04 | eps_dual=1.208190e-04 | primal_ratio=1.195697e-01 | dual_ratio=5.396229e-02 | dual_ratio_balance=5.396229e-02 | rho_before=3.911111e-02 | rho_after=3.911111e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held (frozen after 10 unchanged cycles)
+[ADMM RHO] ESS | primal max ratio=0.000 | primal mean ratio=0.000 | primal selected=0.000 | dual mean ratio=0.000 | increase threshold=5.0 | decrease threshold=5.0 | action=increased
+[ADMM RHO BOYD] ESS | r=1.143111e-24 | s=5.322910e-26 | eps_pri=2.078461e-04 | eps_dual=2.078461e-04 | primal_ratio=5.499796e-21 | dual_ratio=2.560986e-22 | dual_ratio_balance=2.560986e-22 | rho_before=5.766504e-01 | rho_after=8.649756e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[INFO]		 - ADMM cycle 36 | Primal (V max/mean | PF max/mean | ESS max/mean) = 0.000029/0.000005 | 0.000015/0.000001 | 0.000000/0.000000 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.000007/0.000001 | 0.000005/0.000000 | 0.000000/0.000000 | Recourse change = 21.143027 (tol. 7951.769976) | Stable cycles = 10/10 | Penalty actions (V/PF/ESS) = held/held (frozen after 10 unchanged cycles)/increased
+[INFO] 	 - Iteration 36: 20.19 s
+[INFO] 	 - ADMM converged in 36 iteration(s).
+[INFO] 	 - Execution time: 767.63 s
+[S31 Part 3] component_levels_terminal.json written: /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main/component_levels_terminal.json
+[S31C Part 3] interface_settlement_detail_s31c.json written: /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main/interface_settlement_detail_s31c.json
+[S33E2] interface_voltage_terminal.json written: /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main/interface_voltage_terminal.json
+[S35REF] boyd_terminal.json written: /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main/boyd_terminal.json
+[S44-CHILD] terminal-phase lock: held after 0s
+[S44-CHILD] response terminal capture: written (entries 107, coordination blocks 3)
+[INFO] Operational Planning Results written to /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main/results/SRP1_distributed_terminal.xlsx.
+[S44-CHILD] multi-scenario terminal capture: written (checks pass: True); workbook: written
+[P5.15-G s39_D] recourse=79517699.76431489 cycles=36 solves=259 local_failures=0 wall=768s
+   EFC/day max across nodes: None (threshold 1.4612)
+   detector grouping clean: True (observed 111 / expected 111)
+   network failures: {'n_blocks': 0, 'classes': {'recovered_tier1': 0, 'recovered_tier2': 0, 'unrecovered': 0, 'not_attempted': 0, 'indeterminate': 0, 'recovered': 0}, 'n_frozen_snapshots': 0, 'n_esso_recovery_events': 0, 'path': 'data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main/network_failures_s39_D.jsonl'}
+[S44-CHILD] x0_pinned_aa_on_main: status=certified cycles=36 certified_cost=79517699.76431489 bar=2776.147047922015 peak_rss=2680373248

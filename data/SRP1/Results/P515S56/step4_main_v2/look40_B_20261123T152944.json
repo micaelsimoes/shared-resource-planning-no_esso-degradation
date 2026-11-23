@@ -1,0 +1,35 @@
+{
+ "schema": "p515_s56_step4_look40_v1",
+ "utc": "2026-11-23T15:29:44.258906+00:00",
+ "instance": "B",
+ "spec": {
+  "path": "data/SRP1/Results/P515S56/step4_main_v2/frozen_step4_main_spec_v2_7ca210fb.json",
+  "sha256": "7ca210fbcd645cc3f3d46554ce7efbdbf2abcedcd183aa825a8eaf160794ccb0"
+ },
+ "script": "p515_s56_step4_main.py",
+ "script_sha256": "e93c709da862e77bc11551014466a26fd5a2286aba42815d651a183c40efcf78",
+ "definition": {
+  "fit": "ordinary least squares of ln|e_b(k)| = a + k ln r on cycles 21..34; validated on the held-out cycles 35..40: the held-out error is max over those cycles of |ln(|e_hat(k)| / |e_b(k)|)| (recorded with the predicted and observed values); the projection refits on cycles 21..40",
+  "output": "look40_<inst>_<utc>.json in the main directory",
+  "projection": "k_star = 40 + ln(allowance_b / |e_hat(40)|) / ln r when r < 1 and |e_hat(40)| > allowance; k_star = 40 when |e_hat(40)| <= allowance; k_star = infinity when r >= 1",
+  "recorded_beside_not_deciding": "the same fit on e_b(k) - F_b with F_b the D-1 production-depth floor (the cycles of the look are production-depth until the first Boyd pass); the tail-depth classification of cycles 1..40",
+  "stop_rule": "if k_star > 600 on a calibrated block, STOP AND REPORT: the running campaign is terminated through the harness's own interrupt path (SIGINT to the launcher parent; the harness SIGTERMs and reaps its children, records written up to the stop are kept) and nothing further is launched. Otherwise continue",
+  "what": "per calibrated block b of the instance (A: 2025|Winter; B: 2035|Summer), e_b(k) = Q_b(k) - w_b x C_central, Q_b = V-1 capture q_blocks.per_year_day[b].settlement_excluded_in_full",
+  "when": "once V-1 of the instance has written its cycle-40 capture line (or the run ended before 40)"
+ },
+ "blocks": {},
+ "error": "Traceback (most recent call last):\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s56_step4_main.py\", line 818, in look40\n    series = {x['cycle']: (x['q_blocks']['per_year_day'][bk]['settlement_excluded_in_full'] - wc\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s56_step4_main.py\", line 819, in <dictcomp>\n    if x.get('captured') else None) for x in lines if x['cycle'] <= look['cycle']}\n                                                                    ~~~~^^^^^^^^^\nKeyError: 'cycle'\n",
+ "n_capture_lines": 40,
+ "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/917aa06e2a2e1b55_x0_v1_main",
+ "run_ended": false,
+ "tail_depth_cycles_1_40": [],
+ "guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ }
+}
