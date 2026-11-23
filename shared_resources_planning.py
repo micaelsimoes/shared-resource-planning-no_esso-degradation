@@ -18,14 +18,14 @@ import matplotlib.ticker as mticker
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
 from centralized_coordination import combine_networks
-from network_data import NetworkData
+from network_data import NetworkData, SHARED_ESS_COHORT_GROSS_FLOW_DATA_ATTRIBUTE
 from network import capture_block_mutable_state, apply_block_mutable_state
 import admm_persistent_workers
 import admm_anderson_acceleration
 from load import Load
 from shared_energy_storage import SharedEnergyStorage
 from planning_parameters import PlanningParameters
-from shared_energy_storage_data import SharedEnergyStorageData
+from shared_energy_storage_data import SharedEnergyStorageData, shared_ess_network_gross_flow_node_years
 import shared_ess_price_taker
 from model_construction_helpers import *
 from helper_functions import *
@@ -2654,6 +2654,27 @@ def _rebuild_candidate_total_capacities(planning_problem, candidate_solution):
                 candidate_solution['total_capacity'][node_id][year]['e'] += investment['e']
 
 
+def _sync_shared_ess_cohort_gross_flow(planning_problem, candidate_solution):
+    """P5.15 S56 cohort follow-up (Expert ruling 4, D1 (a)): give every network planning object the per-(node, year)
+    gross-flow flags of THIS candidate, before any network model receives it. `network_data` copies each flag onto
+    the block's per-unit attribute and `configure_shared_ess_operational_state` then deactivates `sess_comp` on the
+    flagged units only. Under 'legacy_h3' the flags are removed (None from `shared_ess_network_gross_flow_node_years`),
+    so the network models are exactly today's. `candidate_solution` carries 'investment' (the cohorts) and
+    'total_capacity' (what the networks receive; recorded beside each flag as a staleness guard)."""
+    flags = shared_ess_network_gross_flow_node_years(planning_problem.shared_ess_data, candidate_solution['investment'])
+    networks = [planning_problem.transmission_network] + list(planning_problem.distribution_networks.values())
+    for network in networks:
+        if flags is None:
+            network.__dict__.pop(SHARED_ESS_COHORT_GROSS_FLOW_DATA_ATTRIBUTE, None)
+            continue
+        synced = dict()
+        for node_id, by_year in flags.items():
+            for year, gross_flow in by_year.items():
+                total = candidate_solution['total_capacity'][node_id][year]
+                synced[(node_id, year)] = {'gross_flow': gross_flow, 's': abs(total['s']), 'e': abs(total['e'])}
+        setattr(network, SHARED_ESS_COHORT_GROSS_FLOW_DATA_ATTRIBUTE, synced)
+
+
 def _get_investment_soh_margin(planning_problem, esso_models, node_id, year_inv):
     years = list(planning_problem.shared_ess_data.years)
     y_inv = years.index(year_inv)
@@ -2881,6 +2902,10 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
     # `interface_coupling_active` is False and every branch below that reads it is skipped.
     _validate_interface_coupling_options(admm_parameters)
     interface_coupling_active = _per_scenario_interface_coupling_active(planning_problem)
+
+    # P5.15 S56 cohort follow-up (D1 (a)): the networks' per-unit gross-flow flags for this candidate, before either
+    # branch below hands it to a network model (removed under 'legacy_h3': today's models).
+    _sync_shared_ess_cohort_gross_flow(planning_problem, candidate_solution)
 
     if initial_state is None:
         # Create ADMM variables and obtain the initial local solutions.
@@ -9477,6 +9502,9 @@ def _run_operational_planning_without_coordination(planning_problem):
             candidate_solution[node_id][year] = dict()
             candidate_solution[node_id][year]['s'] = 0.00
             candidate_solution[node_id][year]['e'] = 0.00
+    # P5.15 S56 cohort follow-up: no shared ESS here, so no flag is set (stale flags of an earlier candidate cleared).
+    _sync_shared_ess_cohort_gross_flow(planning_problem, {'investment': candidate_solution,
+                                                          'total_capacity': candidate_solution})
 
     start = time.time()
 

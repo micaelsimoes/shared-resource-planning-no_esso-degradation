@@ -1,0 +1,269 @@
+{
+ "also_found": "The previous session's scratchpad (outside the repository) held a spec generator make_spec.py and a draft spec frozen_cohort_followup_spec_v1_6de74f6f.json (never committed, never launched) and a zero-solve debug directory whose zero child was killed before writing a record. The generator was reused, edited (verbatim task text of the resumed task, explicit legacy-key T1 mode, T10 variable inventory, output paths); no result from the killed debug run is used.",
+ "context": "A previous Worker building the S56 cohort follow-up in this worktree (branch s56-cohort-followup, HEAD c65201d1) was killed by the session exit of 2026-11-23 ~14:48 (TASKS.md). It left uncommitted edits in five production files and an untracked test script. Before any new edit, the working-tree diff against HEAD and the untracked file were saved here unmodified, then read hunk by hunk against the Planner's specification (build items 1-5, tests T1-T10). Nothing was discarded with git; every hunk was kept.",
+ "hunks": [
+  {
+   "classification": "keep",
+   "diff_line": 5,
+   "file": "model_construction_helpers.py",
+   "reason": "item 2: plain per-unit model attribute, default False, absent -> today's model; item 5: maximum network closure slack of a solved block, read-only, unwired",
+   "spec_items": [
+    "2",
+    "5"
+   ],
+   "what": "SHARED_ESS_COHORT_GROSS_FLOW_ATTRIBUTE, shared_ess_cohort_gross_flow (reader, default False), set_shared_ess_cohort_gross_flow (attribute created only when a True value is set), shared_ess_network_closure_slack_max (D2 gate reader, not wired)"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 65,
+   "file": "model_construction_helpers.py",
+   "reason": "item 2: the switch lives in configure_shared_ess_operational_state; only sess_comp; every other row as set above it",
+   "spec_items": [
+    "2"
+   ],
+   "what": "in configure_shared_ess_operational_state, after the unit rows are (de)activated: sess_comp entries of the unit deactivated iff the unit is active and its flag is True"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 85,
+   "file": "network_data.py",
+   "reason": "supporting",
+   "spec_items": [
+    "2"
+   ],
+   "what": "import set_shared_ess_cohort_gross_flow"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 93,
+   "file": "network_data.py",
+   "reason": "item 2: the attribute is set True only on >= 2 active cohorts and a corrected key (computed by shared_ess_network_gross_flow_node_years); absent synced flags -> attribute absent or reset to False",
+   "spec_items": [
+    "2"
+   ],
+   "what": "SHARED_ESS_COHORT_GROSS_FLOW_DATA_ATTRIBUTE and _apply_shared_ess_cohort_gross_flow (copies the synced per-(node, year) flag onto the block before configuring; staleness guard raises if the synced totals differ from the capacities applied)"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 126,
+   "file": "network_data.py",
+   "reason": "call sites 7/8 of configure (candidate update)",
+   "spec_items": [
+    "2"
+   ],
+   "what": "TSO candidate update calls _apply_... before configure"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 135,
+   "file": "network_data.py",
+   "reason": "as above",
+   "spec_items": [
+    "2"
+   ],
+   "what": "DSO candidate update calls _apply_... before configure"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 148,
+   "file": "shared_energy_storage_data.py",
+   "reason": "supporting",
+   "spec_items": [
+    "1",
+    "4"
+   ],
+   "what": "imports of the corrected-key tuple and the A/B key value"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 158,
+   "file": "shared_energy_storage_data.py",
+   "reason": "item 3 raises at build time under the corrected key; item 4 the A/B key value builds the same components",
+   "spec_items": [
+    "3",
+    "4"
+   ],
+   "what": "independent_units := key in COHORT_FORMULATIONS_CORRECTED; efficiency-equality gate called at build under a corrected key"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 175,
+   "file": "shared_energy_storage_data.py",
+   "reason": "item 1 D2: exact closure with no closure slack; retire the slacked closure by unwiring. These are Var families on newly built models, not module symbols: no callable is deleted, and the configure branch that reads them is retained behind hasattr (T2 retained-branch check)",
+   "spec_items": [
+    "1"
+   ],
+   "what": "per-cohort closure-slack Vars slack_es_soc_final_per_unit_up/_down no longer constructed (comment records the unwiring); Q-slack pair kept"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 205,
+   "file": "shared_energy_storage_data.py",
+   "reason": "the term referenced the unwired Vars; no other objective change",
+   "spec_items": [
+    "1"
+   ],
+   "what": "objective term of the closure slacks removed with the Vars; Q-slack term kept"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 227,
+   "file": "shared_energy_storage_data.py",
+   "reason": "item 3 gate (exact equality of eff_ch and eff_dch across the installation-year units of the node, ValueError); item 2 the >= 2 active-cohort count by the ESSO's own activity and lifetime tests, None under legacy_h3; the A/B option does not change it (network side unchanged at n = 1)",
+   "spec_items": [
+    "2",
+    "3"
+   ],
+   "what": "_assert_esso_cohort_efficiencies_equal; shared_ess_active_cohort_counts; shared_ess_network_gross_flow_node_years"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 299,
+   "file": "shared_energy_storage_data.py",
+   "reason": "item 4: the on-arm is the same construction with the activation threshold at 1",
+   "spec_items": [
+    "1",
+    "4"
+   ],
+   "what": "_build_esso_cohort_units_rows docstring; registry min_active_cohorts (1 under the A/B key, else 2); two new ConstraintLists (sum, complementarity)"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 350,
+   "file": "shared_energy_storage_data.py",
+   "reason": "normalisation of the complementarity row (see below)",
+   "spec_items": [
+    "1"
+   ],
+   "what": "s_hat_base = es_s_investment_fixed[y_inv]"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 358,
+   "file": "shared_energy_storage_data.py",
+   "reason": "item 1. INTERPRETATION recorded, not changed: the task writes p^ch_c * p^dch_c <= ESS_COMPLEMENTARITY_TOLERANCE and the decomposition note \"the sess_comp form\"; the network sess_comp (BILINEAR_RELAXATION, P5.4-H1) is written on p/S, so the row is built normalised by the cohort rating (equivalently pch*pdch <= 1e-4 S_c^2 MW^2). Flagged to the Planner",
+   "spec_items": [
+    "1"
+   ],
+   "what": "rows 6b sum pch + pdch <= es_s_rated_per_unit; 6c complementarity (pch/S_c)(pdch/S_c) <= ESS_COMPLEMENTARITY_TOLERANCE; closure exact e_T == 0.5 E_av (both params.slacks branches replaced)"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 379,
+   "file": "shared_energy_storage_data.py",
+   "reason": "as above",
+   "spec_items": [
+    "1",
+    "4"
+   ],
+   "what": "_configure_esso_cohort_units_rows docstring; min_active read from the registry (default 2 for registries without it); has_closure_slacks"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 413,
+   "file": "shared_energy_storage_data.py",
+   "reason": "x0 stays inactive under the option (0 >= 1 false)",
+   "spec_items": [
+    "4"
+   ],
+   "what": "multi := n_active >= min_active"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 422,
+   "file": "shared_energy_storage_data.py",
+   "reason": "unwire, never delete",
+   "spec_items": [
+    "1"
+   ],
+   "what": "closure-slack branch guarded by has_closure_slacks (retained, unused on new builds)"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 435,
+   "file": "shared_energy_storage_parameters.py",
+   "reason": "item 4: explicit, default off (default stays legacy_h3), recorded in the cohort key itself (any record of the key records the option); strict reader accepts it",
+   "spec_items": [
+    "4"
+   ],
+   "what": "key value 'independent_units_all_node_years' added to COHORT_FORMULATIONS; COHORT_FORMULATIONS_CORRECTED"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 451,
+   "file": "shared_energy_storage_parameters.py",
+   "reason": "documentation",
+   "spec_items": [
+    "4"
+   ],
+   "what": "comment"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 464,
+   "file": "shared_resources_planning.py",
+   "reason": "supporting",
+   "spec_items": [
+    "2"
+   ],
+   "what": "imports"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 481,
+   "file": "shared_resources_planning.py",
+   "reason": "item 2: computes the flags of THIS candidate for every network planning object; removes them under legacy_h3",
+   "spec_items": [
+    "2"
+   ],
+   "what": "_sync_shared_ess_cohort_gross_flow"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 509,
+   "file": "shared_resources_planning.py",
+   "reason": "both the fresh-build and continuation branches pass through network_data._update_model_with_candidate_solution",
+   "spec_items": [
+    "2"
+   ],
+   "what": "sync at the top of _run_operational_planning, before either branch hands the candidate to a network model"
+  },
+  {
+   "classification": "keep",
+   "diff_line": 520,
+   "file": "shared_resources_planning.py",
+   "reason": "supporting: without it, flags synced for an earlier candidate would trip the staleness guard there",
+   "spec_items": [
+    "2"
+   ],
+   "what": "sync with an all-zero candidate in _run_operational_planning_without_coordination"
+  }
+ ],
+ "reverted_hunks": [],
+ "saved_inputs": {
+  "p515_s56_cohort_followup_tests.py.partial": {
+   "sha256": "21b87e956c10db0c0a64629b706604d4b521f07bddda679b3f5ff831b39ffbec",
+   "what": "the untracked test script at resume, byte copy"
+  },
+  "partial_work.diff": {
+   "sha256": "be39064049bd67d2517aa8864e07da23d6ca94af044f2dd05faa8f1c4c78cfd9",
+   "what": "git diff (HEAD c65201d1 vs working tree) at resume, before any new edit"
+  }
+ },
+ "schema": "p515_s56_cohort_followup_partial_audit_v1",
+ "untracked_test_script": {
+  "classification": "complete",
+  "completed_by_editing": [
+   "docstring: authority now S56_PLAN_v4_1.md and the plan-v4 review item 3; the copy-paste \"committed ... as p515_s56_cohort_esso_tests.py\" corrected; output paths moved under cohort_followup_v1/run (this audit directory occupies cohort_followup_v1/)",
+   "T1: an explicit 'legacy_h3' key mode (ESSO + network) in the after tree, compared with the before tree's default path (the task names legacy AND default paths; the default is the key as read)",
+   "T10: the free new-Var inventory (per-cohort SoC and q, Q-slack pair) added to the measured inventory",
+   "pre-launch key scan: rescoped to committed INPUT json; committed evidence under data/<case>/Results/ excluded and listed (as found, the scan would have refused on the committed cohort_esso_v2 records, which name the key)",
+   "evaluators _eval_t7/_eval_t10: skip the text fields of the prediction blocks (found by the pre-freeze rehearsal: AttributeError in _eval_t10; T7 would have failed on the verbatim field)",
+   "T5/T6 legacy net-form maps: closure slack sign corrected (slack_up = max(r, 0), slack_down = max(-r, 0) for soc_T == 0.5 E + up - down; found by the rehearsal as a 2r violation of sess_soc_final)"
+  ],
+  "file": "p515_s56_cohort_followup_tests.py",
+  "kept": "everything else",
+  "state_found": "structurally complete (children build/fixtures/zero/solves, parent, evaluators, manifest); compiles; no spec committed; never launched into the repository"
+ },
+ "utc": "2026-11-23"
+}

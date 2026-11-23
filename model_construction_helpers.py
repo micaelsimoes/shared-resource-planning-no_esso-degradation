@@ -1126,6 +1126,59 @@ def _configure_shared_ess_expected_schedule(model, shared_ess_idx, inactive):
                 entry.activate()
 
 
+# P5.15 S56 cohort follow-up (Expert ruling 4, D1 (a)): the network-side switch. A plain Python attribute on a network
+# block (not a Pyomo component, so it never reaches the NL file): {shared_ess_idx: bool}. True for a unit only when its
+# node-year has >= 2 active cohorts under a corrected cohort formulation (never under 'legacy_h3'); set by
+# `network_data._update_model_with_candidate_solution` from the network's synced flags
+# (`shared_resources_planning._sync_shared_ess_cohort_gross_flow`). Absent attribute, or a unit missing from it, reads
+# False: today's model. Pickled with the block, so cloned / continued models keep it.
+SHARED_ESS_COHORT_GROSS_FLOW_ATTRIBUTE = '_shared_ess_cohort_gross_flow'
+
+
+def shared_ess_cohort_gross_flow(model, shared_ess_idx):
+    """True iff the block's per-unit gross-flow attribute is set True for this unit (default False)."""
+    flags = getattr(model, SHARED_ESS_COHORT_GROSS_FLOW_ATTRIBUTE, None)
+    return isinstance(flags, dict) and flags.get(shared_ess_idx, False) is True
+
+
+def set_shared_ess_cohort_gross_flow(model, shared_ess_idx, value):
+    """Record the per-unit gross-flow flag on a network block (creating the attribute only when a True value is set,
+    so a model that never sees the corrected formulation never carries it). Does not (re)configure the unit: every
+    caller runs `configure_shared_ess_operational_state` after it."""
+    flags = getattr(model, SHARED_ESS_COHORT_GROSS_FLOW_ATTRIBUTE, None)
+    if flags is None:
+        if value is not True:
+            return
+        flags = dict()
+        setattr(model, SHARED_ESS_COHORT_GROSS_FLOW_ATTRIBUTE, flags)
+    flags[shared_ess_idx] = (value is True)
+
+
+def shared_ess_network_closure_slack_max(model, s_base=None):
+    """P5.15 S56 cohort follow-up (Expert ruling 4, D2 gate; an exit certificate, NOT wired into any harness yet): the
+    maximum network shared-ESS day-closure slack of a SOLVED network block -- max over every unit e and every built
+    (s_m, s_o) of slack_shared_es_soc_final_up / _down (p.u. of energy on the block's baseMVA; MWh when `s_base`, the
+    block's baseMVA, is given). Under D2 the network aggregate closure is implied with zero slack; the gate is
+    max <= tau_cl on every storage evaluation. Read-only. Returns {'max_pu', 'max_mwh' (or None), 'argmax'
+    ((name, index) or None), 'n_entries'}; n_entries = 0 when the block has no slack Vars (day_balance slack off)."""
+    best = 0.0
+    argmax = None
+    n_entries = 0
+    for name in ('slack_shared_es_soc_final_up', 'slack_shared_es_soc_final_down'):
+        if not hasattr(model, name):
+            continue
+        for index, var in getattr(model, name).items():
+            value = var.value
+            if value is None:
+                continue
+            n_entries += 1
+            if argmax is None or value > best:
+                best = float(value)
+                argmax = (name, index)
+    return {'max_pu': best, 'max_mwh': best * s_base if s_base is not None else None, 'argmax': argmax,
+            'n_entries': n_entries}
+
+
 def configure_shared_ess_operational_state(
         model, shared_ess_idx, s_capacity, e_capacity):
     s_capacity = normalize_shared_ess_capacity(s_capacity)
@@ -1188,6 +1241,15 @@ def configure_shared_ess_operational_state(
                 entry.deactivate()
             else:
                 entry.activate()
+
+    # P5.15 S56 cohort follow-up (Expert ruling 4, D1 (a), S56_DECOMPOSITION_NOTE.md): on a multi-cohort node-year
+    # under a corrected cohort formulation, the aggregate complementarity row `sess_comp` is the only net-forcing
+    # storage row, so it alone is deactivated (gross-flow aggregate rows); every other storage row stays as set above.
+    # Read from a plain per-unit model attribute (`shared_ess_cohort_gross_flow`): absent, or False for this unit,
+    # leaves today's model untouched.
+    if not inactive and shared_ess_cohort_gross_flow(model, shared_ess_idx):
+        for entry in _component_entries_for_shared_ess(model.sess_comp, shared_ess_idx):
+            entry.deactivate()
 
     # P5.4-D2-P: at zero capacity the box still collapses to [0, 0] -- that is a
     # structural gate and the variables are additionally fixed at 0 above. At

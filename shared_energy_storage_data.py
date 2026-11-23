@@ -8,7 +8,8 @@ from openpyxl import Workbook
 from shared_energy_storage import SharedEnergyStorage
 from shared_energy_storage_parameters import SharedEnergyStorageParameters
 from shared_energy_storage_parameters import COHORT_FORMULATIONS, COHORT_FORMULATION_DEFAULT, \
-    COHORT_FORMULATION_INDEPENDENT_UNITS
+    COHORT_FORMULATION_INDEPENDENT_UNITS, COHORT_FORMULATIONS_CORRECTED, \
+    COHORT_FORMULATION_INDEPENDENT_UNITS_ALL_NODE_YEARS
 from model_construction_helpers import period_duration_hours, ESS_DAY_BALANCE_SLACK_FRACTION
 from helper_functions import *
 
@@ -447,8 +448,15 @@ def _build_subproblem(shared_ess_data, node_id):
     # every new Var fixed at 0 and every new row deactivated, in their OWN registry (`_esso_cohort_units_rows`, not
     # `_esso_cohort_constraints`); `_configure_esso_cohort_units_rows` activates them per (node, year) only when >= 2
     # cohorts are active.
+    # P5.15 S56 cohort follow-up (2026-11-23 rulings): `independent_units` stands for every CORRECTED key value
+    # ('independent_units' and the single-cohort A/B option 'independent_units_all_node_years'); the two differ only in
+    # the activation threshold `_configure_esso_cohort_units_rows` applies (registry 'min_active_cohorts').
     cohort_formulation = _esso_cohort_formulation(shared_ess_data)
-    independent_units = (cohort_formulation == COHORT_FORMULATION_INDEPENDENT_UNITS)
+    independent_units = (cohort_formulation in COHORT_FORMULATIONS_CORRECTED)
+    if independent_units:
+        # Expert ruling 4 (addition to D1): the aggregate network recursion is the exact sum of the cohort recursions
+        # only when every cohort at the node has the same eta_ch and eta_dch. Raised at build time.
+        _assert_esso_cohort_efficiencies_equal(shared_ess_data, node_id, shared_ess_idx)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Variables
@@ -565,20 +573,23 @@ def _build_subproblem(shared_ess_data, node_id):
 
     if independent_units:
         # P5.15 S56 (independent_units only; proposal rows 3-8): per-cohort stored energy (MWh, end of period p),
-        # per-cohort reactive power, the per-cohort day-closure slack pair and the aggregate Q-slack pair (E5). All
-        # fixed at 0 here; unfixed by `_configure_esso_cohort_units_rows` on multi-cohort node-years only.
+        # per-cohort reactive power and the aggregate Q-slack pair (E5). All fixed at 0 here; unfixed by
+        # `_configure_esso_cohort_units_rows` on the node-years where the cohort rows are active.
+        #
+        # P5.15 S56 cohort follow-up (Expert ruling 4, D2): the per-cohort day-closure slack pair
+        # (`slack_es_soc_final_per_unit_up/_down`, built by 8c9fd6ec in the network `sess_soc_final` form) is UNWIRED:
+        # no longer constructed on newly built models, and its objective term is gone with it. D2 makes the closure
+        # exact per cohort (`_build_esso_cohort_units_rows`); feasibility is carried by the ESSO P slack and the Q
+        # slack below. `_configure_esso_cohort_units_rows` keeps a `hasattr`-guarded branch for those Vars, for any
+        # model built before this change (none is preserved; the branch is retained, unused, rather than deleted).
         model._esso_cohort_formulation = cohort_formulation
         model.es_soc_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
         model.es_q_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.Reals, initialize=0.00)
         model.es_soc_per_unit.fix(0.00)
         model.es_q_per_unit.fix(0.00)
         if shared_ess_data.params.slacks:
-            model.slack_es_soc_final_per_unit_up = pe.Var(model.years, model.years, model.days, domain=pe.NonNegativeReals, initialize=0.00)
-            model.slack_es_soc_final_per_unit_down = pe.Var(model.years, model.years, model.days, domain=pe.NonNegativeReals, initialize=0.00)
             model.slack_es_qnet_up = pe.Var(model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
             model.slack_es_qnet_down = pe.Var(model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)
-            model.slack_es_soc_final_per_unit_up.fix(0.00)
-            model.slack_es_soc_final_per_unit_down.fix(0.00)
             model.slack_es_qnet_up.fix(0.00)
             model.slack_es_qnet_down.fix(0.00)
 
@@ -895,17 +906,14 @@ def _build_subproblem(shared_ess_data, node_id):
 
     if independent_units and shared_ess_data.params.slacks:
         # P5.15 S56 (independent_units only). E5: the aggregate Q-slack pair, priced like the P-slack pair
-        # (`esso_slack_penalty` per MVAr per period). Day closure: the per-cohort closure-slack pair, priced like the
-        # network's shared-ESS day-balance slack (`shared_ess_day_balance_slack_penalty`: baseMVA *
-        # PENALTY_SHARED_ESS_BALANCE * slack_pu = PENALTY_SHARED_ESS_BALANCE per MWh). Both Var families are fixed at
-        # 0 outside multi-cohort node-years, so they add nothing there.
+        # (`esso_slack_penalty` per MVAr per period). The Var family is fixed at 0 outside the node-years where the
+        # cohort rows are active, so it adds nothing there.
+        # P5.15 S56 cohort follow-up (D2): the per-cohort closure-slack term (PENALTY_SHARED_ESS_BALANCE per MWh on
+        # `slack_es_soc_final_per_unit_up/_down`) is unwired with those Vars -- the closure is exact.
         for y in model.years:
             for d in model.days:
                 for p in model.periods:
                     slack_penalty += esso_slack_penalty * (model.slack_es_qnet_up[y, d, p] + model.slack_es_qnet_down[y, d, p])
-        for (y_inv, y) in model._esso_cohort_units_rows['pairs']:
-            for d in model.days:
-                slack_penalty += PENALTY_SHARED_ESS_BALANCE * (model.slack_es_soc_final_per_unit_up[y_inv, y, d] + model.slack_es_soc_final_per_unit_down[y_inv, y, d])
 
     salvage_value = _build_terminal_salvage_value_expression(shared_ess_data, model, shared_ess_idx)
 
@@ -1905,12 +1913,67 @@ def _esso_cohort_formulation(shared_ess_data):
     return value
 
 
+def _assert_esso_cohort_efficiencies_equal(shared_ess_data, node_id, shared_ess_idx):
+    """P5.15 S56 cohort follow-up (Expert ruling 4, the addition to D1): under a corrected cohort formulation, every
+    cohort a node can hold (one per representative year, its installation-year SharedEnergyStorage -- the object
+    whose eff_ch / eff_dch the cohort SoC row uses) must have the same eta_ch and the same eta_dch, because the
+    network's aggregate SoC recursion is the exact sum of the cohort recursions only then. Exact float equality.
+    Raises ValueError at build time; returns the common (eta_ch, eta_dch)."""
+    effs = {}
+    for year in shared_ess_data.years:
+        shared_energy_storage = shared_ess_data.shared_energy_storages[year][shared_ess_idx]
+        effs[year] = (shared_energy_storage.eff_ch, shared_energy_storage.eff_dch)
+    distinct = sorted(set(effs.values()))
+    if len(distinct) != 1:
+        raise ValueError(f'cohort_formulation {_esso_cohort_formulation(shared_ess_data)!r}: the cohorts at node '
+                         f'{node_id} must have equal eta_ch and eta_dch (the aggregate network SoC recursion is exact '
+                         f'only then); got (eta_ch, eta_dch) by installation year {effs}.')
+    return distinct[0]
+
+
+def shared_ess_active_cohort_counts(shared_ess_data, investment):
+    """P5.15 S56 cohort follow-up: the number of active cohorts per (node, representative year) of an investment
+    candidate ({node_id: {year: {'s': MVA, 'e': MWh}}}), by the ESSO's own tests: a cohort is active iff its
+    investment is not zero (`_configure_esso_cohort_state`: |s| and |e| > SHARED_ESS_ZERO_CAPACITY_TOLERANCE) and
+    the year lies inside its calendar-life window (the tcal_norm rule of the rated-capacity rows of
+    `_build_subproblem` and of `_rebuild_candidate_total_capacities`). Pure; reads only data."""
+    years = list(shared_ess_data.years)
+    tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE
+    counts = dict()
+    for node_id in investment:
+        shared_ess_idx = shared_ess_data.get_shared_energy_storage_idx(node_id)
+        counts[node_id] = {year: 0 for year in years}
+        for y_inv, year_inv in enumerate(years):
+            value = investment[node_id][year_inv]
+            if abs(value['s']) <= tolerance and abs(value['e']) <= tolerance:
+                continue
+            shared_energy_storage = shared_ess_data.shared_energy_storages[year_inv][shared_ess_idx]
+            tcal_norm = round(shared_energy_storage.t_cal / shared_ess_data.years[year_inv])
+            max_tcal_norm = min(y_inv + tcal_norm, len(years))
+            for y in range(y_inv, max_tcal_norm):
+                counts[node_id][years[y]] += 1
+    return counts
+
+
+def shared_ess_network_gross_flow_node_years(shared_ess_data, investment):
+    """P5.15 S56 cohort follow-up (Expert ruling 4, D1 (a)): {node_id: {year: bool}}, True exactly on the node-years
+    where the network aggregate `sess_comp` row is to be deactivated -- >= 2 active cohorts AND a corrected cohort
+    formulation. None under 'legacy_h3' (nothing is switched). The single-cohort A/B option does not change it: with
+    one cohort, `sess_comp` stays as today."""
+    if _esso_cohort_formulation(shared_ess_data) not in COHORT_FORMULATIONS_CORRECTED:
+        return None
+    counts = shared_ess_active_cohort_counts(shared_ess_data, investment)
+    return {node_id: {year: n >= 2 for year, n in by_year.items()} for node_id, by_year in counts.items()}
+
+
 def _build_esso_cohort_units_rows(shared_ess_data, model, shared_ess_idx, circle_rows_by_year):
-    """P5.15 S56 arrangement A (S56_COHORT_FORMULATION_PROPOSAL.md rows 3-9; Expert rulings E1, E2, E5), built only
-    under cohort_formulation 'independent_units'. Every row is built DEACTIVATED and recorded in
+    """P5.15 S56 arrangement A (S56_COHORT_FORMULATION_PROPOSAL.md rows 3-9; Expert rulings E1, E2, E5; cohort
+    follow-up 2026-11-23: Expert rulings 3-4, D1-D2), built only under a CORRECTED cohort_formulation
+    ('independent_units', 'independent_units_all_node_years'). Every row is built DEACTIVATED and recorded in
     `model._esso_cohort_units_rows`; `_configure_esso_cohort_units_rows` activates the rows of a (node, year) only
-    when >= 2 cohorts are active in that year. Built for every (y_inv, y) inside the cohort's calendar-life window
-    (`es_s_rated_per_unit[y_inv, y]` unfixed at build -- the existing lifetime gate).
+    when >= registry['min_active_cohorts'] cohorts are active in that year (2 under 'independent_units'; 1 under the
+    single-cohort A/B option 'independent_units_all_node_years'). Built for every (y_inv, y) inside the cohort's
+    calendar-life window (`es_s_rated_per_unit[y_inv, y]` unfixed at build -- the existing lifetime gate).
 
     Per cohort c = y_inv, block y, day d, period p (MW / MVAr / MWh; dt = period_duration_hours):
       row 3 SoC:     e[c,y,d,p] == e_prev + eta_ch(c) * pch * dt - pdch * dt / eta_dch(c),
@@ -1918,31 +1981,40 @@ def _build_esso_cohort_units_rows(shared_ess_data, model, shared_ess_idx, circle
                      coefficients; eta from the cohort's installation-year SharedEnergyStorage, as the throughput row)
       row 4 window:  e >= ENERGY_STORAGE_MIN_ENERGY_STORED * E_av[c,y];  e <= ENERGY_STORAGE_MAX_ENERGY_STORED * E_av[c,y]
                      (E_av = es_e_available_per_unit, the Var the networks' aggregate E is the sum of)
-      row 5 closure: the network `sess_soc_final_rule` form, per cohort and day:
-                     params.slacks True:  e[c,y,d,T] == INIT * E_av[c,y] + s_up[c,y,d] - s_down[c,y,d],
-                                          0 <= s <= ESS_DAY_BALANCE_SLACK_FRACTION * E_rated(c) + EQUALITY_TOLERANCE
-                                          (bound set by `_configure_esso_cohort_units_rows`), priced
-                                          PENALTY_SHARED_ESS_BALANCE per MWh in `feasibility_penalty`
-                     params.slacks False: -EQUALITY_TOLERANCE <= e[c,y,d,T] - INIT * E_av[c,y] <= EQUALITY_TOLERANCE
+      row 5 closure: EXACT per cohort and day (D2; no closure slack, with or without params.slacks):
+                     e[c,y,d,T] == INIT * E_av[c,y]
+                     (8c9fd6ec built the network `sess_soc_final_rule` form with a priced, bounded slack pair; that
+                     form predates D2 and is unwired -- see the Var section of `_build_subproblem`.)
       row 6 converter: (pch - pdch)^2 + q^2 <= es_s_rated_per_unit[c,y]^2
+      row 6b sum (D1): pch + pdch <= es_s_rated_per_unit[c,y]
+      row 6c complementarity (Expert ruling 3; the network `sess_comp` BILINEAR_RELAXATION form on the cohort's
+                     dimensionless powers, hat = p / S_c, S_c = es_s_investment_fixed[c], the cohort's rated power):
+                     (pch / S_c) * (pdch / S_c) <= ESS_COMPLEMENTARITY_TOLERANCE
+                     i.e. pch * pdch <= ESS_COMPLEMENTARITY_TOLERANCE * S_c^2 (the relative condition `sess_comp`
+                     reformulates exactly); only ever active with S_c > 0 (the cohort is active).
     Per block y, day d, period p:
       row 8 aggregation Q: es_qnet == sum_c q[c] (+ slack_es_qnet_up - slack_es_qnet_down when params.slacks; E5)
       row 9: the aggregate circle rows of `energy_storage_operation_agg` (indices in `circle_rows_by_year`) are
-             deactivated by `_configure_esso_cohort_units_rows` on multi-cohort years.
-    Within-cohort simultaneous charge/discharge is restricted exactly as in the single-cohort ESSO: by no row; the
-    EPS_ESSO_THROUGHPUT throughput regularization and the remedy-(h) tolerances, detector-checked
+             deactivated by `_configure_esso_cohort_units_rows` on the years where the cohort rows are active.
+    Within-cohort simultaneous charge/discharge: restricted by rows 6b-6c (Expert ruling 3: "activate", with the
+    per-cohort sum row), in addition to the EPS_ESSO_THROUGHPUT throughput regularization; detector-checked
     (`p515_s56_cohort_diagnostics.py`). Inter-cohort transfer is allowed (E2)."""
     repr_years = [year for year in shared_ess_data.years]
     dt = period_duration_hours(model)
     final_p = model.periods[-1]
     slacks = shared_ess_data.params.slacks
+    min_active = 1 if getattr(model, '_esso_cohort_formulation', None) == COHORT_FORMULATION_INDEPENDENT_UNITS_ALL_NODE_YEARS else 2
     registry = {'pairs': [], 'cohort': dict(), 'aggregate': {y: [] for y in model.years},
-                'aggregate_circle': {y: list(circle_rows_by_year[y]) for y in model.years}}
+                'aggregate_circle': {y: list(circle_rows_by_year[y]) for y in model.years},
+                'min_active_cohorts': min_active}
 
     model.energy_storage_cohort_soc = pe.ConstraintList()
     model.energy_storage_cohort_soc_window = pe.ConstraintList()
     model.energy_storage_cohort_soc_final = pe.ConstraintList()
     model.energy_storage_cohort_converter = pe.ConstraintList()
+    # P5.15 S56 cohort follow-up: rows 6b (sum) and 6c (complementarity).
+    model.energy_storage_cohort_sum_limit = pe.ConstraintList()
+    model.energy_storage_cohort_complementarity = pe.ConstraintList()
     model.energy_storage_operation_agg_q = pe.ConstraintList()
 
     def _add(name, expr, key):
@@ -1963,6 +2035,7 @@ def _build_esso_cohort_units_rows(shared_ess_data, model, shared_ess_idx, circle
             rows = registry['cohort'][(y_inv, y)] = []
             e_av = model.es_e_available_per_unit[y_inv, y]
             s_max = model.es_s_rated_per_unit[y_inv, y]
+            s_hat_base = model.es_s_investment_fixed[y_inv]
             for d in model.days:
                 for p in model.periods:
                     pch = model.es_pch_per_unit[y_inv, y, d, p]
@@ -1977,16 +2050,11 @@ def _build_esso_cohort_units_rows(shared_ess_data, model, shared_ess_idx, circle
                     _add('energy_storage_cohort_soc_window', soc <= ENERGY_STORAGE_MAX_ENERGY_STORED * e_av, rows)
                     _add('energy_storage_cohort_converter',
                          (pch - pdch) ** 2 + model.es_q_per_unit[y_inv, y, d, p] ** 2 <= s_max ** 2, rows)
+                    _add('energy_storage_cohort_sum_limit', pch + pdch <= s_max, rows)
+                    _add('energy_storage_cohort_complementarity',
+                         (pch / s_hat_base) * (pdch / s_hat_base) <= ESS_COMPLEMENTARITY_TOLERANCE, rows)
                 soc_final = model.es_soc_per_unit[y_inv, y, d, final_p]
-                if slacks:
-                    _add('energy_storage_cohort_soc_final',
-                         soc_final == ENERGY_STORAGE_RELATIVE_INIT_SOC * e_av
-                         + model.slack_es_soc_final_per_unit_up[y_inv, y, d]
-                         - model.slack_es_soc_final_per_unit_down[y_inv, y, d], rows)
-                else:
-                    _add('energy_storage_cohort_soc_final',
-                         pe.inequality(-EQUALITY_TOLERANCE, soc_final - ENERGY_STORAGE_RELATIVE_INIT_SOC * e_av,
-                                       EQUALITY_TOLERANCE), rows)
+                _add('energy_storage_cohort_soc_final', soc_final == ENERGY_STORAGE_RELATIVE_INIT_SOC * e_av, rows)
 
     for y in model.years:
         for d in model.days:
@@ -2010,21 +2078,26 @@ def _configure_esso_cohort_units_rows(model):
     `_configure_esso_cohort_pnet_share_rows`). A no-op on models built without the registry ('legacy_h3' builds and
     models pickled before S56) -- the `hasattr` guard.
 
-    For each block y: multi = (>= 2 cohorts active in y). Then
+    For each block y: multi = (>= registry['min_active_cohorts'] cohorts active in y; 2 under 'independent_units', 1
+    under the single-cohort A/B option 'independent_units_all_node_years'; models built before the key existed carry
+    no 'min_active_cohorts' and use 2). Then
       cohort rows of (y_inv, y) active  iff multi and y_inv active in y;  else deactivated
-      es_soc / es_q / closure slacks     unfixed iff the same;              else fixed at 0
+      es_soc / es_q                      unfixed iff the same;              else fixed at 0
       aggregate Q rows of y              active  iff multi;                 else deactivated
       Q-slack pair of y                  unfixed iff multi (and slacks);    else fixed at 0
-      aggregate circle rows of y         active  iff NOT multi (today's row on single-cohort years)
-    Closure-slack bounds: [0, ESS_DAY_BALANCE_SLACK_FRACTION * E_rated(y_inv) + EQUALITY_TOLERANCE] (the network's
-    `configure_shared_ess_operational_state` rule, with the cohort's rated energy Param in place of the available
-    energy the network receives, since E_av is a Var in the ESSO). A newly active SoC Var is given the value
-    INIT * E_rated (the network's re-initialisation of `shared_es_soc`)."""
+      aggregate circle rows of y         active  iff NOT multi (today's row where the cohort rows are inactive)
+    The cohort rows include the exact closure, the sum row and the complementarity row (cohort follow-up, D1-D2,
+    Expert ruling 3). A newly active SoC Var is given the value INIT * E_rated (the network's re-initialisation of
+    `shared_es_soc`).
+    Closure-slack Vars (`slack_es_soc_final_per_unit_*`): UNWIRED by the cohort follow-up (D2) and absent from newly
+    built models; the `hasattr`-guarded branch below is retained, unused, for any model built before that change."""
     if not hasattr(model, '_esso_cohort_units_rows'):
         return
     registry = model._esso_cohort_units_rows
+    min_active = registry.get('min_active_cohorts', 2)
     years = list(model.years)
     has_slacks = hasattr(model, 'slack_es_qnet_up')
+    has_closure_slacks = hasattr(model, 'slack_es_soc_final_per_unit_up')
     multi_years = []
     for y in years:
         active_cohorts = [
@@ -2032,7 +2105,7 @@ def _configure_esso_cohort_units_rows(model):
             if (not model._esso_cohort_inactive.get(y_inv, False))
             and _esso_cohort_pair_is_within_lifetime(model, y_inv, y)
         ]
-        multi = len(active_cohorts) >= 2
+        multi = len(active_cohorts) >= min_active
         if multi:
             multi_years.append(y)
         for y_inv in years:
@@ -2048,7 +2121,7 @@ def _configure_esso_cohort_units_rows(model):
                     else:
                         soc.fix(0.00)
                     _set_esso_variable_state(model.es_q_per_unit[y_inv, y, d, p], pair_on, 0.00)
-                if has_slacks:
+                if has_closure_slacks:  # retained, unused on newly built models (see the docstring)
                     slack_ub = (ESS_DAY_BALANCE_SLACK_FRACTION * e_rated + EQUALITY_TOLERANCE) if pair_on else 0.00
                     for name in ('slack_es_soc_final_per_unit_up', 'slack_es_soc_final_per_unit_down'):
                         var = getattr(model, name)[y_inv, y, d]
