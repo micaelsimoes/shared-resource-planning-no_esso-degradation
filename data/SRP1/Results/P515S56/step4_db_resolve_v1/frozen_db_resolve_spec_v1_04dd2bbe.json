@@ -1,0 +1,214 @@
+{
+ "authority": [
+  "TASKS.md \"Expert rulings on handback 3 (2026-11-23)\" item 5: D_b mapping NOT confirmed; causal split needs a TN-only re-solve at the pinned AA-off arm realized DN exchanges, both blocks (guarded, frozen spec): pinned-accounting = C_TN-resolve - Q_pin (sign empirical); DN re-optimization gain = wC - C_TN-resolve (<= 0 only up to local optimality)",
+  "TASKS.md Order (2026-11-23, after handback 3 rulings): D_b TN-only re-solve, active, clean export, own output roots",
+  "Planner task 2026-11-23 (Task 1), predictions B1-B3; spec precedent 72125c3b (D0 v2)"
+ ],
+ "blocks": {
+  "deciding": [
+   "2025|Winter",
+   "2035|Summer"
+  ],
+  "reported_not_deciding": [
+   "2025|Summer (merged-only C_central; re-solved because it sits in instance B)"
+  ]
+ },
+ "failure_policy": "no re-run, no tuning, no other settings; a failed solve is recorded and its block reported indeterminate; a pre-solve gate failure refuses the run with zero solves",
+ "guards": {
+  "concurrency": "refuses when another copy of the stage script runs; other p5* python processes recorded",
+  "count_rule": "3 blocks (A: 2025|Winter; B: 2025|Summer, 2035|Summer) x 2 arms (A control, B realized); exactly 6 solves and 6 executions from p515_s56_db_tn_resolve.py:_solve_one; 0 under --trial or a pre-solve refusal",
+  "expected_solves": 6,
+  "imported_guards": "D0 v2 / v1 / post-check guards uninstalled after import, counts recorded, all 0",
+  "pickle": "pickle.load/loads blocked, verified 0",
+  "run": "attached, stdout and stderr captured to sibling logs"
+ },
+ "harness": {
+  "export_script": "p515_s56_db_t8_export.py",
+  "imports": [
+   "p515_s56_tn_realized_resolve_v2.py (build_arm_v2, _arm_status)",
+   "p515_s56_tn_realized_resolve.py (block_data, build_arm, model_gates, extract, max_violation, configure)"
+  ],
+  "script": "p515_s56_db_tn_resolve.py"
+ },
+ "instances": [
+  {
+   "K": 44,
+   "blocks": [
+    "2025|Winter"
+   ],
+   "campaign_spec_path": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/campaign_spec_s56s4main_v2_main_a_a504ecb8.json",
+   "campaign_spec_sha256": "a504ecb84d81642f556514f69b7895749f709ea08522a2809fec8d02401b35fb",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "case_path": "data/SRP1/Results/P515S56/step4_instances_v1/SRP1__s56_step4_2025_Winter.json",
+   "case_sha256": "92e6283bdb1dafcb328ec951095ebf2173d314754e7f946c0c2210694ca7537e",
+   "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/f7d156742d1bf952_x0_pinned_aa_off_main",
+   "eval_dir_inputs_sha256": {
+    "child_manifest_sha256.json": "bf036fa447f6f6b965477bf9ea2bb4c7834ad187dddf92c3e0de5525ad93f9a5",
+    "evaluation_record.json": "73dd61f1301206a21e8e38dae128f3966b80b2f54971f22cf0dae27e0d083a41",
+    "multiscenario_terminal.json": "b1e305e3b8a4ba99b696da04b24f65446b8cb49b15b33773fbdfa068014edb2c",
+    "s56_cycle_capture.jsonl": "52aaddf067d610eba6f2f1c934c050235ed4c8ea0f47e594c7ea8090784a7a79"
+   },
+   "eval_key": "f7d156742d1bf95219e96e60912ed7006a7710ca6653c0a9444e6d476a448939",
+   "label": "A",
+   "scenario_checksum": "58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e"
+  },
+  {
+   "K": 97,
+   "blocks": [
+    "2025|Summer",
+    "2035|Summer"
+   ],
+   "campaign_spec_path": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/campaign_spec_s56s4main_v2_main_b_2e3fe0b7.json",
+   "campaign_spec_sha256": "2e3fe0b7ac5bace4e9293f867bc36c774b3ea7c9a1d6070671ef24d9e03183fa",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "case_path": "data/SRP1/Results/P515S56/step4_instances_v2/SRP1__s56_step4_2025_2035_Summer.json",
+   "case_sha256": "b1cd5440e70fb8cde8694b12f9e897037dcb072c4551fe97753e3785a1b6a00c",
+   "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/28ae4f1905fc503f_x0_pinned_aa_off_main",
+   "eval_dir_inputs_sha256": {
+    "child_manifest_sha256.json": "e2573367c905b2bca321992830bc6b49b8ce9d25f2a3bed09d020835f8b8af98",
+    "evaluation_record.json": "348d8dc9bfc3d1206d4d343acd8313e20efb762a549b7d1ecb084fddbab89b81",
+    "multiscenario_terminal.json": "dfc0e041ef79620483c8f5f264ea1ccfc692ec3e736297a5045fe553d3564082",
+    "s56_cycle_capture.jsonl": "102a8715c140b254113fc15b23fdfb7503683a76202ed73c6512fa8c5a8dbb5f"
+   },
+   "eval_key": "28ae4f1905fc503f7a2566ec84af51b525fadf4fde85a6279134edb430788f7d",
+   "label": "B",
+   "scenario_checksum": "ade7456c3d110e4cbc9aec7f701feb431854bd03ec1dc8f37601fc164721ed1a"
+  }
+ ],
+ "isolation": {
+  "export_commit": "4c586e5ef9751fd291cc9ef7edc002b7ed9c5aaf",
+  "how": "git archive of the export commit (every tracked path outside data/SRP1/Results plus the declared results inputs) into a new scratch directory by p515_s56_db_t8_export.py; this spec and the stage script overlaid byte for byte from the commit that freezes them (additions only); EXPORT_PROVENANCE.json records both commits and the sha256 of every root file; the stage script refuses when itself, this spec or any imported root module differs from that record; the working directory is the export (relative solver logs land there); outputs copied afterwards into the main checkout root data/SRP1/Results/P515S56/step4_db_resolve_v1/",
+  "results_inputs": [
+   "data/SRP1/Results/P515S56/step4_instances_v1",
+   "data/SRP1/Results/P515S56/step4_instances_v2",
+   "data/SRP1/Results/P515S56/step4_main_v2"
+  ]
+ },
+ "model": {
+  "arm_A_control": "every ADN pc/qc fixed in every scenario at the TSO terminal scenario-common exchange (D0 Arm A); reported beside, not deciding",
+  "arm_B": "every ADN pc/qc fixed PER SCENARIO at the DN realized interface exchange of that scenario (pinned arm DSO block interface_profiles.per_scenario, key <s_m>_<s_o>); TN interface voltage free within its bounds",
+  "machinery": "D0 v2 (spec 72125c3b): p515_s56_tn_realized_resolve_v2.build_arm_v2 = v1 build_arm (production NetworkData.build_model of the TN of a deep-copied derived instance; candidate x0 applied as production; terminal published available capacity; _prepare_transmission_objectives_for_admm; interface settlement weight 0; ADN setup as create_transmission_network_model; no ADMM terms, no pin, no row 18) + isolate_shared_ess (inert at x0: no storage)",
+  "per_scenario_note": "with fixed exchanges and no storage the 9 scenarios of a block share no free variable, so one multi-scenario solve per block equals the 9 per-scenario solves (D0 practice)"
+ },
+ "not_permitted": [
+  "production or harness edits",
+  "any ADMM run",
+  "more solves than declared",
+  "writing into step4_main_v2/, step4_postdiag_v1/ or cohort_followup_v1/"
+ ],
+ "objective_convention": "EUR of total discounted cost (block weight w_b = production _get_admm_block_weight = years x days / 1.02^(y - 2025)). w_b C_central: step 3 gross (model.objective with settlement weight 0, no row 18, no pin, no salvage). Q_pin: pinned AA-off arm at terminal cycle K, contracted settlement excluded (= w_b [TSO base + sum_DN (DSO base + DSO covariance settlement)]). C_TN-resolve = w_b [C_TN,B + sum_DN DSO base]: C_TN,B = TN-only model.objective (settlement weight 0, no pin, no row 18, no ADMM terms; generation + flexibility + load curtailment + slack terms + zero-weighted penalties) at the realized per-scenario DN exchanges; DSO base = the pinned arm DN operating cost sum_s omega_s obj_s (no settlement, no pin). T1 = C_TN-resolve - Q_pin; T2 = w_b C_central - C_TN-resolve; D_b = w_b C_central - Q_pin = T1 + T2.",
+ "outputs": {
+  "files": [
+   "run/db_tn_resolve_results.json",
+   "run/manifest_sha256.json",
+   "run/logs/**",
+   "run_stdout.log",
+   "run_stderr.log",
+   "EXPORT_PROVENANCE.json (copy)",
+   "stage manifest"
+  ],
+  "root": "data/SRP1/Results/P515S56/step4_db_resolve_v1/",
+  "run_dir_in_export": "data/SRP1/Results/P515S56/step4_db_resolve_v1/run (must not exist)"
+ },
+ "predecessor": null,
+ "predictions": {
+  "B1": {
+   "numeric_addition": "T1 >= D_b - tau_b (implied by B2 given D_b > 0; recorded so B1 and B2 are read together, not as independent confirmations)",
+   "statement": "pinned-accounting term T1 = C_TN-resolve - Q_pin > 0 on both calibration blocks (2025|Winter, 2035|Summer)"
+  },
+  "B2": {
+   "statement": "DN re-optimization gain T2 = w_b C_central - C_TN-resolve <= tau_b on both calibration blocks",
+   "tolerance_eur_per_day": 2.0,
+   "tolerance_rule": "tau_b = w_b x 2 EUR/day (A: 910.00 EUR; B 2035|Summer: 746.52 EUR): the solve tolerance, 57x the step 3 merged-vs-single stopping offset (0.035 EUR/day) and 1.1e-5 (A) / 1.3e-5 (B) relative to C_central; local-optimality caveat: C_central is a local IPOPT optimum and the composite (TN re-solve + pinned DN schedules) is feasible for the merged model only where the TN interface voltage equals the DN root voltage (mismatch reported beside)"
+  },
+  "B3": {
+   "operational": "a = T1 + T2 = (C_TN-resolve - Q_pin) + (w_b C_central - C_TN-resolve); b = D_b = w_b C_central - Q_pin; summands |C_TN-resolve|, |Q_pin|, |w_b C_central|, |C_TN-resolve| (a) and |w_b C_central|, |Q_pin| (b); u = 2^-53",
+   "statement": "T1 + T2 == D_b to the adopted M1 tolerance: |a - b| <= 64 u sum|summands| over both sides, floor 1e-6 EUR"
+  },
+  "CTRL": {
+   "statement": "not deciding: w_b (C_TN,A - TSO base) <= tau_b (the TN re-optimized at the pinned scenario-common exchange without ADMM terms is no costlier than the ADMM TSO terminal point; D0 v2 precedent: -0.05 to -9.2 EUR/day on 20 blocks)"
+  },
+  "P_solves": {
+   "statement": "6/6 solves strict \"Optimal Solution Found.\" (termination optimal, production success test true); a block whose Arm B fails is indeterminate for B1-B3"
+  },
+  "reading_rule": "B1 and B2 are read per calibration block; each term is also stated against its resolution (T1: the last-10-cycle max |step| of Q_pin, and step 4 bar S_b; T2: the last-10-cycle max |step| of w_b sum_DN DSO base); a term smaller than its resolution is indeterminate in sign. The result is reported as the causal split; the earlier accounting split (wC - Q_pin in full + covariance) is an identity with no sign content and is not called a decomposition."
+ },
+ "reported": [
+  "Q_pin",
+  "w_C_central",
+  "D_b",
+  "C_TN_resolve",
+  "C_TN_B_objective",
+  "C_TN_A_objective",
+  "T1_pinned_accounting",
+  "T2_DN_reoptimization_gain",
+  "B3_identity",
+  "status_iterations_time",
+  "production_success_test",
+  "max_constraint_violation",
+  "slack_detector_terms",
+  "interface_voltage_mismatch",
+  "dso_covariance_per_block",
+  "resolution_last10_steps",
+  "control_reading_beside",
+  "predictions"
+ ],
+ "solver": {
+  "attempts_per_block": 1,
+  "call": "Network.run_smopf(model, params, from_warm_start=False)",
+  "executable": "/usr/local/bin/ipopt (NLP_SOLVER_PATH)",
+  "option_overrides": {
+   "compl_inf_tol": 1e-06,
+   "linear_solver": "ma97",
+   "tol": 1e-05
+  },
+  "recovery_enabled": false,
+  "recovery_tier2_enabled": false,
+  "success_test": "production helper_functions.solver_result_succeeded(result); nothing extracted from a rejected solve; every status asserted as a check (a failed solve fails the run record, it is never read as loaded); strict = IPOPT exit \"Optimal Solution Found.\""
+ },
+ "stage": "P5.15 S56 D_b causal split: TN-only re-solve at the pinned AA-off arm realized DN exchanges (frozen spec v1)",
+ "step4": {
+  "D_b_as_reported": {
+   "A|2025|Winter": 193439.1199682355,
+   "B|2025|Summer (merged-only, not deciding)": 72648.88430845737,
+   "B|2035|Summer": 61053.69155650586
+  },
+  "evaluation_path": "data/SRP1/Results/P515S56/step4_main_v2/step4_main_evaluation_20261123T163553.json",
+  "evaluation_sha256": "95a4c7d640cd1c4f8eb16f872f7082f725b5327f94f71929d84e8ddc216d6c9b",
+  "spec_path": "data/SRP1/Results/P515S56/step4_main_v2/frozen_step4_main_spec_v2_7ca210fb.json",
+  "spec_sha256": "7ca210fbcd645cc3f3d46554ce7efbdbf2abcedcd183aa825a8eaf160794ccb0"
+ },
+ "version": 1
+}

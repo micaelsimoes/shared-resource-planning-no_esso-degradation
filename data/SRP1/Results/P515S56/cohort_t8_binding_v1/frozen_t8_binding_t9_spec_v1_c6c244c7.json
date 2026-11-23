@@ -1,0 +1,411 @@
+{
+ "authority": [
+  "TASKS.md \"Expert rulings on handback 3 (2026-11-23)\" item 4: T8 (a) accepted; within-cohort leak detector with ceiling lambda.L priced <= 1 % of R/4; two ms solves confirming the row binds (row dual + hourly profile); explain the three undiagnosed T9 changes before the harness wiring spec is frozen",
+  "Planner task 2026-11-23 (Tasks 2 and 3): exactly 2 binding solves; at most 4 T9 solves, declared here",
+  "cohort follow-up spec v1 287c0da6 (the test definitions, re-used verbatim)"
+ ],
+ "frozen_records": {
+  "after": "data/SRP1/Results/P515S56/cohort_followup_v1/run/child_solves_after.json",
+  "v1_spec": "data/SRP1/Results/P515S56/frozen_cohort_followup_spec_v1_287c0da6.json",
+  "v2": "data/SRP1/Results/P515S56/cohort_esso_v2/child_solves.json"
+ },
+ "grids": {
+  "fiveblock_3x3": {
+   "case_file": "SRP1__s53_3x3.json",
+   "plans": {
+    "only2031": [
+     [
+      7,
+      2031,
+      0.25,
+      1.0
+     ]
+    ],
+    "ref_unit": [
+     [
+      7,
+      2025,
+      0.25,
+      1.0
+     ]
+    ],
+    "x0": []
+   },
+   "scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+   "source_case_rel": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+   "source_case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+   "years": {
+    "2025": 3,
+    "2028": 3,
+    "2031": 3,
+    "2034": 3,
+    "2037": 3
+   }
+  },
+  "srp1": {
+   "case_file": "SRP1.json",
+   "plans": {
+    "only2030": [
+     [
+      7,
+      2030,
+      0.25,
+      1.0
+     ]
+    ],
+    "only2035": [
+     [
+      7,
+      2035,
+      0.25,
+      1.0
+     ]
+    ],
+    "p2025_2030": [
+     [
+      7,
+      2025,
+      0.25,
+      1.0
+     ],
+     [
+      7,
+      2030,
+      0.25,
+      0.5
+     ]
+    ],
+    "ref_unit": [
+     [
+      7,
+      2025,
+      0.25,
+      1.0
+     ]
+    ],
+    "x0": []
+   },
+   "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+   "years": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   }
+  }
+ },
+ "guards": {
+  "child": "stage guard + the harness module guard (installed at its import, same site), both verified at the declared count; the optimize-wrapper call count == declared",
+  "expected_solves_total": 6,
+  "parent": "SolveProfileGuard(permitted=()) verified at 0; pickle blocked in every process, verified 0",
+  "per_child": {
+   "binding": 2,
+   "t9_rows_off": 3,
+   "t9_sum_off": 1
+  },
+  "run": "attached; parent stdout/stderr captured by the caller; each child stdout/stderr captured by the parent; children run one after the other",
+  "site": "shared_energy_storage_data.py:_run_solver_attempt (production ESSO solve; a recovery retry would exceed the count and fail)"
+ },
+ "harness": {
+  "imports": [
+   "p515_s56_cohort_followup_tests.py (child_solves, _read_planning)",
+   "p515_s56_cohort_diagnostics.py"
+  ],
+  "script": "p515_s56_t8_binding_t9.py"
+ },
+ "inputs": {
+  "data/SRP1/Results/P515S56/cohort_esso_v2/child_solves.json": "f80984d5b3efc8e5aedd204bd8945a22aebf4a6e228604c9d0b54dfd7a53ad9c",
+  "data/SRP1/Results/P515S56/cohort_followup_v1/run/child_solves_after.json": "fc801152188a9e9d44c3e3921f52024c26153a177e8d808c3506489f5454d714",
+  "data/SRP1/Results/P515S56/frozen_cohort_followup_spec_v1_287c0da6.json": "287c0da6625e757fed1e9c6c6b02a09d1fc72b9a1e4624a3bcf273830f294c46"
+ },
+ "isolation": {
+  "code_identity_with_the_frozen_T8_run": "the after-tree of the cohort follow-up run (scratch tree_after) and 4c586e5e differ in 2 of 602 root .py files (p515_s44_campaign_harness.py, p515_s56_step4_capture_check.py; neither on the ESSO solve path) and in 1 of 84 data/SRP1 input files (SRP1__s53_3x3.json, the five-block case, not read by these tests); checked before freezing",
+  "export_commit": "4c586e5ef9751fd291cc9ef7edc002b7ed9c5aaf",
+  "how": "git archive of the export commit by p515_s56_db_t8_export.py (tracked paths outside data/SRP1/Results plus the declared results inputs); this spec and the stage script overlaid from the commit that freezes them; EXPORT_PROVENANCE.json; working directory = the export; outputs copied into data/SRP1/Results/P515S56/cohort_t8_binding_v1/"
+ },
+ "leak_detector": {
+  "L": "sum over cohorts, block-days and hours of max(min(p_ch, p_dch), 0) x 1 h (MWh per representative day), from the hourly capture of the reproduced T8 (T8b beside)",
+  "S_c_mva": {
+   "2025": 0.25,
+   "2030": 0.25,
+   "2035": 0.25
+  },
+  "beside": [
+   "the conversion-loss form (1/eta_dch - eta_ch) x the primary",
+   "undiscounted primary",
+   "the row-dual implied value sum |dual| x max(p_ch, p_dch)/S_c^2 x m in ESSO objective units (sigma-scaled ADMM objective: not a EUR price, so not compared with the ceiling)"
+  ],
+  "ceiling_eur": 25.0,
+  "ceiling_rule": "lambda.L priced <= 1 % of R/4, R = 10,000 EUR",
+  "eta_ch": 0.97,
+  "eta_dch": 0.96,
+  "horizon_weight": "days[d] x years[y] of the ESSO (the real days a representative block-day stands for), discounted by 1/(1 + r)^(y - y0), r = the TN discount factor (the production planning weight)",
+  "price_primary": "the TN expected day-ahead energy price of that block-day and hour (sum_m prob_m cost_energy_p[m][t], SRP1 case): a EUR/MWh price directly comparable with the EUR ceiling; applied to the whole leak L (an upper bound: the leak destroys only (1/eta_dch - eta_ch) = 7.2 % of L as conversion loss)"
+ },
+ "not_permitted": [
+  "production or harness edits (the harness module is imported unedited)",
+  "any ADMM run",
+  "more solves than declared",
+  "writing into cohort_followup_v1/"
+ ],
+ "outputs": {
+  "root": "data/SRP1/Results/P515S56/cohort_t8_binding_v1/",
+  "run_dir_in_export": "data/SRP1/Results/P515S56/cohort_t8_binding_v1/run (must not exist)"
+ },
+ "predecessor": null,
+ "predictions": {
+  "T8-B1": {
+   "binding_threshold": 9.999e-05,
+   "nonbinding_value_max": 5e-05,
+   "operational": "for every active cohort row with value >= 0.9999e-4: dual imported and |dual| > 0, and min |dual| over those rows >= 100 x max |dual| over the active rows with value <= 0.5e-4 (an interior-point method gives every inequality a positive multiplier mu/slack; the separation is what distinguishes a binding row); held per case (T8, T8b)",
+   "separation_factor": 100.0,
+   "statement": "the complementarity row dual is nonzero at every hour where the row value is >= 0.9999e-4"
+  },
+  "T8-B2": {
+   "criterion": "bitwise (the frozen record stores full float repr, so it supports bitwise); rel <= 1e-9 recorded beside; T8b likewise (informational)",
+   "statement": "the first solve reproduces the frozen T8 run: admm_objective, feasibility_penalty and L (max over cohorts of within-cohort L, 2.475074215145362e-4 MWh/day) BITWISE"
+  },
+  "T8-B3": {
+   "operational": "the set of (cohort, block-day) with a binding row (value >= 0.9999e-4) is exactly the 2025 cohort on the 8 multi-cohort block-days (2030 and 2035 x 4 days), and on each the binding periods are exactly {1, 2, 3, 4} (0-based period index, the p_req charge periods); the share of L in periods 1-4 is reported beside (expected ~0.8 from the frozen 4.85 / 4.69 hour-equivalents)",
+   "statement": "the hours with the leak are the charge hours 1-4"
+  },
+  "T9-F": {
+   "abs_tol": 1e-09,
+   "statement": "rows-off feasibility_penalty == the frozen after value within 1e-9 abs (the dispatch does not enter the objective; the v2 -> after penalty change is the closure-slack constant alone)"
+  },
+  "T9-R": {
+   "fraction": 0.05,
+   "mechanism_if_held": "the three tests have a flat objective in the free dispatch (objective = the feasibility penalty, identical up to the closure-slack constant); IPOPT returns the barrier (analytic) centre of the degenerate optimal face; rows 6b/6c add barrier terms (and, at the t_ii_b / t_iv_peak discharge box, a near-active sum row), which moves that centre",
+   "quantities": [
+    {
+     "path": "precharged_cohort_stored_rise_before_peak_mwh",
+     "test": "t_ii_b"
+    },
+    {
+     "path": "detectors.summary_multi_cohort.window_margin_min_mwh",
+     "test": "t_iii_indep"
+    },
+    {
+     "path": "detectors.summary_multi_cohort.within_cohort_simultaneity_max_mwh",
+     "test": "t_iv_peak"
+    },
+    {
+     "path": "inter_cohort_gross_transfer_mwh",
+     "test": "t_iv_peak"
+    }
+   ],
+   "statement": "with the two new row families deactivated, each undiagnosed quantity returns to its v2 value within 5 % of its v2 -> after change: the change is caused by rows 6b/6c, the closure-slack removal contributing <= 5 %"
+  },
+  "T9-S": {
+   "min_share": 0.5,
+   "statement": "t_ii_b: the sum rows carry at least half of the row-family effect: (X_after - X_sum_off) / (X_after - X_rows_off) >= 0.5 (the sum row sits 8.7e-9 MW from its bound at the discharge hour; the complementarity row body is at most 1.7e-6 against 1e-4)"
+  },
+  "failure_policy": "a failed prediction is recorded, not re-run; T9 changes without a supported mechanism are listed under Not confirmed"
+ },
+ "reported": [
+  "T8_hourly_pch_pdch_row_value_row_dual",
+  "bound_multipliers_pch_pdch",
+  "T8_objective_and_L_reproduction",
+  "leak_detector_lambda_L",
+  "T9_rows_off_values",
+  "T9_sum_off_values",
+  "mu_final",
+  "guards",
+  "predictions"
+ ],
+ "solves": {
+  "binding": {
+   "declared_count": 2,
+   "order": [
+    "t_v_tv_on",
+    "t8b_two_cohort"
+   ]
+  },
+  "grid": "srp1",
+  "node": 7,
+  "permitted_site": "shared_energy_storage_data.py:_run_solver_attempt",
+  "t9_rows_off": {
+   "declared_count": 3,
+   "order": [
+    "t_ii_b",
+    "t_iii_indep",
+    "t_iv_peak"
+   ]
+  },
+  "t9_sum_off": {
+   "declared_count": 1,
+   "order": [
+    "t_ii_b"
+   ]
+  },
+  "t_ii": {
+   "a": {
+    "discharge_period": 0,
+    "modes": [
+     "independent_units",
+     "legacy_h3"
+    ],
+    "other_periods_of_the_day": "free (so the daily closure can be met)",
+    "request_mw": -0.5
+   },
+   "b": {
+    "discharge_period": 6,
+    "other_periods_of_the_day": "free (periods 0-5: pre-charge window chosen by the solver)",
+    "precharged_cohort": 2030,
+    "request_mw": -0.5
+   },
+   "block": 2030,
+   "day": "Spring",
+   "plan": [
+    [
+     7,
+     2025,
+     0.25,
+     1.0
+    ],
+    [
+     7,
+     2030,
+     0.25,
+     0.5
+    ]
+   ]
+  },
+  "t_iii": {
+   "block": 2035,
+   "day": "Spring",
+   "fraction_f": 0.97,
+   "plan": [
+    [
+     7,
+     2025,
+     0.25,
+     1.0
+    ],
+    [
+     7,
+     2035,
+     0.25,
+     1.0
+    ]
+   ],
+   "profile_rule": "swing = (0.5-0.1) * f * sum_c E_cal(c) with E_cal = E_rated * phi^(n*k) (calendar-only end-of-block, an upper bound on E_av); phases at rate_mw from period 0, each on a new period, last partial: discharge swing*eta_dch, charge 2*swing/eta_ch, discharge swing*eta_dch; every other period 0; all periods fixed",
+   "rate_mw": 0.2,
+   "start_period": 0,
+   "zero_solve_numbers": {
+    "E_cal_2025_in_2035": 0.7971562536487744,
+    "E_cal_2035_in_2035": 0.9272165023656249,
+    "legacy_old_cohort_implied_fraction_range_calendar_only": [
+     0.0803,
+     0.9197
+    ],
+    "swing_mwh": 0.669056629333587
+   }
+  },
+  "t_iv": {
+   "block": 2030,
+   "control": "every period of the day fixed 0 (no peak)",
+   "day": "Spring",
+   "peak_period": 12,
+   "peak_rule": "peak = midpoint of no_transfer_max = sum_c min(s_c, 0.4*E_cal_c*eta_dch) and with_transfer_max = min(s_A, 0.4*E_A*eta_dch) + min(s_B, (0.4*E_B + gain)*eta_dch), gain = max(0, 0.4*E_A - s_A/eta_dch)*eta_dch*eta_ch (A = 2025 cohort, B = 2030 cohort, calendar-only E); periods before the peak fixed 0, after the peak free (recharge to the closure)",
+   "plan": [
+    [
+     7,
+     2025,
+     0.25,
+     1.0
+    ],
+    [
+     7,
+     2030,
+     0.25,
+     0.5
+    ]
+   ],
+   "zero_solve_numbers": {
+    "no_transfer_max_mw": 0.4280255684542,
+    "peak_mw": 0.4640127842271,
+    "with_transfer_max_mw": 0.5
+   }
+  },
+  "t_v": {
+   "p_req_profile_mw": {
+    "1": 0.15,
+    "17": -0.14,
+    "18": -0.14,
+    "19": -0.14,
+    "2": 0.15,
+    "20": -0.14,
+    "3": 0.15,
+    "4": 0.15
+   },
+   "plan": [
+    [
+     7,
+     2025,
+     0.25,
+     1.0
+    ],
+    [
+     7,
+     2030,
+     0.25,
+     1.0
+    ],
+    [
+     7,
+     2035,
+     0.25,
+     0.5
+    ]
+   ],
+   "plan_two_cohort": [
+    [
+     7,
+     2025,
+     0.25,
+     1.0
+    ],
+    [
+     7,
+     2030,
+     0.25,
+     1.0
+    ]
+   ],
+   "stage": "ADMM: create_shared_energy_storage_model (initial solve stubbed) + update_shared_energy_storage_model_to_admm with production al-scale and sigma; p_req = profile on every (y, d), q_req 0, duals 0",
+   "starts": {
+    "as_built": "TV on: the built model values",
+    "newest": "TV off: the same on the newest",
+    "oldest": "TV off: on multi-cohort blocks the request placed on the oldest active cohort (pch/pdch values), others 0"
+   },
+   "starts_note": "'two warm starts' implemented as two cold production solves (from_warm_start False) from two different primal starting points",
+   "tv_off": "in_objective False",
+   "tv_on": "salvage in_objective True (in memory), kappa = a/sigma read from the model",
+   "two_cohort_note": "T8b: the task's description of the H_B case reads '2025 + 2030 cohorts'; the recorded H_B case (cohort_esso_v2 t_v_tv_on, 0.85 MWh/day) has a third (2035) cohort. T8 repeats the recorded case exactly; T8b runs the same profile and kappa on the two cohorts 2025 + 2030 in both trees"
+  }
+ },
+ "stage": "P5.15 S56 T8 binding check (2 ESSO solves) + T9 three-change attribution (4 ESSO solves) (frozen spec v1)",
+ "stage_tags": {
+  "binding": {
+   "deactivate": [],
+   "read_prices": true,
+   "what": "T8 = the frozen after-tree t_v_tv_on (H_B case: plan 2025 1.0 + 2030 1.0 + 2035 0.5 MWh at 0.25 MVA, TV on, kappa > 0, p_req +0.15 MW periods 1-4 / -0.14 MW periods 17-20 on every block-day); T8b = t8b_two_cohort (2025 + 2030 only). Second solve = T8b: the report lists it as the other case that failed T8 at the same L (2.475e-4) and the case the mu-independence argument rests on (mu ratio 3.12); the alternative named in the report (row tolerance 1e-6) is a formulation perturbation the Expert did not ask for (decision 4 accepted (a))"
+  },
+  "t9_rows_off": {
+   "deactivate": [
+    "energy_storage_cohort_complementarity",
+    "energy_storage_cohort_sum_limit"
+   ],
+   "read_prices": false,
+   "what": "the three tests whose changes are undiagnosed, after-tree build, with the two new row families (rows 6b sum, 6c complementarity) deactivated immediately before the solve; what remains differs from the v2 build only by the removed closure-slack Vars (exact closure, D2)"
+  },
+  "t9_sum_off": {
+   "deactivate": [
+    "energy_storage_cohort_sum_limit"
+   ],
+   "read_prices": false,
+   "what": "t_ii_b (the largest change) with only the sum rows deactivated: splits the row-family effect between sum and complementarity rows"
+  }
+ },
+ "version": 1
+}
