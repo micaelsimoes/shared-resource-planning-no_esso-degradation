@@ -315,6 +315,26 @@ class ADMMParameters:
             'source': 'default',
         }
 
+        # P5.15 S56 step 1 (S56_PLAN_v2.md validation step 1, Expert items X1-X3; S56_SCENARIO_COUPLING_PROPOSAL.md
+        # F1): the PER-SCENARIO TN-DN INTERFACE COUPLING option. DEFAULT OFF: with these three defaults every model and
+        # every ADMM cycle is the existing one, bit for bit. Production reads them with getattr(params, name, default)
+        # (a params object unpickled from a fixture that predates them carries none), see
+        # `shared_resources_planning._per_scenario_interface_coupling_enabled` and its siblings.
+        #   per_scenario_interface_coupling: adds the per-scenario DEVIATION consensus channel d^T_s = d^D_s on interface
+        #       P and Q beside the existing expectation channel, frees the TSO's per-scenario `interface_delta` copies
+        #       (ADMM preparation only; the initialisation solve is unchanged). Inert (structurally absent) at one
+        #       scenario.
+        #   per_scenario_voltage_mode: 'pin' (V-2: V stays on the expectation channel, the interface-voltage pin is
+        #       kept) or 'per_scenario' (V-1: a per-scenario V deviation channel; the pin is not constructed). Only
+        #       meaningful with the coupling on ('per_scenario' with the coupling off is refused).
+        #   row18_charge_reactive: True = today's row 18 (P and Q deviations charged); False = row 18's Q deviation
+        #       Vars and rows are NOT CONSTRUCTED (a zero price would leave a null ray; see the alpha = 0 guard).
+        # May be set programmatically (campaign harness option `interface_coupling`) or from an OPTIONAL case-file key
+        # `admm.interface_coupling`; when the key is absent nothing here changes.
+        self.per_scenario_interface_coupling = False
+        self.per_scenario_voltage_mode = 'pin'
+        self.row18_charge_reactive = True
+
         # P5.15 Addendum 46 ruling 7 (PLANNER_BRIEF_2026-09-13.md; frozen spec
         # `data/SRP1/Results/P515S53/frozen_s53_spec_v28_*.json`): the convergence-
         # depth "tight tail". When enabled, `_run_operational_planning` sets IPOPT
@@ -648,6 +668,39 @@ def _read_parameters_from_file(admm_params, params_data):
     if 'anderson_acceleration' in params_data:
         admm_params.anderson_acceleration = _read_anderson_acceleration(
             admm_params.anderson_acceleration, params_data['anderson_acceleration'])
+
+    # P5.15 S56 step 1: optional per-scenario interface coupling block. Absent key -> nothing is touched.
+    if 'interface_coupling' in params_data:
+        _read_interface_coupling(admm_params, params_data['interface_coupling'])
+
+
+PER_SCENARIO_VOLTAGE_MODES = ('pin', 'per_scenario')
+INTERFACE_COUPLING_KEYS = ('per_scenario_interface_coupling', 'per_scenario_voltage_mode', 'row18_charge_reactive')
+
+
+def _read_interface_coupling(admm_params, coupling_data):
+    """P5.15 S56 step 1: validate the optional `admm.interface_coupling` block and set the three attributes."""
+    if not isinstance(coupling_data, dict):
+        raise ValueError('ADMM interface_coupling must be an object (dict).')
+    unknown_keys = sorted(set(coupling_data) - set(INTERFACE_COUPLING_KEYS))
+    if unknown_keys:
+        raise ValueError(f'ADMM interface_coupling: unsupported keys {unknown_keys}; '
+                         f'supported: {list(INTERFACE_COUPLING_KEYS)}.')
+    for key in ('per_scenario_interface_coupling', 'row18_charge_reactive'):
+        if key in coupling_data and not isinstance(coupling_data[key], bool):
+            raise ValueError(f'ADMM interface_coupling.{key} must be a bool.')
+    mode = coupling_data.get('per_scenario_voltage_mode', admm_params.per_scenario_voltage_mode)
+    if mode not in PER_SCENARIO_VOLTAGE_MODES:
+        raise ValueError(f'ADMM interface_coupling.per_scenario_voltage_mode must be one of '
+                         f'{PER_SCENARIO_VOLTAGE_MODES}; got {mode!r}.')
+    enabled = coupling_data.get('per_scenario_interface_coupling', admm_params.per_scenario_interface_coupling)
+    if mode == 'per_scenario' and not enabled:
+        raise ValueError("ADMM interface_coupling.per_scenario_voltage_mode 'per_scenario' requires "
+                         "per_scenario_interface_coupling True.")
+    for key in INTERFACE_COUPLING_KEYS:
+        if key in coupling_data:
+            setattr(admm_params, key, coupling_data[key])
+    admm_params.interface_coupling_source = 'case_file'
 
 
 def _read_interface_deviation_premium(current_settings, premium_data):

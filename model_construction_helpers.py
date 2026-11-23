@@ -843,6 +843,18 @@ def sess_na_scenario(m):
     return next(iter(m.scenarios_market)), next(iter(m.scenarios_operation))
 
 
+# P5.15 S56 step 1 (per-scenario TN-DN interface coupling, default off): the block attribute that makes the TSO's
+# interface expression and ADN-bus net load reference each scenario's OWN `interface_delta` copy instead of the alias
+# above. Set (True) only by `shared_resources_planning._wire_per_scenario_interface_coupling`, at ADMM preparation,
+# immediately before it rewrites those expressions with the rule functions below; never present at build time, so
+# every built model is unchanged. A plain attribute, not a component: nothing enters the model or its NL file.
+PER_SCENARIO_INTERFACE_DELTA_ATTRIBUTE = 'per_scenario_interface_delta'
+
+
+def per_scenario_interface_delta(m):
+    return getattr(m, PER_SCENARIO_INTERFACE_DELTA_ATTRIBUTE, False) is True
+
+
 def sess_row_is_duplicate(m, s_m, s_o):
     """True for the scenario pairs whose shared-ESS operational rows are redundant
     under hard non-anticipativity (every pair except the first). The rules below
@@ -1256,6 +1268,12 @@ def interface_pf_p_transmission_def(m, dn, s_m, s_o, p, network, params):
     # P5.15 Addendum 38 (A): scenario-free (see `sess_na_scenario`'s note) -- the TSO
     # operates on its committed schedule in every scenario.
     s_m0, s_o0 = sess_na_scenario(m)
+    # P5.15 S56 step 1 (per-scenario interface coupling, F1): on a block that carries the attribute
+    # PER_SCENARIO_INTERFACE_DELTA_ATTRIBUTE (set ONLY by `shared_resources_planning._wire_per_scenario_interface_coupling`
+    # right before it rewrites this expression at ADMM preparation), scenario (s_m, s_o)'s OWN copy is referenced
+    # instead of the alias. No block carries it at build time: unchanged.
+    if per_scenario_interface_delta(m):
+        s_m0, s_o0 = s_m, s_o
     pc_adn += m.interface_delta_p[dn, s_m0, s_o0, p]
     if params.fl_reg:
         pc_adn += m.flex_p_up[adn_load_idx, s_m, s_o, p] - m.flex_p_down[adn_load_idx, s_m, s_o, p]
@@ -1272,6 +1290,8 @@ def interface_pf_q_transmission_def(m, dn, s_m, s_o, p, network, params):
     # P5.15 Step 3.1-C (Addendum 12 item 2): see interface_pf_p_transmission_def.
     # P5.15 Addendum 38 (A): scenario-free -- see interface_pf_p_transmission_def.
     s_m0, s_o0 = sess_na_scenario(m)
+    if per_scenario_interface_delta(m):  # P5.15 S56 step 1: see interface_pf_p_transmission_def
+        s_m0, s_o0 = s_m, s_o
     qc_adn += m.interface_delta_q[dn, s_m0, s_o0, p]
     if params.fl_reg:
         qc_adn += m.flex_q_up[adn_load_idx, s_m, s_o, p] - m.flex_q_down[adn_load_idx, s_m, s_o, p]
@@ -1389,6 +1409,10 @@ def compute_node_load(model, i, s_m, s_o, p, network, params):
                 # `interface_pf_p_transmission_def`, so the node balance and the
                 # interface expression stay identical row by row.
                 s_m0, s_o0 = sess_na_scenario(model)
+                # P5.15 S56 step 1: the per-scenario copy, exactly as in `interface_pf_p_transmission_def`
+                # (only on a block the coupling option marked at its ADMM-preparation rewrite).
+                if per_scenario_interface_delta(model):
+                    s_m0, s_o0 = s_m, s_o
                 Pd += model.interface_delta_p[dn, s_m0, s_o0, p]
                 Qd += model.interface_delta_q[dn, s_m0, s_o0, p]
             if params.fl_reg and load.fl_reg:
@@ -1875,7 +1899,7 @@ def row18_interface_deviation_q_rule(m, s_m, s_o, p):
 
 
 def add_scenario_commitment_terms(model, network, params, premium_alpha=0.0,
-                                  premium_floor=None, include_voltage=True):
+                                  premium_floor=None, include_voltage=True, include_reactive_deviation=True):
     """Wire row 18 (DSO side) and the interface-voltage pin, then rebuild the objective.
 
     Returns a provenance dict recording exactly what was wired (consumed by the stage's
@@ -1894,6 +1918,12 @@ def add_scenario_commitment_terms(model, network, params, premium_alpha=0.0,
     `premium_floor` is applied to pibar_t ONLY if the caller passes one; Addendum 38 makes
     that conditional on some hour's mean price being non-positive, which is a property of
     the price data and is checked before the run, never assumed.
+
+    `include_reactive_deviation` (P5.15 S56 step 1, `ADMMParameters.row18_charge_reactive`) defaults to True:
+    today's row 18, charging P AND Q deviations. False: row 18's Q deviation Vars (`row18_dev_q_up/down`) and rows
+    (`row18_dev_q_def`) are NOT CONSTRUCTED and the charge carries P only -- never a zero Q price, which would leave
+    the (up, down) pair a cost-free ray (the reason for the alpha = 0 structural absence above). The returned record
+    then carries `row18_reactive_charged` False; with the default the record is unchanged.
     """
 
     n_scenarios = len(model.scenarios_market) * len(model.scenarios_operation)
@@ -1965,17 +1995,23 @@ def add_scenario_commitment_terms(model, network, params, premium_alpha=0.0,
 
         model.row18_dev_p_up = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
         model.row18_dev_p_down = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.row18_dev_q_up = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-        model.row18_dev_q_down = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        if include_reactive_deviation:  # P5.15 S56 step 1: False -> the Q pair is not constructed
+            model.row18_dev_q_up = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+            model.row18_dev_q_down = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
 
         model.row18_dev_p_def = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=row18_interface_deviation_p_rule)
-        model.row18_dev_q_def = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=row18_interface_deviation_q_rule)
+        if include_reactive_deviation:  # P5.15 S56 step 1: False -> the Q row is not constructed
+            model.row18_dev_q_def = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=row18_interface_deviation_q_rule)
 
         charge = 0.0
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 probability = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
                 for p in model.periods:
+                    if not include_reactive_deviation:  # P5.15 S56 step 1: P deviations only
+                        charge += (probability * model.row18_alpha * model.row18_premium[p] * network.baseMVA
+                                   * (model.row18_dev_p_up[s_m, s_o, p] + model.row18_dev_p_down[s_m, s_o, p]))
+                        continue
                     charge += (probability * model.row18_alpha * model.row18_premium[p] * network.baseMVA
                                * (model.row18_dev_p_up[s_m, s_o, p] + model.row18_dev_p_down[s_m, s_o, p]
                                   + model.row18_dev_q_up[s_m, s_o, p] + model.row18_dev_q_down[s_m, s_o, p]))
@@ -1986,6 +2022,10 @@ def add_scenario_commitment_terms(model, network, params, premium_alpha=0.0,
         wired['row18_premium_floor_applied'] = floor_applied
         wired['row18_n_deviation_variables'] = 4 * n_scenarios * len(model.periods)
         wired['row18_n_deviation_rows'] = 2 * n_scenarios * len(model.periods)
+        if not include_reactive_deviation:  # P5.15 S56 step 1: only when off, so the default record is unchanged
+            wired['row18_reactive_charged'] = False
+            wired['row18_n_deviation_variables'] = 2 * n_scenarios * len(model.periods)
+            wired['row18_n_deviation_rows'] = n_scenarios * len(model.periods)
 
     # ------------------------------------------------------------------------------
     # Rebuild the objective so that `model.objective` IS `objective_function_rule`

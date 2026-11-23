@@ -1146,6 +1146,9 @@ def _get_interface_reporting_detail(planning_problem, models):
                             # actually applies in each scenario, which is that one value.
                             # At one scenario these indices are (s_m, s_o) themselves.
                             s_m0, s_o0 = sess_na_scenario(local_tso_model)
+                            # P5.15 S56 step 1: with the per-scenario coupling wired, scenario s's own copy.
+                            if getattr(local_tso_model, PER_SCENARIO_INTERFACE_COUPLING_MARKER, False):
+                                s_m0, s_o0 = s_m, s_o
                             delta_p_by_scenario[scen_key] = pe.value(local_tso_model.interface_delta_p[dn, s_m0, s_o0, p]) * s_base
                             delta_q_by_scenario[scen_key] = pe.value(local_tso_model.interface_delta_q[dn, s_m0, s_o0, p]) * s_base
                             anchor_p_by_scenario[scen_key] = pe.value(local_tso_model.pc[adn_load_idx, s_m, s_o, p]) * s_base
@@ -1342,6 +1345,10 @@ def _get_operational_recourse_components(planning_problem, models):
         'detector_components': detector_totals,
         'economic_recourse_all_D_excluded': net_operational_recourse - detector_penalty_total,
         'economic_recourse_voltage_excluded': net_operational_recourse - voltage_slack_total,
+        # P5.15 S56 step 1: with the per-scenario coupling wired, Q with the settlement excluded IN FULL (X2 pending)
+        # beside today's `gross_operational_cost`; nothing is added otherwise.
+        **_settlement_excluded_in_full_convention(models, gross_operational_cost_including_settlement,
+                                                  interface_settlement_total, voltage_pin_total),
     }
 
 
@@ -2855,6 +2862,11 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         else _init_admm_freeze_state()
     )
 
+    # P5.15 S56 step 1: the per-scenario interface coupling option (default off; inert at one scenario). With it off
+    # `interface_coupling_active` is False and every branch below that reads it is skipped.
+    _validate_interface_coupling_options(admm_parameters)
+    interface_coupling_active = _per_scenario_interface_coupling_active(planning_problem)
+
     if initial_state is None:
         # Create ADMM variables and obtain the initial local solutions.
         consensus_vars, dual_vars = create_admm_variables(planning_problem)
@@ -2872,6 +2884,9 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             parallel_execution=planning_problem.parallel_execution,
             premium_alpha=interface_premium['alpha'],
             premium_floor=interface_premium['floor'],
+            # P5.15 S56 step 1: both True with the option off (the builder then makes exactly the existing call).
+            include_voltage_pin=not _per_scenario_voltage_channel_active(planning_problem),
+            row18_charge_reactive=_row18_charge_reactive(admm_parameters),
         )
         tso_model, results['tso'] = create_transmission_network_model(
             planning_problem, consensus_vars, candidate_solution['total_capacity']
@@ -2931,6 +2946,9 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         update_distribution_models_to_admm(planning_problem, dso_models, admm_parameters, objective_scale)
         update_transmission_model_to_admm(planning_problem, tso_model, admm_parameters, objective_scale)
         update_shared_energy_storage_model_to_admm(planning_problem, esso_model, admm_parameters, al_scale_esso=al_scale_esso, objective_scale=objective_scale)
+        if interface_coupling_active:  # P5.15 S56 step 1: per-scenario wiring at ADMM preparation (see the helper)
+            _wire_per_scenario_interface_coupling(planning_problem, tso_model, dso_models, consensus_vars, dual_vars,
+                                                  admm_parameters)
         _initialize_shared_ess_consensus(planning_problem, consensus_vars)
 
         # P5.15 Addendum 16 items 2-3, PHASE 1 (frozen spec v6,
@@ -2969,6 +2987,8 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         consensus_vars = deepcopy(initial_state['consensus_vars'])
         dual_vars = deepcopy(initial_state['dual_vars'])
         _update_operational_models_with_candidate(planning_problem, models, candidate_solution)
+        if interface_coupling_active:  # P5.15 S56 step 1: only models wired by the option may be continued with it
+            _assert_per_scenario_interface_coupling_wired(tso_model, dso_models, consensus_vars, dual_vars)
         # P5.15 Step 3.4: sigma/al_scale_esso are baked into the model's own
         # ADMM Params at construction (`if initial_state is None:` above)
         # and are not recomputed when continuing -- reload the values for
@@ -3002,6 +3022,9 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
     # `persistent_pool` stays None and every dispatch call below is the
     # existing serial code path, unchanged.
     persistent_pool = None
+    if interface_coupling_active and admm_persistent_workers.persistent_workers_enabled(admm_parameters):
+        raise ValueError('per-scenario interface coupling is not supported with persistent workers (the worker '
+                         'processes would not receive the per-cycle deviation Params).')
     if admm_persistent_workers.persistent_workers_enabled(admm_parameters):
         persistent_pool = admm_persistent_workers.PersistentWorkerPool(
             num_workers=admm_parameters.persistent_workers.get('num_workers', 8),
@@ -3028,6 +3051,17 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
     # inside the cycle loop below ever runs -- no call into
     # `admm_anderson_acceleration` is made anywhere in this function.
     aa_enabled = admm_anderson_acceleration.anderson_acceleration_enabled(admm_parameters)
+    # P5.15 S56 step 1: Anderson acceleration is FORCED OFF while the per-scenario coupling is active -- its iterate
+    # layout (`admm_anderson_acceleration.build_iterate_layout`) does not carry the deviation channel. Loud, and
+    # recorded in every cycle record (`interface_coupling_aa_forced_off`).
+    interface_coupling_aa_forced_off = False
+    if aa_enabled and interface_coupling_active:
+        print('[WARNING] ********************************************************************************')
+        print('[WARNING] Per-scenario interface coupling is ACTIVE: Anderson acceleration is FORCED OFF for this run')
+        print('[WARNING] (the AA iterate does not carry the deviation channel). The case-file AA setting is ignored.')
+        print('[WARNING] ********************************************************************************')
+        aa_enabled = False
+        interface_coupling_aa_forced_off = True
     aa_layout = None
     aa_state = None
     if aa_enabled:
@@ -3095,6 +3129,10 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             aa_rho_before = _get_admm_rho_channel_scalars_for_aa(tso_model, dso_models, esso_model, admm_parameters)
             aa_w_before = admm_anderson_acceleration.collect_w(aa_layout, consensus_vars, dual_vars, aa_rho_before)
 
+        # P5.15 S56 step 1: the DSOs' deviation requests (the TSO's latest deviations) and duals for this solve.
+        if interface_coupling_active:
+            _set_interface_deviation_params(planning_problem, tso_model, dso_models, consensus_vars, dual_vars, 'dso')
+
         # --------------------------------------------------------------------------------------------------------------
         # 1. Solve DSOs problems
         if persistent_pool is not None:
@@ -3135,6 +3173,10 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             check_convergence=False,
         )
 
+        # P5.15 S56 step 1: the TSO's deviation requests (the DSOs' just-updated deviations) and duals.
+        if interface_coupling_active:
+            _set_interface_deviation_params(planning_problem, tso_model, dso_models, consensus_vars, dual_vars, 'tso')
+
         # --------------------------------------------------------------------------------------------------------------
         # 2. Solve TSO problem
         if persistent_pool is not None:
@@ -3166,6 +3208,8 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
 
         # Update the proximal centre only with successful TSO solutions.
         tso_proximal_movements = _update_tso_proximal_centres_after_solve(planning_problem, tso_model, results['tso'], cycle=iter)
+        if interface_coupling_active:  # P5.15 S56 step 1: the deviation channel's proximal centres, likewise
+            _update_interface_deviation_proximal_centres(planning_problem, tso_model, results['tso'])
 
         # Update ADMM consensus variables and primal diagnostics.
         update_and_check_convergence(
@@ -3659,6 +3703,10 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             'aa_rho_changed_channels': aa_record.get('rho_changed_channels') if aa_record is not None else None,
             'aa_boyd_all_pass': aa_record.get('boyd_all_pass') if aa_record is not None else None,
         })
+        if interface_coupling_active:  # P5.15 S56 step 1: the option's per-cycle fields, only while it is active
+            admm_diagnostics[-1].update(_interface_coupling_cycle_record(
+                planning_problem, tso_model, dso_models, dual_vars, boyd_metrics, admm_parameters,
+                interface_coupling_aa_forced_off, recourse_components if local_solves_ok else None))
 
         objective_change_text = (f'{objective_change_abs:.6f}' if objective_change_abs is not None else 'N/A')
         objective_tolerance_text = (f'{objective_tolerance:.6f}' if objective_tolerance is not None else 'N/A')
@@ -4227,6 +4275,577 @@ def _interface_no_reverse_flow_dso_rule(m, s_m, s_o, p):
     return m.pg_adn[s_m, s_o, p] >= 0.0
 
 
+# ======================================================================================================================
+#  P5.15 S56 step 1 -- PER-SCENARIO TN-DN INTERFACE COUPLING (F1), DEFAULT OFF
+# ======================================================================================================================
+# Authority: S56_PLAN_v2.md (validation step 1; Expert items X1-X3, pending); S56_SCENARIO_COUPLING_PROPOSAL.md (F1 and
+# its change list); gate spec data/SRP1/Results/P515S56/coupling_option_v1/frozen_coupling_gates_spec_v1_10c98258.json.
+#
+# THE OPTION (`ADMMParameters`, read with getattr(params, name, default)): `per_scenario_interface_coupling` (False),
+# `per_scenario_voltage_mode` ('pin' | 'per_scenario'; default 'pin'), `row18_charge_reactive` (True). With the
+# defaults none of the functions below is called and every model and every ADMM cycle is the existing one. ACTIVE =
+# enabled AND the TN carries more than one (market x operation) scenario; at one scenario the option is inert --
+# structurally absent, exactly like row 18 and the voltage pin.
+#
+# WHAT IT ADDS when active (DN k, period t, scenario s with weight omega_s; P shown, Q identical; V under 'per_scenario'):
+#   TSO  P^T_s = pc + delta_s: every per-scenario `interface_delta` copy is FREED within +-rating at ADMM preparation
+#        and referenced by scenario s's own interface expression and node-balance row; `pc` stays fixed. The
+#        expectation Pbar^T is the existing Var; the deviation is d^T_s = pc_adn[s] - Pbar^T.
+#   DSO  d^D_s = pg_adn[s] - Pbar^D; the commitment Pbar^D is the existing expectation Var (unchanged).
+#   Channel d^T_s = d^D_s, one augmented term per side, beside the existing expectation channel (left untouched):
+#        sum_s omega_s [ mu_s (d_s - d^req_s)/R + (rho_pf/2) ((d_s - d^req_s)/R)^2 ]
+#        (V: rho_v and no rating normalisation, as the existing V channel), plus the TSO proximal term extended to the
+#        deviations with the same weights. Dual update mu_s += rho (d^T_s - d^D_s)/R per side from mu = 0, in the
+#        stored units of the existing channel (x s_base for P/Q; kV for V; the model Param is stored / base).
+#   Boyd PF (and V under 'per_scenario') residuals on the omega-weighted norm r^2 = rbar^2 + sum_s omega_s (r^d_s)^2,
+#        both parts recorded; the entry counts are unchanged (the omega_s of one coordinate sum to 1).
+#   Per cycle (`admm_diagnostics`, only when active): the scenario-wise mismatch dP_s = P^T_s - P^D_s (and dQ, dV) max
+#        and omega-RMS per DN, the signed priced residual PR, and Q under BOTH conventions (today's
+#        `gross_operational_cost` = gross - contracted - pin, and 'settlement excluded in full' = gross - settlement
+#        total - pin, X2 pending). Today's reported gross is not changed.
+#
+# INITIALISATION IS UNCHANGED. The TSO model is built and solved at initialisation exactly as today: every interface
+# expression and node-balance row references the alias copy and the other copies stay fixed at 0 -- freed there they
+# would be UNPRICED (the settlement weight is 0 until ADMM preparation). The per-scenario wiring happens at ADMM
+# preparation (`_wire_per_scenario_interface_coupling`): the TN interface expressions (`pc_adn`, `qc_adn`) and the ADN
+# bus net-load expressions (`pc_node`, `qc_node`, which the node-balance rows reference) are REWRITTEN IN PLACE
+# (Expression `set_value`; no component is added or removed) by production's own rule functions, after the block is
+# marked with `model_construction_helpers.PER_SCENARIO_INTERFACE_DELTA_ATTRIBUTE`, and every copy is freed within +-rating at the alias copy's initialisation value. Under
+# 'per_scenario' the voltage pin is not constructed (a build-time term), so that initialisation solve has no pin.
+#
+# NOT SUPPORTED while active: persistent workers (refused: the worker processes would not receive the per-cycle
+# deviation Params); Anderson acceleration (FORCED OFF, with a warning and `interface_coupling_aa_forced_off` in every
+# cycle record: its iterate layout does not carry the deviation channel); the parallel DSO builder with a non-default
+# pin / Q charge (refused); a continuation whose models were not wired (refused).
+INTERFACE_DEVIATION_STORE = 'interface_dev'
+PER_SCENARIO_INTERFACE_COUPLING_MARKER = 'per_scenario_interface_coupling_wired'
+PER_SCENARIO_VOLTAGE_MODES = ('pin', 'per_scenario')
+INTERFACE_DEVIATION_WEIGHT_TOLERANCE = 1e-12
+
+
+def _interface_deviation_param_name(role, kind):
+    return {'req': f'interface_dev_{kind}_req', 'dual': f'dual_interface_dev_{kind}_req',
+            'prox': f'prox_interface_dev_{kind}_prev'}[role]
+
+
+def _per_scenario_interface_coupling_enabled(params):
+    """S56 step 1: the option; False when the attribute is absent (a params object that predates it)."""
+    return getattr(params, 'per_scenario_interface_coupling', False) is True
+
+
+def _per_scenario_voltage_mode(params):
+    mode = getattr(params, 'per_scenario_voltage_mode', 'pin')
+    if mode not in PER_SCENARIO_VOLTAGE_MODES:
+        raise ValueError(f'per_scenario_voltage_mode must be one of {PER_SCENARIO_VOLTAGE_MODES}; got {mode!r}')
+    return mode
+
+
+def _row18_charge_reactive(params):
+    value = getattr(params, 'row18_charge_reactive', True)
+    if not isinstance(value, bool):
+        raise ValueError(f'row18_charge_reactive must be a bool; got {value!r}')
+    return value
+
+
+def _validate_interface_coupling_options(params):
+    enabled = getattr(params, 'per_scenario_interface_coupling', False)
+    if not isinstance(enabled, bool):
+        raise ValueError(f'per_scenario_interface_coupling must be a bool; got {enabled!r}')
+    if _per_scenario_voltage_mode(params) == 'per_scenario' and not enabled:
+        raise ValueError("per_scenario_voltage_mode 'per_scenario' requires per_scenario_interface_coupling True")
+    _row18_charge_reactive(params)
+
+
+def _interface_scenario_pairs(model):
+    return [(s_m, s_o) for s_m in model.scenarios_market for s_o in model.scenarios_operation]
+
+
+def _per_scenario_interface_coupling_active(planning_problem):
+    if not _per_scenario_interface_coupling_enabled(planning_problem.params.admm):
+        return False
+    tn = planning_problem.transmission_network
+    counts = {len(tn.network[year][day].prob_market_scenarios) * len(tn.network[year][day].prob_operation_scenarios)
+              for year in tn.years for day in tn.days}
+    return max(counts) > 1
+
+
+def _per_scenario_voltage_channel_active(planning_problem):
+    return (_per_scenario_interface_coupling_active(planning_problem)
+            and _per_scenario_voltage_mode(planning_problem.params.admm) == 'per_scenario')
+
+
+def _interface_deviation_kinds(planning_problem):
+    return ('p', 'q', 'v') if _per_scenario_voltage_channel_active(planning_problem) else ('p', 'q')
+
+
+def _tso_interface_deviation_expr(block, kind, dn, s_m, s_o, p):
+    if kind == 'p':
+        return block.pc_adn[dn, s_m, s_o, p] - block.expected_interface_pf_p[dn, p]
+    if kind == 'q':
+        return block.qc_adn[dn, s_m, s_o, p] - block.expected_interface_pf_q[dn, p]
+    return block.vmag_adn[dn, s_m, s_o, p] - block.expected_interface_vmag[dn, p]
+
+
+def _dso_interface_deviation_expr(block, kind, s_m, s_o, p):
+    if kind == 'p':
+        return block.pg_adn[s_m, s_o, p] - block.expected_interface_pf_p[p]
+    if kind == 'q':
+        return block.qg_adn[s_m, s_o, p] - block.expected_interface_pf_q[p]
+    return block.vmag_adn[s_m, s_o, p] - block.expected_interface_vmag[p]
+
+
+def _wire_per_scenario_interface_coupling(planning_problem, tso_model, dso_models, consensus_vars, dual_vars,
+                                          admm_parameters):
+    """S56 step 1, ADMM PREPARATION (after `update_*_to_admm`, before the initial consensus update): rewrite the TN
+    interface / ADN-bus net-load expressions to the per-scenario delta copy, free every copy within +-rating, add the
+    deviation Params and the omega-weighted augmented (and TSO proximal) terms to both sides' ADMM objectives, and
+    create the deviation consensus / dual stores. Raises when the TN and a DN do not carry the same scenario pairs
+    and weights (per-scenario coupling asserts a JOINT scenario; audit A)."""
+    transmission_network = planning_problem.transmission_network
+    distribution_networks = planning_problem.distribution_networks
+    kinds = _interface_deviation_kinds(planning_problem)
+    proximal_cfg = admm_parameters.proximal_regularization
+    use_tso_proximal = (proximal_cfg['enabled'] and proximal_cfg['tso']['enabled'])
+    reference_pairs = None
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            block = tso_model[year][day]
+            network = transmission_network.network[year][day]
+            s_base = network.baseMVA
+            pairs = _interface_scenario_pairs(block)
+            if reference_pairs is None:
+                reference_pairs = pairs
+            elif pairs != reference_pairs:
+                raise ValueError(f'per-scenario interface coupling: TSO block {year}/{day} scenario pairs {pairs} '
+                                 f'differ from {reference_pairs}')
+            alias = sess_na_scenario(block)
+            omega = {pair: network.prob_market_scenarios[pair[0]] * network.prob_operation_scenarios[pair[1]]
+                     for pair in pairs}
+            for dn in block.active_distribution_networks:
+                node_id = transmission_network.active_distribution_network_nodes[dn]
+                d_block = dso_models[node_id][year][day]
+                d_net = distribution_networks[node_id].network[year][day]
+                if _interface_scenario_pairs(d_block) != pairs:
+                    raise ValueError(f'per-scenario interface coupling: DSO {node_id} block {year}/{day} scenario '
+                                     f'pairs differ from the TSO block (a joint scenario is required)')
+                for pair in pairs:
+                    w_d = d_net.prob_market_scenarios[pair[0]] * d_net.prob_operation_scenarios[pair[1]]
+                    if abs(w_d - omega[pair]) > INTERFACE_DEVIATION_WEIGHT_TOLERANCE:
+                        raise ValueError(f'per-scenario interface coupling: scenario {pair} weight {w_d!r} on DSO '
+                                         f'{node_id} {year}/{day} != TSO weight {omega[pair]!r}')
+
+            # (1) TSO: the per-scenario delta copy in the interface expression and the ADN-bus net load (which the
+            # node-balance rows reference), every copy freed within +-rating at the alias copy's value.
+            setattr(block, PER_SCENARIO_INTERFACE_DELTA_ATTRIBUTE, True)  # the rules below now use the own copy
+            for dn in block.active_distribution_networks:
+                node_id = transmission_network.active_distribution_network_nodes[dn]
+                node_idx = network.get_node_idx(node_id)
+                rating = distribution_networks[node_id].network[year][day].get_interface_branch_rating() / s_base
+                for (s_m, s_o) in pairs:
+                    if (s_m, s_o) == alias:
+                        continue
+                    for p in block.periods:
+                        block.pc_adn[dn, s_m, s_o, p].set_value(interface_pf_p_transmission_def(
+                            block, dn, s_m, s_o, p, network=network, params=transmission_network.params))
+                        block.qc_adn[dn, s_m, s_o, p].set_value(interface_pf_q_transmission_def(
+                            block, dn, s_m, s_o, p, network=network, params=transmission_network.params))
+                        block.pc_node[node_idx, s_m, s_o, p].set_value(net_load_p_per_node_def(
+                            block, node_idx, s_m, s_o, p, network=network, params=transmission_network.params))
+                        block.qc_node[node_idx, s_m, s_o, p].set_value(net_load_q_per_node_def(
+                            block, node_idx, s_m, s_o, p, network=network, params=transmission_network.params))
+                        for delta in (block.interface_delta_p, block.interface_delta_q):
+                            copy_var = delta[dn, s_m, s_o, p]
+                            copy_var.set_value(pe.value(delta[dn, alias[0], alias[1], p]))
+                            copy_var.fixed = False
+                            copy_var.setlb(-rating)
+                            copy_var.setub(rating)
+
+            # (2) TSO: deviation Params and the omega-weighted augmented / proximal terms.
+            index = (block.active_distribution_networks, block.scenarios_market, block.scenarios_operation, block.periods)
+            for kind in kinds:
+                block.add_component(_interface_deviation_param_name('req', kind),
+                                    pe.Param(*index, mutable=True, domain=pe.Reals, initialize=0.0))
+                block.add_component(_interface_deviation_param_name('dual', kind),
+                                    pe.Param(*index, mutable=True, domain=pe.Reals, initialize=0.0))
+                if use_tso_proximal:
+                    block.add_component(_interface_deviation_param_name('prox', kind),
+                                        pe.Param(*index, mutable=True, domain=pe.Reals, initialize=0.0))
+            extra = 0.0
+            for dn in block.active_distribution_networks:
+                node_id = transmission_network.active_distribution_network_nodes[dn]
+                rating = distribution_networks[node_id].network[year][day].get_interface_branch_rating() / s_base
+                for (s_m, s_o) in pairs:
+                    w = omega[(s_m, s_o)]
+                    for p in block.periods:
+                        for kind in kinds:
+                            dev = _tso_interface_deviation_expr(block, kind, dn, s_m, s_o, p)
+                            req = getattr(block, _interface_deviation_param_name('req', kind))[dn, s_m, s_o, p]
+                            dual = getattr(block, _interface_deviation_param_name('dual', kind))[dn, s_m, s_o, p]
+                            norm = 1.0 if kind == 'v' else rating
+                            rho = block.rho_v if kind == 'v' else block.rho_pf
+                            c = (dev - req) / norm if kind != 'v' else (dev - req)
+                            extra += w * (dual * c + (rho / 2) * c ** 2)
+                            if use_tso_proximal:
+                                prev = getattr(block, _interface_deviation_param_name('prox', kind))[dn, s_m, s_o, p]
+                                prev.set_value(pe.value(dev))
+                                gamma = block.prox_gamma_v if kind == 'v' else block.prox_gamma_pf
+                                prox = (dev - prev) / norm if kind != 'v' else (dev - prev)
+                                extra += w * (gamma / 2) * prox ** 2
+            block.admm_objective.set_value(block.admm_objective.expr + extra)
+            setattr(block, PER_SCENARIO_INTERFACE_COUPLING_MARKER, True)
+
+            # (3) DSO side of every DN of this year / day.
+            for dn in block.active_distribution_networks:
+                node_id = transmission_network.active_distribution_network_nodes[dn]
+                d_block = dso_models[node_id][year][day]
+                d_net = distribution_networks[node_id].network[year][day]
+                rating_d = d_net.get_interface_branch_rating() / d_net.baseMVA
+                d_index = (d_block.scenarios_market, d_block.scenarios_operation, d_block.periods)
+                for kind in kinds:
+                    d_block.add_component(_interface_deviation_param_name('req', kind),
+                                          pe.Param(*d_index, mutable=True, domain=pe.Reals, initialize=0.0))
+                    d_block.add_component(_interface_deviation_param_name('dual', kind),
+                                          pe.Param(*d_index, mutable=True, domain=pe.Reals, initialize=0.0))
+                d_extra = 0.0
+                for (s_m, s_o) in pairs:
+                    w = omega[(s_m, s_o)]
+                    for p in d_block.periods:
+                        for kind in kinds:
+                            dev = _dso_interface_deviation_expr(d_block, kind, s_m, s_o, p)
+                            req = getattr(d_block, _interface_deviation_param_name('req', kind))[s_m, s_o, p]
+                            dual = getattr(d_block, _interface_deviation_param_name('dual', kind))[s_m, s_o, p]
+                            rho = d_block.rho_v if kind == 'v' else d_block.rho_pf
+                            c = (dev - req) / rating_d if kind != 'v' else (dev - req)
+                            d_extra += w * (dual * c + (rho / 2) * c ** 2)
+                d_block.admm_objective.set_value(d_block.admm_objective.expr + d_extra)
+                setattr(d_block, PER_SCENARIO_INTERFACE_COUPLING_MARKER, True)
+
+    # (4) the deviation consensus / dual stores (MW, MVAr, kV -- the units of the expectation channel's stores).
+    pairs = reference_pairs
+    num_instants = planning_problem.num_instants
+    store = {'meta': {'scenarios': [list(pair) for pair in pairs], 'kinds': list(kinds),
+                      'units': {'p': 'MW', 'q': 'MVAr', 'v': 'kV'},
+                      'definition': 'd_s = (interface exchange in scenario s) - (the agent own expectation Var)'},
+             'tso': {'current': dict(), 'prev': dict()}, 'dso': {'current': dict(), 'prev': dict()}}
+    duals = {'tso': {'current': dict()}, 'dso': {'current': dict()}}
+    for node_id in planning_problem.active_distribution_network_nodes:
+        for holder in (store['tso']['current'], store['tso']['prev'], store['dso']['current'], store['dso']['prev'],
+                       duals['tso']['current'], duals['dso']['current']):
+            holder[node_id] = {year: {day: {kind: [[0.0] * num_instants for _ in pairs] for kind in kinds}
+                                      for day in planning_problem.days} for year in planning_problem.years}
+    consensus_vars[INTERFACE_DEVIATION_STORE] = store
+    dual_vars[INTERFACE_DEVIATION_STORE] = duals
+    print(f'[INFO] Per-scenario interface coupling WIRED: {len(pairs)} scenarios, channels {list(kinds)}, voltage mode '
+          f'{_per_scenario_voltage_mode(admm_parameters)!r}, row 18 Q charge '
+          f'{_row18_charge_reactive(admm_parameters)}; TSO proximal on deviations {bool(use_tso_proximal)}.')
+
+
+def _assert_per_scenario_interface_coupling_wired(tso_model, dso_models, consensus_vars, dual_vars):
+    """S56 step 1: a continuation with the option active must continue models wired by it."""
+    blocks = [b for days in tso_model.values() for b in days.values()]
+    blocks += [b for node in dso_models.values() for days in node.values() for b in days.values()]
+    if not all(getattr(b, PER_SCENARIO_INTERFACE_COUPLING_MARKER, False) for b in blocks) or \
+            INTERFACE_DEVIATION_STORE not in consensus_vars or INTERFACE_DEVIATION_STORE not in dual_vars:
+        raise ValueError('per-scenario interface coupling is active but the continued models / stores were not wired '
+                         'by it (initial_state from a run without the option)')
+
+
+def _set_interface_deviation_params(planning_problem, tso_model, dso_models, consensus_vars, dual_vars, agent):
+    """S56 step 1: before an agent's solve, its deviation requests (the OTHER side's latest deviations) and its own
+    deviation duals, mirroring the expectation channel's Param updates in the update-and-solve functions."""
+    transmission_network = planning_problem.transmission_network
+    distribution_networks = planning_problem.distribution_networks
+    store = consensus_vars[INTERFACE_DEVIATION_STORE]
+    duals = dual_vars[INTERFACE_DEVIATION_STORE]
+    kinds = store['meta']['kinds']
+    pairs = [tuple(pair) for pair in store['meta']['scenarios']]
+    for node_id in planning_problem.active_distribution_network_nodes:
+        for year in planning_problem.years:
+            for day in planning_problem.days:
+                if agent == 'tso':
+                    block = tso_model[year][day]
+                    network = transmission_network.network[year][day]
+                    s_base = network.baseMVA
+                    v_base = network.get_node_base_kv(node_id)
+                    dn_index = transmission_network.active_distribution_network_nodes.index(node_id)
+                    req_src = store['dso']['current'][node_id][year][day]
+                    dual_src = duals['tso']['current'][node_id][year][day]
+                else:
+                    block = dso_models[node_id][year][day]
+                    network = distribution_networks[node_id].network[year][day]
+                    s_base = network.baseMVA
+                    v_base = network.get_node_base_kv(network.get_reference_node_id())
+                    dn_index = None
+                    req_src = store['tso']['current'][node_id][year][day]
+                    dual_src = duals['dso']['current'][node_id][year][day]
+                for kind in kinds:
+                    base = v_base if kind == 'v' else s_base
+                    req = getattr(block, _interface_deviation_param_name('req', kind))
+                    dual = getattr(block, _interface_deviation_param_name('dual', kind))
+                    for k, (s_m, s_o) in enumerate(pairs):
+                        for p in block.periods:
+                            index = (dn_index, s_m, s_o, p) if agent == 'tso' else (s_m, s_o, p)
+                            req[index].set_value(req_src[kind][k][p] / base)
+                            dual[index].set_value(dual_src[kind][k][p] / base)
+
+
+def _update_interface_deviation_variables(planning_problem, tso_model, dso_models, consensus_vars, dual_vars,
+                                          results, update_tn=True, update_dns=True):
+    """S56 step 1: the deviation channel's consensus copies and duals, called by
+    `_update_interface_power_flow_variables` (every call site of the expectation channel's update passes through it)
+    with the same flags, and mirroring it: a side's copies move only on a successful solve of that block; the duals
+    move only when the TSO block was updated and both solves succeeded."""
+    transmission_network = planning_problem.transmission_network
+    distribution_networks = planning_problem.distribution_networks
+    store = consensus_vars[INTERFACE_DEVIATION_STORE]
+    duals = dual_vars[INTERFACE_DEVIATION_STORE]
+    kinds = store['meta']['kinds']
+    pairs = [tuple(pair) for pair in store['meta']['scenarios']]
+
+    if update_tn:
+        for dn, node_id in enumerate(planning_problem.active_distribution_network_nodes):
+            for year in planning_problem.years:
+                for day in planning_problem.days:
+                    if not _solver_result_succeeded(results['tso'][year][day]):
+                        continue
+                    network = transmission_network.network[year][day]
+                    s_base = network.baseMVA
+                    v_base = network.get_node_base_kv(node_id)
+                    block = tso_model[year][day]
+                    cur = store['tso']['current'][node_id][year][day]
+                    prev = store['tso']['prev'][node_id][year][day]
+                    for kind in kinds:
+                        base = v_base if kind == 'v' else s_base
+                        for k, (s_m, s_o) in enumerate(pairs):
+                            for p in block.periods:
+                                prev[kind][k][p] = copy(cur[kind][k][p])
+                                cur[kind][k][p] = pe.value(_tso_interface_deviation_expr(block, kind, dn, s_m, s_o,
+                                                                                         p)) * base
+
+    if update_dns:
+        for node_id in distribution_networks:
+            distribution_network = distribution_networks[node_id]
+            for year in planning_problem.years:
+                for day in planning_problem.days:
+                    if not _solver_result_succeeded(results['dso'][node_id][year][day]):
+                        continue
+                    network = distribution_network.network[year][day]
+                    s_base = network.baseMVA
+                    v_base = network.get_node_base_kv(network.get_reference_node_id())
+                    block = dso_models[node_id][year][day]
+                    cur = store['dso']['current'][node_id][year][day]
+                    prev = store['dso']['prev'][node_id][year][day]
+                    for kind in kinds:
+                        base = v_base if kind == 'v' else s_base
+                        for k, (s_m, s_o) in enumerate(pairs):
+                            for p in block.periods:
+                                prev[kind][k][p] = copy(cur[kind][k][p])
+                                cur[kind][k][p] = pe.value(_dso_interface_deviation_expr(block, kind, s_m, s_o, p)) \
+                                    * base
+
+    for node_id in distribution_networks:
+        distribution_network = distribution_networks[node_id]
+        for year in planning_problem.years:
+            for day in planning_problem.days:
+                tso_s_base = transmission_network.network[year][day].baseMVA
+                dso_s_base = distribution_network.network[year][day].baseMVA
+                interface_rating = distribution_network.network[year][day].get_interface_branch_rating()
+                tso_succeeded = (_solver_result_succeeded(results['tso'][year][day]) if update_tn else False)
+                dso_succeeded = (_solver_result_succeeded(results['dso'][node_id][year][day])
+                                 if update_tn or update_dns else False)
+                if not (update_tn and tso_succeeded and dso_succeeded):
+                    continue
+                rho_v_tso = pe.value(tso_model[year][day].rho_v)
+                rho_pf_tso = pe.value(tso_model[year][day].rho_pf)
+                rho_v_dso = pe.value(dso_models[node_id][year][day].rho_v)
+                rho_pf_dso = pe.value(dso_models[node_id][year][day].rho_pf)
+                tso_cur = store['tso']['current'][node_id][year][day]
+                dso_cur = store['dso']['current'][node_id][year][day]
+                tso_dual = duals['tso']['current'][node_id][year][day]
+                dso_dual = duals['dso']['current'][node_id][year][day]
+                for kind in kinds:
+                    for k in range(len(pairs)):
+                        for p in range(planning_problem.num_instants):
+                            error_tso = tso_cur[kind][k][p] - dso_cur[kind][k][p]
+                            error_dso = dso_cur[kind][k][p] - tso_cur[kind][k][p]
+                            if kind == 'v':
+                                tso_dual[kind][k][p] += rho_v_tso * error_tso
+                                dso_dual[kind][k][p] += rho_v_dso * error_dso
+                            else:
+                                tso_dual[kind][k][p] += rho_pf_tso * error_tso / interface_rating * tso_s_base
+                                dso_dual[kind][k][p] += rho_pf_dso * error_dso / interface_rating * dso_s_base
+
+
+def _update_interface_deviation_proximal_centres(planning_problem, tso_model, tso_results):
+    """S56 step 1: the TSO proximal centre of the deviation channel follows the successful TSO iterate, as
+    `_update_tso_proximal_centres_after_solve` does for the expectation channel; a failed block keeps its centre."""
+    proximal_cfg = planning_problem.params.admm.proximal_regularization
+    if not (proximal_cfg['enabled'] and proximal_cfg['tso']['enabled']):
+        return
+    transmission_network = planning_problem.transmission_network
+    kinds = _interface_deviation_kinds(planning_problem)
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            if not _solver_result_succeeded(tso_results[year][day]):
+                continue
+            block = tso_model[year][day]
+            for kind in kinds:
+                prev = getattr(block, _interface_deviation_param_name('prox', kind))
+                for (dn, s_m, s_o, p) in prev:
+                    prev[dn, s_m, s_o, p].set_value(pe.value(_tso_interface_deviation_expr(block, kind, dn, s_m, s_o,
+                                                                                            p)))
+
+
+def _interface_deviation_boyd_sumsq(planning_problem, tso_model, consensus_vars, dual_vars, admm_parameters):
+    """S56 step 1: the deviation channel's omega-weighted contributions to the Boyd sums of squares of the PF channel
+    (P and Q) and, under 'per_scenario', of the V channel -- exactly the expectation channel's mapping (x = DSO copy,
+    z = TSO copy, y = the DSO dual / base; s = sqrt(rho^2 + gamma^2) dz with the TSO proximal gamma), each term
+    multiplied by omega_s. Entry counts are not changed."""
+    proximal_cfg = admm_parameters.proximal_regularization
+    tso_proximal_enabled = bool(proximal_cfg['enabled'] and proximal_cfg['tso']['enabled'])
+    store = consensus_vars[INTERFACE_DEVIATION_STORE]
+    duals = dual_vars[INTERFACE_DEVIATION_STORE]
+    kinds = store['meta']['kinds']
+    pairs = [tuple(pair) for pair in store['meta']['scenarios']]
+    out = {g: {'r': 0.0, 's': 0.0, 's_rho': 0.0, 's_prox': 0.0, 'x': 0.0, 'z': 0.0, 'y': 0.0} for g in ('v', 'pf')}
+    for node_id in planning_problem.active_distribution_network_nodes:
+        for year in planning_problem.years:
+            for day in planning_problem.days:
+                network = planning_problem.transmission_network.network[year][day]
+                dso_network = planning_problem.distribution_networks[node_id].network[year][day]
+                s_base_dso = dso_network.baseMVA
+                v_base = network.get_node_base_kv(node_id)
+                interface_rating = dso_network.get_interface_branch_rating()
+                block = tso_model[year][day]
+                rho = {'v': pe.value(block.rho_v), 'pf': pe.value(block.rho_pf)}
+                gamma = {'v': pe.value(block.prox_gamma_v) if tso_proximal_enabled else 0.0,
+                         'pf': pe.value(block.prox_gamma_pf) if tso_proximal_enabled else 0.0}
+                for kind in kinds:
+                    g = 'v' if kind == 'v' else 'pf'
+                    norm = v_base if kind == 'v' else interface_rating
+                    y_base = v_base if kind == 'v' else s_base_dso
+                    x_all = store['dso']['current'][node_id][year][day][kind]
+                    z_all = store['tso']['current'][node_id][year][day][kind]
+                    z_prev_all = store['tso']['prev'][node_id][year][day][kind]
+                    y_all = duals['dso']['current'][node_id][year][day][kind]
+                    for k, (s_m, s_o) in enumerate(pairs):
+                        w = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+                        for p in range(planning_problem.num_instants):
+                            r = (x_all[k][p] - z_all[k][p]) / norm
+                            dz = (z_all[k][p] - z_prev_all[k][p]) / norm
+                            out[g]['r'] += w * r ** 2
+                            out[g]['s'] += w * (sqrt(rho[g] ** 2 + gamma[g] ** 2) * dz) ** 2
+                            out[g]['s_rho'] += w * (rho[g] * dz) ** 2
+                            out[g]['s_prox'] += w * (gamma[g] * dz) ** 2
+                            out[g]['x'] += w * (x_all[k][p] / norm) ** 2
+                            out[g]['z'] += w * (z_all[k][p] / norm) ** 2
+                            out[g]['y'] += w * (y_all[k][p] / y_base) ** 2
+    return out
+
+
+def _get_per_scenario_interface_mismatch(planning_problem, tso_model, dso_models, dual_vars):
+    """S56 step 1 (X3 / X5 inputs, per cycle; REPORTED, never a bound): per DN and pooled, the scenario-wise exchange
+    mismatch dP_s = P^T_s - P^D_s (MW; TSO `pc_adn`, DSO `pg_adn`, both positive in the DN-import direction), dQ_s
+    (MVAr) and dV_s = |V| TSO ADN bus - |V| DSO reference bus (p.u., the same base kV), as the max |.| and the
+    omega-RMS sqrt(sum_b sum_s omega_s sum_t x^2 / (N_b T)) over blocks b, scenarios and hours; and the signed priced
+    residual PR = sum_b w_b sum_dn sum_s omega_s sum_t (pi_s,t + mu_s,t) dP_s,t, with pi the scenario's market price
+    (EUR/MWh) and mu the TSO-side deviation multiplier converted to EUR/MWh of the block
+    (mu_stored / s_base x admm_objective_scale / rating_MVA), its parts and its absolute form
+    sum w omega |pi + mu| |dP|. Values are read off the current models (whatever their last solve)."""
+    transmission_network = planning_problem.transmission_network
+    store_duals = dual_vars[INTERFACE_DEVIATION_STORE]['tso']['current']
+    pooled = {kind: {'sumsq': 0.0, 'max': 0.0, 'n': 0} for kind in ('p', 'q', 'v')}
+    by_dn = {}
+    pr_price = pr_dual = pr_abs = 0.0
+    for dn, node_id in enumerate(transmission_network.active_distribution_network_nodes):
+        acc = {kind: {'sumsq': 0.0, 'max': 0.0, 'n': 0} for kind in ('p', 'q', 'v')}
+        for year in transmission_network.years:
+            for day in transmission_network.days:
+                block = tso_model[year][day]
+                d_block = dso_models[node_id][year][day]
+                network = transmission_network.network[year][day]
+                d_network = planning_problem.distribution_networks[node_id].network[year][day]
+                s_base_t = network.baseMVA
+                s_base_d = d_network.baseMVA
+                weight = _get_admm_block_weight(transmission_network, year, day)
+                effective_scale = pe.value(block.admm_objective_scale)
+                rating_mva = d_network.get_interface_branch_rating()
+                for k, (s_m, s_o) in enumerate(_interface_scenario_pairs(block)):
+                    omega = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+                    for p in block.periods:
+                        d_p = pe.value(block.pc_adn[dn, s_m, s_o, p]) * s_base_t - pe.value(d_block.pg_adn[s_m, s_o, p]) * s_base_d
+                        d_q = pe.value(block.qc_adn[dn, s_m, s_o, p]) * s_base_t - pe.value(d_block.qg_adn[s_m, s_o, p]) * s_base_d
+                        d_v = pe.value(block.vmag_adn[dn, s_m, s_o, p]) - pe.value(d_block.vmag_adn[s_m, s_o, p])
+                        for kind, x in (('p', d_p), ('q', d_q), ('v', d_v)):
+                            acc[kind]['sumsq'] += omega * x ** 2
+                            acc[kind]['max'] = max(acc[kind]['max'], abs(x))
+                        price = network.cost_energy_p[s_m][p]
+                        mu = store_duals[node_id][year][day]['p'][k][p] / s_base_t * effective_scale / rating_mva
+                        pr_price += weight * omega * price * d_p
+                        pr_dual += weight * omega * mu * d_p
+                        pr_abs += weight * omega * abs(price + mu) * abs(d_p)
+                for kind in acc:
+                    acc[kind]['n'] += len(block.periods)
+        by_dn[str(node_id)] = {}
+        for kind, unit in (('p', 'mw'), ('q', 'mvar'), ('v', 'pu')):
+            by_dn[str(node_id)][f'{kind}_max_{unit}'] = acc[kind]['max']
+            by_dn[str(node_id)][f'{kind}_rms_{unit}'] = sqrt(acc[kind]['sumsq'] / acc[kind]['n']) if acc[kind]['n'] \
+                else 0.0
+            pooled[kind]['sumsq'] += acc[kind]['sumsq']
+            pooled[kind]['n'] += acc[kind]['n']
+            pooled[kind]['max'] = max(pooled[kind]['max'], acc[kind]['max'])
+    out = {'scenario_mismatch_by_dn': by_dn}
+    for kind, unit in (('p', 'mw'), ('q', 'mvar'), ('v', 'pu')):
+        out[f'scenario_mismatch_{kind}_max_{unit}'] = pooled[kind]['max']
+        out[f'scenario_mismatch_{kind}_rms_{unit}'] = (sqrt(pooled[kind]['sumsq'] / pooled[kind]['n'])
+                                                       if pooled[kind]['n'] else 0.0)
+    out.update({'priced_residual_pr': pr_price + pr_dual, 'priced_residual_pr_abs': pr_abs,
+                'priced_residual_price_part': pr_price, 'priced_residual_dual_part': pr_dual})
+    return out
+
+
+def _interface_coupling_cycle_record(planning_problem, tso_model, dso_models, dual_vars, boyd_metrics,
+                                     admm_parameters, aa_forced_off, recourse_components):
+    """S56 step 1: the per-cycle fields added to `admm_diagnostics` while the option is active (never otherwise).
+    A capture failure is recorded in `interface_coupling_capture_error` (values None), never raised."""
+    record = {
+        'interface_coupling_active': True,
+        'interface_coupling_voltage_mode': _per_scenario_voltage_mode(admm_parameters),
+        'interface_coupling_row18_charge_reactive': _row18_charge_reactive(admm_parameters),
+        'interface_coupling_aa_forced_off': bool(aa_forced_off),
+        'interface_coupling_capture_error': None,
+    }
+    for group in ('pf', 'v'):
+        for part in ('r_expectation_part', 'r_deviation_part', 's_expectation_part', 's_deviation_part'):
+            record[f'boyd_{group}_{part}'] = boyd_metrics[group].get(part)
+    mismatch_fields = ('scenario_mismatch_p_max_mw', 'scenario_mismatch_p_rms_mw', 'scenario_mismatch_q_max_mvar',
+                       'scenario_mismatch_q_rms_mvar', 'scenario_mismatch_v_max_pu', 'scenario_mismatch_v_rms_pu',
+                       'scenario_mismatch_by_dn', 'priced_residual_pr', 'priced_residual_pr_abs',
+                       'priced_residual_price_part', 'priced_residual_dual_part')
+    try:
+        record.update(_get_per_scenario_interface_mismatch(planning_problem, tso_model, dso_models, dual_vars))
+    except Exception as error:  # noqa: BLE001 -- a reporting capture; recorded, never raised
+        record.update({name: None for name in mismatch_fields})
+        record['interface_coupling_capture_error'] = f'{type(error).__name__}: {error}'
+    record['gross_operational_cost_settlement_excluded_in_full'] = (
+        (recourse_components or {}).get('gross_operational_cost_settlement_excluded_in_full'))
+    return record
+
+
+def _settlement_excluded_in_full_convention(models, gross_including_settlement, settlement_total, voltage_pin_total):
+    """S56 step 1 (X2 pending): with the per-scenario coupling wired, Q under the proposed convention -- the interface
+    settlement excluded IN FULL (and the pin) -- beside today's `gross_operational_cost` (contracted part and pin
+    excluded), which is left unchanged. Empty (no key added) when the option is not wired."""
+    wired = any(getattr(block, PER_SCENARIO_INTERFACE_COUPLING_MARKER, False)
+                for days in models['tso'].values() for block in days.values())
+    if not wired:
+        return {}
+    return {'gross_operational_cost_settlement_excluded_in_full': (gross_including_settlement - settlement_total
+                                                                   - voltage_pin_total),
+            'q_convention_settlement_excluded_in_full': ('gross incl. settlement - interface settlement total (TSO + '
+                                                         'every DSO) - voltage pin; S56 X2 proposal, pending')}
+
+
 def create_transmission_network_model(planning_problem, consensus_vars, candidate_solution):
 
     print(f'[INFO] \t\t - Transmission Network...')
@@ -4331,6 +4950,9 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                 transmission_network.network[year][day],
                 transmission_network.params,
                 premium_alpha=0.0,
+                # P5.15 S56 step 1: V-1 ('per_scenario' voltage mode, coupling active) -> the pin is not constructed;
+                # otherwise True, the default (unchanged).
+                include_voltage=not _per_scenario_voltage_channel_active(planning_problem),
             )
 
     # Run SMOPF
@@ -4361,7 +4983,7 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
     return tso_model, results
 
 
-def create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution, parallel_execution=False, premium_alpha=0.0, premium_floor=None):
+def create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution, parallel_execution=False, premium_alpha=0.0, premium_floor=None, include_voltage_pin=True, row18_charge_reactive=True):
     """`premium_alpha` / `premium_floor` carry the row 18 imbalance premium (P5.15
     Addendum 38) down to `add_scenario_commitment_terms`. Both default to the INACTIVE
     setting -- alpha = 0, no floor -- which is the behaviour of every result committed
@@ -4375,12 +4997,18 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
     settlement weight.
     """
     if parallel_execution:
+        # P5.15 S56 step 1: the parallel worker function keeps its signature; it builds today's pin and row 18 only.
+        if not include_voltage_pin or not row18_charge_reactive:
+            raise ValueError('create_distribution_networks_models: the per-scenario voltage mode / row 18 Q-charge '
+                             'switch is supported by the sequential builder only (parallel_execution is on).')
         return create_distribution_networks_models_parallel(distribution_networks, consensus_vars, candidate_solution, premium_alpha=premium_alpha, premium_floor=premium_floor)
     else:
-        return create_distribution_networks_models_sequential(distribution_networks, consensus_vars, candidate_solution, premium_alpha=premium_alpha, premium_floor=premium_floor)
+        if include_voltage_pin and row18_charge_reactive:  # the defaults: exactly the existing call
+            return create_distribution_networks_models_sequential(distribution_networks, consensus_vars, candidate_solution, premium_alpha=premium_alpha, premium_floor=premium_floor)
+        return create_distribution_networks_models_sequential(distribution_networks, consensus_vars, candidate_solution, premium_alpha=premium_alpha, premium_floor=premium_floor, include_voltage_pin=include_voltage_pin, row18_charge_reactive=row18_charge_reactive)
 
 
-def create_distribution_networks_models_sequential(distribution_networks, consensus_vars, candidate_solution, premium_alpha=0.0, premium_floor=None):
+def create_distribution_networks_models_sequential(distribution_networks, consensus_vars, candidate_solution, premium_alpha=0.0, premium_floor=None, include_voltage_pin=True, row18_charge_reactive=True):
 
     dso_models = dict()
     results = dict()
@@ -4427,6 +5055,9 @@ def create_distribution_networks_models_sequential(distribution_networks, consen
                     distribution_network.params,
                     premium_alpha=premium_alpha,
                     premium_floor=premium_floor,
+                    # P5.15 S56 step 1: both default True (unchanged); False under V-1 / the Q-charge switch.
+                    include_voltage=include_voltage_pin,
+                    include_reactive_deviation=row18_charge_reactive,
                 )
                 # P5.15 Addendum 40 ruling 2: row 18 inactive at this (initialisation) solve.
                 _set_row18_inactive_for_initialisation(dso_model[year][day])
@@ -5289,6 +5920,8 @@ def _set_row18_inactive_for_initialisation(model):
     if not hasattr(model, 'row18_alpha'):
         return
     for row_name, up_name, down_name, _flow_name, _expectation_name in _ROW18_DEVIATION_FAMILIES:
+        if not hasattr(model, row_name):  # P5.15 S56 step 1: the Q family is absent when row 18 charges P only
+            continue
         row = getattr(model, row_name)
         up = getattr(model, up_name)
         down = getattr(model, down_name)
@@ -5319,6 +5952,8 @@ def _activate_row18_with_settlement(model):
     if not hasattr(model, 'row18_alpha'):
         return
     for row_name, up_name, down_name, _flow_name, _expectation_name in _ROW18_DEVIATION_FAMILIES:
+        if not hasattr(model, row_name):  # P5.15 S56 step 1: the Q family is absent when row 18 charges P only
+            continue
         row = getattr(model, row_name)
         up = getattr(model, up_name)
         down = getattr(model, down_name)
@@ -5328,6 +5963,8 @@ def _activate_row18_with_settlement(model):
                                    f'{model.name!r} is not in the initialisation state (row inactive, '
                                    f'deviation pair fixed); refusing to activate.')
     for row_name, up_name, down_name, flow_name, expectation_name in _ROW18_DEVIATION_FAMILIES:
+        if not hasattr(model, row_name):  # P5.15 S56 step 1: see above
+            continue
         row = getattr(model, row_name)
         up = getattr(model, up_name)
         down = getattr(model, down_name)
@@ -5342,6 +5979,8 @@ def _activate_row18_with_settlement(model):
             down[index].unfix()
             row[index].activate()
     for row_name, _up_name, _down_name, _flow_name, _expectation_name in _ROW18_DEVIATION_FAMILIES:
+        if not hasattr(model, row_name):  # P5.15 S56 step 1: see above
+            continue
         row = getattr(model, row_name)
         for index in row:
             body_residual = pe.value(row[index].body) - pe.value(row[index].upper)
@@ -7303,6 +7942,18 @@ def get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso
                             sumsq['ess']['s'] += s_prox_ess ** 2
                             sumsq['ess']['s_prox'] += s_prox_ess ** 2
 
+    # P5.15 S56 step 1: the per-scenario deviation channel's omega-weighted part (present only when the coupling option
+    # wired it): r^2 = rbar^2 + sum_s omega_s (r^d_s)^2 (likewise s, |x|, |z|, |y|); entry counts unchanged.
+    deviation_sumsq = None
+    expectation_sumsq = None
+    if INTERFACE_DEVIATION_STORE in consensus_vars:
+        deviation_sumsq = _interface_deviation_boyd_sumsq(planning_problem, tso_model, consensus_vars, dual_vars,
+                                                          admm_parameters)
+        expectation_sumsq = {g: dict(sumsq[g]) for g in ('v', 'pf')}
+        for g in ('v', 'pf'):
+            for key, value in deviation_sumsq[g].items():
+                sumsq[g][key] += value
+
     channels = dict()
     for group in ('v', 'pf', 'ess'):
         n = count[group]
@@ -7352,6 +8003,13 @@ def get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso
             channel_entry['norm_y_dso'] = sqrt(sumsq['ess']['y_dso'])
             channel_entry['norm_y_esso'] = sqrt(sumsq['ess']['y_esso'])
         channels[group] = channel_entry
+
+    if deviation_sumsq is not None:  # P5.15 S56 step 1: both parts recorded
+        for g in ('v', 'pf'):
+            channels[g]['r_expectation_part'] = sqrt(expectation_sumsq[g]['r'])
+            channels[g]['r_deviation_part'] = sqrt(deviation_sumsq[g]['r'])
+            channels[g]['s_expectation_part'] = sqrt(expectation_sumsq[g]['s'])
+            channels[g]['s_deviation_part'] = sqrt(deviation_sumsq[g]['s'])
 
     channels['all_boyd_pass'] = all(channels[g]['channel_pass'] for g in ('v', 'pf', 'ess'))
     channels['eps_abs'] = eps_abs
@@ -8562,6 +9220,12 @@ def _update_interface_power_flow_variables(planning_problem, tso_model, dso_mode
                         dual_vars['vmag']['dso']['current'][node_id][year][day][p] += rho_v_dso * error_v_req_dso
                         dual_vars['pf']['dso']['current'][node_id][year][day]['p'][p] += rho_pf_dso * error_p_pf_req_dso / interface_rating * dso_s_base
                         dual_vars['pf']['dso']['current'][node_id][year][day]['q'][p] += rho_pf_dso * error_q_pf_req_dso / interface_rating * dso_s_base
+
+    # P5.15 S56 step 1: the per-scenario deviation channel, at the same call (and with the same flags) as the
+    # expectation channel above; present only when the coupling option wired it.
+    if INTERFACE_DEVIATION_STORE in interface_vars:
+        _update_interface_deviation_variables(planning_problem, tso_model, dso_models, interface_vars, dual_vars,
+                                              results, update_tn=update_tn, update_dns=update_dns)
 
 
 def _update_shared_energy_storage_variables(planning_problem, tso_model, dso_models, sess_model, shared_ess_vars, dual_vars, results, params, update_tn=True, update_dns=True, update_sess=True):

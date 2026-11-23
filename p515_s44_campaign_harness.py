@@ -362,7 +362,7 @@ EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification', 'investme
                                     'flex_price_multiplier', 'interface_deviation_premium',
                                     'release_solution_bookkeeping', 'certification_continuation',
                                     'settling_continuation', 'settling_extension', 'settling_resettle',
-                                    'rho0_scale', 'nrf_option'})
+                                    'rho0_scale', 'nrf_option', 'interface_coupling'})
 # P5.15 Addendum 39 (W47): a DERIVED INSTANCE (see the module docstring) and row 18's premium. The identity keys
 # of a derived instance enter the eval key; the other keys are provenance. Absent -> nothing changes.
 DERIVED_INSTANCE_KEYS = frozenset({'instance_label', 'case_path', 'case_sha256', 'scenario_checksum',
@@ -760,6 +760,125 @@ def nrf_option_production_support():
     return supported, f'hasattr(network_parameters.NetworkParameters(), {NRF_SUPPORT_ATTRIBUTE!r}) is {supported}'
 
 
+# P5.15 S56 step 1: the PER-SCENARIO TN-DN INTERFACE COUPLING option (production: `ADMMParameters.
+# per_scenario_interface_coupling` / `per_scenario_voltage_mode` / `row18_charge_reactive`, default off / 'pin' / True).
+# An entry option `interface_coupling` (a dict of those three keys; missing keys take the defaults); it enters the eval
+# key ONLY when it differs from the defaults, and then the entry and the spec carry INTERFACE_COUPLING_LABEL, the child
+# asserts the capture path of its per-cycle fields before any solve (`assert_interface_coupling_capture_path`) and the
+# per-cycle record gains PER_CYCLE_INTERFACE_COUPLING_FIELDS. Absent (or all-default) changes nothing.
+INTERFACE_COUPLING_DEFAULTS = {'per_scenario_interface_coupling': False, 'per_scenario_voltage_mode': 'pin',
+                               'row18_charge_reactive': True}
+INTERFACE_COUPLING_VOLTAGE_MODES = ('pin', 'per_scenario')
+INTERFACE_COUPLING_LABEL = 'EVALUATION OPTION — per-scenario TN-DN interface coupling (S56 F1; not the published formulation)'
+PER_CYCLE_INTERFACE_COUPLING_FIELDS = (
+    'interface_coupling_active', 'interface_coupling_voltage_mode', 'interface_coupling_row18_charge_reactive',
+    'interface_coupling_aa_forced_off', 'interface_coupling_capture_error',
+    'boyd_pf_r_expectation_part', 'boyd_pf_r_deviation_part', 'boyd_pf_s_expectation_part', 'boyd_pf_s_deviation_part',
+    'boyd_v_r_expectation_part', 'boyd_v_r_deviation_part', 'boyd_v_s_expectation_part', 'boyd_v_s_deviation_part',
+    'scenario_mismatch_p_max_mw', 'scenario_mismatch_p_rms_mw', 'scenario_mismatch_q_max_mvar',
+    'scenario_mismatch_q_rms_mvar', 'scenario_mismatch_v_max_pu', 'scenario_mismatch_v_rms_pu',
+    'scenario_mismatch_by_dn', 'priced_residual_pr', 'priced_residual_pr_abs', 'priced_residual_price_part',
+    'priced_residual_dual_part', 'gross_operational_cost_settlement_excluded_in_full',
+)
+
+
+def validate_interface_coupling(value):
+    """S56 step 1: None = not given. Otherwise a dict with keys drawn from INTERFACE_COUPLING_DEFAULTS (bools are
+    bools, the voltage mode one of INTERFACE_COUPLING_VOLTAGE_MODES; 'per_scenario' requires the coupling on); missing
+    keys take the defaults. Returns the full normalized dict. No model import (parent side)."""
+    if value is None:
+        return None
+    if not isinstance(value, dict):
+        raise ValueError(f'interface_coupling must be a dict, got {value!r}')
+    unknown = sorted(set(value) - set(INTERFACE_COUPLING_DEFAULTS))
+    if unknown:
+        raise ValueError(f'interface_coupling: unsupported keys {unknown}; supported {sorted(INTERFACE_COUPLING_DEFAULTS)}')
+    out = dict(INTERFACE_COUPLING_DEFAULTS)
+    out.update(value)
+    for key in ('per_scenario_interface_coupling', 'row18_charge_reactive'):
+        if not isinstance(out[key], bool):
+            raise ValueError(f'interface_coupling.{key} must be a bool, got {out[key]!r}')
+    if out['per_scenario_voltage_mode'] not in INTERFACE_COUPLING_VOLTAGE_MODES:
+        raise ValueError(f"interface_coupling.per_scenario_voltage_mode must be one of "
+                         f"{INTERFACE_COUPLING_VOLTAGE_MODES}, got {out['per_scenario_voltage_mode']!r}")
+    if out['per_scenario_voltage_mode'] == 'per_scenario' and not out['per_scenario_interface_coupling']:
+        raise ValueError("interface_coupling: per_scenario_voltage_mode 'per_scenario' requires the coupling on")
+    return out
+
+
+def interface_coupling_in_key(value):
+    """The option as it enters the eval key: None when absent or equal to the defaults, else the normalized dict."""
+    out = validate_interface_coupling(value)
+    return None if out is None or out == INTERFACE_COUPLING_DEFAULTS else out
+
+
+def interface_coupling_production_support():
+    """The support marker of the production change: a fresh `admm_parameters.ADMMParameters()` carries the three
+    attributes. Child side. Returns (supported, description)."""
+    import admm_parameters as AP
+    fresh = AP.ADMMParameters()
+    supported = all(hasattr(fresh, key) for key in INTERFACE_COUPLING_DEFAULTS)
+    return supported, f'admm_parameters.ADMMParameters() carries {sorted(INTERFACE_COUPLING_DEFAULTS)}: {supported}'
+
+
+def apply_interface_coupling(planning, interface_coupling):
+    """S56 step 1, in the child's configuration hook. Declared and non-default: refuse unless production supports
+    it, set the three attributes on `planning.params.admm`, read them back (raise if not in force); returns the record.
+    Not declared (or all-default): when production supports it, the attributes in force must be the defaults (raise
+    otherwise -- the option in force without its key); returns None, so nothing is recorded and every other evaluation
+    keeps its exact record."""
+    declared = validate_interface_coupling(interface_coupling)
+    supported, description = interface_coupling_production_support()
+    a = planning.params.admm
+    keyed = interface_coupling_in_key(declared)
+    if keyed is None:
+        if supported:
+            in_force = {k: getattr(a, k) for k in INTERFACE_COUPLING_DEFAULTS}
+            if in_force != INTERFACE_COUPLING_DEFAULTS:
+                raise RuntimeError(f'interface_coupling not declared (or default) but in force: {in_force}')
+        return None
+    if not supported:
+        raise RuntimeError(f'interface_coupling {keyed} refused: production has no support ({description})')
+    before = {k: getattr(a, k) for k in INTERFACE_COUPLING_DEFAULTS}
+    for key, value in keyed.items():
+        setattr(a, key, value)
+    after = {k: getattr(a, k) for k in INTERFACE_COUPLING_DEFAULTS}
+    checks = {'in_force_equals_declaration': after == keyed}
+    out = {'interface_coupling': keyed, 'label': INTERFACE_COUPLING_LABEL, 'production_support': description,
+           'before': before, 'in_force': after, 'checks': checks}
+    if not all(checks.values()):
+        raise RuntimeError(f'interface_coupling did not take effect: {out}')
+    return out
+
+
+def assert_interface_coupling_capture_path():
+    """S56 step 1 (CLAUDE.md rule eleven): before any solve of an evaluation declaring the option, every per-cycle
+    field the record requires has a capture path in the live production code (each field name is written by
+    `shared_resources_planning._interface_coupling_cycle_record` / `_get_per_scenario_interface_mismatch` /
+    `_settlement_excluded_in_full_convention`, and the record is merged into `admm_diagnostics` by
+    `_run_operational_planning`). The six mismatch names are composed there from (kind, unit) pairs, so the check is
+    that composition. Raises on any failure; returns the checklist."""
+    import inspect
+    import shared_resources_planning as srp
+    src = ''.join(inspect.getsource(getattr(srp, name)) for name in (
+        '_interface_coupling_cycle_record', '_get_per_scenario_interface_mismatch',
+        '_settlement_excluded_in_full_convention'))
+    loop = inspect.getsource(srp._run_operational_planning)
+    boyd = inspect.getsource(srp.get_admm_boyd_residual_metrics)
+    composed = "out[f'scenario_mismatch_{kind}_max_{unit}']" in src and "out[f'scenario_mismatch_{kind}_rms_{unit}']" in src
+    checks = {f'field:{f}': (f"'{f}'" in src) or (f.startswith('scenario_mismatch_') and f != 'scenario_mismatch_by_dn'
+                                                 and composed)
+              for f in PER_CYCLE_INTERFACE_COUPLING_FIELDS}
+    checks['record_merged_into_admm_diagnostics'] = 'admm_diagnostics[-1].update(_interface_coupling_cycle_record(' in loop
+    checks['boyd_parts_recorded'] = all(s in boyd for s in ("'r_expectation_part'", "'r_deviation_part'",
+                                                            "'s_expectation_part'", "'s_deviation_part'"))
+    checks['production_support'] = interface_coupling_production_support()[0]
+    failed = sorted(k for k, v in checks.items() if not v)
+    if failed:
+        raise RuntimeError(f'interface_coupling capture path missing: {failed}')
+    return checks
+
+
 _HEX64 = frozenset('0123456789abcdef')
 
 
@@ -1056,7 +1175,8 @@ def resettle_hooks_module(value):
 def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_variant=None, ess_ageing_baseline=None,
                    flex_price_multiplier=None, derived_instance=None, interface_deviation_premium=None,
                    convergence_depth_tail=None, certification_continuation=None, settling_continuation=None,
-                   settling_extension=None, settling_resettle=None, rho0_scale=None, nrf_option=None):
+                   settling_extension=None, settling_resettle=None, rho0_scale=None, nrf_option=None,
+                   interface_coupling=None):
     """Identity of one EVALUATION (candidate x configuration). The case-file
     configuration (no overrides) keeps the candidate key itself, so a D
     evaluation's directory name is `<candidate key16>_<label>` as in s44_gate;
@@ -1126,7 +1246,7 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
                               ess_ageing_baseline=ess_ageing_baseline, flex_price_multiplier=flex_price_multiplier,
                               derived_instance=derived_instance, interface_deviation_premium=interface_deviation_premium,
                               convergence_depth_tail=convergence_depth_tail, rho0_scale=rho0_scale,
-                              nrf_option=nrf_option)
+                              nrf_option=nrf_option, interface_coupling=interface_coupling)
         payload = {'base_evaluation_key': base, 'settling_resettle': validate_settling_resettle(settling_resettle)}
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
@@ -1137,7 +1257,7 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
                               ess_ageing_baseline=ess_ageing_baseline, flex_price_multiplier=flex_price_multiplier,
                               derived_instance=derived_instance, interface_deviation_premium=interface_deviation_premium,
                               convergence_depth_tail=convergence_depth_tail, rho0_scale=rho0_scale,
-                              nrf_option=nrf_option)
+                              nrf_option=nrf_option, interface_coupling=interface_coupling)
         payload = {'base_evaluation_key': base, 'settling_extension': validate_settling_extension(settling_extension)}
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
@@ -1148,7 +1268,7 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
                               ess_ageing_baseline=ess_ageing_baseline, flex_price_multiplier=flex_price_multiplier,
                               derived_instance=derived_instance, interface_deviation_premium=interface_deviation_premium,
                               convergence_depth_tail=convergence_depth_tail, rho0_scale=rho0_scale,
-                              nrf_option=nrf_option)
+                              nrf_option=nrf_option, interface_coupling=interface_coupling)
         payload = {'base_evaluation_key': base,
                    'settling_continuation': validate_settling_continuation(settling_continuation)}
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
@@ -1158,7 +1278,7 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
                               ess_ageing_baseline=ess_ageing_baseline, flex_price_multiplier=flex_price_multiplier,
                               derived_instance=derived_instance, interface_deviation_premium=interface_deviation_premium,
                               convergence_depth_tail=convergence_depth_tail, rho0_scale=rho0_scale,
-                              nrf_option=nrf_option)
+                              nrf_option=nrf_option, interface_coupling=interface_coupling)
         payload = {'base_evaluation_key': base,
                    'certification_continuation': validate_certification_continuation(certification_continuation)}
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
@@ -1171,6 +1291,7 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
     tail = convergence_depth_tail_in_key(convergence_depth_tail)
     rho_s = rho0_scale_in_key(rho0_scale)   # W183a: None when absent or 1.0
     nrf = nrf_option_in_key(nrf_option)     # W183a: None when absent or False
+    ic = interface_coupling_in_key(interface_coupling)  # S56 step 1: None when absent or all-default
     if tail is not None:  # W86: only when declared ENABLED, so every undeclared / declared-off key is byte-identical
         payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {}}
         if case_file_aa is not None:
@@ -1186,7 +1307,7 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
         if premium is not None:
             payload['interface_deviation_premium'] = premium
         payload['convergence_depth_tail'] = tail
-        _add_w183a_options(payload, rho_s, nrf)
+        _add_w183a_options(payload, rho_s, nrf, ic)
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
     if derived_instance is not None or premium is not None:
@@ -1203,7 +1324,7 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
             payload['derived_instance'] = derived_instance_identity(derived_instance)
         if premium is not None:
             payload['interface_deviation_premium'] = premium
-        _add_w183a_options(payload, rho_s, nrf)
+        _add_w183a_options(payload, rho_s, nrf, ic)
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
     if ess_ageing_baseline is not None:
@@ -1215,7 +1336,7 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
             payload['model_variant'] = model_variant
         if flex_m is not None:
             payload['flex_price_multiplier'] = flex_m
-        _add_w183a_options(payload, rho_s, nrf)
+        _add_w183a_options(payload, rho_s, nrf, ic)
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
     if case_file_aa is not None:
@@ -1226,24 +1347,24 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
             payload['model_variant'] = model_variant
         if flex_m is not None:
             payload['flex_price_multiplier'] = flex_m
-        _add_w183a_options(payload, rho_s, nrf)
+        _add_w183a_options(payload, rho_s, nrf, ic)
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
     if model_variant is not None:
         payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {}, 'model_variant': model_variant}
         if flex_m is not None:
             payload['flex_price_multiplier'] = flex_m
-        _add_w183a_options(payload, rho_s, nrf)
+        _add_w183a_options(payload, rho_s, nrf, ic)
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
     if flex_m is not None:
         payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {}, 'flex_price_multiplier': flex_m}
-        _add_w183a_options(payload, rho_s, nrf)
+        _add_w183a_options(payload, rho_s, nrf, ic)
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
-    if rho_s is not None or nrf is not None:  # W183a: only when declared non-default, so every other key is unchanged
+    if rho_s is not None or nrf is not None or ic is not None:  # W183a / S56: only when declared non-default
         payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {}}
-        _add_w183a_options(payload, rho_s, nrf)
+        _add_w183a_options(payload, rho_s, nrf, ic)
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
     if not overrides:
@@ -1253,7 +1374,7 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
     return hashlib.sha256(text.encode()).hexdigest()
 
 
-def _add_w183a_options(payload, rho_s, nrf):
+def _add_w183a_options(payload, rho_s, nrf, ic=None):
     """W183a (Addendum 83 ruling 3 ii / iv): add the two options to a base eval-key payload, each ONLY when it is
     declared and non-default (`rho0_scale_in_key` / `nrf_option_in_key` already map absent / 1.0 / False to None),
     so a payload without them is exactly the pre-W183a payload."""
@@ -1261,6 +1382,8 @@ def _add_w183a_options(payload, rho_s, nrf):
         payload['rho0_scale'] = rho_s
     if nrf is not None:
         payload['nrf_option'] = nrf
+    if ic is not None:  # S56 step 1: the per-scenario interface coupling, only when non-default
+        payload['interface_coupling'] = ic
     return payload
 
 
@@ -1461,6 +1584,7 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     any_flex_price = False
     any_rho0_scale = False  # W183a
     any_nrf_option = False  # W183a
+    any_interface_coupling = False  # S56 step 1
     for item in candidates:
         if len(item) == 2:
             (label, cand), options = item, {}
@@ -1485,12 +1609,14 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         resettle = validate_settling_resettle(options.get('settling_resettle'))  # W118: keyed
         rho0_scale = validate_rho0_scale(options.get('rho0_scale'))  # W183a: keyed only when != 1.0
         nrf_option = validate_nrf_option(options.get('nrf_option'))  # W183a: keyed only when True
+        coupling = validate_interface_coupling(options.get('interface_coupling'))  # S56: keyed only when non-default
         ekey = evaluation_key(key, eff_overrides, case_file_aa=case_file_aa, model_variant=model_variant,
                               ess_ageing_baseline=ess_ageing, flex_price_multiplier=flex_m,
                               derived_instance=derived, interface_deviation_premium=premium,
                               convergence_depth_tail=tail, certification_continuation=continuation,
                               settling_continuation=settling, settling_extension=extension,
-                              settling_resettle=resettle, rho0_scale=rho0_scale, nrf_option=nrf_option)
+                              settling_resettle=resettle, rho0_scale=rho0_scale, nrf_option=nrf_option,
+                              interface_coupling=coupling)
         if label in seen_labels or ekey in seen_keys:
             raise ValueError(f'duplicate evaluation label or key (candidate x configuration): {label} / {ekey[:16]}')
         seen_labels.add(label)
@@ -1533,6 +1659,11 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
             if nrf_option_in_key(nrf_option) is not None:
                 cand_entry['nrf_option_label'] = NRF_OPTION_LABEL
                 any_nrf_option = True
+        if coupling is not None:  # S56 step 1: only when given, so every other entry keeps its exact format
+            cand_entry['interface_coupling'] = coupling
+            if interface_coupling_in_key(coupling) is not None:
+                cand_entry['interface_coupling_label'] = INTERFACE_COUPLING_LABEL
+                any_interface_coupling = True
         cand_entries.append(cand_entry)
     os.makedirs(campaign_root, exist_ok=True)  # only after every validation above has passed
     try:
@@ -1590,6 +1721,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         spec['rho0_scale_label'] = RHO0_SCALE_LABEL
     if any_nrf_option:  # W183a: a campaign holding the no-reverse-flow option says so at the top level
         spec['nrf_option_label'] = NRF_OPTION_LABEL
+    if any_interface_coupling:  # S56 step 1: a campaign holding the per-scenario coupling says so at the top level
+        spec['interface_coupling_label'] = INTERFACE_COUPLING_LABEL
     text = json.dumps(spec, indent=1, sort_keys=True, default=str)
     digest = hashlib.sha256(text.encode()).hexdigest()
     path = os.path.join(campaign_root, f'campaign_spec_{_sanitize_id(campaign_id)}_{digest[:8]}.json')
@@ -3183,7 +3316,8 @@ def capture_nrf_terminal(planning, models):
 
 def _config_hook_factory(spec, holder, overrides=None, model_variant=None, investment_year=INVESTMENT_YEAR,
                          expected_floor_rows=None, flex_price_multiplier=None, interface_deviation_premium=None,
-                         release_solution_bookkeeping=None, rho0_scale=None, nrf_option=None):
+                         release_solution_bookkeeping=None, rho0_scale=None, nrf_option=None,
+                         interface_coupling=None):
     """pre_solve_hook: verify the case file carries the D oracle configuration
     (same checks as `p515_s43_aa_run._aa_on_pre_solve_hook`), then apply the
     evaluation's overrides (`overrides`; default = the campaign-level
@@ -3229,7 +3363,10 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
     support marker (`nrf_option_production_support`); when it does, `params.no_reverse_flow = True` is set on the TSO's
     and every DSO's network parameters and read back (raises if not in force). Otherwise (None / False), when the
     marker exists, every network's `no_reverse_flow` must be off -- an option in force without its key raises; what is
-    in force is recorded (`w183a_nrf_option`) whenever the option is given or the marker exists."""
+    in force is recorded (`w183a_nrf_option`) whenever the option is given or the marker exists.
+    P5.15 S56 step 1: with a non-default `interface_coupling` the three `ADMMParameters` attributes are set and read
+    back (`apply_interface_coupling`; recorded as `s56_interface_coupling`); otherwise the defaults must be in force
+    and nothing is recorded."""
     import p515_g_g1_g4_admm_gates as G
     model_variant = validate_model_variant(model_variant)
     flex_price_multiplier = validate_flex_price_multiplier(flex_price_multiplier)
@@ -3237,6 +3374,7 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
     release_bk = validate_release_solution_bookkeeping(release_solution_bookkeeping)
     rho0_scale = validate_rho0_scale(rho0_scale)  # W183a
     nrf_option = validate_nrf_option(nrf_option)  # W183a
+    interface_coupling = validate_interface_coupling(interface_coupling)  # S56 step 1
     derived = validate_derived_instance(spec['configuration'].get('derived_instance'))
     if overrides is None:
         overrides = spec['configuration'].get('overrides') or {}
@@ -3314,6 +3452,10 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
         if applied_nrf is not None:
             holder['nrf_option_applied'] = applied_nrf
             report['rule_eleven_checklist']['w183a_nrf_option'] = applied_nrf
+        applied_coupling = apply_interface_coupling(planning, interface_coupling)  # S56: None unless non-default
+        if applied_coupling is not None:
+            holder['interface_coupling_applied'] = applied_coupling
+            report['rule_eleven_checklist']['s56_interface_coupling'] = applied_coupling
         if derived is not None:  # W47: the planning object IS the declared derived instance
             got = (getattr(planning, 'scenario_metadata', None) or {}).get('combined_scenario_checksum')
             derived_checks = {'planning_scenario_checksum_equals_declaration': got == derived['scenario_checksum'],
@@ -3752,7 +3894,12 @@ def _per_scenario_costs(model, network, params):
             else:
                 settle = sum(c_p[p] * base_mva * float(pe.value(model.pg_adn[s_m, s_o, p])) for p in model.periods)
             row18 = None
-            if wired:
+            if wired and not hasattr(model, 'row18_dev_q_up'):  # S56 step 1: row 18 charging P only
+                row18 = sum(float(pe.value(model.row18_alpha)) * float(pe.value(model.row18_premium[p])) * base_mva
+                            * float(pe.value(model.row18_dev_p_up[s_m, s_o, p] + model.row18_dev_p_down[s_m, s_o, p]))
+                            for p in model.periods)
+                sum_row18 += prob * row18
+            elif wired:
                 row18 = sum(float(pe.value(model.row18_alpha)) * float(pe.value(model.row18_premium[p])) * base_mva
                             * float(pe.value(model.row18_dev_p_up[s_m, s_o, p] + model.row18_dev_p_down[s_m, s_o, p]
                                              + model.row18_dev_q_up[s_m, s_o, p] + model.row18_dev_q_down[s_m, s_o, p]))
@@ -4265,6 +4412,10 @@ def activation_readback(planning, tso_model, dso_models, alpha):
     import pyomo.environ as pe
     row18_components = ('row18_alpha', 'row18_premium', 'row18_dev_p_up', 'row18_dev_p_down', 'row18_dev_q_up',
                         'row18_dev_q_down', 'row18_dev_p_def', 'row18_dev_q_def', 'row18_deviation_charge')
+    # S56 step 1: with `row18_charge_reactive` False row 18 has its P family only (Q Vars / rows not constructed).
+    reactive = getattr(planning.params.admm, 'row18_charge_reactive', True) is not False
+    if not reactive:
+        row18_components = tuple(c for c in row18_components if '_q_' not in c)
     per_block, failing = {}, []
     for kind, node_id, holder, year, day in _block_list(planning):
         model = tso_model[year][day] if kind == 'TSO' else dso_models[node_id][year][day]
@@ -4279,13 +4430,15 @@ def activation_readback(planning, tso_model, dso_models, alpha):
             rec['row18_ok'] = not present
         elif alpha > 0.0:
             n_scen = len(model.scenarios_market) * len(model.scenarios_operation)
-            expected_rows = 2 * n_scen * len(model.periods)
+            expected_rows = (2 if reactive else 1) * n_scen * len(model.periods)
             wired = len(present) == len(row18_components)
             rec['alpha_on_model'] = _f(pe.value(model.row18_alpha)) if hasattr(model, 'row18_alpha') else None
             n_rows = n_active = n_fixed = 0
             if wired:
                 for row_name, up_name, down_name in (('row18_dev_p_def', 'row18_dev_p_up', 'row18_dev_p_down'),
                                                      ('row18_dev_q_def', 'row18_dev_q_up', 'row18_dev_q_down')):
+                    if not hasattr(model, row_name):  # S56 step 1: the Q family is absent under the P-only row 18
+                        continue
                     row, up, down = getattr(model, row_name), getattr(model, up_name), getattr(model, down_name)
                     for index in row:
                         n_rows += 1
@@ -4576,9 +4729,12 @@ def _row18_legs_block(model, network):
             for p in model.periods:
                 coef = omega * alpha * float(pe.value(model.row18_premium[p])) * base
                 legs['charge_p'] += coef * float(pe.value(model.row18_dev_p_up[s_m, s_o, p] + model.row18_dev_p_down[s_m, s_o, p]))
-                legs['charge_q'] += coef * float(pe.value(model.row18_dev_q_up[s_m, s_o, p] + model.row18_dev_q_down[s_m, s_o, p]))
+                if hasattr(model, 'row18_dev_q_up'):  # S56 step 1: absent under the P-only row 18
+                    legs['charge_q'] += coef * float(pe.value(model.row18_dev_q_up[s_m, s_o, p] + model.row18_dev_q_down[s_m, s_o, p]))
                 for row_name, up_name, down_name in (('row18_dev_p_def', 'row18_dev_p_up', 'row18_dev_p_down'),
                                                      ('row18_dev_q_def', 'row18_dev_q_up', 'row18_dev_q_down')):
+                    if not hasattr(model, row_name):  # S56 step 1: see above
+                        continue
                     zl_up = model.ipopt_zL_out.get(getattr(model, up_name)[s_m, s_o, p])
                     zl_dn = model.ipopt_zL_out.get(getattr(model, down_name)[s_m, s_o, p])
                     lam = model.dual.get(getattr(model, row_name)[s_m, s_o, p])
@@ -4649,6 +4805,7 @@ def _row18_primal_split_block(model, network):
           'max_min_split_pu': 0.0}
     legs = (('pg_adn', 'expected_interface_pf_p', 'row18_dev_p_up', 'row18_dev_p_down', 'max_abs_row_residual_pu_p'),
             ('qg_adn', 'expected_interface_pf_q', 'row18_dev_q_up', 'row18_dev_q_down', 'max_abs_row_residual_pu_q'))
+    legs = tuple(leg for leg in legs if hasattr(model, leg[2]))  # S56 step 1: the Q leg is absent under P-only row 18
     for s_m in model.scenarios_market:
         for s_o in model.scenarios_operation:
             omega = _scenario_probability(network, s_m, s_o)
@@ -5681,6 +5838,17 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     if nrf_on:
         holder['nrf_capture_checklist'] = assert_nrf_capture_path()
         progress['nrf_capture_checklist'] = holder['nrf_capture_checklist']
+    # S56 step 1: the per-scenario interface coupling runs only under its label (spec AND entry) when non-default; its
+    # per-cycle capture path is asserted here, before any solve (rule eleven).
+    interface_coupling = validate_interface_coupling(entry.get('interface_coupling'))
+    coupling_on = interface_coupling_in_key(interface_coupling) is not None
+    if coupling_on and (spec.get('interface_coupling_label') != INTERFACE_COUPLING_LABEL
+                        or entry.get('interface_coupling_label') != INTERFACE_COUPLING_LABEL):
+        raise RuntimeError(f'interface_coupling entry {entry["label"]!r} without the label '
+                           f'{INTERFACE_COUPLING_LABEL!r} at spec and entry level')
+    if coupling_on:
+        holder['interface_coupling_capture_checklist'] = assert_interface_coupling_capture_path()
+        progress['interface_coupling_capture_checklist'] = holder['interface_coupling_capture_checklist']
     post_request = entry.get('post_certification')
     post_checklist = None
     if post_request:
@@ -5959,7 +6127,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                                                 flex_price_multiplier=flex_m,
                                                 interface_deviation_premium=premium,
                                                 release_solution_bookkeeping=release_bk,
-                                                rho0_scale=rho0_scale, nrf_option=nrf_option),
+                                                rho0_scale=rho0_scale, nrf_option=nrf_option,
+                                                interface_coupling=interface_coupling),
             investment_year=investment_year)
     run_wall = time.time() - t0
 
@@ -5971,6 +6140,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     # per-cycle record; every other evaluation writes exactly its pre-W64 fields.
     response_by_cycle = read_per_cycle_response(eval_dir) if capture_multiscenario else {}
     per_cycle_fields = PER_CYCLE_RECORD_FIELDS if capture_multiscenario else PER_CYCLE_TRAJECTORY_FIELDS
+    if coupling_on:  # S56 step 1: the option's per-cycle fields, only for entries declaring it
+        per_cycle_fields = per_cycle_fields + PER_CYCLE_INTERFACE_COUPLING_FIELDS
     with open(per_cycle_path, 'w') as handle:
         for r in rows:
             merged = dict(r)
@@ -6079,6 +6250,14 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'settling_resettle_summary': holder.get('settling_resettle'),
         })
     variant_extra.update(_w183a_record_fields(entry, holder))  # W183a: empty unless the entry declares an option
+    if 'interface_coupling' in entry:  # S56 step 1: only for entries declaring it, so every other record keeps its format
+        variant_extra.update({
+            'interface_coupling': entry['interface_coupling'],
+            'interface_coupling_label': entry.get('interface_coupling_label'),
+            'interface_coupling_applied_in_child': holder.get('interface_coupling_applied'),
+            'interface_coupling_capture_checklist_asserted_before_run': holder.get(
+                'interface_coupling_capture_checklist'),
+        })
     record = build_evaluation_record(
         spec=spec, spec_path=spec_path, spec_sha256=args.spec_sha256, entry=entry, report=report,
         component_levels=component_levels,

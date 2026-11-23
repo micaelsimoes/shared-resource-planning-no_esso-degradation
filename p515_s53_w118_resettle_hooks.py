@@ -368,7 +368,46 @@ def t_sum_from_consensus(planning_problem, consensus_vars, price_weight):
                     acc += term
                     abs_gap += abs(xd[p] - zt[p])
         by_node[str(n)] = acc
+    # P5.15 S56 step 1: with the per-scenario interface coupling wired, t_sum gains its deviation part (absent
+    # otherwise, so every existing t_sum is unchanged).
+    deviation = t_sum_deviation_part(planning_problem, consensus_vars, price_weight)
+    if deviation is not None:
+        total += deviation[0]
+        for node, value in deviation[1].items():
+            by_node[node] += value
     return total, by_node, abs_gap
+
+
+def t_sum_deviation_part(planning_problem, consensus_vars, price_weight):
+    """P5.15 S56 step 1 (per-scenario interface coupling): the deviation part of the priced interface-consensus gap,
+    sum over (node, year, day, scenario s, period) of w(y, d) * omega_s * (pi_s,t - pibar_t) * (d^D_s - d^T_s), with
+    d the per-scenario P deviation copies (MW; consensus_vars['interface_dev'][dso|tso]['current'][n][y][d]['p'][s][t]),
+    pi_s,t the TN block's market price of scenario s (`cost_energy_p[s_m][t]`), pibar_t / w from `price_weight`
+    (production's `_expected_market_price` / `_get_admm_block_weight`), omega_s the TN block's scenario probability.
+    Returns (total, {node: part}) or None when the deviation channel is absent."""
+    store = consensus_vars.get('interface_dev')
+    if store is None:
+        return None
+    tn = planning_problem.transmission_network
+    pairs = [tuple(pair) for pair in store['meta']['scenarios']]
+    total = 0.0
+    by_node = {}
+    for n in planning_problem.active_distribution_network_nodes:
+        acc = 0.0
+        for y in planning_problem.years:
+            for d in planning_problem.days:
+                network = tn.network[y][d]
+                xd = store['dso']['current'][n][y][d]['p']
+                zt = store['tso']['current'][n][y][d]['p']
+                for k, (s_m, s_o) in enumerate(pairs):
+                    omega = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+                    for p in range(planning_problem.num_instants):
+                        pibar, w = price_weight[(n, y, d, p)]
+                        term = w * omega * (network.cost_energy_p[s_m][p] - pibar) * (xd[k][p] - zt[k][p])
+                        total += term
+                        acc += term
+        by_node[str(n)] = acc
+    return total, by_node
 
 
 def price_weight_digest(price_weight):
@@ -691,6 +730,10 @@ def make_wrappers(st, originals, srp_module=None):
                 st.price_weight_sha256 = price_weight_digest(st.price_weight)
             ts, by_node, abs_gap = t_sum_from_consensus(planning_problem, consensus_vars, st.price_weight)
             cap['t_sum'] = {'t_sum': ts, 't_by_node': by_node, 'sum_abs_gap_mw_p': abs_gap}
+            deviation = t_sum_deviation_part(planning_problem, consensus_vars, st.price_weight)  # S56 step 1
+            if deviation is not None:  # only with the per-scenario coupling wired: both parts recorded
+                cap['t_sum']['t_sum_deviation_part'] = deviation[0]
+                cap['t_sum']['t_deviation_by_node'] = deviation[1]
         except Exception as error:  # noqa: BLE001
             cap['t_sum'] = None
             st.capture_errors.append({'cycle': st.cycle, 'capture': 't_sum', 'error': f'{type(error).__name__}: {error}'})
