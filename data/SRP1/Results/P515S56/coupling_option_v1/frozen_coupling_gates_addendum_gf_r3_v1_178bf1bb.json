@@ -1,0 +1,121 @@
+{
+ "authority": [
+  "Planner task 2026-11-23 (S56 step 1 completion), item 4: G-f r3 + an option-off control 2-cycle run on the same instance and candidate; addendum spec declaring the control, its solve counts and the comparison, committed before launching",
+  "TASKS.md S56: Step 1 completion (Planner-authorized); author decision 6 (2026-11-21)"
+ ],
+ "code_at_freeze": {
+  "commits": {
+   "harness_sweep_fixes": "2c328c58",
+   "q_convention_production": "f6bd136e",
+   "zero_solve_evidence": "a738b7c2"
+  },
+  "git_head": "a738b7c2c0a862fdabe5ae90f1285bd22c632356",
+  "sha256": {
+   "admm_parameters.py": "8e9e69e58f120270f68139a83737f33662ae2c710982ab2e0d59a3699f46ec13",
+   "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+   "interface_dual_capture.py": "d98b566f09f4f77867be0a812636c732183399f39803320b6b51587e80dd37fd",
+   "model_construction_helpers.py": "51ae3bcf4173b9ae60bda8d1f398288cfae57d9a5f8e5e151ed50737f3927c1a",
+   "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+   "p515_g_g1_g4_admm_gates.py": "67401731268cab293f97d1d5a197b933839be516dfe4811f85b2e7002247feaf",
+   "p515_s44_campaign_harness.py": "9280d2fd5a92bcfc4f3086f22749563c0e5b664e39b47d99885bfa917eed5320",
+   "p515_s53_w118_resettle_hooks.py": "1df97eb48976aa88a96ac8f81a07cce776630cb64bda01a4da30a8ec9f60e81e",
+   "p515_s56_coupling_gates.py": "b46faf10bd2ffa0072061d6c19829bbcd08083c7b9ada9bb3fb38dc7ea61b3fb",
+   "p515_s56_coupling_gates_gf_r3.py": "f4663b3c81e1b0570cb11bc5e1069a4cf5c6c26432f2dce0cbac1878516ea8db",
+   "p58_rescale.py": "fb116dd41e5a890e888fd3e794561dbb3015de6af93db0a3866702acfb74667d",
+   "shared_resources_planning.py": "7213f1bfc15a5ebaf29919f6a227208b94ad147dc31de70ccb6551fb0c8d94d7"
+  }
+ },
+ "comparison_declared": {
+  "hypothesis_reported_not_gated": "in r2 the per-scenario delta copies were freed within +-rating while the solved objective carried no deviation augmented / proximal term (the p58 snapshot defect), so the linear settlement could drive them bound to bound; r3 has the deviation terms in the solved objective",
+  "prediction": "none (diagnostic)",
+  "quantities_per_cycle_1_and_2_per_run": [
+   "production [TSO PROX] V / PF maxima with location (child_stdout.log)",
+   "S38 PF stride: z_TSO current - previous per entry (MW / MVAr), top 10 by |dz| / rating, max per (node, P|Q), counts with |dz| / rating >= 1.99 (bound to bound) and >= 0.5",
+   "both Q conventions per cycle and at the terminal point; Boyd PF / V parts"
+  ],
+  "question": "is the cycle-1 TSO interface movement seen in r2 (expected interface P at node 7, 2030 Autumn, t5: 199.997 MW, normalized 2.0; V 58.2 kV at node 9 2025 Winter t8) present in the option-off control too, and in r3?",
+  "reference": "r2's [TSO PROX] cycle-1 lines (campaign_s56cpl_gf_smoke_r2, kept as is)"
+ },
+ "execution": "sequential, attached, alone (concurrency 1; the harness campaign lock and process scan), both streams captured to <G>/gf_r3_launch.log and <G>/gf_control_off_launch.log",
+ "failure_policy": "as the predecessor: a gate failure is recorded and investigated (which block / field / cycle), never re-run or tuned; a harness fault is reported and stops the sequence",
+ "frozen_utc": "2026-11-23T09:49:23.628980+00:00",
+ "not_permitted": [
+  "editing the predecessor spec",
+  "runs beyond these two",
+  "tuning"
+ ],
+ "order": [
+  "commit this addendum and the launcher",
+  "gf_r3_on",
+  "gf_control_off",
+  "compare",
+  "commit evidence"
+ ],
+ "predecessor": {
+  "edited": false,
+  "path": "data/SRP1/Results/P515S56/coupling_option_v1/frozen_coupling_gates_spec_v1_10c98258.json",
+  "sha256": "10c9825862bdb16c3e2d4cb56e67bca02ee30769163ac4ff430b1908d7c5e7a4"
+ },
+ "predictions": {
+  "control_P1": "exit 0, 2 cycles, 2 per-cycle rows, no coupling field and no new Q field in the rows, no q_convention in the record (today's convention)",
+  "r3_P1_frozen_G-f": "exit 0, 2 cycles, every frozen per-cycle field present and finite, coupling active in both rows (the frozen smoke checks)",
+  "r3_P2_new_fields": "net_operational_recourse_settlement_excluded_in_full, gross_operational_cost_contracted_excluded, net_operational_recourse_contracted_excluded present and finite in both rows; in each row with local solves ok gross_operational_cost == gross_operational_cost_settlement_excluded_in_full and recourse == net_operational_recourse_settlement_excluded_in_full exactly",
+  "r3_P3_terminal_Q": "terminal recourse components: gross_operational_cost_contracted_excluded - gross_operational_cost == interface_settlement_total - interface_settlement_contracted_total to relative 1e-9 of max(|total|, |contracted|, 1); evaluation record objective_convention = the corrected-mode text; multiscenario terminal all_checks_pass True",
+  "r3_P4_pf_identity": "the S38 PF stride identity holds on both cycles (expectation, deviation and composition; otherwise the child raises -- a harness fault)"
+ },
+ "runs": {
+  "compare": {
+   "launcher": "p515_s56_coupling_gates_gf_r3.py --arm compare",
+   "output": "data/SRP1/Results/P515S56/coupling_option_v1/gf_r3_vs_control_<utc>.json",
+   "solves": 0
+  },
+  "gf_control_off": {
+   "candidate": "x0",
+   "cap": 2,
+   "instance": "srp1grid",
+   "launcher": "p515_s56_coupling_gates_gf_r3.py --arm control",
+   "mechanism": "the frozen gate script's own _run_campaign with the G-f configuration (CONFIGURATION_SRP1 + the srp1grid derived declaration), candidate x0, cap 2, row-18 premium alpha 0.5, and NO interface_coupling option (default off); own verdict file verdict_gf_control_off_<utc>.json",
+   "options": {
+    "interface_deviation_premium": {
+     "alpha": 0.5,
+     "floor": null
+    }
+   },
+   "root": "data/SRP1/Results/P515S56/coupling_option_v1/campaign_s56cpl_gf_control_off"
+  },
+  "gf_r3_on": {
+   "candidate": "x0",
+   "cap": 2,
+   "instance": "srp1grid (frozen derived declaration)",
+   "launcher": "p515_s56_coupling_gates_gf_r3.py --arm on",
+   "mechanism": "imports the frozen gate script unchanged, GF_ROOT -> s56cpl_gf_smoke_r3, calls its smoke() (frozen configuration, options, cap, checks, verdict writer)",
+   "note_objective_convention": "the frozen script's _run_campaign stamps 'Q = gross_operational_cost (contracted settlement and pin excluded)' into the campaign spec; for this arm production's corrected-mode convention (f6bd136e, settlement excluded in full) supersedes that text -- the evaluation record and per-cycle record carry q_convention / objective_convention",
+   "options": {
+    "interface_coupling": {
+     "per_scenario_interface_coupling": true,
+     "per_scenario_voltage_mode": "per_scenario",
+     "row18_charge_reactive": false
+    },
+    "interface_deviation_premium": {
+     "alpha": 0.5,
+     "floor": null
+    }
+   },
+   "root": "data/SRP1/Results/P515S56/coupling_option_v1/campaign_s56cpl_gf_smoke_r3"
+  }
+ },
+ "schema": "p515_s56_coupling_gates_addendum_gf_r3_v1",
+ "solve_counts": {
+  "parent_processes": "zero (the gate script guard, verified 0 in each verdict)",
+  "per_round": "(1 TSO + 3 DSO) x 3 years x 4 days + 3 ESSO = 51 network/ESSO solves",
+  "per_run_base": "3 rounds (initialisation + 2 ADMM cycles) = 153, plus credited retries under the W35 rule (run_admm_arm solve_profile: identity_holds checks observed == base + retries exactly)",
+  "total_base_both_runs": 306
+ },
+ "stage": "P5.15 S56 step 1 completion -- G-f third attempt (option on) and its option-OFF control, SRP1-grid 3 x 3, 2 cycles",
+ "wall_projection": "r2 reached the cycle-1 Boyd call in 736 s (initialisation + cycle 1); projected <= 30 min per run, <= 1.25 h in total; well under 4 h",
+ "why_a_third_attempt": {
+  "fixed_since": "2c328c58: the identity compares like with like (expectation part, deviation part reproduced, composition); p58_rescale re-takes the solved (rescaled) objective after the per-scenario wiring -- in r2 the solved objective carried NO deviation term (zero-solve probe a738b7c2); f6bd136e: Q per author decision 6",
+  "r1": "refused before any solve by the capture-path assertion (composed boyd_*_part names); fixed in 21c49cec; verdict_gf_20261123T085107.json",
+  "r2": "raised at ADMM cycle 1 in the S38 PF entry identity (expectation-only reconstruction vs the omega-weighted total); verdict_gf_20261123T090427.json"
+ }
+}
