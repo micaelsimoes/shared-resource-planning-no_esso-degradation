@@ -46,7 +46,7 @@ NEW_Q_FIELDS = ('net_operational_recourse_settlement_excluded_in_full', 'gross_o
                 'net_operational_recourse_contracted_excluded')
 R2_EVAL = os.path.join('campaign_s56cpl_gf_smoke_r2', 'evals', '972942a49f415577_x0')
 TSO_PROX = re.compile(r'^\[TSO PROX\]\[(V|PF) MAX\] node=(\d+), year=(\d+), day=(\w+), period=(\d+)'
-                      r'(?:, type=(\w+))? \| (?:dV|delta)=([-\d.eE+]+) (kV|MW) \| normalized=([-\d.eE+]+)')
+                      r'(?:, type=(\w+))? \| (?:dV|delta)=([-\d.eE+]+) (kV|MW|MVAr) \| normalized=([-\d.eE+]+)')
 TSO_PROX_HEAD = re.compile(r'^\[TSO PROX\] cycle=(\d+) \|')
 
 
