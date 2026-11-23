@@ -152,7 +152,22 @@ def t1():
         inv = rec['s56_investment']['investment_cost_eur']
         last = files['rows'][-1]
         ck(1, f'{lab}: exit summary from the real record: status not_certified (cap 2 reached), read at the terminal '
-              f'cycle 2', ex['status'] == 'not_certified' and ex['read_cycle'] == 2, ex.get('status'))
+              f'cycle 2', ex['status'] == 'not_certified' and ex['read_cycle'] == 2
+           and ex['read_at'].startswith('terminal cycle'), [ex.get('status'), ex.get('read_at')])
+        if lab == 'unit':
+            rc_dir = os.path.join(OUT, 'real_check', 'campaign_s56orc_v1_real_check', 'evals')
+            if os.path.isdir(rc_dir):   # the real 3-cycle check's record (run before this suite), mapped again here
+                ed = os.path.join(rc_dir, os.listdir(rc_dir)[0])
+                rf = D.read_eval_files(ed)
+                rx = D.map_record(rf, P.DEPTH_EXIT)
+                rs = D.map_record(rf, P.DEPTH_SETTLED)
+                out['real_check_remapped'] = {'exit': rx, 'settled': {k: rs.get(k) for k in (
+                    'status', 'F', 'V', 'gates', 'gates_pass', 'settled_checks', 'leak_flag')}}
+                ck(1, 'the real 3-cycle settled-key record re-mapped: exit not_certified read at the terminal cycle 3 '
+                      '(no would-be certification cycle); settled complete, not_settled',
+                   rx['status'] == 'not_certified' and rx['read_cycle'] == 3 and rx['read_at'].startswith(
+                       'terminal cycle') and rs['status'] == D.NOT_SETTLED_STATUS
+                   and all(D._fin(rs['V'][k]) for k in 'S PR G A'.split()), [rx.get('read_at'), rs.get('status')])
         ck(1, f'{lab}: F = I(x) + recourse(2) exactly, = the cost breakdown total_planning_cost_eur',
            ex['F'] == inv + last['recourse'] and abs(ex['F'] - bd['total_planning_cost_eur']) <= 1e-9 * ex['F'],
            [ex['F'], inv + last['recourse'], bd['total_planning_cost_eur']])
@@ -987,7 +1002,8 @@ def real_check(out_dir):
         ex = D.map_record(D.read_eval_files(ed), P.DEPTH_EXIT)
         res['exit_view'] = ex
         ck('R', 'exit view of the stop-disabled run: no would-be certification cycle in 3 cycles -> not_certified, '
-                'F and bar read at the terminal cycle', ex['status'] == 'not_certified' and D._fin(ex['F']), ex['status'])
+                'F and bar read at the terminal cycle', ex['status'] == 'not_certified' and D._fin(ex['F'])
+           and ex['read_cycle'] == REAL_CAP and ex['read_at'].startswith('terminal cycle'), ex['status'])
     except Exception as error:  # noqa: BLE001 -- recorded (a harness fault)
         res['error'] = f'{type(error).__name__}: {error}'
         res['traceback'] = traceback.format_exc()

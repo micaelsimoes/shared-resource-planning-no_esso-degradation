@@ -840,8 +840,9 @@ def map_record(files, depth, params=MAPPING_PARAMETERS, read_cycle=None):
         bar, steps = bar_at(F, c, params['bar_window']) if c is not None else (None, [])
         tri = triangle_bound(rows, c, params['bar_window']) if c is not None else None
         return dict(base, status=status, F=Fc, bar=bar, read_cycle=c,
-                    read_at=('would-be certification cycle (stop disabled)' if stop_disabled
-                             else 'certification cycle' if read_cycle is not None else 'terminal cycle (uncertified)'),
+                    read_at=('terminal cycle (no certification cycle: uncertified)' if read_cycle is None
+                             else 'would-be certification cycle (stop disabled)' if stop_disabled
+                             else 'certification cycle'),
                     I=inv, bar_steps_n=len(steps), bar_triangle_bound=tri,
                     bar_within_triangle_bound=(tri is None or bar is None or bar <= tri * (1 + 1e-12) + 1e-9),
                     recourse_identity_bad_cycles=bad, guards=guards, cycles_run=rec.get('cycles_run'),
