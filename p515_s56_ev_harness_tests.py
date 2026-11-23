@@ -36,6 +36,9 @@ modules it imports):
   --smoke                 THE ONE SOLVED RUN: a 2-cycle EV evaluation of x0 and of the reference unit at 2x on the
                           SRP1-grid EV twin, all keys on, through the campaign harness (freeze, lock, evaluate);
                           declared solves per evaluation ((1 + 3) x 12 + 3) x (2 + 1) = 153, checked exactly.
+  --smoke-recheck         ZERO SOLVES: the smoke's checks on its recorded artifacts with the corrected solve-count
+                          comparison (the --smoke run compared a dict with an integer; its FAIL lines stand in
+                          smoke.json), plus the table of measured numbers.
   --manifest              sha256 of every file under the output directory.
 
 Usage (repo root, canonical interpreter, attached, both streams captured; one mode per invocation):
@@ -1432,7 +1435,7 @@ def smoke(_args):
                and r.get('cycles_run') == SMOKE_CAP, {'exit': (r.get('parent_view') or {}).get('exit_code'),
                                                       'cycles': r.get('cycles_run'), 'status': r.get('status')})
             ck(f'{lab}: solves == declared {SMOKE_DECLARED_SOLVES_PER_EVAL} (identity holds, nothing blocked)',
-               sp_.get('observed') == SMOKE_DECLARED_SOLVES_PER_EVAL and sp_.get('identity_holds') is True, sp_)
+               _solves_as_declared(sp_), sp_)
             ck(f'{lab}: cost breakdown written, harness checks ok', cb.get('status') == 'written'
                and cb.get('harness_checks_ok') is True, cb.get('checks'))
             ck(f'{lab}: hook order EV assertion -> settings -> multiplier', r.get('s56_hook_order')
@@ -1443,6 +1446,99 @@ def smoke(_args):
         traceback.print_exc()
     res['wall_s'] = time.time() - t0
     return _finish(res, ck, out_dir, 'smoke')
+
+
+def _solves_as_declared(sp_):
+    """The solve profile of one smoke evaluation against the declared count: permitted solves == declared, nothing
+    blocked, the base == declared, no retry credited, production's identity holds. (The --smoke run of 2026-11-23
+    compared the `observed` DICT with the integer -- a defect of this check, recorded as FAIL in smoke.json; the
+    corrected comparison is applied to the recorded profiles by --smoke-recheck, zero solves.)"""
+    obs = sp_.get('observed') or {}
+    return (obs.get('permitted_solve') == SMOKE_DECLARED_SOLVES_PER_EVAL
+            and obs.get('permitted_exec') == SMOKE_DECLARED_SOLVES_PER_EVAL
+            and obs.get('blocked_solve') == 0 and obs.get('blocked_exec') == 0
+            and sp_.get('base_solves') == SMOKE_DECLARED_SOLVES_PER_EVAL and sp_.get('retry_solves_credited') == 0
+            and sp_.get('identity_holds') is True)
+
+
+def smoke_recheck(_args):
+    """ZERO SOLVES: the smoke's checks re-evaluated on its RECORDED artifacts (smoke.json, each evaluation_record.json,
+    s56_cost_breakdown.json and per_cycle_record.jsonl), with the corrected solve-count comparison; the measured smoke
+    numbers (RSS, s/cycle, cost breakdown, ESSO slacks at 1e4, leak detector) collected in one table."""
+    src = os.path.join(OUT, 'smoke')
+    out_dir = _new_out('smoke_recheck')
+    ck = Checks()
+    with open(os.path.join(src, 'smoke.json')) as handle:
+        smk = json.load(handle)
+    res = {'schema': SCHEMA + '_smoke_recheck', 'started_utc': _utc(), 'provenance': _provenance(), 'error': None,
+           'source': {'smoke_json': os.path.relpath(os.path.join(src, 'smoke.json'), REPO),
+                      'sha256': _sha(os.path.join(src, 'smoke.json'))}, 'evaluations': {}}
+    root = os.path.join(REPO, smk['campaign']['root'])
+    for e in smk['campaign']['entries']:
+        ed = os.path.join(root, 'evals', e['eval_dir'])
+        with open(os.path.join(ed, 'evaluation_record.json')) as handle:
+            r = json.load(handle)
+        with open(os.path.join(ed, H.S56_COST_BREAKDOWN_FILE)) as handle:
+            cb = json.load(handle)
+        with open(os.path.join(ed, 'per_cycle_record.jsonl')) as handle:
+            pc = [json.loads(t) for t in handle if t.strip()]
+        with open(os.path.join(ed, 'exit_code.txt')) as handle:
+            exit_code = int(handle.read().strip())
+        lab = e['label']
+        sp_ = r.get('solve_profile') or {}
+        rss = r.get('peak_rss') or {}
+        res['evaluations'][lab] = {
+            'eval_dir': os.path.relpath(ed, REPO), 'exit_code': exit_code, 'cycles_run': r.get('cycles_run'),
+            'status': r.get('status'), 'solve_profile_observed': sp_.get('observed'),
+            'peak_rss_bytes': {'child_python_process': rss.get('child_python_process_ru_maxrss'),
+                               'production_state': rss.get('production_state_peak_rss_ru_maxrss'),
+                               'solver_subprocesses_max': rss.get('solver_subprocesses_max_ru_maxrss')},
+            'wall_time_s': r.get('wall_time_s'), 'cycle_wall_s': [c.get('cycle_wall_s') for c in pc],
+            'rss_bytes_per_cycle': [c.get('rss_bytes') for c in pc],
+            'gross_operational_cost_per_cycle': [c.get('gross_operational_cost') for c in pc],
+            'objective_change_abs_per_cycle': [c.get('objective_change_abs') for c in pc],
+            'cost_breakdown': {k: cb[k] for k in ('objective_convention', 'investment_cost_eur',
+                                                  'gross_operational_cost_eur', 'terminal_value_credit_eur',
+                                                  'net_operational_recourse_eur', 'total_planning_cost_eur',
+                                                  'flexibility_cost_reactive_down_eur', 'salvage_objective_kappa',
+                                                  'priced_residual_pr')},
+            'flexibility_cost_eur': {k: cb['flexibility_cost_eur'][k] for k in (
+                'active_down_eur', 'reactive_down_eur', 'per_dso', 'reconciliation_with_total_flex_cost',
+                'max_rel_diff_vs_flex_cost_scenario_expression')},
+            'flex_price_split_readback': cb['flex_price_split_readback'],
+            'esso_slack_totals': cb['esso_slack_totals'],
+            'leak_detector': {k: v for k, v in cb['leak_detector'].items()},
+            'per_cohort_throughput': cb['per_cohort_throughput'],
+            'exit_certificate_e6_summary': cb['exit_certificate_e6']['summary'],
+            'network_certificate': {k: v for k, v in cb['exit_certificate_e6']['network'].items() if k != 'per_block'},
+            'breakdown_checks': cb['checks'], 'hook_order': r.get('s56_hook_order'),
+            'ev_injection_at_read': r.get('s56_ev_injection_at_read'),
+            'ev_assertion_in_hook_ok': (r.get('s56_ev_assertion_in_hook') or {}).get('ok'),
+            'derived_instance_checks_in_child': r.get('derived_instance_checks_in_child'),
+            'applied_in_force': (r.get('s56_ev_plan_applied_in_child') or {}).get('in_force'),
+            'multiscenario_terminal_status': (r.get('multiscenario_terminal') or {}).get('status'),
+            'operational_workbook_status': (r.get('operational_workbook') or {}).get('status')}
+        ck(f'{lab}: child exit 0, 2 cycles', exit_code == 0 and r.get('cycles_run') == SMOKE_CAP)
+        ck(f'{lab}: solves == declared {SMOKE_DECLARED_SOLVES_PER_EVAL} (permitted solves and execs, 0 blocked, no '
+           f'retry, identity holds)', _solves_as_declared(sp_), sp_.get('observed'))
+        ck(f'{lab}: cost breakdown written, harness checks ok', (r.get('s56_cost_breakdown') or {}).get('status')
+           == 'written' and (r.get('s56_cost_breakdown') or {}).get('harness_checks_ok') is True
+           and _sha(os.path.join(ed, H.S56_COST_BREAKDOWN_FILE)) == r['s56_cost_breakdown']['sha256'])
+        ck(f'{lab}: hook order EV assertion -> settings -> multiplier', r.get('s56_hook_order')
+           == ['ev_assertion', 'esso_settings_and_staged_write', 'flex_price_multiplier'])
+        ck(f'{lab}: EV injected once at the read, assertion ok at the read and in the hook',
+           (r.get('s56_ev_injection_at_read') or {}).get('hook_calls') == 1
+           and ((r.get('s56_ev_injection_at_read') or {}).get('assertion_post_read') or {}).get('ok') is True
+           and (r.get('s56_ev_assertion_in_hook') or {}).get('ok') is True)
+        ck(f'{lab}: ESSO slack penalty 1e4, cohort mode and TV in force in the child',
+           (r.get('s56_ev_plan_applied_in_child') or {}).get('in_force') == {
+               'cohort_formulation': COHORT_MODE, 'salvage_value_enabled': True, 'salvage_value_in_objective': True,
+               'esso_slack_penalty': SLACK_PENALTY})
+        ck(f'{lab}: kappa = a / sigma on every ESSO model', all(v and v['equals_a_over_sigma'] for v in
+                                                              cb['salvage_objective_kappa'].values()))
+    res['smoke_parent_guard'] = smk.get('guards')
+    ck('smoke parent process: zero solves (guard verified)', smk.get('zero_solve_verified') is True)
+    return _finish(res, ck, out_dir, 'smoke_recheck')
 
 
 # ======================================================================================================================
@@ -1468,7 +1564,7 @@ def manifest(_args):
 def main():
     ap = argparse.ArgumentParser()
     for flag in ('--build-ev-five-block', '--nokey', '--nl-stub', '--nl-compare', '--keys', '--keys-child',
-                 '--stub-run', '--smoke', '--manifest'):
+                 '--stub-run', '--smoke', '--smoke-recheck', '--manifest'):
         ap.add_argument(flag, action='store_true')
     ap.add_argument('--pre-rev', default=DEFAULT_PRE_REV)
     ap.add_argument('--harness', choices=('pre', 'post'))
@@ -1491,6 +1587,8 @@ def main():
         return stub_run(a)
     if a.smoke:
         return smoke(a)
+    if a.smoke_recheck:
+        return smoke_recheck(a)
     if a.manifest:
         return manifest(a)
     ap.error('one mode')
