@@ -191,3 +191,225 @@ All three runs terminate as `complete_poll_no_accepted_candidate`.
 - **The hours of killed evaluations are lower bounds:** launch start to the last write in the eval dir.
 - **Item 9** reports coverage and classes only. No published history covers N(x) completely; searched: s47, s51, s53,
   the only committed `campaign_results.json` files with a `poll_history`.
+
+## Integration (Worker, 2026-11-23): oracle mapping, cap in the key, cache roots, preflight, `--pilot`
+
+**Authority:** `S56_SEARCH_DRIVER_DESIGN.md`, "Oracle mapping and key rules" (`acc80a2e`); the Planner's integration task.
+Engineering build: one test script with pass/fail checks, no prediction spec. **Not launched:** the pilot and any search.
+
+**Solve claim:** the zero-solve suite and every driver subprocess run with an armed `SolveProfileGuard(permitted=())`,
+verified at 0; pickle load / loads blocked, 0. **One real evaluation** ran (the 3-cycle check): parent guard at 0, child
+solves 204 = the declared ((1 + 3)·12 + 3)·(3 + 1), nothing blocked, identity held.
+
+**Objective convention (every EUR figure):** F = I(x) + gross_operational_cost − TV credit, EUR of total discounted
+planning cost; gross is settlement-excluded (contracted part and pin excluded; at one scenario that is the whole
+settlement). Cost-breakdown schema v2.
+
+### Blocked on Planner
+
+These do not block the build. They block a **real** pilot or search: the real freeze and the real pilot freeze refuse
+until items 1 and 3 are confirmed (refusals tested, T5).
+
+1. **Two gate thresholds are not named anywhere: τ_cl and the ESSO slack gate.** Searched: `S56_PLAN_v4_1.md`,
+   `S56_PLAN_v4.md`, `S56_DECOMPOSITION_NOTE.md`, `S56_SEARCH_DRIVER_DESIGN.md`, `P5_15_S56_EXPERT_HANDBACK*.md`,
+   `model_construction_helpers.py`, `p515_s56_cohort_followup_tests.py`, the harness.
+   - **Provisional values in the code:** both 1e-5, anchored to `definitions.EQUALITY_TOLERANCE`. That is the band
+     production imposes on the closure when its slack is not built (`sess_soc_final_rule`).
+     - τ_cl applies in p.u. of the block base, so 1e-3 MWh on base 100.
+     - The ESSO slack gate is |s_up − s_down| ≤ 1e-5 MW / MVAr.
+   - **Options:** confirm these values, or name others. `MAPPING_PARAMETERS['provisional']` then empties.
+2. **s_share is not named in the design:** S's share of R/4, which the K_EV rule needs ("the smallest K at which S
+   meets its share"). `--pilot-evaluate` refuses without `--s-share-eur`.
+3. **The initialisations.** The harness has no initialisation variant as such.
+   - **Smallest deterministic variation (proposed):** the existing, keyed harness option `rho0_scale` (W183a: ρ0 × s on
+     every TSO / DSO channel and the ESSO ρ). It needs no production option.
+   - **Proposed values:** s ∈ {1.0, 0.5, 2.0}. 1.0 is the default run.
+   - **The staged plan** is `p515_s56_ev_harness_tests.STAGED[grid]`, the memory probe's mixed-duration plan.
+   - Confirm or change both. The pilot spec records them as `PROPOSED`.
+4. **Readings I took inside the decisions.** Each is stated in the driver's mapping comment; change any you disagree
+   with.
+   - **(a) "Would have certified each of the last W cycles"** means production's per-cycle test `cycle_convergence`
+     (= boyd_all_pass and local_solves_ok, `shared_resources_planning.py:3469`) holds on each of them. With W = 10, the
+     certificate length, that is "would have certified at K". The stronger reading, a complete certificate at each of
+     the last W cycles (19 consecutive cycles), is not used.
+   - **(b) PR.** Sign per ruling 3: PR = −price + dual.
+     - The interface part uses the **TSO-side** multipliers × (TSO − DSO copy). This is the step 4 evaluator's form and
+       production's `priced_residual_pr` conversion.
+     - The ESS part is each of the three agents' own augmented-Lagrangian term, σ·λ_i·(x_i − z)/(2 S_i)
+       (`_update_shared_energy_storage_variables`).
+     - σ is the common objective scale: one scaled-objective unit of any agent = σ EUR. For the ESSO this follows from
+       κ = a/σ.
+   - **(c) G.**
+     - The ESSO slack is priced σ·|λ_esso|·|s_up − s_down|/(2 S_esso).
+     - The closure is priced σ·|row dual|·|s_up − s_down| (p.u.).
+     - **Deactivated closure rows are excluded and counted:** 48 of 72 in the real check.
+     - A closure row with a non-zero slack and no dual makes the summary incomplete (harness_error).
+   - **(d) Pilot rules.**
+     - K_EV must be ≥ every run's would-be certification cycle.
+     - e_EV's pair set is the 9 x0/unit pairs plus the 6 staged pairs.
+     - ψ = block makespan / mean t_exit of the block, max over blocks of ≥ 2 runs.
+     - The pilot runs in concurrent blocks, so its t_exit already carries contention. κ = 1.18 in the projection may
+       then double-count it.
+5. **Policy gap (outside this task; not changed).** `P.confirm` maps a `not_settled` settled summary to
+   `harness_error`, which **stops the search**. The design says "otherwise the class is uncertified". The mapping emits
+   `not_settled`.
+   - **Options:** (a) leave the policy as is: an unsettled confirmation stops for review; (b) a policy change: unsettled
+     → "unresolved after confirmation", listed, the search continues.
+6. **The driver gate's item 4 control now fails as written.** It asserted that the 2× configuration is **refused** (the
+   smoke alias). The cap rule removes that alias (T3, T9). The gate was not re-run. Re-scope that control if the gate is
+   re-run.
+7. **A real launch needs `memory_per_slot_gib` declared** in the harness config or pilot spec, from the memory probe
+   (`7974096f`: five-block exceeds 20.7 GiB; 2025/2030/2035 by the rule, awaiting the author). I did not read the
+   probe's figures.
+
+### Changed
+
+| commit | content |
+|---|---|
+| `8948db26` | Harness **+328 lines, insertions only** (vs `acc80a2e`); driver integration; `p515_s56_search_oracle_tests.py` (new) |
+| `370b7689` | Exit-view label fix (below); the tests re-map the real record |
+| (this commit) | Evidence `data/SRP1/Results/P515S56/search_oracle_v1/` + manifest + this section |
+
+**Harness (`p515_s44_campaign_harness.py`):**
+- **Cap in the eval key (option (a)).** For every entry that declares an S56 EV-plan key, the eval key is wrapped
+  **last** as sha256{base, `s56_cycle_cap`: cap}. The entry records `s56_cycle_cap_keyed`. For S56 entries this
+  supersedes the W98 comment at `S56_SETTLED_STOP_DISABLED_KEY`; that comment is left in place, insertions only.
+  Entries without S56 keys are not wrapped.
+- **`s56_pricing_capture` (opt-in; allowed only on S56 EV-plan entries without the coupling).**
+  - True is keyed (sha256{base, key}). False is recorded, not keyed. Absent changes nothing.
+  - The capture path is asserted before any solve: 29 production-source checks.
+  - Post-run, zero solves, it writes `s56_pricing_terminal.json` from production's returned terminal state
+    (`consensus_vars` / `dual_vars` deep copies) and the run's terminal models:
+    - σ;
+    - the interface copies and multipliers;
+    - the three ESS agents' x, λ, z and ratings;
+    - the ESSO slacks;
+    - the closure rows with their dual;
+    - the settlement blocks;
+    - the efficiencies.
+  - A failed write exits the child with code 2.
+- **The per-cycle TV credit needed no capture.** Production's trajectory row already carries `terminal_salvage_value`
+  and `recourse` (= net) every cycle (`shared_resources_planning.py:3386–3388, 3589–3590`).
+
+**Driver (`p515_s56_search_driver.py`):**
+- **`map_record` / `HarnessOracle.summary_from_dir`:**
+  - the mapping exactly as in the design;
+  - `assert_mapping_capture_paths` runs at oracle construction, before any run;
+  - every missing file or field gives `harness_error` with its reason.
+- **`compose_eval_key`:** one composition for the search and the pilot, including the pricing and cap wraps.
+- **Cache roots and start pool:**
+  - `build_cache_index` (freeze) indexes only the records whose eval key is this search's key at a depth. Others are
+    listed with the reason.
+  - `load_cache` re-verifies the hash and the key and maps the records at every launch.
+  - `best_start` returns the certified pool member with the lowest exit F, with the runner-up margin against e.
+  - CLI: `--cache-root`, `--start best_of_pool`, `--start-pool`.
+- **`real_launch_preflight`:**
+  - the mapping parameters are final;
+  - `check_campaign_preconditions` (live campaign children, legacy lock, write-once root, production / harness /
+    driver files clean);
+  - `NLP_SOLVER_PATH` = `/usr/local/bin/ipopt`;
+  - the memory rule: E1's vm_stat rule, re-implemented because importing the E1 launcher would chdir and install a
+    guard; the per-slot GiB is declared in the spec.
+  - It runs before a launch dir is created.
+- **`project_wall_time`** (T = κ[ψ·t_exit·Σblocks + t_set·batches]), **`count_projection`** (the design's N_search /
+  E_j formula), `projection_from_state`. CLI `--project`.
+- **`--pilot-freeze / --pilot-run / --pilot-evaluate`:**
+  - 7 evaluations at 2×, `s56_settled_stop_disabled` + `s56_pricing_capture`, cap K_pilot = 300.
+  - Blocks of 5 + 2, one attached launch per block, hash-chained launch records. Exit 4 while blocks remain.
+  - `--grid srp1grid | five_block`.
+  - `pilot_outputs` computes:
+    - single offsets and their sign;
+    - 15 pair offsets;
+    - the dF_exit / dF_set spreads, with V_pair beside;
+    - the bars, t_exit, t_set, ψ;
+    - the leak at the settled point;
+    - K_EV and e_EV by the frozen rule.
+- **Settlement derivation (task item 1, PR)**, in `SETTLEMENT_DERIVATION`:
+  - **The EV record's Q:** `gross_including_settlement − contracted settlement − pin` (`shared_resources_planning.py:1305–1307`).
+  - **The in-full form applies only when the coupling is wired** (`:1316–1320`, `:4899–4900`), and it is never wired
+    at one scenario (`:4406`).
+  - **At one scenario the deviation part is 0 and contracted = total** (`:1274–1275`, `:826–827`).
+  - **So the EV Q contains no settlement price part.** price = −Σ w_b·settlement_total.
+  - Checked on every settled record: deviation = 0, contracted = total, and the blocks reconcile with
+    `interface_settlement_total`. All three held on the real check.
+
+### Found
+
+**Zero-solve suite, from committed code `370b7689`: 103/103 pass.** Attached, both streams captured, 57 s, stderr
+empty.
+
+| item | result | evidence |
+|---|---|---|
+| T1 mapping on real records | **pass** (23) | Smoke x0 / unit: F = I + recourse(2) exactly = breakdown total (unit **873,899,483.26**, x0 873,896,422.55 — the harness report's values); recourse = gross − TV every cycle; bar_F = the record's net step (rel 1e-12) ≤ triangle bound; exit code / status error / missing files / no I(x) → harness_error; guards broken → not_certified. The real 3-cycle record re-mapped (exit read at terminal cycle 3; settled complete, not_settled) |
+| T2 settled arithmetic | **pass** (21) | Real smoke files + a **synthetic** pricing fixture: PR, A, G = an independent hand computation (rel 1e-12); the PR sign; S; each settled condition alone → not_settled (named); a record short of K → harness_error; gate boundaries (dP = 12.5 kW passes, 12.6 fails; ESSO slack; τ_cl; D1); leak 25.01 € flagged, not gated; a closure row without dual, a non-zero deviation part → harness_error; `P.confirm` consumes the summaries |
+| T3 keys | **pass** (11) | Composition = `freeze_campaign_spec` (3 points × 2 depths × caps 2/3/300/500), 24 distinct keys; settled K distinct; **alias gone:** the smoke's keys are hit by no 2× key at caps 3/300/500; **the freeze-time collision scan of the 2× configuration (74,084 keys, 308 files) finds nothing** — it named the smoke spec before; pricing key refusals (no S56 key, coupling, non-bool), True keyed, False not keyed |
+| T4 option-off identity | **pass** (11) | Harness diff vs `acc80a2e`: 328 added, **0 deleted**. **308 committed specs, 7,293 entries: candidate keys reproduce; the 7,291 entries without S56 keys: full eval key post = pre on every one, and the 7,270 recorded eval keys all reproduce (0 mismatches).** The 2 entries with S56 keys (the smoke's x0 / unit) reproduce under pre and change under the cap rule, by design. Freeze pre = post byte-identical on 4 entry sets (SRP1 plain incl. ρ0 scale; pinned-capture AA; SP derived coupled + calibration key; SP derived plain); `build_evaluation_record` pre = post on 12 committed records |
+| T5 preflight | **pass** (13) | Memory rule (pass / refuse / equality edge, undeclared per-slot, missing vm_stat line); `real_launch_preflight` refuses on the provisional mapping and on `NLP_SOLVER_PATH`, never creates the launch dir; the real freeze refuses (provisional; no `memory_per_slot_gib`); the real oracle refuses a settled depth without the pricing key; the mapping capture path passes on the EV configuration; the real pilot freeze refuses (provisional); unknown grid, stub pilot not test-only refused |
+| T6 cache / start pool | **pass** (5) | **Synthetic** fixture records: 3 indexed; foreign key and the pre-rule smoke copy ignored with reason; mapped F = fixture F; best start = lowest certified exit F, runner-up margin 40,000 € vs e reported; a member without a record refused; a record changed after the freeze refuses |
+| T7 pilot vs stubs | **pass** (11) | Freeze (SRP1 grid): 7 entries, 5 + 2, distinct keys, all stop-disabled + pricing at 300; three attached launches → exit **4, 0, 0**; hash-chained records, children exit 0; evaluate without s_share refuses; with a test s_share 500 € (**synthetic** traces): every output written, e_EV re-derived by the rule, K_EV meets its rule; unreachable share / no would-be certification → failure named, no value; five-block freeze: keys distinct from the SRP1 grid |
+| T8 projection | **pass** (4) | Worked count example N 37 / blocks 7 / batches 6; T = 36.108 h on that example; unmeasured t_exit refused |
+| T9 2× stub search | **pass** (2) | The 2× EV stub search freezes (it was refused before) and runs to termination by attached launches; final state = in-process replay |
+
+**Real check:** `--real-check`, from committed code `8948db26`; 12/12 pass, attached, stderr empty.
+- **Setup:** the reference unit, SRP1-grid EV twin, 2×, `s56_settled_stop_disabled` + `s56_pricing_capture`, cap 3.
+- **Keys:** eval key `ae319309…`, candidate `0998d021…`. Spec `campaign_spec_s56orc_v1_real_check_6781f85a.json`.
+
+| quantity | value |
+|---|---|
+| child exit / cycles / record status | 0 / 3 / not_certified |
+| solves | 204 = declared; blocked 0; identity holds |
+| stop disabling | length 10 → 10⁹ → restored 10; summary ok |
+| pricing capture | written (632 kB): 36 interface, 36 ESS, 36 ESSO-slack blocks, 72 closure rows (24 with dual, 48 inactive) |
+| F at K = 3 | **828,457,805.41** (I 317,957.01) = breakdown total |
+| S (3-cycle window; K < W) | 936,978,515.20 |
+| PR = −price + dual | −11,810,480.31 = −16,714,546.03 + 4,904,065.73 (interface P +4,920,672.90, Q −14,225.14, V −3,334.17; ESS P +955.23, Q −3.09) |
+| A | 25,246,375.18 |
+| G | 2,046.31 (closure 2,038.24; leak 8.07; ESSO slack 9.9e-12) |
+| gates | **gates_pass False**: interface max \|dP\| 32.05 MW > 12.5 kW; ESSO slack, τ_cl (1.57e-8 MWh), D1 (η 0.97/0.96), status pass |
+| settled | **not_settled**: K < W, last W not at tail depth, not certified on the last W |
+| leak λL (loss) | 8.07 € (full-L 112.55 €), within 25 € — at 3 cycles, unconverged: a measurement, not a result |
+| wall / peak RSS | 199.5 s child / 2.43 GiB (ru_maxrss) |
+
+- **Cycles 1–2 are bitwise equal to the committed smoke unit** (gross and recourse float.hex). The settled key and
+  the pricing capture leave the computation unchanged in those cycles.
+- **Everything in the table is a 3-cycle unconverged point.** It shows that the mapping is complete. It is not an
+  estimate.
+
+**Unexpected findings:**
+- **The real check found a label defect.** In a stop-disabled run without a would-be certification cycle, the exit
+  view said "would-be certification cycle" although it read the terminal cycle. The status and value were right.
+  - Fixed in `370b7689`.
+  - `real_check.json` (written by `8948db26`) carries the old label. The suite's T1 re-maps the same record with the
+    fix.
+- **In the 3-cycle check the price part (−16.7 M€) dominates PR and A.** That is expected far from consensus, and it
+  is why PR only withholds determinacy.
+
+**Evidence** (`data/SRP1/Results/P515S56/search_oracle_v1/`):
+- `zero_solve/zero_solve.json` `f118f2f3…`;
+- `real_check/real_check.json` `252b2354…`;
+- `manifest_sha256.json` `9e7904d7…`: 484 files hashed, including the uncommitted test trees;
+- launch logs: `zero_solve_stdout.log` `06a81c5a…`, `real_check_stdout.log` `74fe7dff…`; stderr logs empty
+  (`e3b0c442…`).
+
+**Committed:**
+- the JSONs, the manifest and the logs;
+- the real-check campaign spec, heartbeat and init-identity record;
+- its eval dir, without the ESSO pickle, `results/` (xlsx), `planning_read/` and `esso_capture/`, as for the smoke.
+
+**Not committed, hash-recorded only:** `zero_solve/test_trees/`. It holds frozen campaign and pilot specs with
+EV-configuration eval keys, which a later collision scan would hit.
+
+### Not confirmed
+
+- **No settled (K ≥ W, tail-depth) record has been mapped.** The settled branch is tested on a synthetic fixture (T2)
+  and on the 3-cycle real record (not_settled). Searched: no committed EV record with the pricing capture beyond this
+  check.
+- **Every committed or new EV record has TV = 0.** The 2025 cohort has no remaining life, so the per-cycle TV term of F
+  is exercised only at zero.
+- **No would-be certification cycle has occurred in a real record.** The pilot's exit-view path (c* found) is tested
+  on synthetic traces only.
+- **The pricing conversion factors are derived from production source and asserted.** They were not compared against
+  an independent dual-based estimate, which needs a converged run.
+- **No real cache root exists.** T6 uses fixtures, and the screen has not run.
+- **The memory preflight's per-slot figure is not taken from the memory probe** (Blocked 7).
+- **Gate F (5 concurrent children, bitwise) was not re-run.** The driver gate was not re-run (Blocked 6).

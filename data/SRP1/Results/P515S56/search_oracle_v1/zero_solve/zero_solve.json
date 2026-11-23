@@ -1,0 +1,1981 @@
+{
+ "all_checks_ok": true,
+ "checks": [
+  {
+   "check": "unit: exit summary from the real record: status not_certified (cap 2 reached), read at the terminal cycle 2",
+   "detail": [
+    "not_certified",
+    "terminal cycle (no certification cycle: uncertified)"
+   ],
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "the real 3-cycle settled-key record re-mapped: exit not_certified read at the terminal cycle 3 (no would-be certification cycle); settled complete, not_settled",
+   "detail": [
+    "terminal cycle (no certification cycle: uncertified)",
+    "not_settled"
+   ],
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "unit: F = I(x) + recourse(2) exactly, = the cost breakdown total_planning_cost_eur",
+   "detail": [
+    873899483.2599616,
+    873899483.2599616,
+    873899483.2599616
+   ],
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "unit: recourse = gross - TV on every cycle (exact)",
+   "detail": null,
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "unit: bar_F = the record's net-recourse step (I constant), rel 1e-12; <= the triangle bound bar_gross + range(TV)",
+   "detail": [
+    891536837.3488126,
+    891536837.3488125,
+    891536837.3488125
+   ],
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "unit: settled mapping of a record without the pricing capture -> harness_error naming the file",
+   "detail": "missing ['pricing']",
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "unit: exit code 1 -> harness_error, no value",
+   "detail": "exit 1 status not_certified",
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "unit: record status error -> harness_error, no value",
+   "detail": "exit 0 status error",
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "unit: no per-cycle file -> harness_error, no value",
+   "detail": "missing ['rows']",
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "unit: no exit_code.txt -> harness_error, no value",
+   "detail": "missing ['exit_code']",
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "unit: no I(x) in the record -> harness_error",
+   "detail": "the record carries no s56_investment.investment_cost_eur (I(x))",
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "unit: guards not exact -> not certified (listed, never a value accepted)",
+   "detail": null,
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "x0: exit summary from the real record: status not_certified (cap 2 reached), read at the terminal cycle 2",
+   "detail": [
+    "not_certified",
+    "terminal cycle (no certification cycle: uncertified)"
+   ],
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "x0: F = I(x) + recourse(2) exactly, = the cost breakdown total_planning_cost_eur",
+   "detail": [
+    873896422.5543851,
+    873896422.5543851,
+    873896422.5543851
+   ],
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "x0: recourse = gross - TV on every cycle (exact)",
+   "detail": null,
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "x0: bar_F = the record's net-recourse step (I constant), rel 1e-12; <= the triangle bound bar_gross + range(TV)",
+   "detail": [
+    891517067.8485001,
+    891517067.8485001,
+    891517067.8485001
+   ],
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "x0: settled mapping of a record without the pricing capture -> harness_error naming the file",
+   "detail": "missing ['pricing']",
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "x0: exit code 1 -> harness_error, no value",
+   "detail": "exit 1 status not_certified",
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "x0: record status error -> harness_error, no value",
+   "detail": "exit 0 status error",
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "x0: no per-cycle file -> harness_error, no value",
+   "detail": "missing ['rows']",
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "x0: no exit_code.txt -> harness_error, no value",
+   "detail": "missing ['exit_code']",
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "x0: no I(x) in the record -> harness_error",
+   "detail": "the record carries no s56_investment.investment_cost_eur (I(x))",
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "x0: guards not exact -> not certified (listed, never a value accepted)",
+   "detail": null,
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "settled summary complete on the fixture (real smoke files + synthetic pricing, W = 2 for a 2-cycle record)",
+   "detail": "settled",
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "PR = the independent hand computation (rel 1e-12)",
+   "detail": [
+    -24.998400000000018,
+    -24.9984
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "A = the independent hand computation (rel 1e-12)",
+   "detail": [
+    51.00239999999998,
+    51.0024
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "G = the independent hand computation (rel 1e-12)",
+   "detail": [
+    5.0075,
+    5.0075
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "PR sign: Q - price + dual (Expert ruling 3): PR = -price + dual",
+   "detail": {
+    "dual": 5.001599999999984,
+    "ess_p": 1.9999999999999947,
+    "ess_q": 0.0,
+    "interface_p": 0.0020000000000000018,
+    "interface_q": -0.0004,
+    "interface_v": 2.9999999999999893,
+    "minus_price": -30.0
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "S = range of F over the last W cycles (rel 1e-12)",
+   "detail": [
+    891536837.3488126,
+    891536837.3488125
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "all settled conditions hold on the fixture -> status settled",
+   "detail": {
+    "K_at_least_W": true,
+    "guards_exact_and_no_local_failure": true,
+    "last_W_at_tail_depth": true,
+    "reached_K": true,
+    "stop_disabled_declared": true,
+    "would_have_certified_each_of_last_W": true
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "settled condition: a cycle without the production certification test -> not_settled, the failed condition named",
+   "detail": [
+    "would_have_certified_each_of_last_W"
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "settled condition: a cycle not at tail depth -> not_settled, the failed condition named",
+   "detail": [
+    "last_W_at_tail_depth"
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "a record that stopped before its cap K (2 cycles of K = 3) -> harness_error: F(K) and S do not exist (reached_K False recorded)",
+   "detail": [
+    "harness_error",
+    "incomplete settled summary"
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "a blocked solve -> not_settled (guards) and gates_pass False",
+   "detail": null,
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "gates on the fixture: dP 0.01 MW <= 12.5 kW; ESSO slack 2e-6 <= 1e-5; closure 3e-6 p.u. <= 1e-5; D1",
+   "detail": {
+    "d1_efficiency_equality": true,
+    "esso_slack_gate": true,
+    "interface_p_ceiling_12p5kw": true,
+    "network_closure_slack_le_tau_cl": true,
+    "status_ok_and_guards_exact": true
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "gate boundary: dP = 12.5 kW exactly passes",
+   "detail": {
+    "d1_efficiency_equality": true,
+    "esso_slack_gate": true,
+    "interface_p_ceiling_12p5kw": true,
+    "network_closure_slack_le_tau_cl": true,
+    "status_ok_and_guards_exact": true
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "gate boundary: dP = 12.6 kW fails",
+   "detail": {
+    "d1_efficiency_equality": true,
+    "esso_slack_gate": true,
+    "interface_p_ceiling_12p5kw": false,
+    "network_closure_slack_le_tau_cl": true,
+    "status_ok_and_guards_exact": true
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "gate boundary: ESSO slack 2e-5 fails",
+   "detail": {
+    "d1_efficiency_equality": true,
+    "esso_slack_gate": false,
+    "interface_p_ceiling_12p5kw": true,
+    "network_closure_slack_le_tau_cl": true,
+    "status_ok_and_guards_exact": true
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "gate boundary: closure 2e-5 p.u. fails",
+   "detail": {
+    "d1_efficiency_equality": true,
+    "esso_slack_gate": true,
+    "interface_p_ceiling_12p5kw": true,
+    "network_closure_slack_le_tau_cl": false,
+    "status_ok_and_guards_exact": true
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "gate boundary: unequal efficiencies across active cohorts fail D1",
+   "detail": {
+    "d1_efficiency_equality": false,
+    "esso_slack_gate": true,
+    "interface_p_ceiling_12p5kw": true,
+    "network_closure_slack_le_tau_cl": true,
+    "status_ok_and_guards_exact": true
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "leak 25.01 EUR > 25: flagged, NOT in gates_pass (reported)",
+   "detail": {
+    "L_weighted_mwh": 103.35306005670759,
+    "ceiling_eur": 25.0,
+    "gate": false,
+    "note": "reported and flagged; not in gates_pass until the pilot measures it (TASKS 28ba36b4)",
+    "priced_full_eur": 11083.119674158468,
+    "priced_loss_eur": 25.01,
+    "within_ceiling": false
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "a closure row without its dual -> harness_error (incomplete G), never a silent 0",
+   "detail": "incomplete settled summary",
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "a non-zero settlement deviation part (not one scenario) -> harness_error (the price derivation fails)",
+   "detail": "incomplete settled summary",
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "the policy's confirm() consumes two mapped settled summaries (shape check)",
+   "detail": {
+    "A_sum": 102.00479999999996,
+    "R": 10000.0,
+    "V_pair": 1783073684.712625,
+    "dF_exit": 0.0,
+    "dF_set": 0.0,
+    "e": 15000.0,
+    "failed": [
+     "F_set(inc) - F_set(x) < R",
+     "V_pair > R/4"
+    ],
+    "gates_pass": true,
+    "improvement_set": -0.0,
+    "offset": 0.0,
+    "result": "unresolved_after_confirmation"
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "driver composition == freeze_campaign_spec on S56 staged entries (3 points x 2 depths x caps 2/3/300/500); each entry records the keyed cap",
+   "detail": [],
+   "item": 3,
+   "ok": true
+  },
+  {
+   "check": "every (cap, depth, point) has a distinct key (24 keys)",
+   "detail": null,
+   "item": 3,
+   "ok": true
+  },
+  {
+   "check": "settled runs at different K have different keys",
+   "detail": null,
+   "item": 3,
+   "ok": true
+  },
+  {
+   "check": "the smoke entries recomposed under the new rule at their own cap 2 differ from their recorded keys (the recorded keys predate the cap rule)",
+   "detail": {
+    "unit": "f3d58a2027158551b12e23015a4318c8022b35e72e53eefad8f32ea3edcacbcb",
+    "x0": "7846986dea1ddb64de2e9ee9d6c53d8d871ab2f3ed1cb459c8acc6b2e3e9dc87"
+   },
+   "item": 3,
+   "ok": true
+  },
+  {
+   "check": "no 2x EV exit / settled key of x0 or the unit at caps 3 / 300 / 500 is a key of the committed smoke spec (the alias is gone)",
+   "detail": 0,
+   "item": 3,
+   "ok": true
+  },
+  {
+   "check": "the freeze-time collision scan of the 2x EV configuration (74,084 keys) now finds no committed artefact (it named the smoke spec before the cap rule)",
+   "detail": {
+    "n_excluded_cache_roots": 0,
+    "n_excluded_own_root": 0,
+    "n_files_scanned": 310,
+    "n_keys": 74084,
+    "scope": "git ls-files data/SRP1/Results: campaign_spec_* / search_spec_* / launches/launch_*.json"
+   },
+   "item": 3,
+   "ok": true
+  },
+  {
+   "check": "pricing key True refused: no S56 EV-plan key",
+   "detail": "s56_pricing_capture True refused: the entry declares no S56 EV-plan key",
+   "item": 3,
+   "ok": true
+  },
+  {
+   "check": "pricing key True refused: per-scenario coupling",
+   "detail": "s56_pricing_capture True refused: the entry declares the per-scenario coupling",
+   "item": 3,
+   "ok": true
+  },
+  {
+   "check": "pricing key True refused: non-bool",
+   "detail": "s56_pricing_capture must be a bool, got 1",
+   "item": 3,
+   "ok": true
+  },
+  {
+   "check": "pricing key True: keyed (a distinct eval key), recorded in the entry; False: recorded, not keyed",
+   "detail": null,
+   "item": 3,
+   "ok": true
+  },
+  {
+   "check": "record fields of the pricing key empty when absent",
+   "detail": null,
+   "item": 3,
+   "ok": true
+  },
+  {
+   "check": "harness vs acc80a2e: insertions only (328 added, 0 deleted)",
+   "detail": [],
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "committed specs: candidate keys of every entry reproduce (310 spec files, 7295 entries)",
+   "detail": [],
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "entries WITHOUT an S56 EV-plan key: full eval key post == pre on every entry",
+   "detail": [],
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "entries WITHOUT an S56 EV-plan key: post == recorded wherever pre == recorded (same set of historic non-reproducing shapes)",
+   "detail": 0,
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "entries WITH S56 EV-plan keys: every one changes under the cap rule (by design; listed with whether the pre harness reproduces its recorded key)",
+   "detail": [],
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "freeze_campaign_spec pre == post byte-identical (volatile fields excluded): srp1_plain",
+   "detail": null,
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "freeze_campaign_spec pre == post byte-identical (volatile fields excluded): srp1_pinned_aa",
+   "detail": null,
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "freeze_campaign_spec pre == post byte-identical (volatile fields excluded): sp_derived_coupled_calib",
+   "detail": null,
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "freeze_campaign_spec pre == post byte-identical (volatile fields excluded): sp_derived_plain",
+   "detail": null,
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "build_evaluation_record pre == post on committed records",
+   "detail": {
+    "n": 12
+   },
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "the child record helpers add nothing when the keys are absent",
+   "detail": null,
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "memory rule: 64 - 16 = 48 GiB available >= 5 x 3 GiB passes; 64 - 50 = 14 < 15 refuses; 15 == 15 passes",
+   "detail": [
+    48.0,
+    14.0,
+    15.0
+   ],
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "memory rule: an undeclared per-slot figure refuses",
+   "detail": null,
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "memory rule: a vm_stat without the compressor line refuses",
+   "detail": null,
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "real-launch preflight refuses while a mapping parameter is provisional, and names it",
+   "detail": [
+    "mapping parameters still provisional (Planner to confirm): ['tau_cl_pu', 'esso_slack_tol']"
+   ],
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "real-launch preflight refuses without NLP_SOLVER_PATH = /usr/local/bin/ipopt (final mapping)",
+   "detail": [
+    "NLP_SOLVER_PATH is None, not /usr/local/bin/ipopt"
+   ],
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "real-launch preflight never created the launch dir",
+   "detail": null,
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "real search freeze refused: provisional mapping",
+   "detail": "harness oracle: mapping parameters still provisional (Planner to confirm): ['tau_cl_pu', 'esso_slack_tol']",
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "real search freeze refused: no memory_per_slot_gib",
+   "detail": "harness oracle: the harness config must declare memory_per_slot_gib (from the memory probe) for the real-launch memory preflight",
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "real oracle refused when the settled depth does not declare the pricing capture (mapping capture-path assertion, before any run)",
+   "detail": "mapping capture path missing: ['settled_declares_pricing_capture']",
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "mapping capture-path assertion passes on the integration harness with the EV configuration",
+   "detail": {
+    "cost_breakdown_fields": true,
+    "equality_tolerance_anchor": true,
+    "exit_declares_neither": true,
+    "exit_tail_enabled": true,
+    "investment_in_entry": true,
+    "leak_loss_price_written": true,
+    "pricing_fields": true,
+    "pricing_written_in_child": true,
+    "record_fields": true,
+    "settled_declares_pricing_capture": true,
+    "settled_declares_stop_disabled": true,
+    "settled_stop_summary_recorded": true,
+    "settled_tail_enabled": true,
+    "tail_state_check_recorded": true,
+    "tail_state_file_written": true,
+    "trajectory_fields": true
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "real pilot freeze refused while a mapping parameter is provisional",
+   "detail": "mapping parameters still provisional (Planner to confirm): ['tau_cl_pu', 'esso_slack_tol']",
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "pilot freeze refused: an unknown grid",
+   "detail": "grid 'other' not in ('srp1grid', 'five_block') (the author confirms the grid after the memory probe)",
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "pilot freeze refused: a stub pilot not test-only",
+   "detail": "a stub-children pilot must be test-only",
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "cache index: the 3 fixture exit records of this configuration indexed at depth exit; the foreign-key fixture and the smoke copy (pre-cap-rule key) ignored with their reason",
+   "detail": {
+    "entries": 3,
+    "ignored": [
+     {
+      "eval_dir": "data/SRP1/Results/P515S56/search_oracle_v1/zero_solve/test_trees/t6/cache_root/evals/ffffffffffffffff_fixture",
+      "reason": "eval key is not this search's key at either depth (another configuration)"
+     },
+     {
+      "eval_dir": "data/SRP1/Results/P515S56/search_oracle_v1/zero_solve/test_trees/t6/cache_root/evals/smoke_copy",
+      "reason": "eval key is not this search's key at either depth (another configuration)"
+     }
+    ]
+   },
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "load_cache maps every indexed record through the oracle mapping (exit F = the fixture F)",
+   "detail": {
+    "plan_2030": 873850000.0,
+    "reference_unit": 873890000.0,
+    "x0": 873900000.0
+   },
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "best start = the certified pool member with the lowest exit F (plan_2030 here), runner-up margin and e reported",
+   "detail": {
+    "chosen": "plan_2030",
+    "excluded_uncertified": [],
+    "members": [
+     {
+      "F": 873900000.0,
+      "bar": 4000.0,
+      "label": "x0",
+      "name": "x0",
+      "status": "certified",
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     {
+      "F": 873890000.0,
+      "bar": 4000.0,
+      "label": "n7_y2025_p0.25_e1",
+      "name": "reference_unit",
+      "status": "certified",
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       2,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     {
+      "F": 873850000.0,
+      "bar": 4000.0,
+      "label": "n5_y2030_p0.25_e0.5__n7_y2030_p1_e3.5",
+      "name": "plan_2030",
+      "status": "certified",
+      "z": [
+       0,
+       0,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       4,
+       7,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     }
+    ],
+    "rule": "argmin exit F over the certified pool members (ties by lattice label)",
+    "runner_up": {
+     "e": 15000.0,
+     "margin": 40000.0,
+     "name": "reference_unit",
+     "within_e": false
+    }
+   },
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "best start refuses a pool member without a cached exit record (names it)",
+   "detail": "start pool members without a cached exit record (evaluate them first): ['other']",
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "a record changed after the freeze refuses the launch",
+   "detail": "cache data/SRP1/Results/P515S56/search_oracle_v1/zero_solve/test_trees/t6/cache_root/evals/0e0683bed63415e8_fixture: record changed since the freeze",
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "pilot freeze (stub, test-only, SRP1 grid): 7 entries, blocks of 5 + 2, distinct eval keys, every entry stop-disabled with the pricing capture at K_pilot 300",
+   "detail": 0,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "x0 and the unit from three initialisations (rho0_scale 1.0 / 0.5 / 2.0, PROPOSED), one staged plan",
+   "detail": [
+    [
+     "staged",
+     "i1"
+    ],
+    [
+     "unit",
+     "i1"
+    ],
+    [
+     "unit",
+     "i2"
+    ],
+    [
+     "unit",
+     "i3"
+    ],
+    [
+     "x0",
+     "i1"
+    ],
+    [
+     "x0",
+     "i2"
+    ],
+    [
+     "x0",
+     "i3"
+    ]
+   ],
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "three attached pilot launches: block 1 (5) -> exit 4, block 2 (2) -> exit 0, then done -> exit 0",
+   "detail": [
+    4,
+    0,
+    0
+   ],
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "launch records: the frozen blocks with their frozen eval keys, hash-chained, every child exit 0",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "pilot evaluation without s_share refuses (Planner parameter)",
+   "detail": 2,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "pilot evaluation (SYNTHETIC traces) writes every output: K_EV, e_EV and its terms, 15 pairs, spreads, bars, t_exit, t_set, psi, per-run single offsets and the leak at the settled point",
+   "detail": {
+    "K_EV": 107,
+    "e_EV": 28025.040077209473,
+    "failures": []
+   },
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "e_EV re-derived from the reported pairs by the frozen rule",
+   "detail": [
+    28025.040077209473,
+    28025.040077209473
+   ],
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "K_EV satisfies its rule on the reported values (S <= s_share at K_EV, K_EV >= every c*)",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "an unreachable s_share -> K_EV None with the failure named (a stop, not a value)",
+   "detail": [
+    "S does not meet s_share 1e-09 at any K in [85, 300]"
+   ],
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "a run without a would-be certification cycle -> failure named, no e_EV",
+   "detail": [
+    "no would-be certification cycle within K: ['r0']"
+   ],
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "pilot freeze on the five-block grid (the grid is a parameter): 7 entries, keys distinct from the SRP1 grid",
+   "detail": 0,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "count formula on a worked example: N_search 37, blocks 7, confirmation batches 6",
+   "detail": {
+    "N_search": 37,
+    "S_0": 1,
+    "blocks": 7,
+    "confirmation_batches": 6,
+    "final": {
+     "c": 3,
+     "n": 15
+    },
+    "per_move": [
+     {
+      "E": 10,
+      "c": 2,
+      "j": 1,
+      "n": 18,
+      "p": 7
+     },
+     {
+      "E": 5,
+      "c": 1,
+      "j": 2,
+      "n": 20,
+      "p": 1
+     }
+    ]
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "T = 1.18 (1.2 x 1.5 x 7 + 3.0 x 6) = 36.108 h",
+   "detail": {
+    "T_h": 36.108,
+    "formula": "T = kappa [psi t_exit sum(blocks) + t_set (confirmation batches)]",
+    "kappa": 1.18,
+    "n_blocks": 7,
+    "n_confirmation_batches": 6,
+    "psi": 1.2,
+    "t_exit_h": 1.5,
+    "t_set_h": 3.0
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "the projection refuses an unmeasured t_exit (the pilot measures it)",
+   "detail": [
+    "t_exit_h must be a measured positive number (from the pilot), got None"
+   ],
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "projection_from_state counts blocks and confirmation batches as the synthetic search issued them",
+   "detail": {
+    "blocks": 17,
+    "confirmation_batches": 12,
+    "evaluations": 92
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "the 2x EV stub search freezes (its collision scan, refused before the cap rule, passes)",
+   "detail": 0,
+   "item": 9,
+   "ok": true
+  },
+  {
+   "check": "the stub search terminates through attached launches and its final state == the in-process synthetic replay (the launch path after the integration edits)",
+   "detail": {
+    "budget": 12,
+    "codes": [
+     4,
+     4,
+     4,
+     0
+    ],
+    "termination": {
+     "budget_used": 12,
+     "detail": {
+      "poll": 1,
+      "pos": 5
+     },
+     "reason": "budget_exhausted"
+    }
+   },
+   "item": 9,
+   "ok": true
+  },
+  {
+   "check": "SolveProfileGuard(permitted=()) verify(0) == [] in this parent",
+   "detail": [],
+   "item": "guards",
+   "ok": true
+  },
+  {
+   "check": "pickle load/loads 0",
+   "detail": {
+    "load": 0,
+    "loads": 0
+   },
+   "item": "guards",
+   "ok": true
+  }
+ ],
+ "code_sha256": {
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+  "p515_s44_campaign_harness.py": "05a9838c46f19837398af31252bd85c465a3794aa03e9cfc1a7a30c08c462b29",
+  "p515_s56_neighbourhood.py": "bd95342d2da2b0ecf2d99b9ef3b8a396e3637e18a050f8ce0117ec2ec9590cc0",
+  "p515_s56_search_driver.py": "7825944f919f59de68f0c5dcb6aee479d9522f90d4965862eaf3a740f6e07f13",
+  "p515_s56_search_oracle_tests.py": "bdd49644ae736755019417d21ba28dc4fdd78f55773b4df83d2c88c4bc06684f",
+  "p515_s56_search_policy.py": "b37601c8c9fc065383249831f64cd6fcaa0828d6d6b3346959ffd151653abd40",
+  "p516_lattice.py": "ff5d63ef897ccd04e5bbaa719b352537108180a31b83c1b8574506612af86e88"
+ },
+ "failed_checks": [],
+ "finished_utc": "2026-11-23T22:03:15.300273+00:00",
+ "git_head": "370b7689dbdeb4e07429493c6b5058b961d798dc",
+ "guards": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "pickle": {
+   "load": 0,
+   "loads": 0
+  },
+  "verify_0": []
+ },
+ "instance": {
+  "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+  "lattice": {
+   "block_widths": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "budget_eur": 1000000.0,
+   "cost_energy": {
+    "0": {
+     "2025": 212132.83090957787,
+     "2030": 167114.2595388713,
+     "2035": 152464.16443904658
+    },
+    "1": {
+     "2025": 264982.3635447595,
+     "2030": 222115.86276729195,
+     "2035": 204988.41411333327
+    },
+    "2": {
+     "2025": 338908.86670623126,
+     "2030": 275450.090999905,
+     "2035": 266020.3907359085
+    }
+   },
+   "cost_power": {
+    "0": {
+     "2025": 214171.32910223768,
+     "2030": 168720.15012439265,
+     "2035": 153929.27440020515
+    },
+    "1": {
+     "2025": 267528.7212530719,
+     "2030": 224250.2932694956,
+     "2035": 206958.25777164166
+    },
+    "2": {
+     "2025": 342165.6238488894,
+     "2030": 278097.0387178216,
+     "2035": 268576.723404457
+    }
+   },
+   "discount_factor": 0.02,
+   "max_capacity_mwh": 5.0,
+   "max_energy_to_power_ratio": 4.0,
+   "min_energy_to_power_ratio": 2.0,
+   "nodes": [
+    5,
+    7,
+    9
+   ],
+   "prob_market": [
+    0.35,
+    0.55,
+    0.1
+   ],
+   "sources": {
+    "case": {
+     "path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+     "sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+    },
+    "cost_file": {
+     "cells": "Scenarios!B1 = number of market scenarios, Scenarios!C1.. = omega_m; 'Investment Cost, Power'/'Investment Cost, Energy' row 1 (from column B) = years, row 1 + m = scenario m (EUR/MVA, EUR/MWh, undiscounted)",
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/SharedESS/SRP1_ESS.xlsx",
+     "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+     "sheets": {
+      "energy": "Investment Cost, Energy",
+      "power": "Investment Cost, Power",
+      "scenarios": "Scenarios"
+     }
+    },
+    "note": "omega_m is read from the workbook Scenarios sheet, as production does; it is independent of the case file NumMarketScenarios",
+    "num_market_scenarios_case_file": 3,
+    "params_file": {
+     "fields": "budget, max_capacity, min_energy_to_power_factor, max_energy_to_power_factor, ageing.calendar_life_years",
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/SharedESS/SRP1_ESS_Params.json",
+     "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+    }
+   },
+   "t_cal_years": 15.0,
+   "years": [
+    2025,
+    2030,
+    2035
+   ]
+  }
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "items": [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9"
+ ],
+ "results": {
+  "1": {
+   "result": {
+    "dF_unit_minus_x0_cycle2": 3060.7055765390396,
+    "note": "2-cycle unconverged smoke: a mapping test, not a result; the difference is indeterminate (bar 891.5 MEUR)",
+    "real_check_remapped": {
+     "exit": {
+      "F": 828457805.409566,
+      "I": 317957.0085035586,
+      "bar": 891536837.3488126,
+      "bar_steps_n": 2,
+      "bar_triangle_bound": 891536837.3488125,
+      "bar_within_triangle_bound": true,
+      "cycles_run": 3,
+      "depth": "exit",
+      "guards": {
+       "child_exit_0": true,
+       "no_local_solve_failure": true,
+       "nothing_blocked": true,
+       "solve_profile_identity_holds": true,
+       "stop_disabling_summary_ok": true,
+       "tail_state_matches_declaration": true
+      },
+      "mapping_schema": "p515_s56_oracle_mapping_v1",
+      "objective_convention": "F = I(x) + net = I(x) + gross_operational_cost - terminal value credit, EUR of total discounted planning cost; gross settlement-excluded (contracted part and pin excluded; at one scenario the whole settlement)",
+      "read_at": "terminal cycle (no certification cycle: uncertified)",
+      "read_cycle": 3,
+      "recourse_identity_bad_cycles": [],
+      "status": "not_certified",
+      "wall_s": 199.5111608505249
+     },
+     "settled": {
+      "F": 828457805.409566,
+      "V": {
+       "A": 25246375.17852793,
+       "G": 2046.3096810554582,
+       "PR": -11810480.30757023,
+       "S": 936978515.1992081
+      },
+      "gates": {
+       "d1_efficiency_equality": true,
+       "esso_slack_gate": true,
+       "interface_p_ceiling_12p5kw": false,
+       "network_closure_slack_le_tau_cl": true,
+       "status_ok_and_guards_exact": true
+      },
+      "gates_pass": false,
+      "leak_flag": false,
+      "settled_checks": {
+       "K_at_least_W": false,
+       "guards_exact_and_no_local_failure": true,
+       "last_W_at_tail_depth": false,
+       "reached_K": true,
+       "stop_disabled_declared": true,
+       "would_have_certified_each_of_last_W": false
+      },
+      "status": "not_settled"
+     }
+    },
+    "unit": {
+     "F": 873899483.2599616,
+     "I": 317957.0085035586,
+     "bar": 891536837.3488126,
+     "bar_steps_n": 1,
+     "bar_triangle_bound": 891536837.3488125,
+     "bar_within_triangle_bound": true,
+     "cycles_run": 2,
+     "depth": "exit",
+     "guards": {
+      "child_exit_0": true,
+      "no_local_solve_failure": true,
+      "nothing_blocked": true,
+      "solve_profile_identity_holds": true,
+      "tail_state_matches_declaration": true
+     },
+     "mapping_schema": "p515_s56_oracle_mapping_v1",
+     "objective_convention": "F = I(x) + net = I(x) + gross_operational_cost - terminal value credit, EUR of total discounted planning cost; gross settlement-excluded (contracted part and pin excluded; at one scenario the whole settlement)",
+     "read_at": "terminal cycle (no certification cycle: uncertified)",
+     "read_cycle": 2,
+     "recourse_identity_bad_cycles": [],
+     "status": "not_certified",
+     "wall_s": 174.59179997444153
+    },
+    "x0": {
+     "F": 873896422.5543851,
+     "I": 0.0,
+     "bar": 891517067.8485001,
+     "bar_steps_n": 1,
+     "bar_triangle_bound": 891517067.8485001,
+     "bar_within_triangle_bound": true,
+     "cycles_run": 2,
+     "depth": "exit",
+     "guards": {
+      "child_exit_0": true,
+      "no_local_solve_failure": true,
+      "nothing_blocked": true,
+      "solve_profile_identity_holds": true,
+      "tail_state_matches_declaration": true
+     },
+     "mapping_schema": "p515_s56_oracle_mapping_v1",
+     "objective_convention": "F = I(x) + net = I(x) + gross_operational_cost - terminal value credit, EUR of total discounted planning cost; gross settlement-excluded (contracted part and pin excluded; at one scenario the whole settlement)",
+     "read_at": "terminal cycle (no certification cycle: uncertified)",
+     "read_cycle": 2,
+     "recourse_identity_bad_cycles": [],
+     "status": "not_certified",
+     "wall_s": 166.64225888252258
+    }
+   },
+   "wall_s": 0.04049205780029297
+  },
+  "2": {
+   "result": {
+    "fixture_expected": {
+     "A": 51.0024,
+     "G": 5.0075,
+     "PR": -24.9984,
+     "dual": 5.0016,
+     "price": 30.0
+    },
+    "note": "SYNTHETIC pricing fixture on the real smoke files: an arithmetic check, not a measurement",
+    "summary": {
+     "F": 873899483.2599616,
+     "V": {
+      "A": 51.00239999999998,
+      "G": 5.0075,
+      "PR": -24.998400000000018,
+      "S": 891536837.3488126
+     },
+     "gates": {
+      "d1_efficiency_equality": true,
+      "esso_slack_gate": true,
+      "interface_p_ceiling_12p5kw": true,
+      "network_closure_slack_le_tau_cl": true,
+      "status_ok_and_guards_exact": true
+     },
+     "gates_pass": true,
+     "settled_checks": {
+      "K_at_least_W": true,
+      "guards_exact_and_no_local_failure": true,
+      "last_W_at_tail_depth": true,
+      "reached_K": true,
+      "stop_disabled_declared": true,
+      "would_have_certified_each_of_last_W": true
+     },
+     "status": "settled"
+    }
+   },
+   "wall_s": 0.020416975021362305
+  },
+  "3": {
+   "result": {
+    "collision_scan": {
+     "n_excluded_cache_roots": 0,
+     "n_excluded_own_root": 0,
+     "n_files_scanned": 310,
+     "n_keys": 74084,
+     "scope": "git ls-files data/SRP1/Results: campaign_spec_* / search_spec_* / launches/launch_*.json"
+    },
+    "collision_scan_s": 7.02520227432251
+   },
+   "wall_s": 9.183640956878662
+  },
+  "4": {
+   "result": {
+    "c5": [
+     {
+      "identical": true,
+      "record": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/4e53fa5560bbfa10_two_c_star_d/evaluation_record.json"
+     },
+     {
+      "identical": true,
+      "record": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/evaluation_record.json"
+     },
+     {
+      "identical": true,
+      "record": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/evals/578636daa6d6360d_c_star_d/evaluation_record.json"
+     },
+     {
+      "identical": true,
+      "record": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/evals/837fc982565dbba3_c_star_aa_keep_memory/evaluation_record.json"
+     },
+     {
+      "identical": true,
+      "record": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star/evaluation_record.json"
+     },
+     {
+      "identical": true,
+      "record": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/d1a02e67107d0bac_paper_plan/evaluation_record.json"
+     },
+     {
+      "identical": true,
+      "record": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/e30704e6e4dd3765_node7_empty/evaluation_record.json"
+     },
+     {
+      "identical": true,
+      "record": "data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/0796b6dceeb0f95f_node7_empty_aa_keep_memory/evaluation_record.json"
+     },
+     {
+      "identical": true,
+      "record": "data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/8e48f3ec8993a283_paper_plan_aa_keep_memory/evaluation_record.json"
+     },
+     {
+      "identical": true,
+      "record": "data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/a6ca6c94e033e460_two_c_star_aa_keep_memory/evaluation_record.json"
+     },
+     {
+      "identical": true,
+      "record": "data/SRP1/Results/P515S44/harness_checks_r3/c8_fake_refs/aa_ref/evaluation_record.json"
+     },
+     {
+      "identical": true,
+      "record": "data/SRP1/Results/P515S44/harness_checks_r3/c8_fake_refs/uncertified/evaluation_record.json"
+     }
+    ],
+    "diff_lines_added": 328,
+    "errors": [],
+    "n_entries": 7295,
+    "n_entries_with_s56_keys": 4,
+    "n_eval_keys_recorded_non_s56": 7270,
+    "n_post_ne_recorded": 0,
+    "n_recompute_errors": 0,
+    "n_s56_entries_recorded_eq_pre": 4,
+    "n_spec_files": 310,
+    "post_ne_recorded_first": [],
+    "s56_entries": [
+     {
+      "label": "x0",
+      "post_ne_pre": true,
+      "recorded_eq_pre": true,
+      "spec": "data/SRP1/Results/P515S56/ev_harness_v1/smoke/campaign_s56evh_v1_smoke/campaign_spec_s56evh_v1_smoke_39882ca6.json"
+     },
+     {
+      "label": "unit",
+      "post_ne_pre": true,
+      "recorded_eq_pre": true,
+      "spec": "data/SRP1/Results/P515S56/ev_harness_v1/smoke/campaign_s56evh_v1_smoke/campaign_spec_s56evh_v1_smoke_39882ca6.json"
+     },
+     {
+      "label": "staged_sp",
+      "post_ne_pre": true,
+      "recorded_eq_pre": true,
+      "spec": "data/SRP1/Results/P515S56/memory_probe_v1/five_block/campaign_s56memprobe_v1_five_block/campaign_spec_s56memprobe_v1_five_block_9920cfa0.json"
+     },
+     {
+      "label": "staged_sp",
+      "post_ne_pre": true,
+      "recorded_eq_pre": true,
+      "spec": "data/SRP1/Results/P515S56/memory_probe_v1/srp1grid/campaign_s56memprobe_v1_srp1grid/campaign_spec_s56memprobe_v1_srp1grid_c827a307.json"
+     }
+    ]
+   },
+   "wall_s": 1.6090738773345947
+  },
+  "5": {
+   "result": {
+    "live_campaign_child_at_test_time": false,
+    "mapping_capture_checklist": {
+     "cost_breakdown_fields": true,
+     "equality_tolerance_anchor": true,
+     "exit_declares_neither": true,
+     "exit_tail_enabled": true,
+     "investment_in_entry": true,
+     "leak_loss_price_written": true,
+     "pricing_fields": true,
+     "pricing_written_in_child": true,
+     "record_fields": true,
+     "settled_declares_pricing_capture": true,
+     "settled_declares_stop_disabled": true,
+     "settled_stop_summary_recorded": true,
+     "settled_tail_enabled": true,
+     "tail_state_check_recorded": true,
+     "tail_state_file_written": true,
+     "trajectory_fields": true
+    },
+    "real_launch_preflight_refusals": [
+     "mapping parameters still provisional (Planner to confirm): ['tau_cl_pu', 'esso_slack_tol']"
+    ],
+    "real_launch_preflight_refusals_final_mapping": [
+     "NLP_SOLVER_PATH is None, not /usr/local/bin/ipopt"
+    ]
+   },
+   "wall_s": 0.2981071472167969
+  },
+  "6": {
+   "result": {
+    "best_start": {
+     "chosen": "plan_2030",
+     "excluded_uncertified": [],
+     "members": [
+      {
+       "F": 873900000.0,
+       "bar": 4000.0,
+       "label": "x0",
+       "name": "x0",
+       "status": "certified",
+       "z": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "F": 873890000.0,
+       "bar": 4000.0,
+       "label": "n7_y2025_p0.25_e1",
+       "name": "reference_unit",
+       "status": "certified",
+       "z": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "F": 873850000.0,
+       "bar": 4000.0,
+       "label": "n5_y2030_p0.25_e0.5__n7_y2030_p1_e3.5",
+       "name": "plan_2030",
+       "status": "certified",
+       "z": [
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        4,
+        7,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      }
+     ],
+     "rule": "argmin exit F over the certified pool members (ties by lattice label)",
+     "runner_up": {
+      "e": 15000.0,
+      "margin": 40000.0,
+      "name": "reference_unit",
+      "within_e": false
+     }
+    },
+    "ignored": [
+     {
+      "eval_dir": "data/SRP1/Results/P515S56/search_oracle_v1/zero_solve/test_trees/t6/cache_root/evals/ffffffffffffffff_fixture",
+      "reason": "eval key is not this search's key at either depth (another configuration)"
+     },
+     {
+      "eval_dir": "data/SRP1/Results/P515S56/search_oracle_v1/zero_solve/test_trees/t6/cache_root/evals/smoke_copy",
+      "reason": "eval key is not this search's key at either depth (another configuration)"
+     }
+    ],
+    "n_indexed": 3,
+    "note": "SYNTHETIC fixture records (smoke files with rewritten keys and F)"
+   },
+   "wall_s": 1.1617968082427979
+  },
+  "7": {
+   "result": {
+    "launch_codes": [
+     4,
+     0,
+     0
+    ],
+    "result": {
+     "K_EV": 107,
+     "K_EV_holds_at_every_later_K": true,
+     "W": 10,
+     "dF_exit_spread_3x3": 16428.31814599037,
+     "dF_set_spread_3x3": 499.74335169792175,
+     "e_EV": 28025.040077209473,
+     "e_EV_terms": {
+      "2_x_max_pair_offset": 28025.040077209473,
+      "dF_exit_spread": 16428.31814599037,
+      "max_bar_sum": 15334.307854771614
+     },
+     "failures": [],
+     "grid": "srp1grid",
+     "kappa_for_projection": 1.18,
+     "max_bar_sum": 15334.307854771614,
+     "max_pair_offset": 14012.520038604736,
+     "objective_convention": "F = I(x) + gross - TV credit, EUR of total discounted planning cost",
+     "oracle": {
+      "kind": "stub_children"
+     },
+     "pairs": [
+      {
+       "V_pair_terminal": 150.6678397082698,
+       "bar_sum": 1707.7722450494766,
+       "dF_exit": 5330.682214379311,
+       "dF_set": 2874.4234993457794,
+       "kind": "unit-x0",
+       "offset": 2456.258715033531,
+       "pair": "unit_i1 - x0_i1"
+      },
+      {
+       "V_pair_terminal": 92.99635058389444,
+       "bar_sum": 1594.2893180847168,
+       "dF_exit": 5400.463621497154,
+       "dF_set": 3075.6572316884995,
+       "kind": "unit-x0",
+       "offset": 2324.806389808655,
+       "pair": "unit_i2 - x0_i1"
+      },
+      {
+       "V_pair_terminal": 142.92083090237398,
+       "bar_sum": 5896.814712524414,
+       "dF_exit": -2624.903910279274,
+       "dF_set": 2873.5981580018997,
+       "kind": "unit-x0",
+       "offset": 5498.502068281174,
+       "pair": "unit_i3 - x0_i1"
+      },
+      {
+       "V_pair_terminal": 78.35175919952948,
+       "bar_sum": 1724.7828903198242,
+       "dF_exit": 1320.1779967546463,
+       "dF_set": 3172.1077773571014,
+       "kind": "unit-x0",
+       "offset": 1851.9297806024551,
+       "pair": "unit_i1 - x0_i2"
+      },
+      {
+       "V_pair_terminal": 98.38461996882117,
+       "bar_sum": 1611.2999633550644,
+       "dF_exit": 1389.95940387249,
+       "dF_set": 3373.3415096998215,
+       "kind": "unit-x0",
+       "offset": 1983.3821058273315,
+       "pair": "unit_i2 - x0_i2"
+      },
+      {
+       "V_pair_terminal": 69.83965708995936,
+       "bar_sum": 5913.825357794762,
+       "dF_exit": -6635.408127903938,
+       "dF_set": 3171.2824360132217,
+       "kind": "unit-x0",
+       "offset": 9806.69056391716,
+       "pair": "unit_i3 - x0_i2"
+      },
+      {
+       "V_pair_terminal": 86.7711103732853,
+       "bar_sum": 11145.265387296677,
+       "dF_exit": -3072.268399834633,
+       "dF_set": 2985.4908554553986,
+       "kind": "unit-x0",
+       "offset": 6057.759255290031,
+       "pair": "unit_i1 - x0_i3"
+      },
+      {
+       "V_pair_terminal": 78.00266773133102,
+       "bar_sum": 11031.782460331917,
+       "dF_exit": -3002.4869927167892,
+       "dF_set": 3186.7245877981186,
+       "kind": "unit-x0",
+       "offset": 6189.211580514908,
+       "pair": "unit_i2 - x0_i3"
+      },
+      {
+       "V_pair_terminal": 79.0241015673895,
+       "bar_sum": 15334.307854771614,
+       "dF_exit": -11027.854524493217,
+       "dF_set": 2984.665514111519,
+       "kind": "unit-x0",
+       "offset": 14012.520038604736,
+       "pair": "unit_i3 - x0_i3"
+      },
+      {
+       "V_pair_terminal": 148.01654241298775,
+       "bar_sum": 1925.7030900716782,
+       "dF_exit": -17269.268025636673,
+       "dF_set": -20150.410833597183,
+       "kind": "staged-x0",
+       "offset": 2881.1428079605103,
+       "pair": "staged_i1 - x0_i1"
+      },
+      {
+       "V_pair_terminal": 74.93536860057313,
+       "bar_sum": 1942.7137353420258,
+       "dF_exit": -21279.772243261337,
+       "dF_set": -19852.72655558586,
+       "kind": "staged-x0",
+       "offset": 1427.045687675476,
+       "pair": "staged_i1 - x0_i2"
+      },
+      {
+       "V_pair_terminal": 84.11981307800325,
+       "bar_sum": 11363.196232318878,
+       "dF_exit": -25672.218639850616,
+       "dF_set": -20039.343477487564,
+       "kind": "staged-x0",
+       "offset": 5632.875162363052,
+       "pair": "staged_i1 - x0_i3"
+      },
+      {
+       "V_pair_terminal": 63.98313783221597,
+       "bar_sum": 729.6035513877869,
+       "dF_exit": -22599.950240015984,
+       "dF_set": -23024.834332942963,
+       "kind": "staged-unit",
+       "offset": 424.88409292697906,
+       "pair": "staged_i1 - unit_i1"
+      },
+      {
+       "V_pair_terminal": 84.01599860150768,
+       "bar_sum": 616.120624423027,
+       "dF_exit": -22669.731647133827,
+       "dF_set": -23226.068065285683,
+       "kind": "staged-unit",
+       "offset": 556.3364181518555,
+       "pair": "staged_i1 - unit_i2"
+      },
+      {
+       "V_pair_terminal": 47.0189830306634,
+       "bar_sum": 4918.646018862724,
+       "dF_exit": -14644.364115357399,
+       "dF_set": -23024.008991599083,
+       "kind": "staged-unit",
+       "offset": 8379.644876241684,
+       "pair": "staged_i1 - unit_i3"
+      }
+     ],
+     "pilot_spec_sha256": "fa5052b31bb5bd81fb7c3cb743c07b61a7028937b9168bc7b34e312c2b034c53",
+     "psi": 1.1092674134124751,
+     "psi_definition": "block makespan / mean t_exit of the block (max over blocks of >= 2 runs); the pilot runs concurrently, so t_exit already carries contention (kappa beside)",
+     "psi_per_block": [
+      {
+       "block": [
+        "x0_i1",
+        "unit_i1",
+        "staged_i1",
+        "x0_i2",
+        "unit_i2"
+       ],
+       "psi": 1.0411924137617612
+      },
+      {
+       "block": [
+        "x0_i3",
+        "unit_i3"
+       ],
+       "psi": 1.1092674134124751
+      }
+     ],
+     "runs": {
+      "staged_i1": {
+       "F_exit": 873880625.9084679,
+       "F_set": 873879885.9536582,
+       "K": 300,
+       "S_at_K_EV": 91.73345875740051,
+       "bar_exit": 473.7671982049942,
+       "c_star": 76,
+       "init": "i1",
+       "leak_settled_point": {
+        "priced_loss_eur": 16.080890827736418,
+        "within_ceiling": true
+       },
+       "role": "staged",
+       "settled_checks_at_K_EV": {
+        "tail_depth_last_W": true,
+        "would_have_certified_last_W": true
+       },
+       "single_offset": 739.9548096656799,
+       "single_offset_sign": 1,
+       "t_exit_s": 2135.118986003948,
+       "t_set_s": 2991.0417765809575,
+       "terminal_V": {
+        "A": 57.47045989041695,
+        "G": 17.991220432213062,
+        "PR": -43.01251205608878,
+        "S": 3.6629718542099
+       },
+       "terminal_gates_pass": true,
+       "terminal_status": "settled"
+      },
+      "unit_i1": {
+       "F_exit": 873903225.8587079,
+       "F_set": 873902910.7879912,
+       "K": 300,
+       "S_at_K_EV": 23.721349835395813,
+       "bar_exit": 255.83635318279266,
+       "c_star": 76,
+       "init": "i1",
+       "leak_settled_point": {
+        "priced_loss_eur": 14.398869359592048,
+        "within_ceiling": true
+       },
+       "role": "unit",
+       "settled_checks_at_K_EV": {
+        "tail_depth_last_W": true,
+        "would_have_certified_last_W": true
+       },
+       "single_offset": 315.07071673870087,
+       "single_offset_sign": 1,
+       "t_exit_s": 2119.8260640007475,
+       "t_set_s": 2960.6273519966576,
+       "terminal_V": {
+        "A": 254.91237807007536,
+        "G": 29.771806215406116,
+        "PR": -34.00078407404479,
+        "S": 3.5454113483428955
+       },
+       "terminal_gates_pass": true,
+       "terminal_status": "settled"
+      },
+      "unit_i2": {
+       "F_exit": 873903295.640115,
+       "F_set": 873903112.0217235,
+       "K": 300,
+       "S_at_K_EV": 21.051580905914307,
+       "bar_exit": 142.35342621803284,
+       "c_star": 74,
+       "init": "i2",
+       "leak_settled_point": {
+        "priced_loss_eur": 25.249682026034606,
+        "within_ceiling": false
+       },
+       "role": "unit",
+       "settled_checks_at_K_EV": {
+        "tail_depth_last_W": true,
+        "would_have_certified_last_W": true
+       },
+       "single_offset": 183.61839151382446,
+       "single_offset_sign": 1,
+       "t_exit_s": 2063.600058942292,
+       "t_set_s": 2976.1876881916883,
+       "terminal_V": {
+        "A": 252.84743072812466,
+        "G": 10.74056271657522,
+        "PR": 4.851390872788741,
+        "S": 3.757340669631958
+       },
+       "terminal_gates_pass": true,
+       "terminal_status": "settled"
+      },
+      "unit_i3": {
+       "F_exit": 873895270.2725832,
+       "F_set": 873902909.9626498,
+       "K": 300,
+       "S_at_K_EV": 435.81824719905853,
+       "bar_exit": 4444.87882065773,
+       "c_star": 66,
+       "init": "i3",
+       "leak_settled_point": {
+        "priced_loss_eur": 3.9070061643607445,
+        "within_ceiling": true
+       },
+       "role": "unit",
+       "settled_checks_at_K_EV": {
+        "tail_depth_last_W": true,
+        "would_have_certified_last_W": true
+       },
+       "single_offset": -7639.690066576004,
+       "single_offset_sign": -1,
+       "t_exit_s": 1858.3495588477515,
+       "t_set_s": 2979.7131158858438,
+       "terminal_V": {
+        "A": 156.29612055096942,
+        "G": 17.062056115821633,
+        "PR": -38.60935707187316,
+        "S": 3.899579644203186
+       },
+       "terminal_gates_pass": true,
+       "terminal_status": "settled"
+      },
+      "x0_i1": {
+       "F_exit": 873897895.1764935,
+       "F_set": 873900036.3644918,
+       "K": 300,
+       "S_at_K_EV": 81.65668869018555,
+       "bar_exit": 1451.935891866684,
+       "c_star": 66,
+       "init": "i1",
+       "leak_settled_point": {
+        "priced_loss_eur": 28.952016776440246,
+        "within_ceiling": false
+       },
+       "role": "x0",
+       "settled_checks_at_K_EV": {
+        "tail_depth_last_W": true,
+        "would_have_certified_last_W": true
+       },
+       "single_offset": -2141.1879982948303,
+       "single_offset_sign": -1,
+       "t_exit_s": 1830.4457218824991,
+       "t_set_s": 2954.949267960183,
+       "terminal_V": {
+        "A": 298.2341109076643,
+        "G": 31.70673351222053,
+        "PR": 48.60795248058061,
+        "S": 3.0351520776748657
+       },
+       "terminal_gates_pass": true,
+       "terminal_status": "settled"
+      },
+      "x0_i2": {
+       "F_exit": 873901905.6807112,
+       "F_set": 873899738.6802138,
+       "K": 300,
+       "S_at_K_EV": 455.33645832538605,
+       "bar_exit": 1468.9465371370316,
+       "c_star": 77,
+       "init": "i2",
+       "leak_settled_point": {
+        "priced_loss_eur": 25.930794102399872,
+        "within_ceiling": false
+       },
+       "role": "x0",
+       "settled_checks_at_K_EV": {
+        "tail_depth_last_W": true,
+        "would_have_certified_last_W": true
+       },
+       "single_offset": 2167.000497341156,
+       "single_offset_sign": 1,
+       "t_exit_s": 2143.238146347032,
+       "t_set_s": 2964.439876317152,
+       "terminal_V": {
+        "A": 22.321503028069145,
+        "G": 41.45906571606002,
+        "PR": -34.38333072588193,
+        "S": 3.192929267883301
+       },
+       "terminal_gates_pass": true,
+       "terminal_status": "settled"
+      },
+      "x0_i3": {
+       "F_exit": 873906298.1271077,
+       "F_set": 873899925.2971357,
+       "K": 300,
+       "S_at_K_EV": 284.0496941804886,
+       "bar_exit": 10889.429034113884,
+       "c_star": 53,
+       "init": "i3",
+       "leak_settled_point": {
+        "priced_loss_eur": 21.033316344713207,
+        "within_ceiling": true
+       },
+       "role": "x0",
+       "settled_checks_at_K_EV": {
+        "tail_depth_last_W": true,
+        "would_have_certified_last_W": true
+       },
+       "single_offset": 6372.829972028732,
+       "single_offset_sign": 1,
+       "t_exit_s": 1492.2393728704367,
+       "t_set_s": 2976.492386226651,
+       "terminal_V": {
+        "A": 149.8570928940975,
+        "G": 35.99679657819461,
+        "PR": -19.600132368421797,
+        "S": 3.056444525718689
+       },
+       "terminal_gates_pass": true,
+       "terminal_status": "settled"
+      }
+     },
+     "s_share_eur": 500.0,
+     "schema": "p515_s56_pilot_result_v1",
+     "synthetic": true,
+     "t_exit_h": 0.5413816630513772,
+     "t_set_h": 0.8255337882206005,
+     "utc": "2026-11-23T22:02:43.348837+00:00"
+    }
+   },
+   "wall_s": 13.06201982498169
+  },
+  "8": {
+   "result": {
+    "count_example": {
+     "N_search": 37,
+     "S_0": 1,
+     "blocks": 7,
+     "confirmation_batches": 6,
+     "final": {
+      "c": 3,
+      "n": 15
+     },
+     "per_move": [
+      {
+       "E": 10,
+       "c": 2,
+       "j": 1,
+       "n": 18,
+       "p": 7
+      },
+      {
+       "E": 5,
+       "c": 1,
+       "j": 2,
+       "n": 20,
+       "p": 1
+      }
+     ]
+    },
+    "projection_example": {
+     "T_h": 36.108,
+     "formula": "T = kappa [psi t_exit sum(blocks) + t_set (confirmation batches)]",
+     "kappa": 1.18,
+     "n_blocks": 7,
+     "n_confirmation_batches": 6,
+     "psi": 1.2,
+     "t_exit_h": 1.5,
+     "t_set_h": 3.0
+    },
+    "synthetic_state_projection": {
+     "blocks": 17,
+     "confirmation_batches": 12,
+     "evaluations": 92
+    }
+   },
+   "wall_s": 0.07271504402160645
+  },
+  "9": {
+   "result": {
+    "codes": [
+     4,
+     4,
+     4,
+     0
+    ]
+   },
+   "wall_s": 31.627930879592896
+  }
+ },
+ "schema": "p515_s56_search_oracle_tests_v1",
+ "scratch_note": "test_trees/ holds frozen campaign / pilot specs carrying EV-configuration eval keys: hash-recorded in the manifest, NOT committed (a later collision scan would hit them)",
+ "script": "p515_s56_search_oracle_tests.py",
+ "solve_claim": "ZERO SOLVES, guard-verified; driver subprocesses arm their own guard; stub children import no model",
+ "wall_s": 57.1793532371521
+}
