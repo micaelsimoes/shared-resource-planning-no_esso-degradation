@@ -71,8 +71,8 @@ Author's six points: (1) option (a) per-scenario coupling, P/Q/V consistent per 
   **Report back (stop point):** step 4 vs predictions; memory probes; step 5 pair; A/B; replicate spread; plan v4 — measured separated from projected.
 
 ### Order (2026-11-23, after the rulings)
-- [ ] Pinned-arm capture fix (harness, zero-solve) — **active** (Worker running)
-- [ ] **Step 4 main run** — spec with V-2 measured/non-deciding, P4 recorded not a stop, must-hold stop conditions with the local-solution caveat; arms V-1, V-2, pinned AA-off, pinned AA-on × instances A, B; serial 3-cycle equivalence vs the smoke; cap 300, cycle-40 look, continuation to 600 if contracting — after the capture fix
+- [x] Pinned-arm capture fix — `a662c9bf`: key `s56_cycle_capture_pinned` (entry option, not in the eval key; refused on coupled entries); per-arm field sets; `voltage_pin` per cycle on all arms; r5 probe 4/4 identical; (a) 44/44, (b) V-1 58/58, V-2 52/52, (c) 22/22 on stubbed cycles; schema string kept `s56_cycle_capture_v1` (additions only); two runs used file versions differing by a docstring line / an unrelated check branch (disclosed in the manifest)
+- [ ] **Step 4 main run** — **active** (Worker: freeze addendum spec, B arms concurrent, A arms if memory allows, cycle-40 look, continuation to 600 declared) — spec with V-2 measured/non-deciding, P4 recorded not a stop, must-hold stop conditions with the local-solution caveat; arms V-1, V-2, pinned AA-off, pinned AA-on × instances A, B; serial 3-cycle equivalence vs the smoke; cap 300, cycle-40 look, continuation to 600 if contracting — after the capture fix
 - [ ] **Cohort follow-up** (production, worktree `.claude/worktrees/s56-cohort-followup`, branch `s56-cohort-followup` from `c65201d1`, created by the author; merged after step 4 with the author's OK): network-side D1 switch, per-cohort complementarity + sum rows, closure per D2, efficiency-equality gate, single-cohort activation key for the A/B; zero-solve + millisecond tests — **active**
 - [ ] EV plumbing in the harness child (EV injection, assertion before the multiplier) — after the capture fix
 - [ ] Memory probes (e) — after step 4 (machine)
