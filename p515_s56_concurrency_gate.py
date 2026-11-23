@@ -65,6 +65,22 @@ harness, guard or capture failure.
 
 Objective convention (for every value quoted): Q = gross_operational_cost (contracted interface settlement excluded,
 salvage reported separately); the gate compares records bitwise and quotes no objective difference.
+
+PROFILES (--profile, default srp1_v1 = everything above, unchanged in meaning). `ev_v1` (Planner task "pilot-ready",
+2026-11-23: gate F re-run on the final harness before the driver relies on concurrency; S56_SEARCH_DRIVER_DESIGN.md
+"Execution") re-binds the configuration constants only (`apply_profile_ev_v1`; frozen into the gate spec):
+  the SRP1-grid 3 x 3 EV twin (2025 / 2030 / 2035), 2x flexibility price, every S56 EV-plan key of the pilot's entries
+  (cohort formulation, TV in the objective, ESSO slack penalty, EV profiles, staged investment, settled stop-disabled,
+  terminal pricing capture; `p515_s56_search_driver.pilot_entries`, initialisation i1), cap 3, the current harness;
+  FIVE distinct candidates -- x0, the reference unit, the pilot's staged plan, n5 2025 0.25/0.5, n9 2025 0.25/1;
+  root A = the five at concurrency 1 (serial), root B = the five at concurrency 5; EVERY candidate compared A vs B
+  (G1-G3), not only the shared one; G1 excludes the per-cycle timing / memory fields of the EV per-cycle record
+  (declared, `G1_EXCLUDED`); G3 adds the EV record's root-specific, timing and sibling-order leaves (declared);
+  4.0 GiB per slot (integration ruling 7). Writes data/SRP1/Results/P515S56/concurrency_gate_ev_v1/.
+               set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt \\
+                 /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s56_concurrency_gate.py --freeze \\
+                 --profile ev_v1 > data/SRP1/Results/P515S56/concurrency_gate_ev_v1_freeze_launch.log 2>&1
+               ... --run --profile ev_v1 --spec-sha256 <sha256> > data/SRP1/Results/P515S56/concurrency_gate_ev_v1/run_launch.log 2>&1
 """
 import argparse
 import ctypes
@@ -260,6 +276,12 @@ PREDICTIONS = {
                             '(bytes, macOS) / 2^30 in [2.3, 3.5]'),
            'range_gib': [2.3, 3.5]},
 }
+G1_EXCLUDED = {name: {} for name in G1_FILES}   # srp1_v1: no exclusion (the ev_v1 profile declares its own)
+COMPARED_LABELS = [SHARED_LABEL]                 # srp1_v1: the shared candidate only
+PROFILE = 'srp1_v1'
+CHECK_NAMES = {'reference_configuration': 'configuration_equals_w187_x0_A_1x_block',
+               'domain': 'candidates_admissible_in_s47_domain'}
+CANDIDATE_OPTIONS = {}                           # ev_v1: label -> harness entry options (staged plan included)
 FAILURE_POLICY = ('a bitwise mismatch is investigated (which field, which cycle), never re-run or tuned; the first '
                   'differing field per compared file is recorded in gate_result.json')
 
@@ -267,6 +289,126 @@ FAILURE_POLICY = ('a bitwise mismatch is investigated (which field, which cycle)
 # ======================================================================================================================
 #  small helpers
 # ======================================================================================================================
+def _cand(lab):
+    """The (label, investment, options) triple `freeze_campaign_spec` takes: srp1_v1 a single-year investment map;
+    ev_v1 a staged plan carried in the entry options (investment None), as the pilot freezes them."""
+    if PROFILE == 'ev_v1':
+        return (lab, None, json.loads(json.dumps(CANDIDATE_OPTIONS[lab])))
+    return (lab, CANDIDATES[lab], {})
+
+
+def apply_profile_ev_v1():
+    """Re-bind the configuration constants for the EV re-run of gate F (module docstring, PROFILES). Zero solves."""
+    import p515_s56_ev_harness_tests as EVT
+    import p515_s56_search_driver as D
+    g = globals()
+    derived, _ev = EVT.ev_declaration('srp1grid')
+    cfg, required = EVT._spec_like(derived, cap=3)
+    pilot = {e['label']: e for e in D.pilot_entries(H, 'srp1grid')}
+    base = json.loads(json.dumps(pilot['unit_i1']['options']))
+    extra = {'n5_y2025_p0.25_e0.5': {'5': {'2025': [0.25, 0.5]}}, 'n9_y2025_p0.25_e1': {'9': {'2025': [0.25, 1.0]}}}
+    opts = {'n7_y2025_p0.25_e1': pilot['unit_i1']['options'], 'x0': pilot['x0_i1']['options'],
+            D.PILOT_STAGED_LABEL['srp1grid']: pilot['staged_i1']['options']}
+    for lab, plan in extra.items():
+        opts[lab] = dict(json.loads(json.dumps(base)), **{H.S56_STAGED_INVESTMENT_KEY: plan})
+    labels = ['n7_y2025_p0.25_e1', 'x0', D.PILOT_STAGED_LABEL['srp1grid'], 'n5_y2025_p0.25_e0.5', 'n9_y2025_p0.25_e1']
+    rc = os.path.join('data', 'SRP1', 'Results', 'P515S56', 'search_oracle_v1', 'real_check',
+                      'campaign_s56orc_v1_real_check')
+    g.update({
+        'PROFILE': 'ev_v1',
+        'HARNESS_EXPECTED_SHA256': '05a9838c46f19837398af31252bd85c465a3794aa03e9cfc1a7a30c08c462b29',
+        'GATE_DIR_REL': os.path.join('data', 'SRP1', 'Results', 'P515S56', 'concurrency_gate_ev_v1'),
+        'SPEC_PREFIX': 'frozen_concurrency_gate_ev_spec_v1_',
+        'STAGE': ('P5.15 S56 gate F re-run on the final harness -- serial-vs-concurrent bitwise equivalence for the EV '
+                  'search driver (SRP1-grid 3 x 3 EV twin, 2x, every S56 EV-plan key of the pilot entries, 3-cycle '
+                  'cap; root A five candidates at concurrency 1, root B the same five at concurrency 5; every '
+                  'candidate compared)'),
+        'AUTHORITY': AUTHORITY + [
+            'S56_SEARCH_DRIVER_DESIGN.md, Execution: "Gate F (5 concurrent children, bitwise) is re-run on the final '
+            'harness before the driver relies on it"; Integration rulings 1-7 (601775c0)',
+            'Planner task (pilot-ready Worker, 2026-11-23): EV twin, 2025/2030/2035, 2x, all S56 EV keys, cap 3, five '
+            'distinct candidates incl. x0, the reference unit and the staged plan; serial vs 5-way, bitwise on the '
+            'per-cycle records with timing fields excluded (exclusion list declared in advance)'],
+        'CAP': 3, 'REQUIRED_CONSECUTIVE_CYCLES': required, 'SOLVES_PER_CYCLE': 51,
+        'BASE_SOLVES_PER_EVALUATION': 51 * (3 + 1),
+        'CONFIGURATION': dict(cfg, name=('S56 GATE F (EV re-run) -- the SRP1-grid 3 x 3 EV twin as '
+                                         'p515_s56_ev_harness_tests._spec_like declares it (case-file AA, ESS ageing '
+                                         'baseline, convergence-depth tail), cap 3'),
+                              note=('identical in both roots; the S56 EV-plan keys are entry options (the pilot\'s '
+                                    'i1 entries); cap 3 (cannot certify: 10 consecutive passing cycles required)')),
+        'REFERENCE_CONFIGURATION_SPEC': {
+            'path': os.path.join(rc, 'campaign_spec_s56orc_v1_real_check_6781f85a.json'),
+            'keys': ('apply_rho', 'arm_label', 'case_file', 'case_file_anderson_acceleration', 'case_file_sha256',
+                     'convergence_depth_tail', 'derived_instance', 'ess_ageing_baseline', 'ess_ageing_baseline_label',
+                     'ess_params_file', 'full_diagnostics_in_rows', 'overrides')},
+        'CANDIDATE_OPTIONS': opts, 'CANDIDATES': {lab: None for lab in labels},
+        'SHARED_LABEL': 'n7_y2025_p0.25_e1', 'COMPARED_LABELS': list(labels),
+        'ROOTS': {'A': {'campaign_id': 's56_cgate_ev_v1_rootA_serial', 'concurrency': 1, 'labels': list(labels),
+                        'role': 'serial: the five candidates one after another (concurrency 1)'},
+                  'B': {'campaign_id': 's56_cgate_ev_v1_rootB_concurrent', 'concurrency': 5, 'labels': list(labels),
+                        'role': 'concurrent: the same five candidates in one batch of five'}},
+        'MEMORY_PER_SLOT_BYTES': 4 * GIB,
+        'MEMORY_RULE': ('hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x '
+                        '4.0 GiB (the S47 launcher rule with integration ruling 7\'s per-slot figure); gating before '
+                        'each root'),
+        'G1_EXCLUDED': {
+            'g_s39_D.json#cycle_trajectory': {},
+            'per_cycle_record.jsonl': {
+                '[*].cycle_wall_s': 'wall time of the cycle (the EV per-cycle record merges the response fields)',
+                '[*].rss_bytes': 'process memory measurement',
+                '[*].ru_maxrss_bytes': 'process memory measurement',
+                '[*].response_capture_s': 'wall time of the response capture'},
+            'aa_per_cycle.jsonl': {}},
+        'G3_EXCLUDED': dict(G3_EXCLUDED, **{
+            'initialisation_identity.path': 'path (the campaign root)',
+            'initialisation_identity.other_candidates_not_compared': (
+                'the sibling records present in init_identity/ when this one was written: a function of launch order '
+                'and timing (serial vs concurrent), not of the computation; every listed sibling is another candidate'),
+            'derived_instance_installed_in_child.planning_read_dir': 'path',
+            'derived_instance_installed_in_child.read_wall_s': 'wall time',
+            'multiscenario_terminal.path': 'path',
+            'multiscenario_terminal.runtime_s': 'wall time',
+            'operational_workbook.path': 'path',
+            'operational_workbook.runtime_s': 'wall time',
+            'operational_workbook.write_s': 'wall time',
+            'operational_workbook.sha256': 'hash of an xlsx, whose zip parts carry write timestamps',
+            'operational_workbook.size_bytes': 'size of that xlsx (compressed, timestamped parts)',
+            'terminal_phase_lock.lock_path': 'path',
+            'terminal_phase_lock.waited_s': 'wall time (waiting on siblings: concurrency-dependent by design)',
+            'response_terminal.path': 'path',
+            'response_terminal.sha256': 'hash of a file that embeds capture_cost timings and RSS',
+            'response_terminal.capture_cost': 'timings and process memory of the response capture',
+            'per_cycle_response.path': 'path',
+            's56_pricing_capture_summary.path': 'path',
+            's56_cost_breakdown.path': 'path'}),
+        'HISTORICAL_CROSS_CHECKS': {'n7_y2025_p0.25_e1': {
+            'eval_dir': os.path.join(rc, 'evals', 'ae3193097a25324e_unit_settled_k3'),
+            'note': ('integration real check (same harness 05a9838c, same options and cap 3, eval key ae319309...), '
+                     'cycles 1-3; informational')}},
+        'SELFTEST_DIRS': {'x0_A_1x': os.path.join(rc, 'evals', 'ae3193097a25324e_unit_settled_k3'),
+                          'n7_N_1x': os.path.join('data', 'SRP1', 'Results', 'P515S56', 'ev_harness_v1', 'smoke',
+                                                  'campaign_s56evh_v1_smoke', 'evals', '1933e753d4bae5ab_x0')},
+        'CHECK_NAMES': {'reference_configuration': 'configuration_equals_real_check_block',
+                        'domain': 'candidates_on_the_lattice_distinct_staged_key_equals_lattice_key'},
+        'PREDICTIONS': {
+            'P1': {'text': 'each of the five candidates\' per-cycle record is bitwise identical in A and B',
+                   'source': 'gate F (S56 D6) carried to the EV configuration',
+                   'evaluated_as': 'G1 and G2 and G3 hold for every candidate (every compared field bitwise equal)'},
+            'P2': {'text': 'contention 1.10-1.30x per cycle in B vs A on the shared candidate (Worker-recorded '
+                           'expectation: gate F v1 measured 1.183x on SRP1; kappa = 1.18 in the projection)',
+                   'source': 'Worker (not a Planner prediction; not gated)',
+                   'evaluated_as': ('sum over cycles 1-3 of the shared candidate\'s production "Iteration k: X s" '
+                                    'wall in B / the same sum in A, held iff in [1.10, 1.30]'),
+                   'range': [1.10, 1.30]},
+            'P3': {'text': 'peak RSS per EV child 2.3-4.0 GiB (Worker-recorded: the real check measured 2.43 GiB at '
+                           '3 cycles; ruling 7 slot 4.0 GiB)',
+                   'source': 'Worker (not a Planner prediction; not gated)',
+                   'evaluated_as': ('every one of the 10 children: evaluation_record peak_rss.'
+                                    'child_python_process_ru_maxrss / 2^30 in [2.3, 4.0]'),
+                   'range_gib': [2.3, 4.0]}},
+    })
+
+
 def _utc():
     return datetime.now(timezone.utc).isoformat()
 
@@ -810,7 +952,7 @@ def compare_eval_dirs(dir_a, dir_b, run_id_a, run_id_b, tokens_a=None, tokens_b=
         xa, xb = pa[name], pb[name]
         if max_cycles is not None:
             xa, xb = xa[:max_cycles], xb[:max_cycles]
-        d, ex = deep_diff(xa, xb)
+        d, ex = deep_diff(xa, xb, excluded=tuple(G1_EXCLUDED.get(name) or ()))
         g1[name] = {**_summ(d, ex), 'n_rows_A': len(pa[name]), 'n_rows_B': len(pb[name]),
                     'first_differing_cycle_field': _first_cycle_field(d)}
     res['G1_per_cycle_record'] = {'files': g1, 'holds': all(v['identical'] for v in g1.values())}
@@ -935,7 +1077,7 @@ def scratch_freeze(scratch):
     out = {}
     for rk in ORDER:
         r = ROOTS[rk]
-        cands = [(lab, CANDIDATES[lab], {}) for lab in r['labels']]
+        cands = [_cand(lab) for lab in r['labels']]
         path, sha, spec = H.freeze_campaign_spec(os.path.join(scratch, f"campaign_{r['campaign_id']}"),
                                                  r['campaign_id'], cands, CONFIGURATION, CAP, r['concurrency'],
                                                  AUTHORITY, required_consecutive_cycles=REQUIRED_CONSECUTIVE_CYCLES,
@@ -949,7 +1091,28 @@ def entry_view(e):
                               'effective_anderson_acceleration', 'overrides', 'post_certification') if k in e}
 
 
+def lattice_membership():
+    """ev_v1: every candidate's staged plan is on the S56 lattice (C5-admissible, `s56_staged_canonical`), the five are
+    distinct, and the harness candidate key equals `GeneralLattice.key` (zero solves)."""
+    import p515_s56_search_driver as D
+    lat = D.build_lattice(REPO)[0]
+    case_rel = H.s56_case_rel(H.validate_derived_instance(CONFIGURATION['derived_instance']))
+    out = {}
+    for lab in COMPARED_LABELS:
+        canon = H.s56_staged_canonical(CANDIDATE_OPTIONS[lab][H.S56_STAGED_INVESTMENT_KEY], case_rel)[0]
+        z = lat.z_of_canonical(canon)
+        out[lab] = {'lattice_label': lat.label(z), 'label_equals_lattice_label': lat.label(z) == lab,
+                    'candidate_key': H.candidate_key(canon), 'staged_key_equals_lattice_key':
+                        H.candidate_key(canon) == lat.key(z), 'I_x_eur': lat.investment_cost(z)}
+    keys = [v['candidate_key'] for v in out.values()]
+    return {'per_label': out, 'distinct': len(set(keys)) == len(keys) == 5,
+            'all_admissible': (len(set(keys)) == len(keys) == 5 and all(
+                v['label_equals_lattice_label'] and v['staged_key_equals_lattice_key'] for v in out.values()))}
+
+
 def domain_membership():
+    if PROFILE == 'ev_v1':
+        return lattice_membership()
     d = _load(DOMAIN_SPEC_REL)
     dom = d['extra']['domain_I_x_eur']
     by_label = {e['label']: e for e in d['candidates']}
@@ -1083,10 +1246,10 @@ def comparator_selftest():
 def commands(spec_name_hint):
     py = CANONICAL_PYTHON
     return {
-        'freeze': (f'set -o noclobber && NLP_SOLVER_PATH={SOLVER_PATH} {py} -u {SCRIPT_NAME} --freeze > '
-                   f'data/SRP1/Results/P515S56/concurrency_gate_v1_freeze_launch.log 2>&1'),
-        'run': (f'set -o noclobber && NLP_SOLVER_PATH={SOLVER_PATH} {py} -u {SCRIPT_NAME} --run --spec-sha256 '
-                f'<sha256 of {spec_name_hint}> > {GATE_DIR_REL}/{RUN_LOG_NAME} 2>&1'),
+        'freeze': (f'set -o noclobber && NLP_SOLVER_PATH={SOLVER_PATH} {py} -u {SCRIPT_NAME} --freeze '
+                   f'--profile {PROFILE} > {GATE_DIR_REL}_freeze_launch.log 2>&1'),
+        'run': (f'set -o noclobber && NLP_SOLVER_PATH={SOLVER_PATH} {py} -u {SCRIPT_NAME} --run --profile {PROFILE} '
+                f'--spec-sha256 <sha256 of {spec_name_hint}> > {GATE_DIR_REL}/{RUN_LOG_NAME} 2>&1'),
         'cwd': REPO,
         'attached': 'attached, alone, both streams captured, never detached; A then B in the same process',
     }
@@ -1102,7 +1265,7 @@ def freeze(_args):
     if os.path.realpath(sys.executable) != os.path.realpath(CANONICAL_PYTHON):
         failures.append(f'not the canonical interpreter: {sys.executable}')
     if H.sha256_file(H.HARNESS_PATH) != HARNESS_EXPECTED_SHA256:
-        failures.append('harness sha256 differs from the expected d9a944f2')
+        failures.append(f'harness sha256 differs from the expected {HARNESS_EXPECTED_SHA256[:8]}')
     sol = solver_check()
     if not sol['ok']:
         failures.append(f'solver check: {sol}')
@@ -1132,6 +1295,11 @@ def freeze(_args):
     shared = {rk: next(e for e in roots[rk]['entries'] if e['label'] == SHARED_LABEL) for rk in ORDER}
     shared_same = {k: shared['A'][k] == shared['B'][k] for k in ('label', 'canonical', 'key', 'eval_key', 'eval_dir',
                                                                  'effective_anderson_acceleration', 'overrides')}
+    compared_same = {}
+    for lab in COMPARED_LABELS:   # srp1_v1: the shared candidate only (== shared_same)
+        ea, eb = (next(e for e in roots[rk]['entries'] if e['label'] == lab) for rk in ORDER)
+        compared_same[lab] = all(ea[k] == eb[k] for k in ('label', 'canonical', 'key', 'eval_key', 'eval_dir',
+                                                           'effective_anderson_acceleration', 'overrides'))
     cfg_same = json.dumps(specs['A']['configuration'], sort_keys=True) == json.dumps(specs['B']['configuration'],
                                                                                       sort_keys=True)
     _log('scratch freezes done; running the reference-configuration, domain, exclusion-coverage, capture-path and '
@@ -1146,14 +1314,15 @@ def freeze(_args):
                       :16] == os.path.basename(v['eval_dir'])[:16],
                   'present': os.path.isdir(_abs(v['eval_dir']))} for lab, v in HISTORICAL_CROSS_CHECKS.items()}
     checks = {'shared_entry_identical_in_both_roots': all(shared_same.values()),
+              'every_compared_entry_identical_in_both_roots': all(compared_same.values()),
               'configuration_identical_in_both_roots': cfg_same,
-              'configuration_equals_w187_x0_A_1x_block': refcfg['all_equal'],
-              'candidates_admissible_in_s47_domain': dom['all_admissible'],
+              CHECK_NAMES['reference_configuration']: refcfg['all_equal'],
+              CHECK_NAMES['domain']: dom['all_admissible'],
               'g3_exclusions_cover_every_root_specific_leaf': cover['holds'],
               'capture_path_checklist': capture['all_hold'],
               'comparator_selftest': selftest['all_hold']}
     spec = {
-        'schema': 'p515_s56_concurrency_gate_spec_v1', 'version': 1, 'predecessor': None,
+        'schema': 'p515_s56_concurrency_gate_spec_v1', 'version': 1, 'predecessor': None, 'profile': PROFILE,
         'stage': STAGE, 'authority': AUTHORITY, 'frozen_utc': _utc(), 'git_head': H._git(['rev-parse', 'HEAD']),
         'script': {'path': SCRIPT_NAME, 'sha256': _sha(SCRIPT_NAME)},
         'harness': {'path': _rel(H.HARNESS_PATH), 'sha256': H.sha256_file(H.HARNESS_PATH), 'unchanged': True},
@@ -1168,15 +1337,19 @@ def freeze(_args):
         'objective_convention': ('Q = gross_operational_cost (contracted interface settlement excluded; salvage '
                                  'reported separately); no objective difference is quoted -- records are compared '
                                  'bitwise'),
-        'candidates': {lab: {'nodes': {str(n): list(v) for n, v in c.items()}, 'investment_year': 2025}
-                       for lab, c in CANDIDATES.items()},
+        'candidates': ({lab: {'entry_options': CANDIDATE_OPTIONS[lab]} for lab in COMPARED_LABELS}
+                       if PROFILE == 'ev_v1' else
+                       {lab: {'nodes': {str(n): list(v) for n, v in c.items()}, 'investment_year': 2025}
+                        for lab, c in CANDIDATES.items()}),
         'shared_candidate': {'label': SHARED_LABEL, 'description': 'the reference unit: node 7, 0.25 MVA / 1 MWh, 2025',
                              'entry': shared['A'], 'identical_in_both_roots': shared_same},
+        'compared_candidates': {'labels': list(COMPARED_LABELS), 'identical_entries_in_both_roots': compared_same,
+                                'rule': 'G1-G3 are evaluated A vs B for every compared candidate; each must hold'},
         'domain_membership': dom, 'roots': roots, 'order': list(ORDER),
         'gate': {
             'G0_test_condition': ('A: evaluate() max_concurrent_observed == 1; B: == 5 (all five children launched in '
                                   'the first poll); every child exit 0, status not_certified, cycles_run 3'),
-            'G1_per_cycle_record': {'files': list(G1_FILES), 'excluded': {}},
+            'G1_per_cycle_record': {'files': list(G1_FILES), 'excluded': G1_EXCLUDED},
             'G2_ipopt_solves': {'records_file': G2_RECORDS_FILE, 'records_excluded': G2_RECORDS_EXCLUDED,
                                 'logs': ('every file of <P56A work dir>/<working_dir_ids.run>/logs (network '
                                          'optim_log_case*.log and ESSO optim_log_esso_node*_cycle*.txt): same file '
@@ -1186,7 +1359,8 @@ def freeze(_args):
                                          f'{list(IPOPT_TIMING_PREFIXES)} removed, compared as text')},
             'G3_evaluation_record': {'file': 'evaluation_record.json', 'excluded': G3_EXCLUDED,
                                      'exclusion_coverage_check': cover},
-            'G4_solve_counts': ('each of the 6 records: solve_profile.base_solves == 204, rounds == 4, '
+            'G4_solve_counts': (f'each of the {sum(len(ROOTS[rk]["labels"]) for rk in ORDER)} records: '
+                                f'solve_profile.base_solves == {BASE_SOLVES_PER_EVALUATION}, rounds == {CAP + 1}, '
                                 'reconciliation_supported and identity_holds True, observed.permitted_solve == '
                                 'expected_solves, blocked 0; parent SolveProfileGuard(permitted=()) verify(0) and '
                                 'pickle loads 0'),
@@ -1266,7 +1440,7 @@ def run_root(rk, gspec, gate_dir):
                         f"{mem.get('required_gib')} GiB")
     if failures:
         return {'launched': False, 'failures': failures, 'memory_preflight': mem}
-    cands = [(lab, CANDIDATES[lab], {}) for lab in r['labels']]
+    cands = [_cand(lab) for lab in r['labels']]
     spec_path, spec_sha, spec = H.freeze_campaign_spec(
         root, r['campaign_id'], cands, CONFIGURATION, CAP, r['concurrency'], AUTHORITY,
         required_consecutive_cycles=REQUIRED_CONSECUTIVE_CYCLES,
@@ -1363,6 +1537,8 @@ def run(args):
     spec_rel = os.path.join(GATE_DIR_REL, match[0])
     gspec = _load(spec_rel)
     gspec['_path'], gspec['_sha256'] = spec_rel, args.spec_sha256
+    if gspec.get('profile', 'srp1_v1') != PROFILE:
+        failures.append(f"the gate spec's profile {gspec.get('profile', 'srp1_v1')!r} is not --profile {PROFILE!r}")
     allowed = {match[0], RUN_LOG_NAME}
     extra_files = sorted(set(os.listdir(gate_dir)) - allowed)
     if extra_files:
@@ -1431,20 +1607,23 @@ def run(args):
     both = all(roots_out.get(rk, {}).get('launched') and not roots_out[rk].get('harness_error') for rk in ORDER)
     gate = {'evaluated': False}
     if both:
-        _log('comparing the shared candidate (G1-G3, supplementary) -- zero solves')
-        pa = roots_out['A']['per_evaluation'][SHARED_LABEL]
-        pb = roots_out['B']['per_evaluation'][SHARED_LABEL]
+        _log(f'comparing {COMPARED_LABELS} A vs B (G1-G3, supplementary) -- zero solves')
         tok_a = [(roots_out['A']['campaign_spec']['sha256'], '<SPEC_SHA256>'),
                  (gspec['roots']['A']['campaign_id'], '<CAMPAIGN_ID>'),
                  (roots_out['A']['campaign_spec']['sha256'][:8], '<SPEC_SHA8>')]
         tok_b = [(roots_out['B']['campaign_spec']['sha256'], '<SPEC_SHA256>'),
                  (gspec['roots']['B']['campaign_id'], '<CAMPAIGN_ID>'),
                  (roots_out['B']['campaign_spec']['sha256'][:8], '<SPEC_SHA8>')]
-        try:
-            cmp_ = compare_eval_dirs(_abs(pa['eval_dir']), _abs(pb['eval_dir']), pa['working_dir_run'],
-                                     pb['working_dir_run'], tok_a, tok_b, supplementary=True)
-        except Exception as error:  # noqa: BLE001 -- a comparator fault is a harness fault, recorded
-            cmp_ = {'error': f'{type(error).__name__}: {error}', 'traceback': traceback.format_exc()}
+        cmp_per = {}
+        for lab in COMPARED_LABELS:
+            pa = roots_out['A']['per_evaluation'][lab]
+            pb = roots_out['B']['per_evaluation'][lab]
+            try:
+                cmp_per[lab] = compare_eval_dirs(_abs(pa['eval_dir']), _abs(pb['eval_dir']), pa['working_dir_run'],
+                                                 pb['working_dir_run'], tok_a, tok_b, supplementary=True)
+            except Exception as error:  # noqa: BLE001 -- a comparator fault is a harness fault, recorded
+                cmp_per[lab] = {'error': f'{type(error).__name__}: {error}', 'traceback': traceback.format_exc()}
+        cmp_ = cmp_per[SHARED_LABEL]
         g0 = {'A_max_concurrent_observed': roots_out['A']['batch_info'].get('max_concurrent_observed'),
               'B_max_concurrent_observed': roots_out['B']['batch_info'].get('max_concurrent_observed'),
               'children': {f'{rk}:{lab}': {'exit_code': p['exit_code'], 'status': p['status'],
@@ -1468,11 +1647,16 @@ def run(args):
                     hist[lab] = {'historical': h, 'present': False}
             except Exception as error:  # noqa: BLE001 -- informational
                 hist[lab] = {'historical': h, 'error': f'{type(error).__name__}: {error}'}
-        g1 = (cmp_.get('G1_per_cycle_record') or {}).get('holds') is True
-        g2 = (cmp_.get('G2_ipopt_solves') or {}).get('holds') is True
-        g3 = (cmp_.get('G3_evaluation_record') or {}).get('holds') is True
+        per_label = {lab: {g: (c.get(k) or {}).get('holds') is True for g, k in (
+            ('G1', 'G1_per_cycle_record'), ('G2', 'G2_ipopt_solves'), ('G3', 'G3_evaluation_record'))}
+            for lab, c in cmp_per.items()}
+        g1 = all(v['G1'] for v in per_label.values())
+        g2 = all(v['G2'] for v in per_label.values())
+        g3 = all(v['G3'] for v in per_label.values())
         gate = {'evaluated': True, 'G0_test_condition': g0, 'G1_holds': g1, 'G2_holds': g2, 'G3_holds': g3,
+                'G1_G3_per_compared_label': per_label,
                 'G4_solve_counts': g4, 'G4_holds': g4_holds, 'comparison': cmp_,
+                'comparison_per_compared_label': cmp_per,
                 'GATE_PASS': bool(g0['holds'] and g1 and g2 and g3 and g4_holds),
                 'historical_cross_check_not_gated': hist}
     # measurements and predictions
@@ -1482,12 +1666,15 @@ def run(args):
         wb = roots_out['B']['per_evaluation'][SHARED_LABEL]['cycle_walls']
         cont = contention(wa, wb)
         others = {lab: contention(wa, p['cycle_walls']) for lab, p in roots_out['B']['per_evaluation'].items()}
+        own = {lab: contention(roots_out['A']['per_evaluation'][lab]['cycle_walls'], p['cycle_walls'])
+               for lab, p in roots_out['B']['per_evaluation'].items() if lab in roots_out['A']['per_evaluation']}
         rss = {f'{rk}:{lab}': p['peak_rss_child_gib'] for rk in ORDER for lab, p in
                roots_out[rk]['per_evaluation'].items()}
         fp = {f'{rk}:{lab}': {'gib': (p['footprint'] or {}).get('lifetime_max_phys_footprint_gib'),
                               'capture_exact': (p['footprint'] or {}).get('capture_exact')}
               for rk in ORDER for lab, p in roots_out[rk]['per_evaluation'].items()}
         meas = {'contention_shared_candidate': cont, 'contention_every_B_child_vs_A_shared': others,
+                'contention_every_candidate_B_vs_its_own_A': own,
                 'peak_rss_child_gib': rss, 'footprint_child_gib': fp,
                 'memory_available_during_B': {k: v for k, v in roots_out['B']['memory_during'].items()
                                               if k != 'samples'},
@@ -1536,7 +1723,8 @@ def run(args):
         for k, v in preds.items():
             _log(f"{k}: held {v['held']} outcome {v['outcome']}")
     _log(f'guards {g}')
-    if not both or not g['all_zero'] or not gate.get('evaluated') or 'error' in gate.get('comparison', {}):
+    if (not both or not g['all_zero'] or not gate.get('evaluated')
+            or any('error' in c for c in gate.get('comparison_per_compared_label', {}).values())):
         return 1
     return 0 if gate['GATE_PASS'] else 2
 
@@ -1547,7 +1735,11 @@ def main():
     mode.add_argument('--freeze', action='store_true')
     mode.add_argument('--run', action='store_true')
     parser.add_argument('--spec-sha256', default=None)
+    parser.add_argument('--profile', default='srp1_v1', choices=('srp1_v1', 'ev_v1'),
+                        help='the configuration profile (module docstring, PROFILES); recorded in the frozen spec')
     args = parser.parse_args()
+    if args.profile == 'ev_v1':
+        apply_profile_ev_v1()
     if args.run and not args.spec_sha256:
         parser.error('--run needs --spec-sha256')
     _log(f'{STAGE}; pid {os.getpid()}; interpreter {sys.executable}')
