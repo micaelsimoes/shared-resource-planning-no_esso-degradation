@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s56_ev_harness_tests.py", line 1486, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s56_ev_harness_tests.py", line 1470, in main
+    return nl_stub(a)
+           ^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s56_ev_harness_tests.py", line 843, in nl_stub
+    return _finish(res, ck, out_dir, f'nl_stub_{args.harness}')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s56_ev_harness_tests.py", line 199, in _finish
+    _dump(os.path.join(out_dir, f'{name}.json'), res)
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s56_ev_harness_tests.py", line 153, in _dump
+    GRIO.dump(obj, handle, indent=1, sort_keys=True, default=GRIO.json_default_item)
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/gate_result_io.py", line 142, in dump
+    check(obj, default=default)
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/gate_result_io.py", line 131, in check
+    raise StringFlagError(flags)
+gate_result_io.StringFlagError: refusing to write a string-typed flag (24 value(s)): $.diagnostics[0].boyd_all_pass = 'False'; $.diagnostics[0].boyd_ess_channel_pass = 'False'; $.diagnostics[0].boyd_ess_dual_pass = 'False'; $.diagnostics[0].boyd_ess_primal_pass = 'False'; $.diagnostics[0].boyd_pf_channel_pass = 'False'; $.diagnostics[0].boyd_pf_dual_pass = 'False'; $.diagnostics[0].boyd_pf_primal_pass = 'False'; $.diagnostics[0].boyd_stop = 'False'; $.diagnostics[0].boyd_v_channel_pass = 'False'; $.diagnostics[0].boyd_v_dual_pass = 'False' (+14 more). Write a JSON boolean (bool(x)), not its text.

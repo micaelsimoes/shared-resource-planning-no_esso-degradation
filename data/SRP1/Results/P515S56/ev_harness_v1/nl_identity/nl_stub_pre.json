@@ -1,0 +1,41 @@
+{
+ "checks": {},
+ "configuration": "SRP1 canonical, reference unit 2025, flex x2, option off, 2 stubbed ADMM cycles",
+ "error": "RuntimeError: S44 campaign child: configuration not as frozen (case file D + cap): ['anderson_acceleration_off_before_overrides']",
+ "finished_utc": "2026-11-23T19:35:53.665528+00:00",
+ "guards": {
+  "own": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "label": "P5.15 S56 EV harness tests (this process never solves)",
+   "verify_0": []
+  }
+ },
+ "harness": "pre",
+ "harness_sha256": "c5c477075ce39fbed6f66bb2f7c1c6378cc35c961a425cdd83a8ffdf64326aa5",
+ "pre_rev": "aaaa71e2",
+ "provenance": {
+  "dirty_tracked": [
+   " M p515_s44_campaign_harness.py"
+  ],
+  "git_head": "2c15db477072da554945f75b44255846bb545b57",
+  "harness_sha256": "8dc8eb11c7b5f7c46219c6ac296ac5f76ae65c9d464c71e526634796b39aeef2",
+  "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "nlp_solver_path": "/usr/local/bin/ipopt",
+  "script_sha256": "044aa41a49b14c271ca181e7e02665a6058b525af40d9398c344eb5f91aa6957"
+ },
+ "schema": "p515_s56_ev_harness_tests_v1_nl_stub",
+ "started_utc": "2026-11-23T19:35:40.142116+00:00",
+ "summary": {
+  "all_pass": false,
+  "failed": [],
+  "n_checks": 0,
+  "n_pass": 0
+ },
+ "traceback": "Traceback (most recent call last):\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s56_ev_harness_tests.py\", line 822, in nl_stub\n    mod._config_hook_factory(spec, holder, overrides={}, investment_year=2025, expected_floor_rows=floor_rows,\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/ev_harness_v1/nl_identity/scratch_pre/harness_pre.py\", line 4229, in hook\n    raise RuntimeError(f'S44 campaign child: configuration not as frozen (case file D + cap): {missing}')\nRuntimeError: S44 campaign child: configuration not as frozen (case file D + cap): ['anderson_acceleration_off_before_overrides']\n",
+ "zero_solve_verified": true
+}

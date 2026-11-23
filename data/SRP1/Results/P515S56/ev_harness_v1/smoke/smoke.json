@@ -1,0 +1,516 @@
+{
+ "campaign": {
+  "entries": [
+   {
+    "eval_dir": "1933e753d4bae5ab_x0",
+    "eval_key": "1933e753d4bae5aba361a871a0a404e2b9fc2b4d6d0a5f31edf1de82bef5a0c6",
+    "key": "dcb43218986e026f00649f3988dbc50bbd67f4e4ef3670aa43b3c7805f8aee1f",
+    "label": "x0"
+   },
+   {
+    "eval_dir": "45368596f9cb1a2e_unit",
+    "eval_key": "45368596f9cb1a2e2a8670fe59f98a86c2f559312631ab94cb960568c4d6abe7",
+    "key": "0998d02182570fc09538c2b58e9a16313dbb0225db0595442fcaba0b3c308000",
+    "label": "unit"
+   }
+  ],
+  "root": "data/SRP1/Results/P515S56/ev_harness_v1/smoke/campaign_s56evh_v1_smoke",
+  "spec": "data/SRP1/Results/P515S56/ev_harness_v1/smoke/campaign_s56evh_v1_smoke/campaign_spec_s56evh_v1_smoke_39882ca6.json",
+  "spec_sha256": "39882ca65a90d26d016e0ac8bbf5e1a84a17a47285ec52d2a2cfdfe0ada0776e"
+ },
+ "checks": {
+  "unit: child exit 0, 2 cycles": {
+   "detail": {
+    "cycles": 2,
+    "exit": 0,
+    "status": "not_certified"
+   },
+   "ok": true
+  },
+  "unit: cost breakdown written, harness checks ok": {
+   "detail": {
+    "flex_split_readback_ok": true,
+    "flex_split_reconciles_with_total_flex_cost": true,
+    "kappa_built_iff_tv_declared": true,
+    "kappa_equals_a_over_sigma_where_built": true,
+    "leak_within_ceiling": false
+   },
+   "ok": true
+  },
+  "unit: hook order EV assertion -> settings -> multiplier": {
+   "detail": [
+    "ev_assertion",
+    "esso_settings_and_staged_write",
+    "flex_price_multiplier"
+   ],
+   "ok": true
+  },
+  "unit: solves == declared 153 (identity holds, nothing blocked)": {
+   "detail": {
+    "base_solves": 153,
+    "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+    "expected_solves": 153,
+    "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+    "identity_holds": true,
+    "n_days": 4,
+    "n_dso": 3,
+    "n_esso_nodes": 3,
+    "n_years": 3,
+    "observed": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 153,
+     "permitted_solve": 153
+    },
+    "reconciliation_supported": true,
+    "recovered_only_identity": {
+     "expected": 153,
+     "holds": true,
+     "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+    },
+    "retry_solves_credited": 0,
+    "rounds": 3,
+    "rounds_note": "one initialization round + cycles_run ADMM cycles",
+    "solves_per_cycle": 51
+   },
+   "ok": false
+  },
+  "x0: child exit 0, 2 cycles": {
+   "detail": {
+    "cycles": 2,
+    "exit": 0,
+    "status": "not_certified"
+   },
+   "ok": true
+  },
+  "x0: cost breakdown written, harness checks ok": {
+   "detail": {
+    "flex_split_readback_ok": true,
+    "flex_split_reconciles_with_total_flex_cost": true,
+    "kappa_built_iff_tv_declared": true,
+    "kappa_equals_a_over_sigma_where_built": true,
+    "leak_within_ceiling": true
+   },
+   "ok": true
+  },
+  "x0: hook order EV assertion -> settings -> multiplier": {
+   "detail": [
+    "ev_assertion",
+    "esso_settings_and_staged_write",
+    "flex_price_multiplier"
+   ],
+   "ok": true
+  },
+  "x0: solves == declared 153 (identity holds, nothing blocked)": {
+   "detail": {
+    "base_solves": 153,
+    "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+    "expected_solves": 153,
+    "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+    "identity_holds": true,
+    "n_days": 4,
+    "n_dso": 3,
+    "n_esso_nodes": 3,
+    "n_years": 3,
+    "observed": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 153,
+     "permitted_solve": 153
+    },
+    "reconciliation_supported": true,
+    "recovered_only_identity": {
+     "expected": 153,
+     "holds": true,
+     "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+    },
+    "retry_solves_credited": 0,
+    "rounds": 3,
+    "rounds_note": "one initialization round + cycles_run ADMM cycles",
+    "solves_per_cycle": 51
+   },
+   "ok": false
+  }
+ },
+ "declared": {
+  "cap": 2,
+  "concurrency": 1,
+  "configuration": "step 4 spec_like: case-file AA declared (keep_memory, on; not forced off without the coupling), ESS ageing baseline declared, convergence-depth tail declared",
+  "entries": [
+   "x0",
+   "unit"
+  ],
+  "keys": {
+   "flex_price_multiplier": 2.0,
+   "s56_cohort_formulation": "independent_units_all_node_years",
+   "s56_esso_slack_penalty": 10000.0,
+   "s56_ev_profiles": "SRP1-grid EV twin",
+   "s56_staged_investment": "x0 / unit",
+   "s56_terminal_value_in_objective": true
+  },
+  "not_declared": "interface_coupling: production activates the per-scenario coupling only with > 1 scenario (_per_scenario_interface_coupling_active); on the one-scenario EV twin it is inert, so the smoke does not declare it",
+  "solves_formula": "((1 + n_dso) x n_years x n_days + n_esso_nodes) x (cycles + 1) = ((1 + 3) x 3 x 4 + 3) x 3",
+  "solves_per_evaluation": 153,
+  "solves_total": 306
+ },
+ "error": null,
+ "evaluations": {
+  "unit": {
+   "cost_breakdown": {
+    "checks": {
+     "flex_split_readback_ok": true,
+     "flex_split_reconciles_with_total_flex_cost": true,
+     "kappa_built_iff_tv_declared": true,
+     "kappa_equals_a_over_sigma_where_built": true,
+     "leak_within_ceiling": false
+    },
+    "esso_slack_totals": {
+     "p": {
+      "max_abs": -9.999909090866319e-09,
+      "n_nodes_with_pair": 3,
+      "priced_in_esso_objective": -0.1727984290909089,
+      "sum": -1.727984290909089e-05
+     },
+     "q": {
+      "max_abs": 0.0,
+      "n_nodes_with_pair": 3,
+      "priced_in_esso_objective": -0.0575994763636363,
+      "sum": -5.75994763636363e-06
+     }
+    },
+    "exit_certificate_e6_summary": {
+     "circle_margin_min_mva": 0.08333926410009412,
+     "closure_residual_max_abs_mwh": 0.0,
+     "energy_accounting_residual_max_abs_mwh": 2.983724378680108e-16,
+     "energy_balance_residual_max_mwh": 1.3183898417423734e-16,
+     "inter_cohort_gross_transfer_max_mwh": 0.02686649614835373,
+     "n_block_days": 12,
+     "p_slack_max_abs_mw": -9.999909090866319e-09,
+     "p_slack_sum_mw": -1.727984290909089e-05,
+     "q_slack_max_abs_mvar": 0.0,
+     "q_slack_sum_mvar": -5.75994763636363e-06,
+     "soc_sources": [
+      "variable"
+     ],
+     "window_margin_min_mwh": 0.08109543986837808,
+     "within_cohort_simultaneity_max_mwh": 0.02686649614835373
+    },
+    "flexibility_active_down_eur": {
+     "DSO": 109127931.53373027,
+     "TSO": 0.0
+    },
+    "flexibility_cost_reactive_down_eur": -973.1793678640047,
+    "gross_operational_cost_eur": 873581526.251458,
+    "harness_checks_ok": true,
+    "investment_cost_eur": 317957.0085035586,
+    "leak_detector": {
+     "L_weighted_mwh": 103.35306005670759,
+     "ceiling_eur": 25.0,
+     "max_simultaneous_mw": 0.002492547422913742,
+     "priced_eur": 11083.119674158468,
+     "priced_loss_eur": 794.2902433146912,
+     "within_ceiling": false
+    },
+    "net_operational_recourse_eur": 873581526.251458,
+    "path": "data/SRP1/Results/P515S56/ev_harness_v1/smoke/campaign_s56evh_v1_smoke/evals/45368596f9cb1a2e_unit/s56_cost_breakdown.json",
+    "priced_residual_pr": {
+     "label": "mixed-convention reporting field, read by no acceptance test",
+     "note": "present only on entries declaring the per-scenario coupling",
+     "value_terminal_cycle": null
+    },
+    "sha256": "e2a960e0824418eb26c4c1feee8756a3b8b5239e3d8ec6b5eba799a21c3a428f",
+    "status": "written",
+    "terminal_value_credit_eur": 0.0,
+    "total_planning_cost_eur": 873899483.2599616
+   },
+   "cycle_wall_s": [
+    30.14055609703064,
+    23.80362892150879
+   ],
+   "cycles_run": 2,
+   "derived_instance_checks_in_child": {
+    "planning_scenario_checksum_equals_declaration": true,
+    "s56_ev_planning_is_the_single_scenario_twin": true
+   },
+   "ev_injection_at_read": {
+    "assertion_post_read": {
+     "combined_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+     "expected_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+     "failures": [],
+     "n_a5_checked": 2376,
+     "n_arrays_read": 7728,
+     "n_injected_checked": 5352,
+     "n_mismatches": 0,
+     "n_network_market_arrays_bad": 0,
+     "ok": true,
+     "point": "post_read",
+     "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729",
+     "scenario_dimensions": {
+      "num_market_scenarios": 1,
+      "num_oper_scenarios": {
+       "DSO5": 1,
+       "DSO7": 1,
+       "DSO9": 1,
+       "TSO": 1
+      }
+     }
+    },
+    "hook_calls": 1,
+    "inject_counts": [
+     {
+      "n_a5_kept": 2376,
+      "n_injected": 5352
+     }
+    ],
+    "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729"
+   },
+   "eval_dir": "data/SRP1/Results/P515S56/ev_harness_v1/smoke/campaign_s56evh_v1_smoke/evals/45368596f9cb1a2e_unit",
+   "exit_code": 0,
+   "hook_order": [
+    "ev_assertion",
+    "esso_settings_and_staged_write",
+    "flex_price_multiplier"
+   ],
+   "multiscenario_terminal_status": "written",
+   "peak_rss": {
+    "child_python_process_ru_maxrss": 2578644992,
+    "production_state_peak_rss_ru_maxrss": 2214920192,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)",
+    "solver_subprocesses_max_ru_maxrss": 52232192,
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)"
+   },
+   "rss_bytes_per_cycle": [
+    2091352064,
+    2208333824
+   ],
+   "solve_profile": {
+    "base_solves": 153,
+    "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+    "expected_solves": 153,
+    "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+    "identity_holds": true,
+    "n_days": 4,
+    "n_dso": 3,
+    "n_esso_nodes": 3,
+    "n_years": 3,
+    "observed": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 153,
+     "permitted_solve": 153
+    },
+    "reconciliation_supported": true,
+    "recovered_only_identity": {
+     "expected": 153,
+     "holds": true,
+     "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+    },
+    "retry_solves_credited": 0,
+    "rounds": 3,
+    "rounds_note": "one initialization round + cycles_run ADMM cycles",
+    "solves_per_cycle": 51
+   },
+   "status": "not_certified",
+   "wall_time_s": {
+    "child_process_s": 174.59179997444153,
+    "run_admm_arm_reported_wall_clock_s": 90.3463921546936,
+    "run_admm_arm_s": 161.27309894561768
+   }
+  },
+  "x0": {
+   "cost_breakdown": {
+    "checks": {
+     "flex_split_readback_ok": true,
+     "flex_split_reconciles_with_total_flex_cost": true,
+     "kappa_built_iff_tv_declared": true,
+     "kappa_equals_a_over_sigma_where_built": true,
+     "leak_within_ceiling": true
+    },
+    "esso_slack_totals": {
+     "p": {
+      "max_abs": -9.999909090909091e-09,
+      "n_nodes_with_pair": 3,
+      "priced_in_esso_objective": -0.1727984290909089,
+      "sum": -1.727984290909089e-05
+     },
+     "q": {
+      "max_abs": 0.0,
+      "n_nodes_with_pair": 3,
+      "priced_in_esso_objective": 0.0,
+      "sum": 0.0
+     }
+    },
+    "exit_certificate_e6_summary": {
+     "circle_margin_min_mva": null,
+     "closure_residual_max_abs_mwh": 0.0,
+     "energy_accounting_residual_max_abs_mwh": 0.0,
+     "energy_balance_residual_max_mwh": 0.0,
+     "inter_cohort_gross_transfer_max_mwh": 0.0,
+     "n_block_days": 0,
+     "p_slack_max_abs_mw": -9.999909090909091e-09,
+     "p_slack_sum_mw": -1.727984290909089e-05,
+     "q_slack_max_abs_mvar": 0.0,
+     "q_slack_sum_mvar": 0.0,
+     "soc_sources": [],
+     "window_margin_min_mwh": null,
+     "within_cohort_simultaneity_max_mwh": 0.0
+    },
+    "flexibility_active_down_eur": {
+     "DSO": 109161444.7043289,
+     "TSO": 0.0
+    },
+    "flexibility_cost_reactive_down_eur": -973.1794669510572,
+    "gross_operational_cost_eur": 873896422.5543851,
+    "harness_checks_ok": true,
+    "investment_cost_eur": 0.0,
+    "leak_detector": {
+     "L_weighted_mwh": 0.0,
+     "ceiling_eur": 25.0,
+     "max_simultaneous_mw": 0.0,
+     "priced_eur": 0.0,
+     "priced_loss_eur": 0.0,
+     "within_ceiling": true
+    },
+    "net_operational_recourse_eur": 873896422.5543851,
+    "path": "data/SRP1/Results/P515S56/ev_harness_v1/smoke/campaign_s56evh_v1_smoke/evals/1933e753d4bae5ab_x0/s56_cost_breakdown.json",
+    "priced_residual_pr": {
+     "label": "mixed-convention reporting field, read by no acceptance test",
+     "note": "present only on entries declaring the per-scenario coupling",
+     "value_terminal_cycle": null
+    },
+    "sha256": "a4664b8df1b3af8ce8f234a758b6691f7608a3bfdffb4f914c6ca72164c48cd7",
+    "status": "written",
+    "terminal_value_credit_eur": 0.0,
+    "total_planning_cost_eur": 873896422.5543851
+   },
+   "cycle_wall_s": [
+    26.124667167663574,
+    22.739458799362183
+   ],
+   "cycles_run": 2,
+   "derived_instance_checks_in_child": {
+    "planning_scenario_checksum_equals_declaration": true,
+    "s56_ev_planning_is_the_single_scenario_twin": true
+   },
+   "ev_injection_at_read": {
+    "assertion_post_read": {
+     "combined_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+     "expected_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+     "failures": [],
+     "n_a5_checked": 2376,
+     "n_arrays_read": 7728,
+     "n_injected_checked": 5352,
+     "n_mismatches": 0,
+     "n_network_market_arrays_bad": 0,
+     "ok": true,
+     "point": "post_read",
+     "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729",
+     "scenario_dimensions": {
+      "num_market_scenarios": 1,
+      "num_oper_scenarios": {
+       "DSO5": 1,
+       "DSO7": 1,
+       "DSO9": 1,
+       "TSO": 1
+      }
+     }
+    },
+    "hook_calls": 1,
+    "inject_counts": [
+     {
+      "n_a5_kept": 2376,
+      "n_injected": 5352
+     }
+    ],
+    "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729"
+   },
+   "eval_dir": "data/SRP1/Results/P515S56/ev_harness_v1/smoke/campaign_s56evh_v1_smoke/evals/1933e753d4bae5ab_x0",
+   "exit_code": 0,
+   "hook_order": [
+    "ev_assertion",
+    "esso_settings_and_staged_write",
+    "flex_price_multiplier"
+   ],
+   "multiscenario_terminal_status": "written",
+   "peak_rss": {
+    "child_python_process_ru_maxrss": 2549202944,
+    "production_state_peak_rss_ru_maxrss": 2179891200,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)",
+    "solver_subprocesses_max_ru_maxrss": 51249152,
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)"
+   },
+   "rss_bytes_per_cycle": [
+    2038956032,
+    2179743744
+   ],
+   "solve_profile": {
+    "base_solves": 153,
+    "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+    "expected_solves": 153,
+    "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+    "identity_holds": true,
+    "n_days": 4,
+    "n_dso": 3,
+    "n_esso_nodes": 3,
+    "n_years": 3,
+    "observed": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 153,
+     "permitted_solve": 153
+    },
+    "reconciliation_supported": true,
+    "recovered_only_identity": {
+     "expected": 153,
+     "holds": true,
+     "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+    },
+    "retry_solves_credited": 0,
+    "rounds": 3,
+    "rounds_note": "one initialization round + cycles_run ADMM cycles",
+    "solves_per_cycle": 51
+   },
+   "status": "not_certified",
+   "wall_time_s": {
+    "child_process_s": 166.64225888252258,
+    "run_admm_arm_reported_wall_clock_s": 82.15154910087585,
+    "run_admm_arm_s": 153.34596300125122
+   }
+  }
+ },
+ "finished_utc": "2026-11-23T19:58:15.017008+00:00",
+ "guards": {
+  "own": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "label": "P5.15 S56 EV harness tests (this process never solves)",
+   "verify_0": []
+  }
+ },
+ "lock_released": true,
+ "provenance": {
+  "dirty_tracked": [],
+  "git_head": "a8889d4ba7b3dc3bd9ba9dd812aef987a58d6c76",
+  "harness_sha256": "904b62980c5fd4812b635bfb9b79f2b9ccf33a2583ed1d40c936b6b33d7b298e",
+  "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "nlp_solver_path": "/usr/local/bin/ipopt",
+  "script_sha256": "e3f07e058da5af8c9c404a64fd18693f7137d0b394330a0b822d7daf7d4b0984"
+ },
+ "schema": "p515_s56_ev_harness_tests_v1_smoke",
+ "started_utc": "2026-11-23T19:52:18.076118+00:00",
+ "summary": {
+  "all_pass": false,
+  "failed": [
+   "unit: solves == declared 153 (identity holds, nothing blocked)",
+   "x0: solves == declared 153 (identity holds, nothing blocked)"
+  ],
+  "n_checks": 8,
+  "n_pass": 6
+ },
+ "wall_s": 356.9408309459686,
+ "zero_solve_verified": true
+}

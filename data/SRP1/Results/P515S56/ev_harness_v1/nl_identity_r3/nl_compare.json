@@ -1,0 +1,77 @@
+{
+ "checks": {
+  "NL identity: every TSO / DSO / ESSO block, cycles 1-2, pre == post": {
+   "detail": [],
+   "ok": true
+  },
+  "both stub runs passed their own checks": {
+   "detail": null,
+   "ok": true
+  },
+  "per-cycle diagnostics (float.hex) pre == post": {
+   "detail": null,
+   "ok": true
+  },
+  "rule-eleven checklist sections pre == post": {
+   "detail": {
+    "post": [
+     "s44_campaign_configuration_checks",
+     "s44_campaign_overrides_applied",
+     "w183a_nrf_option",
+     "w33_flex_price_multiplier",
+     "w84_convergence_depth_tail"
+    ],
+    "pre": [
+     "s44_campaign_configuration_checks",
+     "s44_campaign_overrides_applied",
+     "w183a_nrf_option",
+     "w33_flex_price_multiplier",
+     "w84_convergence_depth_tail"
+    ]
+   },
+   "ok": true
+  },
+  "the two runs used different harness files (pre != post sha256)": {
+   "detail": null,
+   "ok": true
+  }
+ },
+ "error": null,
+ "finished_utc": "2026-11-23T19:40:00.403869+00:00",
+ "guards": {
+  "own": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "label": "P5.15 S56 EV harness tests (this process never solves)",
+   "verify_0": []
+  }
+ },
+ "inputs": {
+  "post": "aad12f7ecbf34a86ac350c32a2e0561bf3f89af7193bb330176c89a22a5db864",
+  "pre": "d3ce82ae1657c52e9d569c2b295a01544f578c6d252b145fb5f6b4ead4d123ed"
+ },
+ "nl_differ": [],
+ "provenance": {
+  "dirty_tracked": [
+   " M p515_s44_campaign_harness.py"
+  ],
+  "git_head": "2c15db477072da554945f75b44255846bb545b57",
+  "harness_sha256": "8dc8eb11c7b5f7c46219c6ac296ac5f76ae65c9d464c71e526634796b39aeef2",
+  "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "nlp_solver_path": "/usr/local/bin/ipopt",
+  "script_sha256": "ba551a4d4d7cf6f290496b416d9b0eaaed8f75be05fe894691544f6be55ff8ae"
+ },
+ "schema": "p515_s56_ev_harness_tests_v1_nl_compare",
+ "started_utc": "2026-11-23T19:40:00.359325+00:00",
+ "summary": {
+  "all_pass": true,
+  "failed": [],
+  "n_checks": 5,
+  "n_pass": 5
+ },
+ "zero_solve_verified": true
+}

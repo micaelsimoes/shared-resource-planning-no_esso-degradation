@@ -1,0 +1,20 @@
+19:52:19 smoke: lock {'pid': 18787, 'campaign_id': 's56evh_v1_smoke', 'campaign_spec_sha256': '39882ca65a90d26d016e0ac8bbf5e1a84a17a47285ec52d2a2cfdfe0ada0776e', 'started_utc': '2026-11-23T19:52:19.268237+00:00'}; spec data/SRP1/Results/P515S56/ev_harness_v1/smoke/campaign_s56evh_v1_smoke/campaign_spec_s56evh_v1_smoke_39882ca6.json
+19:52:19 [S44-HARNESS] launched x0 (key dcb43218986e026f) pid=18810
+19:52:19 [S44-HARNESS] heartbeat x0: 0s cycle=None
+19:53:19 [S44-HARNESS] heartbeat x0: 60s cycle=None
+19:54:19 [S44-HARNESS] heartbeat x0: 120s cycle=2
+19:55:09 [S44-HARNESS] finished x0 pid=18810 exit=0 status=not_certified wall=170s
+19:55:14 [S44-HARNESS] launched unit (key 0998d02182570fc0) pid=19091
+19:55:19 [S44-HARNESS] heartbeat unit: 5s cycle=None
+19:56:19 [S44-HARNESS] heartbeat unit: 65s cycle=None
+19:57:19 [S44-HARNESS] heartbeat unit: 125s cycle=2
+19:58:15 [S44-HARNESS] finished unit pid=19091 exit=0 status=not_certified wall=180s
+19:58:15 PASS x0: child exit 0, 2 cycles
+19:58:15 FAIL x0: solves == declared 153 (identity holds, nothing blocked) -- {'observed': {'permitted_solve': 153, 'permitted_exec': 153, 'blocked_solve': 0, 'blocked_exec': 0}, 'identity_holds': True, 'identity': "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists", 'derivation': '(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object', 'n_dso': 3, 'n_years': 3, 'n_days': 4, 'n_esso_nodes': 3, 'solves_per_cycle': 51, 'rounds': 3, 'rounds_note': 'one initialization round + cycles_run ADMM cycles', 'base_solves': 153
+19:58:15 PASS x0: cost breakdown written, harness checks ok
+19:58:15 PASS x0: hook order EV assertion -> settings -> multiplier
+19:58:15 PASS unit: child exit 0, 2 cycles
+19:58:15 FAIL unit: solves == declared 153 (identity holds, nothing blocked) -- {'observed': {'permitted_solve': 153, 'permitted_exec': 153, 'blocked_solve': 0, 'blocked_exec': 0}, 'identity_holds': True, 'identity': "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists", 'derivation': '(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object', 'n_dso': 3, 'n_years': 3, 'n_days': 4, 'n_esso_nodes': 3, 'solves_per_cycle': 51, 'rounds': 3, 'rounds_note': 'one initialization round + cycles_run ADMM cycles', 'base_solves': 153
+19:58:15 PASS unit: cost breakdown written, harness checks ok
+19:58:15 PASS unit: hook order EV assertion -> settings -> multiplier
+19:58:15 [smoke] FAIL: 6/8 checks; failed ['unit: solves == declared 153 (identity holds, nothing blocked)', 'x0: solves == declared 153 (identity holds, nothing blocked)']; error None; zero solves True

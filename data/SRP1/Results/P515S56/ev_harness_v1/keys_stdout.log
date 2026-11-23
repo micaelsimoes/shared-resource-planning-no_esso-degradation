@@ -1,0 +1,33 @@
+19:40:04 PASS keys: the only shared eval keys are the declared-default groups (none / legacy / tv off / 1e3) and 1e4 == 10000
+19:40:04 PASS keys: number of distinct eval keys == settings x plans x flex minus the declared-default merges
+19:40:04 PASS keys: a keyed S56 eval key never equals the bare candidate key or the base key
+19:40:04 PASS determinism: the key table recomputed in a second process is identical
+19:40:04 PASS staged: permutation / int-or-str keys / explicit zeros give one canonical form and one key
+19:40:04 PASS staged: canonical is the lattice schema v2 with every node-year
+19:40:04 PASS staged: a single-cohort plan in schema v2 never shares the single-year key
+19:40:04 PASS single-year keys: canonical_candidate + candidate_key pre == post on 30 candidates x 3 years
+19:40:04 PASS C5 refusal: duration_above_4h
+19:40:04 PASS C5 refusal: duration_below_2h
+19:40:04 PASS C5 refusal: p0_iff_e0
+19:40:04 PASS C5 refusal: negative
+19:40:04 PASS C5 refusal: off_lattice
+19:40:04 PASS C5 refusal: unknown_year
+19:40:04 PASS C5 refusal: unknown_node
+19:40:04 PASS C5 refusal: cumulative_max_capacity
+19:40:04 PASS C5 refusal: budget
+19:40:04 PASS C5 refusal reasons name their class (duration / bound / budget)
+19:40:04 PASS freeze refusal: ev_wrong_checksum
+19:40:04 PASS freeze refusal: ev_wrong_sha
+19:40:04 PASS freeze refusal: ev_without_derived
+19:40:04 PASS freeze refusal: staged_with_candidate
+19:40:04 PASS freeze refusal: staged_with_year
+19:40:04 PASS freeze refusal: staged_inadmissible
+19:40:04 PASS freeze refusal: cohort_unknown_value
+19:40:04 PASS freeze refusal: tv_non_bool
+19:40:04 PASS freeze refusal: slack_non_positive
+19:40:04 PASS freeze refusal: mid_soh_params_file
+19:40:04 PASS accepted: spec and keyed entries carry the S56 label; the plain entry does not
+19:40:04 PASS accepted: the entry records every key, the ESS params check and I(x)
+19:40:04 PASS accepted: eval key == the key table (same settings, flex 2, V-1, EV derived)
+19:40:04 PASS accepted: the plain entry has no S56 field
+19:40:04 [keys] PASS: 32/32 checks; failed []; error None; zero solves True

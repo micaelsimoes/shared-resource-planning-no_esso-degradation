@@ -1,0 +1,334 @@
+{
+ "assertion_tests": {
+  "ev_post_read": {
+   "combined_scenario_checksum": "d0d3a6000bff0841d1f9c234d517e99b5972d4e7fef55ddb316cb85a40885557",
+   "expected_scenario_checksum": "d0d3a6000bff0841d1f9c234d517e99b5972d4e7fef55ddb316cb85a40885557",
+   "failures": [],
+   "mismatches_first": [],
+   "n_a5_checked": 3960,
+   "n_arrays_read": 12880,
+   "n_injected_checked": 8920,
+   "n_mismatches": 0,
+   "n_network_market_arrays_bad": 0,
+   "ok": true,
+   "point": "post_read",
+   "profiles_sha256": "8449163988f80ba7358df41dc9e86a8123dafee99eea918b4157d37dca151954",
+   "scenario_dimensions": {
+    "num_market_scenarios": 1,
+    "num_oper_scenarios": {
+     "DSO5": 1,
+     "DSO7": 1,
+     "DSO9": 1,
+     "TSO": 1
+    }
+   }
+  },
+  "ev_read_wrong_checksum": {
+   "error": "EV injection assertion FAILED: combined scenario checksum d0d3a6000bff0841d1f9c234d517e99b5972d4e7fef55ddb316cb85a40885557 != expected 0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+   "raised": true
+  },
+  "ev_without_injection": {
+   "error": "EV injection assertion FAILED: 8200 of 12880 arrays differ from the stored EV profiles (first: {'key': 'market|energy|2025|Spring', 'what': 'array != stored mean', 'shape': [1, 24], 'max_abs_diff': 23.183297289400485}) | 160 network-block market arrays differ from the stored means (first ['TSO|2025|Spring|cost_energy_p', 'TSO|2025|Spring|cost_flex', 'TSO|2025|Summer|cost_energy_p'])",
+   "raised": true
+  },
+  "sp_read": {
+   "error": "EV injection assertion FAILED: scenario dimensions are not 1: {'num_market_scenarios': 3, 'num_oper_scenarios': {'TSO': 3, 'DSO5': 3, 'DSO7': 3, 'DSO9': 3}} | planning.prob_market_scenarios is not [1.0] in every year | 80 network blocks without [1.0] probabilities (first ['TSO|2025|Spring', 'TSO|2025|Summer', 'TSO|2025|Autumn']) | 12880 of 12880 arrays differ from the stored EV profiles (first: {'key': 'market|energy|2025|Spring', 'what': 'array != stored mean', 'shape': [3, 24], 'max_abs_diff': None}) | 160 network-block market arrays differ from the stored means (first ['TSO|2025|Spring|cost_energy_p', 'TSO|2025|Spring|cost_flex', 'TSO|2025|Summer|cost_energy_p'])",
+   "raised": true
+  },
+  "srp1_plain": {
+   "error": "EV injection assertion FAILED: key set differs: read 7728 (distinct 7728), file 8920 + 3960 A5; only in the read ['DSO5|2030|Autumn|gen|0|0|pg', 'DSO5|2030|Autumn|gen|0|0|qg', 'DSO5|2030|Autumn|gen|1|2|pg'], only in the file ['DSO5|2028|Autumn|gen|0|0|pg', 'DSO5|2028|Autumn|gen|0|0|qg', 'DSO5|2028|Autumn|gen|1|2|pg'] | 1640 of 2576 arrays differ from the stored EV profiles (first: {'key': 'market|energy|2025|Spring', 'what': 'array != stored mean', 'shape': [1, 24], 'max_abs_diff': 23.183297289400485}) | 96 network-block market arrays differ from the stored means (first ['TSO|2025|Spring|cost_energy_p', 'TSO|2025|Spring|cost_flex', 'TSO|2025|Summer|cost_energy_p'])",
+   "raised": true
+  }
+ },
+ "audit_A_cross_check": {
+  "audit_A_file": "data/SRP1/Results/P515S56/input_audit_A/instance/SRP1__s56_3x3_ev_profiles.json",
+  "audit_A_sha256": "23570acbe90a6d8ee15f86572a7744d091efeba2be9bdbfb177145d92f1f3255",
+  "n_audit_A_arrays": 12880,
+  "n_bitwise_equal": 8920,
+  "n_common": 8920,
+  "n_new_arrays": 8920,
+  "n_only_in_audit_A": 3960,
+  "only_in_audit_A": [
+   "DSO5|2025|Autumn|load|0|flex_q_down",
+   "DSO5|2025|Autumn|load|0|flex_q_up",
+   "DSO5|2025|Autumn|load|10|flex_q_down",
+   "DSO5|2025|Autumn|load|10|flex_q_up",
+   "DSO5|2025|Autumn|load|11|flex_q_down",
+   "DSO5|2025|Autumn|load|11|flex_q_up",
+   "DSO5|2025|Autumn|load|12|flex_q_down",
+   "DSO5|2025|Autumn|load|12|flex_q_up",
+   "DSO5|2025|Autumn|load|13|flex_q_down",
+   "DSO5|2025|Autumn|load|13|flex_q_up",
+   "DSO5|2025|Autumn|load|14|flex_q_down",
+   "DSO5|2025|Autumn|load|14|flex_q_up",
+   "DSO5|2025|Autumn|load|15|flex_q_down",
+   "DSO5|2025|Autumn|load|15|flex_q_up",
+   "DSO5|2025|Autumn|load|16|flex_q_down",
+   "DSO5|2025|Autumn|load|16|flex_q_up",
+   "DSO5|2025|Autumn|load|17|flex_q_down",
+   "DSO5|2025|Autumn|load|17|flex_q_up",
+   "DSO5|2025|Autumn|load|18|flex_q_down",
+   "DSO5|2025|Autumn|load|18|flex_q_up"
+  ]
+ },
+ "builder_functions": "p515_s56_build_instances.production_read; p515_s56_expected_profiles.snapshot / compute_means / joint_mean_check / walk_compare",
+ "checks": {
+  "Audit A five-block EV means == the new means on every common key (bitwise)": {
+   "detail": {
+    "audit_A_file": "data/SRP1/Results/P515S56/input_audit_A/instance/SRP1__s56_3x3_ev_profiles.json",
+    "audit_A_sha256": "23570acbe90a6d8ee15f86572a7744d091efeba2be9bdbfb177145d92f1f3255",
+    "n_audit_A_arrays": 12880,
+    "n_bitwise_equal": 8920,
+    "n_common": 8920,
+    "n_new_arrays": 8920,
+    "n_only_in_audit_A": 3960,
+    "only_in_audit_A": [
+     "DSO5|2025|Autumn|load|0|flex_q_down",
+     "DSO5|2025|Autumn|load|0|flex_q_up",
+     "DSO5|2025|Autumn|load|10|flex_q_down",
+     "DSO5|2025|Autumn|load|10|flex_q_up",
+     "DSO5|2025|Autumn|load|11|flex_q_down",
+     "DSO5|2025|Autumn|load|11|flex_q_up",
+     "DSO5|2025|Autumn|load|12|flex_q_down",
+     "DSO5|2025|Autumn|load|12|flex_q_up",
+     "DSO5|2025|Autumn|load|13|flex_q_down",
+     "DSO5|2025|Autumn|load|13|flex_q_up",
+     "DSO5|2025|Autumn|load|14|flex_q_down",
+     "DSO5|2025|Autumn|load|14|flex_q_up",
+     "DSO5|2025|Autumn|load|15|flex_q_down",
+     "DSO5|2025|Autumn|load|15|flex_q_up",
+     "DSO5|2025|Autumn|load|16|flex_q_down",
+     "DSO5|2025|Autumn|load|16|flex_q_up",
+     "DSO5|2025|Autumn|load|17|flex_q_down",
+     "DSO5|2025|Autumn|load|17|flex_q_up",
+     "DSO5|2025|Autumn|load|18|flex_q_down",
+     "DSO5|2025|Autumn|load|18|flex_q_up"
+    ]
+   },
+   "ok": true
+  },
+  "EV case == W89 case except the five scenario counts": {
+   "detail": null,
+   "ok": true
+  },
+  "EV case ESS params file is not the 'mid' file": {
+   "detail": "SRP1_ESS_Params.json",
+   "ok": true
+  },
+  "EV case keeps the first year 2025 and the five-block Years (no derived instance drops the first year)": {
+   "detail": {
+    "2025": 3,
+    "2028": 3,
+    "2031": 3,
+    "2034": 3,
+    "2037": 3
+   },
+   "ok": true
+  },
+  "EV case read without injection: checksum differs from the EV checksum": {
+   "detail": "9f7837e23fb9df693f6abe47993cd266b5df71911aba6f35742e312e52412336",
+   "ok": true
+  },
+  "EV checksum differs from the SP checksum and the SRP1 canonical": {
+   "detail": "d0d3a6000bff0841d1f9c234d517e99b5972d4e7fef55ddb316cb85a40885557",
+   "ok": true
+  },
+  "EV read: checksum-point arrays == means (bitwise)": {
+   "detail": null,
+   "ok": true
+  },
+  "EV read: injected every non-A5 array once, kept every A5 array": {
+   "detail": [
+    {
+     "n_a5_kept": 3960,
+     "n_injected": 8920
+    }
+   ],
+   "ok": true
+  },
+  "EV read: post-read arrays == mean of the SP post-read arrays (bitwise)": {
+   "detail": null,
+   "ok": true
+  },
+  "EV twin: 20 (year, day) blocks per network, 83 solves per cycle": {
+   "detail": {
+    "days": {
+     "Autumn": 91,
+     "Spring": 92,
+     "Summer": 91,
+     "Winter": 91
+    },
+    "declared_solves_per_cycle": 83,
+    "expected_block_counts": {
+     "dso_blocks": 60,
+     "esso_models": 3,
+     "network_blocks": 80,
+     "solves_per_cycle": 83,
+     "tso_blocks": 20
+    },
+    "years": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    }
+   },
+   "ok": true
+  },
+  "EV vs SP: every non-scenario item identical (object walk, declared exclusions only)": {
+   "detail": {
+    "diffs_first": [],
+    "n_diffs": 0
+   },
+   "ok": true
+  },
+  "EVI.array_refs == audit A _array_refs (keys, order) on the SP read": {
+   "detail": null,
+   "ok": true
+  },
+  "SP grid: years 2025/2028/2031/2034/2037 x 3, 4 days, 3 x 3 scenarios": {
+   "detail": {
+    "years": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    }
+   },
+   "ok": true
+  },
+  "SP read checksum == W89 declaration": {
+   "detail": {
+    "declared": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+    "read": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193"
+   },
+   "ok": true
+  },
+  "SP: the only arrays production changes after the checksum point are TSO ADN pd / qd": {
+   "detail": [
+    "TSO|2025|Spring|load|0|pd",
+    "TSO|2025|Spring|load|0|qd",
+    "TSO|2025|Spring|load|1|pd",
+    "TSO|2025|Spring|load|1|qd",
+    "TSO|2025|Spring|load|2|pd",
+    "TSO|2025|Spring|load|2|qd",
+    "TSO|2025|Summer|load|0|pd",
+    "TSO|2025|Summer|load|0|qd",
+    "TSO|2025|Summer|load|1|pd",
+    "TSO|2025|Summer|load|1|qd"
+   ],
+   "ok": true
+  },
+  "W89 case sha256 == its declaration": {
+   "detail": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+   "ok": true
+  },
+  "assertion RAISES on a plain SRP1.json read": {
+   "detail": null,
+   "ok": true
+  },
+  "assertion RAISES on the EV case read without injection": {
+   "detail": null,
+   "ok": true
+  },
+  "assertion RAISES on the EV read with the SP checksum expected": {
+   "detail": null,
+   "ok": true
+  },
+  "assertion RAISES on the SP read": {
+   "detail": null,
+   "ok": true
+  },
+  "guard audit_A_module verify(0) == []": {
+   "detail": [],
+   "ok": true
+  },
+  "guard builder_module verify(0) == []": {
+   "detail": [],
+   "ok": true
+  },
+  "in-child assertion PASSES at the checksum point": {
+   "detail": null,
+   "ok": true
+  },
+  "in-child assertion PASSES on the EV read (post_read, EV checksum)": {
+   "detail": null,
+   "ok": true
+  },
+  "joint 9-pair mean == factorized mean (<= 1e-12 x largest |mean|)": {
+   "detail": 5.684341886080802e-14,
+   "ok": true
+  },
+  "post-read expectation differs from the mean only at TSO ADN pd / qd (production zeroing)": {
+   "detail": null,
+   "ok": true
+  },
+  "profiles file round trip bitwise (every injected array)": {
+   "detail": null,
+   "ok": true
+  }
+ },
+ "error": null,
+ "finished_utc": "2026-11-23T19:35:07.966321+00:00",
+ "guards": {
+  "audit_A_module": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "label": "P5.15 S56 input audit A (never solves)",
+   "verify_0": []
+  },
+  "builder_module": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "label": "P5.15 S56 build instances (never solves)",
+   "verify_0": []
+  },
+  "own": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "label": "P5.15 S56 EV harness tests (this process never solves)",
+   "verify_0": []
+  }
+ },
+ "provenance": {
+  "dirty_tracked": [
+   " M p515_s44_campaign_harness.py"
+  ],
+  "git_head": "2c15db477072da554945f75b44255846bb545b57",
+  "harness_sha256": "8dc8eb11c7b5f7c46219c6ac296ac5f76ae65c9d464c71e526634796b39aeef2",
+  "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "nlp_solver_path": "/usr/local/bin/ipopt",
+  "script_sha256": "c2128a986f845be1409fbea8ce4e127160d261864355729849b28d1c49daa667"
+ },
+ "record": {
+  "all_checks_pass": true,
+  "case_path": "data/SRP1/Results/P515S56/ev_harness_v1/five_block_ev/SRP1__s56_five_block_3x3_ev.json",
+  "case_sha256": "61199eb09a78abac8684fbb5bf983a205e0bac0ce5457b727019905949f07164",
+  "profiles_path": "data/SRP1/Results/P515S56/ev_harness_v1/five_block_ev/SRP1__s56_five_block_3x3_ev_profiles.json",
+  "profiles_sha256": "8449163988f80ba7358df41dc9e86a8123dafee99eea918b4157d37dca151954",
+  "scenario_checksum": "d0d3a6000bff0841d1f9c234d517e99b5972d4e7fef55ddb316cb85a40885557"
+ },
+ "schema": "p515_s56_ev_harness_tests_v1_build_ev_five_block",
+ "started_utc": "2026-11-23T19:34:17.830444+00:00",
+ "summary": {
+  "all_pass": true,
+  "failed": [],
+  "n_checks": 27,
+  "n_pass": 27
+ },
+ "zero_solve_verified": true
+}

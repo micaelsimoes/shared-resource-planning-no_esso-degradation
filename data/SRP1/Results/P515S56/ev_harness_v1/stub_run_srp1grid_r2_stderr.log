@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s56_ev_harness_tests.py", line 1197, in stub_run
+    hook(planning=planning, sed=sed, candidate=candidate, report=report)
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py", line 5374, in hook
+    holder['s56_ev_plan_applied'] = apply_s56_ev_plan_settings(planning, sed, candidate, report, s56_ev_plan,
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py", line 2321, in apply_s56_ev_plan_settings
+    floor_rows, _counts = G._identify_soh_floor_rows(probes)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_g_g1_g4_admm_gates.py", line 3401, in _identify_soh_floor_rows
+    raise RuntimeError(
+RuntimeError: S35REF floor identification FAILED node=5 y_inv=0 y=0: floor row idx=3 body vars=[], expected exactly [es_soh_per_unit_cumul[0,0]]

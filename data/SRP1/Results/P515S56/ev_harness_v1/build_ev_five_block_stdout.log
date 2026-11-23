@@ -1,0 +1,28 @@
+19:34:17 PASS W89 case sha256 == its declaration
+19:34:30 PASS SP read checksum == W89 declaration
+19:34:30 PASS SP grid: years 2025/2028/2031/2034/2037 x 3, 4 days, 3 x 3 scenarios
+19:34:30 PASS EVI.array_refs == audit A _array_refs (keys, order) on the SP read
+19:34:30 PASS joint 9-pair mean == factorized mean (<= 1e-12 x largest |mean|)
+19:34:30 PASS SP: the only arrays production changes after the checksum point are TSO ADN pd / qd
+19:34:30 PASS post-read expectation differs from the mean only at TSO ADN pd / qd (production zeroing)
+19:34:30 PASS EV case == W89 case except the five scenario counts
+19:34:30 PASS EV case keeps the first year 2025 and the five-block Years (no derived instance drops the first year)
+19:34:30 PASS EV case ESS params file is not the 'mid' file
+19:34:30 PASS profiles file round trip bitwise (every injected array)
+19:34:30 PASS Audit A five-block EV means == the new means on every common key (bitwise)
+19:34:43 PASS EV read: injected every non-A5 array once, kept every A5 array
+19:34:43 PASS EV read: checksum-point arrays == means (bitwise)
+19:34:43 PASS EV read: post-read arrays == mean of the SP post-read arrays (bitwise)
+19:34:43 PASS EV checksum differs from the SP checksum and the SRP1 canonical
+19:34:43 PASS in-child assertion PASSES at the checksum point
+19:34:43 PASS in-child assertion PASSES on the EV read (post_read, EV checksum)
+19:34:43 PASS EV vs SP: every non-scenario item identical (object walk, declared exclusions only)
+19:34:43 PASS assertion RAISES on the EV read with the SP checksum expected
+19:34:43 PASS assertion RAISES on the SP read
+19:34:56 PASS EV case read without injection: checksum differs from the EV checksum
+19:34:56 PASS assertion RAISES on the EV case read without injection
+19:35:07 PASS assertion RAISES on a plain SRP1.json read
+19:35:07 PASS EV twin: 20 (year, day) blocks per network, 83 solves per cycle
+19:35:07 PASS guard builder_module verify(0) == []
+19:35:07 PASS guard audit_A_module verify(0) == []
+19:35:07 [build_ev_five_block] PASS: 27/27 checks; failed []; error None; zero solves True
