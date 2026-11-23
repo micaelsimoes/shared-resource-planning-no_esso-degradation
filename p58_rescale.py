@@ -117,13 +117,49 @@ def patched_admm_objectives(record=None):
                     applied[f'DSO{node_id}|{year}|{day}'] = rescale_block(
                         models[node_id][year][day])
 
+    # P5.15 S56 step 1 completion: the per-scenario interface coupling (`_wire_per_scenario_interface_coupling`, called
+    # by `_run_operational_planning` only when the option is ACTIVE) adds its deviation augmented / proximal terms to
+    # `admm_objective` AFTER `update_*_to_admm` -- i.e. after the rescaled snapshot above was taken, onto the objective
+    # this wrapper had deactivated -- so without the re-snapshot below the solved objective would carry no deviation
+    # term at all (verified zero-solve: `p515_s56_step1_completion_checks.py`, the active objective did not reference
+    # `dual_interface_dev_p_req`). Re-taken on every network block after the wiring, then verified: each block's
+    # active rescaled objective must be `scale * <the current admm_objective expression>`. Never called with the
+    # option off (production calls the wiring only when active), so every other run is unchanged.
+    original_wire = getattr(srp, '_wire_per_scenario_interface_coupling', None)
+
+    def patched_wire(planning_problem, tso_model, dso_models, consensus_vars, dual_vars, admm_parameters):
+        original_wire(planning_problem, tso_model, dso_models, consensus_vars, dual_vars, admm_parameters)
+        blocks = []
+        network = planning_problem.transmission_network
+        for year in network.years:
+            for day in network.days:
+                blocks.append((f'TSO|{year}|{day}', tso_model[year][day]))
+        for node_id, dso in sorted(planning_problem.distribution_networks.items()):
+            for year in dso.years:
+                for day in dso.days:
+                    blocks.append((f'DSO{node_id}|{year}|{day}', dso_models[node_id][year][day]))
+        stale = []
+        for key, block in blocks:
+            applied[key] = rescale_block(block)
+            obj = block.component(RESCALED_OBJECTIVE)
+            if obj is None or not obj.active or block.admm_objective.active or obj.expr.args[1] is not \
+                    block.admm_objective.expr:
+                stale.append(key)
+        if stale:
+            raise RuntimeError(f'p58 rescaled objective does not carry the per-scenario coupling terms on {stale[:5]} '
+                               f'({len(stale)} blocks)')
+
     srp.update_transmission_model_to_admm = patched_tso
     srp.update_distribution_models_to_admm = patched_dso
+    if original_wire is not None:
+        srp._wire_per_scenario_interface_coupling = patched_wire
     try:
         yield applied
     finally:
         srp.update_transmission_model_to_admm = original_tso
         srp.update_distribution_models_to_admm = original_dso
+        if original_wire is not None:
+            srp._wire_per_scenario_interface_coupling = original_wire
 
 
 # ===========================================================================

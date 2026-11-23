@@ -5285,6 +5285,38 @@ def _s38_build_probe_tso_model(eval_id, tau_value):
     return planning, tso_model
 
 
+def _s56_pf_deviation_sumsq(planning_problem, tso_model, consensus_vars, tso_proximal_enabled):
+    """P5.15 S56 step 1 completion: the per-scenario DEVIATION channel's omega-weighted contributions to the PF Boyd
+    sums of squares, reproduced (not called -- production exposes no per-entry accessor) from the deviation stores
+    `consensus_vars['interface_dev']` with the expectation channel's own mapping, each term x omega_s (the TN block's
+    market x operation probabilities): r = (x^D_s - z^T_s) / rating, s = sqrt(rho_pf^2 + gamma_pf^2)
+    (z^T_s - z^T_s,prev) / rating, kinds 'p' and 'q' (V is not part of this PF capture). Read-only. Returns
+    (sumsq_r, sumsq_s)."""
+    store = consensus_vars['interface_dev']
+    pairs = [tuple(pair) for pair in store['meta']['scenarios']]
+    kinds = [k for k in ('p', 'q') if k in store['meta']['kinds']]
+    sumsq_r, sumsq_s = 0.0, 0.0
+    for node_id in planning_problem.active_distribution_network_nodes:
+        for year in planning_problem.years:
+            for day in planning_problem.days:
+                network = planning_problem.transmission_network.network[year][day]
+                rating = planning_problem.distribution_networks[node_id].network[year][day].get_interface_branch_rating()
+                rho_pf = pe.value(tso_model[year][day].rho_pf)
+                gamma_pf = pe.value(tso_model[year][day].prox_gamma_pf) if tso_proximal_enabled else 0.0
+                for kind in kinds:
+                    x_all = store['dso']['current'][node_id][year][day][kind]
+                    z_all = store['tso']['current'][node_id][year][day][kind]
+                    z_prev_all = store['tso']['prev'][node_id][year][day][kind]
+                    for k, (s_m, s_o) in enumerate(pairs):
+                        omega = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+                        for p in range(planning_problem.num_instants):
+                            r = (x_all[k][p] - z_all[k][p]) / rating
+                            dz = (z_all[k][p] - z_prev_all[k][p]) / rating
+                            sumsq_r += omega * r ** 2
+                            sumsq_s += omega * (math.sqrt(rho_pf ** 2 + gamma_pf ** 2) * dz) ** 2
+    return sumsq_r, sumsq_s
+
+
 @contextmanager
 def s38_pf_capture_hooks(recourse_jump_path, ess_stride_path, floor_sidecar_path,
                           pf_stride_path, floor_rows_by_node, stride=1):
@@ -5366,26 +5398,64 @@ def s38_pf_capture_hooks(recourse_jump_path, ess_stride_path, floor_sidecar_path
             reconstructed_s = math.sqrt(sumsq_s)
             production_r = result['pf']['r']
             production_s = result['pf']['s']
-            rel_err_r = (abs(reconstructed_r - production_r) / abs(production_r)
-                        if production_r else abs(reconstructed_r - production_r))
-            rel_err_s = (abs(reconstructed_s - production_s) / abs(production_s)
-                        if production_s else abs(reconstructed_s - production_s))
+            # P5.15 S56 step 1 completion: with the per-scenario interface coupling wired, production's PF r / s are
+            # the omega-weighted norms r^2 = rbar^2 + sum_s omega_s (r^d_s)^2 and it records both parts
+            # (`r_expectation_part`, ...). The entries above are the EXPECTATION channel, so they are compared with
+            # the expectation part; the deviation part is reproduced independently from the deviation stores
+            # (`_s56_pf_deviation_sumsq`) and compared with production's; and production's total is checked as the
+            # composition of its two parts. Without the coupling (no part keys) every line below is as before.
+            coupled = 'r_expectation_part' in result['pf']
+            compared_r = result['pf']['r_expectation_part'] if coupled else production_r
+            compared_s = result['pf']['s_expectation_part'] if coupled else production_s
+            rel_err_r = (abs(reconstructed_r - compared_r) / abs(compared_r)
+                        if compared_r else abs(reconstructed_r - compared_r))
+            rel_err_s = (abs(reconstructed_s - compared_s) / abs(compared_s)
+                        if compared_s else abs(reconstructed_s - compared_s))
             identity_holds = bool(rel_err_r <= 1e-9 and rel_err_s <= 1e-9)
+            coupled_fields = None
+            if coupled:
+                dev_sumsq_r, dev_sumsq_s = _s56_pf_deviation_sumsq(planning_problem, tso_model, consensus_vars,
+                                                                   tso_proximal_enabled)
+                coupled_fields = {
+                    'compared_with': 'production expectation part (per-scenario interface coupling wired)',
+                    'production_boyd_pf_r_expectation_part': compared_r,
+                    'production_boyd_pf_s_expectation_part': compared_s,
+                    'production_boyd_pf_r_deviation_part': result['pf']['r_deviation_part'],
+                    'production_boyd_pf_s_deviation_part': result['pf']['s_deviation_part'],
+                    'reconstructed_r_deviation_part': math.sqrt(dev_sumsq_r),
+                    'reconstructed_s_deviation_part': math.sqrt(dev_sumsq_s),
+                    'composed_r': math.sqrt(compared_r ** 2 + result['pf']['r_deviation_part'] ** 2),
+                    'composed_s': math.sqrt(compared_s ** 2 + result['pf']['s_deviation_part'] ** 2),
+                }
+                for name, a, b in (
+                        ('rel_err_r_deviation_part', coupled_fields['reconstructed_r_deviation_part'],
+                         coupled_fields['production_boyd_pf_r_deviation_part']),
+                        ('rel_err_s_deviation_part', coupled_fields['reconstructed_s_deviation_part'],
+                         coupled_fields['production_boyd_pf_s_deviation_part']),
+                        ('rel_err_r_composition', coupled_fields['composed_r'], production_r),
+                        ('rel_err_s_composition', coupled_fields['composed_s'], production_s)):
+                    coupled_fields[name] = abs(a - b) / abs(b) if b else abs(a - b)
+                identity_holds = bool(identity_holds and all(coupled_fields[k] <= 1e-9 for k in (
+                    'rel_err_r_deviation_part', 'rel_err_s_deviation_part', 'rel_err_r_composition',
+                    'rel_err_s_composition')))
             if not identity_holds:
                 raise RuntimeError(
                     f'S38 PF entry-capture identity FAILED at cycle {cycle}: reconstructed '
                     f'r={reconstructed_r} (production boyd_pf_r={production_r}, rel_err={rel_err_r}); '
                     f'reconstructed s={reconstructed_s} (production boyd_pf_s={production_s}, '
-                    f'rel_err={rel_err_s})')
+                    f'rel_err={rel_err_s})' + (f'; per-scenario coupling: {coupled_fields}' if coupled else ''))
 
+            line = {
+                'cycle': cycle, 'stride': stride,
+                'reconstructed_r': reconstructed_r, 'reconstructed_s': reconstructed_s,
+                'production_boyd_pf_r': production_r, 'production_boyd_pf_s': production_s,
+                'rel_err_r': rel_err_r, 'rel_err_s': rel_err_s, 'identity_holds': identity_holds,
+                'entries': entries,
+            }
+            if coupled_fields is not None:
+                line.update(coupled_fields)
             with open(pf_stride_path, 'a') as handle:
-                handle.write(GRIO.dumps({
-                    'cycle': cycle, 'stride': stride,
-                    'reconstructed_r': reconstructed_r, 'reconstructed_s': reconstructed_s,
-                    'production_boyd_pf_r': production_r, 'production_boyd_pf_s': production_s,
-                    'rel_err_r': rel_err_r, 'rel_err_s': rel_err_s, 'identity_holds': identity_holds,
-                    'entries': entries,
-                }, default=GRIO.json_default) + '\n')
+                handle.write(GRIO.dumps(line, default=GRIO.json_default) + '\n')
 
             return result
 

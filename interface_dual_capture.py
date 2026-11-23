@@ -64,6 +64,29 @@ def read_duals(dual_vars, blocks):
     return out
 
 
+# P5.15 S56 step 1 completion: with the per-scenario interface coupling wired, production also holds the DEVIATION
+# channel's duals, `dual_vars['interface_dev'][agent]['current'][node_id][year][day][kind][scenario][period]` (kind 'p',
+# 'q', and 'v' under the per-scenario voltage mode). They are recorded beside the expectation channel's, as
+# `lambda_dev_<kind>_<agent>` (per block: one list per scenario of `n_periods` floats; the scenario order is the
+# header's `deviation_channel.scenarios`). Absent store -> nothing is added (every other record keeps its exact form).
+DEVIATION_STORE = 'interface_dev'
+
+
+def read_deviation_duals(dual_vars, blocks):
+    """The deviation channel's duals (new lists of Python floats), or {} when the coupling is not wired. Pure read."""
+    store = dual_vars.get(DEVIATION_STORE) if isinstance(dual_vars, dict) else None
+    if store is None:
+        return {}
+    out = {}
+    for agent in ('tso', 'dso'):
+        cur = store[agent]['current']
+        first = cur[blocks[0][0]][blocks[0][1]][blocks[0][2]]
+        for kind in first:
+            out[f'lambda_dev_{kind}_{agent}'] = [[[float(v) for v in per_scenario] for per_scenario in
+                                                  cur[node_id][year][day][kind]] for node_id, year, day in blocks]
+    return out
+
+
 def read_metadata(planning_problem, tso_model, dso_models, admm_parameters, blocks):
     """The scaling metadata per block (pure reads). `admm_objective_scale` is read with pyomo's value(); its
     mutability is recorded (a non-mutable Param cannot change)."""
@@ -150,7 +173,7 @@ class InterfaceDualCapture:
         self.bytes_written += len(text.encode())
         return len(text.encode())
 
-    def on_boyd(self, planning_problem, tso_model, dso_models, dual_vars, admm_parameters):
+    def on_boyd(self, planning_problem, tso_model, dso_models, dual_vars, admm_parameters, consensus_vars=None):
         """Called after production's get_admm_boyd_residual_metrics returned. Never raises."""
         if self.closed:
             return
@@ -171,8 +194,18 @@ class InterfaceDualCapture:
                                           'get_admm_boyd_residual_metrics (after the cycle\'s dual updates, before AA)'),
                                'metadata': read_metadata(planning_problem, tso_model, dso_models, admm_parameters,
                                                          self.blocks)}
+                deviation_store = dual_vars.get(DEVIATION_STORE) if isinstance(dual_vars, dict) else None
+                if deviation_store is not None:  # S56 step 1 completion: only with the per-scenario coupling wired
+                    self.header['deviation_channel'] = {
+                        'source': ("dual_vars['interface_dev'][agent]['current'][node_id][year][day][kind][scenario]"
+                                   "[period]"),
+                        'fields': sorted(read_deviation_duals(dual_vars, self.blocks)),
+                        'layout': 'per block (header blocks order): one list per scenario of n_periods floats',
+                        'scenarios': (((consensus_vars or {}).get(DEVIATION_STORE) or {}).get('meta') or {}).get(
+                            'scenarios')}
                 self._write(self.header)
             line.update(read_duals(dual_vars, self.blocks))
+            line.update(read_deviation_duals(dual_vars, self.blocks))
             line['captured'] = True
         except Exception as error:  # noqa: BLE001 -- write-only capture: recorded, never raised
             line['error'] = f'{type(error).__name__}: {error}'
@@ -203,7 +236,8 @@ def make_wrapper(capture, original):
     def w_boyd(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters):
         result = original(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars,
                           admm_parameters)
-        capture.on_boyd(planning_problem, tso_model, dso_models, dual_vars, admm_parameters)
+        capture.on_boyd(planning_problem, tso_model, dso_models, dual_vars, admm_parameters,
+                        consensus_vars=consensus_vars)
         return result
     return w_boyd
 

@@ -779,6 +779,9 @@ PER_CYCLE_INTERFACE_COUPLING_FIELDS = (
     'scenario_mismatch_q_rms_mvar', 'scenario_mismatch_v_max_pu', 'scenario_mismatch_v_rms_pu',
     'scenario_mismatch_by_dn', 'priced_residual_pr', 'priced_residual_pr_abs', 'priced_residual_price_part',
     'priced_residual_dual_part', 'gross_operational_cost_settlement_excluded_in_full',
+    # S56 step 1 completion (author decision 6): the primary net form and today's form, beside it
+    'net_operational_recourse_settlement_excluded_in_full', 'gross_operational_cost_contracted_excluded',
+    'net_operational_recourse_contracted_excluded',
 )
 
 
@@ -2378,6 +2381,18 @@ def build_evaluation_record(*, spec, spec_path, spec_sha256, entry, report, comp
         'wall_time_s': wall,
         'peak_rss': peak_rss,
     }
+    if rc.get('q_convention') == 'settlement_excluded_in_full':
+        # S56 step 1 completion (author decision 6): per-scenario TN-DN coupling wired -- the primary Q excludes the
+        # complete settlement; today's form beside it. Absent otherwise, so every other record keeps its format.
+        record['objective_convention'] = (
+            'gross_operational_cost: per-scenario TN-DN coupling wired -- the COMPLETE internal TN-DN settlement '
+            'excluded (author decision 6, 2026-11-21; the Addendum 38 (C) deviation-as-economic-cost treatment '
+            'withdrawn in this mode); net_operational_recourse = gross minus terminal salvage credit; today\'s form '
+            '(contracted part excluded) in terminal_gross_operational_cost_contracted_excluded')
+        record['terminal_gross_operational_cost_contracted_excluded'] = rc.get(
+            'gross_operational_cost_contracted_excluded')
+        record['terminal_net_operational_recourse_contracted_excluded'] = rc.get(
+            'net_operational_recourse_contracted_excluded')
     if extra:
         record.update(extra)
     _apply_settling_resettle_status(record)
@@ -4042,6 +4057,10 @@ def multiscenario_terminal_capture(planning, models, state=None, premium=None):
         blocks += [('DSO', node_id, dn, year, day) for year in dn.years for day in dn.days]
     dispersion = srp._get_operational_interface_dispersion(planning, models)
     block_components = srp._get_operational_recourse_block_components(planning, models)
+    # S56 step 1 completion (author decision 6): with the per-scenario coupling wired production's Q excludes the
+    # WHOLE settlement (`_get_operational_recourse_block_components` subtracts part 'total'), so the per-block rebuild
+    # below subtracts the same part; otherwise the contracted part, exactly as before.
+    settlement_excluded_in_full = srp._per_scenario_interface_coupling_wired(models)
     per_block, per_dso = {}, {}
     worst = {'settlement_split_rel': 0.0, 'covariance_vs_deviation_rel': 0.0, 'per_scenario_settlement_rel': 0.0,
              'per_scenario_row18_rel': 0.0, 'per_scenario_q_reconciliation_rel': 0.0,
@@ -4062,7 +4081,8 @@ def multiscenario_terminal_capture(planning, models, state=None, premium=None):
         #   sum_s omega_s obj_s + (settlement - contracted) + row 18 charge
         local_q = block_components[(kind, node_id, year, day)] / weight
         rebuilt_q = (cost_checks['expected_base_objective'] + s_weight * cost_checks['interface_settlement_model']
-                     - contracted + (cost_checks['row18_deviation_charge_model'] or 0.0))
+                     - (total if settlement_excluded_in_full else contracted)
+                     + (cost_checks['row18_deviation_charge_model'] or 0.0))
         entry = {
             'kind': kind, 'node_id': node_id, 'year': str(year), 'day': str(day), 'admm_block_weight': weight,
             'n_scenarios': len(model.scenarios_market) * len(model.scenarios_operation),
@@ -4187,6 +4207,17 @@ def multiscenario_terminal_capture(planning, models, state=None, premium=None):
             'detector_penalty_total')},
         'voltage_pin_mismatch_max_rms_pu': max((v or {}).get('rms_pu', 0.0) for v in voltage.values()),
     }
+    if settlement_excluded_in_full:  # S56 step 1 completion (author decision 6); absent otherwise
+        summary['objective_convention'] = (
+            'per-scenario obj = production base SMOPF objective per scenario (no settlement, no row 18, no voltage '
+            'pin); per-scenario TN-DN coupling wired: Q per block = sum_s omega_s obj_s + (settlement - settlement) + '
+            'row 18 charge, i.e. the COMPLETE settlement excluded = the primary gross_operational_cost convention in '
+            'this mode (_get_operational_recourse_block_components / weight); today\'s form (contracted part '
+            'excluded) is recourse_components.gross_operational_cost_contracted_excluded')
+        summary['recourse_components'].update({k: rc.get(k) for k in (
+            'q_convention', 'gross_operational_cost_contracted_excluded', 'net_operational_recourse_contracted_excluded',
+            'gross_operational_cost_settlement_excluded_in_full', 'net_operational_recourse_settlement_excluded_in_full',
+            'interface_settlement_total', 'interface_settlement_deviation_total')})
     payload = {'schema': 'p515_s44_multiscenario_terminal_v1', 'summary': summary, 'blocks': per_block,
                'scenario_voltage_mismatch': voltage}
     return payload, summary
@@ -4491,7 +4522,8 @@ def initialisation_identity_record(planning, tso_model, dso_models, esso_model):
             'components_hex': {k: (float.hex(v) if v is not None else None) for k, v in comps.items()}}
 
 
-def register_initialisation_identity(record, campaign_root, eval_dir, label, candidate_key, derived_identity):
+def register_initialisation_identity(record, campaign_root, eval_dir, label, candidate_key, derived_identity,
+                                     interface_coupling=None):
     """Write this evaluation's initialisation record into `<campaign_root>/init_identity/<eval dir name>.json`
     (atomic, write-once: written under a temporary name and hard-linked into place), then compare it BITWISE with
     every record already there for the SAME candidate on the SAME instance (other evaluations of this campaign --
@@ -4504,6 +4536,12 @@ def register_initialisation_identity(record, campaign_root, eval_dir, label, can
     path = os.path.join(directory, name)
     mine = {'label': label, 'eval_dir': os.path.relpath(eval_dir, REPO), 'candidate_key': candidate_key,
             'derived_instance': derived_identity, 'record': record, 'utc': _utc(), 'pid': os.getpid()}
+    # S56 step 1 completion: the per-scenario coupling option (keyed form; None = off / default) is part of what makes
+    # two initialisations comparable -- under the per-scenario voltage mode the pin is not constructed, so an on and
+    # an off evaluation of one candidate in one root legitimately differ. Recorded only when set (format unchanged
+    # otherwise); records of another coupling declaration are listed, not compared.
+    if interface_coupling is not None:
+        mine['interface_coupling'] = interface_coupling
     tmp = f'{path}.{os.getpid()}.tmp'
     with open(tmp, 'x') as handle:
         json.dump(mine, handle, indent=1)
@@ -4517,7 +4555,8 @@ def register_initialisation_identity(record, campaign_root, eval_dir, label, can
             continue
         with open(os.path.join(directory, fname)) as handle:
             other = json.load(handle)
-        if other.get('candidate_key') != candidate_key or other.get('derived_instance') != derived_identity:
+        if (other.get('candidate_key') != candidate_key or other.get('derived_instance') != derived_identity
+                or other.get('interface_coupling') != mine.get('interface_coupling')):
             other_candidates.append({'file': fname, 'label': other.get('label'),
                                      'candidate_key': other.get('candidate_key')})
             continue
@@ -4544,7 +4583,7 @@ class _AlphaRowHookControl:
         self.closed = True
 
 
-def alpha_row_run_hooks(eval_dir, label, candidate_key, derived_identity, alpha, holder):
+def alpha_row_run_hooks(eval_dir, label, candidate_key, derived_identity, alpha, holder, interface_coupling=None):
     """Context manager (installed INSIDE the s38 / s39 capture hooks, so it wraps their wrappers and is removed
     first): pass-through wrappers on six production functions of `shared_resources_planning`, each calling the
     original unchanged --
@@ -4609,7 +4648,8 @@ def alpha_row_run_hooks(eval_dir, label, candidate_key, derived_identity, alpha,
             _write_once_json(os.path.join(eval_dir, ACTIVATION_READBACK_FILE), readback)
             holder['activation_readback'] = {k: v for k, v in readback.items() if k != 'per_block'}
             ident = register_initialisation_identity(holder['initialisation_identity_record'], campaign_root,
-                                                     eval_dir, label, candidate_key, derived_identity)
+                                                     eval_dir, label, candidate_key, derived_identity,
+                                                     interface_coupling=interface_coupling)
             _write_once_json(os.path.join(eval_dir, INIT_IDENTITY_FILE),
                              {'record': holder['initialisation_identity_record'], 'comparison': ident})
             holder['initialisation_identity'] = ident
@@ -4716,6 +4756,39 @@ def _flexibility_block(model, network, params):
     legs['production_flexibility_used'] = {'p': _f(used['p']), 'q': _f(used['q'])}
     legs['reconciliation_rel_diff_p'] = _rel_diff(legs['p_up_mwh'] + legs['p_down_mwh'], used['p'])
     return legs
+
+
+def _interface_deviation_channel_block(model, network):
+    """S56 step 1 completion, ZERO SOLVES: the per-scenario DEVIATION channel a DSO block faced in its last solve
+    (the W44 coordination record covers the expectation channel only): per kind present ('p', 'q'; 'v' under the
+    per-scenario voltage mode) and scenario '<s_m>_<s_o>', the raw Params `dual_interface_dev_<kind>_req` and
+    `interface_dev_<kind>_req` (model units) and the block's own deviation d_s = (interface exchange - its
+    expectation Var) at the returned point, with omega_s, rho and the effective objective scale beside them. Raw reads
+    (`pe.value`); nothing converted."""
+    import pyomo.environ as pe
+    out = {'rho_pf': float(pe.value(model.rho_pf)), 'rho_v': float(pe.value(model.rho_v)),
+           'admm_objective_scale': (float(pe.value(model.admm_objective_scale))
+                                    if hasattr(model, 'admm_objective_scale') else None),
+           'interface_rating_pu': network.get_interface_branch_rating() / network.baseMVA,
+           'units': 'model units (per unit of baseMVA for P / Q; per unit for V)', 'kinds': {}}
+    legs = {'p': ('pg_adn', 'expected_interface_pf_p'), 'q': ('qg_adn', 'expected_interface_pf_q'),
+            'v': ('vmag_adn', 'expected_interface_vmag')}
+    for kind, (flow, expected) in legs.items():
+        dual = getattr(model, f'dual_interface_dev_{kind}_req', None)
+        req = getattr(model, f'interface_dev_{kind}_req', None)
+        if dual is None or req is None:
+            continue
+        per = {}
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                per[f'{s_m}_{s_o}'] = {
+                    'omega': _scenario_probability(network, s_m, s_o),
+                    'dual': [float(pe.value(dual[s_m, s_o, p])) for p in model.periods],
+                    'req': [float(pe.value(req[s_m, s_o, p])) for p in model.periods],
+                    'own_deviation': [float(pe.value(getattr(model, flow)[s_m, s_o, p]))
+                                      - float(pe.value(getattr(model, expected)[p])) for p in model.periods]}
+        out['kinds'][kind] = per
+    return out
 
 
 def _row18_legs_block(model, network):
@@ -4994,6 +5067,8 @@ def response_terminal_capture(planning, models, optimization_results=None):
         coordination[key] = LG.coordination_record_or_error(model, network, holder.params, key)
         coordination[key]['admm_block_weight'] = weight
         coordination[key]['termination_last_solve'] = term
+        if hasattr(model, 'dual_interface_dev_p_req'):  # S56 step 1 completion: only with the per-scenario coupling
+            coordination[key]['interface_deviation_channel'] = _interface_deviation_channel_block(model, network)
         flexibility[key] = dict(_flexibility_block(model, network, holder.params), admm_block_weight=weight)
         legs = _row18_legs_block(model, network)
         if legs is not None:   # W65 (G13): computed separately, so the W64 leg sums above are untouched
@@ -5070,6 +5145,11 @@ def response_terminal_capture(planning, models, optimization_results=None):
         'dso_last_solve_ipopt_exit_counts': dso_exit_counts,
         'ipopt_options_in_force_dso': ipopt_options_dso,
     }
+    if rc.get('q_convention') == 'settlement_excluded_in_full':  # S56 step 1 completion; absent otherwise
+        summary['recourse_components'].update({k: _f(rc.get(k)) for k in (
+            'gross_operational_cost_contracted_excluded', 'net_operational_recourse_contracted_excluded',
+            'interface_settlement_contracted_total')})
+        summary['recourse_components']['q_convention'] = rc.get('q_convention')
     payload = {'schema': 'p515_s44_response_terminal_v1', 'summary': summary,   # in memory; v2 = its compact layout
                'curtailment_entries': entries, 'network_hour_rows': rows_by_hour,
                'curtailment_by_block': curtail_blocks, 'coordination_by_dso_block': coordination,
@@ -6095,7 +6175,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     from contextlib import nullcontext
     derived_identity = derived_instance_identity(derived) if derived is not None else None
     alpha_row_hooks = (alpha_row_run_hooks(eval_dir, entry['label'], entry['key'], derived_identity,
-                                           float((premium or {}).get('alpha') or 0.0), holder)
+                                           float((premium or {}).get('alpha') or 0.0), holder,
+                                           interface_coupling=interface_coupling_in_key(interface_coupling))
                        if capture_multiscenario else nullcontext())
     release_counter = _ReleaseBookkeepingCallCounter(holder) if release_bk is not None else nullcontext()  # W90
     # W98: entered FIRST, so its wrappers sit directly on production and every capture hook below wraps them (the tail
