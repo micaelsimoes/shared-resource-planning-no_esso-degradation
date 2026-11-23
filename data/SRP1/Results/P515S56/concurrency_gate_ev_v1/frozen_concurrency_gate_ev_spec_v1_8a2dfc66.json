@@ -1,0 +1,1617 @@
+{
+ "PYTHONHASHSEED_in_parent_env": null,
+ "authority": [
+  "S56_DESIGN_NOTE_v1.md, section Parallelism (D6): bitwise equivalence gate over 3 cycles, one candidate alone vs the same candidate inside a full batch, in separate roots, on the per-cycle record",
+  "author's request (S56 order, 2026-11-21): compare representative serial and parallel evaluations using the same inputs and numerical criteria",
+  "Planner task: S56 concurrency gate (Advisor: the gate must be bitwise; predictions P1-P3 recorded before the run)",
+  "TASKS.md, S56 order",
+  "S56_SEARCH_DRIVER_DESIGN.md, Execution: \"Gate F (5 concurrent children, bitwise) is re-run on the final harness before the driver relies on it\"; Integration rulings 1-7 (601775c0)",
+  "Planner task (pilot-ready Worker, 2026-11-23): EV twin, 2025/2030/2035, 2x, all S56 EV keys, cap 3, five distinct candidates incl. x0, the reference unit and the staged plan; serial vs 5-way, bitwise on the per-cycle records with timing fields excluded (exclusion list declared in advance)"
+ ],
+ "candidates": {
+  "n5_y2025_p0.25_e0.5": {
+   "entry_options": {
+    "flex_price_multiplier": 2.0,
+    "s56_cohort_formulation": "independent_units_all_node_years",
+    "s56_esso_slack_penalty": 10000.0,
+    "s56_ev_profiles": {
+     "ev_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+     "profiles_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+     "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729"
+    },
+    "s56_pricing_capture": true,
+    "s56_settled_stop_disabled": true,
+    "s56_staged_investment": {
+     "5": {
+      "2025": [
+       0.25,
+       0.5
+      ]
+     }
+    },
+    "s56_terminal_value_in_objective": true
+   }
+  },
+  "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5": {
+   "entry_options": {
+    "flex_price_multiplier": 2.0,
+    "s56_cohort_formulation": "independent_units_all_node_years",
+    "s56_esso_slack_penalty": 10000.0,
+    "s56_ev_profiles": {
+     "ev_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+     "profiles_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+     "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729"
+    },
+    "s56_pricing_capture": true,
+    "s56_settled_stop_disabled": true,
+    "s56_staged_investment": {
+     "5": {
+      "2030": [
+       0.5,
+       1.0
+      ]
+     },
+     "7": {
+      "2025": [
+       0.25,
+       1.0
+      ],
+      "2030": [
+       0.25,
+       0.5
+      ]
+     },
+     "9": {
+      "2035": [
+       0.25,
+       0.5
+      ]
+     }
+    },
+    "s56_terminal_value_in_objective": true
+   }
+  },
+  "n7_y2025_p0.25_e1": {
+   "entry_options": {
+    "flex_price_multiplier": 2.0,
+    "s56_cohort_formulation": "independent_units_all_node_years",
+    "s56_esso_slack_penalty": 10000.0,
+    "s56_ev_profiles": {
+     "ev_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+     "profiles_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+     "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729"
+    },
+    "s56_pricing_capture": true,
+    "s56_settled_stop_disabled": true,
+    "s56_staged_investment": {
+     "7": {
+      "2025": [
+       0.25,
+       1.0
+      ]
+     }
+    },
+    "s56_terminal_value_in_objective": true
+   }
+  },
+  "n9_y2025_p0.25_e1": {
+   "entry_options": {
+    "flex_price_multiplier": 2.0,
+    "s56_cohort_formulation": "independent_units_all_node_years",
+    "s56_esso_slack_penalty": 10000.0,
+    "s56_ev_profiles": {
+     "ev_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+     "profiles_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+     "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729"
+    },
+    "s56_pricing_capture": true,
+    "s56_settled_stop_disabled": true,
+    "s56_staged_investment": {
+     "9": {
+      "2025": [
+       0.25,
+       1.0
+      ]
+     }
+    },
+    "s56_terminal_value_in_objective": true
+   }
+  },
+  "x0": {
+   "entry_options": {
+    "flex_price_multiplier": 2.0,
+    "s56_cohort_formulation": "independent_units_all_node_years",
+    "s56_esso_slack_penalty": 10000.0,
+    "s56_ev_profiles": {
+     "ev_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+     "profiles_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+     "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729"
+    },
+    "s56_pricing_capture": true,
+    "s56_settled_stop_disabled": true,
+    "s56_staged_investment": {
+     "5": {
+      "2025": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "s56_terminal_value_in_objective": true
+   }
+  }
+ },
+ "cap": {
+  "consequence": "cycles_run 3, status not_certified (10 consecutive passing cycles are required)",
+  "mechanism": "the harness's own spec['cap'] -> run_admm_arm(num_max_iters_override=cap) (p515_s44_campaign_harness.py, child), as in the W90/W91 3-cycle smokes (campaign_s53_w91_3x3_smoke_bon spec: cap 3)",
+  "value": 3
+ },
+ "capture_path_checklist": {
+  "all_hold": true,
+  "checks": {
+   "G1_three_per_cycle_files_parse_with_rows": true,
+   "G2_esso_log_final_blocks_parse": true,
+   "G2_network_log_final_blocks_parse": true,
+   "G2_one_final_block_per_solve_start": true,
+   "G2_solve_records_have_iterations_exit_mu": true,
+   "G3_record_has_solve_profile_and_peak_rss": true,
+   "footprint_capture_selftest": true,
+   "harness_sha256_is_the_one_that_wrote_these": true,
+   "memory_available_measure": true,
+   "per_cycle_wall_from_drained_events": true,
+   "per_cycle_wall_from_production_stdout": true,
+   "wait4_rusage_written_by_harness": true
+  },
+  "detail": {
+   "G1_rows": {
+    "aa_per_cycle.jsonl": 3,
+    "g_s39_D.json#cycle_trajectory": 3,
+    "per_cycle_record.jsonl": 3
+   },
+   "footprint_selftest": {
+    "all_hold": true,
+    "allocation_bytes": 268435456,
+    "checks": {
+     "capture_exact": true,
+     "final_read_after_exit": true,
+     "identity_verified": true,
+     "lifetime_max_ge_allocation": true,
+     "negative_control_refuses_other_eval_key": true,
+     "reaped_by_wait4_exit_0": true
+    },
+    "lifetime_max_phys_footprint_bytes": 273449536
+   },
+   "logs": {
+    "dir": "data/SRP1/Results/P56A/evals/p515s44_s56orc_v1_real_check_ae3193097a25324e_run/logs",
+    "first_network_log_solves": 4,
+    "first_network_log_starts": 4,
+    "n_esso_logs": 12,
+    "n_network_logs": 48
+   },
+   "memory_now": {
+    "available_bytes": 24502222848,
+    "available_gib": 22.819473266601562,
+    "hw_memsize_gib": 32.0,
+    "page_size": 16384,
+    "pages": {
+     "Anonymous pages": 357203,
+     "Pages free": 470458,
+     "Pages inactive": 654036,
+     "Pages occupied by compressor": 118542,
+     "Pages wired down": 125910
+    },
+    "utc": "2026-11-23T23:49:35.613201+00:00"
+   },
+   "walls_first3": {
+    "1": 24.54,
+    "2": 24.98,
+    "3": 24.13
+   }
+  },
+  "source_eval_dir": "data/SRP1/Results/P515S56/search_oracle_v1/real_check/campaign_s56orc_v1_real_check/evals/ae3193097a25324e_unit_settled_k3"
+ },
+ "commands": {
+  "attached": "attached, alone, both streams captured, never detached; A then B in the same process",
+  "cwd": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation",
+  "freeze": "set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s56_concurrency_gate.py --freeze --profile ev_v1 > data/SRP1/Results/P515S56/concurrency_gate_ev_v1_freeze_launch.log 2>&1",
+  "run": "set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s56_concurrency_gate.py --run --profile ev_v1 --spec-sha256 <sha256 of frozen_concurrency_gate_ev_spec_v1_<sha8>.json> > data/SRP1/Results/P515S56/concurrency_gate_ev_v1/run_launch.log 2>&1"
+ },
+ "comparator_selftest": {
+  "all_hold": true,
+  "checks": {
+   "other_G1_differs": true,
+   "other_G2_differs": true,
+   "other_G3_differs": true,
+   "self_G1_identical": true,
+   "self_G2_compared_solves_positive": true,
+   "self_G2_identical": true,
+   "self_G3_identical": true
+  },
+  "other_first_differences": {
+   "G1": {
+    "aa_per_cycle.jsonl": {
+     "field": "aa_combined_residual",
+     "path": "[0].aa_combined_residual",
+     "row_index": 0,
+     "value_A": 6.984780905363877,
+     "value_B": 6.979657587725971
+    },
+    "g_s39_D.json#cycle_trajectory": {
+     "field": "primal_v",
+     "path": "[0].primal_v",
+     "row_index": 0,
+     "value_A": 0.08952411196039932,
+     "value_B": 0.08952774688490983
+    },
+    "per_cycle_record.jsonl": {
+     "field": "recourse",
+     "path": "[0].recourse",
+     "row_index": 0,
+     "value_A": 1765118363.6002705,
+     "value_B": 1765413490.4028852
+    }
+   },
+   "G2_n_solves_compared_self": 204,
+   "G3_first": [
+    [
+     "candidate_label",
+     "str:unit_settled_k3",
+     "str:x0"
+    ],
+    [
+     "candidate_canonical.nodes.7.2025[0]",
+     0.25,
+     0.0
+    ],
+    [
+     "candidate_canonical.nodes.7.2025[1]",
+     1.0,
+     0.0
+    ]
+   ]
+  },
+  "pair_other": [
+   "data/SRP1/Results/P515S56/search_oracle_v1/real_check/campaign_s56orc_v1_real_check/evals/ae3193097a25324e_unit_settled_k3",
+   "data/SRP1/Results/P515S56/ev_harness_v1/smoke/campaign_s56evh_v1_smoke/evals/1933e753d4bae5ab_x0"
+  ],
+  "pair_same": [
+   "data/SRP1/Results/P515S56/search_oracle_v1/real_check/campaign_s56orc_v1_real_check/evals/ae3193097a25324e_unit_settled_k3",
+   "data/SRP1/Results/P515S56/search_oracle_v1/real_check/campaign_s56orc_v1_real_check/evals/ae3193097a25324e_unit_settled_k3"
+  ]
+ },
+ "compared_candidates": {
+  "identical_entries_in_both_roots": {
+   "n5_y2025_p0.25_e0.5": true,
+   "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5": true,
+   "n7_y2025_p0.25_e1": true,
+   "n9_y2025_p0.25_e1": true,
+   "x0": true
+  },
+  "labels": [
+   "n7_y2025_p0.25_e1",
+   "x0",
+   "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5",
+   "n5_y2025_p0.25_e0.5",
+   "n9_y2025_p0.25_e1"
+  ],
+  "rule": "G1-G3 are evaluated A vs B for every compared candidate; each must hold"
+ },
+ "configuration_passed_to_freeze_campaign_spec": {
+  "arm_label": "s39_D",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "convergence_depth_tail": {
+   "compl_inf_tol": 1e-06,
+   "enabled": true
+  },
+  "derived_instance": {
+   "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+   "case_sha256": "45e8e700a547de22b2c9cd2f9373c4307da30764461e647424eca7eb2d1594b3",
+   "changes_vs_source": [
+    {
+     "from": 3,
+     "key": "NumMarketScenarios",
+     "to": 1
+    },
+    {
+     "from": 3,
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "to": 1
+    },
+    {
+     "from": 3,
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "to": 1
+    },
+    {
+     "from": 3,
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "to": 1
+    },
+    {
+     "from": 3,
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "to": 1
+    },
+    {
+     "from": "production synthesis at one scenario (= the published draw 0)",
+     "key": "scenario arrays (all but A5)",
+     "to": "probability-weighted means of s56_srp1grid_3x3, injected at shared_resources_planning._compute_scenario_metadata from data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json (sha256 f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729)"
+    }
+   ],
+   "instance_label": "s56_srp1grid_3x3_ev",
+   "scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+   "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+   "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+  },
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "name": "S56 GATE F (EV re-run) -- the SRP1-grid 3 x 3 EV twin as p515_s56_ev_harness_tests._spec_like declares it (case-file AA, ESS ageing baseline, convergence-depth tail), cap 3",
+  "note": "identical in both roots; the S56 EV-plan keys are entry options (the pilot's i1 entries); cap 3 (cannot certify: 10 consecutive passing cycles required)",
+  "overrides": {}
+ },
+ "configuration_reference_check": {
+  "all_equal": true,
+  "per_key_equal": {
+   "apply_rho": true,
+   "arm_label": true,
+   "case_file": true,
+   "case_file_anderson_acceleration": true,
+   "case_file_sha256": true,
+   "convergence_depth_tail": true,
+   "derived_instance": true,
+   "ess_ageing_baseline": true,
+   "ess_ageing_baseline_label": true,
+   "ess_params_file": true,
+   "full_diagnostics_in_rows": true,
+   "overrides": true
+  },
+  "reference": {
+   "path": "data/SRP1/Results/P515S56/search_oracle_v1/real_check/campaign_s56orc_v1_real_check/campaign_spec_s56orc_v1_real_check_6781f85a.json",
+   "sha256": "6781f85a3d59db60ed70642a7136ce7f4d24355a38898eadfcdf11cbc159e7db"
+  }
+ },
+ "domain_membership": {
+  "all_admissible": true,
+  "distinct": true,
+  "per_label": {
+   "n5_y2025_p0.25_e0.5": {
+    "I_x_eur": 191018.169784262,
+    "candidate_key": "aeb5515dee716bac12ec8c787b2920d893b27a6cd1ca536de0187ad9fbd0fac1",
+    "label_equals_lattice_label": true,
+    "lattice_label": "n5_y2025_p0.25_e0.5",
+    "staged_key_equals_lattice_key": true
+   },
+   "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5": {
+    "I_x_eur": 862548.6983358284,
+    "candidate_key": "87170f8d2133558f7e41b78671a8e43fc5453dd25b8a834739dd4498506d3f4d",
+    "label_equals_lattice_label": true,
+    "lattice_label": "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5",
+    "staged_key_equals_lattice_key": true
+   },
+   "n7_y2025_p0.25_e1": {
+    "I_x_eur": 317957.0085035586,
+    "candidate_key": "0998d02182570fc09538c2b58e9a16313dbb0225db0595442fcaba0b3c308000",
+    "label_equals_lattice_label": true,
+    "lattice_label": "n7_y2025_p0.25_e1",
+    "staged_key_equals_lattice_key": true
+   },
+   "n9_y2025_p0.25_e1": {
+    "I_x_eur": 317957.0085035586,
+    "candidate_key": "e8578c6effe2ff49e163b175a469f8aa17ad3b994fc5f7b6dd7b455562e49667",
+    "label_equals_lattice_label": true,
+    "lattice_label": "n9_y2025_p0.25_e1",
+    "staged_key_equals_lattice_key": true
+   },
+   "x0": {
+    "I_x_eur": 0.0,
+    "candidate_key": "dcb43218986e026f00649f3988dbc50bbd67f4e4ef3670aa43b3c7805f8aee1f",
+    "label_equals_lattice_label": true,
+    "lattice_label": "x0",
+    "staged_key_equals_lattice_key": true
+   }
+  }
+ },
+ "failure_policy": "a bitwise mismatch is investigated (which field, which cycle), never re-run or tuned; the first differing field per compared file is recorded in gate_result.json",
+ "freeze_checks": {
+  "candidates_on_the_lattice_distinct_staged_key_equals_lattice_key": true,
+  "capture_path_checklist": true,
+  "comparator_selftest": true,
+  "configuration_equals_real_check_block": true,
+  "configuration_identical_in_both_roots": true,
+  "every_compared_entry_identical_in_both_roots": true,
+  "g3_exclusions_cover_every_root_specific_leaf": true,
+  "shared_entry_identical_in_both_roots": true
+ },
+ "freeze_checks_all_hold": true,
+ "freeze_wall_s": 5.150398254394531,
+ "frozen_utc": "2026-11-23T23:49:39.539718+00:00",
+ "gate": {
+  "G0_test_condition": "A: evaluate() max_concurrent_observed == 1; B: == 5 (all five children launched in the first poll); every child exit 0, status not_certified, cycles_run 3",
+  "G1_per_cycle_record": {
+   "excluded": {
+    "aa_per_cycle.jsonl": {},
+    "g_s39_D.json#cycle_trajectory": {},
+    "per_cycle_record.jsonl": {
+     "[*].cycle_wall_s": "wall time of the cycle (the EV per-cycle record merges the response fields)",
+     "[*].response_capture_s": "wall time of the response capture",
+     "[*].rss_bytes": "process memory measurement",
+     "[*].ru_maxrss_bytes": "process memory measurement"
+    }
+   },
+   "files": [
+    "g_s39_D.json#cycle_trajectory",
+    "per_cycle_record.jsonl",
+    "aa_per_cycle.jsonl"
+   ]
+  },
+  "G2_ipopt_solves": {
+   "logs": "every file of <P56A work dir>/<working_dir_ids.run>/logs (network optim_log_case*.log and ESSO optim_log_esso_node*_cycle*.txt): same file names; per file the number of solve starts, every EXIT line and, per solve, the final-statistics block from \"Number of Iterations....:\" to the EXIT line inclusive with blank lines and lines starting with ['Total seconds in IPOPT', 'Total CPU secs', 'Total CPU seconds', 'Total wall-clock secs', 'Total wall clock'] removed, compared as text",
+   "records_excluded": {
+    "[*].log_bytes": "byte offsets into the log file: the log embeds its own path (output_file option line) and the IPOPT timing lines, so offsets differ with the root name and with timings",
+    "[*].log_path": "path (the IPOPT log path names the working dir, which carries the campaign id)"
+   },
+   "records_file": "network_ipopt_solve_records.jsonl"
+  },
+  "G3_evaluation_record": {
+   "excluded": {
+    "aa_per_cycle.path": "path",
+    "campaign_id": "root identity (one campaign id per root)",
+    "campaign_lock_seen_by_child": "PID, root identity and timestamp of the campaign lock",
+    "campaign_spec_path": "path",
+    "campaign_spec_sha256": "root identity (one frozen campaign spec per root)",
+    "child_pid": "PID",
+    "convergence_depth_capture.convergence_depth_tail_state_path": "path",
+    "convergence_depth_capture.network_ipopt_solve_records_path": "path",
+    "convergence_depth_capture.network_ipopt_solve_records_sha256": "hash of a file that embeds paths (log_path) and log byte offsets; the file is compared field by field in G2",
+    "convergence_depth_per_round_append.end_of_run_records_sha256": "as network_ipopt_solve_records_sha256",
+    "convergence_depth_per_round_append.events_path": "path",
+    "convergence_depth_per_round_append.records_append_path": "path",
+    "convergence_depth_per_round_append.records_append_sha256": "as network_ipopt_solve_records_sha256 (same content)",
+    "derived_instance_installed_in_child.planning_read_dir": "path",
+    "derived_instance_installed_in_child.read_wall_s": "wall time",
+    "eval_dir": "path",
+    "initialisation_identity.other_candidates_not_compared": "the sibling records present in init_identity/ when this one was written: a function of launch order and timing (serial vs concurrent), not of the computation; every listed sibling is another candidate",
+    "initialisation_identity.path": "path (the campaign root)",
+    "multiscenario_terminal.path": "path",
+    "multiscenario_terminal.runtime_s": "wall time",
+    "network_failures_summary.path": "path",
+    "operational_workbook.path": "path",
+    "operational_workbook.runtime_s": "wall time",
+    "operational_workbook.sha256": "hash of an xlsx, whose zip parts carry write timestamps",
+    "operational_workbook.size_bytes": "size of that xlsx (compressed, timestamped parts)",
+    "operational_workbook.write_s": "wall time",
+    "parent_pid": "PID",
+    "peak_rss": "process memory measurements (ru_maxrss): not a wall time, PID, path or timestamp -- ADDED to the Planner's list, stated here before the run; reported under P3 instead",
+    "per_cycle_record_path": "path",
+    "per_cycle_response.path": "path",
+    "post_certification_path": "path",
+    "report_path": "path",
+    "response_terminal.capture_cost": "timings and process memory of the response capture",
+    "response_terminal.path": "path",
+    "response_terminal.sha256": "hash of a file that embeds capture_cost timings and RSS",
+    "s56_cost_breakdown.path": "path",
+    "s56_pricing_capture_summary.path": "path",
+    "terminal_phase_lock.lock_path": "path",
+    "terminal_phase_lock.waited_s": "wall time (waiting on siblings: concurrency-dependent by design)",
+    "wall_time_s": "wall times",
+    "working_dir_ids": "path (the working-dir names carry the campaign id)"
+   },
+   "exclusion_coverage_check": {
+    "holds": true,
+    "n_flagged_covered": 38,
+    "record": {
+     "path": "data/SRP1/Results/P515S56/search_oracle_v1/real_check/campaign_s56orc_v1_real_check/evals/ae3193097a25324e_unit_settled_k3/evaluation_record.json",
+     "sha256": "66a7645c4ac21f12122274b346d46f7e571632574441c73d16c4d1f742acb1bc"
+    },
+    "uncovered": []
+   },
+   "file": "evaluation_record.json"
+  },
+  "G4_solve_counts": "each of the 10 records: solve_profile.base_solves == 204, rounds == 4, reconciliation_supported and identity_holds True, observed.permitted_solve == expected_solves, blocked 0; parent SolveProfileGuard(permitted=()) verify(0) and pickle loads 0",
+  "equality": "bitwise: floats by IEEE-754 bytes (struct <d), exact types, equal key sets, equal list lengths; strings and ints by ==",
+  "verdict": "GATE PASS iff G0 and G1 and G2 and G3 and G4 hold"
+ },
+ "git_head": "83891647fcb5f85a3cf5851b6195d7f5a233be67",
+ "harness": {
+  "path": "p515_s44_campaign_harness.py",
+  "sha256": "05a9838c46f19837398af31252bd85c465a3794aa03e9cfc1a7a30c08c462b29",
+  "unchanged": true
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "measurements": {
+  "contention": "shared candidate: B/A per cycle and sum over cycles 1-3 (primary); every B child against the shared candidate in A, reported",
+  "footprint": "ri_lifetime_max_phys_footprint of the evaluation child (the harness's --child Python process; its IPOPT subprocesses are NOT included -- the same scope as child_python_process_ru_maxrss), read by this launcher with proc_pid_rusage(pid, RUSAGE_INFO_V4); FINAL value = the read on the exited, not-yet-reaped child, taken on the kqueue EVFILT_PROC NOTE_EXIT event; identity: pid from the harness launch.json, parent pid == this launcher, command line holds --child and the eval key (W91 ChildFootprintMonitor, copied)",
+  "memory_available_during_B": "the preflight measure sampled every 5.0 s from just before the B launch to its return; min / max / first / last",
+  "memory_preflight": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x 4.0 GiB (the S47 launcher rule with integration ruling 7's per-slot figure); gating before each root",
+  "peak_rss": "evaluation_record peak_rss.child_python_process_ru_maxrss (bytes, macOS ru_maxrss); wait4 ru_maxrss of the reaped child; solver_subprocesses_max_ru_maxrss",
+  "per_cycle_wall": "production's \"- Iteration k: X s\" lines of stdout_s39_D.log (2 decimals), per cycle, every child; secondary: the interval between consecutive \"drained\" events of convergence_depth_append_events.jsonl"
+ },
+ "not_permitted": [
+  "any change to production code or the harness",
+  "any run other than the two roots",
+  "tuning",
+  "re-running on failure"
+ ],
+ "objective_convention": "Q = gross_operational_cost (contracted interface settlement excluded; salvage reported separately); no objective difference is quoted -- records are compared bitwise",
+ "order": [
+  "A",
+  "B"
+ ],
+ "pins_sha256": {
+  "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+  "admm_parameters.py": "8e9e69e58f120270f68139a83737f33662ae2c710982ab2e0d59a3699f46ec13",
+  "admm_persistent_workers.py": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+  "data/SRP1/SRP1.json": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+  "data/SRP1/SRP1_params.json": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "data/SRP1/SharedESS/SRP1_ESS_Params.json": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "interface_dual_capture.py": "d98b566f09f4f77867be0a812636c732183399f39803320b6b51587e80dd37fd",
+  "model_construction_helpers.py": "b588854840f97f8f528e46135e9c5a0e3b252be04244fbbcb038c4d84062b63e",
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "network_data.py": "ac3e7122a2615011159d8fe3931f5169d328911c3be9c8f135b169366dcfc3ae",
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+  "p514_n_instrumented_cstar.py": "62df39d41fec0ee48b320f6ade9eb1be4132203dcdbd100b90d1fc545d1d43c2",
+  "p515_g_g1_g4_admm_gates.py": "67401731268cab293f97d1d5a197b933839be516dfe4811f85b2e7002247feaf",
+  "p515_s39_evaluate.py": "2dd5b31f29aadb84dfcaf7b9e112fdda570bf20f78154b19d49914ba3a8a28c4",
+  "p515_s40_clone_capture_preflight.py": "30e33d0a7803c2a958bbf7da617dba277a8fe15888078e37aa451feba09a3652",
+  "p515_s40_cost_decomposition.py": "2fb70a404ca7b41969fc84908e564acc8d1c1fbd68c3e7ffb5dcdd19877222ad",
+  "p515_s40_polish_gap.py": "026a4d80037e9d03fbb8505986ab5a74a0b1eb08fc9c5b4ebf5494dce4556cf4",
+  "p515_s41_hull_polish.py": "e76c5921ecd1057dceb8fa8e097e960247a51d3e09f13d78ae95dec727385d5d",
+  "p515_s42_exact_fix_rerun.py": "de83af2ff01c48861995d70314a6565cf3e4c6ab8c2b32fc748fdc829c9e930a",
+  "p515_s43_aa_flagoff_gate.py": "22ef58b84bdd109d39e2cbf78d2e69e7302ccd0aadae2c90dcb9f6341d9472d3",
+  "p515_s43_aa_run.py": "34fd36a469d92186b6f982a529f9f8c68d6bd9d73157a4f75698c71597073aa8",
+  "p515_s44_campaign_harness.py": "05a9838c46f19837398af31252bd85c465a3794aa03e9cfc1a7a30c08c462b29",
+  "p515_s56_concurrency_gate.py": "8038374f73b453bccc23e72e74ddcbfdea01ed2f99098205894b518f262e4c01",
+  "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+  "shared_energy_storage_data.py": "0c3f032e32d3917e56f02ff5e693caf44e462ba94159b0b01d70f4d2a3f9f9df",
+  "shared_resources_planning.py": "c6e874d29f99572119b0e10b8ae3c3bd928a1c31a6b60e6be39f6548befb923e"
+ },
+ "predecessor": null,
+ "predictions_recorded_before_run": {
+  "P1": {
+   "evaluated_as": "G1 and G2 and G3 hold for every candidate (every compared field bitwise equal)",
+   "source": "gate F (S56 D6) carried to the EV configuration",
+   "text": "each of the five candidates' per-cycle record is bitwise identical in A and B"
+  },
+  "P2": {
+   "evaluated_as": "sum over cycles 1-3 of the shared candidate's production \"Iteration k: X s\" wall in B / the same sum in A, held iff in [1.10, 1.30]",
+   "range": [
+    1.1,
+    1.3
+   ],
+   "source": "Worker (not a Planner prediction; not gated)",
+   "text": "contention 1.10-1.30x per cycle in B vs A on the shared candidate (Worker-recorded expectation: gate F v1 measured 1.183x on SRP1; kappa = 1.18 in the projection)"
+  },
+  "P3": {
+   "evaluated_as": "every one of the 10 children: evaluation_record peak_rss.child_python_process_ru_maxrss / 2^30 in [2.3, 4.0]",
+   "range_gib": [
+    2.3,
+    4.0
+   ],
+   "source": "Worker (not a Planner prediction; not gated)",
+   "text": "peak RSS per EV child 2.3-4.0 GiB (Worker-recorded: the real check measured 2.43 GiB at 3 cycles; ruling 7 slot 4.0 GiB)"
+  }
+ },
+ "profile": "ev_v1",
+ "roots": {
+  "A": {
+   "campaign_id": "s56_cgate_ev_v1_rootA_serial",
+   "campaign_root": "data/SRP1/Results/P515S56/concurrency_gate_ev_v1/campaign_s56_cgate_ev_v1_rootA_serial",
+   "campaign_spec_configuration": {
+    "apply_rho": false,
+    "arm_label": "s39_D",
+    "case_file": "data/SRP1/SRP1_params.json",
+    "case_file_anderson_acceleration": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+    "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+    "convergence_depth_tail": {
+     "compl_inf_tol": 1e-06,
+     "enabled": true
+    },
+    "derived_instance": {
+     "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+     "case_sha256": "45e8e700a547de22b2c9cd2f9373c4307da30764461e647424eca7eb2d1594b3",
+     "changes_vs_source": [
+      {
+       "from": 3,
+       "key": "NumMarketScenarios",
+       "to": 1
+      },
+      {
+       "from": 3,
+       "key": "TransmissionNetwork[case9].num_operation_scenarios",
+       "to": 1
+      },
+      {
+       "from": 3,
+       "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+       "to": 1
+      },
+      {
+       "from": 3,
+       "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+       "to": 1
+      },
+      {
+       "from": 3,
+       "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+       "to": 1
+      },
+      {
+       "from": "production synthesis at one scenario (= the published draw 0)",
+       "key": "scenario arrays (all but A5)",
+       "to": "probability-weighted means of s56_srp1grid_3x3, injected at shared_resources_planning._compute_scenario_metadata from data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json (sha256 f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729)"
+      }
+     ],
+     "instance_label": "s56_srp1grid_3x3_ev",
+     "scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+     "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+     "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+    },
+    "ess_ageing_baseline": {
+     "calendar_life_years": 15,
+     "calendar_retention_per_year": 0.985,
+     "calibration": {
+      "cycles_n": 10000,
+      "eol_retention_r": 0.8,
+      "reference_dod_d": 0.8,
+      "status": "ACTIVE"
+     },
+     "cycle_life_nominal": 10000,
+     "depth_of_discharge_nominal": 0.8,
+     "minimum_soh": 0.7
+    },
+    "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+    "ess_params_file": {
+     "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+     "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+     "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+    },
+    "full_diagnostics_in_rows": true,
+    "name": "S56 GATE F (EV re-run) -- the SRP1-grid 3 x 3 EV twin as p515_s56_ev_harness_tests._spec_like declares it (case-file AA, ESS ageing baseline, convergence-depth tail), cap 3",
+    "note": "identical in both roots; the S56 EV-plan keys are entry options (the pilot's i1 entries); cap 3 (cannot certify: 10 consecutive passing cycles required)",
+    "overrides": {}
+   },
+   "cap": 3,
+   "concurrency": 1,
+   "entries": [
+    {
+     "canonical": {
+      "nodes": {
+       "5": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "7": {
+        "2025": [
+         0.25,
+         1.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "9": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "schema": "v2"
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "eval_dir": "ae3193097a25324e_n7_y2025_p0_25_e1",
+     "eval_key": "ae3193097a25324e6f3b6f5a3b746849bdf8c3d80c2f7bd046da806a942685d7",
+     "key": "0998d02182570fc09538c2b58e9a16313dbb0225db0595442fcaba0b3c308000",
+     "label": "n7_y2025_p0.25_e1",
+     "overrides": {},
+     "post_certification": null,
+     "working_dir_ids": {
+      "precheck": "p515s44_s56_cgate_ev_v1_roota_serial_ae3193097a25324e_precheck",
+      "run": "p515s44_s56_cgate_ev_v1_roota_serial_ae3193097a25324e_run"
+     }
+    },
+    {
+     "canonical": {
+      "nodes": {
+       "5": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "7": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "9": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "schema": "v2"
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "eval_dir": "d8617f71494a5b15_x0",
+     "eval_key": "d8617f71494a5b150761c09fe2a20a95ef82381368f878511b9dffb6eada2aa7",
+     "key": "dcb43218986e026f00649f3988dbc50bbd67f4e4ef3670aa43b3c7805f8aee1f",
+     "label": "x0",
+     "overrides": {},
+     "post_certification": null,
+     "working_dir_ids": {
+      "precheck": "p515s44_s56_cgate_ev_v1_roota_serial_d8617f71494a5b15_precheck",
+      "run": "p515s44_s56_cgate_ev_v1_roota_serial_d8617f71494a5b15_run"
+     }
+    },
+    {
+     "canonical": {
+      "nodes": {
+       "5": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.5,
+         1.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "7": {
+        "2025": [
+         0.25,
+         1.0
+        ],
+        "2030": [
+         0.25,
+         0.5
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "9": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.25,
+         0.5
+        ]
+       }
+      },
+      "schema": "v2"
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "eval_dir": "c400fd49be5b5eda_n5_y2030_p0_5_e1__n7_y2025_p0_25_e1__n7_y2030_p0_25_e0_5__n9_y2035_p0_25_e0_5",
+     "eval_key": "c400fd49be5b5edab9e9fdebf50dea376a2b444fb046c396b6ecad3c9cd2868d",
+     "key": "87170f8d2133558f7e41b78671a8e43fc5453dd25b8a834739dd4498506d3f4d",
+     "label": "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5",
+     "overrides": {},
+     "post_certification": null,
+     "working_dir_ids": {
+      "precheck": "p515s44_s56_cgate_ev_v1_roota_serial_c400fd49be5b5eda_precheck",
+      "run": "p515s44_s56_cgate_ev_v1_roota_serial_c400fd49be5b5eda_run"
+     }
+    },
+    {
+     "canonical": {
+      "nodes": {
+       "5": {
+        "2025": [
+         0.25,
+         0.5
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "7": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "9": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "schema": "v2"
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "eval_dir": "d5efc8b73566a51a_n5_y2025_p0_25_e0_5",
+     "eval_key": "d5efc8b73566a51a9efaa8a382960b0ef888631406c52adf8c7c570954e100b3",
+     "key": "aeb5515dee716bac12ec8c787b2920d893b27a6cd1ca536de0187ad9fbd0fac1",
+     "label": "n5_y2025_p0.25_e0.5",
+     "overrides": {},
+     "post_certification": null,
+     "working_dir_ids": {
+      "precheck": "p515s44_s56_cgate_ev_v1_roota_serial_d5efc8b73566a51a_precheck",
+      "run": "p515s44_s56_cgate_ev_v1_roota_serial_d5efc8b73566a51a_run"
+     }
+    },
+    {
+     "canonical": {
+      "nodes": {
+       "5": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "7": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "9": {
+        "2025": [
+         0.25,
+         1.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "schema": "v2"
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "eval_dir": "fbcef374d3e73fd8_n9_y2025_p0_25_e1",
+     "eval_key": "fbcef374d3e73fd83ae79653989e32d283ea125af581e0504716650d49561bfa",
+     "key": "e8578c6effe2ff49e163b175a469f8aa17ad3b994fc5f7b6dd7b455562e49667",
+     "label": "n9_y2025_p0.25_e1",
+     "overrides": {},
+     "post_certification": null,
+     "working_dir_ids": {
+      "precheck": "p515s44_s56_cgate_ev_v1_roota_serial_fbcef374d3e73fd8_precheck",
+      "run": "p515s44_s56_cgate_ev_v1_roota_serial_fbcef374d3e73fd8_run"
+     }
+    }
+   ],
+   "expected_solves": {
+    "base_per_evaluation": 204,
+    "base_total": 1020,
+    "rule": "51 per round x (cap 3 + 1) per evaluation + every attempted retry (per-event identity of run_admm_arm)"
+   },
+   "labels": [
+    "n7_y2025_p0.25_e1",
+    "x0",
+    "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5",
+    "n5_y2025_p0.25_e0.5",
+    "n9_y2025_p0.25_e1"
+   ],
+   "required_consecutive_cycles": 10,
+   "role": "serial: the five candidates one after another (concurrency 1)"
+  },
+  "B": {
+   "campaign_id": "s56_cgate_ev_v1_rootB_concurrent",
+   "campaign_root": "data/SRP1/Results/P515S56/concurrency_gate_ev_v1/campaign_s56_cgate_ev_v1_rootB_concurrent",
+   "campaign_spec_configuration": {
+    "apply_rho": false,
+    "arm_label": "s39_D",
+    "case_file": "data/SRP1/SRP1_params.json",
+    "case_file_anderson_acceleration": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+    "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+    "convergence_depth_tail": {
+     "compl_inf_tol": 1e-06,
+     "enabled": true
+    },
+    "derived_instance": {
+     "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+     "case_sha256": "45e8e700a547de22b2c9cd2f9373c4307da30764461e647424eca7eb2d1594b3",
+     "changes_vs_source": [
+      {
+       "from": 3,
+       "key": "NumMarketScenarios",
+       "to": 1
+      },
+      {
+       "from": 3,
+       "key": "TransmissionNetwork[case9].num_operation_scenarios",
+       "to": 1
+      },
+      {
+       "from": 3,
+       "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+       "to": 1
+      },
+      {
+       "from": 3,
+       "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+       "to": 1
+      },
+      {
+       "from": 3,
+       "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+       "to": 1
+      },
+      {
+       "from": "production synthesis at one scenario (= the published draw 0)",
+       "key": "scenario arrays (all but A5)",
+       "to": "probability-weighted means of s56_srp1grid_3x3, injected at shared_resources_planning._compute_scenario_metadata from data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json (sha256 f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729)"
+      }
+     ],
+     "instance_label": "s56_srp1grid_3x3_ev",
+     "scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+     "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+     "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+    },
+    "ess_ageing_baseline": {
+     "calendar_life_years": 15,
+     "calendar_retention_per_year": 0.985,
+     "calibration": {
+      "cycles_n": 10000,
+      "eol_retention_r": 0.8,
+      "reference_dod_d": 0.8,
+      "status": "ACTIVE"
+     },
+     "cycle_life_nominal": 10000,
+     "depth_of_discharge_nominal": 0.8,
+     "minimum_soh": 0.7
+    },
+    "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+    "ess_params_file": {
+     "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+     "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+     "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+    },
+    "full_diagnostics_in_rows": true,
+    "name": "S56 GATE F (EV re-run) -- the SRP1-grid 3 x 3 EV twin as p515_s56_ev_harness_tests._spec_like declares it (case-file AA, ESS ageing baseline, convergence-depth tail), cap 3",
+    "note": "identical in both roots; the S56 EV-plan keys are entry options (the pilot's i1 entries); cap 3 (cannot certify: 10 consecutive passing cycles required)",
+    "overrides": {}
+   },
+   "cap": 3,
+   "concurrency": 5,
+   "entries": [
+    {
+     "canonical": {
+      "nodes": {
+       "5": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "7": {
+        "2025": [
+         0.25,
+         1.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "9": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "schema": "v2"
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "eval_dir": "ae3193097a25324e_n7_y2025_p0_25_e1",
+     "eval_key": "ae3193097a25324e6f3b6f5a3b746849bdf8c3d80c2f7bd046da806a942685d7",
+     "key": "0998d02182570fc09538c2b58e9a16313dbb0225db0595442fcaba0b3c308000",
+     "label": "n7_y2025_p0.25_e1",
+     "overrides": {},
+     "post_certification": null,
+     "working_dir_ids": {
+      "precheck": "p515s44_s56_cgate_ev_v1_rootb_concurrent_ae3193097a25324e_precheck",
+      "run": "p515s44_s56_cgate_ev_v1_rootb_concurrent_ae3193097a25324e_run"
+     }
+    },
+    {
+     "canonical": {
+      "nodes": {
+       "5": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "7": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "9": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "schema": "v2"
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "eval_dir": "d8617f71494a5b15_x0",
+     "eval_key": "d8617f71494a5b150761c09fe2a20a95ef82381368f878511b9dffb6eada2aa7",
+     "key": "dcb43218986e026f00649f3988dbc50bbd67f4e4ef3670aa43b3c7805f8aee1f",
+     "label": "x0",
+     "overrides": {},
+     "post_certification": null,
+     "working_dir_ids": {
+      "precheck": "p515s44_s56_cgate_ev_v1_rootb_concurrent_d8617f71494a5b15_precheck",
+      "run": "p515s44_s56_cgate_ev_v1_rootb_concurrent_d8617f71494a5b15_run"
+     }
+    },
+    {
+     "canonical": {
+      "nodes": {
+       "5": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.5,
+         1.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "7": {
+        "2025": [
+         0.25,
+         1.0
+        ],
+        "2030": [
+         0.25,
+         0.5
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "9": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.25,
+         0.5
+        ]
+       }
+      },
+      "schema": "v2"
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "eval_dir": "c400fd49be5b5eda_n5_y2030_p0_5_e1__n7_y2025_p0_25_e1__n7_y2030_p0_25_e0_5__n9_y2035_p0_25_e0_5",
+     "eval_key": "c400fd49be5b5edab9e9fdebf50dea376a2b444fb046c396b6ecad3c9cd2868d",
+     "key": "87170f8d2133558f7e41b78671a8e43fc5453dd25b8a834739dd4498506d3f4d",
+     "label": "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5",
+     "overrides": {},
+     "post_certification": null,
+     "working_dir_ids": {
+      "precheck": "p515s44_s56_cgate_ev_v1_rootb_concurrent_c400fd49be5b5eda_precheck",
+      "run": "p515s44_s56_cgate_ev_v1_rootb_concurrent_c400fd49be5b5eda_run"
+     }
+    },
+    {
+     "canonical": {
+      "nodes": {
+       "5": {
+        "2025": [
+         0.25,
+         0.5
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "7": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "9": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "schema": "v2"
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "eval_dir": "d5efc8b73566a51a_n5_y2025_p0_25_e0_5",
+     "eval_key": "d5efc8b73566a51a9efaa8a382960b0ef888631406c52adf8c7c570954e100b3",
+     "key": "aeb5515dee716bac12ec8c787b2920d893b27a6cd1ca536de0187ad9fbd0fac1",
+     "label": "n5_y2025_p0.25_e0.5",
+     "overrides": {},
+     "post_certification": null,
+     "working_dir_ids": {
+      "precheck": "p515s44_s56_cgate_ev_v1_rootb_concurrent_d5efc8b73566a51a_precheck",
+      "run": "p515s44_s56_cgate_ev_v1_rootb_concurrent_d5efc8b73566a51a_run"
+     }
+    },
+    {
+     "canonical": {
+      "nodes": {
+       "5": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "7": {
+        "2025": [
+         0.0,
+         0.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       },
+       "9": {
+        "2025": [
+         0.25,
+         1.0
+        ],
+        "2030": [
+         0.0,
+         0.0
+        ],
+        "2035": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "schema": "v2"
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "eval_dir": "fbcef374d3e73fd8_n9_y2025_p0_25_e1",
+     "eval_key": "fbcef374d3e73fd83ae79653989e32d283ea125af581e0504716650d49561bfa",
+     "key": "e8578c6effe2ff49e163b175a469f8aa17ad3b994fc5f7b6dd7b455562e49667",
+     "label": "n9_y2025_p0.25_e1",
+     "overrides": {},
+     "post_certification": null,
+     "working_dir_ids": {
+      "precheck": "p515s44_s56_cgate_ev_v1_rootb_concurrent_fbcef374d3e73fd8_precheck",
+      "run": "p515s44_s56_cgate_ev_v1_rootb_concurrent_fbcef374d3e73fd8_run"
+     }
+    }
+   ],
+   "expected_solves": {
+    "base_per_evaluation": 204,
+    "base_total": 1020,
+    "rule": "51 per round x (cap 3 + 1) per evaluation + every attempted retry (per-event identity of run_admm_arm)"
+   },
+   "labels": [
+    "n7_y2025_p0.25_e1",
+    "x0",
+    "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5",
+    "n5_y2025_p0.25_e0.5",
+    "n9_y2025_p0.25_e1"
+   ],
+   "required_consecutive_cycles": 10,
+   "role": "concurrent: the same five candidates in one batch of five"
+  }
+ },
+ "schema": "p515_s56_concurrency_gate_spec_v1",
+ "script": {
+  "path": "p515_s56_concurrency_gate.py",
+  "sha256": "8038374f73b453bccc23e72e74ddcbfdea01ed2f99098205894b518f262e4c01"
+ },
+ "shared_candidate": {
+  "description": "the reference unit: node 7, 0.25 MVA / 1 MWh, 2025",
+  "entry": {
+   "canonical": {
+    "nodes": {
+     "5": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     },
+     "7": {
+      "2025": [
+       0.25,
+       1.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     },
+     "9": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "schema": "v2"
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "ae3193097a25324e_n7_y2025_p0_25_e1",
+   "eval_key": "ae3193097a25324e6f3b6f5a3b746849bdf8c3d80c2f7bd046da806a942685d7",
+   "key": "0998d02182570fc09538c2b58e9a16313dbb0225db0595442fcaba0b3c308000",
+   "label": "n7_y2025_p0.25_e1",
+   "overrides": {},
+   "post_certification": null,
+   "working_dir_ids": {
+    "precheck": "p515s44_s56_cgate_ev_v1_roota_serial_ae3193097a25324e_precheck",
+    "run": "p515s44_s56_cgate_ev_v1_roota_serial_ae3193097a25324e_run"
+   }
+  },
+  "identical_in_both_roots": {
+   "canonical": true,
+   "effective_anderson_acceleration": true,
+   "eval_dir": true,
+   "eval_key": true,
+   "key": true,
+   "label": true,
+   "overrides": true
+  },
+  "label": "n7_y2025_p0.25_e1"
+ },
+ "solver": {
+  "expected": "/usr/local/bin/ipopt",
+  "ok": true,
+  "resolved": {
+   "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+   "source": "environment"
+  },
+  "sha256": "b316abbe38cd851d9a9a87a6a1a1714a4334304c9539df1976d2f7101360ff05"
+ },
+ "stage": "P5.15 S56 gate F re-run on the final harness -- serial-vs-concurrent bitwise equivalence for the EV search driver (SRP1-grid 3 x 3 EV twin, 2x, every S56 EV-plan key of the pilot entries, 3-cycle cap; root A five candidates at concurrency 1, root B the same five at concurrency 5; every candidate compared)",
+ "supplementary_not_gated": {
+  "historical_cross_check_cycles_1_3": {
+   "n7_y2025_p0.25_e1": {
+    "eval_dir": "data/SRP1/Results/P515S56/search_oracle_v1/real_check/campaign_s56orc_v1_real_check/evals/ae3193097a25324e_unit_settled_k3",
+    "eval_key_in_dir_name": "ae3193097a25324e",
+    "eval_key_prefix_equal": true,
+    "note": "integration real check (same harness 05a9838c, same options and cap 3, eval key ae319309...), cycles 1-3; informational",
+    "present": true
+   }
+  },
+  "ipopt_full_text": "every log, root tokens normalised, timing lines removed, sha256 compared",
+  "json_artifacts": "every other *.json / *.jsonl of the shared eval dir except ['launch.json', 'wait4_rusage.json', 'child_manifest_sha256.json', 'exit_code.txt', 'heartbeat_s39_D.json', 'evaluation_record.json', 'per_cycle_record.jsonl', 'aa_per_cycle.jsonl', 'network_ipopt_solve_records.jsonl']; root tokens normalised; generic key rule ['pid', 'ppid', 'child_pid', 'parent_pid', 'log_path', 'log_bytes'] + substrings ['utc', 'timestamp', 'wall', 'rss', 'footprint', 'elapsed', 'runtime', 'seconds', '_path', 'path_', 'sha256']"
+ },
+ "thread_caps": {
+  "MKL_NUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1"
+ },
+ "version": 1,
+ "writes": {
+  "campaign_roots": [
+   "data/SRP1/Results/P515S56/concurrency_gate_ev_v1/campaign_s56_cgate_ev_v1_rootA_serial",
+   "data/SRP1/Results/P515S56/concurrency_gate_ev_v1/campaign_s56_cgate_ev_v1_rootB_concurrent"
+  ],
+  "gate_dir": "data/SRP1/Results/P515S56/concurrency_gate_ev_v1",
+  "note": "nothing a committed report cites is written",
+  "p56a_working_dirs (harness-fixed location, new names)": [
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_roota_serial_ae3193097a25324e_precheck",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_roota_serial_ae3193097a25324e_run",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_roota_serial_d8617f71494a5b15_precheck",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_roota_serial_d8617f71494a5b15_run",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_roota_serial_c400fd49be5b5eda_precheck",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_roota_serial_c400fd49be5b5eda_run",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_roota_serial_d5efc8b73566a51a_precheck",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_roota_serial_d5efc8b73566a51a_run",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_roota_serial_fbcef374d3e73fd8_precheck",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_roota_serial_fbcef374d3e73fd8_run",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_rootb_concurrent_ae3193097a25324e_precheck",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_rootb_concurrent_ae3193097a25324e_run",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_rootb_concurrent_d8617f71494a5b15_precheck",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_rootb_concurrent_d8617f71494a5b15_run",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_rootb_concurrent_c400fd49be5b5eda_precheck",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_rootb_concurrent_c400fd49be5b5eda_run",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_rootb_concurrent_d5efc8b73566a51a_precheck",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_rootb_concurrent_d5efc8b73566a51a_run",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_rootb_concurrent_fbcef374d3e73fd8_precheck",
+   "data/SRP1/Results/P56A/evals/p515s44_s56_cgate_ev_v1_rootb_concurrent_fbcef374d3e73fd8_run"
+  ],
+  "results": [
+   "data/SRP1/Results/P515S56/concurrency_gate_ev_v1/gate_result.json",
+   "data/SRP1/Results/P515S56/concurrency_gate_ev_v1/manifest_sha256.json"
+  ]
+ }
+}
