@@ -11,6 +11,26 @@ only after step 3 has reported and diagnostics D-1 to D-3 have run.
 | X4-1 | **Rule for choosing between V-1 and V-2.** Keep the decision with the Expert; step 4 supplies measurements M1–M5 (below) | **Eliminate V-2** if its ΔV plateau exceeds the ΔV gate, or if the hard-pin cost Δ_pin exceeds the allowance (V-2 is then a modelling restriction, not an approximation that can be validated). **Eliminate V-1** if its V channel does not contract, or if it fails local solves repeatedly while V-2 settles. **If both survive,** choose V-1 unless its cycles × wall time exceed V-2's by more than 1.5×. V-1 has an exact centralized comparator and matches "P/Q/V consistent per scenario" |
 | X4-2 | **Tail depth through the whole run** (a production solver setting). **Conditional:** asked only if D-1 shows that the local-solver floor exceeds the per-block allowance | If asked: run at tail depth from cycle 1 in every arm, or else calibrate only on tail-depth cycles and report the floor as a limitation |
 
+### Measured (D-1, D-2: `P5_15_S56_STEP4_DIAG_REPORT.md`, `1948bb3e`, spec `ff466289`)
+
+All values are € of total discounted cost per block, against that block's allowance.
+
+| block | allowance | D-1 offset, production depth | D-1 offset, tail depth | Δ_pin (hard pin, weighted) |
+|---|---|---|---|---|
+| 2025\|Winter | 228.64 | +597.67 (2.61×) | +45.67 (0.20×) | 184.5 (0.81×) |
+| 2035\|Summer | 187.56 | +499.03 (2.66×) | +40.58 (0.22×) | 1,823.6 (9.72×) |
+
+- **X4-2 is triggered.** At production depth, the local solvers alone leave a one-signed cost bias of 2.6× the
+  allowance. At tail depth the bias is 0.2×.
+  - **Planner recommendation: no configuration change.** Production already switches to tail depth after an
+    all-channel Boyd pass, so the terminal cycles of a settled run sit at tail depth anyway. Calibration and acceptance
+    then use tail-depth cycles only, and the production-depth floor is reported as a limitation.
+  - **The alternative:** tail depth from cycle 1 in every arm. That is a production configuration change.
+- **X4-1: the proposed V-2 elimination rule is met on 2035|Summer.** Making the interface voltage scenario-common costs
+  9.7× the allowance there.
+  - V-2's soft pin may cost less than the hard pin, so Δ_pin bounds V-2's restriction from above.
+  - If the Expert adopts the rule, V-2 leaves step 4. The pinned arm still carries the pin and stays as the control.
+
 ## Planner decisions
 
 1. **Calibration arm: V-1 only.** Of the three arms, only F1 + V-1 converges to step 3's C_central exactly:
