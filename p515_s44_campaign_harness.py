@@ -889,6 +889,254 @@ def assert_interface_coupling_capture_path():
     return checks
 
 
+# ==============================================================================
+#  S56 validation step 4 (S56_STEP4_DESIGN.md decision 7; Planner task 2026-11-23, item 2b): the per-cycle S56
+#  capture, ONLY for entries declaring the per-scenario coupling (option off: never installed, never asserted, so every
+#  other evaluation runs and writes exactly as before).
+# ==============================================================================
+# One JSONL sidecar per evaluation, a header line then one line per cycle, written at production's once-per-cycle
+# `get_admm_boyd_residual_metrics` call (after the cycle's TSO / DSO / ESSO solves and dual updates, before AA -- the
+# point `interface_dual_capture` reads), each line carrying:
+#   primal_expectation[side][kind]  the expectation-channel consensus copies, consensus_vars['pf'][side]['current']
+#                                   (P MW, Q MVAr) and consensus_vars['vmag'][side]['current'] (V kV), per block
+#                                   (header `blocks` order) one list of n_periods floats;
+#   primal_deviation[side][kind]    the deviation-channel copies consensus_vars['interface_dev'][side]['current']
+#                                   (d_s = exchange_s - own expectation; MW / MVAr / kV), per block one list per
+#                                   scenario (header `deviation_scenarios` order) of n_periods floats;
+#   dual_expectation_v[side]        the expectation V duals dual_vars['vmag'][side]['current'] (the duals not in the
+#                                   interface-dual sidecar). Every OTHER interface dual (expectation P/Q, every
+#                                   deviation dual incl. V) is in `interface_dual_capture.INTERFACE_DUAL_FILE`, written
+#                                   at the same call for every evaluation -- together the two sidecars hold every
+#                                   interface dual on both sides;
+#   rho                             per TSO / DSO block key: rho_pf and rho_v (model Params) in force for the cycle;
+#   tail_compl_inf_tol              per network holder (production `_convergence_depth_tail_holders`): the
+#                                   `compl_inf_tol` option in force for this cycle's solves (None = not set) -- the
+#                                   convergence-depth tail state;
+#   q_blocks                        per (year, day) block, w_b x local cost summed over the TSO and every DSO block, in
+#                                   BOTH conventions: 'settlement_excluded_in_full' = production
+#                                   `_get_operational_recourse_block_components` (the primary Q while the coupling is
+#                                   wired) and 'contracted_excluded' = the same + w_b x (settlement total - contracted
+#                                   part) per agent block; plus the per-agent parts and the salvage block.
+# PR is NOT computed here (production's `priced_residual_pr` is the P-deviation price only); it is recomputed after
+# the run from these primal copies, the duals of both sidecars and the instance prices.
+S56_CYCLE_CAPTURE_FILE = 's56_cycle_capture.jsonl'
+S56_CYCLE_CAPTURE_SCHEMA = 's56_cycle_capture_v1'
+S56_CYCLE_CAPTURE_SUMMARY_KEY = 's56_cycle_capture'
+S56_CYCLE_CAPTURE_LINE_FIELDS = ('cycle', 'captured', 'error', 'primal_expectation', 'primal_deviation',
+                                 'dual_expectation_v', 'rho', 'tail_compl_inf_tol', 'q_blocks', 'capture_s')
+
+
+def assert_s56_cycle_capture_path():
+    """Rule eleven, BEFORE any solve of an evaluation declaring the coupling: every source the S56 per-cycle capture
+    reads exists in the live production code, with the layout the capture assumes. Raises on any failure; returns the
+    checklist."""
+    import inspect
+    import interface_dual_capture as IDC
+    import shared_resources_planning as srp
+    create_src = inspect.getsource(srp.create_admm_variables)
+    wire_src = inspect.getsource(srp._wire_per_scenario_interface_coupling)
+    blocks_src = inspect.getsource(srp._get_operational_recourse_block_components)
+    tso_src = inspect.getsource(srp.update_transmission_model_to_admm)
+    dso_src = inspect.getsource(srp.update_distribution_models_to_admm)
+    checks = {
+        'boyd_call_point': bool(IDC.assert_capture_path()),
+        'idc_deviation_duals_recorded': callable(getattr(IDC, 'read_deviation_duals', None)),
+        'consensus_pf_leaf_p_q_lists': ("consensus_variables['pf']['tso']['current'][node_id][year][day] = "
+                                        "{'p': [0.0] * num_instants, 'q': [0.0] * num_instants}") in create_src,
+        'consensus_vmag_leaf_list': ("consensus_variables['vmag']['tso']['current'][node_id][year][day] = "
+                                     "[node_base_kv] * num_instants") in create_src,
+        'dual_vmag_leaf_list': ("dual_variables['vmag']['tso']['current'][node_id][year][day] = "
+                                "[0.0] * planning_problem.num_instants") in create_src,
+        'deviation_store_name': getattr(srp, 'INTERFACE_DEVIATION_STORE', None) == 'interface_dev',
+        'deviation_stores_created_by_the_wiring': ('consensus_vars[INTERFACE_DEVIATION_STORE] = store' in wire_src
+                                                   and 'dual_vars[INTERFACE_DEVIATION_STORE] = duals' in wire_src),
+        'block_components_settlement_part_follows_wiring': (
+            "settlement_part = 'total' if _per_scenario_interface_coupling_wired(models) else 'contracted'"
+            in blocks_src),
+        'local_settlement_parts': callable(getattr(srp, '_get_local_interface_settlement', None)),
+        'block_weight': callable(getattr(srp, '_get_admm_block_weight', None)),
+        'rho_params_tso': 'model[year][day].rho_pf' in tso_src and 'model[year][day].rho_v' in tso_src,
+        'rho_params_dso': 'rho_pf' in dso_src and 'rho_v' in dso_src,
+        'tail_holders': callable(getattr(srp, '_convergence_depth_tail_holders', None))
+                        and getattr(srp, 'CONVERGENCE_DEPTH_TAIL_OPTION', None) == 'compl_inf_tol',
+        'writer_is_gate_result_io': callable(getattr(GRIO, 'dumps', None)),
+    }
+    failed = sorted(k for k, v in checks.items() if not v)
+    if failed:
+        raise RuntimeError(f'S56 per-cycle capture path missing (before any solve): {failed}')
+    return checks
+
+
+def _floats(seq):
+    return [float(v) for v in seq]
+
+
+def s56_cycle_capture_line(planning, tso_model, dso_models, esso_model, consensus_vars, dual_vars, blocks):
+    """The capture of ONE cycle (module comment above). Pure reads (dict / list indexing, pyomo value, production
+    read functions); returns the line's data fields."""
+    import pyomo.environ as pe
+    import shared_resources_planning as srp
+    line = {}
+    pe_exp, pe_dev, de_v = {}, {}, {}
+    store = consensus_vars.get(srp.INTERFACE_DEVIATION_STORE)
+    for side in ('tso', 'dso'):
+        pf = consensus_vars['pf'][side]['current']
+        vm = consensus_vars['vmag'][side]['current']
+        pe_exp[side] = {'p': [_floats(pf[n][y][d]['p']) for n, y, d in blocks],
+                        'q': [_floats(pf[n][y][d]['q']) for n, y, d in blocks],
+                        'v': [_floats(vm[n][y][d]) for n, y, d in blocks]}
+        pe_dev[side] = ({kind: [[_floats(sc) for sc in store[side]['current'][n][y][d][kind]] for n, y, d in blocks]
+                         for kind in store['meta']['kinds']} if store is not None else None)
+        dv = dual_vars['vmag'][side]['current']
+        de_v[side] = [_floats(dv[n][y][d]) for n, y, d in blocks]
+    line['primal_expectation'], line['primal_deviation'], line['dual_expectation_v'] = pe_exp, pe_dev, de_v
+    tn = planning.transmission_network
+    rho = {}
+    for year in tn.years:
+        for day in tn.days:
+            b = tso_model[year][day]
+            rho[f'TSO|{year}|{day}'] = {'rho_pf': float(pe.value(b.rho_pf)), 'rho_v': float(pe.value(b.rho_v))}
+    for node_id, dn in planning.distribution_networks.items():
+        for year in dn.years:
+            for day in dn.days:
+                b = dso_models[node_id][year][day]
+                rho[f'DSO{node_id}|{year}|{day}'] = {'rho_pf': float(pe.value(b.rho_pf)),
+                                                     'rho_v': float(pe.value(b.rho_v))}
+    line['rho'] = rho
+    tail = {}
+    for label, holder in srp._convergence_depth_tail_holders(planning):
+        options = holder.params.solver_params.options
+        tail[label] = options.get(srp.CONVERGENCE_DEPTH_TAIL_OPTION) if options is not None else None
+    line['tail_compl_inf_tol'] = tail
+    models = {'tso': tso_model, 'dso': dso_models, 'esso': esso_model}
+    comp = srp._get_operational_recourse_block_components(planning, models)
+    per_yd, per_agent = {}, {}
+    for (kind, node_id, year, day), value in comp.items():
+        if kind == 'SALVAGE':
+            continue
+        if kind == 'TSO':
+            holder, model, label = tn, tso_model[year][day], f'TSO|{year}|{day}'
+        else:
+            holder = planning.distribution_networks[node_id]
+            model, label = dso_models[node_id][year][day], f'DSO{node_id}|{year}|{day}'
+        weight = srp._get_admm_block_weight(holder, year, day)
+        total = srp._get_local_interface_settlement(model, part='total')
+        contracted = srp._get_local_interface_settlement(model, part='contracted')
+        primary_is_full = srp._per_scenario_interface_coupling_wired(models)
+        full = float(value) if primary_is_full else float(value - weight * (total - contracted))
+        cont = float(value + weight * (total - contracted)) if primary_is_full else float(value)
+        per_agent[label] = {'settlement_excluded_in_full': full, 'contracted_excluded': cont, 'weight': weight,
+                            'settlement_total_unweighted': float(total),
+                            'settlement_contracted_unweighted': float(contracted)}
+        acc = per_yd.setdefault(f'{year}|{day}', {'settlement_excluded_in_full': 0.0, 'contracted_excluded': 0.0})
+        acc['settlement_excluded_in_full'] += full
+        acc['contracted_excluded'] += cont
+    line['q_blocks'] = {'per_year_day': per_yd, 'per_agent': per_agent,
+                        'salvage_block': float(comp.get(('SALVAGE', None, None, None), 0.0)),
+                        'convention': ('EUR of total discounted cost; w_b x (get_primal_value - settlement part - '
+                                       'pin) per agent block (production _get_operational_recourse_block_components); '
+                                       'salvage separate (its block is -salvage)')}
+    return line
+
+
+class S56CycleCapture:
+    def __init__(self, eval_dir):
+        self.eval_dir = eval_dir
+        self.calls = 0
+        self.lines = 0
+        self.errors = []
+        self.header = None
+        self.blocks = None
+        self.closed = False
+        self.bytes_written = 0
+        self.per_line_bytes = []
+
+    def _write(self, obj):
+        text = GRIO.dumps(obj, default=GRIO.json_default) + '\n'
+        with open(os.path.join(self.eval_dir, S56_CYCLE_CAPTURE_FILE), 'a') as handle:
+            handle.write(text)
+            handle.flush()
+            os.fsync(handle.fileno())
+        self.bytes_written += len(text.encode())
+        return len(text.encode())
+
+    def on_boyd(self, planning, tso_model, dso_models, esso_model, consensus_vars, dual_vars):
+        """Called after production's get_admm_boyd_residual_metrics returned. Never raises."""
+        if self.closed:
+            return
+        import interface_dual_capture as IDC
+        import shared_resources_planning as srp
+        self.calls += 1
+        t0 = time.time()
+        line = {'cycle': self.calls, 'captured': False, 'error': None}
+        try:
+            if self.header is None:
+                self.blocks = IDC.block_order(planning)
+                store = consensus_vars.get(srp.INTERFACE_DEVIATION_STORE) or {}
+                tn = planning.transmission_network
+                self.header = {
+                    'schema': S56_CYCLE_CAPTURE_SCHEMA, 'header': True, 'first_cycle': self.calls,
+                    'blocks': [[n, y, d] for n, y, d in self.blocks], 'n_blocks': len(self.blocks),
+                    'n_periods': planning.num_instants,
+                    'deviation_kinds': list((store.get('meta') or {}).get('kinds') or []),
+                    'deviation_scenarios': (store.get('meta') or {}).get('scenarios'),
+                    'deviation_units': (store.get('meta') or {}).get('units'),
+                    'n_network_blocks': len(tn.years) * len(tn.days) * (1 + len(planning.distribution_networks)),
+                    'tail_holders': [label for label, _h in srp._convergence_depth_tail_holders(planning)],
+                    'line_fields': list(S56_CYCLE_CAPTURE_LINE_FIELDS),
+                    'sources': {'primal_expectation': "consensus_vars['pf' | 'vmag'][side]['current']",
+                                'primal_deviation': "consensus_vars['interface_dev'][side]['current']",
+                                'dual_expectation_v': "dual_vars['vmag'][side]['current']",
+                                'other_duals': f'{IDC.INTERFACE_DUAL_FILE} (same call point)',
+                                'read_point': 'get_admm_boyd_residual_metrics (after the cycle dual updates, before AA)'}}
+                self._write(self.header)
+            line.update(s56_cycle_capture_line(planning, tso_model, dso_models, esso_model, consensus_vars, dual_vars,
+                                               self.blocks))
+            line['captured'] = True
+        except Exception as error:  # noqa: BLE001 -- write-only capture: recorded, never raised
+            line['error'] = f'{type(error).__name__}: {error}'
+            self.errors.append({'cycle': self.calls, 'error': line['error']})
+        line['capture_s'] = time.time() - t0
+        try:
+            self.per_line_bytes.append(self._write(line))
+            self.lines += 1
+        except Exception as error:  # noqa: BLE001
+            self.errors.append({'cycle': self.calls, 'error': f'write failed: {type(error).__name__}: {error}'})
+
+    def summary(self):
+        return {'schema': S56_CYCLE_CAPTURE_SCHEMA, 'file': S56_CYCLE_CAPTURE_FILE, 'boyd_calls_captured': self.calls,
+                'cycle_lines_written': self.lines, 'header_written': self.header is not None,
+                'bytes_written': self.bytes_written,
+                'bytes_per_cycle_line_max': max(self.per_line_bytes) if self.per_line_bytes else None,
+                'errors': list(self.errors),
+                'ok': not self.errors and self.lines == self.calls and (self.calls == 0 or self.header is not None)}
+
+
+@contextmanager
+def s56_cycle_capture_hooks(eval_dir, holder):
+    """Installs a pass-through wrapper over production's `get_admm_boyd_residual_metrics` (called with the same
+    argument objects, its return value returned unchanged) for the run; restores production on exit (even on error);
+    `holder[S56_CYCLE_CAPTURE_SUMMARY_KEY]` gets the summary. Refuses to overwrite an existing sidecar."""
+    import shared_resources_planning as srp
+    path = os.path.join(eval_dir, S56_CYCLE_CAPTURE_FILE)
+    if os.path.exists(path):
+        raise RuntimeError(f'refusing to overwrite existing artifact: {path}')
+    capture = S56CycleCapture(eval_dir)
+    original = srp.get_admm_boyd_residual_metrics
+
+    def w_boyd(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters):
+        result = original(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars,
+                          admm_parameters)
+        capture.on_boyd(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars)
+        return result
+    srp.get_admm_boyd_residual_metrics = w_boyd
+    try:
+        yield capture
+    finally:
+        srp.get_admm_boyd_residual_metrics = original
+        holder[S56_CYCLE_CAPTURE_SUMMARY_KEY] = capture.summary()
+
+
 _HEX64 = frozenset('0123456789abcdef')
 
 
@@ -4503,6 +4751,22 @@ def activation_readback(planning, tso_model, dso_models, alpha):
 INIT_IDENTITY_FIELDS = ('gross_operational_cost', 'gross_operational_cost_including_settlement',
                         'interface_settlement_total', 'voltage_pin_total', 'terminal_salvage_value',
                         'net_operational_recourse')
+# S56 step 4 (Planner ruling at the step-1 completion, narrowed grouping; task 2026-11-23 item 2b): two initialisation
+# records of one candidate on one instance are comparable when their initialisation MODELS are built alike. The
+# per-scenario coupling is wired only at ADMM preparation, so option off and option on with the 'pin' voltage mode
+# build the same initialisation model (the pin is constructed) -- one group, compared; under 'per_scenario' the pin
+# is not constructed -- the other group, never compared with the first.
+INIT_IDENTITY_GROUP_PIN = 'voltage_pin_constructed'
+INIT_IDENTITY_GROUP_NO_PIN = 'voltage_pin_not_constructed'
+
+
+def initialisation_identity_group(interface_coupling):
+    """The initialisation-identity group of a coupling declaration (keyed form, None = off / default)."""
+    keyed = interface_coupling_in_key(interface_coupling)
+    if (keyed is not None and keyed['per_scenario_interface_coupling'] is True
+            and keyed['per_scenario_voltage_mode'] == 'per_scenario'):
+        return INIT_IDENTITY_GROUP_NO_PIN
+    return INIT_IDENTITY_GROUP_PIN
 
 
 def initialisation_identity_record(planning, tso_model, dso_models, esso_model):
@@ -4539,9 +4803,13 @@ def register_initialisation_identity(record, campaign_root, eval_dir, label, can
     # S56 step 1 completion: the per-scenario coupling option (keyed form; None = off / default) is part of what makes
     # two initialisations comparable -- under the per-scenario voltage mode the pin is not constructed, so an on and
     # an off evaluation of one candidate in one root legitimately differ. Recorded only when set (format unchanged
-    # otherwise); records of another coupling declaration are listed, not compared.
+    # otherwise). S56 step 4: records are grouped by PIN CONSTRUCTION (`initialisation_identity_group`): off and
+    # on-'pin' are compared, on-'per_scenario' only with its own group; records of the other group are listed, not
+    # compared. The group is recorded only when the option is set.
+    my_group = initialisation_identity_group(interface_coupling)
     if interface_coupling is not None:
         mine['interface_coupling'] = interface_coupling
+        mine['initialisation_identity_group'] = my_group
     tmp = f'{path}.{os.getpid()}.tmp'
     with open(tmp, 'x') as handle:
         json.dump(mine, handle, indent=1)
@@ -4556,20 +4824,26 @@ def register_initialisation_identity(record, campaign_root, eval_dir, label, can
         with open(os.path.join(directory, fname)) as handle:
             other = json.load(handle)
         if (other.get('candidate_key') != candidate_key or other.get('derived_instance') != derived_identity
-                or other.get('interface_coupling') != mine.get('interface_coupling')):
+                or initialisation_identity_group(other.get('interface_coupling')) != my_group):
             other_candidates.append({'file': fname, 'label': other.get('label'),
                                      'candidate_key': other.get('candidate_key')})
             continue
         other_hex = (other.get('record') or {}).get('gross_operational_cost_hex')
-        compared.append({'file': fname, 'label': other.get('label'), 'gross_operational_cost_hex': other_hex,
-                         'equal': other_hex == record['gross_operational_cost_hex'],
-                         'components_equal': {k: (other.get('record') or {}).get('components_hex', {}).get(k) == v
-                                              for k, v in record['components_hex'].items()}})
+        entry = {'file': fname, 'label': other.get('label'), 'gross_operational_cost_hex': other_hex,
+                 'equal': other_hex == record['gross_operational_cost_hex'],
+                 'components_equal': {k: (other.get('record') or {}).get('components_hex', {}).get(k) == v
+                                      for k, v in record['components_hex'].items()}}
+        if other.get('interface_coupling') is not None:  # S56 step 4: named only when the other record declares it
+            entry['interface_coupling'] = other.get('interface_coupling')
+        compared.append(entry)
     mismatches = [c for c in compared if not c['equal']]
-    return {'path': os.path.relpath(path, REPO), 'gross_operational_cost': record['gross_operational_cost'],
-            'gross_operational_cost_hex': record['gross_operational_cost_hex'], 'n_compared': len(compared),
-            'compared': compared, 'other_candidates_not_compared': other_candidates, 'mismatches': mismatches,
-            'all_equal': not mismatches}
+    out = {'path': os.path.relpath(path, REPO), 'gross_operational_cost': record['gross_operational_cost'],
+           'gross_operational_cost_hex': record['gross_operational_cost_hex'], 'n_compared': len(compared),
+           'compared': compared, 'other_candidates_not_compared': other_candidates, 'mismatches': mismatches,
+           'all_equal': not mismatches}
+    if interface_coupling is not None:  # S56 step 4: recorded only when the option is set (format unchanged otherwise)
+        out['initialisation_identity_group'] = my_group
+    return out
 
 
 class _AlphaRowHookControl:
@@ -5936,6 +6210,9 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     if coupling_on:
         holder['interface_coupling_capture_checklist'] = assert_interface_coupling_capture_path()
         progress['interface_coupling_capture_checklist'] = holder['interface_coupling_capture_checklist']
+        # S56 step 4 (item 2b): the per-cycle S56 capture's sources, asserted before any solve (rule eleven)
+        holder['s56_cycle_capture_checklist'] = assert_s56_cycle_capture_path()
+        progress['s56_cycle_capture_checklist'] = holder['s56_cycle_capture_checklist']
     post_request = entry.get('post_certification')
     post_checklist = None
     if post_request:
@@ -6192,11 +6469,14 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     # W118: likewise entered first (mutually exclusive with the three above).
     resettle_cm = (W118C.settling_resettle_hooks(eval_dir, resettle, holder, int(spec['cap']))
                    if resettle is not None else nullcontext())
+    # S56 step 4 (item 2b): the per-cycle S56 capture, only for entries declaring the coupling (else nothing installed)
+    s56_cycle_cm = s56_cycle_capture_hooks(eval_dir, holder) if coupling_on else nullcontext()
     with continuation_cm, \
          settling_cm, \
          extension_cm, \
          resettle_cm, \
          IDC.interface_dual_capture_hooks(eval_dir, holder) as dual_capture, \
+         s56_cycle_cm, \
          G.s38_pf_capture_hooks(paths['recourse_jump'], paths['ess_stride'], paths['floor'],
                                 paths['pf_stride'], floor_rows_by_node, stride=1), \
          G.s39_exempt_until_capture_hooks(paths['exempt']), \
@@ -6345,6 +6625,9 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'interface_coupling_applied_in_child': holder.get('interface_coupling_applied'),
             'interface_coupling_capture_checklist_asserted_before_run': holder.get(
                 'interface_coupling_capture_checklist'),
+            # S56 step 4 (item 2b): the per-cycle S56 capture (checklist asserted before the run, and its summary)
+            's56_cycle_capture_checklist_asserted_before_run': holder.get('s56_cycle_capture_checklist'),
+            's56_cycle_capture_summary': holder.get(S56_CYCLE_CAPTURE_SUMMARY_KEY),
         })
     record = build_evaluation_record(
         spec=spec, spec_path=spec_path, spec_sha256=args.spec_sha256, entry=entry, report=report,
