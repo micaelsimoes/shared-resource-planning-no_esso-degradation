@@ -1,0 +1,242 @@
+18:59:59 [Db] OK   step 4 spec sha256 == spec
+18:59:59 [Db] OK   step 4 evaluation sha256 == spec
+18:59:59 [Db] OK   A: case sha256 == spec
+18:59:59 [Db] OK   A: case == the campaign spec declaration (path, sha256, checksum)
+18:59:59 [Db] OK   A: eval dir is the campaign's pinned AA-off arm (AA off, no per-scenario coupling)
+18:59:59 [Db] OK   A: multiscenario_terminal.json sha256 == child manifest pin
+18:59:59 [Db] OK   A: evaluation_record.json sha256 == child manifest pin
+18:59:59 [Db] OK   A: s56_cycle_capture.jsonl sha256 == child manifest pin
+18:59:59 [Db] OK   A: candidate_canonical == spec (x0)
+18:59:59 [Db] OK   A: certified, terminal == certification cycle == spec K
+18:59:59 [Db] OK   A: eval key == spec
+18:59:59 [Db] OK   A: capture header arm pinned, primary convention contracted_excluded
+18:59:59 [Db] OK   A: last capture line = cycle K, captured
+18:59:59 [D0] stage: read_planning_problem (data, copula/KDE scenario generation, networks, ESS)
+[INFO] Scenario random seed: 2026
+[INFO] Reading MARKET DATA from file(s)...
+[INFO] 	 - Generating market scenarios...
+[INFO] 	 - Plotting market scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading TRANSMISSION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Scenario checksum: 58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e
+[INFO] Reading SHARED ESS DATA from file(s)...
+[INFO] Reading PLANNING PARAMETERS from file...
+19:00:07 [D0] stage done (7.9 s): read_planning_problem (data, copula/KDE scenario generation, networks, ESS)
+19:00:07 [Db] OK   A: combined scenario checksum == declaration
+19:00:07 [Db] OK   A: TN ADN nodes == [5, 7, 9]
+19:00:07 [Db] OK   A: instance blocks == spec
+19:00:07 [D0] OK   A 2025 Winter: 9 scenarios; TSO per-scenario probabilities == network product
+19:00:07 [D0] OK   A 2025 Winter: admm_block_weight saved == production
+19:00:07 [D0] OK   A 2025 Winter DN5: TSO exchange scenario-common (max spread P, Q <= 1e-9)
+19:00:07 [D0] OK   A 2025 Winter DN5: DSO probabilities == TSO
+19:00:07 [D0] OK   A 2025 Winter DN5: DSO covariance recomputed == saved settlement deviation (abs <= 1e-6 max(1,|x|))
+19:00:07 [D0] OK   A 2025 Winter DN7: TSO exchange scenario-common (max spread P, Q <= 1e-9)
+19:00:07 [D0] OK   A 2025 Winter DN7: DSO probabilities == TSO
+19:00:07 [D0] OK   A 2025 Winter DN7: DSO covariance recomputed == saved settlement deviation (abs <= 1e-6 max(1,|x|))
+19:00:07 [D0] OK   A 2025 Winter DN9: TSO exchange scenario-common (max spread P, Q <= 1e-9)
+19:00:07 [D0] OK   A 2025 Winter DN9: DSO probabilities == TSO
+19:00:07 [D0] OK   A 2025 Winter DN9: DSO covariance recomputed == saved settlement deviation (abs <= 1e-6 max(1,|x|))
+19:00:07 [D0] OK   A 2025 Winter: TN price array == every DN block price array (max abs <= 1e-9)
+19:00:07 [D0] OK   A 2025 Winter DN5: shared-ESS schedule on the na scenario [0, 0]
+19:00:07 [D0] OK   A 2025 Winter DN7: shared-ESS schedule on the na scenario [0, 0]
+19:00:07 [D0] OK   A 2025 Winter DN9: shared-ESS schedule on the na scenario [0, 0]
+19:00:07 [Db] OK   A 2025|Winter: w_b production == step 4 spec w_b
+19:00:07 [Db] OK   A 2025|Winter DSO5: base + covariance == block_recourse_production_local (rel <= 1e-12)
+19:00:07 [Db] OK   A 2025|Winter DSO5: capture contracted_excluded == w x block local (rel <= 1e-12)
+19:00:07 [Db] OK   A 2025|Winter DSO5: capture settlement_excluded_in_full == w x base (rel <= 1e-12)
+19:00:07 [Db] OK   A 2025|Winter DSO7: base + covariance == block_recourse_production_local (rel <= 1e-12)
+19:00:07 [Db] OK   A 2025|Winter DSO7: capture contracted_excluded == w x block local (rel <= 1e-12)
+19:00:07 [Db] OK   A 2025|Winter DSO7: capture settlement_excluded_in_full == w x base (rel <= 1e-12)
+19:00:07 [Db] OK   A 2025|Winter DSO9: base + covariance == block_recourse_production_local (rel <= 1e-12)
+19:00:07 [Db] OK   A 2025|Winter DSO9: capture contracted_excluded == w x block local (rel <= 1e-12)
+19:00:07 [Db] OK   A 2025|Winter DSO9: capture settlement_excluded_in_full == w x base (rel <= 1e-12)
+19:00:07 [Db] OK   A 2025|Winter: capture TSO contracted_excluded == w x TSO block local (rel <= 1e-12)
+19:00:07 [Db] OK   A 2025|Winter: Q_pin(capture) == w (TSO base + sum DSO base + sum cov) (rel <= 1e-12)
+19:00:07 [Db] OK   A 2025|Winter: Q_pin == step 4 evaluation Q_pin_K (bitwise)
+19:00:07 [Db] OK   A 2025|Winter: w C_central == step 4 evaluation (bitwise)
+19:00:07 [D0] OK   A A 2025 Winter: model gates
+19:00:07 [D0v2] OK   A A 2025 Winter: shared ESS = fixed injection only (rows deactivated, only node balance references it, fixed)
+19:00:08 [D0] OK   A B 2025 Winter: model gates
+19:00:08 [D0v2] OK   A B 2025 Winter: shared ESS = fixed injection only (rows deactivated, only node balance references it, fixed)
+19:00:08 [Db] OK   A: bound_relax_factor not overridden
+19:00:08 [Db] OK   B: case sha256 == spec
+19:00:08 [Db] OK   B: case == the campaign spec declaration (path, sha256, checksum)
+19:00:08 [Db] OK   B: eval dir is the campaign's pinned AA-off arm (AA off, no per-scenario coupling)
+19:00:08 [Db] OK   B: multiscenario_terminal.json sha256 == child manifest pin
+19:00:08 [Db] OK   B: evaluation_record.json sha256 == child manifest pin
+19:00:08 [Db] OK   B: s56_cycle_capture.jsonl sha256 == child manifest pin
+19:00:08 [Db] OK   B: candidate_canonical == spec (x0)
+19:00:08 [Db] OK   B: certified, terminal == certification cycle == spec K
+19:00:08 [Db] OK   B: eval key == spec
+19:00:08 [Db] OK   B: capture header arm pinned, primary convention contracted_excluded
+19:00:08 [Db] OK   B: last capture line = cycle K, captured
+19:00:08 [D0] stage: read_planning_problem (data, copula/KDE scenario generation, networks, ESS)
+[INFO] Scenario random seed: 2026
+[INFO] Reading MARKET DATA from file(s)...
+[INFO] 	 - Generating market scenarios...
+[INFO] 	 - Plotting market scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading TRANSMISSION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Scenario checksum: ade7456c3d110e4cbc9aec7f701feb431854bd03ec1dc8f37601fc164721ed1a
+[INFO] Reading SHARED ESS DATA from file(s)...
+[INFO] Reading PLANNING PARAMETERS from file...
+19:00:15 [D0] stage done (7.3 s): read_planning_problem (data, copula/KDE scenario generation, networks, ESS)
+19:00:15 [Db] OK   B: combined scenario checksum == declaration
+19:00:15 [Db] OK   B: TN ADN nodes == [5, 7, 9]
+19:00:15 [Db] OK   B: instance blocks == spec
+19:00:15 [D0] OK   B 2025 Summer: 9 scenarios; TSO per-scenario probabilities == network product
+19:00:15 [D0] OK   B 2025 Summer: admm_block_weight saved == production
+19:00:15 [D0] OK   B 2025 Summer DN5: TSO exchange scenario-common (max spread P, Q <= 1e-9)
+19:00:15 [D0] OK   B 2025 Summer DN5: DSO probabilities == TSO
+19:00:15 [D0] OK   B 2025 Summer DN5: DSO covariance recomputed == saved settlement deviation (abs <= 1e-6 max(1,|x|))
+19:00:15 [D0] OK   B 2025 Summer DN7: TSO exchange scenario-common (max spread P, Q <= 1e-9)
+19:00:15 [D0] OK   B 2025 Summer DN7: DSO probabilities == TSO
+19:00:15 [D0] OK   B 2025 Summer DN7: DSO covariance recomputed == saved settlement deviation (abs <= 1e-6 max(1,|x|))
+19:00:15 [D0] OK   B 2025 Summer DN9: TSO exchange scenario-common (max spread P, Q <= 1e-9)
+19:00:15 [D0] OK   B 2025 Summer DN9: DSO probabilities == TSO
+19:00:15 [D0] OK   B 2025 Summer DN9: DSO covariance recomputed == saved settlement deviation (abs <= 1e-6 max(1,|x|))
+19:00:15 [D0] OK   B 2025 Summer: TN price array == every DN block price array (max abs <= 1e-9)
+19:00:15 [D0] OK   B 2025 Summer DN5: shared-ESS schedule on the na scenario [0, 0]
+19:00:15 [D0] OK   B 2025 Summer DN7: shared-ESS schedule on the na scenario [0, 0]
+19:00:15 [D0] OK   B 2025 Summer DN9: shared-ESS schedule on the na scenario [0, 0]
+19:00:15 [Db] OK   B 2025|Summer: w_b production == step 4 spec w_b
+19:00:15 [Db] OK   B 2025|Summer DSO5: base + covariance == block_recourse_production_local (rel <= 1e-12)
+19:00:15 [Db] OK   B 2025|Summer DSO5: capture contracted_excluded == w x block local (rel <= 1e-12)
+19:00:15 [Db] OK   B 2025|Summer DSO5: capture settlement_excluded_in_full == w x base (rel <= 1e-12)
+19:00:15 [Db] OK   B 2025|Summer DSO7: base + covariance == block_recourse_production_local (rel <= 1e-12)
+19:00:15 [Db] OK   B 2025|Summer DSO7: capture contracted_excluded == w x block local (rel <= 1e-12)
+19:00:15 [Db] OK   B 2025|Summer DSO7: capture settlement_excluded_in_full == w x base (rel <= 1e-12)
+19:00:15 [Db] OK   B 2025|Summer DSO9: base + covariance == block_recourse_production_local (rel <= 1e-12)
+19:00:15 [Db] OK   B 2025|Summer DSO9: capture contracted_excluded == w x block local (rel <= 1e-12)
+19:00:15 [Db] OK   B 2025|Summer DSO9: capture settlement_excluded_in_full == w x base (rel <= 1e-12)
+19:00:15 [Db] OK   B 2025|Summer: capture TSO contracted_excluded == w x TSO block local (rel <= 1e-12)
+19:00:15 [Db] OK   B 2025|Summer: Q_pin(capture) == w (TSO base + sum DSO base + sum cov) (rel <= 1e-12)
+19:00:15 [Db] OK   B 2025|Summer: Q_pin == step 4 evaluation Q_pin_K (bitwise)
+19:00:15 [Db] OK   B 2025|Summer: w C_central == step 4 evaluation (bitwise)
+19:00:15 [D0] OK   B 2035 Summer: 9 scenarios; TSO per-scenario probabilities == network product
+19:00:15 [D0] OK   B 2035 Summer: admm_block_weight saved == production
+19:00:15 [D0] OK   B 2035 Summer DN5: TSO exchange scenario-common (max spread P, Q <= 1e-9)
+19:00:15 [D0] OK   B 2035 Summer DN5: DSO probabilities == TSO
+19:00:15 [D0] OK   B 2035 Summer DN5: DSO covariance recomputed == saved settlement deviation (abs <= 1e-6 max(1,|x|))
+19:00:15 [D0] OK   B 2035 Summer DN7: TSO exchange scenario-common (max spread P, Q <= 1e-9)
+19:00:15 [D0] OK   B 2035 Summer DN7: DSO probabilities == TSO
+19:00:15 [D0] OK   B 2035 Summer DN7: DSO covariance recomputed == saved settlement deviation (abs <= 1e-6 max(1,|x|))
+19:00:15 [D0] OK   B 2035 Summer DN9: TSO exchange scenario-common (max spread P, Q <= 1e-9)
+19:00:15 [D0] OK   B 2035 Summer DN9: DSO probabilities == TSO
+19:00:15 [D0] OK   B 2035 Summer DN9: DSO covariance recomputed == saved settlement deviation (abs <= 1e-6 max(1,|x|))
+19:00:15 [D0] OK   B 2035 Summer: TN price array == every DN block price array (max abs <= 1e-9)
+19:00:15 [D0] OK   B 2035 Summer DN5: shared-ESS schedule on the na scenario [0, 0]
+19:00:15 [D0] OK   B 2035 Summer DN7: shared-ESS schedule on the na scenario [0, 0]
+19:00:15 [D0] OK   B 2035 Summer DN9: shared-ESS schedule on the na scenario [0, 0]
+19:00:15 [Db] OK   B 2035|Summer: w_b production == step 4 spec w_b
+19:00:15 [Db] OK   B 2035|Summer DSO5: base + covariance == block_recourse_production_local (rel <= 1e-12)
+19:00:15 [Db] OK   B 2035|Summer DSO5: capture contracted_excluded == w x block local (rel <= 1e-12)
+19:00:15 [Db] OK   B 2035|Summer DSO5: capture settlement_excluded_in_full == w x base (rel <= 1e-12)
+19:00:15 [Db] OK   B 2035|Summer DSO7: base + covariance == block_recourse_production_local (rel <= 1e-12)
+19:00:15 [Db] OK   B 2035|Summer DSO7: capture contracted_excluded == w x block local (rel <= 1e-12)
+19:00:15 [Db] OK   B 2035|Summer DSO7: capture settlement_excluded_in_full == w x base (rel <= 1e-12)
+19:00:15 [Db] OK   B 2035|Summer DSO9: base + covariance == block_recourse_production_local (rel <= 1e-12)
+19:00:15 [Db] OK   B 2035|Summer DSO9: capture contracted_excluded == w x block local (rel <= 1e-12)
+19:00:15 [Db] OK   B 2035|Summer DSO9: capture settlement_excluded_in_full == w x base (rel <= 1e-12)
+19:00:15 [Db] OK   B 2035|Summer: capture TSO contracted_excluded == w x TSO block local (rel <= 1e-12)
+19:00:15 [Db] OK   B 2035|Summer: Q_pin(capture) == w (TSO base + sum DSO base + sum cov) (rel <= 1e-12)
+19:00:15 [Db] OK   B 2035|Summer: Q_pin == step 4 evaluation Q_pin_K (bitwise)
+19:00:15 [Db] OK   B 2035|Summer: w C_central == step 4 evaluation (bitwise)
+19:00:16 [D0] OK   B A 2025 Summer: model gates
+19:00:16 [D0] OK   B A 2035 Summer: model gates
+19:00:16 [D0v2] OK   B A 2025 Summer: shared ESS = fixed injection only (rows deactivated, only node balance references it, fixed)
+19:00:16 [D0v2] OK   B A 2035 Summer: shared ESS = fixed injection only (rows deactivated, only node balance references it, fixed)
+19:00:17 [D0] OK   B B 2025 Summer: model gates
+19:00:17 [D0] OK   B B 2035 Summer: model gates
+19:00:17 [D0v2] OK   B B 2025 Summer: shared ESS = fixed injection only (rows deactivated, only node balance references it, fixed)
+19:00:18 [D0v2] OK   B B 2035 Summer: shared ESS = fixed injection only (rows deactivated, only node balance references it, fixed)
+19:00:18 [Db] OK   B: bound_relax_factor not overridden
+19:00:18 [D0] OK   A A 2025 Winter: model gates
+19:00:18 [D0v2] OK   A A 2025 Winter: shared ESS = fixed injection only (rows deactivated, only node balance references it, fixed)
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+19:00:19 [Db] OK   A A 2025|Winter: solve status asserted (production success test)
+19:00:19 [Db] A A 2025|Winter: optimal Optimal Solution Found. loaded True it 31 wall 0.8s obj 161897.7047826409
+19:00:20 [D0] OK   A B 2025 Winter: model gates
+19:00:20 [D0v2] OK   A B 2025 Winter: shared ESS = fixed injection only (rows deactivated, only node balance references it, fixed)
+[INFO] 			 - Running SMOPF, Network case9, 2025, Winter...
+[WARNING] Network solver did not converge for case9, year=2025, day=Winter: status=warning, termination=infeasible, message=Ipopt 3.14.18\x3a Converged to a locally infeasible point. Problem may be infeasible. | warm_start=False
+[WARNING] IPOPT solver log for case9, year=2025, day=Winter: data/SRP1/Results/P515S56/step4_db_resolve_v1/run/logs/A/B/optim_log_case9_2025_Winter.log
+19:00:22 [Db] FAIL A B 2025|Winter: solve status asserted (production success test) -- status=warning, termination=infeasible, message=Ipopt 3.14.18\x3a Converged to a locally infeasible point. Problem may be infeasible.
+19:00:22 [Db] A B 2025|Winter: infeasible Converged to a point of local infeasibility. Problem may be infeasible. loaded False it 146 wall 2.0s obj None
+19:00:23 [D0] OK   B A 2025 Summer: model gates
+19:00:23 [D0] OK   B A 2035 Summer: model gates
+19:00:23 [D0v2] OK   B A 2025 Summer: shared ESS = fixed injection only (rows deactivated, only node balance references it, fixed)
+19:00:23 [D0v2] OK   B A 2035 Summer: shared ESS = fixed injection only (rows deactivated, only node balance references it, fixed)
+[INFO] 			 - Running SMOPF, Network case9, 2025, Summer...
+19:00:24 [Db] OK   B A 2025|Summer: solve status asserted (production success test)
+19:00:24 [Db] B A 2025|Summer: optimal Optimal Solution Found. loaded True it 31 wall 0.8s obj 136020.64180520733
+[INFO] 			 - Running SMOPF, Network case9, 2035, Summer...
+19:00:25 [Db] OK   B A 2035|Summer: solve status asserted (production success test)
+19:00:25 [Db] B A 2035|Summer: optimal Optimal Solution Found. loaded True it 37 wall 1.0s obj 64726.36654704039
+19:00:26 [D0] OK   B B 2025 Summer: model gates
+19:00:26 [D0] OK   B B 2035 Summer: model gates
+19:00:26 [D0v2] OK   B B 2025 Summer: shared ESS = fixed injection only (rows deactivated, only node balance references it, fixed)
+19:00:27 [D0v2] OK   B B 2035 Summer: shared ESS = fixed injection only (rows deactivated, only node balance references it, fixed)
+[INFO] 			 - Running SMOPF, Network case9, 2025, Summer...
+[WARNING] Network solver did not converge for case9, year=2025, day=Summer: status=warning, termination=infeasible, message=Ipopt 3.14.18\x3a Converged to a locally infeasible point. Problem may be infeasible. | warm_start=False
+[WARNING] IPOPT solver log for case9, year=2025, day=Summer: data/SRP1/Results/P515S56/step4_db_resolve_v1/run/logs/B/B/optim_log_case9_2025_Summer.log
+19:00:29 [Db] FAIL B B 2025|Summer: solve status asserted (production success test) -- status=warning, termination=infeasible, message=Ipopt 3.14.18\x3a Converged to a locally infeasible point. Problem may be infeasible.
+19:00:29 [Db] B B 2025|Summer: infeasible Converged to a point of local infeasibility. Problem may be infeasible. loaded False it 138 wall 1.9s obj None
+[INFO] 			 - Running SMOPF, Network case9, 2035, Summer...
+[WARNING] Network solver did not converge for case9, year=2035, day=Summer: status=warning, termination=infeasible, message=Ipopt 3.14.18\x3a Converged to a locally infeasible point. Problem may be infeasible. | warm_start=False
+[WARNING] IPOPT solver log for case9, year=2035, day=Summer: data/SRP1/Results/P515S56/step4_db_resolve_v1/run/logs/B/B/optim_log_case9_2035_Summer.log
+19:00:31 [Db] FAIL B B 2035|Summer: solve status asserted (production success test) -- status=warning, termination=infeasible, message=Ipopt 3.14.18\x3a Converged to a locally infeasible point. Problem may be infeasible.
+19:00:31 [Db] B B 2035|Summer: infeasible Converged to a point of local infeasibility. Problem may be infeasible. loaded False it 138 wall 2.1s obj None
+19:00:31 [Db] wrote data/SRP1/Results/P515S56/step4_db_resolve_v1/run/db_tn_resolve_results.json; guards_ok True; failed checks 3
