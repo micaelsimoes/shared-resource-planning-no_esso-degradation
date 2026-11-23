@@ -1561,7 +1561,7 @@ def committed_by_rule(rel, size):
 
 def manifest(_args):
     out = {}
-    target = os.path.join(OUT_REL, 'manifest_sha256.json')
+    target = os.path.join(OUT_REL, f'manifest_sha256{TAG}.json')   # a re-run writes a new manifest (write-once)
     for root, _dirs, files in os.walk(OUT):
         for name in sorted(files):
             path = os.path.join(root, name)

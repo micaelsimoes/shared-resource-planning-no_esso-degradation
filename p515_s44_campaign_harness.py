@@ -1726,7 +1726,8 @@ S56_R_EUR = 10000.0                                          # Expert: R; R/4 = 
 S56_LEAK_CEILING_EUR = 0.01 * (S56_R_EUR / 4.0)              # Expert ruling 4: lambda x L priced <= 1 % of R/4 = 25 EUR
 S56_PRICED_RESIDUAL_PR_LABEL = 'mixed-convention reporting field, read by no acceptance test'   # Expert ruling 3
 S56_COST_BREAKDOWN_FILE = 's56_cost_breakdown.json'
-S56_COST_BREAKDOWN_SCHEMA = 's56_cost_breakdown_v1'
+S56_COST_BREAKDOWN_SCHEMA = 's56_cost_breakdown_v2'   # v2: the leak ceiling applies to the conversion-loss price
+# (Planner decision, TASKS.md 8f2a878a); v1 (the 2026-11-23 smoke) applied it to the full-L price
 S56_EV_PLAN_SUMMARY_KEY = 's56_ev_plan'
 # Every field of the cost breakdown and the production / diagnostic source it is read from (rule eleven: asserted by
 # `assert_s56_ev_plan_capture_path` before any solve; `s56_cost_breakdown` writes exactly these fields).
@@ -1748,8 +1749,9 @@ S56_COST_BREAKDOWN_SOURCES = {
     'esso_slack_totals': 'p515_s56_cohort_diagnostics.esso_slacks (slack_es_pnet_up/down, slack_es_qnet_up/down) x '
                          'the esso_slack_penalty in force',
     'leak_detector': 'within-cohort simultaneity min(es_pch_per_unit, es_pdch_per_unit) x dt per (node, cohort, block, '
-                     'day, hour), weighted by _get_admm_block_weight and priced at '
-                     'model_construction_helpers.expected_market_price of the TSO block',
+                     'day, hour), weighted by _get_admm_block_weight; priced as the conversion loss (1/eta_dch - '
+                     'eta_ch) L at model_construction_helpers.expected_market_price of the TSO block (the deciding form, '
+                     'Planner decision); the full-L price beside, not deciding',
     'per_cohort_throughput': 'p515_s56_cohort_diagnostics.cohort_degradation (avg throughput MWh/day, EFC/day, SoH)',
     'exit_certificate_e6': 'p515_s56_cohort_diagnostics.cohort_block_day per (node, block, day): Q slack, per-cohort '
                            'closure / balance / window / converter margins, energy accounting',
@@ -2430,9 +2432,10 @@ def s56_leak_detector(planning, sed, esso_models):
     value against the declared ceiling S56_LEAK_CEILING_EUR (1 % of R/4 = 25 EUR). Per (node, cohort, block y, day d,
     hour t) on every block-day where the cohort is active: m = min(pch, pdch) (MW) -- the simultaneous charge and
     discharge of ONE cohort; L = sum w_(y,d) m dt (MWh, total discounted weight w = _get_admm_block_weight of the TSO
-    block: years x days x annualisation); priced lambda L = sum w_(y,d) lambda_(y,d,t) m dt with lambda = |pibar_t|,
-    production's probability-weighted energy price of the TSO block (EUR/MWh). The loss-priced variant (the stored
-    energy lost, (1/eta_dch - eta_ch) m dt) is beside it; the ceiling is applied to the gross form (the larger)."""
+    block: years x days x annualisation). DECIDING price (Planner decision, TASKS.md 8f2a878a: E2's loss formula at the
+    TN expected energy price): lambda L = sum w_(y,d) |pibar_(y,d,t)| (1/eta_dch - eta_ch) m dt, pibar = production's
+    probability-weighted energy price of the TSO block (EUR/MWh); the full-L price sum w |pibar| m dt is reported
+    beside, not deciding."""
     import pyomo.environ as pe
     import model_construction_helpers as MCH
     import shared_resources_planning as srp
@@ -2464,14 +2467,17 @@ def s56_leak_detector(planning, sed, esso_models):
                         node['priced_eur'] += w * lam * m * dt
                         node['max_mw'] = max(node['max_mw'], m)
                         max_mw = max(max_mw, m)
-    return {'definition': ('L = sum w_(y,d) min(pch, pdch) dt over (node, active cohort, block, day, hour); lambda L = '
-                           'sum w_(y,d) |pibar_(y,d,t)| min(pch, pdch) dt; w = _get_admm_block_weight(TSO, y, d); pibar '
-                           '= model_construction_helpers.expected_market_price(TSO block, t); loss-priced variant x '
-                           '(1/eta_dch - eta_ch); ceiling applied to the gross priced form'),
+    return {'definition': ('L = sum w_(y,d) min(pch, pdch) dt over (node, active cohort, block, day, hour); w = '
+                           '_get_admm_block_weight(TSO, y, d); pibar = model_construction_helpers.expected_market_price('
+                           'TSO block, t); DECIDING: priced_loss_eur = sum w |pibar| (1/eta_dch - eta_ch) min(pch, pdch) '
+                           'dt (Planner decision, conversion loss); beside, not deciding: priced_eur = sum w |pibar| '
+                           'min(pch, pdch) dt (full L)'),
             'L_weighted_mwh': L_mwh, 'priced_eur': priced, 'priced_loss_eur': priced_loss,
+            'ceiling_applies_to': 'priced_loss_eur',
             'max_simultaneous_mw': max_mw, 'ceiling_eur': S56_LEAK_CEILING_EUR,
-            'ceiling_source': 'Expert ruling 4 (handback 3): lambda L priced <= 1 % of R/4, R = 10,000 EUR',
-            'within_ceiling': priced <= S56_LEAK_CEILING_EUR, 'per_node': per_node}
+            'ceiling_source': ('Expert ruling 4 (handback 3): lambda L priced <= 1 % of R/4, R = 10,000 EUR; priced as the '
+                               'conversion loss (Planner decision, TASKS.md 8f2a878a)'),
+            'within_ceiling': priced_loss <= S56_LEAK_CEILING_EUR, 'per_node': per_node}
 
 
 def s56_exit_certificate(sed, esso_models):
@@ -2638,8 +2644,8 @@ def write_s56_cost_breakdown(planning, sed, models, rows, plan, holder, eval_dir
             'flexibility_active_down_eur': out['flexibility_cost_eur']['active_down_eur'],
             'esso_slack_totals': out['esso_slack_totals']['totals'],
             'leak_detector': {k: out['leak_detector'][k] for k in ('L_weighted_mwh', 'priced_eur', 'priced_loss_eur',
-                                                                   'max_simultaneous_mw', 'ceiling_eur',
-                                                                   'within_ceiling')},
+                                                                   'ceiling_applies_to', 'max_simultaneous_mw',
+                                                                   'ceiling_eur', 'within_ceiling')},
             'exit_certificate_e6_summary': out['exit_certificate_e6']['summary'],
             'priced_residual_pr': out['priced_residual_pr']}
 
