@@ -12,6 +12,7 @@ from network_parameters import NetworkParameters
 from model_construction_helpers import (
     configure_shared_ess_operational_state,
     shared_ess_capacity_is_inactive,
+    set_shared_ess_cohort_gross_flow,
 )
 from helper_functions import *
 
@@ -2924,6 +2925,32 @@ def _update_data_with_candidate_solution(network_planning, candidate_solution):
                 network_planning.network[year][day].shared_energy_storages[shared_ess_idx].e_max = candidate_solution[tn_node_id][year]['e'] * ENERGY_STORAGE_MAX_ENERGY_STORED / network_planning.network[year][day].baseMVA
 
 
+# P5.15 S56 cohort follow-up (Expert ruling 4, D1 (a)): the network planning object's copy of the per-(node, year)
+# gross-flow flags of the CURRENT candidate, {(node_id, year): {'gross_flow': bool, 's': total MVA, 'e': total MWh}},
+# set by `shared_resources_planning._sync_shared_ess_cohort_gross_flow` (absent under 'legacy_h3' and on objects that
+# never saw the corrected formulation). Read with getattr(..., None): NetworkData objects pickled before it existed
+# do not carry it.
+SHARED_ESS_COHORT_GROSS_FLOW_DATA_ATTRIBUTE = 'shared_ess_cohort_gross_flow'
+
+
+def _apply_shared_ess_cohort_gross_flow(network, block, shared_ess_idx, node_id, year, candidate_capacity):
+    """Copy the synced gross-flow flag of (node_id, year) onto the block's per-unit attribute, before the unit is
+    (re)configured. Without synced flags the attribute is left absent (today's model) or, if a previous candidate set
+    it, reset to False. A staleness guard: the synced totals must equal the candidate capacities being applied --
+    flags synced for another candidate raise instead of switching the wrong rows."""
+    flags = getattr(network, SHARED_ESS_COHORT_GROSS_FLOW_DATA_ATTRIBUTE, None)
+    if flags is None:
+        set_shared_ess_cohort_gross_flow(block, shared_ess_idx, False)
+        return
+    entry = flags[(node_id, year)]
+    if entry['s'] != abs(candidate_capacity['s']) or entry['e'] != abs(candidate_capacity['e']):
+        raise ValueError(f'{network.name}: shared-ESS cohort gross-flow flags were synced for another candidate '
+                         f'(node {node_id}, {year}: synced s={entry["s"]}, e={entry["e"]}; applied '
+                         f's={candidate_capacity["s"]}, e={candidate_capacity["e"]}). Call '
+                         f'shared_resources_planning._sync_shared_ess_cohort_gross_flow first.')
+    set_shared_ess_cohort_gross_flow(block, shared_ess_idx, entry['gross_flow'])
+
+
 def _update_model_with_candidate_solution(network, model, candidate_solution):
     if network.is_transmission:
         for year in network.years:
@@ -2935,6 +2962,8 @@ def _update_model_with_candidate_solution(network, model, candidate_solution):
                     e_capacity = abs(candidate_solution[node_id][year]['e']) / s_base
                     model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(s_capacity)
                     model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(e_capacity)
+                    _apply_shared_ess_cohort_gross_flow(network, model[year][day], shared_ess_idx, node_id, year,
+                                                        candidate_solution[node_id][year])
                     configure_shared_ess_operational_state(
                         model[year][day], shared_ess_idx, s_capacity, e_capacity
                     )
@@ -2949,6 +2978,8 @@ def _update_model_with_candidate_solution(network, model, candidate_solution):
                 e_capacity = abs(candidate_solution[tn_node_id][year]['e']) / s_base
                 model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(s_capacity)
                 model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(e_capacity)
+                _apply_shared_ess_cohort_gross_flow(network, model[year][day], shared_ess_idx, tn_node_id, year,
+                                                    candidate_solution[tn_node_id][year])
                 configure_shared_ess_operational_state(
                     model[year][day], shared_ess_idx, s_capacity, e_capacity
                 )

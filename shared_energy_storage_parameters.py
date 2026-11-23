@@ -8,7 +8,14 @@ from definitions import PENALTY_ESSO_SLACK
 # P5.15 S56 cohort formulation: the admissible values of `SharedEnergyStorageParameters.cohort_formulation`.
 COHORT_FORMULATION_LEGACY_H3 = 'legacy_h3'
 COHORT_FORMULATION_INDEPENDENT_UNITS = 'independent_units'
-COHORT_FORMULATIONS = (COHORT_FORMULATION_LEGACY_H3, COHORT_FORMULATION_INDEPENDENT_UNITS)
+# P5.15 S56 cohort follow-up (TASKS.md, 2026-11-23 rulings; S56_PLAN_v4.md step 4c, the single-cohort A/B): the
+# corrected formulation with the arrangement-A rows ALSO activated on single-cohort node-years. An explicit option,
+# off by default, carried IN the key value so that any record of the key records the option too.
+COHORT_FORMULATION_INDEPENDENT_UNITS_ALL_NODE_YEARS = 'independent_units_all_node_years'
+COHORT_FORMULATIONS = (COHORT_FORMULATION_LEGACY_H3, COHORT_FORMULATION_INDEPENDENT_UNITS,
+                       COHORT_FORMULATION_INDEPENDENT_UNITS_ALL_NODE_YEARS)
+# The corrected (arrangement-A) formulations: every key value except 'legacy_h3'.
+COHORT_FORMULATIONS_CORRECTED = (COHORT_FORMULATION_INDEPENDENT_UNITS, COHORT_FORMULATION_INDEPENDENT_UNITS_ALL_NODE_YEARS)
 COHORT_FORMULATION_DEFAULT = COHORT_FORMULATION_LEGACY_H3
 
 
@@ -268,6 +275,8 @@ class SharedEnergyStorageParameters:
         #   'independent_units': arrangement A -- each cohort a complete unit (own SoC, window, closure, converter
         #       P/Q) on node-years with >= 2 active cohorts; H3 rows unwired. See
         #       `shared_energy_storage_data._build_subproblem`.
+        #   'independent_units_all_node_years': as 'independent_units', with the arrangement-A rows also activated
+        #       on single-cohort node-years (the single-cohort A/B option; the network-side switch is unaffected).
         # Read with getattr(..., COHORT_FORMULATION_DEFAULT) by the builder, because parameter objects pickled before
         # this key existed do not carry the attribute.
         self.cohort_formulation = COHORT_FORMULATION_DEFAULT
