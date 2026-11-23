@@ -197,3 +197,31 @@ harness change, option (a). Entries without S56 keys keep their keys bitwise. Th
 
 **K for the pilot:** K_pilot = 300 cycles, stop-disabled. The exit value is read at the would-be certification cycle.
 K_EV for the search is set from the pilot as the smallest K at which S meets its share. K_EV is frozen with e_EV.
+
+## Integration rulings (Planner, 2026-11-23; after `8948db26` / `370b7689` / `e1b87c27`)
+
+1. **Gate thresholds.** Confirmed as built:
+   - τ_cl = 1e-5 p.u. of the block base (1e-3 MWh on base 100);
+   - ESSO slack gate |s_up − s_down| ≤ 1e-5 MW / MVAr per element.
+
+   Both are backstops; the priced slacks enter G in any case.
+2. **s_share** = 500 € per evaluation: S(x) ≤ 500 €, i.e. 1,000 € of the pair's 2,500 €. K_EV is the smallest K at which
+   every pilot run's S ≤ 500 € and K ≥ every run's would-be certification cycle.
+3. **Initialisation variant:** the keyed harness option `rho0_scale` ∈ {1.0, 0.5, 2.0}, where 1.0 is the default run.
+   - Pilot staged plan: `n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5` (the memory
+     probe's SRP1-grid plan).
+4. **Readings accepted as built:**
+   - "would have certified" = `cycle_convergence` holds on each of the last W cycles;
+   - PR = −price + dual, with the interface terms on the TSO-side multipliers (λ_T = −λ_D bitwise, as step 4 showed)
+     and the ESS terms on each agent's own multiplier;
+   - G priced as built;
+   - ψ = block makespan / mean t_exit;
+   - e_EV over the 15 pairs.
+5. **A not_settled confirmation is "unresolved after confirmation"** and the search continues (option b). **Review
+   trigger:** three consecutive not_settled confirmations, or not_settled on more than 25 % of the confirmations so
+   far (at least 4), stops the search for review.
+6. **Driver gate item 4:** re-scoped to assert that the smoke alias is absent (the cap rule removed it). Re-run the
+   whole gate on the final code.
+7. **memory_per_slot_gib = 4.0 for EV evaluations.** Measured: 2.43 GiB at 3 cycles, and step 4 children ≤ 3.53 GiB
+   over full runs. Five slots therefore need 20 GiB. The pilot measures the full-run peak; the search spec uses the
+   pilot's measured peak × 1.15.
