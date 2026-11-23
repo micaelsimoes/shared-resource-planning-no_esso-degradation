@@ -1544,20 +1544,43 @@ def smoke_recheck(_args):
 # ======================================================================================================================
 #  --manifest
 # ======================================================================================================================
+COMMIT_EXCLUDED_PARTS = ('/scratch', '/planning_read/', '/results/', '/esso_capture/')
+COMMIT_EXCLUDED_SUFFIXES = ('.pkl', '.xlsx', '.pdf', '.png', '.nl')
+COMMIT_MAX_BYTES = 1_300_000
+COMMIT_SIZE_EXEMPT = (FIVE_EV_PROFILES,)   # the five-block EV instance's profiles: the instance itself
+
+
+def committed_by_rule(rel, size):
+    """The declared selection of the files committed with the evidence (everything else is recorded by sha256 only):
+    no scratch / production-read / results / ESSO-capture directory, no pickle / workbook / plot / NL file, and at
+    most COMMIT_MAX_BYTES unless it is the five-block EV profiles file."""
+    if any(part in '/' + rel for part in COMMIT_EXCLUDED_PARTS) or rel.endswith(COMMIT_EXCLUDED_SUFFIXES):
+        return False
+    return size <= COMMIT_MAX_BYTES or os.path.basename(rel) in COMMIT_SIZE_EXEMPT
+
+
 def manifest(_args):
     out = {}
+    target = os.path.join(OUT_REL, 'manifest_sha256.json')
     for root, _dirs, files in os.walk(OUT):
         for name in sorted(files):
             path = os.path.join(root, name)
-            if os.path.relpath(path, REPO) == os.path.join(OUT_REL, 'manifest_sha256.json'):
-                continue
             rel = os.path.relpath(path, REPO)
-            out[rel] = {'sha256': _sha(path), 'bytes': os.path.getsize(path),
-                        'tracked': bool(_git('ls-files', '--', rel).strip())}
-    path = os.path.join(OUT, 'manifest_sha256.json')
+            if rel == target:
+                continue
+            size = os.path.getsize(path)
+            out[rel] = {'sha256': _sha(path), 'bytes': size, 'committed': committed_by_rule(rel, size)}
+    path = os.path.join(REPO, target)
+    if os.path.exists(path):
+        raise SystemExit(f'REFUSED: {target} exists (write-once)')
     _dump(path, {'schema': SCHEMA + '_manifest', 'utc': _utc(), 'git_head': _git('rev-parse', 'HEAD').strip(),
-                 'n_files': len(out), 'files': dict(sorted(out.items()))})
-    _log(f'manifest: {len(out)} files -> {os.path.relpath(path, REPO)} ({_sha(path)})')
+                 'selection_rule': {'excluded_parts': list(COMMIT_EXCLUDED_PARTS),
+                                    'excluded_suffixes': list(COMMIT_EXCLUDED_SUFFIXES),
+                                    'max_bytes': COMMIT_MAX_BYTES, 'size_exempt': list(COMMIT_SIZE_EXEMPT)},
+                 'n_files': len(out), 'n_committed': sum(1 for v in out.values() if v['committed']),
+                 'files': dict(sorted(out.items()))})
+    _log(f'manifest: {len(out)} files ({sum(1 for v in out.values() if v["committed"])} committed) -> {target} '
+         f'({_sha(path)})')
     return 0
 
 
