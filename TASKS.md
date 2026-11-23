@@ -90,12 +90,22 @@ Author's six points: (1) option (a) per-scenario coupling, P/Q/V consistent per 
   5. **D_b mapping NOT confirmed**: the split is an accounting identity (covariance term has no theoretical sign). Causal split needs a **TN-only re-solve at the pinned AA-off arm's realized DN exchanges, both blocks** (guarded, frozen spec): pinned-accounting = C_TN-resolve − Q_pin (sign empirical); DN re-optimization gain = wC − C_TN-resolve (≤ 0 only up to local optimality). D_b split provisional in the step 4 record until then.
   **Report back with:** (a), the D_b re-solve, the T8 binding check; step 5 follows.
 
-### Order (2026-11-23, after handback 3 rulings)
-- [ ] **(a) V-1 calibration re-run** (A cap 140, B cap 320; certification stop disabled for the arm; V upper-bound multiplier capture; frozen decision rule) — **active**
-- [ ] **D_b TN-only re-solve** (pinned AA-off realized exchanges, both blocks) **+ T8 binding check** (2 ms solves) **+ T9 three-change explanation** — **active** (clean export, own output roots)
-- [ ] Harness wiring (own spec, after T9 explained and after (a) releases the checkout): E6 certificate reading, leak detector with ceiling λ·L ≤ 1 % R/4, `cohort_formulation` keys/records, `priced_residual_pr` label, `uncoordinated_benchmark.py` sync step — then EV plumbing
-- [ ] **STOP — report back** ((a), D_b re-solve, T8 binding)
-- [ ] Step 5 (released by (a), under the stopping rule it supports)
+### Order (2026-11-23, after handback 3 rulings) — superseded the same evening by the working-mode change below
+- [~] (a) V-1 calibration re-run — harness keys `091b7745`, spec v3 `0b3a0989` (`c330ec3b`); instance A **stopped by the Planner at ≈ cycle 35/140** (deferred to idle time; checkout needed for the EV harness); root + lock preserved, `step4_calib_v1/STOPPED_BY_PLANNER_NOTE.md`; B never launched
+- [~] D_b re-solve + T8 binding + T9 — specs `d1acfb80`; running from a clean export when the mode changed; allowed to finish (minutes), results recorded without further pursuit
+
+## Working mode and EV priority (author + Expert, 2026-11-23 evening) — current authority
+**Rulings on handback 3 (final, no further reports):** (1) calibration (a) approved, **deferred to idle machine time**; gates the SP evaluations only; pre-declared cycle cap; outcome in one table. (2) M1 tolerance adopted. (3) P7 = Q − price + dual, diagnostic only. (4) T8 accepted as designed slack; no confirmation solves; T9 not pursued unless it appears in a real evaluation; **leak detector reported per evaluation**. (5) D_b recorded as a two-block accounting figure; causal split not pursued.
+**Scope cuts:** single-cohort A/B dropped (corrected mode = `independent_units_all_node_years` for every plan); step 5 + SP calibration after the EV searches, before SP evaluations; TV repricing (4 conventions) after the searches, zero-solve.
+**Process:** frozen specs with recorded predictions only for runs > 4 h or results entering the manuscript; engineering tests = script with pass/fail checks + one TASKS line. Escalate to the Expert only for a formulation change or a failed must-hold inequality; numerical/harness details Planner/Advisor decide and log. **Report only at (i) driver ready + pilot result + measured hours; (ii) EV searches complete.** In between, TASKS entries only.
+
+### Critical path
+- [ ] **1. Harness:** cohort rows on all node-years (`independent_units_all_node_years`), TV in the objective, 2× multiplier, EV injection hook, staged (multi-year) candidates, cache keys, cost breakdown (incl. 2× reactive flex contribution, leak detector, `priced_residual_pr` label); zero-solve gates — **active**
+- [ ] **2. Opportunistic search driver** (neighbourhood module, cap 80, same-sign diagonals; O1–O15) + zero-solve determinism gate — Advisor design review **active** (parallel with 1)
+- [ ] **3. Memory probe:** build + 2 cycles of the corrected five-block SP instance with a staged plan; ≤ 20.7 GiB → five-block, else 2025/2030/2035 (**author confirms in one line**)
+- [ ] **4. EV pilot at 2×:** x0, reference unit, one staged plan, + x0/unit from two more initialisations (resolution spread); measured hours per evaluation → **report (i)**
+- [ ] **5. EV screen → EV search 2× → 1×** → **report (ii)**
+- [ ] Deferred to idle time: calibration (a) re-run (spec v3 `0b3a0989`, fresh root); then step 5 + SP calibration before SP evaluations; TV repricing after the searches
 - (cohort follow-up original scope, for reference) — (production, worktree `.claude/worktrees/s56-cohort-followup`, branch `s56-cohort-followup` from `c65201d1`, created by the author; merged after step 4 with the author's OK): network-side D1 switch, per-cohort complementarity + sum rows, closure per D2, efficiency-equality gate, single-cohort activation key for the A/B; zero-solve + millisecond tests — **active**
 - [ ] EV plumbing in the harness child (EV injection, assertion before the multiplier) — after the capture fix
 - [ ] Memory probes (e) — after step 4 (machine)
