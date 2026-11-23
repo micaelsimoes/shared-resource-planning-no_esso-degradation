@@ -1,0 +1,91 @@
+09:21:15 OK   every imported repository module resolved from the code root (no mixed trees)
+09:21:15 OK   baseMVA = 100 on the TN and every DN, every 3 x 3 year (audit D network facts)
+09:21:15 == 3x3_pair_x0 (data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0)
+09:21:15 OK   3x3_pair_x0: multiscenario_terminal.json sha256 == child manifest pin
+09:21:15 OK   3x3_pair_x0: response_terminal.json sha256 == child manifest pin
+09:21:16 OK   3x3_pair_x0: evaluation_record.json sha256 == child manifest pin
+09:21:16 OK   3x3_pair_x0: pf_entry_stride_s39_D.jsonl sha256 == child manifest pin
+09:21:16 OK   3x3_pair_x0: 60 coordination blocks, none with a capture error
+09:21:16 OK   3x3_pair_x0: TSO and DSO block weights and scenario probabilities equal
+09:21:16 OK   3x3_pair_x0: TN interface P scenario-common (max |P_TSO[s] - Pbar_TSO| <= 1e-9 MW)
+09:21:16 OK   3x3_pair_x0: pibar == sum_s omega_s pi_s (<= 1e-9 EUR/MWh)
+09:21:16 OK   3x3_pair_x0: sigma_eff * w_b == sigma, one value for all 60 DSO blocks (rel <= 1e-12)
+09:21:16 OK   3x3_pair_x0: captured lambda_al_per_mwh == sigma_eff (lambda_m + rho (pbar-req)/rating)/(rating s_base) (rel <= 1e-9, floor 1e-6 EUR/MWh)
+09:21:16 OK   3x3_pair_x0: coordination pbar == committed DSO profile (<= 1e-9 MW)
+09:21:16 OK   3x3_pair_x0: decomposition PR == PR_c - PR_d (rel <= 1e-9)
+09:21:16 OK   3x3_pair_x0: prices identical across the three DN blocks of each (year, day)
+09:21:16 OK   3x3_pair_x0: PR == -(T_TSO + T_DSO) of production (rel <= 1e-09)
+09:21:16 OK   3x3_pair_x0: PR_d == production DSO covariance (rel <= 1e-09)
+09:21:16 OK   3x3_pair_x0: PR per DN == -audit D C_net_eur_weighted per DN (rel <= 1e-09)
+09:21:16 OK   3x3_pair_x0: audit D run identity (candidate key, cycles) == this run
+09:21:16 OK   3x3_pair_x0: stride file holds every cycle 1..N exactly once
+09:21:16 OK   3x3_pair_x0: stride s_base_dso == 100 at the reported cycles
+09:21:16 OK   3x3_pair_x0: stride cycle N x_dso / z_tso == committed DSO / TSO profiles (<= 1e-9 MW)
+09:21:16 OK   3x3_pair_x0: stride cycle N-1 lambda_dso / s_base == the terminal solve's dual_pf_p_req (rel <= 1e-12)
+09:21:16 OK   3x3_pair_x0: cycle-N stride K_lambda_faced == terminal K_lambda (rel <= 1e-9)
+09:21:16 OK   3x3_pair_x0: cycle-N stride EC_lambda_faced == terminal EC_lambda (abs <= 1e-6 EUR)
+09:21:16 OK   3x3_pair_x0: cycle-N stride EC_pibar == terminal PR_c (abs <= 1e-6 EUR)
+09:21:16 OK   3x3_pair_x0: no per-cycle per-scenario paired interface file in the run directory tree (audit D confirmed)
+09:21:16 OK   3x3_pair_x0: no interface_duals_per_cycle file in the run directory tree (duals taken from pf_entry_stride + the terminal coordination record instead)
+09:21:16 3x3_pair_x0: K_pi = 39,958,287 EUR/MW (3 DNs); K_lambda = 2,108,149.1; PR = 750,743; APR = 50,145,998; |PR|/APR = 0.0150; EC_lambda = -2.53
+09:21:16 == 3x3_pair_n7_4h_e1 (data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/c82522f470b35b58_n7_4h_e1)
+09:21:16 OK   3x3_pair_n7_4h_e1: multiscenario_terminal.json sha256 == child manifest pin
+09:21:16 OK   3x3_pair_n7_4h_e1: response_terminal.json sha256 == child manifest pin
+09:21:16 OK   3x3_pair_n7_4h_e1: evaluation_record.json sha256 == child manifest pin
+09:21:16 OK   3x3_pair_n7_4h_e1: pf_entry_stride_s39_D.jsonl sha256 == child manifest pin
+09:21:17 OK   3x3_pair_n7_4h_e1: 60 coordination blocks, none with a capture error
+09:21:17 OK   3x3_pair_n7_4h_e1: TSO and DSO block weights and scenario probabilities equal
+09:21:17 OK   3x3_pair_n7_4h_e1: TN interface P scenario-common (max |P_TSO[s] - Pbar_TSO| <= 1e-9 MW)
+09:21:17 OK   3x3_pair_n7_4h_e1: pibar == sum_s omega_s pi_s (<= 1e-9 EUR/MWh)
+09:21:17 OK   3x3_pair_n7_4h_e1: sigma_eff * w_b == sigma, one value for all 60 DSO blocks (rel <= 1e-12)
+09:21:17 OK   3x3_pair_n7_4h_e1: captured lambda_al_per_mwh == sigma_eff (lambda_m + rho (pbar-req)/rating)/(rating s_base) (rel <= 1e-9, floor 1e-6 EUR/MWh)
+09:21:17 OK   3x3_pair_n7_4h_e1: coordination pbar == committed DSO profile (<= 1e-9 MW)
+09:21:17 OK   3x3_pair_n7_4h_e1: decomposition PR == PR_c - PR_d (rel <= 1e-9)
+09:21:17 OK   3x3_pair_n7_4h_e1: prices identical across the three DN blocks of each (year, day)
+09:21:17 OK   3x3_pair_n7_4h_e1: PR == -(T_TSO + T_DSO) of production (rel <= 1e-09)
+09:21:17 OK   3x3_pair_n7_4h_e1: PR_d == production DSO covariance (rel <= 1e-09)
+09:21:17 OK   3x3_pair_n7_4h_e1: PR per DN == -audit D C_net_eur_weighted per DN (rel <= 1e-09)
+09:21:17 OK   3x3_pair_n7_4h_e1: audit D run identity (candidate key, cycles) == this run
+09:21:17 OK   3x3_pair_n7_4h_e1: stride file holds every cycle 1..N exactly once
+09:21:17 OK   3x3_pair_n7_4h_e1: stride s_base_dso == 100 at the reported cycles
+09:21:17 OK   3x3_pair_n7_4h_e1: stride cycle N x_dso / z_tso == committed DSO / TSO profiles (<= 1e-9 MW)
+09:21:17 OK   3x3_pair_n7_4h_e1: stride cycle N-1 lambda_dso / s_base == the terminal solve's dual_pf_p_req (rel <= 1e-12)
+09:21:17 OK   3x3_pair_n7_4h_e1: cycle-N stride K_lambda_faced == terminal K_lambda (rel <= 1e-9)
+09:21:17 OK   3x3_pair_n7_4h_e1: cycle-N stride EC_lambda_faced == terminal EC_lambda (abs <= 1e-6 EUR)
+09:21:17 OK   3x3_pair_n7_4h_e1: cycle-N stride EC_pibar == terminal PR_c (abs <= 1e-6 EUR)
+09:21:17 OK   3x3_pair_n7_4h_e1: no per-cycle per-scenario paired interface file in the run directory tree (audit D confirmed)
+09:21:17 OK   3x3_pair_n7_4h_e1: no interface_duals_per_cycle file in the run directory tree (duals taken from pf_entry_stride + the terminal coordination record instead)
+09:21:17 3x3_pair_n7_4h_e1: K_pi = 39,958,287 EUR/MW (3 DNs); K_lambda = 2,107,684.9; PR = 755,849; APR = 50,146,920; |PR|/APR = 0.0151; EC_lambda = -1,188.84
+09:21:17 == 3x3_x0_continuation_r2 (data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont)
+09:21:17 OK   3x3_x0_continuation_r2: multiscenario_terminal.json sha256 == child manifest pin
+09:21:17 OK   3x3_x0_continuation_r2: response_terminal.json sha256 == child manifest pin
+09:21:17 OK   3x3_x0_continuation_r2: evaluation_record.json sha256 == child manifest pin
+09:21:17 OK   3x3_x0_continuation_r2: pf_entry_stride_s39_D.jsonl sha256 == child manifest pin
+09:21:17 OK   3x3_x0_continuation_r2: 60 coordination blocks, none with a capture error
+09:21:17 OK   3x3_x0_continuation_r2: TSO and DSO block weights and scenario probabilities equal
+09:21:17 OK   3x3_x0_continuation_r2: TN interface P scenario-common (max |P_TSO[s] - Pbar_TSO| <= 1e-9 MW)
+09:21:17 OK   3x3_x0_continuation_r2: pibar == sum_s omega_s pi_s (<= 1e-9 EUR/MWh)
+09:21:17 OK   3x3_x0_continuation_r2: sigma_eff * w_b == sigma, one value for all 60 DSO blocks (rel <= 1e-12)
+09:21:17 OK   3x3_x0_continuation_r2: captured lambda_al_per_mwh == sigma_eff (lambda_m + rho (pbar-req)/rating)/(rating s_base) (rel <= 1e-9, floor 1e-6 EUR/MWh)
+09:21:17 OK   3x3_x0_continuation_r2: coordination pbar == committed DSO profile (<= 1e-9 MW)
+09:21:17 OK   3x3_x0_continuation_r2: decomposition PR == PR_c - PR_d (rel <= 1e-9)
+09:21:17 OK   3x3_x0_continuation_r2: prices identical across the three DN blocks of each (year, day)
+09:21:17 OK   3x3_x0_continuation_r2: PR == -(T_TSO + T_DSO) of production (rel <= 1e-09)
+09:21:17 OK   3x3_x0_continuation_r2: PR_d == production DSO covariance (rel <= 1e-09)
+09:21:17 OK   3x3_x0_continuation_r2: PR per DN == -audit D C_net_eur_weighted per DN (rel <= 1e-09)
+09:21:17 OK   3x3_x0_continuation_r2: audit D run identity (candidate key, cycles) == this run
+09:21:18 OK   3x3_x0_continuation_r2: stride file holds every cycle 1..N exactly once
+09:21:18 OK   3x3_x0_continuation_r2: stride s_base_dso == 100 at the reported cycles
+09:21:18 OK   3x3_x0_continuation_r2: stride cycle N x_dso / z_tso == committed DSO / TSO profiles (<= 1e-9 MW)
+09:21:18 OK   3x3_x0_continuation_r2: stride cycle N-1 lambda_dso / s_base == the terminal solve's dual_pf_p_req (rel <= 1e-12)
+09:21:18 OK   3x3_x0_continuation_r2: cycle-N stride K_lambda_faced == terminal K_lambda (rel <= 1e-9)
+09:21:18 OK   3x3_x0_continuation_r2: cycle-N stride EC_lambda_faced == terminal EC_lambda (abs <= 1e-6 EUR)
+09:21:18 OK   3x3_x0_continuation_r2: cycle-N stride EC_pibar == terminal PR_c (abs <= 1e-6 EUR)
+09:21:18 OK   3x3_x0_continuation_r2: continuation_cycle_record.jsonl sha256 == child manifest pin
+09:21:18 OK   3x3_x0_continuation_r2: no per-cycle per-scenario paired interface file in the run directory tree (audit D confirmed)
+09:21:18 OK   3x3_x0_continuation_r2: no interface_duals_per_cycle file in the run directory tree (duals taken from pf_entry_stride + the terminal coordination record instead)
+09:21:18 3x3_x0_continuation_r2: K_pi = 39,958,287 EUR/MW (3 DNs); K_lambda = 2,107,718.2; PR = 751,739; APR = 50,130,518; |PR|/APR = 0.0150; EC_lambda = -562.24
+09:21:18 OK   weighted horizon hours identical across the three runs
+09:21:18 OK   own SolveProfileGuard(permitted=()) verify(0) == []
+09:21:18 OK   pickle.load / pickle.loads never reached
+09:21:18 all_checks_ok = True; failed = []
