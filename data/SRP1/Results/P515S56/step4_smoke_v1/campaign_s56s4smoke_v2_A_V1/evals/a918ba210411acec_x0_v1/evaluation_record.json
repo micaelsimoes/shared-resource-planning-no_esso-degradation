@@ -1,0 +1,1601 @@
+{
+ "schema": "p515_s44_evaluation_record_v2",
+ "campaign_id": "s56s4smoke_v2_A_V1",
+ "campaign_spec_path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/campaign_spec_s56s4smoke_v2_a_v1_ac107174.json",
+ "campaign_spec_sha256": "ac10717489de781f6fdd93ddfe52f3b9813b43553759aa5d7f5f684e10ead76c",
+ "candidate_label": "x0_V1",
+ "candidate_canonical": {
+  "investment_year": 2025,
+  "nodes": {
+   "5": [
+    0.0,
+    0.0
+   ],
+   "7": [
+    0.0,
+    0.0
+   ],
+   "9": [
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+ "instance_note": "candidate_key = sha256 of the canonical candidate; identifies the problem instance",
+ "working_dir_ids": {
+  "precheck": "p515s44_s56s4smoke_v2_a_v1_a918ba210411acec_precheck",
+  "run": "p515s44_s56s4smoke_v2_a_v1_a918ba210411acec_run"
+ },
+ "eval_dir": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/evals/a918ba210411acec_x0_v1",
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "convergence_depth_tail": {
+   "compl_inf_tol": 1e-06,
+   "enabled": true
+  },
+  "derived_instance": {
+   "case_path": "data/SRP1/Results/P515S56/step4_instances_v1/SRP1__s56_step4_2025_Winter.json",
+   "case_sha256": "92e6283bdb1dafcb328ec951095ebf2173d314754e7f946c0c2210694ca7537e",
+   "changes_vs_source": [
+    {
+     "from": {
+      "2025": 5,
+      "2030": 5,
+      "2035": 5
+     },
+     "key": "Years",
+     "to": {
+      "2025": 5
+     }
+    },
+    {
+     "from": {
+      "Autumn": 91,
+      "Spring": 92,
+      "Summer": 91,
+      "Winter": 91
+     },
+     "key": "Days",
+     "to": {
+      "Winter": 91
+     }
+    }
+   ],
+   "instance_label": "s56_step4_2025_Winter",
+   "scenario_checksum": "58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e",
+   "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+   "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+  },
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ess_params_file": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "full_diagnostics_in_rows": true,
+  "name": "S56 step 4 smoke run 1: instance A (2025|Winter), arm V1; x0, alpha 0, cap 3",
+  "note": "S56 step 4 smoke: the G-f / step 4 build configuration (p515_s56_coupling_gates.py literals) on the derived instance; no row 18 declaration (production default alpha 0.0), no model variant, no flex variant, no NRF, no rho0 scale, no post-certification",
+  "overrides": {}
+ },
+ "cap": 3,
+ "required_consecutive_cycles": 10,
+ "status": "not_certified",
+ "barrier": true,
+ "barrier_cause": "cap reached without certification",
+ "objective_convention": "gross_operational_cost: per-scenario TN-DN coupling wired -- the COMPLETE internal TN-DN settlement excluded (author decision 6, 2026-11-21; the Addendum 38 (C) deviation-as-economic-cost treatment withdrawn in this mode); net_operational_recourse = gross minus terminal salvage credit; today's form (contracted part excluded) in terminal_gross_operational_cost_contracted_excluded",
+ "certified_cost": null,
+ "terminal_gross_operational_cost": 87564556.8202396,
+ "terminal_net_operational_recourse": 87564556.8202396,
+ "bar": {
+  "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+  "value": 107033304.5427751,
+  "n_cycles_in_window": 3,
+  "n_steps_available": 2,
+  "trajectory_cycles_contiguous_from_1": true,
+  "window": [
+   {
+    "cycle": 1,
+    "gross_operational_cost": 211339493.78310615,
+    "predecessor_cycle": null,
+    "predecessor_gross_operational_cost": null,
+    "gross_step_abs": null
+   },
+   {
+    "cycle": 2,
+    "gross_operational_cost": 104306189.24033105,
+    "predecessor_cycle": 1,
+    "predecessor_gross_operational_cost": 211339493.78310615,
+    "gross_step_abs": 107033304.5427751
+   },
+   {
+    "cycle": 3,
+    "gross_operational_cost": 87564556.8202396,
+    "predecessor_cycle": 2,
+    "predecessor_gross_operational_cost": 104306189.24033105,
+    "gross_step_abs": 16741632.42009145
+   }
+  ]
+ },
+ "bar_net_recourse_step_reported": {
+  "definition": "max objective_change_abs over the last 10 cycles (production: |net_operational_recourse[k] - net_operational_recourse[k-1]|, shared_resources_planning.py:2849/2814; NET of the terminal salvage credit; reported, not the bar)",
+  "value": 107033304.5427751,
+  "n_cycles_in_window": 3,
+  "n_steps_available": 2,
+  "window": [
+   {
+    "cycle": 1,
+    "objective_change_abs": null
+   },
+   {
+    "cycle": 2,
+    "objective_change_abs": 107033304.5427751
+   },
+   {
+    "cycle": 3,
+    "objective_change_abs": 16741632.42009145
+   }
+  ]
+ },
+ "certification": {
+  "certified": false,
+  "certification_cycle": null,
+  "cycles_run": 3,
+  "cap": 3,
+  "required_consecutive_cycles": 10,
+  "terminal_cycle_convergence": false,
+  "terminal_consecutive_converged_cycles": 0,
+  "local_solve_failures_total": 0
+ },
+ "certification_cycle": null,
+ "cycles_run": 3,
+ "stopped_by_trajectory": {
+  "stopped_by": "cap",
+  "converged_at_cycle": null,
+  "stop_run_cycles": []
+ },
+ "first_pass_cycle_per_channel": {
+  "v": null,
+  "pf": null,
+  "ess": 1
+ },
+ "terminal_ratios_per_channel": {
+  "v": {
+   "primal": 105.05050137074635,
+   "dual": 10.564096454446533,
+   "max": 105.05050137074635
+  },
+  "pf": {
+   "primal": 65.05412871513713,
+   "dual": 971.8377626998937,
+   "max": 971.8377626998937
+  },
+  "ess": {
+   "primal": 2.1665496466482842e-21,
+   "dual": 1.69067128749825e-25,
+   "max": 2.1665496466482842e-21
+  }
+ },
+ "rule_ten": {
+  "reported_not_gated": true,
+  "terminal_objective_change_abs": 16741632.42009145,
+  "terminal_objective_tolerance": 10430.618924033106,
+  "terminal_step_over_threshold": 1605.0468857142494,
+  "boyd_terminal_ratio_max_per_channel": {
+   "v": 105.05050137074635,
+   "pf": 971.8377626998937,
+   "ess": 2.1665496466482842e-21
+  }
+ },
+ "component_decomposition_totals_weighted": {
+  "generation_cost": 78716608.30575547,
+  "flexibility_cost_internal": 8848859.316993203,
+  "load_curtailment_cost": 0.0,
+  "res_curtailment_penalty": 0.0,
+  "ess_usage_cost": 0.0,
+  "flexibility_cost_tso_adn_interface_definitional": 0.0,
+  "voltage_slack": -830.6407381727711,
+  "node_balance_slack": 0.0,
+  "branch_flow_slack": 0.0,
+  "flexibility_p_day_balance_slack": -80.1617708940464,
+  "local_ess_day_balance_slack": 0.0,
+  "shared_ess_day_balance_slack": 0.0,
+  "detector_penalty_total": -910.8025090668176,
+  "ess_complementarity_bilinear_definitional": 0.0,
+  "orphan_flex_q_day_balance_slack_raw": 0.0,
+  "orphan_tso_adn_flex_p_day_balance_slack_raw": 0.0,
+  "orphan_flex_q_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional": 0.0,
+  "orphan_tso_adn_flex_p_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional": 0.0,
+  "res_curtailment_definitional_at_weight_1": 19471.672172720027
+ },
+ "recourse_components": {
+  "gross_operational_cost": 87564556.8202396,
+  "gross_operational_cost_including_settlement": 87042541.68147315,
+  "interface_settlement_tso": -128666467.07559367,
+  "interface_settlement_dso": {
+   "5": 42985944.5172723,
+   "7": 30666919.563430242,
+   "9": 54491587.85612468
+  },
+  "interface_settlement_total": -522015.13876645267,
+  "interface_settlement_contracted_tso": -128765994.58392933,
+  "interface_settlement_contracted_dso": {
+   "5": 43037849.63097513,
+   "7": 30688068.539607827,
+   "9": 54525962.84670029
+  },
+  "interface_settlement_contracted_total": -514113.5666460991,
+  "interface_settlement_deviation_tso": 99527.50833565922,
+  "interface_settlement_deviation_dso": {
+   "5": -51905.1137028294,
+   "7": -21148.976177585937,
+   "9": -34374.9905756113
+  },
+  "interface_settlement_deviation_total": -7901.572120367418,
+  "interface_settlement_covariance_total": -7901.572120367418,
+  "interface_settlement_identity_residual": -514113.56664608524,
+  "voltage_pin_tso": 0.0,
+  "voltage_pin_dso": {
+   "5": 0.0,
+   "7": 0.0,
+   "9": 0.0
+  },
+  "voltage_pin_total": 0.0,
+  "terminal_salvage_value": -7.039032651546557e-35,
+  "net_operational_recourse": 87564556.8202396,
+  "detector_penalty_total": -910.8025090668176,
+  "detector_components": {
+   "voltage_slack": -830.6407381727711,
+   "node_balance_slack": 0.0,
+   "branch_flow_slack": 0.0,
+   "flexibility_p_day_balance_slack": -80.1617708940464,
+   "local_ess_day_balance_slack": 0.0,
+   "shared_ess_day_balance_slack": 0.0,
+   "detector_penalty_total": -910.8025090668176
+  },
+  "economic_recourse_all_D_excluded": 87565467.62274867,
+  "economic_recourse_voltage_excluded": 87565387.46097778,
+  "gross_operational_cost_settlement_excluded_in_full": 87564556.8202396,
+  "net_operational_recourse_settlement_excluded_in_full": 87564556.8202396,
+  "gross_operational_cost_contracted_excluded": 87556655.24811925,
+  "net_operational_recourse_contracted_excluded": 87556655.24811925,
+  "q_convention": "settlement_excluded_in_full",
+  "q_convention_settlement_excluded_in_full": "PRIMARY in this mode (author decision 6, 2026-11-21): gross_operational_cost = gross incl. settlement - interface settlement total (TSO + every DSO) - voltage pin; net_operational_recourse = that - terminal salvage; today's form (contracted part and pin excluded) is gross_operational_cost_contracted_excluded / net_operational_recourse_contracted_excluded"
+ },
+ "settlement_remainder": {
+  "definition": "recourse_components.interface_settlement_total: T_TSO + sum(T_DSO), the non-cancelling interface settlement at the terminal point, excluded from the cost",
+  "value": -522015.13876645267
+ },
+ "storage_per_node": {
+  "5": {
+   "s_mva": 0.0,
+   "e_mwh": 0.0,
+   "has_storage": false,
+   "efc_per_day_max": null,
+   "efc_per_day_per_cohort_year": {},
+   "terminal_soh_per_active_cohort_year": {},
+   "terminal_soh_min_over_active_cohort_years": null,
+   "soh_floor_rows_active_at_terminal": [],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 3.6734198463196485e-40,
+     "e_available": -4.591774807899561e-41
+    }
+   },
+   "note_zero_node": "zero-capacity node: no active cohort; EFC undefined (None), SoH variables fixed at 1.0 by production and not reported as a result"
+  },
+  "7": {
+   "s_mva": 0.0,
+   "e_mwh": 0.0,
+   "has_storage": false,
+   "efc_per_day_max": null,
+   "efc_per_day_per_cohort_year": {},
+   "terminal_soh_per_active_cohort_year": {},
+   "terminal_soh_min_over_active_cohort_years": null,
+   "soh_floor_rows_active_at_terminal": [],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 3.6734198463196485e-40,
+     "e_available": -4.591774807899561e-41
+    }
+   },
+   "note_zero_node": "zero-capacity node: no active cohort; EFC undefined (None), SoH variables fixed at 1.0 by production and not reported as a result"
+  },
+  "9": {
+   "s_mva": 0.0,
+   "e_mwh": 0.0,
+   "has_storage": false,
+   "efc_per_day_max": null,
+   "efc_per_day_per_cohort_year": {},
+   "terminal_soh_per_active_cohort_year": {},
+   "terminal_soh_min_over_active_cohort_years": null,
+   "soh_floor_rows_active_at_terminal": [],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 3.6734198463196485e-40,
+     "e_available": -4.591774807899561e-41
+    }
+   },
+   "note_zero_node": "zero-capacity node: no active cohort; EFC undefined (None), SoH variables fixed at 1.0 by production and not reported as a result"
+  }
+ },
+ "local_solve_failures": 0,
+ "network_failures_summary": {
+  "n_blocks": 0,
+  "classes": {
+   "recovered_tier1": 0,
+   "recovered_tier2": 0,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 0
+  },
+  "n_frozen_snapshots": 0,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/evals/a918ba210411acec_x0_v1/network_failures_s39_D.jsonl"
+ },
+ "solve_profile": {
+  "observed": {
+   "permitted_solve": 28,
+   "permitted_exec": 28,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "identity_holds": true,
+  "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+  "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+  "n_dso": 3,
+  "n_years": 1,
+  "n_days": 1,
+  "n_esso_nodes": 3,
+  "solves_per_cycle": 7,
+  "rounds": 4,
+  "rounds_note": "one initialization round + cycles_run ADMM cycles",
+  "base_solves": 28,
+  "retry_solves_credited": 0,
+  "reconciliation_supported": true,
+  "expected_solves": 28,
+  "recovered_only_identity": {
+   "expected": 28,
+   "holds": true,
+   "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+  }
+ },
+ "wall_time_s": {
+  "child_process_s": 145.67935729026794,
+  "run_admm_arm_s": 135.20829606056213,
+  "run_admm_arm_reported_wall_clock_s": 87.15908813476562
+ },
+ "peak_rss": {
+  "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+  "child_python_process_ru_maxrss": 2237579264,
+  "production_state_peak_rss_ru_maxrss": 2155151360,
+  "solver_subprocesses_max_ru_maxrss": 370114560,
+  "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+ },
+ "terminal_gross_operational_cost_contracted_excluded": 87556655.24811925,
+ "terminal_net_operational_recourse_contracted_excluded": 87556655.24811925,
+ "record_capture_checklist_asserted_before_run": {
+  "trajectory_field_boyd_all_pass": true,
+  "trajectory_field_boyd_ess_channel_pass": true,
+  "trajectory_field_boyd_ess_dual_ratio": true,
+  "trajectory_field_boyd_ess_primal_ratio": true,
+  "trajectory_field_boyd_pf_channel_pass": true,
+  "trajectory_field_boyd_pf_dual_ratio": true,
+  "trajectory_field_boyd_pf_primal_ratio": true,
+  "trajectory_field_boyd_stop": true,
+  "trajectory_field_boyd_v_channel_pass": true,
+  "trajectory_field_boyd_v_dual_ratio": true,
+  "trajectory_field_boyd_v_primal_ratio": true,
+  "trajectory_field_consecutive_converged_cycles": true,
+  "trajectory_field_cycle": true,
+  "trajectory_field_cycle_convergence": true,
+  "trajectory_field_efc_per_day_max": true,
+  "trajectory_field_gross_operational_cost": true,
+  "trajectory_field_local_solves_ok": true,
+  "trajectory_field_objective_change_abs": true,
+  "trajectory_field_objective_change_ratio": true,
+  "trajectory_field_objective_tolerance": true,
+  "trajectory_field_recourse": true,
+  "trajectory_field_rho_ess_action": true,
+  "trajectory_field_rho_ess_after": true,
+  "trajectory_field_rho_freeze_active": true,
+  "trajectory_field_rho_pf_action": true,
+  "trajectory_field_rho_pf_after": true,
+  "trajectory_field_rho_v_action": true,
+  "trajectory_field_rho_v_after": true,
+  "trajectory_field_terminal_salvage_value": true,
+  "esso_capture_attr_es_avg_ch_dch_per_unit": true,
+  "esso_capture_attr_es_soh_per_unit_cumul": true,
+  "esso_capture_attr_es_e_rated_per_unit": true,
+  "harness_fn_run_admm_arm": true,
+  "harness_fn_write_boyd_terminal_s35ref": true,
+  "harness_fn_s38_pf_capture_hooks": true,
+  "harness_fn_s39_exempt_until_capture_hooks": true,
+  "harness_fn__s35ref_terminal_floor_and_efc": true,
+  "harness_fn__derive_stopped_by_from_trajectory": true,
+  "harness_fn__identify_soh_floor_rows": true,
+  "evaluator_fn__certification_from_trajectory": true,
+  "evaluator_fn__first_pass_cycle": true,
+  "evaluator_fn__terminal_ratios": true,
+  "component_levels_recourse_key_interface_settlement_total": true,
+  "run_admm_arm_accepts_investment_map": true,
+  "run_admm_arm_post_run_hook_gets_state": true,
+  "production_state_has_peak_rss": true
+ },
+ "convergence_depth_tail_checklist_asserted_before_run": {
+  "checks": {
+   "production_default_tail_off": true,
+   "production_tail_helper_present": true,
+   "production_both_returns_carry_the_records": true,
+   "production_both_returns_carry_the_tail_state": true,
+   "production_records_drained_at_initialisation": true,
+   "production_records_drained_every_cycle": true,
+   "network_attempt_appends_a_record_after_the_solve": true,
+   "run_admm_arm_post_run_hook_gets_state": true
+  },
+  "declared": {
+   "enabled": true,
+   "compl_inf_tol": 1e-06
+  },
+  "tail_enabled_for_this_run": true,
+  "compl_inf_tol_tail": 1e-06,
+  "source": "campaign spec configuration.convergence_depth_tail",
+  "production_default": {
+   "enabled": false,
+   "compl_inf_tol": 1e-06
+  },
+  "persisted_files": [
+   "network_ipopt_solve_records.jsonl",
+   "convergence_depth_tail_state.json"
+  ]
+ },
+ "convergence_depth_tail_applied_in_child": {
+  "declared": {
+   "enabled": true,
+   "compl_inf_tol": 1e-06
+  },
+  "source": "campaign spec configuration.convergence_depth_tail",
+  "before": {
+   "enabled": false,
+   "compl_inf_tol": 1e-06
+  },
+  "after": {
+   "enabled": true,
+   "compl_inf_tol": 1e-06
+  },
+  "enabled_in_force": true,
+  "expected_enabled": true,
+  "dict_in_force_equals_declaration": true,
+  "ok": true
+ },
+ "convergence_depth_tail_state_check": {
+  "expected_enabled": true,
+  "enabled_in_state": true,
+  "expected_compl_inf_tol_tail": 1e-06,
+  "compl_inf_tol_tail_in_state": 1e-06,
+  "match": true,
+  "n_cycles_recorded": 3,
+  "cycles_tail_active": [],
+  "n_cycles_acted": 0,
+  "restore_at_exit_acted": false
+ },
+ "convergence_depth_capture": {
+  "status": "written",
+  "network_ipopt_solve_records_path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/evals/a918ba210411acec_x0_v1/network_ipopt_solve_records.jsonl",
+  "network_ipopt_solve_records_sha256": "1ac8734952f215b9973e409f864a8cf6c082318eb766d4280a0f18c98ac906f2",
+  "state_carried_records": true,
+  "n_records": 16,
+  "records_per_round": {
+   "0": 4,
+   "1": 4,
+   "2": 4,
+   "3": 4
+  },
+  "floor_status_tally": {
+   "DSO|at": 12,
+   "TSO|above": 2,
+   "TSO|at": 2
+  },
+  "exit_tally": {
+   "Optimal Solution Found.": 16
+  },
+  "n_parse_problems": 0,
+  "stale_network_ipopt_solve_records_discarded": 0,
+  "convergence_depth_tail_state_path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/evals/a918ba210411acec_x0_v1/convergence_depth_tail_state.json",
+  "convergence_depth_tail_state_sha256": "f43836a3a1f97ac65a6b5bbc9781d06ab64afbfc8b9cacd1daa59c9527b6b2c1",
+  "state_carried_tail_state": true
+ },
+ "convergence_depth_per_round_append": {
+  "records_append_path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/evals/a918ba210411acec_x0_v1/network_ipopt_solve_records_append.jsonl",
+  "records_append_sha256": "1ac8734952f215b9973e409f864a8cf6c082318eb766d4280a0f18c98ac906f2",
+  "end_of_run_records_sha256": "1ac8734952f215b9973e409f864a8cf6c082318eb766d4280a0f18c98ac906f2",
+  "n_records_appended": 16,
+  "rounds_appended": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "events_path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/evals/a918ba210411acec_x0_v1/convergence_depth_append_events.jsonl",
+  "records_append_byte_identical_to_end_of_run_file": true,
+  "tail_state_rebuilt_from_events_equals_returned_state": true,
+  "write_errors": [],
+  "ok": true
+ },
+ "eval_key": "a918ba210411acece96b1c22bb4f948e603d3a77c789c454ca306d895e9913eb",
+ "evaluation_overrides_effective": {},
+ "post_certification_capture_checklist_asserted_before_run": null,
+ "post_certification": null,
+ "post_certification_path": null,
+ "aa_per_cycle": {
+  "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/evals/a918ba210411acec_x0_v1/aa_per_cycle.jsonl",
+  "n_rows": 3,
+  "action_counts": {
+   "null": 3
+  },
+  "n_accepted": 0,
+  "n_rejected": 0,
+  "rejections_with_memory_retained": [],
+  "first_accept_cycle": null,
+  "first_reject_cycle": null
+ },
+ "configuration_checks_in_child": {
+  "rho_v_matches_D": true,
+  "rho_pf_matches_D": true,
+  "rho_ess_matches_D": true,
+  "tau_is_0": true,
+  "gamma_policy_tied_to_rho": true,
+  "balancing_exempt_until_matches_D": true,
+  "balancing_exempt_channels_empty": true,
+  "freeze_after_unchanged_cycles_is_10": true,
+  "freeze_backstop_cycle_is_200": true,
+  "minimum_consecutive_converged_cycles_matches_spec": true,
+  "shared_ess_initialization_is_standalone": true,
+  "num_max_iters_is_spec_cap": true,
+  "anderson_acceleration_case_file_matches_declaration": true,
+  "anderson_acceleration_case_file_memory_regularization_frozen": true,
+  "persistent_workers_off": true,
+  "parallel_execution_off": true
+ },
+ "overrides_applied_in_child": {},
+ "anderson_acceleration_effective_in_child": {
+  "enabled": true,
+  "memory": 5,
+  "regularization": 1e-10,
+  "reject_policy": "keep_memory"
+ },
+ "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+ "thread_caps_seen_by_child": {
+  "OMP_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1"
+ },
+ "PYTHONHASHSEED_in_child": null,
+ "nlp_solver_path_in_child": "/usr/local/bin/ipopt",
+ "campaign_lock_seen_by_child": {
+  "pid": 81663,
+  "campaign_id": "s56s4smoke_v2_A_V1",
+  "campaign_spec_sha256": "ac10717489de781f6fdd93ddfe52f3b9813b43553759aa5d7f5f684e10ead76c",
+  "started_utc": "2026-11-23T13:17:56.176584+00:00"
+ },
+ "child_pid": 81682,
+ "parent_pid": 81663,
+ "report_path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/evals/a918ba210411acec_x0_v1/g_s39_D.json",
+ "per_cycle_record_path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/evals/a918ba210411acec_x0_v1/per_cycle_record.jsonl",
+ "interface_dual_capture_checklist_asserted_before_run": {
+  "boyd_metrics_call_once_in_run_source": true,
+  "boyd_metrics_call_inside_the_cycle_loop": true,
+  "boyd_metrics_call_before_the_aa_step": true,
+  "boyd_metrics_signature": true,
+  "dual_leaf_is_p_q_period_lists": true,
+  "dual_update_scaled_by_rating_and_s_base": true,
+  "wrapped_names_exist": true,
+  "writer_is_gate_result_io": true
+ },
+ "interface_dual_capture": {
+  "schema": "interface_dual_capture_v1",
+  "file": "interface_duals_per_cycle.jsonl",
+  "boyd_calls_captured": 3,
+  "cycle_lines_written": 3,
+  "header_written": true,
+  "n_blocks": 3,
+  "n_periods": 24,
+  "bytes_written": 292553,
+  "bytes_per_cycle_line_max": 97412,
+  "errors": [],
+  "ok": true
+ },
+ "ess_ageing_baseline": {
+  "calendar_life_years": 15,
+  "calendar_retention_per_year": 0.985,
+  "cycle_life_nominal": 10000,
+  "depth_of_discharge_nominal": 0.8,
+  "minimum_soh": 0.7,
+  "calibration": {
+   "status": "ACTIVE",
+   "cycles_n": 10000,
+   "reference_dod_d": 0.8,
+   "eol_retention_r": 0.8
+  }
+ },
+ "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+ "ess_params_sha256_in_child": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+ "ess_ageing_verified_pre_run": {
+  "declared": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7,
+   "calibration": {
+    "status": "ACTIVE",
+    "cycles_n": 10000,
+    "reference_dod_d": 0.8,
+    "eol_retention_r": 0.8
+   }
+  },
+  "loaded": {
+   "calendar_life_years": 15,
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "status": "ACTIVE",
+    "cycles_n": 10000,
+    "reference_dod_d": 0.8,
+    "eol_retention_r": 0.8
+   }
+  },
+  "file_used_by_production": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+  "file_sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+  "pin": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "k_production": 35851.3609417964,
+  "per_ess": [
+   {
+    "year": "2025",
+    "bus": 5,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2025",
+    "bus": 7,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2025",
+    "bus": 9,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   }
+  ],
+  "checks": {
+   "pin_path_is_ess_params_file": true,
+   "file_used_by_production_is_pinned_file": true,
+   "file_sha256_equals_pin": true,
+   "loaded_equals_declaration_types_included": true,
+   "every_ess_soh_min_is_declared": true,
+   "every_ess_phi_cal_is_declared": true,
+   "every_ess_cl_eff_is_production_k": true
+  },
+  "readback_pre_run": {
+   "expected": {
+    "k": 35851.3609417964,
+    "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.8)",
+    "phi_cal_in_model": 0.985,
+    "floor_row_lower": 0.7,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true,
+    "d_row_form": "D * 2kE == 365 n avg"
+   },
+   "per_node": {
+    "5": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 0,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 1.0,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8712867870271764
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    },
+    "7": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 0,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 1.0,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8712867870271764
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    },
+    "9": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 0,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 1.0,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8712867870271764
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    }
+   },
+   "all_match": true,
+   "method": "numerical read-back from the built rows (model_variant_readback) against the declaration's closed forms; on probe models"
+  },
+  "floor_rows_identical_to_precheck": true
+ },
+ "ess_ageing_readback_terminal": {
+  "expected": {
+   "k": 35851.3609417964,
+   "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.8)",
+   "phi_cal_in_model": 0.985,
+   "floor_row_lower": 0.7,
+   "available_energy_soh_point": "end",
+   "ageing_enabled": true,
+   "d_row_form": "D * 2kE == 365 n avg"
+  },
+  "per_node": {
+   "5": {
+    "readback": {
+     "y_inv": 0,
+     "y0": 0,
+     "y1_available_row": 0,
+     "n_years_data": 5,
+     "d_row_form": "D * 2kE == 365 n avg",
+     "k": 35851.3609417964,
+     "n_years_from_d_row": 5.0,
+     "phi_cal_in_model": 0.985,
+     "soh_row_exp_form_ok": true,
+     "available_energy_soh_point": "end",
+     "available_row_probe": {
+      "soh_end": 0.9,
+      "soh_prev": 1.0,
+      "D": 0.2,
+      "X": 0.9,
+      "X_end": 0.9,
+      "X_mid_closed_form": 0.8712867870271764
+     },
+     "floor_row_lower": 0.7
+    },
+    "checks": {
+     "k": true,
+     "n_years_from_d_row_equals_data": true,
+     "phi_cal_in_model": true,
+     "d_row_form": true,
+     "available_energy_soh_point": true,
+     "soh_row_exp_form": true,
+     "floor_row_lower": true
+    }
+   },
+   "7": {
+    "readback": {
+     "y_inv": 0,
+     "y0": 0,
+     "y1_available_row": 0,
+     "n_years_data": 5,
+     "d_row_form": "D * 2kE == 365 n avg",
+     "k": 35851.3609417964,
+     "n_years_from_d_row": 5.0,
+     "phi_cal_in_model": 0.985,
+     "soh_row_exp_form_ok": true,
+     "available_energy_soh_point": "end",
+     "available_row_probe": {
+      "soh_end": 0.9,
+      "soh_prev": 1.0,
+      "D": 0.2,
+      "X": 0.9,
+      "X_end": 0.9,
+      "X_mid_closed_form": 0.8712867870271764
+     },
+     "floor_row_lower": 0.7
+    },
+    "checks": {
+     "k": true,
+     "n_years_from_d_row_equals_data": true,
+     "phi_cal_in_model": true,
+     "d_row_form": true,
+     "available_energy_soh_point": true,
+     "soh_row_exp_form": true,
+     "floor_row_lower": true
+    }
+   },
+   "9": {
+    "readback": {
+     "y_inv": 0,
+     "y0": 0,
+     "y1_available_row": 0,
+     "n_years_data": 5,
+     "d_row_form": "D * 2kE == 365 n avg",
+     "k": 35851.3609417964,
+     "n_years_from_d_row": 5.0,
+     "phi_cal_in_model": 0.985,
+     "soh_row_exp_form_ok": true,
+     "available_energy_soh_point": "end",
+     "available_row_probe": {
+      "soh_end": 0.9,
+      "soh_prev": 1.0,
+      "D": 0.2,
+      "X": 0.9,
+      "X_end": 0.9,
+      "X_mid_closed_form": 0.8712867870271764
+     },
+     "floor_row_lower": 0.7
+    },
+    "checks": {
+     "k": true,
+     "n_years_from_d_row_equals_data": true,
+     "phi_cal_in_model": true,
+     "d_row_form": true,
+     "available_energy_soh_point": true,
+     "soh_row_exp_form": true,
+     "floor_row_lower": true
+    }
+   }
+  },
+  "all_match": true,
+  "method": "numerical read-back from the built rows (model_variant_readback) against the declaration's closed forms; on clones of the given models"
+ },
+ "ageing_trajectory_terminal": {
+  "available_energy_soh_point": "end",
+  "ageing_enabled": true,
+  "nodes": {
+   "5": {
+    "cells": [],
+    "salvage_value": -2.3463442171821855e-35
+   },
+   "7": {
+    "cells": [],
+    "salvage_value": -2.3463442171821855e-35
+   },
+   "9": {
+    "cells": [],
+    "salvage_value": -2.3463442171821855e-35
+   }
+  }
+ },
+ "derived_instance": {
+  "case_path": "data/SRP1/Results/P515S56/step4_instances_v1/SRP1__s56_step4_2025_Winter.json",
+  "case_sha256": "92e6283bdb1dafcb328ec951095ebf2173d314754e7f946c0c2210694ca7537e",
+  "changes_vs_source": [
+   {
+    "from": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "key": "Years",
+    "to": {
+     "2025": 5
+    }
+   },
+   {
+    "from": {
+     "Autumn": 91,
+     "Spring": 92,
+     "Summer": 91,
+     "Winter": 91
+    },
+    "key": "Days",
+    "to": {
+     "Winter": 91
+    }
+   }
+  ],
+  "instance_label": "s56_step4_2025_Winter",
+  "scenario_checksum": "58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e",
+  "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+ },
+ "derived_instance_installed_in_child": {
+  "case_path": "data/SRP1/Results/P515S56/step4_instances_v1/SRP1__s56_step4_2025_Winter.json",
+  "case_sha256_in_child": "92e6283bdb1dafcb328ec951095ebf2173d314754e7f946c0c2210694ca7537e",
+  "scenario_checksum_in_child": "58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e",
+  "instance_label": "s56_step4_2025_Winter",
+  "checksum_matches_srp1_canonical": false,
+  "planning_dimensions": {
+   "years": {
+    "2025": 5
+   },
+   "days": {
+    "Winter": 91
+   },
+   "num_instants": 24,
+   "random_seed": 2026,
+   "num_market_scenarios": 3,
+   "num_operation_scenarios": {
+    "case9": 3,
+    "case33_1": 3,
+    "case33_2": 3,
+    "case33_3": 3
+   },
+   "active_distribution_network_nodes": [
+    5,
+    7,
+    9
+   ],
+   "scenario_metadata": {
+    "random_seed": 2026,
+    "deterministic_scenarios": true,
+    "market_scenario_checksum": "95d80d17d16d21552cdd90286aa52b67309448f34e241bfa14bc504299fb46d8",
+    "operational_scenario_checksum": "20ccd28cedb8588330e7e3e4e7d4a2a418c302740b7acd4345c32131c30c1d9b",
+    "combined_scenario_checksum": "58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e"
+   }
+  },
+  "expected_block_counts": {
+   "tso_blocks": 1,
+   "dso_blocks": 3,
+   "network_blocks": 4,
+   "esso_models": 3,
+   "solves_per_cycle": 7
+  },
+  "planning_read_dir": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/evals/a918ba210411acec_x0_v1/planning_read",
+  "read_wall_s": 7.2741968631744385,
+  "reader": "p515_s44_scale_measurement.read_planning_from_derived_case (production SharedResourcesPlanning)"
+ },
+ "derived_instance_checks_in_child": {
+  "planning_scenario_checksum_equals_declaration": true,
+  "planning_has_more_than_one_scenario_combination": true
+ },
+ "interface_deviation_premium_applied_in_child": null,
+ "multiscenario_terminal": {
+  "status": "written",
+  "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/evals/a918ba210411acec_x0_v1/multiscenario_terminal.json",
+  "sha256": "f2116709e293193a0eae33fb776ecbd2821a1ef334fb8a3c0254f837edde255b",
+  "runtime_s": 0.939337968826294,
+  "sigma_calibration": {
+   "sigma_fixed": 93635360.0,
+   "sigma_computed": 55182635.22137763,
+   "ratio_computed_over_fixed": 0.589335430775058,
+   "assert_factor": 3.0,
+   "band": [
+    0.3333333333333333,
+    3.0
+   ],
+   "ratio_over_lower_edge": 1.768006292325174,
+   "upper_edge_over_ratio": 5.090479620501661,
+   "within_band": true,
+   "objective_scale_source": "case_file",
+   "definition": "sigma_computed = max over TSO/DSO blocks of |w_b * f_b| at the initialization solve (shared_resources_planning._compute_common_admm_objective_scale); the resolver raises unless 1/F <= sigma_computed/sigma_fixed <= F"
+  },
+  "objective_convention": "per-scenario obj = production base SMOPF objective per scenario (no settlement, no row 18, no voltage pin); per-scenario TN-DN coupling wired: Q per block = sum_s omega_s obj_s + (settlement - settlement) + row 18 charge, i.e. the COMPLETE settlement excluded = the primary gross_operational_cost convention in this mode (_get_operational_recourse_block_components / weight); today's form (contracted part excluded) is recourse_components.gross_operational_cost_contracted_excluded",
+  "dispersion_convention": "d_{s,t} = p_int_{s,t} - pbar_t (the DSO block's own committed schedule); block-local, probability-weighted; *_sum_over_blocks = summed over the DSO's (year, day) blocks UNWEIGHTED (MWh per representative day summed, the W44 convention); *_weighted = weighted by _get_admm_block_weight (the Q weighting)",
+  "alpha_in_force": 0.0,
+  "floor_in_force": null,
+  "n_blocks": 4,
+  "n_dso_blocks_row18_wired": 0,
+  "per_dso": {
+   "5": {
+    "rms_mw_max_over_blocks": 3.590772888625591,
+    "max_abs_mw": 13.842913562123194,
+    "rms_mvar_max_over_blocks": 0.1496609339297854,
+    "rms_share_of_mean_flow_max_over_blocks": 0.09321589286023788,
+    "E_abs_d_p_mwh_sum_over_blocks": 55.80919830709759,
+    "E_abs_d_p_mwh_weighted": 25393.185229729403,
+    "sum_omega_d2_p_mw2h_sum_over_blocks": 309.44759850452596,
+    "sum_omega_d2_p_mw2h_weighted": 140798.6573195593,
+    "E_abs_d_q_mvarh_sum_over_blocks": 2.90643945512628,
+    "row18_charge_sum_over_blocks": 0.0,
+    "row18_charge_weighted": 0.0,
+    "argmax_rms_block": "2025|Winter",
+    "n_blocks": 1
+   },
+   "7": {
+    "rms_mw_max_over_blocks": 2.291444109825961,
+    "max_abs_mw": 7.565576489629697,
+    "rms_mvar_max_over_blocks": 0.8714555741896924,
+    "rms_share_of_mean_flow_max_over_blocks": 0.07777788928830737,
+    "E_abs_d_p_mwh_sum_over_blocks": 44.11596032626809,
+    "E_abs_d_p_mwh_weighted": 20072.76194845198,
+    "sum_omega_d2_p_mw2h_sum_over_blocks": 126.01718660294621,
+    "sum_omega_d2_p_mw2h_weighted": 57337.819904340526,
+    "E_abs_d_q_mvarh_sum_over_blocks": 16.049047981167547,
+    "row18_charge_sum_over_blocks": 0.0,
+    "row18_charge_weighted": 0.0,
+    "argmax_rms_block": "2025|Winter",
+    "n_blocks": 1
+   },
+   "9": {
+    "rms_mw_max_over_blocks": 2.514338700453199,
+    "max_abs_mw": 7.8478527514938055,
+    "rms_mvar_max_over_blocks": 0.492418580824505,
+    "rms_share_of_mean_flow_max_over_blocks": 0.05298849951372958,
+    "E_abs_d_p_mwh_sum_over_blocks": 45.775583506959634,
+    "E_abs_d_p_mwh_weighted": 20827.890495666634,
+    "sum_omega_d2_p_mw2h_sum_over_blocks": 151.72557841432024,
+    "sum_omega_d2_p_mw2h_weighted": 69035.13817851571,
+    "E_abs_d_q_mvarh_sum_over_blocks": 6.987815010343112,
+    "row18_charge_sum_over_blocks": 0.0,
+    "row18_charge_weighted": 0.0,
+    "argmax_rms_block": "2025|Winter",
+    "n_blocks": 1
+   }
+  },
+  "all_dso": {
+   "E_abs_d_p_mwh_sum_over_blocks": 145.7007421403253,
+   "E_abs_d_p_mwh_weighted": 66293.83767384801,
+   "sum_omega_d2_p_mw2h_sum_over_blocks": 587.1903635217924,
+   "sum_omega_d2_p_mw2h_weighted": 267171.6154024155,
+   "E_abs_d_q_mvarh_sum_over_blocks": 25.943302446636938,
+   "row18_charge_sum_over_blocks": 0.0,
+   "row18_charge_weighted": 0.0,
+   "rms_mw_max_over_all_dso_blocks": 3.590772888625591,
+   "max_abs_mw_over_all_dso_blocks": 13.842913562123194
+  },
+  "settlement_identity": {
+   "definition": "Addendum 38 (C): residual := T_TSO + sum_DSO T_DSO (interface_settlement_total) == the price-deviation covariance (interface_settlement_deviation_total) + the leftover priced interface consensus residual (interface_settlement_identity_residual = the contracted parts, which cancel at consensus); the covariance is also recomputed here from the models",
+   "residual_interface_settlement_total": -522015.13876645267,
+   "covariance_interface_settlement_deviation_total": -7901.572120367418,
+   "covariance_recomputed_weighted_total": -7901.572120266304,
+   "covariance_recomputed_vs_production_rel_diff": 1.9369933064248743e-13,
+   "leftover_identity_residual": -514113.56664608524,
+   "contracted_total": -514113.5666460991,
+   "tso_deviation_part": 99527.50833565922,
+   "dso_deviation_part": {
+    "5": -51905.1137028294,
+    "7": -21148.976177585937,
+    "9": -34374.9905756113
+   }
+  },
+  "identity_worst_rel_diffs": {
+   "settlement_split_rel": 0.0,
+   "covariance_vs_deviation_rel": 6.099070960271636e-16,
+   "per_scenario_settlement_rel": 3.6452166413587407e-16,
+   "per_scenario_row18_rel": 0.0,
+   "per_scenario_q_reconciliation_rel": 5.046800941558404e-16,
+   "dispersion_identity_rel": 7.492924984024045e-16
+  },
+  "identity_rel_tol": 1e-09,
+  "checks": {
+   "settlement_split_rel": true,
+   "covariance_vs_deviation_rel": true,
+   "per_scenario_settlement_rel": true,
+   "per_scenario_row18_rel": true,
+   "per_scenario_q_reconciliation_rel": true,
+   "dispersion_identity_rel": true,
+   "covariance_recomputed_vs_production": true,
+   "row18_readback_all_blocks": true
+  },
+  "all_checks_pass": true,
+  "recourse_components": {
+   "gross_operational_cost": 87564556.8202396,
+   "net_operational_recourse": 87564556.8202396,
+   "terminal_salvage_value": -7.039032651546557e-35,
+   "voltage_pin_total": 0.0,
+   "detector_penalty_total": -910.8025090668176,
+   "q_convention": "settlement_excluded_in_full",
+   "gross_operational_cost_contracted_excluded": 87556655.24811925,
+   "net_operational_recourse_contracted_excluded": 87556655.24811925,
+   "gross_operational_cost_settlement_excluded_in_full": 87564556.8202396,
+   "net_operational_recourse_settlement_excluded_in_full": 87564556.8202396,
+   "interface_settlement_total": -522015.13876645267,
+   "interface_settlement_deviation_total": -7901.572120367418
+  },
+  "voltage_pin_mismatch_max_rms_pu": 0.004788286485426596
+ },
+ "multiscenario_terminal_error_traceback": null,
+ "operational_workbook": {
+  "status": "written",
+  "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/evals/a918ba210411acec_x0_v1/results/SRP1_distributed_terminal.xlsx",
+  "sha256": "8a97de8a9576b8664718151583abf211395c04e8f644769f3e8db2e14753bfd3",
+  "size_bytes": 9398943,
+  "runtime_s": 44.37118601799011,
+  "write_s": 43.37937903404236,
+  "writer": "SharedResourcesPlanning.write_operational_planning_results_to_excel (production)",
+  "point": "terminal models of the run, BEFORE any post-certification step"
+ },
+ "terminal_phase_lock": {
+  "status": "held",
+  "lock_path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/.terminal_phase.lock",
+  "waited_s": 0.00011086463928222656,
+  "stale_locks_taken_over": [],
+  "released": true
+ },
+ "sigma_calibration": {
+  "sigma_fixed": 93635360.0,
+  "sigma_computed": 55182635.22137763,
+  "ratio_computed_over_fixed": 0.589335430775058,
+  "assert_factor": 3.0,
+  "band": [
+   0.3333333333333333,
+   3.0
+  ],
+  "ratio_over_lower_edge": 1.768006292325174,
+  "upper_edge_over_ratio": 5.090479620501661,
+  "within_band": true,
+  "objective_scale_source": "case_file",
+  "definition": "sigma_computed = max over TSO/DSO blocks of |w_b * f_b| at the initialization solve (shared_resources_planning._compute_common_admm_objective_scale); the resolver raises unless 1/F <= sigma_computed/sigma_fixed <= F"
+ },
+ "alpha_row_capture_checklist_asserted_before_run": {
+  "production_fn_create_transmission_network_model": true,
+  "production_fn_create_shared_energy_storage_model": true,
+  "production_fn__prepare_distribution_objectives_for_admm": true,
+  "production_fn__prepare_transmission_objectives_for_admm": true,
+  "production_fn_get_admm_boyd_residual_metrics": true,
+  "production_fn__admm_local_solves_succeeded": true,
+  "production_fn__get_operational_interface_dispersion": true,
+  "production_fn__get_operational_recourse_components": true,
+  "production_fn__get_local_interface_settlement": true,
+  "production_fn__get_admm_block_weight": true,
+  "production_fn__activate_row18_with_settlement": true,
+  "init_check_then_prepare_dso_then_prepare_tso": true,
+  "tso_and_esso_built_before_prepare": true,
+  "boyd_once_per_cycle_before_local_check": true,
+  "local_check_called_exactly_twice": true,
+  "row18_activated_in_prepare_dso": true,
+  "prepare_dso_sets_weight_and_penalty": true,
+  "prepare_tso_sets_weight_and_penalty": true,
+  "model_declares_dual_and_bound_suffixes": true,
+  "release_bookkeeping_leaves_suffixes": true,
+  "solved_objective_is_p58_rescaled": true,
+  "coordination_record_by_import": true,
+  "coordination_record_reads_duals_rho_request_pbar_scale": true,
+  "audit_helpers_by_import": true,
+  "audit_constants_by_import": true,
+  "decomposition_by_import": true,
+  "post_run_hook_gets_optimization_results": true,
+  "p_posthoc_inputs_captured": true,
+  "p_posthoc_formula_defined": true,
+  "child_installs_alpha_row_hooks": true,
+  "child_closes_hooks_in_post_run_hook": true,
+  "child_writes_response_before_workbook_and_post_certification": true,
+  "child_merges_per_cycle_response": true,
+  "child_response_capture_error_exits_2": true,
+  "termination_record_carries_ipopt_exit": true,
+  "primal_split_captured_per_dso_block": true,
+  "primal_split_terms": true,
+  "ipopt_options_in_force_captured": true,
+  "compact_writer_with_roundtrip": true,
+  "no_entry_cap_in_encoder": true
+ },
+ "activation_readback": {
+  "alpha": 0.0,
+  "point": "after _prepare_distribution_objectives_for_admm and _prepare_transmission_objectives_for_admm; before any ADMM-cycle solve",
+  "n_blocks": 4,
+  "n_dso_blocks": 3,
+  "expected_n_dso_blocks": 3,
+  "failing_blocks": [],
+  "all_ok": true
+ },
+ "initialisation_identity": {
+  "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/init_identity/a918ba210411acec_x0_v1.json",
+  "gross_operational_cost": -4051.9442309228716,
+  "gross_operational_cost_hex": "-0x1.fa7e3723c4b36p+11",
+  "n_compared": 0,
+  "compared": [],
+  "other_candidates_not_compared": [],
+  "mismatches": [],
+  "all_equal": true,
+  "initialisation_identity_group": "voltage_pin_not_constructed"
+ },
+ "response_terminal": {
+  "status": "written",
+  "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/evals/a918ba210411acec_x0_v1/response_terminal.json",
+  "sha256": "ac3a5560bb468961de3a062e406bc039101350099684401ca105087089c81395",
+  "schema": "p515_s44_response_terminal_v2",
+  "capture_cost": {
+   "runtime_s": 2.187299966812134,
+   "rss_before_bytes": 2027945984,
+   "rss_after_bytes": 2028470272,
+   "ru_maxrss_before_bytes": 2155151360,
+   "ru_maxrss_after_bytes": 2155151360,
+   "ru_maxrss_units": "bytes on macOS/BSD, kilobytes on Linux",
+   "file_bytes": 798440,
+   "roundtrip": {
+    "verified": true,
+    "sections_compared": [
+     "capture_cost",
+     "constants",
+     "coordination_by_dso_block",
+     "curtailment_by_block",
+     "curtailment_entries",
+     "flexibility_by_dso_block",
+     "network_hour_rows",
+     "p_posthoc_by_dso_block",
+     "row18_legs_by_dso_block",
+     "schema",
+     "summary"
+    ],
+    "n_entries_written": 1403,
+    "n_entries_captured": 1403,
+    "write_and_verify_s": 0.12498879432678223
+   },
+   "rss_after_write_verify_bytes": 2029633536,
+   "ru_maxrss_after_write_verify_bytes": 2155151360
+  },
+  "alpha_in_force": 0.0,
+  "units": "volumes MWh (MW x 1 h periods) per representative day per block; *_weighted x admm_block_weight (the Q weighting); money EUR",
+  "n_curtailment_entries_above_tol": 1403,
+  "n_entries_dso": 1403,
+  "n_entries_tso": 0,
+  "n_entries_with_row18_fields": 0,
+  "n_entries_with_bus_dual": 1403,
+  "n_network_hours_with_rows": 585,
+  "curtailment_per_network": {
+   "TSO": {
+    "E_plus_mwh_weighted": 0.15881286873721262,
+    "E_net_mwh_weighted": -2.255735339871404,
+    "priced_eur_weighted": 16.003537052847463,
+    "n_entries_above_tol": 0
+   },
+   "DSO5": {
+    "E_plus_mwh_weighted": 319.57758233038305,
+    "E_net_mwh_weighted": 317.29517226397945,
+    "priced_eur_weighted": 32711.830089372987,
+    "n_entries_above_tol": 368
+   },
+   "DSO7": {
+    "E_plus_mwh_weighted": 17150.97549280468,
+    "E_net_mwh_weighted": 17149.548599043253,
+    "priced_eur_weighted": 1708308.8940958166,
+    "n_entries_above_tol": 576
+   },
+   "DSO9": {
+    "E_plus_mwh_weighted": 2008.5877545071262,
+    "E_net_mwh_weighted": 2007.084136752667,
+    "priced_eur_weighted": 195239.2772414948,
+    "n_entries_above_tol": 459
+   }
+  },
+  "n_coordination_blocks": 3,
+  "n_coordination_capture_errors": 0,
+  "flexibility_per_dso_weighted": {
+   "DSO5": {
+    "p_up_mwh": 37622.518734038415,
+    "p_down_mwh": 37622.518954928346,
+    "q_up_mvarh": 145.88425445546324,
+    "q_down_mvarh": 0.7483049215103685
+   },
+   "DSO7": {
+    "p_up_mwh": 150501.02752516206,
+    "p_down_mwh": 150501.02771058553,
+    "q_up_mvarh": 406.64097217498755,
+    "q_down_mvarh": 1.4264623941680423
+   },
+   "DSO9": {
+    "p_up_mwh": 80650.26396432977,
+    "p_down_mwh": 80650.26415971278,
+    "q_up_mvarh": 290.9975814318959,
+    "q_down_mvarh": 1.27900016239508
+   }
+  },
+  "row18_charge_p_weighted": 0.0,
+  "row18_charge_q_weighted": 0.0,
+  "row18_charge_weighted_legs_total": 0.0,
+  "row18_q_leg_share_of_charge": null,
+  "P_charge_over_alpha": null,
+  "P_posthoc_weighted": 8433317.772809274,
+  "P_posthoc_p_leg_weighted": 7228569.727936157,
+  "row18_zl_identity": {
+   "n_checked": 0,
+   "n_missing_suffix_values": 0,
+   "n_le_1e-6": 0,
+   "n_le_1e-4": 0,
+   "n_le_1e-2": 0,
+   "worst_rel_zl_sum_vs_2coef": 0.0,
+   "worst_rel_abs_dual_vs_half_zl_diff": 0.0,
+   "tol": 0.0001,
+   "holds": false
+  },
+  "voltage_pin_total": 0.0,
+  "recourse_components": {
+   "gross_operational_cost": 87564556.8202396,
+   "net_operational_recourse": 87564556.8202396,
+   "terminal_salvage_value": -7.039032651546557e-35,
+   "voltage_pin_total": 0.0,
+   "interface_settlement_total": -522015.13876645267,
+   "interface_settlement_deviation_total": -7901.572120367418,
+   "detector_penalty_total": -910.8025090668176,
+   "gross_operational_cost_contracted_excluded": 87556655.24811925,
+   "net_operational_recourse_contracted_excluded": 87556655.24811925,
+   "interface_settlement_contracted_total": -514113.5666460991,
+   "q_convention": "settlement_excluded_in_full"
+  },
+  "n_blocks_last_solve_not_succeeded": 0,
+  "P_gap_decomposition_weighted": null,
+  "dso_last_solve_ipopt_exit_counts": {
+   "optimal": 3
+  },
+  "ipopt_options_in_force_dso": {
+   "DSO5": {
+    "tol": {
+     "value": 1e-05,
+     "source": "case_file"
+    },
+    "acceptable_tol": {
+     "value": 0.0001,
+     "source": "case_file"
+    },
+    "constr_viol_tol": {
+     "value": 0.0001,
+     "source": "ipopt_default"
+    },
+    "acceptable_constr_viol_tol": {
+     "value": 0.01,
+     "source": "ipopt_default"
+    },
+    "bound_relax_factor": {
+     "value": 1e-08,
+     "source": "ipopt_default"
+    },
+    "honor_original_bounds": {
+     "value": "no",
+     "source": "ipopt_default"
+    },
+    "nlp_scaling_method": {
+     "value": "gradient-based",
+     "source": "ipopt_default"
+    },
+    "nlp_scaling_max_gradient": {
+     "value": 100.0,
+     "source": "ipopt_default"
+    }
+   },
+   "DSO7": {
+    "tol": {
+     "value": 1e-05,
+     "source": "case_file"
+    },
+    "acceptable_tol": {
+     "value": 0.0001,
+     "source": "case_file"
+    },
+    "constr_viol_tol": {
+     "value": 0.0001,
+     "source": "ipopt_default"
+    },
+    "acceptable_constr_viol_tol": {
+     "value": 0.01,
+     "source": "ipopt_default"
+    },
+    "bound_relax_factor": {
+     "value": 1e-08,
+     "source": "ipopt_default"
+    },
+    "honor_original_bounds": {
+     "value": "no",
+     "source": "ipopt_default"
+    },
+    "nlp_scaling_method": {
+     "value": "gradient-based",
+     "source": "ipopt_default"
+    },
+    "nlp_scaling_max_gradient": {
+     "value": 100.0,
+     "source": "ipopt_default"
+    }
+   },
+   "DSO9": {
+    "tol": {
+     "value": 1e-05,
+     "source": "case_file"
+    },
+    "acceptable_tol": {
+     "value": 0.0001,
+     "source": "case_file"
+    },
+    "constr_viol_tol": {
+     "value": 0.0001,
+     "source": "ipopt_default"
+    },
+    "acceptable_constr_viol_tol": {
+     "value": 0.01,
+     "source": "ipopt_default"
+    },
+    "bound_relax_factor": {
+     "value": 1e-08,
+     "source": "ipopt_default"
+    },
+    "honor_original_bounds": {
+     "value": "no",
+     "source": "ipopt_default"
+    },
+    "nlp_scaling_method": {
+     "value": "gradient-based",
+     "source": "ipopt_default"
+    },
+    "nlp_scaling_max_gradient": {
+     "value": 100.0,
+     "source": "ipopt_default"
+    }
+   }
+  }
+ },
+ "response_terminal_error_traceback": null,
+ "per_cycle_response": {
+  "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/evals/a918ba210411acec_x0_v1/per_cycle_response.jsonl",
+  "n_lines": 3,
+  "n_trajectory_rows": 3,
+  "n_captured": 3,
+  "cycles_match": true
+ },
+ "interface_coupling": {
+  "per_scenario_interface_coupling": true,
+  "per_scenario_voltage_mode": "per_scenario",
+  "row18_charge_reactive": false
+ },
+ "interface_coupling_label": "EVALUATION OPTION \u2014 per-scenario TN-DN interface coupling (S56 F1; not the published formulation)",
+ "interface_coupling_applied_in_child": {
+  "interface_coupling": {
+   "per_scenario_interface_coupling": true,
+   "per_scenario_voltage_mode": "per_scenario",
+   "row18_charge_reactive": false
+  },
+  "label": "EVALUATION OPTION \u2014 per-scenario TN-DN interface coupling (S56 F1; not the published formulation)",
+  "production_support": "admm_parameters.ADMMParameters() carries ['per_scenario_interface_coupling', 'per_scenario_voltage_mode', 'row18_charge_reactive']: True",
+  "before": {
+   "per_scenario_interface_coupling": false,
+   "per_scenario_voltage_mode": "pin",
+   "row18_charge_reactive": true
+  },
+  "in_force": {
+   "per_scenario_interface_coupling": true,
+   "per_scenario_voltage_mode": "per_scenario",
+   "row18_charge_reactive": false
+  },
+  "checks": {
+   "in_force_equals_declaration": true
+  }
+ },
+ "interface_coupling_capture_checklist_asserted_before_run": {
+  "field:interface_coupling_active": true,
+  "field:interface_coupling_voltage_mode": true,
+  "field:interface_coupling_row18_charge_reactive": true,
+  "field:interface_coupling_aa_forced_off": true,
+  "field:interface_coupling_capture_error": true,
+  "field:boyd_pf_r_expectation_part": true,
+  "field:boyd_pf_r_deviation_part": true,
+  "field:boyd_pf_s_expectation_part": true,
+  "field:boyd_pf_s_deviation_part": true,
+  "field:boyd_v_r_expectation_part": true,
+  "field:boyd_v_r_deviation_part": true,
+  "field:boyd_v_s_expectation_part": true,
+  "field:boyd_v_s_deviation_part": true,
+  "field:scenario_mismatch_p_max_mw": true,
+  "field:scenario_mismatch_p_rms_mw": true,
+  "field:scenario_mismatch_q_max_mvar": true,
+  "field:scenario_mismatch_q_rms_mvar": true,
+  "field:scenario_mismatch_v_max_pu": true,
+  "field:scenario_mismatch_v_rms_pu": true,
+  "field:scenario_mismatch_by_dn": true,
+  "field:priced_residual_pr": true,
+  "field:priced_residual_pr_abs": true,
+  "field:priced_residual_price_part": true,
+  "field:priced_residual_dual_part": true,
+  "field:gross_operational_cost_settlement_excluded_in_full": true,
+  "field:net_operational_recourse_settlement_excluded_in_full": true,
+  "field:gross_operational_cost_contracted_excluded": true,
+  "field:net_operational_recourse_contracted_excluded": true,
+  "record_merged_into_admm_diagnostics": true,
+  "boyd_parts_recorded": true,
+  "production_support": true
+ },
+ "s56_cycle_capture_checklist_asserted_before_run": {
+  "boyd_call_point": true,
+  "idc_deviation_duals_recorded": true,
+  "consensus_pf_leaf_p_q_lists": true,
+  "consensus_vmag_leaf_list": true,
+  "dual_vmag_leaf_list": true,
+  "deviation_store_name": true,
+  "deviation_stores_created_by_the_wiring": true,
+  "block_components_settlement_part_follows_wiring": true,
+  "local_settlement_parts": true,
+  "block_weight": true,
+  "rho_params_tso": true,
+  "rho_params_dso": true,
+  "tail_holders": true,
+  "writer_is_gate_result_io": true
+ },
+ "s56_cycle_capture_summary": {
+  "schema": "s56_cycle_capture_v1",
+  "file": "s56_cycle_capture.jsonl",
+  "boyd_calls_captured": 3,
+  "cycle_lines_written": 3,
+  "header_written": true,
+  "bytes_written": 285315,
+  "bytes_per_cycle_line_max": 95422,
+  "errors": [],
+  "ok": true
+ }
+}

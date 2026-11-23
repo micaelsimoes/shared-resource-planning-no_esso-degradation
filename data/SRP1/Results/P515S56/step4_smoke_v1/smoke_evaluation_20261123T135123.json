@@ -1,0 +1,2982 @@
+{
+ "schema": "p515_s56_step4_smoke_evaluation_v1",
+ "utc": "2026-11-23T13:51:23.716872+00:00",
+ "spec": {
+  "path": "data/SRP1/Results/P515S56/step4_smoke_v1/frozen_step4_smoke_spec_v2_e36c29bd.json",
+  "sha256": "e36c29bdd7791a4639156d2fa0aa6d5bb28bbf02bc586a416199a057d8859795"
+ },
+ "script": "p515_s56_step4_smoke.py",
+ "script_sha256": "2a9d2981cbeb33bc11356f9cbc1be56bb1b5971b3476248ce775595897257a48",
+ "git_head": "bb8639cdea20a8cd1842d550407247fd76a5badd",
+ "objective_convention": "Q in EUR of total discounted cost. Coupled arms: primary gross_operational_cost = settlement excluded in full (pin excluded, salvage separate), contracted-excluded beside it. Pinned arms: gross_operational_cost = contracted settlement and pin excluded. C_central: step 3 gross EUR/day (settlement weight 0, no salvage); Q_block - w_b C_central in EUR of total discounted cost",
+ "runs": {
+  "A|V1": {
+   "run": 1,
+   "instance": "A",
+   "arm": "V1",
+   "eval_dir": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/evals/a918ba210411acec_x0_v1",
+   "eval_key": "a918ba210411acece96b1c22bb4f948e603d3a77c789c454ca306d895e9913eb",
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "campaign_spec_sha256": "ac10717489de781f6fdd93ddfe52f3b9813b43553759aa5d7f5f684e10ead76c",
+   "status": "not_certified",
+   "exit_code_parent": 0,
+   "exit_code_txt": 0,
+   "cycles_run": 3,
+   "n_per_cycle_rows": 3,
+   "solves": {
+    "declared_base": 28,
+    "base_solves": 28,
+    "observed_permitted_solve": 28,
+    "observed_permitted_exec": 28,
+    "blocked_solve": 0,
+    "blocked_exec": 0,
+    "retry_solves_credited": 0,
+    "expected_solves": 28,
+    "identity_holds": true
+   },
+   "launcher_guard": {
+    "label": "P5.15 S56 step 4 smoke launcher (this process never solves)",
+    "counts": {
+     "permitted_solve": 0,
+     "permitted_exec": 0,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "verify_failures": []
+   },
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 2237579264,
+    "production_state_peak_rss_ru_maxrss": 2155151360,
+    "solver_subprocesses_max_ru_maxrss": 370114560,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "s_per_cycle": [
+    27.702051162719727,
+    22.22293186187744,
+    18.085962772369385
+   ],
+   "wall_time_s": {
+    "child_process_s": 145.67935729026794,
+    "run_admm_arm_s": 135.20829606056213,
+    "run_admm_arm_reported_wall_clock_s": 87.15908813476562
+   },
+   "aa": {
+    "effective_in_child": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "forced_off_per_cycle": [
+     true,
+     true,
+     true
+    ]
+   },
+   "local_solve_failures": 0,
+   "network_failures_summary": {
+    "n_blocks": 0,
+    "classes": {
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0,
+     "not_attempted": 0,
+     "indeterminate": 0,
+     "recovered": 0
+    },
+    "n_frozen_snapshots": 0,
+    "n_esso_recovery_events": 0,
+    "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/evals/a918ba210411acec_x0_v1/network_failures_s39_D.jsonl"
+   },
+   "S-P1": {
+    "held": true
+   },
+   "S-P5": {
+    "child_python_peak_rss_gib": 2.0839080810546875,
+    "ipopt_max_rss_gib": 0.344696044921875,
+    "held": true
+   },
+   "init_identity": {
+    "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V1/init_identity/a918ba210411acec_x0_v1.json",
+    "gross_operational_cost": -4051.9442309228716,
+    "gross_operational_cost_hex": "-0x1.fa7e3723c4b36p+11",
+    "n_compared": 0,
+    "compared": [],
+    "other_candidates_not_compared": [],
+    "mismatches": [],
+    "all_equal": true,
+    "initialisation_identity_group": "voltage_pin_not_constructed"
+   },
+   "terminal_recourse": {
+    "gross_operational_cost": 87564556.8202396,
+    "gross_operational_cost_contracted_excluded": 87556655.24811925,
+    "interface_settlement_total": -522015.13876645267,
+    "interface_settlement_contracted_total": -514113.5666460991,
+    "interface_settlement_deviation_total": -7901.572120367418,
+    "voltage_pin_total": 0.0,
+    "voltage_pin_tso": 0.0,
+    "voltage_pin_dso": {
+     "5": 0.0,
+     "7": 0.0,
+     "9": 0.0
+    },
+    "terminal_salvage_value": -7.039032651546557e-35,
+    "q_convention": "settlement_excluded_in_full"
+   },
+   "per_cycle_gross": [
+    211339493.78310615,
+    104306189.24033105,
+    87564556.8202396
+   ],
+   "s56_capture": {
+    "header_blocks": [
+     [
+      5,
+      2025,
+      "Winter"
+     ],
+     [
+      7,
+      2025,
+      "Winter"
+     ],
+     [
+      9,
+      2025,
+      "Winter"
+     ]
+    ],
+    "n_lines": 3,
+    "deviation_kinds": [
+     "p",
+     "q",
+     "v"
+    ],
+    "checklist": {
+     "boyd_call_point": true,
+     "idc_deviation_duals_recorded": true,
+     "consensus_pf_leaf_p_q_lists": true,
+     "consensus_vmag_leaf_list": true,
+     "dual_vmag_leaf_list": true,
+     "deviation_store_name": true,
+     "deviation_stores_created_by_the_wiring": true,
+     "block_components_settlement_part_follows_wiring": true,
+     "local_settlement_parts": true,
+     "block_weight": true,
+     "rho_params_tso": true,
+     "rho_params_dso": true,
+     "tail_holders": true,
+     "writer_is_gate_result_io": true
+    },
+    "summary": {
+     "schema": "s56_cycle_capture_v1",
+     "file": "s56_cycle_capture.jsonl",
+     "boyd_calls_captured": 3,
+     "cycle_lines_written": 3,
+     "header_written": true,
+     "bytes_written": 285315,
+     "bytes_per_cycle_line_max": 95422,
+     "errors": [],
+     "ok": true
+    }
+   },
+   "w_b_capture": {
+    "2025|Winter": [
+     455.0
+    ]
+   },
+   "w_b_capture_equals_own": true,
+   "S-P4": {
+    "checklist_all_true": true,
+    "summary_ok": true,
+    "per_cycle": [
+     {
+      "cycle": 1,
+      "capture_sum": 211339493.78310618,
+      "production_gross": 211339493.78310615,
+      "rel": 1.4101634225679033e-16
+     },
+     {
+      "cycle": 2,
+      "capture_sum": 104306189.24033105,
+      "production_gross": 104306189.24033105,
+      "rel": 0.0
+     },
+     {
+      "cycle": 3,
+      "capture_sum": 87564556.82023962,
+      "production_gross": 87564556.8202396,
+      "rel": 1.7017343243611793e-16
+     }
+    ],
+    "held": true
+   },
+   "S-P2": {
+    "identities_per_cycle": [
+     {
+      "cycle": 1,
+      "price_part": 84316570.08910571,
+      "settlement_total_T": -84316570.08910578,
+      "i_rel": 8.836437000520837e-16,
+      "contracted_minus_primary": 477.9855095744133,
+      "deviation_total_D": 477.9855095297535,
+      "ii_rel": 9.343343457340766e-11,
+      "dso_deviation_from_capture": -30567.91074839428,
+      "dso_deviation_production_covariance_dso_weighted": -30567.91074839428,
+      "ii_dso_decomposition_rel": 0.0,
+      "held": true
+     },
+     {
+      "cycle": 2,
+      "price_part": 1116633.3999397426,
+      "settlement_total_T": -1116633.399939917,
+      "i_rel": 1.5617493808275107e-13,
+      "contracted_minus_primary": -1336.0079282522202,
+      "deviation_total_D": -1336.0079282570223,
+      "ii_rel": 3.594388868354996e-12,
+      "dso_deviation_from_capture": -69720.67438217186,
+      "dso_deviation_production_covariance_dso_weighted": -69720.67438217186,
+      "ii_dso_decomposition_rel": 0.0,
+      "held": true
+     },
+     {
+      "cycle": 3,
+      "price_part": 522015.1387664295,
+      "settlement_total_T": -522015.13876643777,
+      "i_rel": 1.583380870762553e-14,
+      "contracted_minus_primary": -7901.5721203535795,
+      "deviation_total_D": -7901.572120367418,
+      "ii_rel": 1.751407336586251e-12,
+      "dso_deviation_from_capture": -107429.08045602664,
+      "dso_deviation_production_covariance_dso_weighted": -107429.08045602664,
+      "ii_dso_decomposition_rel": 0.0,
+      "i_rel_terminal_record": 4.4379266659399865e-14,
+      "T_vs_record_rel": 2.8545457951774787e-14,
+      "ii_D_vs_record_deviation_rel": 0.0,
+      "ii_lhs_vs_record_deviation_rel": 1.751407336586251e-12,
+      "held": true
+     }
+    ],
+    "gauge_per_cycle": [
+     {
+      "cycle": 1,
+      "families": {
+       "lambda_dev_p_dso": {
+        "max_abs_mu": 0.018566611055384596,
+        "max_abs_weighted_sum": 1.3712257241130232e-14,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         19
+        ],
+        "bound": 1.8566611055384597e-11,
+        "held": true
+       },
+       "lambda_dev_p_tso": {
+        "max_abs_mu": 0.018566611055384596,
+        "max_abs_weighted_sum": 1.3712257241130232e-14,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         19
+        ],
+        "bound": 1.8566611055384597e-11,
+        "held": true
+       },
+       "lambda_dev_q_dso": {
+        "max_abs_mu": 0.01014440732189141,
+        "max_abs_weighted_sum": 7.323202916471871e-15,
+        "at": [
+         9,
+         2025,
+         "Winter",
+         10
+        ],
+        "bound": 1.014440732189141e-11,
+        "held": true
+       },
+       "lambda_dev_q_tso": {
+        "max_abs_mu": 0.01014440732189141,
+        "max_abs_weighted_sum": 7.323202916471871e-15,
+        "at": [
+         9,
+         2025,
+         "Winter",
+         10
+        ],
+        "bound": 1.014440732189141e-11,
+        "held": true
+       },
+       "lambda_dev_v_dso": {
+        "max_abs_mu": 0.060604982713534206,
+        "max_abs_weighted_sum": 1.5074747006238454e-15,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         0
+        ],
+        "bound": 6.060498271353421e-11,
+        "held": true
+       },
+       "lambda_dev_v_tso": {
+        "max_abs_mu": 0.060604982713534206,
+        "max_abs_weighted_sum": 1.5074747006238454e-15,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         0
+        ],
+        "bound": 6.060498271353421e-11,
+        "held": true
+       }
+      },
+      "held": true
+     },
+     {
+      "cycle": 2,
+      "families": {
+       "lambda_dev_p_dso": {
+        "max_abs_mu": 0.038281783489952176,
+        "max_abs_weighted_sum": 1.3536453858861708e-14,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         19
+        ],
+        "bound": 3.828178348995218e-11,
+        "held": true
+       },
+       "lambda_dev_p_tso": {
+        "max_abs_mu": 0.038281783489952176,
+        "max_abs_weighted_sum": 1.3536453858861708e-14,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         19
+        ],
+        "bound": 3.828178348995218e-11,
+        "held": true
+       },
+       "lambda_dev_q_dso": {
+        "max_abs_mu": 0.0053470342708375335,
+        "max_abs_weighted_sum": 6.913144102310698e-15,
+        "at": [
+         9,
+         2025,
+         "Winter",
+         10
+        ],
+        "bound": 5.3470342708375336e-12,
+        "held": true
+       },
+       "lambda_dev_q_tso": {
+        "max_abs_mu": 0.0053470342708375335,
+        "max_abs_weighted_sum": 6.913144102310698e-15,
+        "at": [
+         9,
+         2025,
+         "Winter",
+         10
+        ],
+        "bound": 5.3470342708375336e-12,
+        "held": true
+       },
+       "lambda_dev_v_dso": {
+        "max_abs_mu": 0.04342998482785575,
+        "max_abs_weighted_sum": 2.422324493767114e-15,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         22
+        ],
+        "bound": 4.342998482785575e-11,
+        "held": true
+       },
+       "lambda_dev_v_tso": {
+        "max_abs_mu": 0.04342998482785575,
+        "max_abs_weighted_sum": 2.422324493767114e-15,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         22
+        ],
+        "bound": 4.342998482785575e-11,
+        "held": true
+       }
+      },
+      "held": true
+     },
+     {
+      "cycle": 3,
+      "families": {
+       "lambda_dev_p_dso": {
+        "max_abs_mu": 0.43548777486386403,
+        "max_abs_weighted_sum": 1.3954434125145604e-14,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         17
+        ],
+        "bound": 4.3548777486386404e-10,
+        "held": true
+       },
+       "lambda_dev_p_tso": {
+        "max_abs_mu": 0.43548777486386403,
+        "max_abs_weighted_sum": 1.3954434125145604e-14,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         17
+        ],
+        "bound": 4.3548777486386404e-10,
+        "held": true
+       },
+       "lambda_dev_q_dso": {
+        "max_abs_mu": 0.004801600468151053,
+        "max_abs_weighted_sum": 6.902722208927681e-15,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         5
+        ],
+        "bound": 4.801600468151053e-12,
+        "held": true
+       },
+       "lambda_dev_q_tso": {
+        "max_abs_mu": 0.004801600468151053,
+        "max_abs_weighted_sum": 6.902722208927681e-15,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         5
+        ],
+        "bound": 4.801600468151053e-12,
+        "held": true
+       },
+       "lambda_dev_v_dso": {
+        "max_abs_mu": 0.017066069668171896,
+        "max_abs_weighted_sum": 3.25396177017212e-15,
+        "at": [
+         5,
+         2025,
+         "Winter",
+         8
+        ],
+        "bound": 1.7066069668171898e-11,
+        "held": true
+       },
+       "lambda_dev_v_tso": {
+        "max_abs_mu": 0.017066069668171896,
+        "max_abs_weighted_sum": 3.25396177017212e-15,
+        "at": [
+         5,
+         2025,
+         "Winter",
+         8
+        ],
+        "bound": 1.7066069668171898e-11,
+        "held": true
+       }
+      },
+      "held": true
+     }
+    ],
+    "pin_v1": {
+     "voltage_pin_total": 0.0,
+     "voltage_pin_tso": 0.0,
+     "voltage_pin_dso": {
+      "5": 0.0,
+      "7": 0.0,
+      "9": 0.0
+     },
+     "held": true,
+     "scope": "terminal record (cycle 3) + structural reading for cycles 1-2 (no per-cycle record)"
+    },
+    "held": true
+   },
+   "Q_block_minus_wC": {
+    "2025|Winter": {
+     "C_central": 175188.67874987266,
+     "w_b": 455.0,
+     "w_b_C_central": 79710848.83119206,
+     "allowance_eur": 228.6388788256071,
+     "per_cycle": [
+      {
+       "cycle": 1,
+       "settlement_excluded_in_full": 211339493.78310618,
+       "contracted_excluded": 211339971.76861575,
+       "settlement_excluded_in_full_minus_wC": 131628644.95191412,
+       "contracted_excluded_minus_wC": 131629122.93742369
+      },
+      {
+       "cycle": 2,
+       "settlement_excluded_in_full": 104306189.24033105,
+       "contracted_excluded": 104304853.2324028,
+       "settlement_excluded_in_full_minus_wC": 24595340.409138992,
+       "contracted_excluded_minus_wC": 24594004.40121074
+      },
+      {
+       "cycle": 3,
+       "settlement_excluded_in_full": 87564556.82023962,
+       "contracted_excluded": 87556655.24811925,
+       "settlement_excluded_in_full_minus_wC": 7853707.989047557,
+       "contracted_excluded_minus_wC": 7845806.416927189
+      }
+     ]
+    }
+   }
+  },
+  "A|V2": {
+   "run": 2,
+   "instance": "A",
+   "arm": "V2",
+   "eval_dir": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V2/evals/8074c395fce45fae_x0_v2",
+   "eval_key": "8074c395fce45fae4cba863cd2adb554ecdcb5ff0f5993e2cb1fe03eaa973ddc",
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "campaign_spec_sha256": "4f33d9749fe4a74947e94ed49694bc6a20f2b4192274141607891b39c6f67506",
+   "status": "not_certified",
+   "exit_code_parent": 0,
+   "exit_code_txt": 0,
+   "cycles_run": 3,
+   "n_per_cycle_rows": 3,
+   "solves": {
+    "declared_base": 28,
+    "base_solves": 28,
+    "observed_permitted_solve": 28,
+    "observed_permitted_exec": 28,
+    "blocked_solve": 0,
+    "blocked_exec": 0,
+    "retry_solves_credited": 0,
+    "expected_solves": 28,
+    "identity_holds": true
+   },
+   "launcher_guard": {
+    "label": "P5.15 S56 step 4 smoke launcher (this process never solves)",
+    "counts": {
+     "permitted_solve": 0,
+     "permitted_exec": 0,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "verify_failures": []
+   },
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 2460319744,
+    "production_state_peak_rss_ru_maxrss": 2433368064,
+    "solver_subprocesses_max_ru_maxrss": 369491968,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "s_per_cycle": [
+    34.88697600364685,
+    37.213282108306885,
+    18.56753706932068
+   ],
+   "wall_time_s": {
+    "child_process_s": 164.860778093338,
+    "run_admm_arm_s": 154.33653903007507,
+    "run_admm_arm_reported_wall_clock_s": 106.4130289554596
+   },
+   "aa": {
+    "effective_in_child": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "forced_off_per_cycle": [
+     true,
+     true,
+     true
+    ]
+   },
+   "local_solve_failures": 0,
+   "network_failures_summary": {
+    "n_blocks": 0,
+    "classes": {
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0,
+     "not_attempted": 0,
+     "indeterminate": 0,
+     "recovered": 0
+    },
+    "n_frozen_snapshots": 0,
+    "n_esso_recovery_events": 0,
+    "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V2/evals/8074c395fce45fae_x0_v2/network_failures_s39_D.jsonl"
+   },
+   "S-P1": {
+    "held": true
+   },
+   "S-P5": {
+    "child_python_peak_rss_gib": 2.291351318359375,
+    "ipopt_max_rss_gib": 0.3441162109375,
+    "held": true
+   },
+   "init_identity": {
+    "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_V2/init_identity/8074c395fce45fae_x0_v2.json",
+    "gross_operational_cost": 14199.249387379268,
+    "gross_operational_cost_hex": "0x1.bbb9febecf6ffp+13",
+    "n_compared": 0,
+    "compared": [],
+    "other_candidates_not_compared": [
+     {
+      "file": "a918ba210411acec_x0_v1.json",
+      "label": "x0_V1",
+      "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57"
+     }
+    ],
+    "mismatches": [],
+    "all_equal": true,
+    "initialisation_identity_group": "voltage_pin_constructed"
+   },
+   "terminal_recourse": {
+    "gross_operational_cost": 87116762.04561092,
+    "gross_operational_cost_contracted_excluded": 87103778.16323183,
+    "interface_settlement_total": -936202.6303978562,
+    "interface_settlement_contracted_total": -923218.7480187714,
+    "interface_settlement_deviation_total": -12983.882379078204,
+    "voltage_pin_total": 41.41564031131094,
+    "voltage_pin_tso": 41.41564031131025,
+    "voltage_pin_dso": {
+     "5": 1.1428533834049817e-13,
+     "7": 2.684651464338069e-13,
+     "9": 3.096693175864192e-13
+    },
+    "terminal_salvage_value": -7.039032651546557e-35,
+    "q_convention": "settlement_excluded_in_full"
+   },
+   "per_cycle_gross": [
+    209705822.00193292,
+    117684630.7481951,
+    87116762.04561092
+   ],
+   "s56_capture": {
+    "header_blocks": [
+     [
+      5,
+      2025,
+      "Winter"
+     ],
+     [
+      7,
+      2025,
+      "Winter"
+     ],
+     [
+      9,
+      2025,
+      "Winter"
+     ]
+    ],
+    "n_lines": 3,
+    "deviation_kinds": [
+     "p",
+     "q"
+    ],
+    "checklist": {
+     "boyd_call_point": true,
+     "idc_deviation_duals_recorded": true,
+     "consensus_pf_leaf_p_q_lists": true,
+     "consensus_vmag_leaf_list": true,
+     "dual_vmag_leaf_list": true,
+     "deviation_store_name": true,
+     "deviation_stores_created_by_the_wiring": true,
+     "block_components_settlement_part_follows_wiring": true,
+     "local_settlement_parts": true,
+     "block_weight": true,
+     "rho_params_tso": true,
+     "rho_params_dso": true,
+     "tail_holders": true,
+     "writer_is_gate_result_io": true
+    },
+    "summary": {
+     "schema": "s56_cycle_capture_v1",
+     "file": "s56_cycle_capture.jsonl",
+     "boyd_calls_captured": 3,
+     "cycle_lines_written": 3,
+     "header_written": true,
+     "bytes_written": 203585,
+     "bytes_per_cycle_line_max": 67684,
+     "errors": [],
+     "ok": true
+    }
+   },
+   "w_b_capture": {
+    "2025|Winter": [
+     455.0
+    ]
+   },
+   "w_b_capture_equals_own": true,
+   "S-P4": {
+    "checklist_all_true": true,
+    "summary_ok": true,
+    "per_cycle": [
+     {
+      "cycle": 1,
+      "capture_sum": 209705822.00193295,
+      "production_gross": 209705822.00193292,
+      "rel": 1.42114902214878e-16
+     },
+     {
+      "cycle": 2,
+      "capture_sum": 117684630.74819513,
+      "production_gross": 117684630.7481951,
+      "rel": 2.532388655869779e-16
+     },
+     {
+      "cycle": 3,
+      "capture_sum": 87116762.04561093,
+      "production_gross": 87116762.04561092,
+      "rel": 1.7104815243300697e-16
+     }
+    ],
+    "held": true
+   },
+   "S-P2": {
+    "identities_per_cycle": [
+     {
+      "cycle": 1,
+      "price_part": 90803264.96228799,
+      "settlement_total_T": -90803264.96228817,
+      "i_rel": 1.9692456477246244e-15,
+      "contracted_minus_primary": 314.4823425710201,
+      "deviation_total_D": 314.48234257361037,
+      "ii_rel": 8.236522564197721e-12,
+      "dso_deviation_from_capture": -29573.695954839786,
+      "dso_deviation_production_covariance_dso_weighted": -29573.695954839786,
+      "ii_dso_decomposition_rel": 0.0,
+      "held": true
+     },
+     {
+      "cycle": 2,
+      "price_part": 578788.0794194173,
+      "settlement_total_T": -578788.079419449,
+      "i_rel": 5.470908725122274e-14,
+      "contracted_minus_primary": -815.5364029407501,
+      "deviation_total_D": -815.5364029898919,
+      "ii_rel": 6.02570498950541e-11,
+      "dso_deviation_from_capture": -50117.08768835677,
+      "dso_deviation_production_covariance_dso_weighted": -50117.08768835677,
+      "ii_dso_decomposition_rel": 0.0,
+      "held": true
+     },
+     {
+      "cycle": 3,
+      "price_part": 936202.630397841,
+      "settlement_total_T": -936202.6303978637,
+      "i_rel": 2.4247942720055074e-14,
+      "contracted_minus_primary": -12983.882379084826,
+      "deviation_total_D": -12983.882379078204,
+      "ii_rel": 5.09949276771992e-13,
+      "dso_deviation_from_capture": -110741.83474585101,
+      "dso_deviation_production_covariance_dso_weighted": -110741.83474585101,
+      "ii_dso_decomposition_rel": 0.0,
+      "i_rel_terminal_record": 1.628964357090892e-14,
+      "T_vs_record_rel": 7.95829914914628e-15,
+      "ii_D_vs_record_deviation_rel": 0.0,
+      "ii_lhs_vs_record_deviation_rel": 5.09949276771992e-13,
+      "held": true
+     }
+    ],
+    "gauge_per_cycle": [
+     {
+      "cycle": 1,
+      "families": {
+       "lambda_dev_p_dso": {
+        "max_abs_mu": 0.028593470967814935,
+        "max_abs_weighted_sum": 1.3778983108583137e-14,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         10
+        ],
+        "bound": 2.8593470967814937e-11,
+        "held": true
+       },
+       "lambda_dev_p_tso": {
+        "max_abs_mu": 0.028593470967814935,
+        "max_abs_weighted_sum": 1.3778983108583137e-14,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         10
+        ],
+        "bound": 2.8593470967814937e-11,
+        "held": true
+       },
+       "lambda_dev_q_dso": {
+        "max_abs_mu": 0.01688869736248147,
+        "max_abs_weighted_sum": 9.113986421029757e-15,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         10
+        ],
+        "bound": 1.688869736248147e-11,
+        "held": true
+       },
+       "lambda_dev_q_tso": {
+        "max_abs_mu": 0.01688869736248147,
+        "max_abs_weighted_sum": 9.113986421029757e-15,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         10
+        ],
+        "bound": 1.688869736248147e-11,
+        "held": true
+       }
+      },
+      "held": true
+     },
+     {
+      "cycle": 2,
+      "families": {
+       "lambda_dev_p_dso": {
+        "max_abs_mu": 0.03767215682500163,
+        "max_abs_weighted_sum": 1.6045785576970784e-14,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         15
+        ],
+        "bound": 3.767215682500163e-11,
+        "held": true
+       },
+       "lambda_dev_p_tso": {
+        "max_abs_mu": 0.03767215682500163,
+        "max_abs_weighted_sum": 1.6045785576970784e-14,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         15
+        ],
+        "bound": 3.767215682500163e-11,
+        "held": true
+       },
+       "lambda_dev_q_dso": {
+        "max_abs_mu": 0.011104883934786553,
+        "max_abs_weighted_sum": 9.104208272686654e-15,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         10
+        ],
+        "bound": 1.1104883934786553e-11,
+        "held": true
+       },
+       "lambda_dev_q_tso": {
+        "max_abs_mu": 0.011104883934786553,
+        "max_abs_weighted_sum": 9.104208272686654e-15,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         10
+        ],
+        "bound": 1.1104883934786553e-11,
+        "held": true
+       }
+      },
+      "held": true
+     },
+     {
+      "cycle": 3,
+      "families": {
+       "lambda_dev_p_dso": {
+        "max_abs_mu": 0.4932076342823464,
+        "max_abs_weighted_sum": 1.7999788942332784e-14,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         15
+        ],
+        "bound": 4.932076342823464e-10,
+        "held": true
+       },
+       "lambda_dev_p_tso": {
+        "max_abs_mu": 0.4932076342823464,
+        "max_abs_weighted_sum": 1.7999788942332784e-14,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         15
+        ],
+        "bound": 4.932076342823464e-10,
+        "held": true
+       },
+       "lambda_dev_q_dso": {
+        "max_abs_mu": 0.006210762529182224,
+        "max_abs_weighted_sum": 8.736216502817917e-15,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         10
+        ],
+        "bound": 6.210762529182225e-12,
+        "held": true
+       },
+       "lambda_dev_q_tso": {
+        "max_abs_mu": 0.006210762529182224,
+        "max_abs_weighted_sum": 8.736216502817917e-15,
+        "at": [
+         7,
+         2025,
+         "Winter",
+         10
+        ],
+        "bound": 6.210762529182225e-12,
+        "held": true
+       }
+      },
+      "held": true
+     }
+    ],
+    "pin_v1": null,
+    "held": true
+   },
+   "Q_block_minus_wC": {
+    "2025|Winter": {
+     "C_central": 175188.67874987266,
+     "w_b": 455.0,
+     "w_b_C_central": 79710848.83119206,
+     "allowance_eur": 228.6388788256071,
+     "per_cycle": [
+      {
+       "cycle": 1,
+       "settlement_excluded_in_full": 209705822.00193295,
+       "contracted_excluded": 209706136.4842755,
+       "settlement_excluded_in_full_minus_wC": 129994973.17074089,
+       "contracted_excluded_minus_wC": 129995287.65308343
+      },
+      {
+       "cycle": 2,
+       "settlement_excluded_in_full": 117684630.74819513,
+       "contracted_excluded": 117683815.21179214,
+       "settlement_excluded_in_full_minus_wC": 37973781.917003065,
+       "contracted_excluded_minus_wC": 37972966.38060008
+      },
+      {
+       "cycle": 3,
+       "settlement_excluded_in_full": 87116762.04561093,
+       "contracted_excluded": 87103778.16323185,
+       "settlement_excluded_in_full_minus_wC": 7405913.214418873,
+       "contracted_excluded_minus_wC": 7392929.332039788
+      }
+     ]
+    }
+   }
+  },
+  "A|pinned_aa_off": {
+   "run": 3,
+   "instance": "A",
+   "arm": "pinned_aa_off",
+   "eval_dir": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_pinned_aa_off/evals/f7d156742d1bf952_x0_pinned_aa_off",
+   "eval_key": "f7d156742d1bf95219e96e60912ed7006a7710ca6653c0a9444e6d476a448939",
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "campaign_spec_sha256": "2f73b95045cd60e8af1577d7d89e8ddeabdbc9a2e58d43122b88aa7ef760667e",
+   "status": "not_certified",
+   "exit_code_parent": 0,
+   "exit_code_txt": 0,
+   "cycles_run": 3,
+   "n_per_cycle_rows": 3,
+   "solves": {
+    "declared_base": 28,
+    "base_solves": 28,
+    "observed_permitted_solve": 28,
+    "observed_permitted_exec": 28,
+    "blocked_solve": 0,
+    "blocked_exec": 0,
+    "retry_solves_credited": 0,
+    "expected_solves": 28,
+    "identity_holds": true
+   },
+   "launcher_guard": {
+    "label": "P5.15 S56 step 4 smoke launcher (this process never solves)",
+    "counts": {
+     "permitted_solve": 0,
+     "permitted_exec": 0,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "verify_failures": []
+   },
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 2343518208,
+    "production_state_peak_rss_ru_maxrss": 2307145728,
+    "solver_subprocesses_max_ru_maxrss": 368885760,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "s_per_cycle": [
+    40.092836141586304,
+    37.442241191864014,
+    18.495877027511597
+   ],
+   "wall_time_s": {
+    "child_process_s": 174.24516701698303,
+    "run_admm_arm_s": 163.92072868347168,
+    "run_admm_arm_reported_wall_clock_s": 112.3100848197937
+   },
+   "aa": {
+    "effective_in_child": {
+     "enabled": false,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "forced_off_per_cycle": [
+     null,
+     null,
+     null
+    ]
+   },
+   "local_solve_failures": 0,
+   "network_failures_summary": {
+    "n_blocks": 0,
+    "classes": {
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0,
+     "not_attempted": 0,
+     "indeterminate": 0,
+     "recovered": 0
+    },
+    "n_frozen_snapshots": 0,
+    "n_esso_recovery_events": 0,
+    "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_pinned_aa_off/evals/f7d156742d1bf952_x0_pinned_aa_off/network_failures_s39_D.jsonl"
+   },
+   "S-P1": {
+    "held": true
+   },
+   "S-P5": {
+    "child_python_peak_rss_gib": 2.1825714111328125,
+    "ipopt_max_rss_gib": 0.3435516357421875,
+    "held": true
+   },
+   "init_identity": {
+    "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_pinned_aa_off/init_identity/f7d156742d1bf952_x0_pinned_aa_off.json",
+    "gross_operational_cost": 14199.249387379268,
+    "gross_operational_cost_hex": "0x1.bbb9febecf6ffp+13",
+    "n_compared": 1,
+    "compared": [
+     {
+      "file": "8074c395fce45fae_x0_v2.json",
+      "label": "x0_V2",
+      "gross_operational_cost_hex": "0x1.bbb9febecf6ffp+13",
+      "equal": true,
+      "components_equal": {
+       "gross_operational_cost": true,
+       "gross_operational_cost_including_settlement": true,
+       "interface_settlement_total": true,
+       "voltage_pin_total": true,
+       "terminal_salvage_value": true,
+       "net_operational_recourse": true
+      },
+      "interface_coupling": {
+       "per_scenario_interface_coupling": true,
+       "per_scenario_voltage_mode": "pin",
+       "row18_charge_reactive": false
+      }
+     }
+    ],
+    "other_candidates_not_compared": [
+     {
+      "file": "a918ba210411acec_x0_v1.json",
+      "label": "x0_V1",
+      "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57"
+     }
+    ],
+    "mismatches": [],
+    "all_equal": true
+   },
+   "terminal_recourse": {
+    "gross_operational_cost": 86537890.24448425,
+    "gross_operational_cost_contracted_excluded": null,
+    "interface_settlement_total": -1142468.9424953163,
+    "interface_settlement_contracted_total": -643306.4273402244,
+    "interface_settlement_deviation_total": -499162.515155101,
+    "voltage_pin_total": 3.073629756298437,
+    "voltage_pin_tso": 3.0736297562819233,
+    "voltage_pin_dso": {
+     "5": 2.2821783345820648e-12,
+     "7": 1.1794535363969565e-11,
+     "9": 2.4373909004070343e-12
+    },
+    "terminal_salvage_value": -7.039032651546557e-35,
+    "q_convention": null
+   },
+   "per_cycle_gross": [
+    209074733.7645116,
+    117451881.03401858,
+    86537890.24448425
+   ],
+   "Q_block_minus_wC": {
+    "2025|Winter": {
+     "C_central": 175188.67874987266,
+     "w_b": 455.0,
+     "w_b_C_central": 79710848.83119206,
+     "allowance_eur": 228.6388788256071,
+     "per_cycle": [
+      {
+       "cycle": 1,
+       "contracted_excluded": 209074733.7645116,
+       "source": "per_cycle_record gross_operational_cost (one block)",
+       "contracted_excluded_minus_wC": 129363884.93331952
+      },
+      {
+       "cycle": 2,
+       "contracted_excluded": 117451881.03401858,
+       "source": "per_cycle_record gross_operational_cost (one block)",
+       "contracted_excluded_minus_wC": 37741032.202826515
+      },
+      {
+       "cycle": 3,
+       "contracted_excluded": 86537890.24448425,
+       "source": "per_cycle_record gross_operational_cost (one block)",
+       "contracted_excluded_minus_wC": 6827041.4132921845
+      }
+     ]
+    }
+   }
+  },
+  "A|pinned_aa_on": {
+   "run": 4,
+   "instance": "A",
+   "arm": "pinned_aa_on",
+   "eval_dir": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_pinned_aa_on/evals/fdce6f826d2f6621_x0_pinned_aa_on",
+   "eval_key": "fdce6f826d2f6621a293b70d603694f338bfe322a5dedbff616944ba5c5362d3",
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "campaign_spec_sha256": "ff706d8c84550fa2dbdd6dd9aed73ae6fd6a8ff17ab13196aad9aade1dcbc4ec",
+   "status": "not_certified",
+   "exit_code_parent": 0,
+   "exit_code_txt": 0,
+   "cycles_run": 3,
+   "n_per_cycle_rows": 3,
+   "solves": {
+    "declared_base": 28,
+    "base_solves": 28,
+    "observed_permitted_solve": 28,
+    "observed_permitted_exec": 28,
+    "blocked_solve": 0,
+    "blocked_exec": 0,
+    "retry_solves_credited": 0,
+    "expected_solves": 28,
+    "identity_holds": true
+   },
+   "launcher_guard": {
+    "label": "P5.15 S56 step 4 smoke launcher (this process never solves)",
+    "counts": {
+     "permitted_solve": 0,
+     "permitted_exec": 0,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "verify_failures": []
+   },
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 2282635264,
+    "production_state_peak_rss_ru_maxrss": 2245656576,
+    "solver_subprocesses_max_ru_maxrss": 368803840,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "s_per_cycle": [
+    41.60828518867493,
+    40.01869297027588,
+    20.517281770706177
+   ],
+   "wall_time_s": {
+    "child_process_s": 184.91527104377747,
+    "run_admm_arm_s": 172.52679872512817,
+    "run_admm_arm_reported_wall_clock_s": 119.57955503463745
+   },
+   "aa": {
+    "effective_in_child": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "forced_off_per_cycle": [
+     null,
+     null,
+     null
+    ]
+   },
+   "local_solve_failures": 0,
+   "network_failures_summary": {
+    "n_blocks": 0,
+    "classes": {
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0,
+     "not_attempted": 0,
+     "indeterminate": 0,
+     "recovered": 0
+    },
+    "n_frozen_snapshots": 0,
+    "n_esso_recovery_events": 0,
+    "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_pinned_aa_on/evals/fdce6f826d2f6621_x0_pinned_aa_on/network_failures_s39_D.jsonl"
+   },
+   "S-P1": {
+    "held": true
+   },
+   "S-P5": {
+    "child_python_peak_rss_gib": 2.1258697509765625,
+    "ipopt_max_rss_gib": 0.343475341796875,
+    "held": true
+   },
+   "init_identity": {
+    "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_A_pinned_aa_on/init_identity/fdce6f826d2f6621_x0_pinned_aa_on.json",
+    "gross_operational_cost": 14199.249387379268,
+    "gross_operational_cost_hex": "0x1.bbb9febecf6ffp+13",
+    "n_compared": 2,
+    "compared": [
+     {
+      "file": "8074c395fce45fae_x0_v2.json",
+      "label": "x0_V2",
+      "gross_operational_cost_hex": "0x1.bbb9febecf6ffp+13",
+      "equal": true,
+      "components_equal": {
+       "gross_operational_cost": true,
+       "gross_operational_cost_including_settlement": true,
+       "interface_settlement_total": true,
+       "voltage_pin_total": true,
+       "terminal_salvage_value": true,
+       "net_operational_recourse": true
+      },
+      "interface_coupling": {
+       "per_scenario_interface_coupling": true,
+       "per_scenario_voltage_mode": "pin",
+       "row18_charge_reactive": false
+      }
+     },
+     {
+      "file": "f7d156742d1bf952_x0_pinned_aa_off.json",
+      "label": "x0_pinned_aa_off",
+      "gross_operational_cost_hex": "0x1.bbb9febecf6ffp+13",
+      "equal": true,
+      "components_equal": {
+       "gross_operational_cost": true,
+       "gross_operational_cost_including_settlement": true,
+       "interface_settlement_total": true,
+       "voltage_pin_total": true,
+       "terminal_salvage_value": true,
+       "net_operational_recourse": true
+      }
+     }
+    ],
+    "other_candidates_not_compared": [
+     {
+      "file": "a918ba210411acec_x0_v1.json",
+      "label": "x0_V1",
+      "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57"
+     }
+    ],
+    "mismatches": [],
+    "all_equal": true
+   },
+   "terminal_recourse": {
+    "gross_operational_cost": 86537890.24448425,
+    "gross_operational_cost_contracted_excluded": null,
+    "interface_settlement_total": -1142468.9424953163,
+    "interface_settlement_contracted_total": -643306.4273402244,
+    "interface_settlement_deviation_total": -499162.515155101,
+    "voltage_pin_total": 3.073629756298437,
+    "voltage_pin_tso": 3.0736297562819233,
+    "voltage_pin_dso": {
+     "5": 2.2821783345820648e-12,
+     "7": 1.1794535363969565e-11,
+     "9": 2.4373909004070343e-12
+    },
+    "terminal_salvage_value": -7.039032651546557e-35,
+    "q_convention": null
+   },
+   "per_cycle_gross": [
+    209074733.7645116,
+    117451881.03401858,
+    86537890.24448425
+   ],
+   "Q_block_minus_wC": {
+    "2025|Winter": {
+     "C_central": 175188.67874987266,
+     "w_b": 455.0,
+     "w_b_C_central": 79710848.83119206,
+     "allowance_eur": 228.6388788256071,
+     "per_cycle": [
+      {
+       "cycle": 1,
+       "contracted_excluded": 209074733.7645116,
+       "source": "per_cycle_record gross_operational_cost (one block)",
+       "contracted_excluded_minus_wC": 129363884.93331952
+      },
+      {
+       "cycle": 2,
+       "contracted_excluded": 117451881.03401858,
+       "source": "per_cycle_record gross_operational_cost (one block)",
+       "contracted_excluded_minus_wC": 37741032.202826515
+      },
+      {
+       "cycle": 3,
+       "contracted_excluded": 86537890.24448425,
+       "source": "per_cycle_record gross_operational_cost (one block)",
+       "contracted_excluded_minus_wC": 6827041.4132921845
+      }
+     ]
+    }
+   }
+  },
+  "B|V1": {
+   "run": 5,
+   "instance": "B",
+   "arm": "V1",
+   "eval_dir": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_B_V1/evals/917aa06e2a2e1b55_x0_v1",
+   "eval_key": "917aa06e2a2e1b5574004b2be26037d1274973541a2bd34bac888e7f7f4f5e13",
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "campaign_spec_sha256": "97c8a99504d7169ee03415dc7ee4ec9018ae910271f90f1916883af8e7cf5b02",
+   "status": "not_certified",
+   "exit_code_parent": 0,
+   "exit_code_txt": 0,
+   "cycles_run": 3,
+   "n_per_cycle_rows": 3,
+   "solves": {
+    "declared_base": 44,
+    "base_solves": 44,
+    "observed_permitted_solve": 44,
+    "observed_permitted_exec": 44,
+    "blocked_solve": 0,
+    "blocked_exec": 0,
+    "retry_solves_credited": 0,
+    "expected_solves": 44,
+    "identity_holds": true
+   },
+   "launcher_guard": {
+    "label": "P5.15 S56 step 4 smoke launcher (this process never solves)",
+    "counts": {
+     "permitted_solve": 0,
+     "permitted_exec": 0,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "verify_failures": []
+   },
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 3463544832,
+    "production_state_peak_rss_ru_maxrss": 3350626304,
+    "solver_subprocesses_max_ru_maxrss": 370114560,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "s_per_cycle": [
+    63.17490911483765,
+    39.2173798084259,
+    36.49750590324402
+   ],
+   "wall_time_s": {
+    "child_process_s": 279.5609028339386,
+    "run_admm_arm_s": 268.95236897468567,
+    "run_admm_arm_reported_wall_clock_s": 172.54009008407593
+   },
+   "aa": {
+    "effective_in_child": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "forced_off_per_cycle": [
+     true,
+     true,
+     true
+    ]
+   },
+   "local_solve_failures": 0,
+   "network_failures_summary": {
+    "n_blocks": 0,
+    "classes": {
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0,
+     "not_attempted": 0,
+     "indeterminate": 0,
+     "recovered": 0
+    },
+    "n_frozen_snapshots": 0,
+    "n_esso_recovery_events": 0,
+    "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_B_V1/evals/917aa06e2a2e1b55_x0_v1/network_failures_s39_D.jsonl"
+   },
+   "S-P1": {
+    "held": true
+   },
+   "S-P5": {
+    "child_python_peak_rss_gib": 3.225677490234375,
+    "ipopt_max_rss_gib": 0.344696044921875,
+    "held": true
+   },
+   "init_identity": {
+    "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_B_V1/init_identity/917aa06e2a2e1b55_x0_v1.json",
+    "gross_operational_cost": 12175.717177635375,
+    "gross_operational_cost_hex": "0x1.7c7dbcc7a0caep+13",
+    "n_compared": 0,
+    "compared": [],
+    "other_candidates_not_compared": [],
+    "mismatches": [],
+    "all_equal": true,
+    "initialisation_identity_group": "voltage_pin_not_constructed"
+   },
+   "terminal_recourse": {
+    "gross_operational_cost": 151571533.06507388,
+    "gross_operational_cost_contracted_excluded": 151476226.8882874,
+    "interface_settlement_total": 3449255.0075057447,
+    "interface_settlement_contracted_total": 3544561.184292227,
+    "interface_settlement_deviation_total": -95306.17678647942,
+    "voltage_pin_total": 0.0,
+    "voltage_pin_tso": 0.0,
+    "voltage_pin_dso": {
+     "5": 0.0,
+     "7": 0.0,
+     "9": 0.0
+    },
+    "terminal_salvage_value": -8.027091010699896e-35,
+    "q_convention": "settlement_excluded_in_full"
+   },
+   "per_cycle_gross": [
+    471238088.99058336,
+    217098405.50786227,
+    151571533.06507388
+   ],
+   "s56_capture": {
+    "header_blocks": [
+     [
+      5,
+      2025,
+      "Summer"
+     ],
+     [
+      5,
+      2035,
+      "Summer"
+     ],
+     [
+      7,
+      2025,
+      "Summer"
+     ],
+     [
+      7,
+      2035,
+      "Summer"
+     ],
+     [
+      9,
+      2025,
+      "Summer"
+     ],
+     [
+      9,
+      2035,
+      "Summer"
+     ]
+    ],
+    "n_lines": 3,
+    "deviation_kinds": [
+     "p",
+     "q",
+     "v"
+    ],
+    "checklist": {
+     "boyd_call_point": true,
+     "idc_deviation_duals_recorded": true,
+     "consensus_pf_leaf_p_q_lists": true,
+     "consensus_vmag_leaf_list": true,
+     "dual_vmag_leaf_list": true,
+     "deviation_store_name": true,
+     "deviation_stores_created_by_the_wiring": true,
+     "block_components_settlement_part_follows_wiring": true,
+     "local_settlement_parts": true,
+     "block_weight": true,
+     "rho_params_tso": true,
+     "rho_params_dso": true,
+     "tail_holders": true,
+     "writer_is_gate_result_io": true
+    },
+    "summary": {
+     "schema": "s56_cycle_capture_v1",
+     "file": "s56_cycle_capture.jsonl",
+     "boyd_calls_captured": 3,
+     "cycle_lines_written": 3,
+     "header_written": true,
+     "bytes_written": 564606,
+     "bytes_per_cycle_line_max": 188638,
+     "errors": [],
+     "ok": true
+    }
+   },
+   "w_b_capture": {
+    "2025|Summer": [
+     455.0
+    ],
+    "2035|Summer": [
+     373.2584764431956
+    ]
+   },
+   "w_b_capture_equals_own": true,
+   "S-P4": {
+    "checklist_all_true": true,
+    "summary_ok": true,
+    "per_cycle": [
+     {
+      "cycle": 1,
+      "capture_sum": 471238088.9905834,
+      "production_gross": 471238088.99058336,
+      "rel": 1.2648520178635579e-16
+     },
+     {
+      "cycle": 2,
+      "capture_sum": 217098405.50786224,
+      "production_gross": 217098405.50786227,
+      "rel": 1.372756392106068e-16
+     },
+     {
+      "cycle": 3,
+      "capture_sum": 151571533.06507385,
+      "production_gross": 151571533.06507388,
+      "rel": 1.966221610683343e-16
+     }
+    ],
+    "held": true
+   },
+   "S-P2": {
+    "identities_per_cycle": [
+     {
+      "cycle": 1,
+      "price_part": 189042359.51758257,
+      "settlement_total_T": -189042359.51758203,
+      "i_rel": 2.8376804243634184e-15,
+      "contracted_minus_primary": -81452.851549685,
+      "deviation_total_D": -81452.85154968004,
+      "ii_rel": 6.092117094078932e-14,
+      "dso_deviation_from_capture": -292231.0269162119,
+      "dso_deviation_production_covariance_dso_weighted": -292231.0269162119,
+      "ii_dso_decomposition_rel": 0.0,
+      "held": true
+     },
+     {
+      "cycle": 2,
+      "price_part": 6403720.973664184,
+      "settlement_total_T": -6403720.973664321,
+      "i_rel": 2.137888565593392e-14,
+      "contracted_minus_primary": -153834.62073928118,
+      "deviation_total_D": -153834.62073925475,
+      "ii_rel": 1.7178368515304135e-13,
+      "dso_deviation_from_capture": -604513.1779879059,
+      "dso_deviation_production_covariance_dso_weighted": -604513.1779879059,
+      "ii_dso_decomposition_rel": 0.0,
+      "held": true
+     },
+     {
+      "cycle": 3,
+      "price_part": -3449255.0075058006,
+      "settlement_total_T": 3449255.0075057447,
+      "i_rel": 1.6200412655872542e-14,
+      "contracted_minus_primary": -95306.17678648233,
+      "deviation_total_D": -95306.17678647947,
+      "ii_rel": 3.007913439241925e-14,
+      "dso_deviation_from_capture": -770995.0616947474,
+      "dso_deviation_production_covariance_dso_weighted": -770995.0616947474,
+      "ii_dso_decomposition_rel": 0.0,
+      "i_rel_terminal_record": 1.6200412655872542e-14,
+      "T_vs_record_rel": 0.0,
+      "ii_D_vs_record_deviation_rel": 4.580578841485302e-16,
+      "ii_lhs_vs_record_deviation_rel": 3.053719227656776e-14,
+      "held": true
+     }
+    ],
+    "gauge_per_cycle": [
+     {
+      "cycle": 1,
+      "families": {
+       "lambda_dev_p_dso": {
+        "max_abs_mu": 0.9222643730817291,
+        "max_abs_weighted_sum": 1.1823881988521495e-14,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         3
+        ],
+        "bound": 9.222643730817292e-10,
+        "held": true
+       },
+       "lambda_dev_p_tso": {
+        "max_abs_mu": 0.9222643730817291,
+        "max_abs_weighted_sum": 1.1823881988521495e-14,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         3
+        ],
+        "bound": 9.222643730817292e-10,
+        "held": true
+       },
+       "lambda_dev_q_dso": {
+        "max_abs_mu": 0.06596191650153725,
+        "max_abs_weighted_sum": 8.82341642715538e-15,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         21
+        ],
+        "bound": 6.596191650153725e-11,
+        "held": true
+       },
+       "lambda_dev_q_tso": {
+        "max_abs_mu": 0.06596191650153725,
+        "max_abs_weighted_sum": 8.82341642715538e-15,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         21
+        ],
+        "bound": 6.596191650153725e-11,
+        "held": true
+       },
+       "lambda_dev_v_dso": {
+        "max_abs_mu": 0.11674705808067681,
+        "max_abs_weighted_sum": 1.8041666251245037e-15,
+        "at": [
+         9,
+         2035,
+         "Summer",
+         18
+        ],
+        "bound": 1.1674705808067682e-10,
+        "held": true
+       },
+       "lambda_dev_v_tso": {
+        "max_abs_mu": 0.11674705808067681,
+        "max_abs_weighted_sum": 1.8041666251245037e-15,
+        "at": [
+         9,
+         2035,
+         "Summer",
+         18
+        ],
+        "bound": 1.1674705808067682e-10,
+        "held": true
+       }
+      },
+      "held": true
+     },
+     {
+      "cycle": 2,
+      "families": {
+       "lambda_dev_p_dso": {
+        "max_abs_mu": 1.6728471015958903,
+        "max_abs_weighted_sum": 1.4334779023517097e-14,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         22
+        ],
+        "bound": 1.6728471015958905e-09,
+        "held": true
+       },
+       "lambda_dev_p_tso": {
+        "max_abs_mu": 1.6728471015958903,
+        "max_abs_weighted_sum": 1.4334779023517097e-14,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         22
+        ],
+        "bound": 1.6728471015958905e-09,
+        "held": true
+       },
+       "lambda_dev_q_dso": {
+        "max_abs_mu": 0.015314266145104817,
+        "max_abs_weighted_sum": 9.678282099831177e-15,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         21
+        ],
+        "bound": 1.5314266145104818e-11,
+        "held": true
+       },
+       "lambda_dev_q_tso": {
+        "max_abs_mu": 0.015314266145104817,
+        "max_abs_weighted_sum": 9.678282099831177e-15,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         21
+        ],
+        "bound": 1.5314266145104818e-11,
+        "held": true
+       },
+       "lambda_dev_v_dso": {
+        "max_abs_mu": 0.08394706657508379,
+        "max_abs_weighted_sum": 2.127285977579496e-15,
+        "at": [
+         5,
+         2025,
+         "Summer",
+         14
+        ],
+        "bound": 8.394706657508379e-11,
+        "held": true
+       },
+       "lambda_dev_v_tso": {
+        "max_abs_mu": 0.08394706657508379,
+        "max_abs_weighted_sum": 2.127285977579496e-15,
+        "at": [
+         5,
+         2025,
+         "Summer",
+         14
+        ],
+        "bound": 8.394706657508379e-11,
+        "held": true
+       }
+      },
+      "held": true
+     },
+     {
+      "cycle": 3,
+      "families": {
+       "lambda_dev_p_dso": {
+        "max_abs_mu": 1.6754971938426084,
+        "max_abs_weighted_sum": 1.637036860235863e-14,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         22
+        ],
+        "bound": 1.6754971938426085e-09,
+        "held": true
+       },
+       "lambda_dev_p_tso": {
+        "max_abs_mu": 1.6754971938426084,
+        "max_abs_weighted_sum": 1.637036860235863e-14,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         22
+        ],
+        "bound": 1.6754971938426085e-09,
+        "held": true
+       },
+       "lambda_dev_q_dso": {
+        "max_abs_mu": 0.006286723395913424,
+        "max_abs_weighted_sum": 9.352611695897291e-15,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         21
+        ],
+        "bound": 6.2867233959134245e-12,
+        "held": true
+       },
+       "lambda_dev_q_tso": {
+        "max_abs_mu": 0.006286723395913424,
+        "max_abs_weighted_sum": 9.352611695897291e-15,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         21
+        ],
+        "bound": 6.2867233959134245e-12,
+        "held": true
+       },
+       "lambda_dev_v_dso": {
+        "max_abs_mu": 0.07385643768265135,
+        "max_abs_weighted_sum": 3.736648577362667e-15,
+        "at": [
+         9,
+         2035,
+         "Summer",
+         14
+        ],
+        "bound": 7.385643768265136e-11,
+        "held": true
+       },
+       "lambda_dev_v_tso": {
+        "max_abs_mu": 0.07385643768265135,
+        "max_abs_weighted_sum": 3.736648577362667e-15,
+        "at": [
+         9,
+         2035,
+         "Summer",
+         14
+        ],
+        "bound": 7.385643768265136e-11,
+        "held": true
+       }
+      },
+      "held": true
+     }
+    ],
+    "pin_v1": {
+     "voltage_pin_total": 0.0,
+     "voltage_pin_tso": 0.0,
+     "voltage_pin_dso": {
+      "5": 0.0,
+      "7": 0.0,
+      "9": 0.0
+     },
+     "held": true,
+     "scope": "terminal record (cycle 3) + structural reading for cycles 1-2 (no per-cycle record)"
+    },
+    "held": true
+   },
+   "Q_block_minus_wC": {
+    "2025|Summer": {
+     "C_central": null,
+     "reason": "UNDEFINED: step 3 v3 single(s) ['12'] not Optimal",
+     "w_b": 455.0,
+     "Q": [
+      {
+       "cycle": 1,
+       "settlement_excluded_in_full": 245187065.28564358,
+       "contracted_excluded": 245192168.51151615
+      },
+      {
+       "cycle": 2,
+       "settlement_excluded_in_full": 121485013.16115147,
+       "contracted_excluded": 121479988.24268155
+      },
+      {
+       "cycle": 3,
+       "settlement_excluded_in_full": 90075991.08422275,
+       "contracted_excluded": 90073626.55720176
+      }
+     ]
+    },
+    "2035|Summer": {
+     "C_central": 153017.21416429273,
+     "w_b": 373.2584764431956,
+     "w_b_C_central": 57114972.228546076,
+     "allowance_eur": 187.5635155299484,
+     "per_cycle": [
+      {
+       "cycle": 1,
+       "settlement_excluded_in_full": 226051023.70493984,
+       "contracted_excluded": 225964467.62751764,
+       "settlement_excluded_in_full_minus_wC": 168936051.47639376,
+       "contracted_excluded_minus_wC": 168849495.39897156
+      },
+      {
+       "cycle": 2,
+       "settlement_excluded_in_full": 95613392.34671077,
+       "contracted_excluded": 95464582.64444144,
+       "settlement_excluded_in_full_minus_wC": 38498420.118164696,
+       "contracted_excluded_minus_wC": 38349610.415895365
+      },
+      {
+       "cycle": 3,
+       "settlement_excluded_in_full": 61495541.98085111,
+       "contracted_excluded": 61402600.33108563,
+       "settlement_excluded_in_full_minus_wC": 4380569.752305031,
+       "contracted_excluded_minus_wC": 4287628.102539554
+      }
+     ]
+    }
+   }
+  },
+  "B|V2": {
+   "run": 6,
+   "instance": "B",
+   "arm": "V2",
+   "eval_dir": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_B_V2/evals/069f9dfb8b920dfc_x0_v2",
+   "eval_key": "069f9dfb8b920dfcc8c8b85c2d9bf06ae3bc59a3be5efc0f2d43ad1ef3d3c596",
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "campaign_spec_sha256": "033226bec5ff3803ba66214d65aa5fe02b0afc484247930151c7f8ff605005ac",
+   "status": "not_certified",
+   "exit_code_parent": 0,
+   "exit_code_txt": 0,
+   "cycles_run": 3,
+   "n_per_cycle_rows": 3,
+   "solves": {
+    "declared_base": 44,
+    "base_solves": 44,
+    "observed_permitted_solve": 44,
+    "observed_permitted_exec": 44,
+    "blocked_solve": 0,
+    "blocked_exec": 0,
+    "retry_solves_credited": 0,
+    "expected_solves": 44,
+    "identity_holds": true
+   },
+   "launcher_guard": {
+    "label": "P5.15 S56 step 4 smoke launcher (this process never solves)",
+    "counts": {
+     "permitted_solve": 0,
+     "permitted_exec": 0,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "verify_failures": []
+   },
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 3601088512,
+    "production_state_peak_rss_ru_maxrss": 3439149056,
+    "solver_subprocesses_max_ru_maxrss": 370704384,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "s_per_cycle": [
+    53.891226053237915,
+    56.0345458984375,
+    37.066816091537476
+   ],
+   "wall_time_s": {
+    "child_process_s": 291.6321849822998,
+    "run_admm_arm_s": 281.31785893440247,
+    "run_admm_arm_reported_wall_clock_s": 179.69371008872986
+   },
+   "aa": {
+    "effective_in_child": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "forced_off_per_cycle": [
+     true,
+     true,
+     true
+    ]
+   },
+   "local_solve_failures": 0,
+   "network_failures_summary": {
+    "n_blocks": 0,
+    "classes": {
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0,
+     "not_attempted": 0,
+     "indeterminate": 0,
+     "recovered": 0
+    },
+    "n_frozen_snapshots": 0,
+    "n_esso_recovery_events": 0,
+    "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_B_V2/evals/069f9dfb8b920dfc_x0_v2/network_failures_s39_D.jsonl"
+   },
+   "S-P1": {
+    "held": true
+   },
+   "S-P5": {
+    "child_python_peak_rss_gib": 3.3537750244140625,
+    "ipopt_max_rss_gib": 0.345245361328125,
+    "held": true
+   },
+   "init_identity": {
+    "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_B_V2/init_identity/069f9dfb8b920dfc_x0_v2.json",
+    "gross_operational_cost": 59734.57374448142,
+    "gross_operational_cost_hex": "0x1.d2ad25c1d62ffp+15",
+    "n_compared": 0,
+    "compared": [],
+    "other_candidates_not_compared": [
+     {
+      "file": "917aa06e2a2e1b55_x0_v1.json",
+      "label": "x0_V1",
+      "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57"
+     }
+    ],
+    "mismatches": [],
+    "all_equal": true,
+    "initialisation_identity_group": "voltage_pin_constructed"
+   },
+   "terminal_recourse": {
+    "gross_operational_cost": 168132893.49956188,
+    "gross_operational_cost_contracted_excluded": 168153879.85813063,
+    "interface_settlement_total": -2960918.6640755534,
+    "interface_settlement_contracted_total": -2981905.022644311,
+    "interface_settlement_deviation_total": 20986.358568793163,
+    "voltage_pin_total": 345.23737226248073,
+    "voltage_pin_tso": 345.2373722623581,
+    "voltage_pin_dso": {
+     "5": 8.57311310801409e-11,
+     "7": 3.6201551936040285e-12,
+     "9": 3.328303536625146e-11
+    },
+    "terminal_salvage_value": -8.027091010699896e-35,
+    "q_convention": "settlement_excluded_in_full"
+   },
+   "per_cycle_gross": [
+    478971346.3757591,
+    241937249.4863321,
+    168132893.49956188
+   ],
+   "s56_capture": {
+    "header_blocks": [
+     [
+      5,
+      2025,
+      "Summer"
+     ],
+     [
+      5,
+      2035,
+      "Summer"
+     ],
+     [
+      7,
+      2025,
+      "Summer"
+     ],
+     [
+      7,
+      2035,
+      "Summer"
+     ],
+     [
+      9,
+      2025,
+      "Summer"
+     ],
+     [
+      9,
+      2035,
+      "Summer"
+     ]
+    ],
+    "n_lines": 3,
+    "deviation_kinds": [
+     "p",
+     "q"
+    ],
+    "checklist": {
+     "boyd_call_point": true,
+     "idc_deviation_duals_recorded": true,
+     "consensus_pf_leaf_p_q_lists": true,
+     "consensus_vmag_leaf_list": true,
+     "dual_vmag_leaf_list": true,
+     "deviation_store_name": true,
+     "deviation_stores_created_by_the_wiring": true,
+     "block_components_settlement_part_follows_wiring": true,
+     "local_settlement_parts": true,
+     "block_weight": true,
+     "rho_params_tso": true,
+     "rho_params_dso": true,
+     "tail_holders": true,
+     "writer_is_gate_result_io": true
+    },
+    "summary": {
+     "schema": "s56_cycle_capture_v1",
+     "file": "s56_cycle_capture.jsonl",
+     "boyd_calls_captured": 3,
+     "cycle_lines_written": 3,
+     "header_written": true,
+     "bytes_written": 400896,
+     "bytes_per_cycle_line_max": 133498,
+     "errors": [],
+     "ok": true
+    }
+   },
+   "w_b_capture": {
+    "2025|Summer": [
+     455.0
+    ],
+    "2035|Summer": [
+     373.2584764431956
+    ]
+   },
+   "w_b_capture_equals_own": true,
+   "S-P4": {
+    "checklist_all_true": true,
+    "summary_ok": true,
+    "per_cycle": [
+     {
+      "cycle": 1,
+      "capture_sum": 478971346.3757591,
+      "production_gross": 478971346.3757591,
+      "rel": 0.0
+     },
+     {
+      "cycle": 2,
+      "capture_sum": 241937249.48633212,
+      "production_gross": 241937249.4863321,
+      "rel": 1.2318203356849747e-16
+     },
+     {
+      "cycle": 3,
+      "capture_sum": 168132893.49956185,
+      "production_gross": 168132893.49956188,
+      "rel": 1.7725456195621216e-16
+     }
+    ],
+    "held": true
+   },
+   "S-P2": {
+    "identities_per_cycle": [
+     {
+      "cycle": 1,
+      "price_part": 200581294.7004086,
+      "settlement_total_T": -200581294.70040882,
+      "i_rel": 1.0400583814430927e-15,
+      "contracted_minus_primary": -53556.146828472614,
+      "deviation_total_D": -53556.14682846643,
+      "ii_rel": 1.1547813534576293e-13,
+      "dso_deviation_from_capture": -221930.35548211687,
+      "dso_deviation_production_covariance_dso_weighted": -221930.35548211687,
+      "ii_dso_decomposition_rel": 0.0,
+      "held": true
+     },
+     {
+      "cycle": 2,
+      "price_part": 3611811.2981273592,
+      "settlement_total_T": -3611811.298127517,
+      "i_rel": 4.3706374272421994e-14,
+      "contracted_minus_primary": -208210.99784970284,
+      "deviation_total_D": -208210.99784969178,
+      "ii_rel": 5.3116577355544295e-14,
+      "dso_deviation_from_capture": -540214.1534238993,
+      "dso_deviation_production_covariance_dso_weighted": -540214.1534238993,
+      "ii_dso_decomposition_rel": 0.0,
+      "held": true
+     },
+     {
+      "cycle": 3,
+      "price_part": 2960918.6640754663,
+      "settlement_total_T": -2960918.664075572,
+      "i_rel": 3.570010669369704e-14,
+      "contracted_minus_primary": 20986.358568757772,
+      "deviation_total_D": 20986.358568793352,
+      "ii_rel": 1.6953599938134792e-12,
+      "dso_deviation_from_capture": -553771.1621651986,
+      "dso_deviation_production_covariance_dso_weighted": -553771.1621651986,
+      "ii_dso_decomposition_rel": 0.0,
+      "i_rel_terminal_record": 2.940933899436735e-14,
+      "T_vs_record_rel": 6.2907676993298736e-15,
+      "ii_D_vs_record_deviation_rel": 9.014184016186187e-15,
+      "ii_lhs_vs_record_deviation_rel": 1.686345809797308e-12,
+      "held": true
+     }
+    ],
+    "gauge_per_cycle": [
+     {
+      "cycle": 1,
+      "families": {
+       "lambda_dev_p_dso": {
+        "max_abs_mu": 0.9050600680843549,
+        "max_abs_weighted_sum": 1.4352709016944576e-14,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         1
+        ],
+        "bound": 9.050600680843549e-10,
+        "held": true
+       },
+       "lambda_dev_p_tso": {
+        "max_abs_mu": 0.9050600680843549,
+        "max_abs_weighted_sum": 1.4352709016944576e-14,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         1
+        ],
+        "bound": 9.050600680843549e-10,
+        "held": true
+       },
+       "lambda_dev_q_dso": {
+        "max_abs_mu": 0.045071736233843224,
+        "max_abs_weighted_sum": 9.494771776533822e-15,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         20
+        ],
+        "bound": 4.507173623384323e-11,
+        "held": true
+       },
+       "lambda_dev_q_tso": {
+        "max_abs_mu": 0.045071736233843224,
+        "max_abs_weighted_sum": 9.494771776533822e-15,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         20
+        ],
+        "bound": 4.507173623384323e-11,
+        "held": true
+       }
+      },
+      "held": true
+     },
+     {
+      "cycle": 2,
+      "families": {
+       "lambda_dev_p_dso": {
+        "max_abs_mu": 1.6066056360853196,
+        "max_abs_weighted_sum": 1.582317028359754e-14,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         1
+        ],
+        "bound": 1.6066056360853197e-09,
+        "held": true
+       },
+       "lambda_dev_p_tso": {
+        "max_abs_mu": 1.6066056360853196,
+        "max_abs_weighted_sum": 1.582317028359754e-14,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         1
+        ],
+        "bound": 1.6066056360853197e-09,
+        "held": true
+       },
+       "lambda_dev_q_dso": {
+        "max_abs_mu": 0.03127553641457074,
+        "max_abs_weighted_sum": 9.677954509838826e-15,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         20
+        ],
+        "bound": 3.127553641457074e-11,
+        "held": true
+       },
+       "lambda_dev_q_tso": {
+        "max_abs_mu": 0.03127553641457074,
+        "max_abs_weighted_sum": 9.677954509838826e-15,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         20
+        ],
+        "bound": 3.127553641457074e-11,
+        "held": true
+       }
+      },
+      "held": true
+     },
+     {
+      "cycle": 3,
+      "families": {
+       "lambda_dev_p_dso": {
+        "max_abs_mu": 1.5952706785107553,
+        "max_abs_weighted_sum": 1.8513111237159624e-14,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         1
+        ],
+        "bound": 1.5952706785107553e-09,
+        "held": true
+       },
+       "lambda_dev_p_tso": {
+        "max_abs_mu": 1.5952706785107553,
+        "max_abs_weighted_sum": 1.8513111237159624e-14,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         1
+        ],
+        "bound": 1.5952706785107553e-09,
+        "held": true
+       },
+       "lambda_dev_q_dso": {
+        "max_abs_mu": 0.013111772367389451,
+        "max_abs_weighted_sum": 9.433697312904998e-15,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         20
+        ],
+        "bound": 1.3111772367389452e-11,
+        "held": true
+       },
+       "lambda_dev_q_tso": {
+        "max_abs_mu": 0.013111772367389451,
+        "max_abs_weighted_sum": 9.433697312904998e-15,
+        "at": [
+         7,
+         2035,
+         "Summer",
+         20
+        ],
+        "bound": 1.3111772367389452e-11,
+        "held": true
+       }
+      },
+      "held": true
+     }
+    ],
+    "pin_v1": null,
+    "held": true
+   },
+   "Q_block_minus_wC": {
+    "2025|Summer": {
+     "C_central": null,
+     "reason": "UNDEFINED: step 3 v3 single(s) ['12'] not Optimal",
+     "w_b": 455.0,
+     "Q": [
+      {
+       "cycle": 1,
+       "settlement_excluded_in_full": 245752325.3207997,
+       "contracted_excluded": 245756426.0359824
+      },
+      {
+       "cycle": 2,
+       "settlement_excluded_in_full": 133722174.1624491,
+       "contracted_excluded": 133716721.34956965
+      },
+      {
+       "cycle": 3,
+       "settlement_excluded_in_full": 98308554.19926357,
+       "contracted_excluded": 98309922.46935605
+      }
+     ]
+    },
+    "2035|Summer": {
+     "C_central": 153017.21416429273,
+     "w_b": 373.2584764431956,
+     "w_b_C_central": 57114972.228546076,
+     "allowance_eur": 187.5635155299484,
+     "per_cycle": [
+      {
+       "cycle": 1,
+       "settlement_excluded_in_full": 233219021.0549594,
+       "contracted_excluded": 233161364.1929482,
+       "settlement_excluded_in_full_minus_wC": 176104048.8264133,
+       "contracted_excluded_minus_wC": 176046391.9644021
+      },
+      {
+       "cycle": 2,
+       "settlement_excluded_in_full": 108215075.32388303,
+       "contracted_excluded": 108012317.1389128,
+       "settlement_excluded_in_full_minus_wC": 51100103.09533695,
+       "contracted_excluded_minus_wC": 50897344.91036672
+      },
+      {
+       "cycle": 3,
+       "settlement_excluded_in_full": 69824339.30029826,
+       "contracted_excluded": 69843957.38877459,
+       "settlement_excluded_in_full_minus_wC": 12709367.071752183,
+       "contracted_excluded_minus_wC": 12728985.160228513
+      }
+     ]
+    }
+   }
+  },
+  "B|pinned_aa_off": {
+   "run": 7,
+   "instance": "B",
+   "arm": "pinned_aa_off",
+   "eval_dir": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_B_pinned_aa_off/evals/28ae4f1905fc503f_x0_pinned_aa_off",
+   "eval_key": "28ae4f1905fc503f7a2566ec84af51b525fadf4fde85a6279134edb430788f7d",
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "campaign_spec_sha256": "9d9061a8be202e8f72cd56e8fe48ee2f3a84855f8b03be5b83d428821d6c5419",
+   "status": "not_certified",
+   "exit_code_parent": 0,
+   "exit_code_txt": 0,
+   "cycles_run": 3,
+   "n_per_cycle_rows": 3,
+   "solves": {
+    "declared_base": 44,
+    "base_solves": 44,
+    "observed_permitted_solve": 44,
+    "observed_permitted_exec": 44,
+    "blocked_solve": 0,
+    "blocked_exec": 0,
+    "retry_solves_credited": 0,
+    "expected_solves": 44,
+    "identity_holds": true
+   },
+   "launcher_guard": {
+    "label": "P5.15 S56 step 4 smoke launcher (this process never solves)",
+    "counts": {
+     "permitted_solve": 0,
+     "permitted_exec": 0,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "verify_failures": []
+   },
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 3640705024,
+    "production_state_peak_rss_ru_maxrss": 3601350656,
+    "solver_subprocesses_max_ru_maxrss": 370884608,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "s_per_cycle": [
+    70.39868593215942,
+    50.383411169052124,
+    35.15232706069946
+   ],
+   "wall_time_s": {
+    "child_process_s": 295.2464528083801,
+    "run_admm_arm_s": 284.67560172080994,
+    "run_admm_arm_reported_wall_clock_s": 188.88341808319092
+   },
+   "aa": {
+    "effective_in_child": {
+     "enabled": false,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "forced_off_per_cycle": [
+     null,
+     null,
+     null
+    ]
+   },
+   "local_solve_failures": 0,
+   "network_failures_summary": {
+    "n_blocks": 0,
+    "classes": {
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0,
+     "not_attempted": 0,
+     "indeterminate": 0,
+     "recovered": 0
+    },
+    "n_frozen_snapshots": 0,
+    "n_esso_recovery_events": 0,
+    "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_B_pinned_aa_off/evals/28ae4f1905fc503f_x0_pinned_aa_off/network_failures_s39_D.jsonl"
+   },
+   "S-P1": {
+    "held": true
+   },
+   "S-P5": {
+    "child_python_peak_rss_gib": 3.3906707763671875,
+    "ipopt_max_rss_gib": 0.3454132080078125,
+    "held": true
+   },
+   "init_identity": {
+    "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_B_pinned_aa_off/init_identity/28ae4f1905fc503f_x0_pinned_aa_off.json",
+    "gross_operational_cost": 59734.57374448142,
+    "gross_operational_cost_hex": "0x1.d2ad25c1d62ffp+15",
+    "n_compared": 1,
+    "compared": [
+     {
+      "file": "069f9dfb8b920dfc_x0_v2.json",
+      "label": "x0_V2",
+      "gross_operational_cost_hex": "0x1.d2ad25c1d62ffp+15",
+      "equal": true,
+      "components_equal": {
+       "gross_operational_cost": true,
+       "gross_operational_cost_including_settlement": true,
+       "interface_settlement_total": true,
+       "voltage_pin_total": true,
+       "terminal_salvage_value": true,
+       "net_operational_recourse": true
+      },
+      "interface_coupling": {
+       "per_scenario_interface_coupling": true,
+       "per_scenario_voltage_mode": "pin",
+       "row18_charge_reactive": false
+      }
+     }
+    ],
+    "other_candidates_not_compared": [
+     {
+      "file": "917aa06e2a2e1b55_x0_v1.json",
+      "label": "x0_V1",
+      "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57"
+     }
+    ],
+    "mismatches": [],
+    "all_equal": true
+   },
+   "terminal_recourse": {
+    "gross_operational_cost": 166885898.34213638,
+    "gross_operational_cost_contracted_excluded": null,
+    "interface_settlement_total": -5402539.911022067,
+    "interface_settlement_contracted_total": -2752442.0635296702,
+    "interface_settlement_deviation_total": -2650097.847492409,
+    "voltage_pin_total": 23.743343525452097,
+    "voltage_pin_tso": 23.74334352524935,
+    "voltage_pin_dso": {
+     "5": 5.616372626705178e-11,
+     "7": 1.295954738445292e-11,
+     "9": 1.3362353402271995e-10
+    },
+    "terminal_salvage_value": -8.027091010699896e-35,
+    "q_convention": null
+   },
+   "per_cycle_gross": [
+    477616573.96357113,
+    241549190.04551622,
+    166885898.34213638
+   ],
+   "terminal_block_sum_vs_gross_rel": 0.0,
+   "Q_block_minus_wC": {
+    "2025|Summer": {
+     "C_central": null,
+     "reason": "UNDEFINED: step 3 v3 single(s) ['12'] not Optimal",
+     "w_b": 455.0,
+     "Q": [
+      {
+       "cycle": 3,
+       "contracted_excluded": 97857907.709274,
+       "source": "multiscenario_terminal: sum over the block's agents of block_recourse_production_local x admm_block_weight (terminal only)"
+      }
+     ]
+    },
+    "2035|Summer": {
+     "C_central": 153017.21416429273,
+     "w_b": 373.2584764431956,
+     "w_b_C_central": 57114972.228546076,
+     "allowance_eur": 187.5635155299484,
+     "per_cycle": [
+      {
+       "cycle": 3,
+       "contracted_excluded": 69027990.63286239,
+       "source": "multiscenario_terminal: sum over the block's agents of block_recourse_production_local x admm_block_weight (terminal only)",
+       "contracted_excluded_minus_wC": 11913018.404316314
+      }
+     ]
+    }
+   }
+  },
+  "B|pinned_aa_on": {
+   "run": 8,
+   "instance": "B",
+   "arm": "pinned_aa_on",
+   "eval_dir": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_B_pinned_aa_on/evals/7138c52526c7ac55_x0_pinned_aa_on",
+   "eval_key": "7138c52526c7ac55a698a278a2a1f288a224062e7a8ebd668e6d0b13f0efa01b",
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "campaign_spec_sha256": "19a402b08572a3155906663e0dc7fc6681da6ae9fb72ddcca58f5e84413229e7",
+   "status": "not_certified",
+   "exit_code_parent": 0,
+   "exit_code_txt": 0,
+   "cycles_run": 3,
+   "n_per_cycle_rows": 3,
+   "solves": {
+    "declared_base": 44,
+    "base_solves": 44,
+    "observed_permitted_solve": 44,
+    "observed_permitted_exec": 44,
+    "blocked_solve": 0,
+    "blocked_exec": 0,
+    "retry_solves_credited": 0,
+    "expected_solves": 44,
+    "identity_holds": true
+   },
+   "launcher_guard": {
+    "label": "P5.15 S56 step 4 smoke launcher (this process never solves)",
+    "counts": {
+     "permitted_solve": 0,
+     "permitted_exec": 0,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "verify_failures": []
+   },
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 3643785216,
+    "production_state_peak_rss_ru_maxrss": 3601580032,
+    "solver_subprocesses_max_ru_maxrss": 372375552,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "s_per_cycle": [
+    70.26939606666565,
+    50.25259208679199,
+    36.70840787887573
+   ],
+   "wall_time_s": {
+    "child_process_s": 295.4346969127655,
+    "run_admm_arm_s": 285.00590896606445,
+    "run_admm_arm_reported_wall_clock_s": 190.42576098442078
+   },
+   "aa": {
+    "effective_in_child": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "forced_off_per_cycle": [
+     null,
+     null,
+     null
+    ]
+   },
+   "local_solve_failures": 0,
+   "network_failures_summary": {
+    "n_blocks": 0,
+    "classes": {
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0,
+     "not_attempted": 0,
+     "indeterminate": 0,
+     "recovered": 0
+    },
+    "n_frozen_snapshots": 0,
+    "n_esso_recovery_events": 0,
+    "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_B_pinned_aa_on/evals/7138c52526c7ac55_x0_pinned_aa_on/network_failures_s39_D.jsonl"
+   },
+   "S-P1": {
+    "held": true
+   },
+   "S-P5": {
+    "child_python_peak_rss_gib": 3.3935394287109375,
+    "ipopt_max_rss_gib": 0.3468017578125,
+    "held": true
+   },
+   "init_identity": {
+    "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_B_pinned_aa_on/init_identity/7138c52526c7ac55_x0_pinned_aa_on.json",
+    "gross_operational_cost": 59734.57374448142,
+    "gross_operational_cost_hex": "0x1.d2ad25c1d62ffp+15",
+    "n_compared": 2,
+    "compared": [
+     {
+      "file": "069f9dfb8b920dfc_x0_v2.json",
+      "label": "x0_V2",
+      "gross_operational_cost_hex": "0x1.d2ad25c1d62ffp+15",
+      "equal": true,
+      "components_equal": {
+       "gross_operational_cost": true,
+       "gross_operational_cost_including_settlement": true,
+       "interface_settlement_total": true,
+       "voltage_pin_total": true,
+       "terminal_salvage_value": true,
+       "net_operational_recourse": true
+      },
+      "interface_coupling": {
+       "per_scenario_interface_coupling": true,
+       "per_scenario_voltage_mode": "pin",
+       "row18_charge_reactive": false
+      }
+     },
+     {
+      "file": "28ae4f1905fc503f_x0_pinned_aa_off.json",
+      "label": "x0_pinned_aa_off",
+      "gross_operational_cost_hex": "0x1.d2ad25c1d62ffp+15",
+      "equal": true,
+      "components_equal": {
+       "gross_operational_cost": true,
+       "gross_operational_cost_including_settlement": true,
+       "interface_settlement_total": true,
+       "voltage_pin_total": true,
+       "terminal_salvage_value": true,
+       "net_operational_recourse": true
+      }
+     }
+    ],
+    "other_candidates_not_compared": [
+     {
+      "file": "917aa06e2a2e1b55_x0_v1.json",
+      "label": "x0_V1",
+      "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57"
+     }
+    ],
+    "mismatches": [],
+    "all_equal": true
+   },
+   "terminal_recourse": {
+    "gross_operational_cost": 166885898.34213638,
+    "gross_operational_cost_contracted_excluded": null,
+    "interface_settlement_total": -5402539.911022067,
+    "interface_settlement_contracted_total": -2752442.0635296702,
+    "interface_settlement_deviation_total": -2650097.847492409,
+    "voltage_pin_total": 23.743343525452097,
+    "voltage_pin_tso": 23.74334352524935,
+    "voltage_pin_dso": {
+     "5": 5.616372626705178e-11,
+     "7": 1.295954738445292e-11,
+     "9": 1.3362353402271995e-10
+    },
+    "terminal_salvage_value": -8.027091010699896e-35,
+    "q_convention": null
+   },
+   "per_cycle_gross": [
+    477616573.96357113,
+    241549190.04551622,
+    166885898.34213638
+   ],
+   "terminal_block_sum_vs_gross_rel": 0.0,
+   "Q_block_minus_wC": {
+    "2025|Summer": {
+     "C_central": null,
+     "reason": "UNDEFINED: step 3 v3 single(s) ['12'] not Optimal",
+     "w_b": 455.0,
+     "Q": [
+      {
+       "cycle": 3,
+       "contracted_excluded": 97857907.709274,
+       "source": "multiscenario_terminal: sum over the block's agents of block_recourse_production_local x admm_block_weight (terminal only)"
+      }
+     ]
+    },
+    "2035|Summer": {
+     "C_central": 153017.21416429273,
+     "w_b": 373.2584764431956,
+     "w_b_C_central": 57114972.228546076,
+     "allowance_eur": 187.5635155299484,
+     "per_cycle": [
+      {
+       "cycle": 3,
+       "contracted_excluded": 69027990.63286239,
+       "source": "multiscenario_terminal: sum over the block's agents of block_recourse_production_local x admm_block_weight (terminal only)",
+       "contracted_excluded_minus_wC": 11913018.404316314
+      }
+     ]
+    }
+   }
+  }
+ },
+ "errors": {},
+ "predictions": {
+  "S-P1": {
+   "statement": "every run exits 0 with 3 cycles; the solve-count identity holds.",
+   "per_run": {
+    "A|V1": true,
+    "A|V2": true,
+    "A|pinned_aa_off": true,
+    "A|pinned_aa_on": true,
+    "B|V1": true,
+    "B|V2": true,
+    "B|pinned_aa_off": true,
+    "B|pinned_aa_on": true
+   },
+   "held": true
+  },
+  "S-P2": {
+   "statement": "F1 arms, every cycle: production `priced_residual_pr` price part + `interface_settlement_total` = 0 (rel 1e-9); `gross_operational_cost_contracted_excluded` - `gross_operational_cost` = interface settlement deviation total (rel 1e-9); Sigma_s omega_s mu_s = 0 per coordinate (abs 1e-9 x max|mu|); V-1 voltage pin total == 0.",
+   "per_run": {
+    "A|V1": true,
+    "A|V2": true,
+    "B|V1": true,
+    "B|V2": true
+   },
+   "held": true
+  },
+  "S-P3": {
+   "statement": "initialisation, per instance: pinned AA-off == pinned AA-on == V-2, bitwise (the harness grouping check passes); V-1 is in its own group and differs.",
+   "per_instance": {
+    "A": {
+     "V1": {
+      "group": "voltage_pin_not_constructed",
+      "n_compared": 0,
+      "hex": "-0x1.fa7e3723c4b36p+11"
+     },
+     "V2": {
+      "group": "voltage_pin_constructed",
+      "n_compared": 0,
+      "listed_not_compared": [
+       "x0_V1"
+      ],
+      "hex": "0x1.bbb9febecf6ffp+13"
+     },
+     "pinned_aa_off": {
+      "compared": [
+       "x0_V2"
+      ],
+      "all_equal": true,
+      "hex": "0x1.bbb9febecf6ffp+13",
+      "group": null
+     },
+     "pinned_aa_on": {
+      "compared": [
+       "x0_V2",
+       "x0_pinned_aa_off"
+      ],
+      "all_equal": true,
+      "hex": "0x1.bbb9febecf6ffp+13",
+      "group": null
+     },
+     "held": true
+    },
+    "B": {
+     "V1": {
+      "group": "voltage_pin_not_constructed",
+      "n_compared": 0,
+      "hex": "0x1.7c7dbcc7a0caep+13"
+     },
+     "V2": {
+      "group": "voltage_pin_constructed",
+      "n_compared": 0,
+      "listed_not_compared": [
+       "x0_V1"
+      ],
+      "hex": "0x1.d2ad25c1d62ffp+15"
+     },
+     "pinned_aa_off": {
+      "compared": [
+       "x0_V2"
+      ],
+      "all_equal": true,
+      "hex": "0x1.d2ad25c1d62ffp+15",
+      "group": null
+     },
+     "pinned_aa_on": {
+      "compared": [
+       "x0_V2",
+       "x0_pinned_aa_off"
+      ],
+      "all_equal": true,
+      "hex": "0x1.d2ad25c1d62ffp+15",
+      "group": null
+     },
+     "held": true
+    }
+   },
+   "held": true
+  },
+  "S-P4": {
+   "statement": "on real cycles, in the coupled arms: `assert_s56_cycle_capture_path` holds; per-block Q from the capture sums to production's per-cycle `gross_operational_cost` within rel 1e-12.",
+   "per_run": {
+    "A|V1": true,
+    "A|V2": true,
+    "B|V1": true,
+    "B|V2": true
+   },
+   "held": true
+  },
+  "S-P5": {
+   "statement": "peak RSS <= 6 GiB per run. Record s/cycle per run; the Advisor's inference was 45-75 s for two blocks. Recording only.",
+   "per_run": {
+    "A|V1": {
+     "rss_gib": 2.0839080810546875,
+     "ipopt_gib": 0.344696044921875,
+     "s_per_cycle": [
+      27.702051162719727,
+      22.22293186187744,
+      18.085962772369385
+     ],
+     "held": true
+    },
+    "A|V2": {
+     "rss_gib": 2.291351318359375,
+     "ipopt_gib": 0.3441162109375,
+     "s_per_cycle": [
+      34.88697600364685,
+      37.213282108306885,
+      18.56753706932068
+     ],
+     "held": true
+    },
+    "A|pinned_aa_off": {
+     "rss_gib": 2.1825714111328125,
+     "ipopt_gib": 0.3435516357421875,
+     "s_per_cycle": [
+      40.092836141586304,
+      37.442241191864014,
+      18.495877027511597
+     ],
+     "held": true
+    },
+    "A|pinned_aa_on": {
+     "rss_gib": 2.1258697509765625,
+     "ipopt_gib": 0.343475341796875,
+     "s_per_cycle": [
+      41.60828518867493,
+      40.01869297027588,
+      20.517281770706177
+     ],
+     "held": true
+    },
+    "B|V1": {
+     "rss_gib": 3.225677490234375,
+     "ipopt_gib": 0.344696044921875,
+     "s_per_cycle": [
+      63.17490911483765,
+      39.2173798084259,
+      36.49750590324402
+     ],
+     "held": true
+    },
+    "B|V2": {
+     "rss_gib": 3.3537750244140625,
+     "ipopt_gib": 0.345245361328125,
+     "s_per_cycle": [
+      53.891226053237915,
+      56.0345458984375,
+      37.066816091537476
+     ],
+     "held": true
+    },
+    "B|pinned_aa_off": {
+     "rss_gib": 3.3906707763671875,
+     "ipopt_gib": 0.3454132080078125,
+     "s_per_cycle": [
+      70.39868593215942,
+      50.383411169052124,
+      35.15232706069946
+     ],
+     "held": true
+    },
+    "B|pinned_aa_on": {
+     "rss_gib": 3.3935394287109375,
+     "ipopt_gib": 0.3468017578125,
+     "s_per_cycle": [
+      70.26939606666565,
+      50.25259208679199,
+      36.70840787887573
+     ],
+     "held": true
+    }
+   },
+   "held": true
+  }
+ },
+ "launcher_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ }
+}
