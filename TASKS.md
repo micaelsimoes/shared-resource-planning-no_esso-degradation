@@ -73,7 +73,7 @@ Author's six points: (1) option (a) per-scenario coupling, P/Q/V consistent per 
 ### Order (2026-11-23, after the rulings)
 - [ ] Pinned-arm capture fix (harness, zero-solve) — **active** (Worker running)
 - [ ] **Step 4 main run** — spec with V-2 measured/non-deciding, P4 recorded not a stop, must-hold stop conditions with the local-solution caveat; arms V-1, V-2, pinned AA-off, pinned AA-on × instances A, B; serial 3-cycle equivalence vs the smoke; cap 300, cycle-40 look, continuation to 600 if contracting — after the capture fix
-- [ ] **Cohort follow-up** (production, worktree while step 4 runs; merged after step 4 with the author's OK): network-side D1 switch, per-cohort complementarity + sum rows, closure per D2, efficiency-equality gate, single-cohort activation key for the A/B; zero-solve + millisecond tests — **active**
+- [ ] **Cohort follow-up** (production, worktree `.claude/worktrees/s56-cohort-followup`, branch `s56-cohort-followup` from `c65201d1`, created by the author; merged after step 4 with the author's OK): network-side D1 switch, per-cohort complementarity + sum rows, closure per D2, efficiency-equality gate, single-cohort activation key for the A/B; zero-solve + millisecond tests — **active**
 - [ ] EV plumbing in the harness child (EV injection, assertion before the multiplier) — after the capture fix
 - [ ] Memory probes (e) — after step 4 (machine)
 - [ ] Single-cohort A/B (b); EV replicate pairs (d) — after the cohort follow-up and EV plumbing
