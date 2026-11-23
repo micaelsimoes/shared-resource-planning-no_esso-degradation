@@ -362,7 +362,8 @@ EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification', 'investme
                                     'flex_price_multiplier', 'interface_deviation_premium',
                                     'release_solution_bookkeeping', 'certification_continuation',
                                     'settling_continuation', 'settling_extension', 'settling_resettle',
-                                    'rho0_scale', 'nrf_option', 'interface_coupling'})
+                                    'rho0_scale', 'nrf_option', 'interface_coupling',
+                                    's56_cycle_capture_pinned'})
 # P5.15 Addendum 39 (W47): a DERIVED INSTANCE (see the module docstring) and row 18's premium. The identity keys
 # of a derived instance enter the eval key; the other keys are provenance. Absent -> nothing changes.
 DERIVED_INSTANCE_KEYS = frozenset({'instance_label', 'case_path', 'case_sha256', 'scenario_checksum',
@@ -892,7 +893,8 @@ def assert_interface_coupling_capture_path():
 # ==============================================================================
 #  S56 validation step 4 (S56_STEP4_DESIGN.md decision 7; Planner task 2026-11-23, item 2b): the per-cycle S56
 #  capture, ONLY for entries declaring the per-scenario coupling (option off: never installed, never asserted, so every
-#  other evaluation runs and writes exactly as before).
+#  other evaluation runs and writes exactly as before). S56 step 4 preparation: also for an option-off entry declaring
+#  `S56_CYCLE_CAPTURE_PINNED_KEY` True (the pinned arm; see the comment at that constant).
 # ==============================================================================
 # One JSONL sidecar per evaluation, a header line then one line per cycle, written at production's once-per-cycle
 # `get_admm_boyd_residual_metrics` call (after the cycle's TSO / DSO / ESSO solves and dual updates, before AA -- the
@@ -924,18 +926,86 @@ S56_CYCLE_CAPTURE_SCHEMA = 's56_cycle_capture_v1'
 S56_CYCLE_CAPTURE_SUMMARY_KEY = 's56_cycle_capture'
 S56_CYCLE_CAPTURE_LINE_FIELDS = ('cycle', 'captured', 'error', 'primal_expectation', 'primal_deviation',
                                  'dual_expectation_v', 'rho', 'tail_compl_inf_tol', 'q_blocks', 'capture_s')
+# S56 step 4 PREPARATION (Planner task 2026-11-23; S56_STEP4_DESIGN.md item 7; the smoke report's "Not confirmed"):
+#   * the PINNED arm (option off): the same capture, installed on an option-off entry ONLY when the entry declares
+#     `S56_CYCLE_CAPTURE_PINNED_KEY` True (default absent / False: nothing installed, nothing recorded -- every
+#     option-off evaluation without the key runs and writes exactly as before). Its line carries every field of the
+#     coupled line except `primal_deviation` (the deviation channel is not constructed); its Q in today's convention is
+#     q_blocks 'contracted_excluded' (production's primary while the coupling is not wired). The expectation P / Q
+#     duals of both sides are in the interface-dual sidecar, written for every evaluation.
+#   * both arms: `voltage_pin` per cycle (ADDED field; every pre-existing field of the coupled line and header is
+#     unchanged) -- per agent block the pin weight, the unweighted pin `scenario_voltage_pin`, the block weight and the
+#     weighted term w_b x `_get_local_voltage_pin` (production `_get_operational_voltage_pin_blocks`), per (year, day),
+#     per side, and the total aggregated in production's own order (`_get_operational_recourse_components`'
+#     `voltage_pin_total`). V-1 ('per_scenario'): the pin is not constructed, 0.0; V-2 ('pin') and the pinned arm: a
+#     value.
+S56_CYCLE_CAPTURE_PINNED_KEY = 's56_cycle_capture_pinned'
+S56_CAPTURE_ARM_COUPLED = 'coupled'
+S56_CAPTURE_ARM_PINNED = 'pinned'
+S56_CYCLE_CAPTURE_ADDED_LINE_FIELDS = ('voltage_pin',)
+S56_CYCLE_CAPTURE_BASE_LINE_FIELDS_BY_ARM = {
+    S56_CAPTURE_ARM_COUPLED: S56_CYCLE_CAPTURE_LINE_FIELDS,
+    S56_CAPTURE_ARM_PINNED: tuple(f for f in S56_CYCLE_CAPTURE_LINE_FIELDS if f != 'primal_deviation'),
+}
+S56_CYCLE_CAPTURE_LINE_FIELDS_BY_ARM = {arm: fields + S56_CYCLE_CAPTURE_ADDED_LINE_FIELDS
+                                        for arm, fields in S56_CYCLE_CAPTURE_BASE_LINE_FIELDS_BY_ARM.items()}
+S56_CYCLE_CAPTURE_Q_PRIMARY = {S56_CAPTURE_ARM_COUPLED: 'settlement_excluded_in_full',
+                               S56_CAPTURE_ARM_PINNED: 'contracted_excluded'}
+# the line's always-present bookkeeping fields (the rest are data fields, each written by `s56_cycle_capture_line`)
+_S56_CYCLE_CAPTURE_BOOKKEEPING_FIELDS = ('cycle', 'captured', 'error', 'capture_s')
 
 
-def assert_s56_cycle_capture_path():
-    """Rule eleven, BEFORE any solve of an evaluation declaring the coupling: every source the S56 per-cycle capture
-    reads exists in the live production code, with the layout the capture assumes. Raises on any failure; returns the
-    checklist."""
+def validate_s56_cycle_capture_pinned(value):
+    """S56 step 4 preparation: an entry's `S56_CYCLE_CAPTURE_PINNED_KEY`. None = not declared (the default: nothing
+    installed, entry and record keep their exact format). Otherwise a bool. Capture only -- it changes no model, no
+    solve and no stopping input -- so it NEVER enters `evaluation_key` (the W90 precedent)."""
+    if value is None:
+        return None
+    if not isinstance(value, bool):
+        raise ValueError(f'{S56_CYCLE_CAPTURE_PINNED_KEY} must be a bool, got {value!r}')
+    return value
+
+
+def s56_cycle_capture_arm(coupling_on, pinned):
+    """Which S56 per-cycle capture an evaluation installs: COUPLED for an entry declaring the coupling (as before);
+    PINNED for an option-off entry declaring the key True; None otherwise (nothing installed). The key True on a
+    coupled entry is refused (the coupled capture is already installed; the key is defined for option-off arms)."""
+    if coupling_on:
+        if pinned is True:
+            raise ValueError(f'{S56_CYCLE_CAPTURE_PINNED_KEY} True is for option-off entries only; this entry declares '
+                             f'the per-scenario coupling (its coupled capture is installed regardless)')
+        return S56_CAPTURE_ARM_COUPLED
+    return S56_CAPTURE_ARM_PINNED if pinned is True else None
+
+
+def s56_cycle_capture_pinned_record_fields(entry, holder, capture_arm):
+    """The evaluation-record fields of the key: empty unless the entry declares it (so every other record keeps its
+    format); then the key, the arm, and -- for the pinned arm -- the checklist asserted before the run and the
+    capture summary."""
+    if S56_CYCLE_CAPTURE_PINNED_KEY not in entry:
+        return {}
+    out = {S56_CYCLE_CAPTURE_PINNED_KEY: entry[S56_CYCLE_CAPTURE_PINNED_KEY], 's56_cycle_capture_arm': capture_arm}
+    if capture_arm == S56_CAPTURE_ARM_PINNED:
+        out['s56_cycle_capture_checklist_asserted_before_run'] = holder.get('s56_cycle_capture_checklist')
+        out['s56_cycle_capture_summary'] = holder.get(S56_CYCLE_CAPTURE_SUMMARY_KEY)
+    return out
+
+
+def assert_s56_cycle_capture_path(arm=S56_CAPTURE_ARM_COUPLED):
+    """Rule eleven, BEFORE any solve of an evaluation installing the S56 per-cycle capture: every source the capture
+    reads exists in the live production code, with the layout the capture assumes, and every data field of the ARM's
+    field set (`S56_CYCLE_CAPTURE_LINE_FIELDS_BY_ARM`) is written by `s56_cycle_capture_line`. COUPLED (the default,
+    the pre-existing call): every pre-existing check plus the added ones; PINNED (option off with the key): the same
+    without the deviation-channel sources (not constructed when the coupling is not wired), plus the interface-dual
+    sidecar's expectation P / Q dual fields. Raises on any failure; returns the checklist (bool values only)."""
     import inspect
     import interface_dual_capture as IDC
     import shared_resources_planning as srp
     create_src = inspect.getsource(srp.create_admm_variables)
     wire_src = inspect.getsource(srp._wire_per_scenario_interface_coupling)
     blocks_src = inspect.getsource(srp._get_operational_recourse_block_components)
+    if arm not in S56_CYCLE_CAPTURE_LINE_FIELDS_BY_ARM:
+        raise RuntimeError(f'S56 per-cycle capture: unknown arm {arm!r}')
     tso_src = inspect.getsource(srp.update_transmission_model_to_admm)
     dso_src = inspect.getsource(srp.update_distribution_models_to_admm)
     checks = {
@@ -961,6 +1031,26 @@ def assert_s56_cycle_capture_path():
                         and getattr(srp, 'CONVERGENCE_DEPTH_TAIL_OPTION', None) == 'compl_inf_tol',
         'writer_is_gate_result_io': callable(getattr(GRIO, 'dumps', None)),
     }
+    # S56 step 4 preparation: the voltage-pin sources (both arms) and the arm's field set
+    pin_src = inspect.getsource(srp._get_local_voltage_pin)
+    rc_src = inspect.getsource(srp._get_operational_recourse_components)
+    checks['voltage_pin_local_reads_weight_and_pin'] = (
+        "pe.value(model.scenario_voltage_pin_weight) * pe.value(model.scenario_voltage_pin)" in pin_src
+        and "hasattr(model, 'scenario_voltage_pin')" in pin_src)
+    checks['voltage_pin_blocks'] = callable(getattr(srp, '_get_operational_voltage_pin_blocks', None))
+    checks['voltage_pin_total_is_blocks_aggregate'] = (
+        'voltage_pin_blocks = _get_operational_voltage_pin_blocks(planning_problem, models)' in rc_src
+        and 'voltage_pin_total = voltage_pin_tso + sum(voltage_pin_dso.values())' in rc_src)
+    checks['coupling_wired_marker_reader'] = callable(getattr(srp, '_per_scenario_interface_coupling_wired', None))
+    if arm == S56_CAPTURE_ARM_PINNED:
+        for name in ('idc_deviation_duals_recorded', 'deviation_store_name', 'deviation_stores_created_by_the_wiring'):
+            del checks[name]
+        checks['idc_expectation_pf_duals_both_sides'] = {f for *_x, f in IDC.CHANNEL_FIELDS} == {
+            'lambda_pf_p_tso', 'lambda_pf_p_dso', 'lambda_pf_q_tso', 'lambda_pf_q_dso'}
+    line_src = inspect.getsource(s56_cycle_capture_line)
+    for field in S56_CYCLE_CAPTURE_LINE_FIELDS_BY_ARM[arm]:
+        if field not in _S56_CYCLE_CAPTURE_BOOKKEEPING_FIELDS:
+            checks[f'line_field_written:{field}'] = f"line['{field}']" in line_src
     failed = sorted(k for k, v in checks.items() if not v)
     if failed:
         raise RuntimeError(f'S56 per-cycle capture path missing (before any solve): {failed}')
@@ -971,9 +1061,11 @@ def _floats(seq):
     return [float(v) for v in seq]
 
 
-def s56_cycle_capture_line(planning, tso_model, dso_models, esso_model, consensus_vars, dual_vars, blocks):
+def s56_cycle_capture_line(planning, tso_model, dso_models, esso_model, consensus_vars, dual_vars, blocks,
+                           arm=S56_CAPTURE_ARM_COUPLED):
     """The capture of ONE cycle (module comment above). Pure reads (dict / list indexing, pyomo value, production
-    read functions); returns the line's data fields."""
+    read functions); returns the line's data fields (the ARM's field set). The pinned arm raises (recorded by the
+    caller as the line's error) if the deviation store exists or the models are wired: the run is not option off."""
     import pyomo.environ as pe
     import shared_resources_planning as srp
     line = {}
@@ -989,7 +1081,12 @@ def s56_cycle_capture_line(planning, tso_model, dso_models, esso_model, consensu
                          for kind in store['meta']['kinds']} if store is not None else None)
         dv = dual_vars['vmag'][side]['current']
         de_v[side] = [_floats(dv[n][y][d]) for n, y, d in blocks]
-    line['primal_expectation'], line['primal_deviation'], line['dual_expectation_v'] = pe_exp, pe_dev, de_v
+    if arm == S56_CAPTURE_ARM_PINNED:
+        if store is not None or srp._per_scenario_interface_coupling_wired({'tso': tso_model}):
+            raise RuntimeError('pinned-arm capture on a run with the per-scenario coupling wired')
+        line['primal_expectation'], line['dual_expectation_v'] = pe_exp, de_v
+    else:
+        line['primal_expectation'], line['primal_deviation'], line['dual_expectation_v'] = pe_exp, pe_dev, de_v
     tn = planning.transmission_network
     rho = {}
     for year in tn.years:
@@ -1036,12 +1133,40 @@ def s56_cycle_capture_line(planning, tso_model, dso_models, esso_model, consensu
                         'convention': ('EUR of total discounted cost; w_b x (get_primal_value - settlement part - '
                                        'pin) per agent block (production _get_operational_recourse_block_components); '
                                        'salvage separate (its block is -salvage)')}
+    # S56 step 4 preparation: the per-cycle voltage pin (ADDED field), aggregated exactly as
+    # `_get_operational_recourse_components` aggregates `voltage_pin_total`
+    pin_blocks = srp._get_operational_voltage_pin_blocks(planning, models)
+    pin_tso = sum(value for (kind, _n, _y, _d), value in pin_blocks.items() if kind == 'TSO')
+    pin_dso, pin_yd, pin_agent = {}, {}, {}
+    for (kind, node_id, year, day), value in pin_blocks.items():
+        if kind == 'DSO':
+            pin_dso[node_id] = pin_dso.get(node_id, 0.0) + value
+        if kind == 'TSO':
+            holder, model, label = tn, tso_model[year][day], f'TSO|{year}|{day}'
+        else:
+            holder = planning.distribution_networks[node_id]
+            model, label = dso_models[node_id][year][day], f'DSO{node_id}|{year}|{day}'
+        constructed = hasattr(model, 'scenario_voltage_pin')
+        pin_agent[label] = {'pin_constructed': constructed,
+                            'pin_weight': float(pe.value(model.scenario_voltage_pin_weight)) if constructed else None,
+                            'pin_unweighted': float(pe.value(model.scenario_voltage_pin)) if constructed else None,
+                            'block_weight': srp._get_admm_block_weight(holder, year, day),
+                            'weighted': float(value)}
+        pin_yd[f'{year}|{day}'] = pin_yd.get(f'{year}|{day}', 0.0) + float(value)
+    line['voltage_pin'] = {'per_agent': pin_agent, 'per_year_day': pin_yd, 'tso': float(pin_tso),
+                           'dso': {str(k): float(v) for k, v in pin_dso.items()},
+                           'total': float(pin_tso + sum(pin_dso.values())),
+                           'convention': ('EUR of total discounted cost; weighted = w_b x scenario_voltage_pin_weight x '
+                                          'scenario_voltage_pin (production _get_operational_voltage_pin_blocks); '
+                                          'total = production voltage_pin_total (same aggregation order); 0.0 on a '
+                                          'block without the pin')}
     return line
 
 
 class S56CycleCapture:
-    def __init__(self, eval_dir):
+    def __init__(self, eval_dir, arm=S56_CAPTURE_ARM_COUPLED):
         self.eval_dir = eval_dir
+        self.arm = arm
         self.calls = 0
         self.lines = 0
         self.errors = []
@@ -1083,15 +1208,21 @@ class S56CycleCapture:
                     'deviation_units': (store.get('meta') or {}).get('units'),
                     'n_network_blocks': len(tn.years) * len(tn.days) * (1 + len(planning.distribution_networks)),
                     'tail_holders': [label for label, _h in srp._convergence_depth_tail_holders(planning)],
-                    'line_fields': list(S56_CYCLE_CAPTURE_LINE_FIELDS),
+                    'line_fields': list(S56_CYCLE_CAPTURE_BASE_LINE_FIELDS_BY_ARM[self.arm]),
                     'sources': {'primal_expectation': "consensus_vars['pf' | 'vmag'][side]['current']",
                                 'primal_deviation': "consensus_vars['interface_dev'][side]['current']",
                                 'dual_expectation_v': "dual_vars['vmag'][side]['current']",
                                 'other_duals': f'{IDC.INTERFACE_DUAL_FILE} (same call point)',
-                                'read_point': 'get_admm_boyd_residual_metrics (after the cycle dual updates, before AA)'}}
+                                'read_point': 'get_admm_boyd_residual_metrics (after the cycle dual updates, before AA)'},
+                    # S56 step 4 preparation (added header fields)
+                    'capture_arm': self.arm,
+                    'line_fields_added': list(S56_CYCLE_CAPTURE_ADDED_LINE_FIELDS),
+                    'q_primary_convention': S56_CYCLE_CAPTURE_Q_PRIMARY[self.arm],
+                    'voltage_pin_source': ('shared_resources_planning._get_operational_voltage_pin_blocks (weighted) '
+                                           'and the block models\' scenario_voltage_pin_weight / scenario_voltage_pin')}
                 self._write(self.header)
             line.update(s56_cycle_capture_line(planning, tso_model, dso_models, esso_model, consensus_vars, dual_vars,
-                                               self.blocks))
+                                               self.blocks, arm=self.arm))
             line['captured'] = True
         except Exception as error:  # noqa: BLE001 -- write-only capture: recorded, never raised
             line['error'] = f'{type(error).__name__}: {error}'
@@ -1109,19 +1240,21 @@ class S56CycleCapture:
                 'bytes_written': self.bytes_written,
                 'bytes_per_cycle_line_max': max(self.per_line_bytes) if self.per_line_bytes else None,
                 'errors': list(self.errors),
-                'ok': not self.errors and self.lines == self.calls and (self.calls == 0 or self.header is not None)}
+                'ok': not self.errors and self.lines == self.calls and (self.calls == 0 or self.header is not None),
+                'capture_arm': self.arm}
 
 
 @contextmanager
-def s56_cycle_capture_hooks(eval_dir, holder):
-    """Installs a pass-through wrapper over production's `get_admm_boyd_residual_metrics` (called with the same
+def s56_cycle_capture_hooks(eval_dir, holder, arm=S56_CAPTURE_ARM_COUPLED):
+    """`arm`: COUPLED (default, as before) or PINNED (option off with the key; S56 step 4 preparation).
+    Installs a pass-through wrapper over production's `get_admm_boyd_residual_metrics` (called with the same
     argument objects, its return value returned unchanged) for the run; restores production on exit (even on error);
     `holder[S56_CYCLE_CAPTURE_SUMMARY_KEY]` gets the summary. Refuses to overwrite an existing sidecar."""
     import shared_resources_planning as srp
     path = os.path.join(eval_dir, S56_CYCLE_CAPTURE_FILE)
     if os.path.exists(path):
         raise RuntimeError(f'refusing to overwrite existing artifact: {path}')
-    capture = S56CycleCapture(eval_dir)
+    capture = S56CycleCapture(eval_dir, arm=arm)
     original = srp.get_admm_boyd_residual_metrics
 
     def w_boyd(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters):
@@ -1802,6 +1935,9 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     given, enters the eval key only when non-default (s != 1.0; True), and then the entry and the spec carry
     `rho0_scale_label` == RHO0_SCALE_LABEL / `nrf_option_label` == NRF_OPTION_LABEL. Entries without them keep their
     exact format and keys.
+    S56 step 4 preparation: an entry's options may carry `S56_CYCLE_CAPTURE_PINNED_KEY` (a bool,
+    `validate_s56_cycle_capture_pinned`; True refused on an entry declaring the coupling); recorded in the entry only
+    when given; it NEVER enters the eval key (capture only).
     One entry = one EVALUATION: its `eval_key` (`evaluation_key`) identifies
     candidate x configuration; labels and eval keys must be unique (the same
     candidate may appear under two configurations)."""
@@ -1868,6 +2004,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         rho0_scale = validate_rho0_scale(options.get('rho0_scale'))  # W183a: keyed only when != 1.0
         nrf_option = validate_nrf_option(options.get('nrf_option'))  # W183a: keyed only when True
         coupling = validate_interface_coupling(options.get('interface_coupling'))  # S56: keyed only when non-default
+        s56_pinned = validate_s56_cycle_capture_pinned(options.get(S56_CYCLE_CAPTURE_PINNED_KEY))  # S56 s4: not keyed
+        s56_cycle_capture_arm(interface_coupling_in_key(coupling) is not None, s56_pinned)  # refuses key on coupled
         ekey = evaluation_key(key, eff_overrides, case_file_aa=case_file_aa, model_variant=model_variant,
                               ess_ageing_baseline=ess_ageing, flex_price_multiplier=flex_m,
                               derived_instance=derived, interface_deviation_premium=premium,
@@ -1922,6 +2060,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
             if interface_coupling_in_key(coupling) is not None:
                 cand_entry['interface_coupling_label'] = INTERFACE_COUPLING_LABEL
                 any_interface_coupling = True
+        if s56_pinned is not None:  # S56 step 4 preparation: only when given, so every other entry keeps its format
+            cand_entry[S56_CYCLE_CAPTURE_PINNED_KEY] = s56_pinned
         cand_entries.append(cand_entry)
     os.makedirs(campaign_root, exist_ok=True)  # only after every validation above has passed
     try:
@@ -6213,6 +6353,13 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         # S56 step 4 (item 2b): the per-cycle S56 capture's sources, asserted before any solve (rule eleven)
         holder['s56_cycle_capture_checklist'] = assert_s56_cycle_capture_path()
         progress['s56_cycle_capture_checklist'] = holder['s56_cycle_capture_checklist']
+    # S56 step 4 preparation: the pinned-arm capture, only for an option-off entry declaring the key True (refused on a
+    # coupled entry); its capture path is asserted here, before any solve (rule eleven). Absent / False: nothing.
+    s56_capture_arm = s56_cycle_capture_arm(coupling_on, validate_s56_cycle_capture_pinned(
+        entry.get(S56_CYCLE_CAPTURE_PINNED_KEY)))
+    if s56_capture_arm == S56_CAPTURE_ARM_PINNED:
+        holder['s56_cycle_capture_checklist'] = assert_s56_cycle_capture_path(arm=S56_CAPTURE_ARM_PINNED)
+        progress['s56_cycle_capture_checklist'] = holder['s56_cycle_capture_checklist']
     post_request = entry.get('post_certification')
     post_checklist = None
     if post_request:
@@ -6471,6 +6618,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                    if resettle is not None else nullcontext())
     # S56 step 4 (item 2b): the per-cycle S56 capture, only for entries declaring the coupling (else nothing installed)
     s56_cycle_cm = s56_cycle_capture_hooks(eval_dir, holder) if coupling_on else nullcontext()
+    if s56_capture_arm == S56_CAPTURE_ARM_PINNED:  # S56 step 4 preparation: option off with the key only
+        s56_cycle_cm = s56_cycle_capture_hooks(eval_dir, holder, arm=S56_CAPTURE_ARM_PINNED)
     with continuation_cm, \
          settling_cm, \
          extension_cm, \
@@ -6629,6 +6778,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             's56_cycle_capture_checklist_asserted_before_run': holder.get('s56_cycle_capture_checklist'),
             's56_cycle_capture_summary': holder.get(S56_CYCLE_CAPTURE_SUMMARY_KEY),
         })
+    # S56 step 4 preparation: empty unless the entry declares the key (so every other record keeps its format)
+    variant_extra.update(s56_cycle_capture_pinned_record_fields(entry, holder, s56_capture_arm))
     record = build_evaluation_record(
         spec=spec, spec_path=spec_path, spec_sha256=args.spec_sha256, entry=entry, report=report,
         component_levels=component_levels,
