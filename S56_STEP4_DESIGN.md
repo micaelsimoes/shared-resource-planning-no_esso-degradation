@@ -1,6 +1,12 @@
 # S56 validation step 4: design before build (2026-11-23)
 
-**Status: design.** Nothing is built. The Advisor reviewed it (2026-11-23), and the Planner decided the items below
+**Status: ruled (2026-11-23).** Expert: X4-2 (a), no configuration change, calibration and acceptance on
+tail-depth cycles only; X4-1 rule adopted, **V-1 is the formulation of record**, V-2 kept as a **measured, non-deciding
+arm**; P4 (D_b ≥ 0) is a **recorded prediction, not a stop** (D_b = pinned accounting optimism ≥ 0 plus DN
+re-optimization gain ≤ 0). Stop conditions rest on inequalities that must hold, with the local-solution caveat.
+The text below is the design as reviewed; where it conflicts with this paragraph, this paragraph governs.
+
+**Original status: design.** Nothing is built. The Advisor reviewed it (2026-11-23), and the Planner decided the items below
 inside the authorized step (S56_PLAN_v3.md §7, row 4; ≈ 10–20 h). Two items go to the Expert. The spec is frozen
 only after step 3 has reported and diagnostics D-1 to D-3 have run.
 
