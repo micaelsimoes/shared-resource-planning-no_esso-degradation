@@ -1,0 +1,428 @@
+{
+ "alpha": {
+  "how": "interface_deviation_premium not declared: admm_parameters default {'alpha': 0.0}; model_construction_helpers.add_scenario_commitment_terms builds row 18 only when premium_alpha > 0, so row18_charge_reactive is inert",
+  "value": 0.0
+ },
+ "arms": {
+  "V1": {
+   "aa": "forced off by production under the option",
+   "init_identity_group": "voltage_pin_not_constructed",
+   "options": {
+    "interface_coupling": {
+     "per_scenario_interface_coupling": true,
+     "per_scenario_voltage_mode": "per_scenario",
+     "row18_charge_reactive": false
+    }
+   }
+  },
+  "V2": {
+   "aa": "forced off by production under the option",
+   "init_identity_group": "voltage_pin_constructed",
+   "options": {
+    "interface_coupling": {
+     "per_scenario_interface_coupling": true,
+     "per_scenario_voltage_mode": "pin",
+     "row18_charge_reactive": false
+    }
+   }
+  },
+  "pinned_aa_off": {
+   "aa": "off via the harness AA override",
+   "init_identity_group": "voltage_pin_constructed",
+   "options": {
+    "overrides": {
+     "anderson_acceleration": {
+      "enabled": false
+     }
+    }
+   }
+  },
+  "pinned_aa_on": {
+   "aa": "case default (keep_memory, enabled)",
+   "init_identity_group": "voltage_pin_constructed",
+   "options": {}
+  }
+ },
+ "authority": [
+  "S56_PLAN_v3.md section 7 rows 3-4",
+  "S56_STEP4_DESIGN.md decision 9.2",
+  "TASKS.md S56 section, commit 9c88d89d (step 3 v3 + step 4 smoke active; main run held)",
+  "Planner task 2026-11-23, item 2 (step 4 smoke)"
+ ],
+ "candidate": {
+  "investment_year": 2025,
+  "label": "x0",
+  "map": {
+   "5": [
+    0.0,
+    0.0
+   ],
+   "7": [
+    0.0,
+    0.0
+   ],
+   "9": [
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "cap": 3,
+ "central": {
+  "2025|Summer": {
+   "C_central_eur_per_day": null,
+   "C_central_hex": null,
+   "source": "data/SRP1/Results/P515S56/step3_v3/run_v1/step3_v3_results.json central",
+   "status": "UNDEFINED: step 3 v3 single(s) ['12'] not Optimal"
+  },
+  "2025|Winter": {
+   "C_central_eur_per_day": 175188.67874987266,
+   "C_central_hex": "0x1.562a56e1469cap+17",
+   "source": "data/SRP1/Results/P515S56/step4_diag_v1/run_v1/step4_diag_results.json central.2025|Winter (run_v1 singles + S3-1 single 02)"
+  },
+  "2035|Summer": {
+   "C_central_eur_per_day": 153017.21416429273,
+   "C_central_hex": "0x1.2adc9b69bc4cap+17",
+   "source": "data/SRP1/Results/P515S56/step4_diag_v1/run_v1/step4_diag_results.json central.2035|Summer (step 3 run_v1 singles)"
+  }
+ },
+ "cites": {
+  "design": {
+   "item": "decision 9.2 (serial 3-cycle smoke per arm)",
+   "path": "S56_STEP4_DESIGN.md",
+   "sha256": "b62534beed3a3c05e0ed29e703f0324cacf013f7aa1da493dd8e1ebc8a2a812b"
+  },
+  "diag_central_interface": {
+   "path": "data/SRP1/Results/P515S56/step4_diag_v1/run_v1/central_interface_for_children.json",
+   "sha256": "f949a40a456fcc708c07ee33643b4304d6923ddce7cc3930f0bf5f17c7b6f0ad"
+  },
+  "diag_child_B_results": {
+   "path": "data/SRP1/Results/P515S56/step4_diag_v1/run_v1/child_B/child_results.json",
+   "sha256": "777688d3a48ca8e1cb1582d16e6d5063155ba4e7e6290b3608362fce179358ec"
+  },
+  "diag_launcher": {
+   "path": "p515_s56_step4_diag.py",
+   "reused_by_import_in_d3": [
+    "_init_round (trial=True: every optimize stubbed, zero solves)",
+    "d3_boxes",
+    "_voltage_rows_box",
+    "_box_intersect",
+    "_sqrt_or_none"
+   ],
+   "sha256": "ec56266b1aaae490667367458c0822bb6b7ea53d83c9099c420f7f9d8869e0cb"
+  },
+  "diag_results": {
+   "path": "data/SRP1/Results/P515S56/step4_diag_v1/run_v1/step4_diag_results.json",
+   "sha256": "d4e023beb6bebd8b0d1d9f408ca09f555d5fa1dbc4dcb0b2a34e07e75c947118"
+  },
+  "step3_v3_results": {
+   "path": "data/SRP1/Results/P515S56/step3_v3/run_v1/step3_v3_results.json",
+   "sha256": "7498f38b7dc2ca336d0218b058c88a35283329df23bcc0bec02819a292bf043f"
+  },
+  "step3_v3_spec": {
+   "path": "data/SRP1/Results/P515S56/step3_v3/frozen_step3_spec_v3_b8d07450.json",
+   "sha256": "b8d0745024d816a21fbda4e41112ae98dea94f678946730cd591c7971e1fea97"
+  }
+ },
+ "concurrency": 1,
+ "configuration": {
+  "arm_label": "s39_D",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "convergence_depth_tail": {
+   "compl_inf_tol": 1e-06,
+   "enabled": true
+  },
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "note": "S56 step 4 smoke: the G-f / step 4 build configuration (p515_s56_coupling_gates.py literals) on the derived instance; no row 18 declaration (production default alpha 0.0), no model variant, no flex variant, no NRF, no rho0 scale, no post-certification",
+  "overrides": {}
+ },
+ "coupling_gates_literals_source": {
+  "path": "p515_s56_coupling_gates.py",
+  "sha256": "b46faf10bd2ffa0072061d6c19829bbcd08083c7b9ada9bb3fb38dc7ea61b3fb"
+ },
+ "d3_2025_summer": {
+  "bound_tol_disclosure": "the same 1e-8 x max(1, |bound|) tolerance as D-3 in ff466289 (IPOPT's default bound_relax_factor); it was chosen after a zero-solve draft trial had shown strict margins of -1.9e-10 pu (V at 1.1 pu); the Planner ruled it acceptable (TASKS.md, 9c88d89d)",
+  "bound_tol_rel": 1e-08,
+  "central_values": "2025|Summer has no complete central point (step 3 v3 single 12 not Optimal). PRIMARY: the 8 Optimal singles (v2 S3-2 00, 01, 02, 10, 11, 20, 21; v3 22), reported as INCOMPLETE (8 of 9 scenarios). SUPPLEMENTARY, labelled: the v2 S3-2 merged-default per-scenario interface values (all 9 scenarios; the merged solution, not the central singles)",
+  "method": "zero solves. (1) The ADMM-prepared models of instance B under V-1 are rebuilt with the diagnostics launcher's initialisation round in its trial form (every optimize stubbed, sigma replaced by sigma_fixed; stopped at _build_pristine_snapshot_bases): the static boxes (TSO interface_delta +- rating, TSO ADN-bus V bounds and the fixed voltage slacks, DSO reference-generator pg / qg bounds, DSO reference-node V bounds) are build-time and do not depend on the solution. (2) The only solution-dependent quantity, the TSO ADN-load pc / qc (fixed once, at TSO model creation, at the DSO initial expectation; never changed in the distributed path), is set from the V1 instance-B smoke run's own value: its interface_settlement_detail_s31c.json interface_reporting_detail anchor_p_mw / anchor_q_mvar (production `_get_interface_reporting_detail`: pc x s_base, read on the terminal models) divided by s_base. (3) The diagnostics launcher's d3_boxes (by import) on complete inputs; a copy of it with a scenario filter for the 8 available singles",
+  "method_gate": "recorded, not a prediction: the same construction applied to 2035|Summer with the diag run_v1 central interface values reproduces run_v1 child B's D-3 2035|Summer result (n_values, n_outside, n_outside_strict, every family min_margin) -- equality expected when the smoke's initialisation equals the diag run's; and the filtered copy equals d3_boxes on complete inputs"
+ },
+ "failure_policy": "Failure of any prediction is recorded, never re-run or tuned. A harness fault (exception, guard mismatch, child exit != 0) is recorded and the order stops for the Planner; an initialisation-identity mismatch raised by the harness is such a stop (it is the S-P3 check). The step 4 main run, any cap above 3, concurrent or detached runs and undeclared solves are not permitted.",
+ "harness": {
+  "path": "p515_s44_campaign_harness.py",
+  "sha256": "16031daa1e623f1442d5c32723908bddcde1f113afa130e1f9c20ea2a22a8ae9"
+ },
+ "instances": {
+  "A": {
+   "blocks": [
+    "2025|Winter"
+   ],
+   "derived_instance": {
+    "case_path": "data/SRP1/Results/P515S56/step4_instances_v1/SRP1__s56_step4_2025_Winter.json",
+    "case_sha256": "92e6283bdb1dafcb328ec951095ebf2173d314754e7f946c0c2210694ca7537e",
+    "changes_vs_source": [
+     {
+      "from": {
+       "2025": 5,
+       "2030": 5,
+       "2035": 5
+      },
+      "key": "Years",
+      "to": {
+       "2025": 5
+      }
+     },
+     {
+      "from": {
+       "Autumn": 91,
+       "Spring": 92,
+       "Summer": 91,
+       "Winter": 91
+      },
+      "key": "Days",
+      "to": {
+       "Winter": 91
+      }
+     }
+    ],
+    "instance_label": "s56_step4_2025_Winter",
+    "scenario_checksum": "58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e",
+    "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+    "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+   },
+   "n_days": 1,
+   "n_years": 1,
+   "record": {
+    "path": "data/SRP1/Results/P515S56/step4_instances_v1/step4_instances.json",
+    "sha256": "2d95b73d30b4572abb0459efa0b817866142473038c0d50db20c2dd16d95d425"
+   },
+   "w_b_own": {
+    "2025|Winter": 455.0
+   }
+  },
+  "B": {
+   "blocks": [
+    "2025|Summer",
+    "2035|Summer"
+   ],
+   "derived_instance": {
+    "case_path": "data/SRP1/Results/P515S56/step4_instances_v2/SRP1__s56_step4_2025_2035_Summer.json",
+    "case_sha256": "b1cd5440e70fb8cde8694b12f9e897037dcb072c4551fe97753e3785a1b6a00c",
+    "changes_vs_source": [
+     {
+      "from": {
+       "2025": 5,
+       "2030": 5,
+       "2035": 5
+      },
+      "key": "Years",
+      "to": {
+       "2025": 5,
+       "2035": 5
+      }
+     },
+     {
+      "from": {
+       "Autumn": 91,
+       "Spring": 92,
+       "Summer": 91,
+       "Winter": 91
+      },
+      "key": "Days",
+      "to": {
+       "Summer": 91
+      }
+     }
+    ],
+    "instance_label": "s56_step4_2025_2035_Summer",
+    "scenario_checksum": "ade7456c3d110e4cbc9aec7f701feb431854bd03ec1dc8f37601fc164721ed1a",
+    "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+    "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+   },
+   "n_days": 1,
+   "n_years": 2,
+   "record": {
+    "path": "data/SRP1/Results/P515S56/step4_instances_v2/step4_instance_b.json",
+    "sha256": "94e3c5ab6489c611207782ae40f4efe38f8f3383f87512c0db47bf4768b6a70d"
+   },
+   "w_b_own": {
+    "2025|Summer": 455.0,
+    "2035|Summer": 373.2584764431956
+   }
+  }
+ },
+ "kind": "addendum",
+ "launcher": "p515_s56_step4_smoke.py",
+ "not_permitted": [
+  "production edits",
+  "the step 4 main run",
+  "any cycle cap above 3",
+  "any undeclared solve",
+  "concurrent runs",
+  "detached runs",
+  "overwriting committed artifacts"
+ ],
+ "objective_convention": "Q in EUR of total discounted cost. Coupled arms: primary gross_operational_cost = settlement excluded in full (pin excluded, salvage separate), contracted-excluded beside it. Pinned arms: gross_operational_cost = contracted settlement and pin excluded. C_central: step 3 gross EUR/day (settlement weight 0, no salvage); Q_block - w_b C_central in EUR of total discounted cost",
+ "order": [
+  {
+   "arm": "V1",
+   "campaign_id": "s56s4smoke_A_V1",
+   "campaign_root": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1",
+   "init_identity_seeded_from": [],
+   "instance": "A",
+   "run": 1
+  },
+  {
+   "arm": "V2",
+   "campaign_id": "s56s4smoke_A_V2",
+   "campaign_root": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V2",
+   "init_identity_seeded_from": [
+    "s56s4smoke_A_V1"
+   ],
+   "instance": "A",
+   "run": 2
+  },
+  {
+   "arm": "pinned_aa_off",
+   "campaign_id": "s56s4smoke_A_pinned_aa_off",
+   "campaign_root": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_pinned_aa_off",
+   "init_identity_seeded_from": [
+    "s56s4smoke_A_V1",
+    "s56s4smoke_A_V2"
+   ],
+   "instance": "A",
+   "run": 3
+  },
+  {
+   "arm": "pinned_aa_on",
+   "campaign_id": "s56s4smoke_A_pinned_aa_on",
+   "campaign_root": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_pinned_aa_on",
+   "init_identity_seeded_from": [
+    "s56s4smoke_A_V1",
+    "s56s4smoke_A_V2",
+    "s56s4smoke_A_pinned_aa_off"
+   ],
+   "instance": "A",
+   "run": 4
+  },
+  {
+   "arm": "V1",
+   "campaign_id": "s56s4smoke_B_V1",
+   "campaign_root": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_B_V1",
+   "init_identity_seeded_from": [],
+   "instance": "B",
+   "run": 5
+  },
+  {
+   "arm": "V2",
+   "campaign_id": "s56s4smoke_B_V2",
+   "campaign_root": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_B_V2",
+   "init_identity_seeded_from": [
+    "s56s4smoke_B_V1"
+   ],
+   "instance": "B",
+   "run": 6
+  },
+  {
+   "arm": "pinned_aa_off",
+   "campaign_id": "s56s4smoke_B_pinned_aa_off",
+   "campaign_root": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_B_pinned_aa_off",
+   "init_identity_seeded_from": [
+    "s56s4smoke_B_V1",
+    "s56s4smoke_B_V2"
+   ],
+   "instance": "B",
+   "run": 7
+  },
+  {
+   "arm": "pinned_aa_on",
+   "campaign_id": "s56s4smoke_B_pinned_aa_on",
+   "campaign_root": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_B_pinned_aa_on",
+   "init_identity_seeded_from": [
+    "s56s4smoke_B_V1",
+    "s56s4smoke_B_V2",
+    "s56s4smoke_B_pinned_aa_off"
+   ],
+   "instance": "B",
+   "run": 8
+  }
+ ],
+ "outputs": {
+  "d3": "d3_2025_Summer_<utc>.json",
+  "evaluation": "smoke_evaluation_<utc>.json",
+  "manifest": "step4_smoke_v1_manifest_sha256.json (sha256 of every file under the smoke dir)",
+  "runs": "campaign_s56s4smoke_<inst>_<arm>/ (harness artifacts) + logs/run_<k>_<inst>_<arm>_{stdout,stderr}.log + run_<k>_<inst>_<arm>_launcher.json"
+ },
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S56/step4_diag_v1/frozen_step4_diag_spec_v2_ff466289.json",
+  "relation": "the step 3 v2 + step 4 diagnostics spec; this addendum adds the smoke runs and D-3 for 2025|Summer; nothing in it is edited",
+  "sha256": "ff4662895b10382d92b710b7862f1684e71eb8f9cb7370d29c3056c4e8defed4"
+ },
+ "predictions": {
+  "S-P1": "every run exits 0 with 3 cycles; the solve-count identity holds.",
+  "S-P2": "F1 arms, every cycle: production `priced_residual_pr` price part + `interface_settlement_total` = 0 (rel 1e-9); `gross_operational_cost_contracted_excluded` - `gross_operational_cost` = interface settlement deviation total (rel 1e-9); Sigma_s omega_s mu_s = 0 per coordinate (abs 1e-9 x max|mu|); V-1 voltage pin total == 0.",
+  "S-P3": "initialisation, per instance: pinned AA-off == pinned AA-on == V-2, bitwise (the harness grouping check passes); V-1 is in its own group and differs.",
+  "S-P4": "on real cycles, in the coupled arms: `assert_s56_cycle_capture_path` holds; per-block Q from the capture sums to production's per-cycle `gross_operational_cost` within rel 1e-12.",
+  "S-P5": "peak RSS <= 6 GiB per run. Record s/cycle per run; the Advisor's inference was 45-75 s for two blocks. Recording only."
+ },
+ "predictions_operational": {
+  "S-P1": "per run: harness exit code 0 (parent_view.exit_code and exit_code.txt), record cycles_run == 3, per_cycle_record.jsonl has 3 lines; solve_profile.identity_holds is True, solve_profile.base_solves == the declared base (A 28, B 44), blocked_solve == blocked_exec == 0; the launcher parent guard verify(0)",
+  "S-P2": "coupled arms (V1, V2), every cycle c = 1..3, all with rel = |a - b| / max(|a|, |b|, 1):\n(i) T_c = sum over every agent block (TSO and each DSO) of w x settlement_total_unweighted from the S56 capture (production `_get_local_interface_settlement(part='total')` x `_get_admm_block_weight` -- the terms production's `_get_operational_interface_settlement_blocks` sums); rel(priced_residual_price_part_c, -T_c) <= 1e-9. At c = 3 also against the record's production `recourse_components.interface_settlement_total`.\n(ii) D_c = sum over agent blocks of w x (settlement_total_unweighted - settlement_contracted_unweighted) (S56 capture); rel(gross_operational_cost_contracted_excluded_c - gross_operational_cost_c, D_c) <= 1e-9 (per_cycle_record fields). The production deviation part (`part='deviation'`) is not recorded per cycle for the TSO: the decomposition total - contracted == deviation is checked per cycle on the DSO blocks (rel(sum_DSO w(total - contracted), per_cycle_response covariance_dso_weighted) <= 1e-9) and at c = 3 on every block (rel(D_3, record interface_settlement_deviation_total) <= 1e-9 and rel(LHS_3, the same) <= 1e-9).\n(iii) every deviation-dual coordinate (agent, kind, DN block, period) of interface_duals_per_cycle.jsonl (`lambda_dev_<kind>_<agent>`, scenario order = header deviation_channel.scenarios): |sum_s omega_s mu_s| <= 1e-9 x max|mu| (max over that cycle, agent and kind); omega_s = prob_market[s_m] x prob_operation[s_o] of the block (multiscenario_terminal per_scenario_costs probability of the TSO block).\n(iv) V1 only: the record's terminal recourse_components.voltage_pin_total == 0.0 and voltage_pin_tso == 0.0 and every voltage_pin_dso value == 0.0 (production `_get_local_voltage_pin` returns 0.0 when `scenario_voltage_pin` is absent, which it is under 'per_scenario'); production records no per-cycle pin total, so cycles 1-2 are covered by the structural reading, not by a recorded value",
+  "S-P3": "per instance: the evaluation record initialisation_identity of pinned_aa_off has n_compared >= 1, every compared label == V2 (and pinned_aa_on: V2 and pinned_aa_off), all_equal True, no mismatch; V2 n_compared == 0 with V1 listed under other_candidates_not_compared; V1 group == 'voltage_pin_not_constructed', the others 'voltage_pin_constructed' (pinned records carry no group: option off -> the harness default group); and V1 gross_operational_cost_hex != V2's",
+  "S-P4": "coupled arms: record s56_cycle_capture_checklist_asserted_before_run all True; s56_cycle_capture_summary ok with 3 cycle lines; per cycle: rel(sum over (year, day) of q_blocks.per_year_day[*].settlement_excluded_in_full, per_cycle_record gross_operational_cost) <= 1e-12",
+  "S-P5": "per run: record peak_rss.child_python_process_ru_maxrss <= 6 GiB (6 x 2^30 bytes); the IPOPT subprocess maximum (solver_subprocesses_max_ru_maxrss) is reported beside it. s/cycle = per_cycle_response cycle_wall_s per cycle, recorded only"
+ },
+ "recorded_only": "per cycle and per block, Q_block - w_b x C_central in EUR of total discounted cost, for every block with a C_central; w_b = the instance's own block weight. Q_block: coupled arms -- the S56 capture q_blocks.per_year_day (settlement_excluded_in_full, contracted_excluded beside it) every cycle; pinned arms -- instance A (one block): the per-cycle gross_operational_cost (contracted-excluded, option off); instance B: per block at the terminal cycle only (multiscenario_terminal block_recourse_production_local summed over the block's agents) -- option-off runs carry no per-block per-cycle capture",
+ "required_consecutive_cycles": 10,
+ "sigma_fixed_expected": 93635360.0,
+ "solves": {
+  "d3": 0,
+  "declared_base_per_run": {
+   "A": 28,
+   "B": 44
+  },
+  "derivation": "p515_g_g1_g4_admm_gates.run_admm_arm solve_profile: base = ((1 + n_dso) x n_years x n_days + n_esso_nodes) x (cycles_run + 1); n_dso 3, n_esso 3 (nodes 5, 7, 9); A: 1 year x 1 day -> 7 per round; B: 2 years x 1 day -> 11 per round; cap 3 -> 4 rounds; plus every recovery retry actually attempted (production recovery unchanged in these runs), credited per failure event by the identity",
+  "evaluate": 0,
+  "launcher_parent": 0,
+  "per_instance": {
+   "A": {
+    "base_per_run": 28,
+    "per_round": 7,
+    "rounds": 4
+   },
+   "B": {
+    "base_per_run": 44,
+    "per_round": 11,
+    "rounds": 4
+   },
+   "total_base_8_runs": 288
+  }
+ },
+ "stage": "P5.15 S56 step 4 smoke: serial 3-cycle smoke per arm (V-1, V-2, pinned AA off, pinned AA on) on instance A (2025|Winter) and instance B ({2025, 2035} x Summer); D-3 for 2025|Summer (frozen addendum spec v1)",
+ "sum_12_w": 4975.0943752117555,
+ "thresholds": {
+  "S-P2_gauge_abs_factor": 1e-09,
+  "S-P2_rel": 1e-09,
+  "S-P4_rel": 1e-12,
+  "S-P5_rss_bytes": 6442450944.0
+ },
+ "version": 1
+}
