@@ -101,7 +101,7 @@ Author's six points: (1) option (a) per-scenario coupling, P/Q/V consistent per 
 
 ### Critical path
 - [ ] **1. Harness:** cohort rows on all node-years (`independent_units_all_node_years`), TV in the objective, 2× multiplier, EV injection hook, staged (multi-year) candidates, cache keys, cost breakdown (incl. 2× reactive flex contribution, leak detector, `priced_residual_pr` label); zero-solve gates — **active**
-- [ ] **2. Opportunistic search driver** (neighbourhood module, cap 80, same-sign diagonals; O1–O15) + zero-solve determinism gate — Advisor design review **active** (parallel with 1)
+- [ ] **2. Opportunistic search driver** (neighbourhood module, cap 80, same-sign diagonals; O1–O15) + zero-solve determinism gate — Advisor review done → `S56_SEARCH_DRIVER_DESIGN.md` (three modules, fixed blocks of 5, hash-chained resumable launches, one block per attached launch). **Planner decisions logged:** interim exit error e = max(15 k€, bar sum); worse dF_exit ≥ R + e, confirm-candidate dF_exit ≤ −R + e, else unresolved; confirmations count 1 against N_max; A7 barrier stop dropped; re-classification at zero solves once step 5 measures e. **Harness requirement:** stop-disabled option keyed and allowed on EV entries; staged key = `GeneralLattice.key` — driver Worker (new files only until the harness Worker commits) **active**
 - [ ] **3. Memory probe:** build + 2 cycles of the corrected five-block SP instance with a staged plan; ≤ 20.7 GiB → five-block, else 2025/2030/2035 (**author confirms in one line**)
 - [ ] **4. EV pilot at 2×:** x0, reference unit, one staged plan, + x0/unit from two more initialisations (resolution spread); measured hours per evaluation → **report (i)**
 - [ ] **5. EV screen → EV search 2× → 1×** → **report (ii)**

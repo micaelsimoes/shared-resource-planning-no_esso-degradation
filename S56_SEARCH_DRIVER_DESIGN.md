@@ -1,0 +1,144 @@
+# S56 EV search driver: design (Advisor review 2026-11-23; Planner decisions logged)
+
+Authority: `TASKS.md`, sections "Working mode and EV priority" and "Search policy review (O1–O15)", and
+`S56_PLAN_v4_1.md` §3, §4 and §7. This note fixes how the driver is built. It changes no acceptance rule and no
+formulation.
+
+## Modules
+
+**Reused by import:**
+- `p516_lattice.py` (lattice, `GeneralLattice.key`, I(x)), 201–474.
+- `p515_s56_neighbourhood.py` (`s56_neighbourhood`, N(x)), 161–227.
+- `p515_s44_campaign_harness.py`: `evaluate`, campaign lock, write-once eval dirs, heartbeat tags and stub children
+  (≈ 2853–2998, 2562–2612, 503–507, 2843–2850, 3343–3348).
+- The resumable-launch pattern of `p515_s55_e1_launcher.py`: `search_launch`, `verify_own_records`, the memory
+  preflight.
+
+**Not reused:**
+- E1's Halton poll and best-of-poll acceptance;
+- `PB.classify` / `PB.resolution` (the σ_Q form);
+- `resolution_by_bound`.
+
+**New:**
+1. `p515_s56_search_policy.py`: pure and stdlib-only.
+   - `order(lattice, z_inc, last_move, class_rank)`: O1–O15 order. The sort keys are strictly total; cosines are
+     compared in exact integer arithmetic; the case with no last move has a defined rule.
+   - `classify_exit(...)`, `confirm(...)`, `step(state, records) -> (state, action)`, `terminal_report(state)`.
+   - Every decision lives here.
+2. `p515_s56_search_driver.py`: freeze, dry run, `--run` (one launch = one block), resume.
+3. `p515_s56_search_gate.py`: the zero-solve determinism gate (below).
+
+## Execution
+
+- **Fixed blocks of 5.** The driver takes the next 5 uncached candidates in order, calls `evaluate` once, waits for
+  all 5, and classifies them in order. The incumbent path equals the serial path. No rolling refill.
+- **Budget.** Every completed evaluation counts 1 against N_max. This includes candidates ordered after an accepted
+  one; they are tagged `speculative_post_acceptance` and are cache hits, counting 0, later.
+  - **Planner decision:** settled confirmations also count 1 each.
+  - An evaluation killed by an interruption does not count; its hours are logged.
+  - The budget is checked before each block.
+- **State.** The truth is an append-only, hash-chained set of launch records and manifests.
+  - `search_state.json` is a derived view. On resume it is rebuilt by replaying through `step()` and must match.
+  - Launch records are committed at review points; the hash chain covers the rest.
+- **Resume after a kill.**
+  - An `interrupted_<n>.json` record is written, and the orphan eval dirs are renamed aside. Nothing is deleted.
+  - An explicit stale-lock takeover is allowed only when the pid is dead and the lock names this campaign. The old
+    lock is moved aside.
+- **Never detached.** Each launch is one block, under 4 h, attached, with both streams captured.
+  - It exits with code 4 when more work remains.
+  - For unattended progress the author runs a foreground re-issue loop in his own terminal under `caffeinate -i`.
+- **One search at a time per checkout.** Gate F (5 concurrent children, bitwise) is re-run on the final harness before
+  the driver relies on it.
+- **Exit classes** (they partition |N| exactly):
+  - confirm-candidate, worse or unresolved;
+  - uncertified: `status != 'certified'`. It is never accepted and never "worse"; it is listed;
+  - harness_error: stops the search.
+- **Cap 80** is owned by the driver. It ignores `COMPLETION_CAP = 60` and `over_cap` in `p516_lattice`.
+  Diagonal moves are same-sign only.
+
+## Classification and confirmation
+
+- **Interim exit error (Planner decision, logged).** e = max(15,000 €, bar_x + bar_inc), with the bars from
+  `evaluation_record.bar`. Exit values are compared with exit values only; a mixed-depth comparison is refused.
+  - worse: dF_exit ≥ R + e;
+  - confirm-candidate: dF_exit ≤ −R + e;
+  - otherwise unresolved.
+
+  R = 10,000 €. Basis: single-scenario SRP1 production-exit bars, 3.6–59.9 k€ (median 9.7 k€), and an x0
+  exit-to-settled offset of 14,970.62 € (`P5_15_W187_REPORT.md`). The EV arm earns no credit for being
+  single-scenario.
+- **Confirmation trigger (Planner decision, logged).** Candidates in confirm-candidate class are confirmed in order,
+  and the first accepted one becomes the incumbent. Acceptance itself stays plan v4.1 §3: F_set(inc) − F_set(x′) ≥ R,
+  V_pair ≤ R/4, and the guards and gates pass. Otherwise the candidate is "unresolved after confirmation".
+- **Settled run.** The tail is on and the certification stop is disabled, to a pre-declared cap K_EV. There is no cap
+  extension inside a search.
+  - **Harness requirement:** the stop-disabled option must enter the eval key and must be allowed on single-scenario
+    EV entries. Today `s56_certification_stop_disabled` does neither. Without that, exit and settled records of one
+    candidate would alias.
+- **Re-classification.** Classification is a pure function of stored values. When step 5 measures e, the whole history
+  is re-classified at zero solves, and candidates the measured e would have confirmed are confirmed then.
+- **A7 barrier stop:** dropped (Planner). It is not in plan v4.1.
+- **Expert items:** none, unless V_pair ≤ R/4 proves unreachable for EV, or acceptance on exit values is proposed.
+
+## Pilot protocol (critical-path step 4)
+
+**Runs.** Seven evaluations at 2×, all stop-disabled to K_pilot:
+- x0 and the reference unit, each from three initialisations;
+- one staged plan.
+
+The exit value is read at the would-be certification cycle, so each run yields both its exit and its settled value.
+
+**Frozen before the run:**
+- e_EV = max(2 × the largest pair offset |dF_exit − dF_set|, the dF_exit spread, the bar sum);
+- K_EV;
+- the measured t_exit, t_set and ψ.
+
+**Reported:**
+- single offsets and their sign;
+- pair offsets over the 3 × 3 initialisation combinations, and for the staged plan against both;
+- the dF_set spread beside V_pair;
+- the bars.
+
+**In the search,** every confirmation is a held-out check: an offset above the e in force stops the search for review.
+
+## Determinism gate (zero solves; guard armed)
+
+1. N(x) equals `s56_neighbourhood` on the named points (|N| 18 / 22 / 13), with max ≤ 80 over all 37,042 plans.
+2. The order is byte-identical across fresh processes, with different `PYTHONHASHSEED` values and shuffled input.
+3. The order is unchanged when every cached value is perturbed, and identical at 1× and 2×.
+4. A synthetic-oracle replay through stub children gives an identical incumbent history, evaluated set and budget
+   count, serial and 5-way, with randomised delays.
+5. A kill at every transition, followed by a resume, gives a history byte-equal to the uninterrupted run, with killed
+   evaluations uncounted.
+6. Keys:
+   - 37,042 distinct keys per configuration;
+   - keys pairwise distinct across {1×, 2×} × {exit, settled} × {EV, draw-0} × cohort formulation × TV;
+   - the staged key equals `GeneralLattice.key(z)`;
+   - the collision scan excludes the campaign's own root.
+7. Classification boundaries: dF = R + e exactly, a missing bar, uncertified. Mixed-depth input is refused.
+8. Terminal arithmetic, and budget exhaustion mid-poll.
+9. Published histories are replayed where the old cache covers N(x), with coverage reported.
+
+## Count and time
+
+For each accepted move j = 1..M:
+- n_j = |N_j| − cache hits;
+- p_j = the position of the first confirmed improver;
+- B = 5;
+- E_j = min(n_j, B·⌈p_j/B⌉);
+- the final poll has E_f = n_f.
+
+The evaluation counts are:
+- N_search = S_0 + Σ_j (E_j + c_j) + E_f + c_f, where c counts confirmations;
+- N_screen = |nodes|·|years|·2 + L + Σ_cand (1 + n_cand).
+
+The wall time is T ≈ κ·[ψ·t_exit·Σ blocks + t_set·(confirmation batches)], with κ = 1.18 measured by gate F.
+
+## Top three false-result risks and their checks
+
+1. **Key aliasing** (exit/settled, 1×/2×, EV/draw-0, old/staged schema). Checks: gate item 6; every served key is
+   recomputed in the loop; the child reads the configuration back.
+2. **Mixed depth, or the wrong incumbent.** Checks: depth tags are enforced in `classify_exit`; a zero-solve verifier
+   re-derives every decision from the records.
+3. **Failures read as "worse" or dropped from |N|** (the D0 precedent). Checks: an exact class partition, a strict
+   `status == 'certified'` test, and a stop on harness_error.
