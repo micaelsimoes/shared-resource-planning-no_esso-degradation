@@ -1306,6 +1306,18 @@ def _get_operational_recourse_components(planning_problem, models):
                               - interface_settlement_contracted_total
                               - voltage_pin_total)
     terminal_salvage_value = planning_problem.shared_ess_data.get_salvage_value(models['esso'])
+    # P5.15 S56 step 1 completion -- author decision 6 (TASKS.md, author decisions 2026-11-21, item 6): with the
+    # per-scenario TN-DN coupling WIRED (option on and more than one scenario) the COMPLETE internal TN-DN settlement is
+    # excluded from the system cost -- the Addendum 38 (C) treatment of its deviation (covariance) part as economic
+    # cost is withdrawn in this mode. The primary `gross_operational_cost` -- hence `net_operational_recourse`, the
+    # stopping-test input, the per-cycle and terminal records built from them -- is then the settlement-excluded-in-full
+    # form, and today's form (contracted part and pin excluded) is reported beside it under explicit names
+    # (`_settlement_excluded_in_full_convention`). Not wired (option off, or one scenario): empty, nothing changes.
+    q_convention = _settlement_excluded_in_full_convention(models, gross_operational_cost_including_settlement,
+                                                          interface_settlement_total, voltage_pin_total,
+                                                          gross_operational_cost, terminal_salvage_value)
+    if q_convention:
+        gross_operational_cost = q_convention['gross_operational_cost_settlement_excluded_in_full']
     net_operational_recourse = gross_operational_cost - terminal_salvage_value
 
     # P5.15 Step 3 (Part 1 item 6, signed table `P5_15_S31_PENALTY_TABLE_DRAFT.md`):
@@ -1345,10 +1357,9 @@ def _get_operational_recourse_components(planning_problem, models):
         'detector_components': detector_totals,
         'economic_recourse_all_D_excluded': net_operational_recourse - detector_penalty_total,
         'economic_recourse_voltage_excluded': net_operational_recourse - voltage_slack_total,
-        # P5.15 S56 step 1: with the per-scenario coupling wired, Q with the settlement excluded IN FULL (X2 pending)
-        # beside today's `gross_operational_cost`; nothing is added otherwise.
-        **_settlement_excluded_in_full_convention(models, gross_operational_cost_including_settlement,
-                                                  interface_settlement_total, voltage_pin_total),
+        # P5.15 S56 step 1 completion (author decision 6): with the per-scenario coupling wired, the primary
+        # convention's own fields and today's form beside them (see above); nothing is added otherwise.
+        **q_convention,
     }
 
 
@@ -1373,6 +1384,10 @@ def _get_operational_recourse_block_components(planning_problem, models):
     """
 
     blocks = dict()
+    # P5.15 S56 step 1 completion (author decision 6): with the per-scenario coupling wired,
+    # `_get_operational_recourse_components` excludes the WHOLE settlement, so each block subtracts part 'total'
+    # (otherwise 'contracted', as before) and the decomposition keeps reconciling with `net_operational_recourse`.
+    settlement_part = 'total' if _per_scenario_interface_coupling_wired(models) else 'contracted'
 
     # --------------------------------------------------------------------------------------------------------------
     # TSO blocks
@@ -1386,7 +1401,7 @@ def _get_operational_recourse_block_components(planning_problem, models):
             # `_get_operational_recourse_components` excludes -- the CONTRACTED settlement
             # (the transfer) and the solver-only voltage pin -- so this decomposition
             # keeps reconciling with `net_operational_recourse`.
-            local_value -= _get_local_interface_settlement(model, part='contracted')
+            local_value -= _get_local_interface_settlement(model, part=settlement_part)
             local_value -= _get_local_voltage_pin(model)
             weight = _get_admm_block_weight(transmission_network, year, day)
             blocks[('TSO', None, year, day)] = float(weight * local_value)
@@ -1399,7 +1414,7 @@ def _get_operational_recourse_block_components(planning_problem, models):
                 model = models['dso'][node_id][year][day]
                 local_value = distribution_network.network[year][day].get_primal_value(model, distribution_network.params)
                 # P5.15 Addendum 38 (C)/(D): see the TSO branch above.
-                local_value -= _get_local_interface_settlement(model, part='contracted')
+                local_value -= _get_local_interface_settlement(model, part=settlement_part)
                 local_value -= _get_local_voltage_pin(model)
                 weight = _get_admm_block_weight(distribution_network, year, day)
                 blocks[('DSO', node_id, year, day)] = float(weight * local_value)
@@ -4278,7 +4293,7 @@ def _interface_no_reverse_flow_dso_rule(m, s_m, s_o, p):
 # ======================================================================================================================
 #  P5.15 S56 step 1 -- PER-SCENARIO TN-DN INTERFACE COUPLING (F1), DEFAULT OFF
 # ======================================================================================================================
-# Authority: S56_PLAN_v2.md (validation step 1; Expert items X1-X3, pending); S56_SCENARIO_COUPLING_PROPOSAL.md (F1 and
+# Authority: S56_PLAN_v2.md (validation step 1; Expert items X1-X3); S56_SCENARIO_COUPLING_PROPOSAL.md (F1 and
 # its change list); gate spec data/SRP1/Results/P515S56/coupling_option_v1/frozen_coupling_gates_spec_v1_10c98258.json.
 #
 # THE OPTION (`ADMMParameters`, read with getattr(params, name, default)): `per_scenario_interface_coupling` (False),
@@ -4300,9 +4315,12 @@ def _interface_no_reverse_flow_dso_rule(m, s_m, s_o, p):
 #   Boyd PF (and V under 'per_scenario') residuals on the omega-weighted norm r^2 = rbar^2 + sum_s omega_s (r^d_s)^2,
 #        both parts recorded; the entry counts are unchanged (the omega_s of one coordinate sum to 1).
 #   Per cycle (`admm_diagnostics`, only when active): the scenario-wise mismatch dP_s = P^T_s - P^D_s (and dQ, dV) max
-#        and omega-RMS per DN, the signed priced residual PR, and Q under BOTH conventions (today's
-#        `gross_operational_cost` = gross - contracted - pin, and 'settlement excluded in full' = gross - settlement
-#        total - pin, X2 pending). Today's reported gross is not changed.
+#        and omega-RMS per DN, the signed priced residual PR, and Q under BOTH conventions with their net figures.
+#   Q (X2 ruled -- author decision 6, 2026-11-21): while active, the PRIMARY `gross_operational_cost` (and so
+#        `net_operational_recourse`, the stopping-test input, and every record built from them) is the 'settlement
+#        excluded in full' form = gross - settlement total - pin; today's form (gross - contracted - pin) is reported
+#        beside it as `gross_operational_cost_contracted_excluded` (`_settlement_excluded_in_full_convention`).
+#        Option off or one scenario: Q is unchanged.
 #
 # INITIALISATION IS UNCHANGED. The TSO model is built and solved at initialisation exactly as today: every interface
 # expression and node-balance row references the alias copy and the other copies stay fixed at 0 -- freed there they
@@ -4827,23 +4845,45 @@ def _interface_coupling_cycle_record(planning_problem, tso_model, dso_models, du
     except Exception as error:  # noqa: BLE001 -- a reporting capture; recorded, never raised
         record.update({name: None for name in mismatch_fields})
         record['interface_coupling_capture_error'] = f'{type(error).__name__}: {error}'
-    record['gross_operational_cost_settlement_excluded_in_full'] = (
-        (recourse_components or {}).get('gross_operational_cost_settlement_excluded_in_full'))
+    # Q (author decision 6): the primary settlement-excluded-in-full form (= this cycle's `gross_operational_cost`) and
+    # its net, and today's form beside them; None after a failed local solve (no recourse computed).
+    for name in ('gross_operational_cost_settlement_excluded_in_full',
+                 'net_operational_recourse_settlement_excluded_in_full',
+                 'gross_operational_cost_contracted_excluded', 'net_operational_recourse_contracted_excluded'):
+        record[name] = (recourse_components or {}).get(name)
     return record
 
 
-def _settlement_excluded_in_full_convention(models, gross_including_settlement, settlement_total, voltage_pin_total):
-    """S56 step 1 (X2 pending): with the per-scenario coupling wired, Q under the proposed convention -- the interface
-    settlement excluded IN FULL (and the pin) -- beside today's `gross_operational_cost` (contracted part and pin
-    excluded), which is left unchanged. Empty (no key added) when the option is not wired."""
-    wired = any(getattr(block, PER_SCENARIO_INTERFACE_COUPLING_MARKER, False)
-                for days in models['tso'].values() for block in days.values())
-    if not wired:
+def _per_scenario_interface_coupling_wired(models):
+    """S56 step 1: True when the operational models carry the per-scenario coupling (a TSO block marked by
+    `_wire_per_scenario_interface_coupling`, which marks every block at ADMM preparation); False otherwise -- option
+    off, one scenario, or models not yet prepared (the initialisation solve)."""
+    return any(getattr(block, PER_SCENARIO_INTERFACE_COUPLING_MARKER, False)
+               for days in models['tso'].values() for block in days.values())
+
+
+def _settlement_excluded_in_full_convention(models, gross_including_settlement, settlement_total, voltage_pin_total,
+                                            gross_contracted_excluded, terminal_salvage_value):
+    """S56 step 1 completion -- author decision 6 (2026-11-21, "system-cost convention confirmed for the per-scenario
+    formulation": the complete internal TN-DN settlement excluded from aggregate cost; Addendum 38 (C)'s
+    deviation-as-economic-cost treatment withdrawn in this mode). With the per-scenario coupling wired, Q is the
+    settlement-excluded-in-full form and is the PRIMARY `gross_operational_cost` (`_get_operational_recourse_components`
+    reads it from here); today's form (contracted part and pin excluded) and both net figures (minus the terminal
+    salvage credit) are returned beside it under explicit names. Empty (no key added, nothing changes) when the
+    option is not wired."""
+    if not _per_scenario_interface_coupling_wired(models):
         return {}
-    return {'gross_operational_cost_settlement_excluded_in_full': (gross_including_settlement - settlement_total
-                                                                   - voltage_pin_total),
-            'q_convention_settlement_excluded_in_full': ('gross incl. settlement - interface settlement total (TSO + '
-                                                         'every DSO) - voltage pin; S56 X2 proposal, pending')}
+    gross_in_full = gross_including_settlement - settlement_total - voltage_pin_total
+    return {'gross_operational_cost_settlement_excluded_in_full': gross_in_full,
+            'net_operational_recourse_settlement_excluded_in_full': gross_in_full - terminal_salvage_value,
+            'gross_operational_cost_contracted_excluded': gross_contracted_excluded,
+            'net_operational_recourse_contracted_excluded': gross_contracted_excluded - terminal_salvage_value,
+            'q_convention': 'settlement_excluded_in_full',
+            'q_convention_settlement_excluded_in_full': (
+                'PRIMARY in this mode (author decision 6, 2026-11-21): gross_operational_cost = gross incl. '
+                'settlement - interface settlement total (TSO + every DSO) - voltage pin; net_operational_recourse = '
+                'that - terminal salvage; today\'s form (contracted part and pin excluded) is '
+                'gross_operational_cost_contracted_excluded / net_operational_recourse_contracted_excluded')}
 
 
 def create_transmission_network_model(planning_problem, consensus_vars, candidate_solution):
