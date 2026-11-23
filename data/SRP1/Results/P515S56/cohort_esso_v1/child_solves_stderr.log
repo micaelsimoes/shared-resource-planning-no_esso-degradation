@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/cohort_esso_v1/tree_after/p515_s56_cohort_esso_tests.py", line 1515, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/cohort_esso_v1/tree_after/p515_s56_cohort_esso_tests.py", line 1510, in main
+    return child_solves(args)
+           ^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/cohort_esso_v1/tree_after/p515_s56_cohort_esso_tests.py", line 887, in child_solves
+    _dump(rec, os.path.join(work, 'child_solves.json'))
+  File "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/cohort_esso_v1/tree_after/p515_s56_cohort_esso_tests.py", line 111, in _dump
+    handle.write(GRIO.dumps(obj, indent=1, sort_keys=True))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/cohort_esso_v1/tree_after/gate_result_io.py", line 136, in dumps
+    check(obj, default=default)
+  File "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/cohort_esso_v1/tree_after/gate_result_io.py", line 131, in check
+    raise StringFlagError(flags)
+gate_result_io.StringFlagError: refusing to write a string-typed flag (4 value(s)): $.solver_options.solver_params.verbose = 'False'; $.solver_options.solver_params.recovery_enabled = 'True'; $.solver_options.solver_params.recovery_tier2_enabled = 'True'; $.solver_options.solver_params.release_solution_bookkeeping = 'False'. Write a JSON boolean (bool(x)), not its text.

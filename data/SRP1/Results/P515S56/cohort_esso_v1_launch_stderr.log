@@ -1,0 +1,22 @@
+Traceback (most recent call last):
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s56_cohort_esso_tests.py", line 1515, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s56_cohort_esso_tests.py", line 1511, in main
+    return parent(args)
+           ^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s56_cohort_esso_tests.py", line 1420, in parent
+    solves = json.load(open(p)) if os.path.isfile(p) else None
+             ^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
