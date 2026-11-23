@@ -866,8 +866,15 @@ def assert_interface_coupling_capture_path():
     loop = inspect.getsource(srp._run_operational_planning)
     boyd = inspect.getsource(srp.get_admm_boyd_residual_metrics)
     composed = "out[f'scenario_mismatch_{kind}_max_{unit}']" in src and "out[f'scenario_mismatch_{kind}_rms_{unit}']" in src
+    # The eight Boyd part names are likewise composed in `_interface_coupling_cycle_record` as
+    # record[f'boyd_{group}_{part}'] over group in ('pf', 'v') and the four part literals (the first G-f smoke,
+    # 2026-11-23, refused here with zero solves because this composition was not recognised).
+    boyd_parts = ('r_expectation_part', 'r_deviation_part', 's_expectation_part', 's_deviation_part')
+    boyd_composed_names = {f'boyd_{g}_{p}' for g in ('pf', 'v') for p in boyd_parts} if (
+        "record[f'boyd_{group}_{part}']" in src and "for group in ('pf', 'v'):" in src
+        and all(f"'{p}'" in src for p in boyd_parts)) else set()
     checks = {f'field:{f}': (f"'{f}'" in src) or (f.startswith('scenario_mismatch_') and f != 'scenario_mismatch_by_dn'
-                                                 and composed)
+                                                 and composed) or (f in boyd_composed_names)
               for f in PER_CYCLE_INTERFACE_COUPLING_FIELDS}
     checks['record_merged_into_admm_diagnostics'] = 'admm_diagnostics[-1].update(_interface_coupling_cycle_record(' in loop
     checks['boyd_parts_recorded'] = all(s in boyd for s in ("'r_expectation_part'", "'r_deviation_part'",
