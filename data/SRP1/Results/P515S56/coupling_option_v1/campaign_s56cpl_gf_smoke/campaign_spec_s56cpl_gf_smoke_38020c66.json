@@ -1,0 +1,165 @@
+{
+ "authority": [
+  "S56_PLAN_v2.md, validation step 1 (implementation of F1 + V-1/V-2 + Q-charge switch, default off; identity gates)",
+  "S56_SCENARIO_COUPLING_PROPOSAL.md (F1, change list)",
+  "Planner task: S56 step 1 per-scenario coupling option (default off), gates G-a..G-f",
+  "TASKS.md, S56 revised scope"
+ ],
+ "bar_window_cycles": 10,
+ "campaign_id": "s56cpl_gf_smoke",
+ "candidates": [
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "972942a49f415577_x0",
+   "eval_key": "972942a49f41557769cf023f639c82b9a8e955a6c3b7530574f9d35bc715726a",
+   "interface_coupling": {
+    "per_scenario_interface_coupling": true,
+    "per_scenario_voltage_mode": "per_scenario",
+    "row18_charge_reactive": false
+   },
+   "interface_coupling_label": "EVALUATION OPTION \u2014 per-scenario TN-DN interface coupling (S56 F1; not the published formulation)",
+   "interface_deviation_premium": {
+    "alpha": 0.5,
+    "floor": null
+   },
+   "key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "label": "x0",
+   "overrides": {},
+   "post_certification": null,
+   "working_dir_ids": {
+    "precheck": "p515s44_s56cpl_gf_smoke_972942a49f415577_precheck",
+    "run": "p515s44_s56cpl_gf_smoke_972942a49f415577_run"
+   }
+  }
+ ],
+ "cap": 2,
+ "concurrency": 1,
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "convergence_depth_tail": {
+   "compl_inf_tol": 1e-06,
+   "enabled": true
+  },
+  "derived_instance": {
+   "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+   "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+   "changes_vs_source": [
+    {
+     "from": 1,
+     "key": "NumMarketScenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "to": 3
+    }
+   ],
+   "instance_label": "s56_srp1grid_3x3",
+   "scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+   "source_case_path": "data/SRP1/SRP1.json",
+   "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+  },
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ess_params_file": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "full_diagnostics_in_rows": true,
+  "name": "S56 step 1 G-f smoke: SRP1-grid 3 x 3, per-scenario interface coupling ON (V-1, Q charge off), row 18 alpha 0.5; otherwise the published configuration",
+  "note": "no overrides, no model variant, no flex variant, no NRF, no rho0 scale, no post-certification",
+  "overrides": {}
+ },
+ "extra": {
+  "campaign_script": "p515_s56_coupling_gates.py",
+  "campaign_script_sha256": "b46faf10bd2ffa0072061d6c19829bbcd08083c7b9ada9bb3fb38dc7ea61b3fb",
+  "gate_spec": {
+   "path": "data/SRP1/Results/P515S56/coupling_option_v1/frozen_coupling_gates_spec_v1_10c98258.json",
+   "sha256": "10c9825862bdb16c3e2d4cb56e67bca02ee30769163ac4ff430b1908d7c5e7a4"
+  },
+  "objective_convention": "Q = gross_operational_cost (contracted settlement and pin excluded)",
+  "role": "G-f smoke"
+ },
+ "frozen_utc": "2026-11-23T08:51:02.035656+00:00",
+ "git_head": "a1ee41b66f36f263015083f112d9b6a25a329836",
+ "harness": {
+  "path": "p515_s44_campaign_harness.py",
+  "sha256": "1d4beaadf3f30f29b1ff0699828c1bb20090cfb27014d2541022249997ea12a3"
+ },
+ "interface_coupling_label": "EVALUATION OPTION \u2014 per-scenario TN-DN interface coupling (S56 F1; not the published formulation)",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "nlp_solver_path_env": {
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "source": "environment"
+ },
+ "required_consecutive_cycles": 10,
+ "schema": "p515_s44_campaign_spec_v2",
+ "thread_caps": {
+  "MKL_NUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1"
+ }
+}

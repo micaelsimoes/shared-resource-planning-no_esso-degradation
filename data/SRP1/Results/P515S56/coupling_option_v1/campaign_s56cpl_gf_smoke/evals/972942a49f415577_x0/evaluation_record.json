@@ -1,0 +1,125 @@
+{
+ "schema": "p515_s44_evaluation_record_v2",
+ "campaign_id": "s56cpl_gf_smoke",
+ "campaign_spec_path": "data/SRP1/Results/P515S56/coupling_option_v1/campaign_s56cpl_gf_smoke/campaign_spec_s56cpl_gf_smoke_38020c66.json",
+ "campaign_spec_sha256": "38020c66d0a48051b97b7bd99d4316b5a7a593a668759c538764637146f2dec5",
+ "candidate_label": "x0",
+ "candidate_canonical": {
+  "investment_year": 2025,
+  "nodes": {
+   "5": [
+    0.0,
+    0.0
+   ],
+   "7": [
+    0.0,
+    0.0
+   ],
+   "9": [
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+ "status": "error",
+ "barrier": true,
+ "barrier_cause": "RuntimeError: interface_coupling capture path missing: ['field:boyd_pf_r_deviation_part', 'field:boyd_pf_r_expectation_part', 'field:boyd_pf_s_deviation_part', 'field:boyd_pf_s_expectation_part', 'field:boyd_v_r_deviation_part', 'field:boyd_v_r_expectation_part', 'field:boyd_v_s_deviation_part', 'field:boyd_v_s_expectation_part']",
+ "traceback": "Traceback (most recent call last):\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 6362, in main_child\n    outcome = _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started,\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 5850, in _child_real\n    holder['interface_coupling_capture_checklist'] = assert_interface_coupling_capture_path()\n                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 878, in assert_interface_coupling_capture_path\n    raise RuntimeError(f'interface_coupling capture path missing: {failed}')\nRuntimeError: interface_coupling capture path missing: ['field:boyd_pf_r_deviation_part', 'field:boyd_pf_r_expectation_part', 'field:boyd_pf_s_deviation_part', 'field:boyd_pf_s_expectation_part', 'field:boyd_v_r_deviation_part', 'field:boyd_v_r_expectation_part', 'field:boyd_v_s_deviation_part', 'field:boyd_v_s_expectation_part']\n",
+ "wall_time_s": {
+  "child_process_s": 1.2828929424285889
+ },
+ "anderson_acceleration_effective_in_child": null,
+ "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+ "convergence_depth_tail_checklist_asserted_before_run": {
+  "checks": {
+   "production_default_tail_off": true,
+   "production_tail_helper_present": true,
+   "production_both_returns_carry_the_records": true,
+   "production_both_returns_carry_the_tail_state": true,
+   "production_records_drained_at_initialisation": true,
+   "production_records_drained_every_cycle": true,
+   "network_attempt_appends_a_record_after_the_solve": true,
+   "run_admm_arm_post_run_hook_gets_state": true
+  },
+  "declared": {
+   "enabled": true,
+   "compl_inf_tol": 1e-06
+  },
+  "tail_enabled_for_this_run": true,
+  "compl_inf_tol_tail": 1e-06,
+  "source": "campaign spec configuration.convergence_depth_tail",
+  "production_default": {
+   "enabled": false,
+   "compl_inf_tol": 1e-06
+  },
+  "persisted_files": [
+   "network_ipopt_solve_records.jsonl",
+   "convergence_depth_tail_state.json"
+  ]
+ },
+ "convergence_depth_failure_drain": {
+  "status": "skipped",
+  "why": "no appender (the failure preceded it)"
+ },
+ "convergence_depth_per_round_append_recovered": null,
+ "ess_ageing_baseline": {
+  "calendar_life_years": 15,
+  "calendar_retention_per_year": 0.985,
+  "calibration": {
+   "cycles_n": 10000,
+   "eol_retention_r": 0.8,
+   "reference_dod_d": 0.8,
+   "status": "ACTIVE"
+  },
+  "cycle_life_nominal": 10000,
+  "depth_of_discharge_nominal": 0.8,
+  "minimum_soh": 0.7
+ },
+ "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+ "ess_params_sha256_in_child": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+ "ess_ageing_verified_pre_run": null,
+ "derived_instance": {
+  "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+  "changes_vs_source": [
+   {
+    "from": 1,
+    "key": "NumMarketScenarios",
+    "to": 3
+   },
+   {
+    "from": 1,
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "to": 3
+   },
+   {
+    "from": 1,
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "to": 3
+   },
+   {
+    "from": 1,
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "to": 3
+   },
+   {
+    "from": 1,
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "to": 3
+   }
+  ],
+  "instance_label": "s56_srp1grid_3x3",
+  "scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+  "source_case_path": "data/SRP1/SRP1.json",
+  "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+ },
+ "interface_deviation_premium": {
+  "alpha": 0.5,
+  "floor": null
+ },
+ "derived_instance_installed_in_child": null,
+ "interface_deviation_premium_applied_in_child": null,
+ "interface_dual_capture_checklist_asserted_before_run": null,
+ "interface_dual_capture": null
+}
