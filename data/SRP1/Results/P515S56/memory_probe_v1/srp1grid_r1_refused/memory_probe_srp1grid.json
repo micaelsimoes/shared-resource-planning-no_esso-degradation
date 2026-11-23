@@ -1,0 +1,409 @@
+{
+ "checks": {
+  "declared_solves_equal_case_derivation": {
+   "detail": {
+    "cycles": 2,
+    "formula": "((1 + n_dso) x n_years x n_days + n_esso_nodes) x (cycles + 1)",
+    "n_days": 4,
+    "n_dso": 3,
+    "n_esso_nodes": 3,
+    "n_years": 3,
+    "value": 153,
+    "years": [
+     2025,
+     2030,
+     2035
+    ]
+   },
+   "ok": true
+  },
+  "instance_checksum": {
+   "detail": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+   "ok": true
+  },
+  "launcher_zero_solves": {
+   "detail": {
+    "own": {
+     "counts": {
+      "blocked_exec": 0,
+      "blocked_solve": 0,
+      "permitted_exec": 0,
+      "permitted_solve": 0
+     },
+     "label": "P5.15 S56 memory probe launcher (this process never solves)",
+     "verify_0": []
+    },
+    "p515_s56_ev_harness_tests": {
+     "counts": {
+      "blocked_exec": 0,
+      "blocked_solve": 0,
+      "permitted_exec": 0,
+      "permitted_solve": 0
+     },
+     "label": "P5.15 S56 EV harness tests (this process never solves)",
+     "verify_0": []
+    }
+   },
+   "ok": true
+  }
+ },
+ "configuration": {
+  "alpha": "interface_deviation_premium not declared: production default alpha 0.0",
+  "cfg": {
+   "arm_label": "s39_D",
+   "case_file_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "convergence_depth_tail": {
+    "compl_inf_tol": 1e-06,
+    "enabled": true
+   },
+   "derived_instance": {
+    "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+    "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+    "changes_vs_source": [
+     {
+      "from": 1,
+      "key": "NumMarketScenarios",
+      "to": 3
+     },
+     {
+      "from": 1,
+      "key": "TransmissionNetwork[case9].num_operation_scenarios",
+      "to": 3
+     },
+     {
+      "from": 1,
+      "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+      "to": 3
+     },
+     {
+      "from": 1,
+      "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+      "to": 3
+     },
+     {
+      "from": 1,
+      "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+      "to": 3
+     }
+    ],
+    "instance_label": "s56_srp1grid_3x3",
+    "scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+    "source_case_path": "data/SRP1/SRP1.json",
+    "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+   },
+   "ess_ageing_baseline": {
+    "calendar_life_years": 15,
+    "calendar_retention_per_year": 0.985,
+    "calibration": {
+     "cycles_n": 10000,
+     "eol_retention_r": 0.8,
+     "reference_dod_d": 0.8,
+     "status": "ACTIVE"
+    },
+    "cycle_life_nominal": 10000,
+    "depth_of_discharge_nominal": 0.8,
+    "minimum_soh": 0.7
+   },
+   "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+   "name": "S56 memory probe v1 (srp1grid): corrected SP, staged mixed-duration plan, V-1 per-scenario coupling, alpha 0, cohort all node-years, TV, slack 1e4, flex x2, cap 2",
+   "overrides": {}
+  },
+  "derived_instance": {
+   "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+   "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+   "changes_vs_source": [
+    {
+     "from": 1,
+     "key": "NumMarketScenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "to": 3
+    }
+   ],
+   "instance_label": "s56_srp1grid_3x3",
+   "scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+   "source_case_path": "data/SRP1/SRP1.json",
+   "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+  },
+  "entry_options": {
+   "flex_price_multiplier": 2.0,
+   "interface_coupling": {
+    "per_scenario_interface_coupling": true,
+    "per_scenario_voltage_mode": "per_scenario",
+    "row18_charge_reactive": false
+   },
+   "s56_cohort_formulation": "independent_units_all_node_years",
+   "s56_esso_slack_penalty": 10000.0,
+   "s56_staged_investment": {
+    "5": {
+     "2030": [
+      0.5,
+      1.0
+     ]
+    },
+    "7": {
+     "2025": [
+      0.25,
+      1.0
+     ],
+     "2030": [
+      0.25,
+      0.5
+     ]
+    },
+    "9": {
+     "2035": [
+      0.25,
+      0.5
+     ]
+    }
+   },
+   "s56_terminal_value_in_objective": true
+  },
+  "not_declared": {
+   "s56_ev_profiles": "SP instance (no EV injection)"
+  },
+  "required_consecutive_cycles": 10,
+  "staged_plan": {
+   "5": {
+    "2030": [
+     0.5,
+     1.0
+    ]
+   },
+   "7": {
+    "2025": [
+     0.25,
+     1.0
+    ],
+    "2030": [
+     0.25,
+     0.5
+    ]
+   },
+   "9": {
+    "2035": [
+     0.25,
+     0.5
+    ]
+   }
+  }
+ },
+ "declared": {
+  "cap": 2,
+  "concurrency": 1,
+  "decision_threshold_gib": 20.7,
+  "label": "staged_sp",
+  "solves": 153,
+  "watchdog": {
+   "sample_s": 1.0,
+   "swapout_stop_gib": 1.0,
+   "tree_rss_stop_gib": 28.0
+  },
+  "years": [
+   2025,
+   2030,
+   2035
+  ]
+ },
+ "error": "RuntimeError: refused by the harness preconditions (zero solves): ['a forbidden process appears to be alive: micaelsimoes     30498   0.0  0.0 488786352   2688   ??  Ss    9:05PM   0:00.01 /bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1795457502308-0j0ac5.sh 2>/dev/null || true && \\\\builtin setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL NO_BRACE_CCL NO_MAGIC_EQUAL_SUBST NO_EQUALS 2>/dev/null || true && { \\\\builtin unalias -- \\'which\\'; \\\\builtin unset -f -- \\'which\\'; } >/dev/null 2>&1 || true && { \\\\builtin unalias -- \\'unsetenv\\'; \\\\builtin unset -f -- \\'unsetenv\\'; } >/dev/null 2>&1 || true && eval \\'git status --short p515_s56_search_policy.py p515_s56_search_driver.py p515_s56_search_gate.py p515_s44_campaign_harness.py; D=data/SRP1/Results/P515S56/search_driver_v1 && mkdir -p $D && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s56_search_gate.py --out $D > $D/gate_launch_stdout.log 2> $D/gate_launch_stderr.log; echo exit $?; grep -v \"^.\\\\{9\\\\}OK\" $D/gate_launch_stdout.log | cut -c1-400; grep -c OK $D/gate_launch_stdout.log; tail -3 $D/gate_launch_stderr.log\\' < /dev/null && pwd -P >| /tmp/claude-a22c-cwd']",
+ "finished_utc": "2026-11-23T21:06:16.145497+00:00",
+ "grid": "srp1grid",
+ "guards": {
+  "own": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "label": "P5.15 S56 memory probe launcher (this process never solves)",
+   "verify_0": []
+  },
+  "p515_s56_ev_harness_tests": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "label": "P5.15 S56 EV harness tests (this process never solves)",
+   "verify_0": []
+  }
+ },
+ "launcher_zero_solve_verified": true,
+ "mode": "run",
+ "preconditions": [
+  "a forbidden process appears to be alive: micaelsimoes     30498   0.0  0.0 488786352   2688   ??  Ss    9:05PM   0:00.01 /bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1795457502308-0j0ac5.sh 2>/dev/null || true && \\builtin setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL NO_BRACE_CCL NO_MAGIC_EQUAL_SUBST NO_EQUALS 2>/dev/null || true && { \\builtin unalias -- 'which'; \\builtin unset -f -- 'which'; } >/dev/null 2>&1 || true && { \\builtin unalias -- 'unsetenv'; \\builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'git status --short p515_s56_search_policy.py p515_s56_search_driver.py p515_s56_search_gate.py p515_s44_campaign_harness.py; D=data/SRP1/Results/P515S56/search_driver_v1 && mkdir -p $D && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s56_search_gate.py --out $D > $D/gate_launch_stdout.log 2> $D/gate_launch_stderr.log; echo exit $?; grep -v \"^.\\{9\\}OK\" $D/gate_launch_stdout.log | cut -c1-400; grep -c OK $D/gate_launch_stdout.log; tail -3 $D/gate_launch_stderr.log' < /dev/null && pwd -P >| /tmp/claude-a22c-cwd"
+ ],
+ "provenance": {
+  "cwd": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/e2b75b66-5876-478c-8406-61146cba3204/scratchpad/memprobe/export_b0391b80",
+  "export": {
+   "export_commit": "b0391b80c3883b3fbb67e4299c87c4422204cee4",
+   "method": "git clone --shared --no-checkout <main checkout> <dest>; git checkout --detach <commit>; p515_s56_memory_probe.py written from `git show <overlay commit>:p515_s56_memory_probe.py` (untracked in the clone)",
+   "overlay_commit": "bdb604e83b390c98df6fbae8f0a362a30970fafd",
+   "utc": "2026-11-23T20:16:46.089022+00:00"
+  },
+  "git_head": "b0391b80c3883b3fbb67e4299c87c4422204cee4",
+  "git_status_tracked": "",
+  "harness_sha256": "226f02ee7185b45676469ae9aa4c98f1f3e5e3e92efe99d6d3baf5e20bc910a1",
+  "here": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/e2b75b66-5876-478c-8406-61146cba3204/scratchpad/memprobe/export_b0391b80",
+  "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "lp_solver_path_env": "/Users/micaelsimoes/coin-or/dist/bin/clp",
+  "nlp_solver_path_env": "/usr/local/bin/ipopt",
+  "script_sha256": "de635f4f6994c90bdd7f9df490124abc7ed46dd53f6483f7658932bec7a5133f"
+ },
+ "provenance_failures": [],
+ "schema": "p515_s56_memory_probe_v1",
+ "solves_derivation": {
+  "cycles": 2,
+  "formula": "((1 + n_dso) x n_years x n_days + n_esso_nodes) x (cycles + 1)",
+  "n_days": 4,
+  "n_dso": 3,
+  "n_esso_nodes": 3,
+  "n_years": 3,
+  "value": 153,
+  "years": [
+   2025,
+   2030,
+   2035
+  ]
+ },
+ "started_utc": "2026-11-23T21:05:55.940653+00:00",
+ "summary": {
+  "all_pass": false,
+  "failed": [],
+  "n_checks": 3,
+  "n_pass": 3
+ },
+ "swapusage_after": "total = 1024.00M  used = 0.25M  free = 1023.75M  (encrypted)",
+ "top_processes_after": [
+  {
+   "cmd_head": "/Applications/Claude.app/Contents/Frameworks/Claude Helper (Renderer).app/Contents/MacOS/Claude Helper (Renderer) --type=renderer --user-data-dir=/Users/micaels",
+   "name": "Claude Helper (Renderer)",
+   "pid": 6370,
+   "rss_gib": 0.48779296875
+  },
+  {
+   "cmd_head": "/Users/micaelsimoes/Library/Application Support/Claude/claude-code/2.1.330/4262a1273231/claude.app/Contents/MacOS/claude --output-format stream-json",
+   "name": "claude",
+   "pid": 6549,
+   "rss_gib": 0.4399566650390625
+  },
+  {
+   "cmd_head": "/opt/homebrew/bin/git -c core.quotepath=false",
+   "name": "git",
+   "pid": 30567,
+   "rss_gib": 0.3152008056640625
+  },
+  {
+   "cmd_head": "/Applications/Claude.app/Contents/MacOS/Claude",
+   "name": "Claude",
+   "pid": 6344,
+   "rss_gib": 0.2819671630859375
+  },
+  {
+   "cmd_head": "/Applications/Claude.app/Contents/Frameworks/Claude Helper.app/Contents/MacOS/Claude Helper --type=utility --utility-sub-type=node.mojom.NodeService",
+   "name": "Claude Helper",
+   "pid": 30554,
+   "rss_gib": 0.179290771484375
+  },
+  {
+   "cmd_head": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s56_search_gate.py",
+   "name": "python3.11",
+   "pid": 30504,
+   "rss_gib": 0.1538543701171875
+  },
+  {
+   "cmd_head": "/System/Library/PrivateFrameworks/MediaAnalysis.framework/Versions/A/mediaanalysisd",
+   "name": "mediaanalysisd",
+   "pid": 782,
+   "rss_gib": 0.0968170166015625
+  },
+  {
+   "cmd_head": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/corespotlightd",
+   "name": "corespotlightd",
+   "pid": 724,
+   "rss_gib": 0.0884552001953125
+  },
+  {
+   "cmd_head": "/Applications/OneDrive.app/Contents/MacOS/OneDrive",
+   "name": "OneDrive",
+   "pid": 84997,
+   "rss_gib": 0.085601806640625
+  },
+  {
+   "cmd_head": "/Applications/OneDrive.app/Contents/OneDrive Sync Service.app/Contents/MacOS/OneDrive Sync Service /silentConfig",
+   "name": "OneDrive Sync Service",
+   "pid": 84998,
+   "rss_gib": 0.082763671875
+  },
+  {
+   "cmd_head": "/Applications/Claude.app/Contents/Frameworks/Claude Helper (Renderer).app/Contents/MacOS/Claude Helper (Renderer) --type=renderer --user-data-dir=/Users/micaels",
+   "name": "Claude Helper (Renderer)",
+   "pid": 6366,
+   "rss_gib": 0.0782012939453125
+  },
+  {
+   "cmd_head": "/Applications/Claude.app/Contents/Frameworks/Claude Helper (Renderer).app/Contents/MacOS/Claude Helper (Renderer) --type=renderer --user-data-dir=/Users/micaels",
+   "name": "Claude Helper (Renderer)",
+   "pid": 6395,
+   "rss_gib": 0.0689849853515625
+  }
+ ],
+ "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/e2b75b66-5876-478c-8406-61146cba3204/scratchpad/memprobe/export_b0391b80/p515_s56_memory_probe.py\", line 704, in run\n    raise RuntimeError(f'refused by the harness preconditions (zero solves): {failures}')\nRuntimeError: refused by the harness preconditions (zero solves): ['a forbidden process appears to be alive: micaelsimoes     30498   0.0  0.0 488786352   2688   ??  Ss    9:05PM   0:00.01 /bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1795457502308-0j0ac5.sh 2>/dev/null || true && \\\\builtin setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL NO_BRACE_CCL NO_MAGIC_EQUAL_SUBST NO_EQUALS 2>/dev/null || true && { \\\\builtin unalias -- \\'which\\'; \\\\builtin unset -f -- \\'which\\'; } >/dev/null 2>&1 || true && { \\\\builtin unalias -- \\'unsetenv\\'; \\\\builtin unset -f -- \\'unsetenv\\'; } >/dev/null 2>&1 || true && eval \\'git status --short p515_s56_search_policy.py p515_s56_search_driver.py p515_s56_search_gate.py p515_s44_campaign_harness.py; D=data/SRP1/Results/P515S56/search_driver_v1 && mkdir -p $D && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s56_search_gate.py --out $D > $D/gate_launch_stdout.log 2> $D/gate_launch_stderr.log; echo exit $?; grep -v \"^.\\\\{9\\\\}OK\" $D/gate_launch_stdout.log | cut -c1-400; grep -c OK $D/gate_launch_stdout.log; tail -3 $D/gate_launch_stderr.log\\' < /dev/null && pwd -P >| /tmp/claude-a22c-cwd']\n",
+ "vm_stat_after": {
+  "anonymous_gib": 1.44146728515625,
+  "compressor_occupied_gib": 2.5195159912109375,
+  "free_gib": 20.350341796875,
+  "free_plus_inactive_gib": 25.285491943359375,
+  "inactive_gib": 4.935150146484375,
+  "page_size": 16384,
+  "pageouts_pages": 59957,
+  "speculative_gib": 0.003753662109375,
+  "swapins_pages": 4,
+  "swapouts_pages": 16,
+  "t": 1795467956.0916102,
+  "utc": "2026-11-23T21:05:56.091594+00:00",
+  "wired_gib": 2.130950927734375
+ },
+ "vm_stat_after_20s": {
+  "anonymous_gib": 1.9683074951171875,
+  "compressor_occupied_gib": 2.4930572509765625,
+  "free_gib": 14.029098510742188,
+  "free_plus_inactive_gib": 20.302902221679688,
+  "inactive_gib": 6.2738037109375,
+  "page_size": 16384,
+  "pageouts_pages": 59957,
+  "speculative_gib": 0.0145263671875,
+  "swapins_pages": 4,
+  "swapouts_pages": 16,
+  "t": 1795467976.107371,
+  "utc": "2026-11-23T21:06:16.107346+00:00",
+  "wired_gib": 2.134307861328125
+ },
+ "wall_s": 20.204848051071167
+}
