@@ -367,6 +367,10 @@ EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification', 'investme
 # S56 step 4 calibration re-run (Expert handback 3 decision 1 (a)): the two entry keys (default absent; never keyed)
 EVALUATION_OPTION_KEYS = EVALUATION_OPTION_KEYS | frozenset({'s56_certification_stop_disabled',
                                                              's56_interface_v_multiplier_capture'})
+# S56 EV plan (critical path step 1): the five entry keys (default absent; see `S56_EV_PLAN_KEYS`)
+EVALUATION_OPTION_KEYS = EVALUATION_OPTION_KEYS | frozenset({'s56_cohort_formulation', 's56_terminal_value_in_objective',
+                                                             's56_esso_slack_penalty', 's56_ev_profiles',
+                                                             's56_staged_investment'})
 # P5.15 Addendum 39 (W47): a DERIVED INSTANCE (see the module docstring) and row 18's premium. The identity keys
 # of a derived instance enter the eval key; the other keys are provenance. Absent -> nothing changes.
 DERIVED_INSTANCE_KEYS = frozenset({'instance_label', 'case_path', 'case_sha256', 'scenario_checksum',
@@ -566,11 +570,15 @@ def candidate_key(canonical):
 
 
 def investment_map_from_canonical(canonical):
+    if is_s56_staged_canonical(canonical):  # S56 staged: zeros at the first year; the plan is written by the hook
+        return {int(n): (0.0, 0.0) for n in canonical['nodes']}
     return {int(n): (v[0], v[1]) for n, v in canonical['nodes'].items()}
 
 
 def investment_year_from_canonical(canonical):
     """The SINGLE cohort year of a canonical candidate (Addendum 27, W14)."""
+    if is_s56_staged_canonical(canonical):  # S56 staged: the first instance year (the zero map is written there)
+        return min(int(y) for per_year in canonical['nodes'].values() for y in per_year)
     return int(canonical['investment_year'])
 
 
@@ -1663,6 +1671,1000 @@ def s56_interface_v_multiplier_hooks(eval_dir, holder):
         holder[S56_INTERFACE_V_MULTIPLIER_SUMMARY_KEY] = capture.summary()
 
 
+# ======================================================================================================================
+#  S56 EV-PLAN KEYS (critical path step 1; author + Expert, 2026-11-23 evening, TASKS.md "Working mode and EV
+#  priority"; S56_PLAN_v4_1.md section 2). Five ENTRY options, each default absent. An entry carrying none of them runs,
+#  keys and records exactly as before: none of the functions below is called for it.
+#    s56_cohort_formulation           production `SharedEnergyStorageParameters.cohort_formulation`, set IN MEMORY on
+#                                     the evaluation's own shared-ESS parameters before any ESSO model is built (the
+#                                     corrected mode of every S56 plan: 'independent_units_all_node_years', Expert
+#                                     ruling 2026-11-23). Keyed unless 'legacy_h3' (production's default).
+#    s56_terminal_value_in_objective  bool: production `salvage_value.in_objective` (P5.16 C1; the ESSO objective is
+#                                     feasibility penalty + kappa x salvage credit, kappa = a / sigma set by production
+#                                     at ADMM set-up). The credit is production's existing energy-residual convention
+#                                     (c^E x E x SoH headroom x remaining-life fraction, END-of-block terminal SoH); the
+#                                     converter is EXCLUDED (no power cost, no S variable in the credit -- read back);
+#                                     an ESS parameters file declaring the 'mid' SoH point is refused. Keyed when True.
+#    s56_esso_slack_penalty           float > 0: production `esso_slack_penalty` (the S56 step 2 key; R8 ruled 1e4 for
+#                                     the new instance, Audit I). Keyed unless 1e3 (definitions.PENALTY_ESSO_SLACK).
+#    s56_ev_profiles                  {'profiles_path', 'profiles_sha256', 'ev_scenario_checksum'}: the EV twin's
+#                                     probability-weighted mean profiles (`p515_s56_ev_injection`), injected at the
+#                                     derived-instance read (`install_derived_instance`) and ASSERTED on the
+#                                     evaluation's own planning object in the configuration hook BEFORE the
+#                                     flexibility-price multiplier (Audit J). Requires a spec `derived_instance` whose
+#                                     scenario_checksum is the EV checksum. Always keyed.
+#    s56_staged_investment            {node: {year: [s MVA, e MWh]}}: a STAGED (multi-year) candidate on the instance's
+#                                     node-year lattice (`p516_lattice.GeneralLattice`; C5 admissibility refused when
+#                                     violated). Its canonical form is the lattice schema 'v2' (every node-year, zeros
+#                                     included), so its candidate key never equals a single-year key; the single-year
+#                                     `canonical_candidate` / `candidate_key` are unchanged. The plan is written into
+#                                     the candidate in the configuration hook (production's `candidate['investment']`
+#                                     shape, then `_rebuild_candidate_total_capacities`).
+#  Keyed items enter the eval key as sha256{'base_evaluation_key': <the key every other rule gives>, 's56_ev_plan':
+#  <keyed items>} (`s56_evaluation_key`); staging enters through the candidate key. A declared entry carries
+#  S56_EV_PLAN_LABEL (spec and entry), asserts its capture path before any solve (`assert_s56_ev_plan_capture_path`),
+#  applies and reads back its settings in the configuration hook (zero solves, `apply_s56_ev_plan_settings`), and
+#  writes `S56_COST_BREAKDOWN_FILE` at terminal (zero solves, `s56_cost_breakdown`).
+S56_COHORT_FORMULATION_KEY = 's56_cohort_formulation'
+S56_COHORT_FORMULATIONS = ('legacy_h3', 'independent_units', 'independent_units_all_node_years')  # = production's
+S56_COHORT_FORMULATION_DEFAULT = 'legacy_h3'
+S56_TV_IN_OBJECTIVE_KEY = 's56_terminal_value_in_objective'
+S56_ESSO_SLACK_PENALTY_KEY = 's56_esso_slack_penalty'
+S56_ESSO_SLACK_PENALTY_DEFAULT = 1e3   # definitions.PENALTY_ESSO_SLACK (checked in the child)
+S56_EV_PROFILES_KEY = 's56_ev_profiles'
+S56_EV_PROFILES_FIELDS = frozenset({'profiles_path', 'profiles_sha256', 'ev_scenario_checksum'})
+S56_STAGED_INVESTMENT_KEY = 's56_staged_investment'
+S56_STAGED_SCHEMA = 'v2'   # p516_lattice.KEY_SCHEMA (checked)
+S56_EV_PLAN_SETTING_KEYS = (S56_COHORT_FORMULATION_KEY, S56_TV_IN_OBJECTIVE_KEY, S56_ESSO_SLACK_PENALTY_KEY,
+                            S56_EV_PROFILES_KEY)
+S56_EV_PLAN_KEYS = S56_EV_PLAN_SETTING_KEYS + (S56_STAGED_INVESTMENT_KEY,)
+S56_EV_PLAN_LABEL = ('EVALUATION OPTION — S56 EV-plan formulation (cohort mode, terminal value in the ESSO objective, '
+                     'ESSO slack penalty, EV injection, staged candidate)')
+S56_INSTANCE_CASE_REL = os.path.join('data', 'SRP1', 'SRP1.json')   # the canonical planning case (p56a_oracle)
+S56_MID_SOH_PARAMS_FILES = ('SRP1_5x3y_ESS_Params.json',)   # bundles available_energy_soh_point 'mid' (Audit I hazard)
+S56_R_EUR = 10000.0                                          # Expert: R; R/4 = 2,500 EUR for a pair
+S56_LEAK_CEILING_EUR = 0.01 * (S56_R_EUR / 4.0)              # Expert ruling 4: lambda x L priced <= 1 % of R/4 = 25 EUR
+S56_PRICED_RESIDUAL_PR_LABEL = 'mixed-convention reporting field, read by no acceptance test'   # Expert ruling 3
+S56_COST_BREAKDOWN_FILE = 's56_cost_breakdown.json'
+S56_COST_BREAKDOWN_SCHEMA = 's56_cost_breakdown_v1'
+S56_EV_PLAN_SUMMARY_KEY = 's56_ev_plan'
+# Every field of the cost breakdown and the production / diagnostic source it is read from (rule eleven: asserted by
+# `assert_s56_ev_plan_capture_path` before any solve; `s56_cost_breakdown` writes exactly these fields).
+S56_COST_BREAKDOWN_SOURCES = {
+    'investment_cost_eur': 'p516_lattice.GeneralLattice.investment_cost (the master investment_cost expression, its '
+                           'term order), computed at freeze from the canonical candidate and carried in the entry',
+    'gross_operational_cost_eur': 'shared_resources_planning._get_operational_recourse_components gross_operational_cost',
+    'terminal_value_credit_eur': 'shared_resources_planning._get_operational_recourse_components terminal_salvage_value '
+                                 '(= shared_energy_storage_data.get_salvage_value)',
+    'net_operational_recourse_eur': 'shared_resources_planning._get_operational_recourse_components '
+                                    'net_operational_recourse',
+    'total_planning_cost_eur': 'investment_cost_eur + net_operational_recourse_eur',
+    'flexibility_cost_eur': 'model_construction_helpers.flexibility_cost through each block\'s flex_cost_scenario '
+                            'Expression (standard repn, split by variable family flex_p_down / flex_q_down), x '
+                            'scenario probability x shared_resources_planning._get_admm_block_weight; reconciled with '
+                            'total_flex_cost',
+    'flexibility_cost_reactive_down_eur': 'the flex_q_down part of flexibility_cost_eur (author decision 2, 2026-11-21)',
+    'flex_price_split_readback': 'flex_cost_scenario coefficients per family vs cost_flex x baseMVA (applied array)',
+    'esso_slack_totals': 'p515_s56_cohort_diagnostics.esso_slacks (slack_es_pnet_up/down, slack_es_qnet_up/down) x '
+                         'the esso_slack_penalty in force',
+    'leak_detector': 'within-cohort simultaneity min(es_pch_per_unit, es_pdch_per_unit) x dt per (node, cohort, block, '
+                     'day, hour), weighted by _get_admm_block_weight and priced at '
+                     'model_construction_helpers.expected_market_price of the TSO block',
+    'per_cohort_throughput': 'p515_s56_cohort_diagnostics.cohort_degradation (avg throughput MWh/day, EFC/day, SoH)',
+    'exit_certificate_e6': 'p515_s56_cohort_diagnostics.cohort_block_day per (node, block, day): Q slack, per-cohort '
+                           'closure / balance / window / converter margins, energy accounting',
+    'salvage_objective_kappa': 'ESSO model salvage_objective_kappa (set by '
+                               'shared_resources_planning.update_shared_energy_storage_model_to_admm)',
+    'priced_residual_pr': 'production per-cycle priced_residual_pr (terminal cycle; coupling entries only)',
+}
+S56_COST_BREAKDOWN_FIELDS = tuple(S56_COST_BREAKDOWN_SOURCES)
+
+
+def validate_s56_ev_plan(options):
+    """Parent side, no model import: the declared S56 SETTING keys of an entry's options (the staged candidate is
+    `s56_staged_canonical`'s). None when none is declared (every other entry keeps its format and key). Returns a
+    normalized dict of the declared keys only."""
+    declared = [k for k in S56_EV_PLAN_SETTING_KEYS if k in options]
+    if not declared:
+        return None
+    out = {}
+    if S56_COHORT_FORMULATION_KEY in options:
+        value = options[S56_COHORT_FORMULATION_KEY]
+        if not isinstance(value, str) or value not in S56_COHORT_FORMULATIONS:
+            raise ValueError(f'{S56_COHORT_FORMULATION_KEY} must be one of {S56_COHORT_FORMULATIONS}, got {value!r}')
+        out[S56_COHORT_FORMULATION_KEY] = value
+    if S56_TV_IN_OBJECTIVE_KEY in options:
+        value = options[S56_TV_IN_OBJECTIVE_KEY]
+        if not isinstance(value, bool):
+            raise ValueError(f'{S56_TV_IN_OBJECTIVE_KEY} must be a bool, got {value!r}')
+        out[S56_TV_IN_OBJECTIVE_KEY] = value
+    if S56_ESSO_SLACK_PENALTY_KEY in options:
+        value = options[S56_ESSO_SLACK_PENALTY_KEY]
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(f'{S56_ESSO_SLACK_PENALTY_KEY} must be a positive finite number, got {value!r}')
+        value = float(value)
+        if value != value or value in (float('inf'), float('-inf')) or value <= 0.0:
+            raise ValueError(f'{S56_ESSO_SLACK_PENALTY_KEY} must be a positive finite number, got {value!r}')
+        out[S56_ESSO_SLACK_PENALTY_KEY] = value
+    if S56_EV_PROFILES_KEY in options:
+        value = options[S56_EV_PROFILES_KEY]
+        if not isinstance(value, dict) or set(value) != S56_EV_PROFILES_FIELDS:
+            raise ValueError(f'{S56_EV_PROFILES_KEY} must be a dict with exactly {sorted(S56_EV_PROFILES_FIELDS)}, '
+                             f'got {value!r}')
+        path = value['profiles_path']
+        if not isinstance(path, str) or not path or os.path.isabs(path):
+            raise ValueError(f'{S56_EV_PROFILES_KEY}.profiles_path must be a repo-relative path, got {path!r}')
+        for name in ('profiles_sha256', 'ev_scenario_checksum'):
+            if not _is_hex64(value[name]):
+                raise ValueError(f'{S56_EV_PROFILES_KEY}.{name} must be 64 lowercase hex characters, got '
+                                 f'{value[name]!r}')
+        out[S56_EV_PROFILES_KEY] = {k: value[k] for k in sorted(S56_EV_PROFILES_FIELDS)}
+    return out
+
+
+def s56_ev_plan_in_key(declared):
+    """The keyed part of a validated declaration (the W33 rule: a declaration equal to production's default runs the
+    default computation and is not keyed): cohort mode unless 'legacy_h3'; TV when True; slack penalty unless 1e3; the
+    EV profiles always. None when nothing is keyed."""
+    if declared is None:
+        return None
+    out = {}
+    if declared.get(S56_COHORT_FORMULATION_KEY, S56_COHORT_FORMULATION_DEFAULT) != S56_COHORT_FORMULATION_DEFAULT:
+        out[S56_COHORT_FORMULATION_KEY] = declared[S56_COHORT_FORMULATION_KEY]
+    if declared.get(S56_TV_IN_OBJECTIVE_KEY) is True:
+        out[S56_TV_IN_OBJECTIVE_KEY] = True
+    if declared.get(S56_ESSO_SLACK_PENALTY_KEY, S56_ESSO_SLACK_PENALTY_DEFAULT) != S56_ESSO_SLACK_PENALTY_DEFAULT:
+        out[S56_ESSO_SLACK_PENALTY_KEY] = declared[S56_ESSO_SLACK_PENALTY_KEY]
+    if S56_EV_PROFILES_KEY in declared:
+        out[S56_EV_PROFILES_KEY] = declared[S56_EV_PROFILES_KEY]
+    return out or None
+
+
+def s56_evaluation_key(base_key, keyed):
+    """The eval key of an entry with keyed S56 items: sha256 of {'base_evaluation_key': <the key `evaluation_key`
+    gives for the same entry>, 's56_ev_plan': <keyed items>} -- never the base key. `keyed` None returns the base key
+    unchanged (the W98 wrapper pattern; `evaluation_key` itself is untouched)."""
+    if keyed is None:
+        return base_key
+    text = json.dumps({'base_evaluation_key': base_key, 's56_ev_plan': keyed}, sort_keys=True, separators=(',', ':'))
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def s56_case_rel(derived):
+    """The planning case of the instance: the declared derived case, else the canonical SRP1 case."""
+    return derived['case_path'] if derived is not None else S56_INSTANCE_CASE_REL
+
+
+def _s56_read_case(case_rel):
+    with open(os.path.join(REPO, case_rel)) as handle:
+        return json.load(handle)
+
+
+def s56_lattice(case_rel):
+    """`p516_lattice.GeneralLattice` of the instance whose planning case is `case_rel` (parent side: no model import;
+    the case's ESS parameters and cost workbook are read from data/SRP1/SharedESS, as production reads a derived case
+    from data/SRP1). Every file read is sha256-recorded by the lattice instance."""
+    import p516_lattice as L
+    if L.KEY_SCHEMA != S56_STAGED_SCHEMA:
+        raise RuntimeError(f'p516_lattice.KEY_SCHEMA {L.KEY_SCHEMA!r} != {S56_STAGED_SCHEMA!r}')
+    case = _s56_read_case(case_rel)
+    inst = L.load_instance_from_case_dict(case, os.path.join(REPO, DERIVED_INSTANCE_DATA_DIR_REL),
+                                          case_source={'path': case_rel,
+                                                       'sha256': sha256_file(os.path.join(REPO, case_rel))})
+    return L.GeneralLattice(inst)
+
+
+def _s56_lattice_facts(lattice, z, case_rel):
+    return {'case': case_rel, 'lattice_label': lattice.label(z), 'investment_cost_eur': lattice.investment_cost(z),
+            'investment_cost_definition': ('I(x) = sum_n sum_y sum_m (1+d)^-(y-y1) omega_m (c^S_my P_ny + c^E_my E_ny), '
+                                           'the master investment_cost expression in its own term order '
+                                           '(p516_lattice.GeneralLattice.investment_cost)'),
+            'active_cohorts': [[n, y] for n, y in lattice.active_cohorts(z)],
+            'cumulative_energy_mwh': {f'{n}|{y}': v for (n, y), v in lattice.cumulative_energy(z).items()},
+            'lattice_instance_sha256': hashlib.sha256(json.dumps(lattice.inst.describe(), sort_keys=True,
+                                                                 default=str).encode()).hexdigest()}
+
+
+def s56_staged_canonical(plan, case_rel, lattice=None):
+    """The canonical (lattice schema 'v2') form of a staged plan {node: {year: [s, e]}} on the instance's lattice
+    (missing node-years are zero; permutation-invariant by construction). REFUSES (ValueError) a plan that is off the
+    lattice, names an unknown node or year, or violates C5 admissibility (sign, P = 0 <=> E = 0, E/P window, cumulative
+    rated energy per node and block, budget) -- `GeneralLattice.reasons`. Returns (canonical, facts)."""
+    if not isinstance(plan, dict) or not plan:
+        raise ValueError(f'{S56_STAGED_INVESTMENT_KEY} must be a non-empty dict {{node: {{year: [s, e]}}}}, got '
+                         f'{plan!r}')
+    for node, per_year in plan.items():
+        if not isinstance(per_year, dict):
+            raise ValueError(f'{S56_STAGED_INVESTMENT_KEY}: node {node} must map years to [s, e], got {per_year!r}')
+        for year, value in per_year.items():
+            if (not isinstance(value, (list, tuple)) or len(value) != 2
+                    or any(isinstance(v, bool) or not isinstance(v, (int, float)) for v in value)):
+                raise ValueError(f'{S56_STAGED_INVESTMENT_KEY}: node {node} year {year} must be [s, e] numbers, got '
+                                 f'{value!r}')
+    lat = lattice if lattice is not None else s56_lattice(case_rel)
+    canonical = lat.canonicalize(plan)   # raises off-lattice / unknown node-year / negative / non-finite
+    z = lat.z_of_canonical(canonical)
+    if z is None:
+        raise ValueError(f'{S56_STAGED_INVESTMENT_KEY}: canonical form is not on the instance lattice')
+    reasons = lat.reasons(z)
+    if reasons:
+        raise ValueError(f'{S56_STAGED_INVESTMENT_KEY}: refused by the C5 lattice admissibility rules: {reasons}')
+    return canonical, _s56_lattice_facts(lat, z, case_rel)
+
+
+def s56_single_year_investment_cost(canonical, case_rel, lattice=None):
+    """I(x) of a SINGLE-YEAR canonical candidate, embedded in the instance lattice (reporting only; never refuses:
+    an off-lattice or inadmissible candidate gets None and the reason)."""
+    lat = lattice if lattice is not None else s56_lattice(case_rel)
+    year = int(canonical['investment_year'])
+    try:
+        canon = lat.canonicalize({n: {year: v} for n, v in canonical['nodes'].items()})
+        z = lat.z_of_canonical(canon)
+        out = _s56_lattice_facts(lat, z, case_rel)
+        out['c5_reasons'] = lat.reasons(z)
+        return out
+    except ValueError as error:
+        return {'case': case_rel, 'investment_cost_eur': None, 'error': str(error)}
+
+
+def s56_ess_params_check(case_rel):
+    """The instance's ESS parameters file (named by the case, read from data/SRP1/SharedESS as production does):
+    refused (ValueError) when it is the five-block 'mid' file or declares available_energy_soh_point 'mid' (S56: END-
+    of-block SoH retained; never a silent 'mid'). Returns the record."""
+    case = _s56_read_case(case_rel)
+    name = case['SharedEnergyStorage']['params_file']
+    rel = os.path.join(DERIVED_INSTANCE_DATA_DIR_REL, 'SharedESS', name)
+    with open(os.path.join(REPO, rel)) as handle:
+        params = json.load(handle)
+    soh = params.get('available_energy_soh_point')
+    out = {'case': case_rel, 'ess_params_file': rel, 'sha256': sha256_file(os.path.join(REPO, rel)),
+           'available_energy_soh_point_in_file': soh,
+           'salvage_value_in_objective_in_file': (params.get('salvage_value') or {}).get('in_objective'),
+           'esso_slack_penalty_in_file': params.get('esso_slack_penalty'),
+           'cohort_formulation_in_file': params.get('cohort_formulation')}
+    if name in S56_MID_SOH_PARAMS_FILES or soh == 'mid':
+        raise ValueError(f"S56 EV plan: the ESS parameters file {rel} declares the 'mid' SoH point; refused (END-of-"
+                         f"block SoH is retained): {out}")
+    return out
+
+
+def s56_freeze_entry(options, cand, derived):
+    """Freeze-time handling of the S56 EV-plan keys of one entry (parent side). Returns None when the entry declares
+    none (nothing changes). Otherwise a dict: 'declared' (validated settings or None), 'keyed', 'canonical' (the staged
+    canonical, or None), 'entry_fields' (added to the entry). Refuses: a staged plan together with a candidate map or
+    an investment_year; an EV declaration without a derived instance, with a checksum other than the derived
+    instance's, or whose profiles file does not hash to the declaration; a 'mid' ESS parameters file."""
+    if not any(k in options for k in S56_EV_PLAN_KEYS):
+        return None
+    declared = validate_s56_ev_plan(options)
+    keyed = s56_ev_plan_in_key(declared)
+    case_rel = s56_case_rel(derived)
+    fields = {}
+    if declared:
+        fields.update(declared)
+    ev = (declared or {}).get(S56_EV_PROFILES_KEY)
+    if ev is not None:
+        if derived is None:
+            raise ValueError(f'{S56_EV_PROFILES_KEY} requires a spec derived_instance (the EV twin case)')
+        if ev['ev_scenario_checksum'] != derived['scenario_checksum']:
+            raise ValueError(f"{S56_EV_PROFILES_KEY}.ev_scenario_checksum {ev['ev_scenario_checksum']} != the derived "
+                             f"instance's scenario_checksum {derived['scenario_checksum']}")
+        got = sha256_file(os.path.join(REPO, ev['profiles_path']))
+        if got != ev['profiles_sha256']:
+            raise ValueError(f"{S56_EV_PROFILES_KEY}: {ev['profiles_path']} sha256 {got} != declared "
+                             f"{ev['profiles_sha256']}")
+    fields['s56_ess_params_check'] = s56_ess_params_check(case_rel)
+    lattice = s56_lattice(case_rel)
+    canonical = None
+    if S56_STAGED_INVESTMENT_KEY in options:
+        if cand is not None or 'investment_year' in options:
+            raise ValueError(f'{S56_STAGED_INVESTMENT_KEY}: give the plan in the option only (candidate None, no '
+                             f'investment_year)')
+        canonical, facts = s56_staged_canonical(options[S56_STAGED_INVESTMENT_KEY], case_rel, lattice=lattice)
+        fields[S56_STAGED_INVESTMENT_KEY] = canonical['nodes']
+        fields['s56_investment'] = facts
+    if keyed is not None or canonical is not None:
+        fields['s56_ev_plan_label'] = S56_EV_PLAN_LABEL
+    return {'declared': declared, 'keyed': keyed, 'canonical': canonical, 'lattice': lattice, 'case_rel': case_rel,
+            'entry_fields': fields}
+
+
+def is_s56_staged_canonical(canonical):
+    return isinstance(canonical, dict) and canonical.get('schema') == S56_STAGED_SCHEMA
+
+
+def s56_child_declaration(spec, entry):
+    """CHILD SIDE, before any solve: the entry's S56 EV-plan declaration (None when the entry carries none of the keys:
+    nothing is asserted, applied, installed or recorded). Refuses an entry whose label is missing at spec or entry
+    level, or whose EV profiles file no longer hashes to the declaration (loaded with
+    `p515_s56_ev_injection.load_profiles`, schema and key sets checked)."""
+    if not any(k in entry for k in S56_EV_PLAN_KEYS):
+        return None
+    declared = validate_s56_ev_plan(entry)
+    keyed = s56_ev_plan_in_key(declared)
+    staged = is_s56_staged_canonical(entry['canonical'])
+    if (S56_STAGED_INVESTMENT_KEY in entry) != staged:
+        raise RuntimeError(f'S56 EV plan: entry {entry["label"]!r} staged option and canonical schema disagree')
+    if (keyed is not None or staged) and (spec.get('s56_ev_plan_label') != S56_EV_PLAN_LABEL
+                                          or entry.get('s56_ev_plan_label') != S56_EV_PLAN_LABEL):
+        raise RuntimeError(f'S56 EV plan entry {entry["label"]!r} without the label {S56_EV_PLAN_LABEL!r} at spec and '
+                           f'entry level')
+    profiles = None
+    ev = (declared or {}).get(S56_EV_PROFILES_KEY)
+    if ev is not None:
+        import p515_s56_ev_injection as EVI
+        profiles = EVI.load_profiles(os.path.join(REPO, ev['profiles_path']), expected_sha256=ev['profiles_sha256'])
+    return {'declared': declared, 'keyed': keyed, 'staged': staged,
+            'canonical': entry['canonical'] if staged else None, 'ev': ev, 'ev_profiles': profiles,
+            'investment': entry.get('s56_investment'), 'ess_params_check_at_freeze': entry.get('s56_ess_params_check')}
+
+
+def _s56_storage_view(canonical):
+    """`_storage_per_node`'s view of a STAGED canonical: per node the sums of s and e over the cohorts (has_storage iff
+    any cohort is active); a single-year canonical is returned unchanged (the same object)."""
+    if not is_s56_staged_canonical(canonical):
+        return canonical
+    return {'nodes': {n: [sum(v[0] for v in per_year.values()) + 0.0, sum(v[1] for v in per_year.values()) + 0.0]
+                      for n, per_year in canonical['nodes'].items()}}
+
+
+def assert_s56_ev_plan_capture_path(plan):
+    """Rule eleven, CHILD SIDE, BEFORE any solve of an entry declaring an S56 EV-plan key: production supports every
+    declared setting (the key values and attributes exist, the default slack penalty is the constant), every field of
+    the cost breakdown has its source (`S56_COST_BREAKDOWN_SOURCES`: the functions exist and the source text carries
+    the names read), and the network-build path the harness uses does not pass through `uncoordinated_benchmark.py`
+    (whose network builds skip the cohort gross-flow sync, cohort follow-up report). Raises on any failure; returns the
+    checklist (bools) and what was scanned."""
+    import inspect
+    import definitions as DEF
+    import model_construction_helpers as MCH
+    import shared_energy_storage_data as SED
+    import shared_energy_storage_parameters as SEP
+    import shared_resources_planning as srp
+    import p515_s56_cohort_diagnostics as CD
+    import p515_s56_ev_injection as EVI
+    import p516_lattice as L
+    build_src = inspect.getsource(SED._build_subproblem)
+    loop_src = inspect.getsource(srp._run_operational_planning)
+    esso_admm_src = inspect.getsource(srp.update_shared_energy_storage_model_to_admm)
+    flex_src = inspect.getsource(MCH.flexibility_cost)
+    checks = {
+        'production_cohort_formulations_equal_mirror': tuple(SEP.COHORT_FORMULATIONS) == S56_COHORT_FORMULATIONS,
+        'production_cohort_default_is_legacy': SEP.COHORT_FORMULATION_DEFAULT == S56_COHORT_FORMULATION_DEFAULT,
+        'production_params_carry_cohort_formulation': hasattr(SEP.SharedEnergyStorageParameters(),
+                                                              'cohort_formulation'),
+        'production_salvage_carries_in_objective': hasattr(SEP.SalvageValueParameters(), 'in_objective'),
+        'production_params_carry_esso_slack_penalty': hasattr(SEP.SharedEnergyStorageParameters(),
+                                                              'esso_slack_penalty'),
+        'production_default_slack_penalty_is_1e3': float(DEF.PENALTY_ESSO_SLACK) == S56_ESSO_SLACK_PENALTY_DEFAULT,
+        'esso_build_reads_slack_penalty': "getattr(shared_ess_data.params, 'esso_slack_penalty'" in build_src,
+        'esso_build_reads_in_objective': "getattr(shared_ess_data.params.salvage_value, 'in_objective', False)"
+                                         in build_src,
+        'esso_build_reads_cohort_formulation': '_esso_cohort_formulation(shared_ess_data)' in build_src,
+        'esso_admm_sets_kappa': 'salvage_objective_kappa.set_value(' in esso_admm_src,
+        'loop_syncs_cohort_gross_flow': '_sync_shared_ess_cohort_gross_flow(' in loop_src,
+        'flexibility_cost_prices_p_and_q_down': ('model.flex_p_down[' in flex_src and 'model.flex_q_down[' in flex_src
+                                                 and 'network.cost_flex[s_m]' in flex_src),
+        'fn_rebuild_candidate_total_capacities': callable(getattr(srp, '_rebuild_candidate_total_capacities', None)),
+        'fn_operational_recourse_components': callable(getattr(srp, '_get_operational_recourse_components', None)),
+        'fn_admm_block_weight': callable(getattr(srp, '_get_admm_block_weight', None)),
+        'fn_expected_market_price': callable(getattr(MCH, 'expected_market_price', None)),
+        'fn_esso_ageing_model_settings': callable(getattr(SED, '_esso_ageing_model_settings', None)),
+        'fn_esso_update_with_candidate': callable(getattr(SED, '_update_model_with_candidate_solution', None)),
+        'fn_salvage_credit_expression': callable(getattr(SED, '_build_salvage_credit_objective_expression', None)),
+        'fn_diag_esso_slacks': callable(getattr(CD, 'esso_slacks', None)),
+        'fn_diag_cohort_block_day': callable(getattr(CD, 'cohort_block_day', None)),
+        'fn_diag_cohort_degradation': callable(getattr(CD, 'cohort_degradation', None)),
+        'fn_lattice_investment_cost': callable(getattr(L.GeneralLattice, 'investment_cost', None)),
+        'fn_ev_assertion': callable(getattr(EVI, 'assert_ev_arrays', None)),
+        'priced_residual_pr_is_a_coupling_field': 'priced_residual_pr' in PER_CYCLE_INTERFACE_COUPLING_FIELDS,
+        'cost_breakdown_every_field_has_a_source': (len(S56_COST_BREAKDOWN_FIELDS) == len(S56_COST_BREAKDOWN_SOURCES)
+                                                     and all(S56_COST_BREAKDOWN_SOURCES.values())),
+    }
+    if plan.get('staged'):
+        checks['staged_investment_cost_carried_in_entry'] = (plan.get('investment') or {}).get(
+            'investment_cost_eur') is not None
+    # the uncoordinated benchmark's network builds skip the cohort gross-flow sync (cohort follow-up report): it must
+    # not be on this harness's path -- scanned: the harness, its run module, the oracle, the derived-case reader and
+    # production's planning module (each file's text, import statements)
+    scanned = ('p515_s44_campaign_harness.py', 'p515_g_g1_g4_admm_gates.py', 'p56a_oracle.py',
+               'p515_s44_scale_measurement.py', 'shared_resources_planning.py', 'p514_n_instrumented_cstar.py')
+    importing = []
+    for name in scanned:
+        with open(os.path.join(REPO, name), encoding='utf-8') as handle:
+            text = handle.read()
+        if any(ln.strip().startswith(('import uncoordinated_benchmark', 'from uncoordinated_benchmark '))
+               for ln in text.splitlines()):   # import statements only (this function's own text names the module)
+            importing.append(name)
+    checks['uncoordinated_benchmark_not_on_the_harness_path'] = not importing
+    failed = sorted(k for k, v in checks.items() if not v)
+    if failed:
+        raise RuntimeError(f'S56 EV plan: capture path / production support missing (before any solve): {failed}; '
+                           f'uncoordinated_benchmark importers {importing}')
+    out = dict(checks)
+    out['uncoordinated_benchmark_scan'] = {'files': list(scanned), 'importing': importing,
+                                           'note': ('uncoordinated_benchmark.py builds network models without '
+                                                    '_sync_shared_ess_cohort_gross_flow (cohort follow-up report); '
+                                                    'not used by this harness -- gap logged, not fixed')}
+    out['cost_breakdown_fields'] = list(S56_COST_BREAKDOWN_FIELDS)
+    return out
+
+
+def s56_ev_assertion_in_child(planning, plan, holder):
+    """CHILD SIDE, configuration hook, BEFORE the flexibility-price multiplier (Audit J): the in-child EV assertion on
+    the evaluation's own planning object (`p515_s56_ev_injection.assert_ev_arrays`, point 'post_read', the declared EV
+    checksum). Raises EvInjectionMismatch on any failure. Records the order."""
+    import p515_s56_ev_injection as EVI
+    order = holder.setdefault('s56_hook_order', [])
+    summary = EVI.assert_ev_arrays(planning, plan['ev_profiles'], point='post_read',
+                                   expected_scenario_checksum=plan['ev']['ev_scenario_checksum'])
+    order.append('ev_assertion')
+    holder['s56_ev_assertion_in_hook'] = {k: v for k, v in summary.items() if k != 'mismatches_first'}
+    return summary
+
+
+def s56_esso_row_inventory(model):
+    """Per (cohort y_inv, block y) the active / built arrangement-A rows by row list, per block the active aggregate
+    circle and aggregate-Q rows (registry of `_build_esso_cohort_units_rows`). Read-only."""
+    reg = getattr(model, '_esso_cohort_units_rows', None)
+    if reg is None:
+        return {'registry': False}
+    cohort = {}
+    for (y_inv, y), rows in reg['cohort'].items():
+        counts = {}
+        for name, idx in rows:
+            c = counts.setdefault(name, [0, 0])
+            c[1] += 1
+            c[0] += int(getattr(model, name)[idx].active)
+        cohort[f'{y_inv}|{y}'] = {n: {'active': a, 'built': b} for n, (a, b) in sorted(counts.items())}
+    agg_circle = {str(y): sum(int(model.energy_storage_operation_agg[i].active) for i in idxs)
+                  for y, idxs in reg['aggregate_circle'].items()}
+    agg_q = {str(y): sum(int(getattr(model, n)[i].active) for n, i in rows) for y, rows in reg['aggregate'].items()}
+    return {'registry': True, 'min_active_cohorts': reg.get('min_active_cohorts'), 'cohort_pairs': cohort,
+            'aggregate_circle_active': agg_circle,
+            'aggregate_circle_built': {str(y): len(v) for y, v in reg['aggregate_circle'].items()},
+            'aggregate_q_active': agg_q, 'multi_years': list(getattr(model, '_esso_cohort_units_multi_years', []))}
+
+
+def s56_esso_row_inventory_check(model, investment, sed, node_id, formulation):
+    """The row inventory against the rule of the declared mode on THIS candidate: under 'independent_units_all_node_
+    years' every (cohort, block) pair inside an active cohort's window has ALL its rows active and every other pair
+    none; every block with >= 1 active cohort has its aggregate circle rows inactive and its aggregate-Q rows active,
+    every other block the reverse ('independent_units': the same with >= 2). Returns (ok, detail)."""
+    import shared_energy_storage_data as SED
+    inv = s56_esso_row_inventory(model)
+    if formulation == S56_COHORT_FORMULATION_DEFAULT:
+        return (not inv['registry']), {'inventory': inv}
+    years = list(sed.years)
+    counts = SED.shared_ess_active_cohort_counts(sed, {node_id: investment[node_id]})[node_id]
+    threshold = 1 if formulation == 'independent_units_all_node_years' else 2
+    bad = []
+    for key, by_list in inv['cohort_pairs'].items():
+        y_inv, y = (int(t) for t in key.split('|'))
+        cohort_active = not model._esso_cohort_inactive.get(y_inv, False)
+        on = cohort_active and counts[years[y]] >= threshold
+        for name, c in by_list.items():
+            if c['active'] != (c['built'] if on else 0):
+                bad.append({'pair': key, 'row_list': name, **c, 'expected_active': c['built'] if on else 0})
+    for y in range(len(years)):
+        multi = counts[years[y]] >= threshold
+        if inv['aggregate_circle_active'][str(y)] != (0 if multi else inv['aggregate_circle_built'][str(y)]):
+            bad.append({'block': y, 'aggregate_circle_active': inv['aggregate_circle_active'][str(y)],
+                        'multi': multi})
+        if (inv['aggregate_q_active'][str(y)] > 0) != multi:
+            bad.append({'block': y, 'aggregate_q_active': inv['aggregate_q_active'][str(y)], 'multi': multi})
+    return (inv['registry'] and inv['min_active_cohorts'] == threshold and not bad), {
+        'inventory': inv, 'active_cohort_counts': {str(y): n for y, n in counts.items()}, 'threshold': threshold,
+        'violations': bad[:20], 'n_violations': len(bad)}
+
+
+def s56_salvage_credit_readback(model, sed, node_id):
+    """TV read-back on a BUILT ESSO model (zero solves): the objective carries kappa x salvage_credit_obj; the credit
+    is linear in the cohorts' terminal SoH Vars ONLY (no S, P, Q or E variable: the converter is excluded); its constant
+    and coefficients equal the energy-only closed form -disc_T f c^E(y_inv) rlf(y_inv) E [floor + (1 - floor)(SoH -
+    soh_min)/(1 - soh_min)] with production's own factor functions; and production's 'end' SoH point is in force."""
+    import pyomo.environ as pe
+    from pyomo.repn import generate_standard_repn
+    from pyomo.core.expr.visitor import identify_mutable_parameters
+    import shared_energy_storage_data as SED
+    out = {'has_kappa': hasattr(model, 'salvage_objective_kappa')}
+    soh_point, ageing_on = SED._esso_ageing_model_settings(sed)
+    out['available_energy_soh_point'] = soh_point
+    out['ageing_enabled'] = ageing_on
+    if not out['has_kappa']:
+        return out
+    obj_params = {p.parent_component().local_name for p in identify_mutable_parameters(model.objective.expr)}
+    out['objective_references_kappa'] = 'salvage_objective_kappa' in obj_params
+    repn = generate_standard_repn(model.salvage_credit_obj.expr, compute_values=True)
+    families = sorted({v.parent_component().local_name for v in repn.linear_vars})
+    out['credit_variable_families'] = families
+    out['credit_is_linear'] = repn.nonlinear_expr is None and not repn.quadratic_vars
+    params = sed.params.salvage_value
+    years = list(sed.years)
+    idx = sed.get_shared_energy_storage_idx(node_id)
+    terminal = len(years) - 1
+    disc = SED._get_terminal_discount_factor(sed)
+    expected_coef, expected_const = {}, 0.0
+    for y_inv in model.years:
+        ses = sed.shared_energy_storages[years[y_inv]][idx]
+        _a, _r, rlf = SED._get_remaining_calendar_life(sed, y_inv, ses)
+        tcal_norm = round(ses.t_cal / sed.years[years[y_inv]])
+        if rlf <= 0.0 or not (y_inv <= terminal < min(y_inv + tcal_norm, len(years))):
+            continue
+        e = pe.value(model.es_e_investment_fixed[y_inv])
+        unit = disc * params.energy_recovery_fraction * SED._get_expected_energy_investment_cost(sed, years[y_inv]) * rlf
+        expected_coef[model.es_soh_per_unit_cumul[y_inv, terminal].name] = (
+            -unit * (1.0 - params.recycling_floor_fraction) * e / (1.0 - ses.soh_min))
+        expected_const += -unit * (params.recycling_floor_fraction * e
+                                   - (1.0 - params.recycling_floor_fraction) * e * ses.soh_min / (1.0 - ses.soh_min))
+    got = {v.name: float(c) for v, c in zip(repn.linear_vars, repn.linear_coefs)}
+    dev = [abs(got.get(k, 0.0) - c) / max(abs(c), 1.0) for k, c in expected_coef.items() if c != 0.0]
+    extra = sorted(set(got) - set(expected_coef))
+    const = float(repn.constant or 0.0)
+    out.update({'n_credit_terms': len(got), 'n_expected_terms': sum(1 for c in expected_coef.values() if c != 0.0),
+                'max_rel_dev_coefficients': max(dev) if dev else 0.0, 'unexpected_variables': extra,
+                'constant': const, 'constant_expected': expected_const,
+                'constant_rel_dev': abs(const - expected_const) / max(abs(expected_const), 1.0)})
+    out['ok'] = (out['objective_references_kappa'] and out['credit_is_linear'] and soh_point == 'end'
+                 and set(families) <= {'es_soh_per_unit_cumul'} and not extra
+                 and out['max_rel_dev_coefficients'] <= 1e-12 and out['constant_rel_dev'] <= 1e-12)
+    return out
+
+
+def s56_slack_penalty_readback(model):
+    """Coefficient of every ESSO slack Var (P pair; Q pair when built) in `feasibility_penalty` (zero solves). The
+    standard repn folds FIXED Vars into the constant, so the slack Vars of the PROBE model are unfixed first: call this
+    only on a throw-away probe (it is the last read-back on the probes of `apply_s56_ev_plan_settings`), never on a
+    run's model."""
+    from pyomo.repn import generate_standard_repn
+    for name in ('slack_es_pnet_up', 'slack_es_pnet_down', 'slack_es_qnet_up', 'slack_es_qnet_down'):
+        if hasattr(model, name):
+            for v in getattr(model, name).values():
+                if v.fixed:
+                    v.unfix()
+    repn = generate_standard_repn(model.feasibility_penalty.expr, compute_values=True)
+    by = {}
+    for v, c in zip(repn.linear_vars, repn.linear_coefs):
+        name = v.parent_component().local_name
+        if name.startswith('slack_es_pnet_') or name.startswith('slack_es_qnet_'):
+            by.setdefault(name, set()).add(float(c))
+    return {name: sorted(vals) for name, vals in sorted(by.items())}
+
+
+def apply_s56_ev_plan_settings(planning, sed, candidate, report, plan, holder, expected_floor_rows=None):
+    """CHILD SIDE, configuration hook, before any ESSO model is built and BEFORE the flexibility-price multiplier:
+    (1) refuse unless production's 'end' SoH point is in force; (2) set the declared ESSO settings on THIS evaluation's
+    shared-ESS parameters (in memory) and read them back; (3) for a staged entry, write the plan into the candidate
+    (every node-year, production's shape) and rebuild its total capacities; (4) READ BACK from probe ESSO models built
+    by production (`_build_subproblem` + `_update_model_with_candidate_solution`, the candidate's own investment): the
+    cohort-mode row inventory, the TV credit and kappa wiring, the slack-penalty coefficients, and the SoH-floor rows
+    against the precheck's. Raises on any mismatch. Zero solves."""
+    import shared_energy_storage_data as SED
+    import shared_resources_planning as srp
+    declared = plan['declared'] or {}
+    soh_point, ageing_on = SED._esso_ageing_model_settings(sed)
+    if soh_point != 'end':
+        raise RuntimeError(f"S56 EV plan: available_energy_soh_point {soh_point!r} in force; 'end' required (END-of-"
+                           f"block SoH retained)")
+    p = sed.params
+    before = {'cohort_formulation': getattr(p, 'cohort_formulation', None),
+              'salvage_value_enabled': p.salvage_value.enabled,
+              'salvage_value_in_objective': getattr(p.salvage_value, 'in_objective', None),
+              'esso_slack_penalty': getattr(p, 'esso_slack_penalty', None)}
+    if S56_COHORT_FORMULATION_KEY in declared:
+        p.cohort_formulation = declared[S56_COHORT_FORMULATION_KEY]
+    if S56_TV_IN_OBJECTIVE_KEY in declared:
+        if declared[S56_TV_IN_OBJECTIVE_KEY] and not p.salvage_value.enabled:
+            raise RuntimeError('S56 EV plan: terminal value in the objective requires salvage_value.enabled')
+        p.salvage_value.in_objective = declared[S56_TV_IN_OBJECTIVE_KEY]
+    if S56_ESSO_SLACK_PENALTY_KEY in declared:
+        p.esso_slack_penalty = declared[S56_ESSO_SLACK_PENALTY_KEY]
+    after = {'cohort_formulation': getattr(p, 'cohort_formulation', None),
+             'salvage_value_enabled': p.salvage_value.enabled,
+             'salvage_value_in_objective': getattr(p.salvage_value, 'in_objective', None),
+             'esso_slack_penalty': getattr(p, 'esso_slack_penalty', None)}
+    settings_ok = (after['cohort_formulation'] == declared.get(S56_COHORT_FORMULATION_KEY, before['cohort_formulation'])
+                   and after['salvage_value_in_objective'] == declared.get(S56_TV_IN_OBJECTIVE_KEY,
+                                                                            before['salvage_value_in_objective'])
+                   and after['esso_slack_penalty'] == declared.get(S56_ESSO_SLACK_PENALTY_KEY,
+                                                                   before['esso_slack_penalty']))
+    if not settings_ok:
+        raise RuntimeError(f'S56 EV plan: settings did not take effect: before {before}, after {after}')
+    staged = None
+    if plan['staged']:
+        canonical = plan['canonical']
+        years = [int(y) for y in sed.years]
+        nodes = sorted(int(n) for n in candidate['investment'])
+        if sorted(int(n) for n in canonical['nodes']) != nodes or any(
+                sorted(int(y) for y in canonical['nodes'][str(n)]) != years for n in nodes):
+            raise RuntimeError(f'S56 staged: canonical nodes / years {sorted(canonical["nodes"])} do not match the '
+                               f'candidate nodes {nodes} and instance years {years}')
+        prior = {str(n): {str(y): dict(candidate['investment'][n][y]) for y in sed.years} for n in nodes}
+        if any(v['s'] != 0.0 or v['e'] != 0.0 for per_year in prior.values() for v in per_year.values()):
+            raise RuntimeError(f'S56 staged: the candidate is not zero before the staged write: {prior}')
+        for n in nodes:
+            for y in sed.years:
+                s_val, e_val = canonical['nodes'][str(n)][str(int(y))]
+                candidate['investment'][n][y]['s'] = float(s_val)
+                candidate['investment'][n][y]['e'] = float(e_val)
+        srp._rebuild_candidate_total_capacities(planning, candidate)
+        staged = {'written': {str(n): {str(y): dict(candidate['investment'][n][y]) for y in sed.years} for n in nodes},
+                  'total_capacity': {str(n): {str(y): dict(candidate['total_capacity'][n][y]) for y in sed.years}
+                                     for n in nodes},
+                  'written_equals_canonical': all(
+                      [candidate['investment'][n][y]['s'], candidate['investment'][n][y]['e']]
+                      == canonical['nodes'][str(n)][str(int(y))] for n in nodes for y in sed.years)}
+        report['instance_before_s56_staged_write'] = report.get('instance')
+        report['instance'] = {'assignment': 'staged (node-year lattice; S56 harness configuration hook)',
+                              'canonical_schema': S56_STAGED_SCHEMA, 'investment': staged['written']}
+        if not staged['written_equals_canonical']:
+            raise RuntimeError('S56 staged: the written candidate differs from the canonical plan')
+    # read-back on probe ESSO models built by production with this candidate
+    import p515_g_g1_g4_admm_gates as G
+    probes = {node_id: SED._build_subproblem(sed, node_id) for node_id in sed.active_distribution_network_nodes}
+    # the SoH-floor rows are identified on the freshly built probes (structural, before any candidate fixes a Var), as
+    # the precheck identifies them
+    floor_rows, _counts = G._identify_soh_floor_rows(probes)
+    floor_ok = expected_floor_rows is None or floor_rows == expected_floor_rows
+    for node_id, model in probes.items():
+        SED._update_model_with_candidate_solution(sed, {node_id: model}, {node_id: candidate['investment'][node_id]})
+    formulation = after['cohort_formulation']
+    per_node, ok = {}, True
+    for node_id, model in probes.items():
+        inv_ok, inv = s56_esso_row_inventory_check(model, candidate['investment'], sed, node_id, formulation)
+        tv = s56_salvage_credit_readback(model, sed, node_id)
+        slack = s56_slack_penalty_readback(model)
+        slack_ok = all(vals == [after['esso_slack_penalty']] for vals in slack.values()) and bool(slack)
+        tv_ok = (tv.get('ok') is True) if after['salvage_value_in_objective'] else (not tv['has_kappa'])
+        per_node[str(node_id)] = {'row_inventory_ok': inv_ok, 'row_inventory': inv, 'tv': tv, 'tv_ok': tv_ok,
+                                  'slack_coefficients': slack, 'slack_ok': slack_ok,
+                                  'model_cohort_formulation': getattr(model, '_esso_cohort_formulation', None)}
+        ok = ok and inv_ok and tv_ok and slack_ok
+    del probes
+    out = {'declared': declared, 'before': before, 'in_force': after, 'settings_ok': settings_ok,
+           'available_energy_soh_point': soh_point, 'ageing_enabled': ageing_on, 'staged': staged,
+           'probe_readback': per_node, 'floor_rows_identical_to_precheck': floor_ok,
+           'all_ok': bool(ok and floor_ok and settings_ok)}
+    holder.setdefault('s56_hook_order', []).append('esso_settings_and_staged_write')
+    if not out['all_ok']:
+        bad = {n: {k: v[k] for k in ('row_inventory_ok', 'tv_ok', 'slack_ok')} for n, v in per_node.items()}
+        raise RuntimeError(f'S56 EV plan: read-back failed (before any solve): nodes {bad}, floor rows identical '
+                           f'{floor_ok}')
+    return out
+
+
+def _s56_block_years_days(sed):
+    return list(sed.years), list(sed.days)
+
+
+def s56_flex_cost_split(planning, dso_models, tso_model, flex_m=None, original=None):
+    """Flexibility cost (EUR, total discounted) split by variable family -- flex_p_down (active) and flex_q_down
+    (reactive) -- per block and scenario as production's `model_construction_helpers.flexibility_cost` builds it (the
+    loads it prices: params.fl_reg, load.fl_reg, the TSO's ADN-interface loads excluded by its own predicate
+    `load_is_tso_adn_interface`; coefficient cost_flex[s_m][t] x baseMVA; Var values incl. fixed Vars), x production's
+    scenario probability, x `_get_admm_block_weight`. CROSS-CHECKED per block and scenario against the value of the
+    block's own `flex_cost_scenario[s_m, s_o]` Expression (relative 1e-12), and per network against the weighted
+    `total_flex_cost`. With a multiplier m and the original arrays, every coefficient of a FREE flex Var in the
+    Expression's standard repn is compared with the applied closed form (bitwise) and with m x the original
+    (FLEX_PRICE_READBACK_REL_TOL), per family (the split read-back). Zero solves, read-only."""
+    import pyomo.environ as pe
+    from pyomo.repn import generate_standard_repn
+    import model_construction_helpers as MCH
+    import shared_resources_planning as srp
+    fams = FLEX_PRICE_VARS
+    totals = {'TSO': {f: 0.0 for f in fams}, 'DSO': {f: 0.0 for f in fams}}
+    per_dso = {}
+    reconcile = {'TSO': [0.0, 0.0], 'DSO': [0.0, 0.0]}
+    block_rel_max = 0.0
+    readback = {f: {'n_coefficients': 0, 'n_equal_applied': 0, 'n_within_tol_of_m_original': 0} for f in fams}
+    holders = [('TSO', None, planning.transmission_network, tso_model)] + [
+        ('DSO', n, planning.distribution_networks[n], dso_models[n]) for n in sorted(planning.distribution_networks)]
+    for kind, node_id, holder, models in holders:
+        params = holder.params
+        for year in holder.years:
+            for day in holder.days:
+                net, model = holder.network[year][day], models[year][day]
+                if not hasattr(model, 'flex_cost_scenario'):
+                    continue
+                w = srp._get_admm_block_weight(holder, year, day)
+                for s_m in model.scenarios_market:
+                    c_flex = net.cost_flex[s_m]
+                    for s_o in model.scenarios_operation:
+                        prob = net.prob_market_scenarios[s_m] * net.prob_operation_scenarios[s_o]
+                        part = {f: 0.0 for f in fams}
+                        if params.fl_reg:
+                            for c in model.loads:
+                                load = net.loads[c]
+                                if not load.fl_reg or MCH.load_is_tso_adn_interface(net, load):
+                                    continue
+                                for t in model.periods:
+                                    for f in fams:
+                                        part[f] += float(c_flex[t] * net.baseMVA) * float(
+                                            pe.value(getattr(model, f)[c, s_m, s_o, t]))
+                        expr_value = float(pe.value(model.flex_cost_scenario[s_m, s_o]))
+                        block_rel_max = max(block_rel_max, abs(sum(part.values()) - expr_value)
+                                            / max(abs(expr_value), 1.0))
+                        for f in fams:
+                            totals[kind][f] += w * prob * part[f]
+                            if kind == 'DSO':
+                                per_dso.setdefault(str(node_id), {g: 0.0 for g in fams})[f] += w * prob * part[f]
+                        if kind == 'DSO' and flex_m is not None and original is not None:
+                            repn = generate_standard_repn(model.flex_cost_scenario[s_m, s_o].expr, compute_values=True)
+                            for var, coef in zip(repn.linear_vars, repn.linear_coefs):
+                                fam = var.parent_component().local_name
+                                if fam not in fams:
+                                    raise RuntimeError(f'flex_cost_scenario carries an unexpected variable {var.name}')
+                                t = var.index()[-1]
+                                rb = readback[fam]
+                                rb['n_coefficients'] += 1
+                                rb['n_equal_applied'] += int(float(coef) == float(c_flex[t] * net.baseMVA))
+                                target = flex_m * float(original[(node_id, year, day)][s_m][t] * net.baseMVA)
+                                rb['n_within_tol_of_m_original'] += int(
+                                    abs(float(coef) - target) <= FLEX_PRICE_READBACK_REL_TOL * abs(target))
+                reconcile[kind][0] += w * float(pe.value(model.total_flex_cost))
+    for kind in reconcile:
+        reconcile[kind][1] = sum(totals[kind].values())
+    rel = {k: abs(a - b) / max(abs(a), 1.0) for k, (a, b) in reconcile.items()}
+    out = {'definition': ('sum over blocks w_b sum_s pi_s sum_(priced load, hour) cost_flex[s_m][t] baseMVA '
+                          'flex_<p|q>_down; w_b = _get_admm_block_weight (years x days x annualisation); EUR of total '
+                          'discounted cost'),
+           'active_down_eur': {'TSO': totals['TSO']['flex_p_down'], 'DSO': totals['DSO']['flex_p_down']},
+           'reactive_down_eur': {'TSO': totals['TSO']['flex_q_down'], 'DSO': totals['DSO']['flex_q_down']},
+           'per_dso': per_dso,
+           'max_rel_diff_vs_flex_cost_scenario_expression': block_rel_max,
+           'reconciliation_with_total_flex_cost': {
+               k: {'total_flex_cost_weighted': a, 'split_sum': b, 'rel_diff': rel[k]} for k, (a, b) in reconcile.items()},
+           'reconciles': block_rel_max <= 1e-12 and all(v <= 1e-12 for v in rel.values())}
+    if flex_m is not None and original is not None:
+        out['split_readback'] = {'flex_price_multiplier': flex_m, 'rel_tol': FLEX_PRICE_READBACK_REL_TOL,
+                                 'scope': 'free flex Vars of every DSO flex_cost_scenario Expression (standard repn)',
+                                 'per_family': readback,
+                                 'ok': all(r['n_coefficients'] > 0 and r['n_equal_applied'] == r['n_coefficients']
+                                           and r['n_within_tol_of_m_original'] == r['n_coefficients']
+                                           for r in readback.values())}
+    return out
+
+
+def s56_leak_detector(planning, sed, esso_models):
+    """Within-cohort leak L (Expert ruling 4, T8 accepted as the complementarity row's designed slack) and its priced
+    value against the declared ceiling S56_LEAK_CEILING_EUR (1 % of R/4 = 25 EUR). Per (node, cohort, block y, day d,
+    hour t) on every block-day where the cohort is active: m = min(pch, pdch) (MW) -- the simultaneous charge and
+    discharge of ONE cohort; L = sum w_(y,d) m dt (MWh, total discounted weight w = _get_admm_block_weight of the TSO
+    block: years x days x annualisation); priced lambda L = sum w_(y,d) lambda_(y,d,t) m dt with lambda = |pibar_t|,
+    production's probability-weighted energy price of the TSO block (EUR/MWh). The loss-priced variant (the stored
+    energy lost, (1/eta_dch - eta_ch) m dt) is beside it; the ceiling is applied to the gross form (the larger)."""
+    import pyomo.environ as pe
+    import model_construction_helpers as MCH
+    import shared_resources_planning as srp
+    import p515_s56_cohort_diagnostics as CD
+    years, days = _s56_block_years_days(sed)
+    tso = planning.transmission_network
+    L_mwh = priced = priced_loss = 0.0
+    max_mw, per_node = 0.0, {}
+    for node_id in sed.active_distribution_network_nodes:
+        model = esso_models[node_id]
+        dt = MCH.period_duration_hours(model)
+        node = per_node.setdefault(str(node_id), {'L_weighted_mwh': 0.0, 'priced_eur': 0.0, 'max_mw': 0.0})
+        for y in model.years:
+            cohorts = CD.active_cohorts(model, y)
+            for d in model.days:
+                w = srp._get_admm_block_weight(tso, years[y], days[d])
+                net = tso.network[years[y]][days[d]]
+                for y_inv in cohorts:
+                    eta_ch, eta_dch = CD.cohort_efficiencies(sed, node_id, y_inv)
+                    for p in model.periods:
+                        m = min(float(pe.value(model.es_pch_per_unit[y_inv, y, d, p])),
+                                float(pe.value(model.es_pdch_per_unit[y_inv, y, d, p])))
+                        m = max(m, 0.0)
+                        lam = abs(float(MCH.expected_market_price(net, p)))
+                        L_mwh += w * m * dt
+                        priced += w * lam * m * dt
+                        priced_loss += w * lam * (1.0 / eta_dch - eta_ch) * m * dt
+                        node['L_weighted_mwh'] += w * m * dt
+                        node['priced_eur'] += w * lam * m * dt
+                        node['max_mw'] = max(node['max_mw'], m)
+                        max_mw = max(max_mw, m)
+    return {'definition': ('L = sum w_(y,d) min(pch, pdch) dt over (node, active cohort, block, day, hour); lambda L = '
+                           'sum w_(y,d) |pibar_(y,d,t)| min(pch, pdch) dt; w = _get_admm_block_weight(TSO, y, d); pibar '
+                           '= model_construction_helpers.expected_market_price(TSO block, t); loss-priced variant x '
+                           '(1/eta_dch - eta_ch); ceiling applied to the gross priced form'),
+            'L_weighted_mwh': L_mwh, 'priced_eur': priced, 'priced_loss_eur': priced_loss,
+            'max_simultaneous_mw': max_mw, 'ceiling_eur': S56_LEAK_CEILING_EUR,
+            'ceiling_source': 'Expert ruling 4 (handback 3): lambda L priced <= 1 % of R/4, R = 10,000 EUR',
+            'within_ceiling': priced <= S56_LEAK_CEILING_EUR, 'per_node': per_node}
+
+
+def s56_exit_certificate(sed, esso_models):
+    """E6: per node and (block, day) with >= 1 active cohort, the cohort detectors (`cohort_block_day`, SoC arrays
+    dropped), and over the whole evaluation the Q slack, the per-cohort closure / balance residuals, the window and
+    converter margins and the energy-accounting residual. Read-only."""
+    import p515_s56_cohort_diagnostics as CD
+    years, days = _s56_block_years_days(sed)
+    per, summary = {}, {'closure_residual_max_abs_mwh': 0.0, 'energy_balance_residual_max_mwh': 0.0,
+                        'window_margin_min_mwh': None, 'circle_margin_min_mva': None,
+                        'energy_accounting_residual_max_abs_mwh': 0.0, 'within_cohort_simultaneity_max_mwh': 0.0,
+                        'inter_cohort_gross_transfer_max_mwh': 0.0, 'n_block_days': 0, 'soc_sources': []}
+    for node_id in sed.active_distribution_network_nodes:
+        model = esso_models[node_id]
+        node = per.setdefault(str(node_id), {'slacks': CD.esso_slacks(model), 'block_day': {}})
+        for y in model.years:
+            if not CD.active_cohorts(model, y):
+                continue
+            for d in model.days:
+                bd = CD.cohort_block_day(model, sed, node_id, y, d)
+                for rec in bd['per_cohort'].values():
+                    rec.pop('soc_mwh', None)
+                    summary['closure_residual_max_abs_mwh'] = max(summary['closure_residual_max_abs_mwh'],
+                                                                  abs(rec['closure_residual_mwh']))
+                    summary['energy_balance_residual_max_mwh'] = max(summary['energy_balance_residual_max_mwh'],
+                                                                     rec['energy_balance_residual_max_mwh'])
+                    for k, src in (('window_margin_min_mwh', 'window_margin_min_mwh'),
+                                   ('circle_margin_min_mva', 'circle_margin_min_mva')):
+                        summary[k] = rec[src] if summary[k] is None else min(summary[k], rec[src])
+                    summary['within_cohort_simultaneity_max_mwh'] = max(summary['within_cohort_simultaneity_max_mwh'],
+                                                                        rec['within_cohort_simultaneity_mwh'])
+                    if rec['soc_source'] not in summary['soc_sources']:
+                        summary['soc_sources'].append(rec['soc_source'])
+                summary['energy_accounting_residual_max_abs_mwh'] = max(
+                    summary['energy_accounting_residual_max_abs_mwh'], abs(bd['energy_accounting']['residual_mwh']))
+                summary['inter_cohort_gross_transfer_max_mwh'] = max(summary['inter_cohort_gross_transfer_max_mwh'],
+                                                                     bd['inter_cohort_gross_transfer_mwh'])
+                summary['n_block_days'] += 1
+                node['block_day'][f'{years[y]}|{days[d]}'] = bd
+    q = [v['slacks']['q'] for v in per.values() if v['slacks'].get('q')]
+    p = [v['slacks']['p'] for v in per.values() if v['slacks'].get('p')]
+    summary['q_slack_max_abs_mvar'] = max((x['max_abs'] for x in q), default=None)
+    summary['q_slack_sum_mvar'] = sum(x['sum'] for x in q) if q else None
+    summary['p_slack_max_abs_mw'] = max((x['max_abs'] for x in p), default=None)
+    summary['p_slack_sum_mw'] = sum(x['sum'] for x in p) if p else None
+    return {'summary': summary, 'per_node': per}
+
+
+def s56_network_certificate(planning, models):
+    """The network side of E6 (read-only): per TSO / DSO block the network shared-ESS day-closure slack max
+    (`model_construction_helpers.shared_ess_network_closure_slack_max`, D2 gate: implied with zero slack; MWh on the
+    block's baseMVA) and the count of `sess_comp` rows deactivated (D1 (a): the network-side switch on multi-cohort
+    node-years under a corrected cohort formulation)."""
+    import model_construction_helpers as MCH
+    per, worst, n_off = {}, 0.0, 0
+    holders = [('TSO', planning.transmission_network, models['tso'])] + [
+        (f'DSO{n}', planning.distribution_networks[n], models['dso'][n]) for n in sorted(planning.distribution_networks)]
+    for tag, holder, blocks in holders:
+        for year in holder.years:
+            for day in holder.days:
+                model = blocks[year][day]
+                cl = MCH.shared_ess_network_closure_slack_max(model, s_base=holder.network[year][day].baseMVA)
+                off = sum(1 for c in model.sess_comp.values() if not c.active) if hasattr(model, 'sess_comp') else 0
+                built = len(model.sess_comp) if hasattr(model, 'sess_comp') else 0
+                per[f'{tag}|{year}|{day}'] = {'closure_slack_max_mwh': cl['max_mwh'], 'closure_slack_entries':
+                                              cl['n_entries'], 'sess_comp_inactive': off, 'sess_comp_built': built}
+                worst = max(worst, cl['max_mwh'] or 0.0)
+                n_off += off
+    return {'closure_slack_max_mwh': worst, 'sess_comp_inactive_total': n_off, 'per_block': per}
+
+
+def s56_cost_breakdown(planning, sed, models, rows, plan, holder):
+    """CHILD SIDE, post-run hook, ZERO SOLVES, on the run's own terminal models: every field of
+    S56_COST_BREAKDOWN_FIELDS (sources in S56_COST_BREAKDOWN_SOURCES). Objective convention: EUR of total discounted
+    cost; gross_operational_cost as production's `_get_operational_recourse_components` returns it (the convention it
+    states in `q_convention`); net = gross - terminal value credit; total = I(x) + net."""
+    import pyomo.environ as pe
+    import shared_resources_planning as srp
+    import p515_s56_cohort_diagnostics as CD
+    rc = srp._get_operational_recourse_components(planning, models)
+    inv = (plan.get('investment') or {}).get('investment_cost_eur')
+    gross, tv, net = rc['gross_operational_cost'], rc['terminal_salvage_value'], rc['net_operational_recourse']
+    flex_m = (holder.get('flex_price_applied') or {}).get('flex_price_multiplier')
+    flex = s56_flex_cost_split(planning, models['dso'], models['tso'], flex_m=flex_m,
+                               original=holder.get('_flex_price_original_arrays'))
+    penalty = getattr(sed.params, 'esso_slack_penalty', S56_ESSO_SLACK_PENALTY_DEFAULT)
+    slack = {}
+    for node_id in sed.active_distribution_network_nodes:
+        slack[str(node_id)] = CD.esso_slacks(models['esso'][node_id])
+    slack_tot = {}
+    for k in ('p', 'q'):
+        vals = [v[k] for v in slack.values() if v.get(k)]
+        slack_tot[k] = {'sum': sum(x['sum'] for x in vals) if vals else None,
+                        'max_abs': max(x['max_abs'] for x in vals) if vals else None,
+                        'n_nodes_with_pair': len(vals)}
+        slack_tot[k]['priced_in_esso_objective'] = penalty * slack_tot[k]['sum'] if vals else None
+    kappa = {}
+    for node_id in sed.active_distribution_network_nodes:
+        m = models['esso'][node_id]
+        if hasattr(m, 'salvage_objective_kappa'):
+            a = pe.value(m.admm_esso_al_scale) if hasattr(m, 'admm_esso_al_scale') else 1.0
+            sigma = pe.value(m.admm_common_objective_scale) if hasattr(m, 'admm_common_objective_scale') else None
+            k = pe.value(m.salvage_objective_kappa)
+            kappa[str(node_id)] = {'kappa': k, 'a': a, 'sigma': sigma,
+                                   'equals_a_over_sigma': sigma is not None and k == a / sigma and k > 0.0}
+        else:
+            kappa[str(node_id)] = None
+    throughput = {str(n): CD.cohort_degradation(models['esso'][n], sed, n) for n in sed.active_distribution_network_nodes}
+    last = rows[-1] if rows else {}
+    out = {
+        'schema': S56_COST_BREAKDOWN_SCHEMA,
+        'objective_convention': {'units': 'EUR of total discounted cost',
+                                 'gross_operational_cost': ('production _get_operational_recourse_components '
+                                                            'gross_operational_cost, q_convention '
+                                                            f"{rc.get('q_convention', 'contracted settlement and pin excluded (option off)')!r}"),
+                                 'net': 'gross_operational_cost - terminal value credit (salvage)',
+                                 'total': 'investment cost I(x) + net'},
+        'investment_cost_eur': inv,
+        'gross_operational_cost_eur': gross,
+        'terminal_value_credit_eur': tv,
+        'net_operational_recourse_eur': net,
+        'total_planning_cost_eur': (inv + net) if inv is not None else None,
+        'flexibility_cost_eur': flex,
+        'flexibility_cost_reactive_down_eur': flex['reactive_down_eur']['DSO'] + flex['reactive_down_eur']['TSO'],
+        'flex_price_split_readback': flex.get('split_readback'),
+        'esso_slack_totals': {'esso_slack_penalty_in_force': penalty, 'totals': slack_tot, 'per_node': slack,
+                              'units': 'MW / MVAr summed over (block, day, hour); priced = penalty x sum (ESSO objective)'},
+        'leak_detector': s56_leak_detector(planning, sed, models['esso']),
+        'per_cohort_throughput': throughput,
+        'exit_certificate_e6': {**s56_exit_certificate(sed, models['esso']),
+                                'network': s56_network_certificate(planning, models)},
+        'salvage_objective_kappa': kappa,
+        'priced_residual_pr': {'value_terminal_cycle': last.get('priced_residual_pr'),
+                               'label': S56_PRICED_RESIDUAL_PR_LABEL,
+                               'note': 'present only on entries declaring the per-scenario coupling'},
+        'recourse_components': {k: v for k, v in rc.items() if isinstance(v, (int, float, str)) or v is None},
+    }
+    missing = [f for f in S56_COST_BREAKDOWN_FIELDS if f not in out]
+    if missing:
+        raise RuntimeError(f'S56 cost breakdown: fields without a value path: {missing}')
+    out['checks'] = {
+        'flex_split_reconciles_with_total_flex_cost': flex['reconciles'],
+        'flex_split_readback_ok': (flex.get('split_readback') or {}).get('ok', True),
+        'kappa_equals_a_over_sigma_where_built': all(v is None or v['equals_a_over_sigma'] for v in kappa.values()),
+        'kappa_built_iff_tv_declared': all((v is not None) == bool(sed.params.salvage_value.in_objective)
+                                           for v in kappa.values()),
+        'leak_within_ceiling': out['leak_detector']['within_ceiling'],
+    }
+    return out
+
+
+def write_s56_cost_breakdown(planning, sed, models, rows, plan, holder, eval_dir):
+    """Write `S56_COST_BREAKDOWN_FILE` (write-once) and return the record summary."""
+    out = s56_cost_breakdown(planning, sed, models, rows, plan, holder)
+    path = os.path.join(eval_dir, S56_COST_BREAKDOWN_FILE)
+    _write_once_json(path, out)
+    return {'status': 'written', 'path': os.path.relpath(path, REPO), 'sha256': sha256_file(path),
+            'checks': out['checks'],
+            # 'within_ceiling' of the leak is reported, not a harness failure (a measurement against a declared ceiling)
+            'harness_checks_ok': all(v for k, v in out['checks'].items() if k != 'leak_within_ceiling'),
+            **{k: out[k] for k in ('investment_cost_eur', 'gross_operational_cost_eur', 'terminal_value_credit_eur',
+                                   'net_operational_recourse_eur', 'total_planning_cost_eur',
+                                   'flexibility_cost_reactive_down_eur')},
+            'flexibility_active_down_eur': out['flexibility_cost_eur']['active_down_eur'],
+            'esso_slack_totals': out['esso_slack_totals']['totals'],
+            'leak_detector': {k: out['leak_detector'][k] for k in ('L_weighted_mwh', 'priced_eur', 'priced_loss_eur',
+                                                                   'max_simultaneous_mw', 'ceiling_eur',
+                                                                   'within_ceiling')},
+            'exit_certificate_e6_summary': out['exit_certificate_e6']['summary'],
+            'priced_residual_pr': out['priced_residual_pr']}
+
+
+def s56_ev_plan_record_fields(entry, holder):
+    """The record fields of an entry declaring an S56 EV-plan key (empty otherwise, so every other record keeps its
+    format)."""
+    if not any(k in entry for k in S56_EV_PLAN_KEYS):
+        return {}
+    out = {k: entry[k] for k in S56_EV_PLAN_KEYS if k in entry}
+    for k in ('s56_ev_plan_label', 's56_investment', 's56_ess_params_check'):
+        if k in entry:
+            out[k] = entry[k]
+    out.update({
+        's56_ev_plan_capture_checklist_asserted_before_run': holder.get('s56_ev_plan_capture_checklist'),
+        's56_ev_injection_at_read': holder.get('s56_ev_injection_at_read'),
+        's56_ev_assertion_in_hook': holder.get('s56_ev_assertion_in_hook'),
+        's56_hook_order': holder.get('s56_hook_order'),
+        's56_ev_plan_applied_in_child': holder.get('s56_ev_plan_applied'),
+        's56_cost_breakdown': holder.get('s56_cost_breakdown') or {'status': 'not_reached'},
+        'priced_residual_pr_label': S56_PRICED_RESIDUAL_PR_LABEL,
+    })
+    return out
+
+
 _HEX64 = frozenset('0123456789abcdef')
 
 
@@ -2372,6 +3374,7 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     any_rho0_scale = False  # W183a
     any_nrf_option = False  # W183a
     any_interface_coupling = False  # S56 step 1
+    any_s56_ev_plan = False  # S56 EV plan (critical path step 1)
     for item in candidates:
         if len(item) == 2:
             (label, cand), options = item, {}
@@ -2382,8 +3385,12 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         if bad:
             raise ValueError(f'unsupported evaluation options {bad} for {label}; supported: '
                              f'{sorted(EVALUATION_OPTION_KEYS)}')
-        canon = canonical_candidate(cand, investment_year=options.get('investment_year',
-                                                                      INVESTMENT_YEAR))
+        s56_plan = s56_freeze_entry(options, cand, derived)  # S56 EV plan: None unless the entry declares a key
+        if s56_plan is not None and s56_plan['canonical'] is not None:
+            canon = s56_plan['canonical']  # S56 staged: the lattice schema 'v2' canonical form
+        else:
+            canon = canonical_candidate(cand, investment_year=options.get('investment_year',
+                                                                          INVESTMENT_YEAR))
         key = candidate_key(canon)
         eff_overrides = validate_overrides(options['overrides']) if 'overrides' in options else dict(overrides)
         model_variant = validate_model_variant(options.get('model_variant'))
@@ -2407,6 +3414,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
                               settling_continuation=settling, settling_extension=extension,
                               settling_resettle=resettle, rho0_scale=rho0_scale, nrf_option=nrf_option,
                               interface_coupling=coupling)
+        if s56_plan is not None:  # S56 EV plan: the keyed settings wrap the key every rule above gives
+            ekey = s56_evaluation_key(ekey, s56_plan['keyed'])
         if label in seen_labels or ekey in seen_keys:
             raise ValueError(f'duplicate evaluation label or key (candidate x configuration): {label} / {ekey[:16]}')
         seen_labels.add(label)
@@ -2459,6 +3468,12 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         for s56_key in (S56_CERTIFICATION_STOP_DISABLED_KEY, S56_INTERFACE_V_MULTIPLIER_CAPTURE_KEY):  # S56 s4 calib
             if s56_key in options:  # only when given, so every other entry keeps its format
                 cand_entry[s56_key] = validate_s56_calibration_key(s56_key, options[s56_key])
+        if s56_plan is not None:  # S56 EV plan: only when given, so every other entry keeps its format
+            cand_entry.update(s56_plan['entry_fields'])
+            if 'investment_year' in canon:  # a single-year candidate: I(x) embedded in the lattice, reporting only
+                cand_entry['s56_investment'] = s56_single_year_investment_cost(canon, s56_plan['case_rel'],
+                                                                               lattice=s56_plan['lattice'])
+            any_s56_ev_plan = any_s56_ev_plan or 's56_ev_plan_label' in cand_entry
         cand_entries.append(cand_entry)
     os.makedirs(campaign_root, exist_ok=True)  # only after every validation above has passed
     try:
@@ -2518,6 +3533,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         spec['nrf_option_label'] = NRF_OPTION_LABEL
     if any_interface_coupling:  # S56 step 1: a campaign holding the per-scenario coupling says so at the top level
         spec['interface_coupling_label'] = INTERFACE_COUPLING_LABEL
+    if any_s56_ev_plan:  # S56 EV plan: a campaign holding a keyed / staged entry says so at the top level
+        spec['s56_ev_plan_label'] = S56_EV_PLAN_LABEL
     text = json.dumps(spec, indent=1, sort_keys=True, default=str)
     digest = hashlib.sha256(text.encode()).hexdigest()
     path = os.path.join(campaign_root, f'campaign_spec_{_sanitize_id(campaign_id)}_{digest[:8]}.json')
@@ -2718,6 +3735,12 @@ def _spec_candidate(ctx, candidate):
         hits = [e for e in ctx.spec['candidates'] if e['label'] == candidate]
         if len(hits) != 1:
             raise ValueError(f'evaluation label {candidate!r} is not (uniquely) in the frozen campaign spec')
+        return hits[0]
+    if is_s56_staged_canonical(candidate):  # S56 staged: a canonical 'v2' form is matched by its key
+        hits = [e for e in ctx.spec['candidates'] if e['key'] == candidate_key(candidate)]
+        if len(hits) != 1:
+            raise ValueError(f'staged candidate {candidate_key(candidate)[:16]} matches {len(hits)} entries; name it '
+                             f'by label')
         return hits[0]
     if 'investment_year' in candidate:
         if set(candidate) != {'investment_year', 'nodes'}:
@@ -3051,6 +4074,7 @@ def _max_net_recourse_step_last_n(rows, n=BAR_WINDOW):
 
 
 def _storage_per_node(canonical, esso_capture, floor_terminal, published_caps):
+    canonical = _s56_storage_view(canonical)  # S56 staged: per-node sums; a single-year canonical is unchanged
     out = {}
     per_node_floor = {}
     if floor_terminal and floor_terminal.get('available'):
@@ -4124,7 +5148,7 @@ def capture_nrf_terminal(planning, models):
 def _config_hook_factory(spec, holder, overrides=None, model_variant=None, investment_year=INVESTMENT_YEAR,
                          expected_floor_rows=None, flex_price_multiplier=None, interface_deviation_premium=None,
                          release_solution_bookkeeping=None, rho0_scale=None, nrf_option=None,
-                         interface_coupling=None):
+                         interface_coupling=None, s56_ev_plan=None):
     """pre_solve_hook: verify the case file carries the D oracle configuration
     (same checks as `p515_s43_aa_run._aa_on_pre_solve_hook`), then apply the
     evaluation's overrides (`overrides`; default = the campaign-level
@@ -4173,7 +5197,13 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
     in force is recorded (`w183a_nrf_option`) whenever the option is given or the marker exists.
     P5.15 S56 step 1: with a non-default `interface_coupling` the three `ADMMParameters` attributes are set and read
     back (`apply_interface_coupling`; recorded as `s56_interface_coupling`); otherwise the defaults must be in force
-    and nothing is recorded."""
+    and nothing is recorded.
+    S56 EV plan (critical path step 1): with `s56_ev_plan` (the child's declaration, `s56_child_declaration`): an EV
+    entry's derived-instance check requires the single-scenario EV twin (in place of > 1 scenario combination) and the
+    in-child EV assertion runs right after it (`s56_ev_assertion_in_child`), i.e. BEFORE the flexibility-price
+    multiplier, which refuses to run on an EV entry whose assertion has not run (Audit J); before the multiplier the
+    declared ESSO settings and the staged plan are applied and read back (`apply_s56_ev_plan_settings`). Without it
+    (None) nothing changes."""
     import p515_g_g1_g4_admm_gates as G
     model_variant = validate_model_variant(model_variant)
     flex_price_multiplier = validate_flex_price_multiplier(flex_price_multiplier)
@@ -4269,12 +5299,21 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
                               'planning_has_more_than_one_scenario_combination': (
                                   planning.num_market_scenarios * planning.transmission_network.num_oper_scenarios
                                   > 1)}
+            if s56_ev_plan is not None and s56_ev_plan['ev'] is not None:  # S56 EV: the single-scenario EV twin
+                del derived_checks['planning_has_more_than_one_scenario_combination']
+                derived_checks['s56_ev_planning_is_the_single_scenario_twin'] = (
+                    planning.num_market_scenarios * planning.transmission_network.num_oper_scenarios == 1)
             holder['derived_instance_checks'] = derived_checks
             report['rule_eleven_checklist']['w47_derived_instance'] = {'declared': derived, 'checks': derived_checks,
                                                                         'planning_scenario_checksum': got}
             if not all(derived_checks.values()):
                 raise RuntimeError(f'derived_instance: the planning object is not the declared instance: '
                                    f'{derived_checks} (checksum {got})')
+        if s56_ev_plan is not None and s56_ev_plan['ev'] is not None:  # S56 EV: assertion BEFORE the multiplier
+            ev_summary = s56_ev_assertion_in_child(planning, s56_ev_plan, holder)
+            report['rule_eleven_checklist']['s56_ev_assertion'] = {k: ev_summary[k] for k in (
+                'point', 'profiles_sha256', 'n_injected_checked', 'n_a5_checked', 'n_mismatches',
+                'combined_scenario_checksum', 'ok')}
         if premium is not None:  # W47: row 18's premium, set before any model is built, verified
             before = dict(a.interface_deviation_premium)
             a.interface_deviation_premium = {'alpha': premium['alpha'], 'floor': premium['floor'],
@@ -4331,6 +5370,15 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
                                    f"{ {n: v['checks'] for n, v in readback['per_node'].items()} }")
             if not floor_rows_ok:
                 raise RuntimeError('model_variant changed the SoH-floor row identification of the ESSO model')
+        if s56_ev_plan is not None:  # S56 EV plan: ESSO settings + staged write + probe read-back, before the multiplier
+            holder['s56_ev_plan_applied'] = apply_s56_ev_plan_settings(planning, sed, candidate, report, s56_ev_plan,
+                                                                       holder, expected_floor_rows=expected_floor_rows)
+            report['rule_eleven_checklist']['s56_ev_plan'] = {'all_ok': holder['s56_ev_plan_applied']['all_ok'],
+                                                              'in_force': holder['s56_ev_plan_applied']['in_force']}
+        if flex_price_multiplier is not None and s56_ev_plan is not None:  # S56: the order of Audit J, enforced
+            if s56_ev_plan['ev'] is not None and 'ev_assertion' not in holder.get('s56_hook_order', []):
+                raise RuntimeError('S56 EV: the flexibility-price multiplier would run before the EV assertion')
+            holder.setdefault('s56_hook_order', []).append('flex_price_multiplier')
         if flex_price_multiplier is not None:  # W33: last, so every check above ran on the unmodified planning
             applied_fp = apply_flex_price_multiplier(planning, flex_price_multiplier)  # raises on any mismatch
             holder['_flex_price_original_arrays'] = applied_fp.pop('_original_arrays')
@@ -4573,14 +5621,18 @@ class _NoStageLog:
         return nullcontext(label)
 
 
-def install_derived_instance(derived, eval_dir):
+def install_derived_instance(derived, eval_dir, ev_profiles=None, ev_record=None):
     """CHILD SIDE, FIRST (before anything reads the oracle baseline): hash the declared case file, read it with
     the scale harness's own reader (`p515_s44_scale_measurement.read_planning_from_derived_case`: production's
     `SharedResourcesPlanning` on data/SRP1 with the derived file; plots / results / logs of the READ redirected into
     `<eval_dir>/planning_read`), refuse unless the combined scenario checksum equals the declaration, and install
     it as the oracle baseline (`p56a_oracle.install_baseline`, instance label = the declaration's), so every later
     `fresh_planning` of this process -- the floor-row precheck and the run -- deep-copies the derived instance.
-    Zero solves. Returns the evidence; raises on any mismatch."""
+    Zero solves. Returns the evidence; raises on any mismatch.
+    S56 EV plan: with `ev_profiles` (a loaded `p515_s56_ev_injection` profiles file) the read runs with the injection
+    hook installed at production's checksum point (`ScenarioPointHook`, injecting once), and the in-child assertion
+    (`assert_ev_arrays`, point 'post_read', the declared checksum) must hold BEFORE the baseline is installed; what was
+    done goes into the caller's dict `ev_record`. Without it (None) nothing changes."""
     import p56a_oracle as O
     import p515_s44_scale_measurement as S
     derived = validate_derived_instance(derived)
@@ -4597,12 +5649,27 @@ def install_derived_instance(derived, eval_dir):
     if os.path.exists(read_dir):
         raise RuntimeError(f'refusing to overwrite existing artifact: {read_dir}')
     t0 = time.time()
+    ev_hook = None
+    if ev_profiles is not None:  # S56 EV plan: the injection hook around the read (installed only with the profiles)
+        import p515_s56_ev_injection as EVI
+        ev_hook = EVI.ScenarioPointHook(profiles=ev_profiles).install()
     planning = S.read_planning_from_derived_case({'derived_case': {'path': derived['case_path']}}, eval_dir,
                                                  _NoStageLog())
+    if ev_hook is not None:
+        ev_hook.uninstall()
     checksum = (planning.scenario_metadata or {}).get('combined_scenario_checksum')
     if checksum != derived['scenario_checksum']:
         raise RuntimeError(f"derived_instance: combined scenario checksum {checksum} != declared "
                            f"{derived['scenario_checksum']}")
+    if ev_hook is not None:  # S56 EV plan: the read injected once, and the in-child assertion holds on it
+        ev_summary = EVI.assert_ev_arrays(planning, ev_profiles, point='post_read',
+                                          expected_scenario_checksum=derived['scenario_checksum'])
+        if ev_hook.calls != 1 or len(ev_hook.inject_counts) != 1:
+            raise RuntimeError(f'S56 EV: the checksum-point hook ran {ev_hook.calls} times (expected 1)')
+        if ev_record is not None:
+            ev_record.update({'hook_calls': ev_hook.calls, 'inject_counts': list(ev_hook.inject_counts),
+                              'profiles_sha256': ev_profiles['sha256'],
+                              'assertion_post_read': {k: v for k, v in ev_summary.items() if k != 'mismatches_first'}})
     installed = O.install_baseline(planning, checksum, instance_label=derived['instance_label'])
     return {'case_path': derived['case_path'], 'case_sha256_in_child': got, 'scenario_checksum_in_child': checksum,
             'instance_label': installed['instance_label'],
@@ -6767,6 +7834,12 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     if s56_v_capture:
         holder['s56_interface_v_multiplier_checklist'] = assert_s56_interface_v_multiplier_path()
         progress['s56_interface_v_multiplier_checklist'] = holder['s56_interface_v_multiplier_checklist']
+    # S56 EV plan (critical path step 1): the entry's declaration (None: nothing asserted, applied, installed or
+    # recorded); its capture path and production support asserted here, before any solve (rule eleven).
+    s56_plan = s56_child_declaration(spec, entry)
+    if s56_plan is not None:
+        holder['s56_ev_plan_capture_checklist'] = assert_s56_ev_plan_capture_path(s56_plan)
+        progress['s56_ev_plan_capture_checklist'] = holder['s56_ev_plan_capture_checklist']
     post_request = entry.get('post_certification')
     post_checklist = None
     if post_request:
@@ -6829,7 +7902,11 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     interface_dual_checklist = IDC.assert_capture_path()
     progress['interface_dual_capture_checklist'] = interface_dual_checklist
     derived_installed = None
-    if derived is not None:
+    if derived is not None and (s56_plan or {}).get('ev_profiles') is not None:  # S56 EV: the read with injection
+        holder['s56_ev_injection_at_read'] = {}
+        derived_installed = install_derived_instance(derived, eval_dir, ev_profiles=s56_plan['ev_profiles'],
+                                                     ev_record=holder['s56_ev_injection_at_read'])
+    elif derived is not None:
         derived_installed = install_derived_instance(derived, eval_dir)
         progress['derived_instance_installed'] = derived_installed
         print(f"[S44-CHILD] derived instance {derived['instance_label']} installed: case sha256 "
@@ -6857,6 +7934,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         'pf_stride': os.path.join(eval_dir, f'pf_entry_stride_{label}.jsonl'),
         'exempt': os.path.join(eval_dir, f'ess_exempt_until_state_{label}.jsonl'),
     }
+    if s56_plan is not None and os.path.exists(os.path.join(eval_dir, S56_COST_BREAKDOWN_FILE)):  # S56 EV plan
+        raise RuntimeError(f'refusing to overwrite existing artifact: {os.path.join(eval_dir, S56_COST_BREAKDOWN_FILE)}')
     for p in list(paths.values()) + [os.path.join(eval_dir, f) for f in (
             POST_CERTIFICATION_FILE, HULL_BOUND_DETAIL_FILE, AA_SIDECAR_FILE, 'certified_models.pkl',
             RESPONSE_TERMINAL_FILE, PER_CYCLE_RESPONSE_FILE, ACTIVATION_READBACK_FILE, INIT_IDENTITY_FILE,
@@ -6904,6 +7983,17 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                                      floor_rows_by_node=floor_rows_by_node, floor_sidecar_path=paths['floor'])
         caps = sed.get_updated_capacities(models['esso'])
         holder['published_caps'] = {str(n): {str(y): v for y, v in per_year.items()} for n, per_year in caps.items()}
+        if s56_plan is not None:  # S56 EV plan: the cost breakdown on the run's own terminal models, zero solves
+            try:
+                holder['s56_cost_breakdown'] = write_s56_cost_breakdown(planning, sed, models, rows, s56_plan, holder,
+                                                                        eval_dir)
+            except Exception as error:  # noqa: BLE001 -- recorded loudly; the child exits 2 after writing its record
+                tb = traceback.format_exc()
+                print(tb, file=sys.stderr, flush=True)
+                holder['s56_cost_breakdown'] = {'status': 'error', 'error': f'{type(error).__name__}: {error}',
+                                                'traceback': tb}
+            print(f"[S44-CHILD] S56 cost breakdown: {holder['s56_cost_breakdown'].get('status')} (checks "
+                  f"{holder['s56_cost_breakdown'].get('checks')})", flush=True)
         if nrf_on:  # W183c: the NRF rows and binding hours, read-only on the run's own terminal models
             try:
                 holder['nrf_terminal'] = capture_nrf_terminal(planning, models)
@@ -7058,7 +8148,7 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                                                 interface_deviation_premium=premium,
                                                 release_solution_bookkeeping=release_bk,
                                                 rho0_scale=rho0_scale, nrf_option=nrf_option,
-                                                interface_coupling=interface_coupling),
+                                                interface_coupling=interface_coupling, s56_ev_plan=s56_plan),
             investment_year=investment_year)
     run_wall = time.time() - t0
 
@@ -7195,6 +8285,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     variant_extra.update(s56_cycle_capture_pinned_record_fields(entry, holder, s56_capture_arm))
     # S56 step 4 calibration re-run: empty unless the entry declares a key (so every other record keeps its format)
     variant_extra.update(s56_calibration_record_fields(entry, holder))
+    # S56 EV plan: empty unless the entry declares a key (so every other record keeps its format)
+    variant_extra.update(s56_ev_plan_record_fields(entry, holder))
     record = build_evaluation_record(
         spec=spec, spec_path=spec_path, spec_sha256=args.spec_sha256, entry=entry, report=report,
         component_levels=component_levels,
@@ -7260,6 +8352,9 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     s56_calibration_error = ((s56_stop_disabled and not (holder.get(S56_CERTIFICATION_STOP_SUMMARY_KEY) or {}).get('ok'))
                              or (s56_v_capture
                                  and not (holder.get(S56_INTERFACE_V_MULTIPLIER_SUMMARY_KEY) or {}).get('ok')))
+    s56_ev_plan_error = s56_plan is not None and not (  # S56 EV plan: the breakdown written and its harness checks ok
+        (holder.get('s56_cost_breakdown') or {}).get('status') == 'written'
+        and (holder.get('s56_cost_breakdown') or {}).get('harness_checks_ok'))
     return {'post_certification_error': (holder.get('post_certification') or {}).get('status') == 'error',
             'multiscenario_capture_error': capture_error,
             'convergence_depth_capture_error': convergence_depth_error,
@@ -7269,7 +8364,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'settling_resettle_error': resettle_error,
             'interface_dual_capture_error': interface_dual_error,
             'nrf_capture_error': nrf_error,
-            's56_calibration_error': s56_calibration_error}
+            's56_calibration_error': s56_calibration_error,
+            's56_ev_plan_error': s56_ev_plan_error}
 
 
 def main_child(argv):
@@ -7340,6 +8436,10 @@ def main_child(argv):
                 sys.exit(2)
             if outcome and outcome.get('s56_calibration_error'):  # S56 step 4 calibration re-run
                 print('[S44-CHILD] S56 certification-stop / interface-V multiplier summary not ok (recorded in '
+                      'evaluation_record.json); exiting 2', file=sys.stderr, flush=True)
+                sys.exit(2)
+            if outcome and outcome.get('s56_ev_plan_error'):  # S56 EV plan
+                print('[S44-CHILD] S56 cost breakdown not written or its checks not ok (recorded in '
                       'evaluation_record.json); exiting 2', file=sys.stderr, flush=True)
                 sys.exit(2)
     except SystemExit:
@@ -7425,6 +8525,8 @@ def main_child(argv):
                 **_w183a_record_fields(entry, progress.get('holder') or {}),
                 # S56 step 4 calibration re-run: an entry declaring a key carries it, its checklist and its summary.
                 **s56_calibration_record_fields(entry, progress.get('holder') or {}),
+                # S56 EV plan: an entry declaring a key carries it, its checklist and what was applied, on every path.
+                **s56_ev_plan_record_fields(entry, progress.get('holder') or {}),
                 # W101: the interface-dual capture checklist and summary, on every path (None when not reached).
                 'interface_dual_capture_checklist_asserted_before_run': progress.get(
                     'interface_dual_capture_checklist'),
