@@ -1322,6 +1322,58 @@ S56_INTERFACE_V_MULTIPLIER_FILE = 's56_interface_v_multipliers.jsonl'
 S56_INTERFACE_V_MULTIPLIER_SCHEMA = 's56_interface_v_multipliers_v1'
 S56_INTERFACE_V_MULTIPLIER_SUMMARY_KEY = 's56_interface_v_multiplier_capture'
 S56_INTERFACE_V_MULTIPLIER_ARRAYS = ('row_dual', 'zU_vmag_sqr', 'zU_vmag', 'zU_e', 'vmag_sqr', 'e')
+# ----------------------------------------------------------------------------------------------------------------------
+#  S56 EV search driver (S56_SEARCH_DRIVER_DESIGN.md, "Harness requirement"; added by the search-driver Worker and
+#  logged in P5_15_S56_SEARCH_DRIVER_REPORT.md): the SETTLED-run key of single-scenario S56 entries, DEFAULT ABSENT.
+#  * `S56_SETTLED_STOP_DISABLED_KEY` True: the same certification-stop disabling as `S56_CERTIFICATION_STOP_DISABLED_KEY`
+#    (`assert_s56_certification_stop_path` before any solve, `s56_certification_stop_disabled_hooks` around the run:
+#    the loop runs to the spec cap), but (a) allowed ONLY on an entry declaring an S56 EV-plan key and NOT the
+#    per-scenario coupling (single-scenario EV / draw-0 entries; coupled entries keep the calibration key), never
+#    together with the calibration key, and only under an ENABLED convergence-depth tail; and (b) KEYED: True wraps the
+#    eval key as sha256{'base_evaluation_key', 's56_settled_stop_disabled': True} (`s56_settled_stop_evaluation_key`),
+#    so an exit evaluation and a settled evaluation of one candidate never share a key, an eval dir or a cache entry.
+#    The cap stays spec-level and enters no key (the W98 rule). Absent: nothing validated, keyed, installed or
+#    recorded; False (= the default) is recorded in the entry but not keyed (the W33 rule).
+S56_SETTLED_STOP_DISABLED_KEY = 's56_settled_stop_disabled'
+EVALUATION_OPTION_KEYS = EVALUATION_OPTION_KEYS | frozenset({S56_SETTLED_STOP_DISABLED_KEY})
+
+
+def validate_s56_settled_stop(options, s56_ev_plan_entry, coupling_on, tail_enabled):
+    """The settled-run key of one entry: None when absent; else a bool. True is refused on an entry that declares no
+    S56 EV-plan key, declares the per-scenario coupling, also declares the calibration stop key, or runs without an
+    enabled convergence-depth tail."""
+    value = options.get(S56_SETTLED_STOP_DISABLED_KEY)
+    if value is None:
+        return None
+    if not isinstance(value, bool):
+        raise ValueError(f'{S56_SETTLED_STOP_DISABLED_KEY} must be a bool, got {value!r}')
+    if value:
+        why = [w for w, bad in (('the entry declares no S56 EV-plan key', not s56_ev_plan_entry),
+                                ('the entry declares the per-scenario coupling (use the calibration key)', coupling_on),
+                                (f'the entry also declares {S56_CERTIFICATION_STOP_DISABLED_KEY}',
+                                 options.get(S56_CERTIFICATION_STOP_DISABLED_KEY) is not None),
+                                ('the spec declares no enabled convergence-depth tail', not tail_enabled)) if bad]
+        if why:
+            raise ValueError(f'{S56_SETTLED_STOP_DISABLED_KEY} True refused: {"; ".join(why)}')
+    return value
+
+
+def s56_settled_stop_evaluation_key(base_key, value):
+    """True wraps the key (module comment); None / False return `base_key` unchanged."""
+    if value is not True:
+        return base_key
+    text = json.dumps({'base_evaluation_key': base_key, S56_SETTLED_STOP_DISABLED_KEY: True}, sort_keys=True,
+                      separators=(',', ':'))
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def s56_settled_stop_record_fields(entry, holder):
+    """The record fields of the settled key: empty unless the entry declares it (format unchanged)."""
+    if S56_SETTLED_STOP_DISABLED_KEY not in entry:
+        return {}
+    return {S56_SETTLED_STOP_DISABLED_KEY: entry[S56_SETTLED_STOP_DISABLED_KEY],
+            's56_certification_stop_checklist_asserted_before_run': holder.get('s56_certification_stop_checklist'),
+            's56_certification_stop_summary': holder.get(S56_CERTIFICATION_STOP_SUMMARY_KEY)}
 
 
 def validate_s56_calibration_key(name, value):
@@ -3422,6 +3474,10 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
                               interface_coupling=coupling)
         if s56_plan is not None:  # S56 EV plan: the keyed settings wrap the key every rule above gives
             ekey = s56_evaluation_key(ekey, s56_plan['keyed'])
+        settled_stop = validate_s56_settled_stop(  # S56 search driver: the settled-run key (absent: None, no effect)
+            options, s56_plan is not None, interface_coupling_in_key(coupling) is not None,
+            convergence_depth_tail_in_key(tail) is not None)
+        ekey = s56_settled_stop_evaluation_key(ekey, settled_stop)  # True only: wraps the key; else unchanged
         if label in seen_labels or ekey in seen_keys:
             raise ValueError(f'duplicate evaluation label or key (candidate x configuration): {label} / {ekey[:16]}')
         seen_labels.add(label)
@@ -3480,6 +3536,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
                 cand_entry['s56_investment'] = s56_single_year_investment_cost(canon, s56_plan['case_rel'],
                                                                                lattice=s56_plan['lattice'])
             any_s56_ev_plan = any_s56_ev_plan or 's56_ev_plan_label' in cand_entry
+        if settled_stop is not None:  # S56 search driver: only when given, so every other entry keeps its format
+            cand_entry[S56_SETTLED_STOP_DISABLED_KEY] = settled_stop
         cand_entries.append(cand_entry)
     os.makedirs(campaign_root, exist_ok=True)  # only after every validation above has passed
     try:
@@ -7833,6 +7891,9 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     # S56 step 4 calibration re-run: the two keys (absent / False: nothing asserted, installed or recorded); each one's
     # path is asserted here, before any solve (rule eleven).
     s56_stop_disabled, s56_v_capture = s56_calibration_keys_in_force(entry, coupling_on)
+    # S56 search driver: the settled-run key (validated and keyed at freeze) installs the same stop disabling
+    if entry.get(S56_SETTLED_STOP_DISABLED_KEY) is True:
+        s56_stop_disabled = True
     if s56_stop_disabled:
         holder['s56_certification_stop_checklist'] = assert_s56_certification_stop_path(
             tail_checklist, int(spec['required_consecutive_cycles']))
@@ -8291,6 +8352,7 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     variant_extra.update(s56_cycle_capture_pinned_record_fields(entry, holder, s56_capture_arm))
     # S56 step 4 calibration re-run: empty unless the entry declares a key (so every other record keeps its format)
     variant_extra.update(s56_calibration_record_fields(entry, holder))
+    variant_extra.update(s56_settled_stop_record_fields(entry, holder))  # S56 search driver: empty unless declared
     # S56 EV plan: empty unless the entry declares a key (so every other record keeps its format)
     variant_extra.update(s56_ev_plan_record_fields(entry, holder))
     record = build_evaluation_record(
@@ -8531,6 +8593,8 @@ def main_child(argv):
                 **_w183a_record_fields(entry, progress.get('holder') or {}),
                 # S56 step 4 calibration re-run: an entry declaring a key carries it, its checklist and its summary.
                 **s56_calibration_record_fields(entry, progress.get('holder') or {}),
+                # S56 search driver: the settled-run key, its checklist and summary (empty unless declared).
+                **s56_settled_stop_record_fields(entry, progress.get('holder') or {}),
                 # S56 EV plan: an entry declaring a key carries it, its checklist and what was applied, on every path.
                 **s56_ev_plan_record_fields(entry, progress.get('holder') or {}),
                 # W101: the interface-dual capture checklist and summary, on every path (None when not reached).
