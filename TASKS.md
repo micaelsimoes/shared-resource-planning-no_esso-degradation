@@ -78,7 +78,7 @@ Author's six points: (1) option (a) per-scenario coupling, P/Q/V consistent per 
 - [ ] Memory probes (e) — after step 4 (machine)
 - [ ] Single-cohort A/B (b); EV replicate pairs (d) — after the cohort follow-up and EV plumbing
 - [ ] Step 5: centralized comparator with storage + DN 7 limit (f); stochastic two-block pair; production- vs tail-depth pair offset
-- [ ] **Plan v4** (Planner)
+- [x] **Plan v4** — `S56_PLAN_v4.md` (v3 kept; §8 projection ≈ 150–400 machine h excl. the SP poll; to be refreshed with step 4–5 measurements at the stop point)
 - [ ] **STOP — report back**
 - [x] Step 0 re-run from committed code (`step0_gates_v2/`, identical results); (evidence from committed code only); correct plan v2's SoC excursion figure (14.5 % max in the staged domain, not 4–8 %)
 - [x] **Step 0** zero-solve gates (probabilities, expired cohorts, 2025-TV = 0, H3 derating over 37,041 plans, converter/cost-basis repricing, TV coefficients both grids, capture paths) — `step0_gates.json` (v1 189f6c3a; v2 from a clean export of `fbdc87b3`, fdb12d38, identical results, 16 non-substantive diffs), 42/42: probabilities/prices identical across networks (3 instances); 2025 TV = 0 both grids, no cohort expires inside the horizon; **H3 derates 17,934 / 37,041 plans (48.4 %)**, exactly the mixed-duration ones (worst 4/7, median 0.75); older-cohort SoC excursion up to 14.5 %; converter residual 13,015 € (2030), 24,093 € (2035) per 0.25 MVA; horizon-end/installation basis 0.926 (2030), 1.0 (2035); only 2025 draws shared across grids; RES capacity steps (2028 = 2025, 2031/2034 = 2030 levels)
