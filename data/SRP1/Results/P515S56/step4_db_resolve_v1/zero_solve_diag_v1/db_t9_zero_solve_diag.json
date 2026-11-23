@@ -1,0 +1,852 @@
+{
+ "stage": "P5.15 S56 D_b / T9 zero-solve diagnostics (exploratory, after the runs)",
+ "script": "p515_s56_db_t9_zero_solve_diag.py",
+ "script_sha256": "b1e0828268b6a377b4cde7b94786c1fa151eb2a4df480a083bfb32279cb0b68e",
+ "utc_start": "2026-11-23T19:08:57.613991+00:00",
+ "run_directory": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/e2b75b66-5876-478c-8406-61146cba3204/scratchpad/dbt8t9/export_4c586e5e_diag",
+ "provenance_file_sha256": "1831c4dbf432def2c064f27c4cdd8de9014810ae09c0ae57e1fee8b0e098646d",
+ "part_a_db_infeasibility": {
+  "run_record": {
+   "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_db_resolve_v1/run/db_tn_resolve_results.json",
+   "sha256": "17061b075322c56c114538621987d10280c4184d50f32d8c99dfdf35c012f009"
+  },
+  "blocks": {
+   "A|2025|Winter": {
+    "min_total_realized_dn_exchange_mw": -63.93008503140395,
+    "min_total_tso_common_exchange_mw": 43.45649677582793,
+    "n_scenario_hours_net_dn_export": 6,
+    "scenarios_with_net_export": [
+     "1_0",
+     "1_1",
+     "1_2"
+    ],
+    "net_export_scenario_hours_mw": [
+     [
+      "1_1",
+      9,
+      -63.93008503140395
+     ],
+     [
+      "1_2",
+      9,
+      -62.61042708035709
+     ],
+     [
+      "1_0",
+      9,
+      -53.54492562024307
+     ],
+     [
+      "1_2",
+      8,
+      -44.948424607595484
+     ],
+     [
+      "1_1",
+      8,
+      -42.52996789984729
+     ],
+     [
+      "1_0",
+      8,
+      -32.14756260570177
+     ]
+    ],
+    "tn_load_buses": [
+     5,
+     7,
+     9
+    ],
+    "adn_buses": [
+     5,
+     7,
+     9
+    ],
+    "all_tn_load_buses_are_adn": true,
+    "tn_generator_pg_lower_bound_max_mw": 0.0,
+    "tn_generator_pg_lower_bound_min_mw": -0.001,
+    "slack_vars": {
+     "slack_v_sqr_down": {
+      "n": 1944,
+      "n_free": 1296,
+      "ub_set": [
+       0.0,
+       0.08750000000000013
+      ]
+     },
+     "slack_v_sqr_up": {
+      "n": 1944,
+      "n_free": 1296,
+      "ub_set": [
+       0.0,
+       0.11250000000000004
+      ]
+     },
+     "slack_flex_p_balance_up": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_flex_p_balance_down": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_flex_q_balance_up": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_flex_q_balance_down": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_es_soc_final_up": {
+      "n": 0,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_es_soc_final_down": {
+      "n": 0,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_shared_es_soc_final_up": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_shared_es_soc_final_down": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     }
+    },
+    "node_balance_slacks_configured": false,
+    "node_shunt_gs_max": 0.0,
+    "branch_limit_type": "3",
+    "v_min": 0.9,
+    "branches": [
+     {
+      "f": 1,
+      "t": 4,
+      "r": 0.0,
+      "x": 0.0576,
+      "g_sh": 0.0,
+      "b_sh": 0.0,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 0.0
+     },
+     {
+      "f": 4,
+      "t": 5,
+      "r": 0.017,
+      "x": 0.092,
+      "g_sh": 0.0,
+      "b_sh": 0.158,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 13.117283950617283
+     },
+     {
+      "f": 5,
+      "t": 6,
+      "r": 0.039,
+      "x": 0.17,
+      "g_sh": 0.0,
+      "b_sh": 0.358,
+      "rate_mva": 150.0,
+      "status": true,
+      "loss_bound_mw": 10.83333333333333
+     },
+     {
+      "f": 3,
+      "t": 6,
+      "r": 0.0,
+      "x": 0.0586,
+      "g_sh": 0.0,
+      "b_sh": 0.0,
+      "rate_mva": 300.0,
+      "status": true,
+      "loss_bound_mw": 0.0
+     },
+     {
+      "f": 6,
+      "t": 7,
+      "r": 0.0119,
+      "x": 0.1008,
+      "g_sh": 0.0,
+      "b_sh": 0.209,
+      "rate_mva": 150.0,
+      "status": true,
+      "loss_bound_mw": 3.3055555555555554
+     },
+     {
+      "f": 7,
+      "t": 8,
+      "r": 0.0085,
+      "x": 0.072,
+      "g_sh": 0.0,
+      "b_sh": 0.149,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 6.558641975308642
+     },
+     {
+      "f": 8,
+      "t": 2,
+      "r": 0.0,
+      "x": 0.0625,
+      "g_sh": 0.0,
+      "b_sh": 0.0,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 0.0
+     },
+     {
+      "f": 8,
+      "t": 9,
+      "r": 0.032,
+      "x": 0.161,
+      "g_sh": 0.0,
+      "b_sh": 0.306,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 24.691358024691358
+     },
+     {
+      "f": 9,
+      "t": 4,
+      "r": 0.01,
+      "x": 0.085,
+      "g_sh": 0.0,
+      "b_sh": 0.176,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 7.716049382716049
+     }
+    ],
+    "loss_upper_bound_mw": 66.22222222222221,
+    "arm_B_ipopt_terminal": {
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_db_resolve_v1/run/logs/A/B/optim_log_case9_2025_Winter.log",
+     "sha256": "276a05ab83bf6b4686afc9b8fc9256b8cda5eee678122b6b28a87b0ccbb9292c",
+     "constraint_violation_scaled_unscaled": [
+      0.10286912085382882,
+      0.10286912085382882
+     ],
+     "exit": "Converged to a point of local infeasibility. Problem may be infeasible.",
+     "iterations": 146
+    }
+   },
+   "B|2025|Summer": {
+    "min_total_realized_dn_exchange_mw": -60.05401248042753,
+    "min_total_tso_common_exchange_mw": 37.90042756983485,
+    "n_scenario_hours_net_dn_export": 6,
+    "scenarios_with_net_export": [
+     "0_0",
+     "0_1",
+     "0_2",
+     "2_0",
+     "2_1",
+     "2_2"
+    ],
+    "net_export_scenario_hours_mw": [
+     [
+      "2_0",
+      7,
+      -60.05401248042753
+     ],
+     [
+      "2_2",
+      7,
+      -58.97646934593888
+     ],
+     [
+      "2_1",
+      7,
+      -55.80431140817748
+     ],
+     [
+      "0_0",
+      4,
+      -21.688679233020146
+     ],
+     [
+      "0_1",
+      4,
+      -21.146788843532278
+     ],
+     [
+      "0_2",
+      4,
+      -18.595120627809813
+     ]
+    ],
+    "tn_load_buses": [
+     5,
+     7,
+     9
+    ],
+    "adn_buses": [
+     5,
+     7,
+     9
+    ],
+    "all_tn_load_buses_are_adn": true,
+    "tn_generator_pg_lower_bound_max_mw": 0.0,
+    "tn_generator_pg_lower_bound_min_mw": -0.001,
+    "slack_vars": {
+     "slack_v_sqr_down": {
+      "n": 1944,
+      "n_free": 1296,
+      "ub_set": [
+       0.0,
+       0.08750000000000013
+      ]
+     },
+     "slack_v_sqr_up": {
+      "n": 1944,
+      "n_free": 1296,
+      "ub_set": [
+       0.0,
+       0.11250000000000004
+      ]
+     },
+     "slack_flex_p_balance_up": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_flex_p_balance_down": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_flex_q_balance_up": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_flex_q_balance_down": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_es_soc_final_up": {
+      "n": 0,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_es_soc_final_down": {
+      "n": 0,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_shared_es_soc_final_up": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_shared_es_soc_final_down": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     }
+    },
+    "node_balance_slacks_configured": false,
+    "node_shunt_gs_max": 0.0,
+    "branch_limit_type": "3",
+    "v_min": 0.9,
+    "branches": [
+     {
+      "f": 1,
+      "t": 4,
+      "r": 0.0,
+      "x": 0.0576,
+      "g_sh": 0.0,
+      "b_sh": 0.0,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 0.0
+     },
+     {
+      "f": 4,
+      "t": 5,
+      "r": 0.017,
+      "x": 0.092,
+      "g_sh": 0.0,
+      "b_sh": 0.158,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 13.117283950617283
+     },
+     {
+      "f": 5,
+      "t": 6,
+      "r": 0.039,
+      "x": 0.17,
+      "g_sh": 0.0,
+      "b_sh": 0.358,
+      "rate_mva": 150.0,
+      "status": true,
+      "loss_bound_mw": 10.83333333333333
+     },
+     {
+      "f": 3,
+      "t": 6,
+      "r": 0.0,
+      "x": 0.0586,
+      "g_sh": 0.0,
+      "b_sh": 0.0,
+      "rate_mva": 300.0,
+      "status": true,
+      "loss_bound_mw": 0.0
+     },
+     {
+      "f": 6,
+      "t": 7,
+      "r": 0.0119,
+      "x": 0.1008,
+      "g_sh": 0.0,
+      "b_sh": 0.209,
+      "rate_mva": 150.0,
+      "status": true,
+      "loss_bound_mw": 3.3055555555555554
+     },
+     {
+      "f": 7,
+      "t": 8,
+      "r": 0.0085,
+      "x": 0.072,
+      "g_sh": 0.0,
+      "b_sh": 0.149,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 6.558641975308642
+     },
+     {
+      "f": 8,
+      "t": 2,
+      "r": 0.0,
+      "x": 0.0625,
+      "g_sh": 0.0,
+      "b_sh": 0.0,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 0.0
+     },
+     {
+      "f": 8,
+      "t": 9,
+      "r": 0.032,
+      "x": 0.161,
+      "g_sh": 0.0,
+      "b_sh": 0.306,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 24.691358024691358
+     },
+     {
+      "f": 9,
+      "t": 4,
+      "r": 0.01,
+      "x": 0.085,
+      "g_sh": 0.0,
+      "b_sh": 0.176,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 7.716049382716049
+     }
+    ],
+    "loss_upper_bound_mw": 66.22222222222221,
+    "arm_B_ipopt_terminal": {
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_db_resolve_v1/run/logs/B/B/optim_log_case9_2025_Summer.log",
+     "sha256": "fd143200dc2864a0d93ebeafda1a82b0f6a9852f44e399e8faf609d3bb825c6c",
+     "constraint_violation_scaled_unscaled": [
+      0.0641080457858226,
+      0.0641080457858226
+     ],
+     "exit": "Converged to a point of local infeasibility. Problem may be infeasible.",
+     "iterations": 138
+    }
+   },
+   "B|2035|Summer": {
+    "min_total_realized_dn_exchange_mw": -59.98839321917393,
+    "min_total_tso_common_exchange_mw": 32.68022338898759,
+    "n_scenario_hours_net_dn_export": 15,
+    "scenarios_with_net_export": [
+     "0_0",
+     "0_1",
+     "0_2",
+     "2_0",
+     "2_1",
+     "2_2"
+    ],
+    "net_export_scenario_hours_mw": [
+     [
+      "0_0",
+      4,
+      -59.98839321917393
+     ],
+     [
+      "0_2",
+      4,
+      -57.43053425385727
+     ],
+     [
+      "0_1",
+      4,
+      -54.59622754677431
+     ],
+     [
+      "0_2",
+      3,
+      -27.054042956775092
+     ],
+     [
+      "0_1",
+      3,
+      -26.417039952963393
+     ],
+     [
+      "0_0",
+      3,
+      -24.298311106295245
+     ],
+     [
+      "2_0",
+      7,
+      -16.86513189863434
+     ],
+     [
+      "2_2",
+      7,
+      -15.198725555078553
+     ],
+     [
+      "2_1",
+      7,
+      -12.34966078813099
+     ],
+     [
+      "0_2",
+      2,
+      -9.713767158193463
+     ],
+     [
+      "0_1",
+      2,
+      -7.885992343784038
+     ],
+     [
+      "0_0",
+      6,
+      -6.230633930561867
+     ],
+     [
+      "0_2",
+      6,
+      -5.542467616301115
+     ],
+     [
+      "0_0",
+      2,
+      -3.915023095946343
+     ],
+     [
+      "0_1",
+      6,
+      -1.0028409260913724
+     ]
+    ],
+    "tn_load_buses": [
+     5,
+     7,
+     9
+    ],
+    "adn_buses": [
+     5,
+     7,
+     9
+    ],
+    "all_tn_load_buses_are_adn": true,
+    "tn_generator_pg_lower_bound_max_mw": 0.0,
+    "tn_generator_pg_lower_bound_min_mw": -0.001,
+    "slack_vars": {
+     "slack_v_sqr_down": {
+      "n": 1944,
+      "n_free": 1296,
+      "ub_set": [
+       0.0,
+       0.08750000000000013
+      ]
+     },
+     "slack_v_sqr_up": {
+      "n": 1944,
+      "n_free": 1296,
+      "ub_set": [
+       0.0,
+       0.11250000000000004
+      ]
+     },
+     "slack_flex_p_balance_up": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_flex_p_balance_down": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_flex_q_balance_up": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_flex_q_balance_down": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_es_soc_final_up": {
+      "n": 0,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_es_soc_final_down": {
+      "n": 0,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_shared_es_soc_final_up": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     },
+     "slack_shared_es_soc_final_down": {
+      "n": 27,
+      "n_free": 0,
+      "ub_set": []
+     }
+    },
+    "node_balance_slacks_configured": false,
+    "node_shunt_gs_max": 0.0,
+    "branch_limit_type": "3",
+    "v_min": 0.9,
+    "branches": [
+     {
+      "f": 1,
+      "t": 4,
+      "r": 0.0,
+      "x": 0.0576,
+      "g_sh": 0.0,
+      "b_sh": 0.0,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 0.0
+     },
+     {
+      "f": 4,
+      "t": 5,
+      "r": 0.017,
+      "x": 0.092,
+      "g_sh": 0.0,
+      "b_sh": 0.158,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 13.117283950617283
+     },
+     {
+      "f": 5,
+      "t": 6,
+      "r": 0.039,
+      "x": 0.17,
+      "g_sh": 0.0,
+      "b_sh": 0.358,
+      "rate_mva": 150.0,
+      "status": true,
+      "loss_bound_mw": 10.83333333333333
+     },
+     {
+      "f": 3,
+      "t": 6,
+      "r": 0.0,
+      "x": 0.0586,
+      "g_sh": 0.0,
+      "b_sh": 0.0,
+      "rate_mva": 300.0,
+      "status": true,
+      "loss_bound_mw": 0.0
+     },
+     {
+      "f": 6,
+      "t": 7,
+      "r": 0.0119,
+      "x": 0.1008,
+      "g_sh": 0.0,
+      "b_sh": 0.209,
+      "rate_mva": 150.0,
+      "status": true,
+      "loss_bound_mw": 3.3055555555555554
+     },
+     {
+      "f": 7,
+      "t": 8,
+      "r": 0.0085,
+      "x": 0.072,
+      "g_sh": 0.0,
+      "b_sh": 0.149,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 6.558641975308642
+     },
+     {
+      "f": 8,
+      "t": 2,
+      "r": 0.0,
+      "x": 0.0625,
+      "g_sh": 0.0,
+      "b_sh": 0.0,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 0.0
+     },
+     {
+      "f": 8,
+      "t": 9,
+      "r": 0.032,
+      "x": 0.161,
+      "g_sh": 0.0,
+      "b_sh": 0.306,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 24.691358024691358
+     },
+     {
+      "f": 9,
+      "t": 4,
+      "r": 0.01,
+      "x": 0.085,
+      "g_sh": 0.0,
+      "b_sh": 0.176,
+      "rate_mva": 250.0,
+      "status": true,
+      "loss_bound_mw": 7.716049382716049
+     }
+    ],
+    "loss_upper_bound_mw": 66.22222222222221,
+    "arm_B_ipopt_terminal": {
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_db_resolve_v1/run/logs/B/B/optim_log_case9_2035_Summer.log",
+     "sha256": "6d81a794f5b6fe7d342b8ef969de6a054c671a67c15d4e0d1d028a83fbea7ecc",
+     "constraint_violation_scaled_unscaled": [
+      0.061741083549988356,
+      0.061741083549988356
+     ],
+     "exit": "Converged to a point of local infeasibility. Problem may be infeasible.",
+     "iterations": 138
+    }
+   }
+  }
+ },
+ "part_b_t9_model_diff": {
+  "init_row": {
+   "before": {
+    "path": "data/SRP1/Results/P515S56/cohort_followup_v1/run/nl/before/esso/srp1__p2025_2030__inobj0__indep/srp1__p2025_2030__inobj0__indep__init__n7.sym.row.gz",
+    "sha256": "ce885f614ad62e7f838e2e220285bb7906ab8f651478538506dd8bb14ec42f02",
+    "n": 3145
+   },
+   "after": {
+    "path": "data/SRP1/Results/P515S56/cohort_followup_v1/run/nl/after/esso/srp1__p2025_2030__inobj0__indep/srp1__p2025_2030__inobj0__indep__init__n7.sym.row.gz",
+    "sha256": "3cc475a09fc502dcb1a3eee6eb679550dcbd647872514546fe01c30c920ae393",
+    "n": 3913
+   },
+   "only_before_by_family": {},
+   "only_after_by_family": {
+    "energy_storage_cohort_complementarity": 384,
+    "energy_storage_cohort_sum_limit": 384
+   },
+   "common": 3145,
+   "common_same_order": true
+  },
+  "init_col": {
+   "before": {
+    "path": "data/SRP1/Results/P515S56/cohort_followup_v1/run/nl/before/esso/srp1__p2025_2030__inobj0__indep/srp1__p2025_2030__inobj0__indep__init__n7.sym.col.gz",
+    "sha256": "a7dadd10a4ac560ca0730593709aaa3201662f37fa04818a576edc745c7fa749",
+    "n": 2771
+   },
+   "after": {
+    "path": "data/SRP1/Results/P515S56/cohort_followup_v1/run/nl/after/esso/srp1__p2025_2030__inobj0__indep/srp1__p2025_2030__inobj0__indep__init__n7.sym.col.gz",
+    "sha256": "352945f2b19dbf9fd85e7f9a709e416a15f8ab332c8e1efe0bdce43bdaf8d7c5",
+    "n": 2739
+   },
+   "only_before_by_family": {
+    "slack_es_soc_final_per_unit_up": 16,
+    "slack_es_soc_final_per_unit_down": 16
+   },
+   "only_after_by_family": {},
+   "common": 2739,
+   "common_same_order": true
+  },
+  "admm_row": {
+   "before": {
+    "path": "data/SRP1/Results/P515S56/cohort_followup_v1/run/nl/before/esso/srp1__p2025_2030__inobj0__indep/srp1__p2025_2030__inobj0__indep__admm__n7.sym.row.gz",
+    "sha256": "fe622cd0846a6a41a39c858b091bda6f2caa0e42e78589093d13a1ecd7d2edfa",
+    "n": 3145
+   },
+   "after": {
+    "path": "data/SRP1/Results/P515S56/cohort_followup_v1/run/nl/after/esso/srp1__p2025_2030__inobj0__indep/srp1__p2025_2030__inobj0__indep__admm__n7.sym.row.gz",
+    "sha256": "2f9fe67bf86281a3628f6b314dd37c744ea27a1b35ce4ea9ed648ecfee73753e",
+    "n": 3913
+   },
+   "only_before_by_family": {},
+   "only_after_by_family": {
+    "energy_storage_cohort_complementarity": 384,
+    "energy_storage_cohort_sum_limit": 384
+   },
+   "common": 3145,
+   "common_same_order": true
+  },
+  "admm_col": {
+   "before": {
+    "path": "data/SRP1/Results/P515S56/cohort_followup_v1/run/nl/before/esso/srp1__p2025_2030__inobj0__indep/srp1__p2025_2030__inobj0__indep__admm__n7.sym.col.gz",
+    "sha256": "14a3538c0cc26eefc2e783682d5193b4032aa48d8544ad485ff1039fa7035bff",
+    "n": 3347
+   },
+   "after": {
+    "path": "data/SRP1/Results/P515S56/cohort_followup_v1/run/nl/after/esso/srp1__p2025_2030__inobj0__indep/srp1__p2025_2030__inobj0__indep__admm__n7.sym.col.gz",
+    "sha256": "f9c27107b4e0868ee0b7c528aa9ceb7c6da1f75727b728d7119e2d423ef7a1d7",
+    "n": 3315
+   },
+   "only_before_by_family": {
+    "slack_es_soc_final_per_unit_up": 16,
+    "slack_es_soc_final_per_unit_down": 16
+   },
+   "only_after_by_family": {},
+   "common": 3315,
+   "common_same_order": true
+  }
+ },
+ "guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": [],
+  "db_module_guard_counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  }
+ },
+ "pickle": {
+  "load": 0,
+  "loads": 0
+ },
+ "ok": true
+}
