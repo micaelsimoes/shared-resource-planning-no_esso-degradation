@@ -1368,7 +1368,11 @@ def parent(args):
     checks['overlay_files_carry_key'] = all(KEY.encode() in v for v in work_prod.values())
     json_hits = [line.split(':', 1)[1] for line in
                  _git('grep', '-l', KEY, base, '--', '*.json', check=False).splitlines() if line.strip()]
-    checks['no_committed_json_sets_key'] = not [h for h in json_hits if h != spec_rel]
+    # the campaign's own frozen specs name the key (they are not params files): excluded (CLAUDE.md, pre-run checks
+    # exclude the run's own artefacts; v2's first launch refused on spec v1)
+    own = re.compile(r'^data/SRP1/Results/P515S56/frozen_cohort_esso_spec_v\d+_[0-9a-f]{8}\.json$')
+    checks['no_committed_json_sets_key'] = not [h for h in json_hits if not own.match(h)]
+    checks['no_committed_json_sets_key_matches'] = sorted(json_hits) or True
     inst_bytes = _git_bytes('show', f"{base}:{spec['grids']['fiveblock_3x3']['source_case_rel']}")
     checks['fiveblock_case_sha256_matches_spec'] = (_sha_bytes(inst_bytes)
                                                     == spec['grids']['fiveblock_3x3']['source_case_sha256'])
