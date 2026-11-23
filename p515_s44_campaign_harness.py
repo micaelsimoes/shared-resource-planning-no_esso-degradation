@@ -2723,6 +2723,302 @@ def s56_ev_plan_record_fields(entry, holder):
     return out
 
 
+# ======================================================================================================================
+#  S56 search integration (P5_15_S56_SEARCH_DRIVER_REPORT.md, section "Integration"; S56_SEARCH_DRIVER_DESIGN.md,
+#  "Oracle mapping and key rules", Planner decisions of 2026-11-23, acc80a2e). Two additions, both inert for every entry
+#  that declares no S56 EV-plan key (`S56_EV_PLAN_KEYS`): such entries keep their eval keys, entries and records bitwise.
+# ----------------------------------------------------------------------------------------------------------------------
+#  * THE CYCLE CAP IN THE EVAL KEY (the design's option (a)). An entry declaring ANY S56 EV-plan key has its eval key
+#    wrapped LAST, after every other rule, as sha256{'base_evaluation_key': <the key every other rule gives>,
+#    's56_cycle_cap': <the spec cap, int>} (`s56_cycle_cap_evaluation_key`). For S56 EV-plan entries this supersedes the
+#    W98 rule restated at `S56_SETTLED_STOP_DISABLED_KEY` above ("the cap stays spec-level and enters no key"): an exit
+#    run, the 2-cycle smoke and settled runs at different K therefore never share a key. Entries without an S56 EV-plan
+#    key are not wrapped (the W98 rule still holds for them).
+#  * `S56_PRICING_CAPTURE_KEY` (default absent): the TERMINAL priced-residual capture the search oracle's settled-run
+#    V components and gates read (PR, A, G, the 12.5 kW interface gate, the ESSO slack and closure gates, the D1
+#    efficiency-equality gate). Allowed only on an entry declaring an S56 EV-plan key and NOT the per-scenario coupling.
+#    True: (a) keyed -- the eval key wrapped as sha256{'base_evaluation_key', S56_PRICING_CAPTURE_KEY: True}, so a
+#    record with the capture never shares a key (or a cache entry) with one without it; (b) the capture path asserted
+#    before any solve (`assert_s56_pricing_capture_path`); (c) in the post-run hook, ZERO SOLVES, `S56_PRICING_FILE`
+#    written from the run's returned `state` (production's deep copies of `consensus_vars` / `dual_vars` at the
+#    terminal cycle) and the run's own terminal models. False: recorded in the entry, not keyed (the W33 rule). Absent:
+#    nothing validated, keyed, asserted, installed or recorded. The per-cycle TV credit needs no capture: production's
+#    trajectory row already carries `terminal_salvage_value` and `recourse` (= net) every cycle
+#    (`PER_CYCLE_TRAJECTORY_FIELDS`).
+#  What the file holds (raw values; the oracle formula is `p515_s56_search_driver.pricing_components`):
+#    sigma                 the common ADMM objective scale in use (every TSO / DSO block's `admm_common_objective_scale`,
+#                          asserted equal); one scaled-objective unit of any agent = sigma EUR of total discounted cost
+#                          (TSO / DSO: objective.expr / (sigma / w_b); ESSO: AL terms x a with kappa = a / sigma);
+#    interface             per (node, year, day): w_b, TSO baseMVA, interface rating (MVA), TSO node base kV, and per
+#                          period the consensus copies P / Q (MW / MVAr) and V (kV) of both sides and both sides'
+#                          multipliers (dual_vars['pf' | 'vmag'][side]['current']);
+#    ess                   per (node, year, day): the three agents' normalisation ratings S_i (MVA; exactly as
+#                          production's z-update computes them) and per period x_i, lambda_i (i = tso, dso, esso) and z
+#                          for P and Q (consensus_vars['ess'][i | 'z']['current'], dual_vars['ess'][i]['current']);
+#    esso_slacks           per node and (year, day, period): slack_es_pnet_up / _down and slack_es_qnet_up / _down (MW /
+#                          MVAr; the ESSO's own units, the units of es_pnet / es_qnet);
+#    closure               per network block and `sess_soc_final` row: the closure slack pair (p.u. of energy on the
+#                          block's baseMVA), the baseMVA and the row dual (`model.dual`, None when not loaded);
+#    settlement_blocks     production `_get_operational_interface_settlement_blocks` per agent block, parts 'total',
+#                          'contracted' and 'deviation' (weighted, EUR);
+#    efficiency            per node and cohort year: eta_ch, eta_dch of the shared ESS data (the D1 gate's inputs).
+S56_CYCLE_CAP_KEY_FIELD = 's56_cycle_cap'
+S56_PRICING_CAPTURE_KEY = 's56_pricing_capture'
+EVALUATION_OPTION_KEYS = EVALUATION_OPTION_KEYS | frozenset({S56_PRICING_CAPTURE_KEY})
+S56_PRICING_FILE = 's56_pricing_terminal.json'
+S56_PRICING_SCHEMA = 's56_pricing_terminal_v1'
+S56_PRICING_SUMMARY_KEY = 's56_pricing_capture'
+S56_PRICING_FIELDS = ('schema', 'sigma', 'interface', 'ess', 'esso_slacks', 'closure', 'settlement_blocks',
+                      'efficiency', 'units')
+
+
+def s56_cycle_cap_evaluation_key(base_key, cap):
+    """The cap rule above: `cap` None returns `base_key` unchanged; otherwise sha256{'base_evaluation_key',
+    's56_cycle_cap': int(cap)}."""
+    if cap is None:
+        return base_key
+    if isinstance(cap, bool) or not isinstance(cap, int) or cap < 1:
+        raise ValueError(f'{S56_CYCLE_CAP_KEY_FIELD} must be an int >= 1, got {cap!r}')
+    text = json.dumps({'base_evaluation_key': base_key, S56_CYCLE_CAP_KEY_FIELD: int(cap)}, sort_keys=True,
+                      separators=(',', ':'))
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def validate_s56_pricing_capture(options, s56_ev_plan_entry, coupling_on):
+    """None when absent; else a bool. True refused on an entry declaring no S56 EV-plan key or declaring the
+    per-scenario coupling."""
+    value = options.get(S56_PRICING_CAPTURE_KEY)
+    if value is None:
+        return None
+    if not isinstance(value, bool):
+        raise ValueError(f'{S56_PRICING_CAPTURE_KEY} must be a bool, got {value!r}')
+    if value:
+        why = [w for w, bad in (('the entry declares no S56 EV-plan key', not s56_ev_plan_entry),
+                                ('the entry declares the per-scenario coupling', coupling_on)) if bad]
+        if why:
+            raise ValueError(f'{S56_PRICING_CAPTURE_KEY} True refused: {"; ".join(why)}')
+    return value
+
+
+def s56_pricing_capture_evaluation_key(base_key, value):
+    """True wraps the key; None / False return `base_key` unchanged."""
+    if value is not True:
+        return base_key
+    text = json.dumps({'base_evaluation_key': base_key, S56_PRICING_CAPTURE_KEY: True}, sort_keys=True,
+                      separators=(',', ':'))
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def s56_pricing_record_fields(entry, holder):
+    """Empty unless the entry declares the key (format unchanged otherwise)."""
+    if S56_PRICING_CAPTURE_KEY not in entry:
+        return {}
+    return {S56_PRICING_CAPTURE_KEY: entry[S56_PRICING_CAPTURE_KEY],
+            's56_pricing_capture_checklist_asserted_before_run': holder.get('s56_pricing_capture_checklist'),
+            's56_pricing_capture_summary': holder.get(S56_PRICING_SUMMARY_KEY)}
+
+
+def assert_s56_pricing_capture_path():
+    """Rule eleven, BEFORE any solve of an entry with `S56_PRICING_CAPTURE_KEY` True: every production source the
+    capture reads, and every conversion the oracle formula assumes, is present in the live code as stated in the
+    comment above; every field of `S56_PRICING_FIELDS` is written by `s56_pricing_terminal`. Raises on any failure;
+    returns the checklist (bools)."""
+    import inspect
+    import model_construction_helpers as MCH
+    import network as NW
+    import shared_energy_storage_data as SED
+    import shared_resources_planning as srp
+    run_src = inspect.getsource(srp._run_operational_planning)
+    tso_upd = inspect.getsource(srp.update_transmission_model_to_admm)
+    dso_upd = inspect.getsource(srp.update_distribution_models_to_admm)
+    esso_upd = inspect.getsource(srp.update_shared_energy_storage_model_to_admm)
+    tso_set = inspect.getsource(srp.update_transmission_coordination_model_and_solve)
+    zupd = inspect.getsource(srp._update_shared_energy_storage_variables)
+    checks = {
+        'run_returns_terminal_consensus_and_duals': ("'consensus_vars': deepcopy(consensus_vars)," in run_src
+                                                     and "'dual_vars': deepcopy(dual_vars)," in run_src),
+        'tso_effective_scale_is_sigma_over_w': 'effective_scale = objective_scale / block_weight' in tso_upd,
+        'dso_effective_scale_is_sigma_over_w': 'effective_scale = objective_scale / block_weight' in dso_upd,
+        'tso_common_scale_param': 'admm_common_objective_scale = pe.Param(initialize=objective_scale)' in tso_upd,
+        'tso_interface_p_term': ('constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - '
+                                 'model[year][day].p_pf_req[dn, p]) / interface_transf_rating') in tso_upd,
+        'tso_interface_v_term': ('constraint_v_req = (model[year][day].expected_interface_vmag[dn, p] - '
+                                 'model[year][day].vmag_req[dn, p])') in tso_upd,
+        'tso_pf_dual_over_s_base': ("model[year][day].dual_pf_p_req[dn, p].set_value(dual_pf['current'][node_id][year]"
+                                    "[day]['p'][p] / s_base)") in tso_set,
+        'tso_v_dual_over_v_base': ("model[year][day].dual_vmag_req[dn, p].set_value(dual_vmag['current'][node_id][year]"
+                                   "[day][p] / v_base)") in tso_set,
+        'tso_ess_dual_raw': ("model[year][day].dual_ess_p_req[shared_ess_idx, p].set_value(dual_ess['current'][node_id]"
+                             "[year][day]['p'][p])") in tso_set,
+        'tso_ess_term': ('constraint_ess_p_req = (model[year][day].expected_shared_ess_p[e, p] - '
+                         'model[year][day].p_ess_req[e, p]) / (2 * shared_ess_rating)') in tso_upd,
+        'dso_ess_term': ('constraint_ess_p_req = (dso_model[year][day].expected_shared_ess_p[p] - '
+                         'dso_model[year][day].p_ess_req[p]) / (2 * shared_ess_rating)') in dso_upd,
+        'esso_ess_term': ('constraint_p_req = (models[node_id].es_pnet[y, d, p] - models[node_id].p_req[y, d, p]) / '
+                          '(2 * shared_ess_rating)') in esso_upd,
+        'esso_kappa_is_a_over_sigma': 'esso_al_scale / pe.value(models[node_id].admm_common_objective_scale)' in esso_upd,
+        'z_update_normalised_residual': 'normalized_residual = normalization[agent] * (x[agent] - z_new)' in zupd,
+        'z_update_ratings_floor': 'normalization_floor = params.shared_ess_normalization_floor_mva' in zupd,
+        'esso_copy_is_es_pnet': "p_req = pe.value(sess_model[node_id].es_pnet[y, d, p])" in zupd,
+        'production_helpers': all(callable(getattr(srp, n, None)) for n in (
+            '_get_admm_block_weight', '_shared_ess_admm_normalization_mva', '_admm_shared_ess_reference_mva',
+            '_get_operational_interface_settlement_blocks')),
+        'closure_row_slack_form': ('m.shared_es_soc[e, s_m0, s_o0, final_p] == final_soc + '
+                                   'm.slack_shared_es_soc_final_up[e, s_m0, s_o0] - '
+                                   'm.slack_shared_es_soc_final_down[e, s_m0, s_o0]') in inspect.getsource(
+                                       MCH.sess_soc_final_rule),
+        'network_dual_suffix': 'model.dual = pe.Suffix(direction=pe.Suffix.IMPORT_EXPORT)' in inspect.getsource(NW),
+        'esso_slack_row_form': ('model.es_pnet[y, d, p] == agg_pnet + model.slack_es_pnet_up[y, d, p] - '
+                                'model.slack_es_pnet_down[y, d, p]') in inspect.getsource(SED),
+    }
+    fn_src = inspect.getsource(s56_pricing_terminal)
+    for field in S56_PRICING_FIELDS:
+        checks[f'field_written:{field}'] = f"'{field}':" in fn_src
+    failed = sorted(k for k, v in checks.items() if not v)
+    if failed:
+        raise RuntimeError(f'S56 pricing capture path missing (before any solve): {failed}')
+    return checks
+
+
+def s56_pricing_terminal(planning, models, state):
+    """CHILD SIDE, post-run hook, ZERO SOLVES: the terminal priced-residual capture (comment above). Pure reads."""
+    import pyomo.environ as pe
+    import shared_resources_planning as srp
+    st = state or {}
+    cv, dv = st.get('consensus_vars'), st.get('dual_vars')
+    if not isinstance(cv, dict) or not isinstance(dv, dict):
+        raise RuntimeError('the run returned no consensus_vars / dual_vars')
+    params = planning.params.admm
+    tn = planning.transmission_network
+    sed = planning.shared_ess_data
+    sigmas = set()
+    for year in tn.years:
+        for day in tn.days:
+            sigmas.add(float(pe.value(models['tso'][year][day].admm_common_objective_scale)))
+    for node_id, dn in planning.distribution_networks.items():
+        for year in dn.years:
+            for day in dn.days:
+                sigmas.add(float(pe.value(models['dso'][node_id][year][day].admm_common_objective_scale)))
+    if len(sigmas) != 1:
+        raise RuntimeError(f'admm_common_objective_scale differs across blocks: {sorted(sigmas)}')
+    interface = []
+    for node_id in tn.active_distribution_network_nodes:
+        dnet_holder = planning.distribution_networks[node_id]
+        for year in tn.years:
+            for day in tn.days:
+                tnet = tn.network[year][day]
+                pf = {s: cv['pf'][s]['current'][node_id][year][day] for s in ('tso', 'dso')}
+                vm = {s: cv['vmag'][s]['current'][node_id][year][day] for s in ('tso', 'dso')}
+                lpf = {s: dv['pf'][s]['current'][node_id][year][day] for s in ('tso', 'dso')}
+                lvm = {s: dv['vmag'][s]['current'][node_id][year][day] for s in ('tso', 'dso')}
+                interface.append({
+                    'node_id': node_id, 'year': year, 'day': day,
+                    'w': float(srp._get_admm_block_weight(tn, year, day)), 'tso_base_mva': float(tnet.baseMVA),
+                    'rating_mva': float(dnet_holder.network[year][day].get_interface_branch_rating()),
+                    'v_base_kv': float(tnet.get_node_base_kv(node_id)),
+                    **{f'{k}_{s}': _floats(pf[s][k]) for s in ('tso', 'dso') for k in ('p', 'q')},
+                    **{f'v_{s}': _floats(vm[s]) for s in ('tso', 'dso')},
+                    **{f'lambda_{k}_{s}': _floats(lpf[s][k]) for s in ('tso', 'dso') for k in ('p', 'q')},
+                    **{f'lambda_v_{s}': _floats(lvm[s]) for s in ('tso', 'dso')}})
+    floor = params.shared_ess_normalization_floor_mva
+    ref = srp._admm_shared_ess_reference_mva(params)
+    ess = []
+    for node_id in sed.active_distribution_network_nodes:
+        dn = planning.distribution_networks[node_id]
+        for year in tn.years:
+            for day in tn.days:
+                tnet, dnet = tn.network[year][day], dn.network[year][day]
+                ti = tnet.get_shared_energy_storage_idx(node_id)
+                di = dnet.get_shared_energy_storage_idx(dnet.get_reference_node_id())
+                ei = sed.get_shared_energy_storage_idx(node_id)
+                ratings = {
+                    'tso': srp._shared_ess_admm_normalization_mva(tnet.shared_energy_storages[ti].s * tnet.baseMVA,
+                                                                  floor, reference_mva=ref),
+                    'dso': srp._shared_ess_admm_normalization_mva(dnet.shared_energy_storages[di].s * dnet.baseMVA,
+                                                                  floor, reference_mva=ref),
+                    'esso': srp._shared_ess_admm_normalization_mva(sed.shared_energy_storages[year][ei].s, floor,
+                                                                   reference_mva=ref)}
+                row = {'node_id': node_id, 'year': year, 'day': day, 'rating_mva': ratings}
+                for k in ('p', 'q'):
+                    row[f'z_{k}'] = _floats(cv['ess']['z']['current'][node_id][year][day][k])
+                    for agent in ('tso', 'dso', 'esso'):
+                        row[f'x_{k}_{agent}'] = _floats(cv['ess'][agent]['current'][node_id][year][day][k])
+                        row[f'lambda_{k}_{agent}'] = _floats(dv['ess'][agent]['current'][node_id][year][day][k])
+                ess.append(row)
+    years, days = _s56_block_years_days(sed)
+    esso_slacks = []
+    for node_id in sed.active_distribution_network_nodes:
+        m = models['esso'][node_id]
+        for y in m.years:
+            for d in m.days:
+                rec = {'node_id': node_id, 'year': years[y], 'day': days[d]}
+                for k, up, down in (('p', 'slack_es_pnet_up', 'slack_es_pnet_down'),
+                                    ('q', 'slack_es_qnet_up', 'slack_es_qnet_down')):
+                    if hasattr(m, up):
+                        rec[f'{k}_up'] = [float(pe.value(getattr(m, up)[y, d, p])) for p in m.periods]
+                        rec[f'{k}_down'] = [float(pe.value(getattr(m, down)[y, d, p])) for p in m.periods]
+                    else:
+                        rec[f'{k}_up'] = rec[f'{k}_down'] = None
+                esso_slacks.append(rec)
+    closure = []
+    holders = [('TSO', None, planning.transmission_network, models['tso'])] + [
+        ('DSO', n, planning.distribution_networks[n], models['dso'][n]) for n in sorted(planning.distribution_networks)]
+    for kind, node_id, holder, blocks in holders:
+        for year in holder.years:
+            for day in holder.days:
+                model = blocks[year][day]
+                if not hasattr(model, 'sess_soc_final'):
+                    continue
+                for idx, con in model.sess_soc_final.items():
+                    e = idx[0]
+                    up_var, down_var = (getattr(model, 'slack_shared_es_soc_final_up', None),
+                                        getattr(model, 'slack_shared_es_soc_final_down', None))
+                    s_idx = (e,) + tuple(idx[1:])
+                    up = float(pe.value(up_var[s_idx])) if up_var is not None and s_idx in up_var else None
+                    down = float(pe.value(down_var[s_idx])) if down_var is not None and s_idx in down_var else None
+                    dual = model.dual.get(con) if hasattr(model, 'dual') else None
+                    closure.append({'kind': kind, 'node_id': node_id, 'year': year, 'day': day,
+                                    'index': [str(i) if not isinstance(i, (int, float)) else i for i in idx],
+                                    'slack_up_pu': up, 'slack_down_pu': down,
+                                    'base_mva': float(holder.network[year][day].baseMVA),
+                                    'row_dual': None if dual is None else float(dual), 'active': bool(con.active)})
+    settlement = []
+    parts = {part: srp._get_operational_interface_settlement_blocks(planning, models, part=part)
+             for part in ('total', 'contracted', 'deviation')}
+    for (kind, node_id, year, day), value in parts['total'].items():
+        settlement.append({'kind': kind, 'node_id': node_id, 'year': year, 'day': day, 'total': float(value),
+                           'contracted': float(parts['contracted'][(kind, node_id, year, day)]),
+                           'deviation': float(parts['deviation'][(kind, node_id, year, day)])})
+    efficiency = {}
+    for node_id in sed.active_distribution_network_nodes:
+        ei = sed.get_shared_energy_storage_idx(node_id)
+        efficiency[str(node_id)] = {str(year): [float(sed.shared_energy_storages[year][ei].eff_ch),
+                                                float(sed.shared_energy_storages[year][ei].eff_dch)]
+                                    for year in years}
+    return {'schema': S56_PRICING_SCHEMA, 'sigma': sigmas.pop(), 'interface': interface, 'ess': ess,
+            'esso_slacks': esso_slacks, 'closure': closure, 'settlement_blocks': settlement,
+            'efficiency': efficiency,
+            'units': {'interface': 'P MW, Q MVAr, V kV; multipliers as stored in dual_vars',
+                      'ess': 'x, z MW / MVAr; ratings MVA; multipliers as stored in dual_vars',
+                      'esso_slacks': 'MW / MVAr (ESSO es_pnet / es_qnet units)',
+                      'closure': 'slack p.u. of energy on base_mva; row_dual in the block objective units',
+                      'settlement_blocks': 'EUR of total discounted cost (w_b x local settlement)'}}
+
+
+def write_s56_pricing_terminal(planning, models, state, eval_dir):
+    out = s56_pricing_terminal(planning, models, state)
+    missing = [f for f in S56_PRICING_FIELDS if f not in out]
+    if missing:
+        raise RuntimeError(f'S56 pricing capture: fields without a value: {missing}')
+    path = os.path.join(eval_dir, S56_PRICING_FILE)
+    _write_once_json(path, out)
+    return {'status': 'written', 'path': os.path.relpath(path, REPO), 'sha256': sha256_file(path),
+            'n_interface_blocks': len(out['interface']), 'n_ess_blocks': len(out['ess']),
+            'n_esso_slack_blocks': len(out['esso_slacks']), 'n_closure_rows': len(out['closure']),
+            'n_closure_rows_with_dual': sum(1 for c in out['closure'] if c['row_dual'] is not None),
+            'sigma': out['sigma']}
+
+
 _HEX64 = frozenset('0123456789abcdef')
 
 
@@ -3478,6 +3774,11 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
             options, s56_plan is not None, interface_coupling_in_key(coupling) is not None,
             convergence_depth_tail_in_key(tail) is not None)
         ekey = s56_settled_stop_evaluation_key(ekey, settled_stop)  # True only: wraps the key; else unchanged
+        pricing = validate_s56_pricing_capture(  # S56 search integration: the terminal pricing capture (absent: None)
+            options, s56_plan is not None, interface_coupling_in_key(coupling) is not None)
+        ekey = s56_pricing_capture_evaluation_key(ekey, pricing)  # True only: wraps the key; else unchanged
+        if s56_plan is not None:  # S56 search integration: the cap enters the eval key of S56 EV-plan entries, LAST
+            ekey = s56_cycle_cap_evaluation_key(ekey, int(cap))
         if label in seen_labels or ekey in seen_keys:
             raise ValueError(f'duplicate evaluation label or key (candidate x configuration): {label} / {ekey[:16]}')
         seen_labels.add(label)
@@ -3538,6 +3839,10 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
             any_s56_ev_plan = any_s56_ev_plan or 's56_ev_plan_label' in cand_entry
         if settled_stop is not None:  # S56 search driver: only when given, so every other entry keeps its format
             cand_entry[S56_SETTLED_STOP_DISABLED_KEY] = settled_stop
+        if pricing is not None:  # S56 search integration: only when given, so every other entry keeps its format
+            cand_entry[S56_PRICING_CAPTURE_KEY] = pricing
+        if s56_plan is not None:  # S56 search integration: the cap that entered this S56 entry's eval key
+            cand_entry['s56_cycle_cap_keyed'] = int(cap)
         cand_entries.append(cand_entry)
     os.makedirs(campaign_root, exist_ok=True)  # only after every validation above has passed
     try:
@@ -7907,6 +8212,11 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     if s56_plan is not None:
         holder['s56_ev_plan_capture_checklist'] = assert_s56_ev_plan_capture_path(s56_plan)
         progress['s56_ev_plan_capture_checklist'] = holder['s56_ev_plan_capture_checklist']
+    # S56 search integration: the terminal pricing capture (validated and keyed at freeze; absent / False: nothing)
+    s56_pricing_on = validate_s56_pricing_capture(entry, s56_plan is not None, coupling_on) is True
+    if s56_pricing_on:
+        holder['s56_pricing_capture_checklist'] = assert_s56_pricing_capture_path()
+        progress['s56_pricing_capture_checklist'] = holder['s56_pricing_capture_checklist']
     post_request = entry.get('post_certification')
     post_checklist = None
     if post_request:
@@ -8061,6 +8371,15 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                                                 'traceback': tb}
             print(f"[S44-CHILD] S56 cost breakdown: {holder['s56_cost_breakdown'].get('status')} (checks "
                   f"{holder['s56_cost_breakdown'].get('checks')})", flush=True)
+        if s56_pricing_on:  # S56 search integration: the terminal pricing capture, zero solves
+            try:
+                holder[S56_PRICING_SUMMARY_KEY] = write_s56_pricing_terminal(planning, models, state, eval_dir)
+            except Exception as error:  # noqa: BLE001 -- recorded loudly; the child exits 2 after writing its record
+                tb = traceback.format_exc()
+                print(tb, file=sys.stderr, flush=True)
+                holder[S56_PRICING_SUMMARY_KEY] = {'status': 'error', 'error': f'{type(error).__name__}: {error}',
+                                                   'traceback': tb}
+            print(f"[S44-CHILD] S56 pricing capture: {holder[S56_PRICING_SUMMARY_KEY].get('status')}", flush=True)
         if nrf_on:  # W183c: the NRF rows and binding hours, read-only on the run's own terminal models
             try:
                 holder['nrf_terminal'] = capture_nrf_terminal(planning, models)
@@ -8353,6 +8672,7 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     # S56 step 4 calibration re-run: empty unless the entry declares a key (so every other record keeps its format)
     variant_extra.update(s56_calibration_record_fields(entry, holder))
     variant_extra.update(s56_settled_stop_record_fields(entry, holder))  # S56 search driver: empty unless declared
+    variant_extra.update(s56_pricing_record_fields(entry, holder))  # S56 search integration: empty unless declared
     # S56 EV plan: empty unless the entry declares a key (so every other record keeps its format)
     variant_extra.update(s56_ev_plan_record_fields(entry, holder))
     record = build_evaluation_record(
@@ -8510,6 +8830,12 @@ def main_child(argv):
                 print('[S44-CHILD] S56 cost breakdown not written or its checks not ok (recorded in '
                       'evaluation_record.json); exiting 2', file=sys.stderr, flush=True)
                 sys.exit(2)
+            _ph = progress.get('holder') or {}  # S56 search integration: the pricing capture (declared entries only)
+            if _ph.get('s56_pricing_capture_checklist') is not None and (
+                    _ph.get(S56_PRICING_SUMMARY_KEY) or {}).get('status') != 'written':
+                print('[S44-CHILD] S56 pricing capture not written (recorded in evaluation_record.json); exiting 2',
+                      file=sys.stderr, flush=True)
+                sys.exit(2)
     except SystemExit:
         raise
     except BaseException as error:  # noqa: BLE001 -- recorded as a barrier with its cause, then exit 1
@@ -8595,6 +8921,8 @@ def main_child(argv):
                 **s56_calibration_record_fields(entry, progress.get('holder') or {}),
                 # S56 search driver: the settled-run key, its checklist and summary (empty unless declared).
                 **s56_settled_stop_record_fields(entry, progress.get('holder') or {}),
+                # S56 search integration: the pricing capture key, checklist and summary (empty unless declared).
+                **s56_pricing_record_fields(entry, progress.get('holder') or {}),
                 # S56 EV plan: an entry declaring a key carries it, its checklist and what was applied, on every path.
                 **s56_ev_plan_record_fields(entry, progress.get('holder') or {}),
                 # W101: the interface-dual capture checklist and summary, on every path (None when not reached).
