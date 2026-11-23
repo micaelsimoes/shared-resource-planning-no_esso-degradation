@@ -17,14 +17,19 @@ ITEMS
      points, for every plan, with no last move, with a deterministic last move, and with the reversed class rank.
   3  the order is unchanged when every cached value is perturbed, and identical at 1x and 2x.
   4  stub-children replay: identical incumbent history, evaluated set and budget count, serial and 5-way, randomised
-     per-child delays (harness `evaluate`, stub mode).
+     per-child delays (harness `evaluate`, stub mode). Control (re-scoped by integration ruling 6, 601775c0): the 2x
+     EV configuration FREEZES -- the smoke alias is absent (the cap rule removed it): no collision, and no key of the
+     committed ev_harness_v1 smoke spec among the configuration's 74,084 domain keys.
   5  a kill at every transition, then a resume: the history byte-equal to the uninterrupted run, killed evaluations
      uncounted (synthetic oracle at every transition; stub children during evaluate).
   6  keys: 37,042 distinct lattice keys; keys pairwise distinct across the configuration product; staged key ==
      GeneralLattice.key; the collision scan excludes the campaign's own root.
   7  classification boundaries (dF = R + e exactly, -R + e exactly, the e floor, a missing bar, uncertified, strict
-     status), confirmation boundaries, mixed depth refused, re-classification.
-  8  terminal arithmetic (partition == |N|, roles == budget, the count identity) and budget exhaustion mid-poll.
+     status), confirmation boundaries, mixed depth refused, re-classification; a not_settled confirmation ->
+     unresolved after confirmation, and the review trigger's boundaries (integration ruling 5, 601775c0).
+  8  terminal arithmetic (partition == |N|, roles == budget, the count identity) and budget exhaustion mid-poll;
+     not_settled confirmations in a search: one -> the search continues; 3 consecutive -> stop for review; 2 of 4 ->
+     stop for review (ruling 5); the driver maps that stop to exit 5.
   9  published histories (s47 Phase B 1x, s51 F2 Phase B 2x, s53 F2 certificate 2x) replayed where the old cache
      covers N(x), with coverage reported.
 
@@ -383,8 +388,28 @@ def item7():
             P.confirm(_se(1.0e8 - 20000.0 - 15000.0), _se(1.0e8), ix, ii, 15000.0)['result'] != 'stop_for_review',
         'held-out offset above e -> stop_for_review':
             P.confirm(_se(1.0e8 - 20000.0 - 15000.01), _se(1.0e8), ix, ii, 15000.0)['result'] == 'stop_for_review',
-        'settled not_settled -> harness_error (stops)':
-            P.confirm(_se(1.0e8, status='not_settled'), _se(1.0e8), ix, ii, 15000.0)['result'] == 'harness_error',
+        # integration ruling 5 (601775c0): a not_settled confirmation is "unresolved after confirmation"
+        'candidate settled not_settled -> unresolved_after_confirmation, flagged, the candidate named':
+            (lambda r: r['result'] == 'unresolved_after_confirmation' and r['not_settled'] is True
+             and r['not_settled_sides'] == ['candidate'])(
+                P.confirm(_se(1.0e8 - R - 20000.0, status='not_settled'), _se(1.0e8 - 20000.0), ix, ii, 15000.0)),
+        'incumbent settled not_settled -> unresolved_after_confirmation, the incumbent named':
+            (lambda r: r['result'] == 'unresolved_after_confirmation' and r['not_settled_sides'] == ['incumbent'])(
+                P.confirm(_se(1.0e8 - R - 20000.0), _se(1.0e8 - 20000.0, status='not_settled'), ix, ii, 15000.0)),
+        'both not_settled -> unresolved_after_confirmation, both named':
+            P.confirm(_se(1.0e8, status='not_settled'), _se(1.0e8, status='not_settled'), ix, ii, 15000.0)[
+                'not_settled_sides'] == ['candidate', 'incumbent'],
+        'not_settled with an offset far above e -> no held-out stop (no test on a not-settled value)':
+            P.confirm(_se(1.0e8 - 1.0e6, status='not_settled'), _se(1.0e8), ix, ii, 15000.0)['result']
+            == 'unresolved_after_confirmation',
+        'not_settled without V components -> still unresolved_after_confirmation (never accepted, never a stop)':
+            P.confirm({'depth': 'settled', 'status': 'not_settled', 'F': None}, _se(1.0e8), ix, ii, 15000.0)[
+                'result'] == 'unresolved_after_confirmation',
+        'not_settled candidate vs incumbent harness_error -> harness_error (stops)':
+            P.confirm(_se(1.0e8, status='not_settled'), _se(1.0e8, status='harness_error'), ix, ii, 15000.0)[
+                'result'] == 'harness_error',
+        'unknown settled status "Settled" -> harness_error (strict)':
+            P.confirm(_se(1.0e8, status='Settled'), _se(1.0e8), ix, ii, 15000.0)['result'] == 'harness_error',
         'settled without V components -> harness_error':
             P.confirm({'depth': 'settled', 'status': 'settled', 'F': 1.0e8, 'gates_pass': True}, _se(1.0e8), ix, ii,
                       15000.0)['result'] == 'harness_error',
@@ -402,7 +427,49 @@ def item7():
     ch = P.reclassify(lat_free, recs, 20000.0)
     ck(7, 're-classification at a measured e = 20,000: dF 8,000 unresolved -> confirm_candidate; dF 40,000 stays worse',
        [(c['pos'], c['old'], c['new']) for c in ch] == [(0, 'unresolved', 'confirm_candidate')], ch)
-    return {'n_cases': len(cases) + len(refusals) + len(cf) + 1}
+    trig = review_trigger_cases()
+    return {'n_cases': len(cases) + len(refusals) + len(cf) + 1 + len(trig), 'review_trigger': trig}
+
+
+def _hist_state(pattern, split=None):
+    """A state carrying confirmations in order: pattern of 'n' (not_settled), 'a' (accepted), 'u' (unresolved after
+    confirmation, settled), 'x' (a confirmation not run for budget: not a confirmation), '-' (no confirmation, an
+    exit class). `split`: the index at which a second (open) poll starts."""
+    res = {'n': {'result': 'unresolved_after_confirmation', 'not_settled': True},
+           'a': {'result': 'accepted', 'not_settled': False},
+           'u': {'result': 'unresolved_after_confirmation', 'not_settled': False},
+           'x': {'result': 'not_run_budget'}, '-': None}
+    entries = [{'pos': i, 'confirmation': res[c]} for i, c in enumerate(pattern)]
+    if split is None:
+        return {'polls': [], 'poll': {'index': 0, 'classified': entries}}
+    first = entries[:split]
+    second = [dict(e, pos=i) for i, e in enumerate(entries[split:])]
+    return {'polls': [{'index': 0, 'classified': list(reversed(first))}], 'poll': {'index': 1, 'classified': second}}
+
+
+def review_trigger_cases():
+    """Integration ruling 5's review trigger (`P.not_settled_review`) at its boundaries."""
+    cases = [  # (pattern, split, stop, consecutive rule, share rule)
+        ('nn', None, False, False, False),
+        ('nnn', None, True, True, False),
+        ('n-u-n', None, False, False, False),        # 2 of 3: share rule needs >= 4 confirmations
+        ('uunu', None, False, False, False),         # 1 of 4 = 25 %: not MORE than 25 %
+        ('unun', None, True, False, True),           # 2 of 4 = 50 %
+        ('uuuunuuun', None, False, False, False),     # 2 of 9 = 22 %
+        ('uuunun', None, True, False, True),         # 2 of 6 = 33 %
+        ('aannn', None, True, True, True),           # 3 consecutive and 3 of 5
+        ('nnxn', None, True, True, False),           # a budget-unrun confirmation is not a confirmation: n n n
+        ('uunn', 2, True, False, True),              # across polls: 2 of 4 (closed poll order by position)
+        ('nnn', 2, True, True, False),               # consecutive across a poll boundary
+    ]
+    out = []
+    for pat, split, stop, rc, rs in cases:
+        r = P.not_settled_review(_hist_state(pat, split))
+        ok = r['stop'] is stop and r['rule_consecutive'] is rc and r['rule_share'] is rs
+        ck(7, f'review trigger: confirmations {pat!r}{" (2 polls)" if split else ""} -> stop {stop} '
+              f'(consecutive {rc}, share {rs})', ok, r)
+        out.append({'pattern': pat, 'split': split, 'expected_stop': stop, 'got': r})
+    return out
 
 
 # ======================================================================================================================
@@ -507,7 +574,80 @@ def item8(lat):
     st, recs = _search(lat, env, z0, 10000, overrides={(zc, 'settled'): lambda s: dict(s, F=s['F'] + 1.0e6)})
     ck(8, 'a held-out offset above e at a confirmation stops the search (stop_for_review_offset)',
        st['termination']['reason'] == 'stop_for_review_offset')
+    out['not_settled'] = item8_not_settled(lat, env, z0, base)
     return out
+
+
+def _confirmed_candidates(st):
+    """The candidates of the confirmations that produced a result, in confirmation order."""
+    hist = P.confirmation_history(st)
+    by = {(p['index'], c['pos']): c for p in st['polls'] + ([st['poll']] if st['poll'] else []) for c in p['classified']}
+    return [(tuple(by[(h['poll'], h['pos'])]['z']), h['not_settled']) for h in hist]
+
+
+def item8_not_settled(lat, env, z0, base):
+    """Integration ruling 5 in a search (synthetic oracle): the candidates' settled summaries are set to
+    not_settled one confirmation at a time, so each pattern is reached on the path it itself produces."""
+    ns = lambda s: dict(s, status='not_settled')   # noqa: E731
+    res = {}
+    hist0 = _confirmed_candidates(base)
+    # one not_settled confirmation: the search continues and ends normally
+    ov1 = {(hist0[0][0], 'settled'): ns}
+    st1, recs1 = _search(lat, env, z0, 10000, overrides=ov1)
+    ok1, rep1 = _arith_ok(st1, recs1)
+    h1 = _confirmed_candidates(st1)
+    ck(8, 'one not_settled confirmation: unresolved_after_confirmation, the search continues past it and terminates '
+          'normally (arithmetic holds)',
+       ok1 and h1[0] == (hist0[0][0], True) and len(h1) > 1 and st1['termination']['reason'] not in
+       ('stop_for_review_not_settled', 'harness_error'), {'termination': st1['termination']['reason'], 'n_conf': len(h1)})
+    res['one'] = {'termination': st1['termination'], 'n_confirmations': len(h1)}
+
+    def build(targets):
+        """Mark, in turn, the confirmation at each index of `targets` (on the path the earlier marks produce)."""
+        ov, st = {}, base
+        for idx in targets:
+            h = _confirmed_candidates(st)
+            if len(h) <= idx:
+                return None, None, f'only {len(h)} confirmations on the path'
+            ov[(h[idx][0], 'settled')] = ns
+            st, _r = _search(lat, env, z0, 10000, overrides=dict(ov))
+        return st, _r, None
+    st3, r3, why3 = build([0, 1, 2])
+    ok3 = why3 is None and st3['termination']['reason'] == 'stop_for_review_not_settled'
+    det3 = (st3 or {}).get('termination') if why3 is None else why3
+    ck(8, '3 consecutive not_settled confirmations stop the search for review (stop_for_review_not_settled, the '
+          'consecutive rule)', ok3 and det3['detail']['rule_consecutive'] and det3['detail']['n_confirmations'] == 3,
+       det3)
+    if ok3:
+        ok3b, _rep = _arith_ok(st3, r3)
+        ck(8, 'the not_settled stop: terminal arithmetic holds (partition == |N|, roles == budget == evaluated set)',
+           ok3b, _rep['evaluations'])
+    st4, r4, why4 = build([1, 3])
+    det4 = (st4 or {}).get('termination') if why4 is None else why4
+    ck(8, 'not_settled on 2 of 4 confirmations (> 25 %, >= 4) stops the search for review (the share rule)',
+       why4 is None and st4['termination']['reason'] == 'stop_for_review_not_settled'
+       and det4['detail']['rule_share'] and not det4['detail']['rule_consecutive']
+       and det4['detail']['n_confirmations'] == 4 and det4['detail']['n_not_settled'] == 2, det4)
+    st5, r5, why5 = build([1])
+    h5 = _confirmed_candidates(st5) if st5 else []
+    ck(8, 'not_settled on 1 confirmation only: never a review stop, however many confirmations follow (1 of >= 4 is '
+          '<= 25 %)', why5 is None and st5['termination']['reason'] != 'stop_for_review_not_settled' and len(h5) >= 4,
+       {'termination': (st5 or {}).get('termination', {}).get('reason'), 'n_conf': len(h5)})
+    ck(8, 'the driver maps stop_for_review_not_settled to exit 5 (review), and it is a policy termination',
+       'stop_for_review_not_settled' in D.REVIEW_TERMINATIONS and 'stop_for_review_not_settled' in P.TERMINATIONS)
+    if st3 is not None:
+        rep3 = P.terminal_report(st3, r3)
+        n_flag = sum(1 for u in rep3['unresolved_final_poll'] if u['not_settled'])
+        n_ns_final = sum(1 for c in st3['polls'][-1]['classified']
+                         if (c.get('confirmation') or {}).get('not_settled') is True)
+        ck(8, 'terminal report: the final poll\'s not_settled confirmations are listed unresolved_after_confirmation '
+              'with the flag, and the review record is reported',
+           rep3['not_settled_review']['stop'] and n_flag == n_ns_final >= 1
+           and rep3['class_partition_final_poll']['unresolved_after_confirmation'] >= n_flag,
+           {'review': rep3['not_settled_review'], 'flagged': n_flag, 'final_poll_not_settled': n_ns_final})
+    res.update({'three_consecutive': det3, 'two_of_four': det4,
+                'one_of_many': {'termination': (st5 or {}).get('termination'), 'n_confirmations': len(h5)}})
+    return res
 
 
 # ======================================================================================================================
@@ -918,13 +1058,37 @@ def item4(lat, data_root, out_dir):
     base = os.path.join(out_dir, 'item4')
     os.makedirs(base)
     n_max, seed = 40, 'g4'
-    # positive control of the freeze-time collision scan: the 2x configuration equals the harness smoke's
-    # (ev_harness_v1/smoke, cap 2), whose committed spec carries the x0 / unit exit keys (the cap enters no key)
-    root_c, rc_c, _rc, _codes = _stub_search('control_2x_smoke_alias', lat, data_root, base, 5, n_max, seed, flex=2.0)
+    # control, re-scoped by integration ruling 6 (601775c0): the smoke alias is ABSENT. The 2x EV configuration is the
+    # harness smoke's (ev_harness_v1/smoke, cap 2); before the cap rule its committed spec carried the x0 / unit exit
+    # keys and this freeze was refused. Now the freeze passes its collision scan, and no key of the smoke spec is a key
+    # of the configuration's domain (74,084 keys, both depths).
+    root_c = os.path.join(base, 'control_2x_smoke_alias')
+    hc_c = os.path.join(base, 'control_2x_smoke_alias_harness_config.json')
+    os.makedirs(os.path.join(base, 'control_2x_smoke_alias_logs'))
+    D.write_once_json(hc_c, harness_config(_harness(), flex=2.0, concurrency=5))
+    rc_c = drv(['--freeze', '--root', root_c, '--search-id', 'g4ctl', '--arm', 'ev_2x', '--start', 'x0', '--n-max',
+                str(n_max), '--k-ev', str(K_EV_TEST), '--oracle', 'stub_children', '--synthetic-seed', seed,
+                '--harness-config', hc_c, '--test-only'], data_root,
+               os.path.join(base, 'control_2x_smoke_alias_logs', 'freeze'))
     flog = open(os.path.join(base, 'control_2x_smoke_alias_logs', 'freeze_stdout.log')).read()
-    ck(4, 'freeze-time collision scan (control): the 2x stub configuration is REFUSED and the refusal names the '
-          'committed harness smoke spec (same keys at cap 2)', rc_c == 2 and 'campaign_s56evh_v1_smoke' in flog
-       and not os.path.exists(root_c), [rc_c, flog[-300:]])
+    smoke_rel = os.path.join('data', 'SRP1', 'Results', 'P515S56', 'ev_harness_v1', 'smoke',
+                             'campaign_s56evh_v1_smoke', 'campaign_spec_s56evh_v1_smoke_39882ca6.json')
+    smoke_keys = {e['eval_key'] for e in D.load_json(os.path.join(data_root, smoke_rel))['candidates']}
+    tracked = os.path.join(data_root, smoke_rel) in D.committed_spec_files(data_root)
+    detail = {'freeze_exit': rc_c, 'log_tail': flog[-300:], 'smoke_spec_tracked_and_scanned': tracked}
+    ok = False
+    if rc_c == 0:
+        sp = D.load_spec(root_c)[2]
+        orc = D.HarnessOracle(sp, lat, lock_path=None)
+        keys = {orc.eval_key(z, d) for z in D.enumerate_domain(lat) for d in P.DEPTHS}
+        cs = sp.get('collision_scan') or {}
+        detail.update({'n_domain_keys': len(keys), 'smoke_keys': len(smoke_keys), 'hits': len(keys & smoke_keys),
+                       'collision_scan': cs})
+        ok = (len(keys) == 2 * D.DOMAIN_SIZE and not (keys & smoke_keys) and tracked and cs.get('collisions') == []
+              and cs.get('n_keys') == 2 * D.DOMAIN_SIZE and cs.get('n_files_scanned', 0) > 0)
+    ck(4, 'smoke alias ABSENT (control, re-scoped by ruling 6): the 2x EV stub configuration FREEZES, its collision '
+          'scan (committed smoke spec in scope) finds nothing, and none of the smoke spec\'s eval keys is among the '
+          'configuration\'s 74,084 domain keys', ok, detail)
     runs = {}
     for conc in (1, 5):
         root, rc0, rc, codes = _stub_search(f'conc{conc}', lat, data_root, base, conc, n_max, seed)

@@ -2,8 +2,9 @@
 spec). Authority: S56_SEARCH_DRIVER_DESIGN.md "Oracle mapping and key rules" (Planner decisions, acc80a2e);
 P5_15_S56_SEARCH_DRIVER_REPORT.md (driver build dcea9628 / 1d3b6cdb); the Planner's integration task of 2026-11-23.
 
-MODES (each writes a NEW directory under data/SRP1/Results/P515S56/search_oracle_v1/; attached, both streams
-captured by the caller: `> <dir>_stdout.log 2> <dir>_stderr.log`):
+MODES (each writes a NEW directory under data/SRP1/Results/P515S56/search_oracle_v2/ -- v1 holds the integration
+build's evidence (e1b87c27) and is never written; attached, both streams captured by the caller:
+`> <dir>_stdout.log 2> <dir>_stderr.log`):
   --zero-solve   ZERO SOLVES (SolveProfileGuard(permitted=()) installed before any repository import, verify(0);
                  pickle.load / loads blocked and counted 0):
      T1 the mapping on REAL records (the committed ev_harness_v1 smoke: x0 and the reference unit, 2x, 2 cycles):
@@ -20,11 +21,16 @@ captured by the caller: `> <dir>_stdout.log 2> <dir>_stderr.log`):
         recorded), candidate keys unchanged; entries WITH S56 keys listed (they change by design); freeze pre == post
         on four entry sets without S56 keys; build_evaluation_record pre == post on committed records.
      T5 preflight refusals: memory rule (injected vm_stat), undeclared per-slot, provisional mapping, harness
-        preconditions, solver path; real freeze / pilot refusals; the mapping capture-path assertion.
+        preconditions, solver path; real freeze / pilot refusals; the mapping capture-path assertion. Rulings 1-7
+        (601775c0): the mapping parameters FINAL; a real pilot spec refuses without complete predictions or with a
+        per-slot figure other than 4.0, carries s_share 500 and the ruled staged plan, and passes the pilot
+        capture-path checklist.
      T6 cache roots and the start pool (fixture records in a scratch root, labelled SYNTHETIC): index, ignore reasons,
         re-verification (a tampered record refuses), best start with its runner-up margin.
      T7 the pilot against stubs: freeze (both grids), two attached launches (blocks 5 + 2) through the driver CLI,
-        a third launch = done, evaluation (synthetic traces) -> K_EV, e_EV and every reported output; refusals.
+        a third launch = done, evaluation (synthetic traces, s_share read from the frozen spec) -> K_EV, e_EV and every
+        reported output; refusals; --pilot-run --preflight-only (refused on a stub pilot; on a test-only harness
+        pilot: zero solves, record written, nothing launched, the pilot root unchanged, the lock released).
      T8 the wall-time projection and the count formula.
      T9 a stub-children search at 2x through the driver CLI: frozen (the alias refusal gone), run by attached
         launches to termination, final state == the in-process synthetic replay.
@@ -78,7 +84,7 @@ import p515_s56_search_driver as D  # noqa: E402
 import p515_s56_search_policy as P  # noqa: E402
 
 SCRIPT = os.path.basename(os.path.abspath(__file__))
-OUT_REL = os.path.join('data', 'SRP1', 'Results', 'P515S56', 'search_oracle_v1')
+OUT_REL = os.path.join('data', 'SRP1', 'Results', 'P515S56', 'search_oracle_v2')   # v1: e1b87c27 (never written)
 OUT = os.path.join(CODE_ROOT, OUT_REL)
 SMOKE = os.path.join('data', 'SRP1', 'Results', 'P515S56', 'ev_harness_v1', 'smoke', 'campaign_s56evh_v1_smoke')
 SMOKE_SPEC = os.path.join(SMOKE, 'campaign_spec_s56evh_v1_smoke_39882ca6.json')
@@ -604,13 +610,17 @@ def t5(lat, scratch):
         1, None, VM_STAT.format(wired=1, anon=1, comp=1), 64 * gib)['pass'])
     ck(5, 'memory rule: a vm_stat without the compressor line refuses', not D.memory_preflight(
         1, 1.0, 'Mach Virtual Memory Statistics: (page size of 16384 bytes)\nPages wired down: 1.\n', 64 * gib)['pass'])
+    mp = D.MAPPING_PARAMETERS
+    ck(5, 'ruling 1: the mapping parameters are FINAL (provisional empty; tau_cl 1e-5 p.u., ESSO slack gate 1e-5)',
+       mp['provisional'] == [] and mp['tau_cl_pu'] == 1e-5 and mp['esso_slack_tol'] == 1e-5, mp)
     try:
-        D.real_launch_preflight(H, os.path.join(scratch, 'never_created'), 1, 3.0, CODE_ROOT)
+        D.real_launch_preflight(H, os.path.join(scratch, 'never_created'), 1, 3.0, CODE_ROOT,
+                                mapping=dict(D.MAPPING_PARAMETERS, provisional=['tau_cl_pu']))
         msg = 'not refused'
     except D.Refused as error:
         msg = error.reasons
     out['real_launch_preflight_refusals'] = msg
-    ck(5, 'real-launch preflight refuses while a mapping parameter is provisional, and names it',
+    ck(5, 'real-launch preflight refuses a provisional mapping (one declared provisional), and names it',
        msg != 'not refused' and any('provisional' in m for m in msg), msg)
     env_saved = os.environ.pop('NLP_SOLVER_PATH', None)
     try:
@@ -638,7 +648,9 @@ def t5(lat, scratch):
     inst = D.build_lattice(CODE_ROOT)[1]
     common = dict(search_id='t5', arm='ev_2x', lattice=lat, instance_rec=inst, start_name='x0', n_max=10, k_ev=400,
                   oracle='harness', class_rank=P.CLASS_RANK, test_only=False, data_root=CODE_ROOT)
-    for name, kw, needle in (('provisional mapping', {'harness_config': hc}, 'provisional'),
+    for name, kw, needle in (('provisional mapping', {'harness_config': hc,
+                                                      'mapping': dict(D.MAPPING_PARAMETERS, provisional=['tau_cl_pu'])},
+                              'provisional'),
                              ('no memory_per_slot_gib', {'harness_config': {k: v for k, v in hc.items()
                                                                            if k != 'memory_per_slot_gib'},
                                                          'mapping': dict(D.MAPPING_PARAMETERS, provisional=[])},
@@ -662,13 +674,37 @@ def t5(lat, scratch):
     out['mapping_capture_checklist'] = orc.mapping_checklist
     ck(5, 'mapping capture-path assertion passes on the integration harness with the EV configuration',
        all(orc.mapping_checklist.values()), orc.mapping_checklist)
-    try:
-        D.pilot_spec(pilot_id='t5', grid='srp1grid', oracle='harness', test_only=False, data_root=CODE_ROOT,
-                     memory_per_slot_gib=3.0)
-        m = 'not refused'
-    except D.Refused as error:
-        m = '; '.join(error.reasons)
-    ck(5, 'real pilot freeze refused while a mapping parameter is provisional', 'provisional' in m, m)
+    good = {'predictions': {k: {'statement': f'test {k}', 'evaluated_as': 'test', 'on_failure': 'test'}
+                            for k in D.PILOT_PREDICTION_IDS}}
+    incomplete = {'predictions': {k: v for k, v in good['predictions'].items() if k != 'PP8'}}
+    for name, kw, needle in (('no predictions', {}, 'predictions'),
+                             ('predictions without PP8', {'predictions': incomplete}, 'PP8'),
+                             ('memory_per_slot_gib 3.0 (ruling 7: 4.0)', {'predictions': good,
+                                                                         'memory_per_slot_gib': 3.0}, 'ruling 7'),
+                             ('initialisations other than the ruled', {'predictions': good,
+                                                                      'init_variants': (('i1', 1.0), ('i2', 0.5),
+                                                                                        ('i3', 3.0))}, 'ruled')):
+        try:
+            D.pilot_spec(pilot_id='t5', grid='srp1grid', oracle='harness', test_only=False, data_root=CODE_ROOT, **kw)
+            m = 'not refused'
+        except D.Refused as error:
+            m = '; '.join(error.reasons)
+        ck(5, f'real pilot freeze refused: {name}', needle in m, m)
+    sp = D.pilot_spec(pilot_id='t5', grid='srp1grid', oracle='harness', test_only=False, data_root=CODE_ROOT,
+                      predictions=good)
+    out['real_pilot_spec_in_memory'] = {k: sp[k] for k in ('memory_per_slot_gib', 'rules', 'init_variants',
+                                                           'staged_plan_label', 'capture_path_checklist')}
+    ck(5, 'real pilot spec (in memory, not frozen): rulings 2, 3, 7 -- s_share 500, rho0_scale 1.0 / 0.5 / 2.0 FINAL, '
+          'the ruled staged plan, 4.0 GiB per slot, mapping final, pilot capture-path checklist all true',
+       sp['rules']['s_share_eur'] == 500.0 and sp['memory_per_slot_gib'] == 4.0
+       and sp['init_variants']['values'] == [['i1', 1.0], ['i2', 0.5], ['i3', 2.0]]
+       and sp['init_variants']['status'].startswith('FINAL')
+       and sp['staged_plan_label'] == 'n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5'
+       and sp['mapping']['provisional'] == [] and all(sp['capture_path_checklist'].values())
+       and sp['predictions_recorded_before_run'] == good
+       and [e['rho0_scale'] for e in sp['entries']] == [1.0, 1.0, 1.0, 0.5, 0.5, 2.0, 2.0]
+       and all(('rho0_scale' in e['options']) == (e['rho0_scale'] != 1.0) for e in sp['entries']),
+       out['real_pilot_spec_in_memory'])
     for name, kw in (('an unknown grid', {'grid': 'other', 'oracle': 'stub_children', 'test_only': True}),
                      ('a stub pilot not test-only', {'grid': 'srp1grid', 'oracle': 'stub_children',
                                                      'test_only': False})):
@@ -783,9 +819,9 @@ def t7(scratch):
        and all(e['options'][H.S56_SETTLED_STOP_DISABLED_KEY] is True and e['options'][H.S56_PRICING_CAPTURE_KEY]
                is True for e in spec['entries']), rc)
     roles = sorted((e['role'], e['init']) for e in spec['entries'])
-    ck(7, 'x0 and the unit from three initialisations (rho0_scale 1.0 / 0.5 / 2.0, PROPOSED), one staged plan',
+    ck(7, 'x0 and the unit from three initialisations (rho0_scale 1.0 / 0.5 / 2.0, FINAL by ruling 3), one staged plan',
        roles == sorted([('x0', 'i1'), ('x0', 'i2'), ('x0', 'i3'), ('unit', 'i1'), ('unit', 'i2'), ('unit', 'i3'),
-                        ('staged', 'i1')]) and spec['init_variants']['status'].startswith('PROPOSED'), roles)
+                        ('staged', 'i1')]) and spec['init_variants']['status'].startswith('FINAL'), roles)
     codes = []
     for i in range(3):
         codes.append(drv(['--pilot-run', '--root', root, '--test-only', '--lock-path', lock],
@@ -797,17 +833,20 @@ def t7(scratch):
        [r['block'] for r in lr] == spec['blocks'] and lr[1]['previous_launch_manifest_sha256'] == D.sha256_file(
            D.launch_paths(root, 1)[2]) and all(x['exit_code'] == '0' for r in lr for x in r['records']))
     res_dir = os.path.join(scratch, 'pilot_eval')
-    rc_nos = drv(['--pilot-evaluate', '--root', root, '--out', res_dir + '_noshare'], os.path.join(logs, 'eval_noshare'))
-    ck(7, 'pilot evaluation without s_share refuses (Planner parameter)', rc_nos == 2, rc_nos)
-    rc_ev = drv(['--pilot-evaluate', '--root', root, '--out', res_dir, '--s-share-eur', '500'],
-                os.path.join(logs, 'eval'))
+    rc_other = drv(['--pilot-evaluate', '--root', root, '--out', res_dir + '_othershare', '--s-share-eur', '400'],
+                   os.path.join(logs, 'eval_othershare'))
+    ck(7, 'pilot evaluation with an s_share other than the frozen 500 refuses (ruling 2), writing nothing',
+       rc_other == 2 and not os.path.exists(res_dir + '_othershare'), rc_other)
+    rc_ev = drv(['--pilot-evaluate', '--root', root, '--out', res_dir], os.path.join(logs, 'eval'))
     res = D.load_json(os.path.join(res_dir, 'pilot_result.json')) if rc_ev in (0, 5) else {}
     out['result'] = res
     need = ('K_EV', 'e_EV', 'e_EV_terms', 'pairs', 'dF_exit_spread_3x3', 'dF_set_spread_3x3', 'max_pair_offset',
             'max_bar_sum', 't_exit_h', 't_set_h', 'psi', 'psi_per_block', 'runs')
-    ck(7, 'pilot evaluation (SYNTHETIC traces) writes every output: K_EV, e_EV and its terms, 15 pairs, spreads, '
-          'bars, t_exit, t_set, psi, per-run single offsets and the leak at the settled point',
-       rc_ev == 0 and all(res.get(k) is not None for k in need) and len(res['pairs']) == 15 and res['synthetic']
+    ck(7, 'pilot evaluation (SYNTHETIC traces; s_share 500 read from the frozen spec) writes every output: K_EV, e_EV '
+          'and its terms, 15 pairs, spreads, bars, t_exit, t_set, psi, per-run single offsets and the leak at the '
+          'settled point',
+       rc_ev == 0 and res.get('s_share_eur') == 500.0 and all(res.get(k) is not None for k in need)
+       and len(res['pairs']) == 15 and res['synthetic']
        and all('single_offset' in r and 'leak_settled_point' in r for r in res['runs'].values()),
        {k: res.get(k) for k in ('K_EV', 'e_EV', 'failures')})
     if res.get('K_EV') is not None:
@@ -837,6 +876,43 @@ def t7(scratch):
        rc5 == 0 and len(sp5['entries']) == 7 and not ({e['eval_key'] for e in sp5['entries']}
                                                      & {e['eval_key'] for e in spec['entries']}), rc5)
     out['launch_codes'] = codes
+    out['preflight_only'] = t7_preflight_only(scratch, root, logs)
+    return out
+
+
+def t7_preflight_only(scratch, stub_root, logs):
+    """--pilot-run --preflight-only: refused on a stub pilot; on a test-only HARNESS-oracle pilot (scratch lock): zero
+    solves (the driver's armed guard), the record written, nothing launched, the pilot root unchanged, the lock
+    released. Whether the preflight itself passes depends on the machine's state (memory, live processes), so both
+    outcomes are accepted here provided the record names every refusal."""
+    out = {}
+    lock = os.path.join(scratch, 'pilot_pf.lock')
+    rc_stub = drv(['--pilot-run', '--root', stub_root, '--preflight-only', '--out', os.path.join(scratch, 'pf_stub'),
+                   '--lock-path', lock], os.path.join(logs, 'pf_stub'))
+    ck(7, '--preflight-only on a stub pilot is refused (exit 2), nothing written',
+       rc_stub == 2 and not os.path.exists(os.path.join(scratch, 'pf_stub')), rc_stub)
+    root = os.path.join(scratch, 'pilot_harness_testonly')
+    rc_f = drv(['--pilot-freeze', '--root', root, '--pilot-id', 'pilotpf', '--grid', 'srp1grid', '--oracle', 'harness',
+                '--test-only'], os.path.join(logs, 'pf_freeze'))
+    before = sorted(D.files_under(root)) if rc_f == 0 else None
+    pf_out = os.path.join(scratch, 'pf_harness')
+    rc = drv(['--pilot-run', '--root', root, '--preflight-only', '--out', pf_out, '--lock-path', lock],
+             os.path.join(logs, 'pf_harness'))
+    rec = D.load_json(os.path.join(pf_out, 'pilot_preflight.json')) if os.path.isfile(
+        os.path.join(pf_out, 'pilot_preflight.json')) else {}
+    after = sorted(D.files_under(root)) if rc_f == 0 else None
+    out.update({'freeze_exit': rc_f, 'exit': rc, 'record': rec})
+    ok = (rc_f == 0 and rc in (0, 2) and rec.get('launched') is False and rec.get('solves') == 0
+          and rec.get('launch_dir_created') is False and before == after and not os.path.exists(lock)
+          and rec.get('next_launch_index') == 1 and rec.get('pass') is (rc == 0)
+          and (rc == 0 or rec['real_launch_preflight'].get('refusals')))
+    ck(7, '--preflight-only on a test-only harness pilot: record written (pass or every refusal named), nothing '
+          'launched, no launch dir, the pilot root unchanged, the lock released',
+       ok, {'freeze': rc_f, 'exit': rc, 'pass': rec.get('pass'),
+            'refusals': (rec.get('real_launch_preflight') or {}).get('refusals')})
+    rc_again = drv(['--pilot-run', '--root', root, '--preflight-only', '--out', pf_out, '--lock-path', lock],
+                   os.path.join(logs, 'pf_harness_again'))
+    ck(7, '--preflight-only refuses an existing --out (write-once)', rc_again == 2, rc_again)
     return out
 
 

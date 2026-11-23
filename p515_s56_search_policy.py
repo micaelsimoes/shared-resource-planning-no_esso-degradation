@@ -40,6 +40,16 @@ certification stop disabled, to the pre-declared cap K_EV). Accepted iff
   A(x) + A(inc) <= R/2 (the cancellation guard, 5,000 EUR), and every gate of both evaluations passes.
   HELD-OUT CHECK (design, pilot protocol): offset = |dF_exit - dF_set| > e (the e of the pair's exit classification)
   stops the search for review. Otherwise the candidate is "unresolved after confirmation".
+  NOT SETTLED (integration ruling 5, S56_SEARCH_DRIVER_DESIGN.md "Integration rulings", 601775c0; option b): a
+  confirmation in which the candidate's or the incumbent's settled summary has status 'not_settled' is "unresolved
+  after confirmation" (flagged `not_settled`, the not-settled side(s) named; no acceptance test and no held-out check
+  is applied to a not-settled value) and the search continues. A 'harness_error' or unknown status on either side
+  still stops the search (harness_error). REVIEW TRIGGER: the search stops for review
+  ('stop_for_review_not_settled') when the last NOT_SETTLED_CONSECUTIVE_STOP = 3 confirmations were all not_settled,
+  or when, with at least NOT_SETTLED_MIN_CONFIRMATIONS = 4 confirmations so far, more than NOT_SETTLED_SHARE_STOP =
+  25 % of them were not_settled. "Confirmations so far" = every confirm-candidate whose confirmation produced a result
+  ('accepted' or 'unresolved_after_confirmation'), in confirmation order (poll, then position), over the whole search;
+  derived from the state (`not_settled_review`), so no state field is added.
 
 EXECUTION (`step`). Fixed blocks of BLOCK = 5: the next 5 uncached candidates in order are requested in one action;
 they are then classified in order, so the incumbent path equals the serial path (no rolling refill). Candidates in
@@ -75,6 +85,9 @@ R_EUR = 10000.0                 # S56_PLAN_v4_1.md section 3
 E_FLOOR_EUR = 15000.0           # interim exit error floor (Planner decision, logged in the design)
 V_PAIR_FRACTION = 0.25          # V_pair <= R/4
 A_GUARD_FRACTION = 0.5          # A(x) + A(x') <= 5,000 EUR = R/2
+NOT_SETTLED_CONSECUTIVE_STOP = 3   # integration ruling 5 (601775c0): 3 consecutive not_settled confirmations -> review
+NOT_SETTLED_SHARE_STOP = 0.25      # ... or not_settled on MORE than 25 % of the confirmations so far ...
+NOT_SETTLED_MIN_CONFIRMATIONS = 4  # ... once there are at least 4 confirmations
 BLOCK = 5                       # fixed blocks of 5
 CAP = 80                        # Expert ruling 5; owned by the driver/policy (p516_lattice's 60 is ignored)
 CLASS_RANK = ('resize', 'shift', 'redistribute', 'activate', 'remove')
@@ -91,7 +104,7 @@ PARTITION_CLASSES = ('accepted', 'unresolved_after_confirmation', 'confirm_candi
 ROLES = ('incumbent_exit', 'decision_relevant', 'speculative_post_acceptance', 'speculative_post_termination',
          'confirmation', 'unclassified')
 TERMINATIONS = ('complete_poll_no_accepted_candidate', 'budget_exhausted', 'harness_error', 'stop_for_review_offset',
-                'start_incumbent_not_certified')
+                'start_incumbent_not_certified', 'stop_for_review_not_settled')
 SAME_SIGN_DIAGONALS = ('+1+1', '-1-1', '+1+2', '-1-2')
 
 
@@ -245,13 +258,22 @@ def confirm(x_set, inc_set, x_exit, inc_exit, e, R=R_EUR):
     _need_depth(x_exit, DEPTH_EXIT, 'candidate exit')
     _need_depth(inc_exit, DEPTH_EXIT, 'incumbent exit')
     out = {'result': None, 'improvement_set': None, 'dF_set': None, 'dF_exit': None, 'offset': None, 'e': e,
-           'V_pair': None, 'A_sum': None, 'gates_pass': None, 'failed': [], 'R': R}
-    for name, s in (('candidate', x_set), ('incumbent', inc_set)):
+           'V_pair': None, 'A_sum': None, 'gates_pass': None, 'failed': [], 'R': R, 'not_settled': False}
+    sides = (('candidate', x_set), ('incumbent', inc_set))
+    for name, s in sides:   # a harness error or an unknown status on either side stops the search
         st = s.get('status')
-        if st != 'settled':
-            why = (f'{name} settled status {st!r}' if st in SETTLED_STATUSES and st != 'harness_error'
-                   else f'{name} settled status {st!r} (harness error)')
-            return dict(out, result='harness_error', failed=[why])
+        if st not in SETTLED_STATUSES or st == 'harness_error':
+            return dict(out, result='harness_error', failed=[f'{name} settled status {st!r} (harness error)'])
+    ns = [name for name, s in sides if s.get('status') == 'not_settled']
+    if ns:   # integration ruling 5 (option b): unresolved after confirmation; the search continues
+        if _finite(x_set.get('F')) and _finite(inc_set.get('F')) and _finite(x_exit.get('F')) \
+                and _finite(inc_exit.get('F')):   # reported only; no test is applied to a not-settled value
+            dF_set = float(x_set['F']) - float(inc_set['F'])
+            dF_exit = float(x_exit['F']) - float(inc_exit['F'])
+            out.update(dF_set=dF_set, improvement_set=-dF_set, dF_exit=dF_exit, offset=abs(dF_exit - dF_set))
+        return dict(out, result='unresolved_after_confirmation', not_settled=True, not_settled_sides=ns,
+                    failed=[f'{name} settled status not_settled' for name in ns])
+    for name, s in sides:
         v = s.get('V')
         if not _finite(s.get('F')) or not isinstance(v, dict) or not all(_finite(v.get(k)) for k in 'S PR G A'.split()):
             return dict(out, result='harness_error', failed=[f'{name} settled summary lacks F or V components'])
@@ -434,6 +456,11 @@ def step(state, records, env):
         if res['result'] in ('stop_for_review', 'harness_error'):
             return _terminate(state, 'stop_for_review_offset' if res['result'] == 'stop_for_review'
                               else 'harness_error', {'pos': entry['pos'], 'z': entry['z'], 'failed': res['failed']})
+        if res.get('not_settled'):
+            review = not_settled_review(state)
+            if review['stop']:
+                return _terminate(state, 'stop_for_review_not_settled',
+                                  dict(review, pos=entry['pos'], z=entry['z']))
         if res['result'] != 'accepted':
             continue
         for e in state['evaluated']:
@@ -447,6 +474,38 @@ def step(state, records, env):
         poll['closed'] = 'accepted'
         state['polls'].append(poll)
         state['poll'] = None
+
+
+def confirmation_history(state):
+    """Every confirmation that produced a result ('accepted' / 'unresolved_after_confirmation'), in confirmation order
+    (closed polls in order, then the open poll; within a poll by position) -> [{'poll', 'pos', 'result',
+    'not_settled'}]."""
+    out = []
+    for p in state['polls'] + ([state['poll']] if state['poll'] else []):
+        for c in sorted(p['classified'], key=lambda c: c['pos']):
+            r = (c.get('confirmation') or {}).get('result')
+            if r in ('accepted', 'unresolved_after_confirmation'):
+                out.append({'poll': p['index'], 'pos': c['pos'], 'result': r,
+                            'not_settled': (c['confirmation'] or {}).get('not_settled') is True})
+    return out
+
+
+def not_settled_review(state):
+    """The review trigger of integration ruling 5 (module docstring), from the state alone."""
+    hist = confirmation_history(state)
+    n, n_ns = len(hist), sum(1 for h in hist if h['not_settled'])
+    tail = 0
+    for h in reversed(hist):
+        if not h['not_settled']:
+            break
+        tail += 1
+    consecutive = tail >= NOT_SETTLED_CONSECUTIVE_STOP
+    share = n >= NOT_SETTLED_MIN_CONFIRMATIONS and n_ns > NOT_SETTLED_SHARE_STOP * n
+    return {'stop': consecutive or share, 'n_confirmations': n, 'n_not_settled': n_ns, 'consecutive_not_settled': tail,
+            'rule_consecutive': consecutive, 'rule_share': share,
+            'rule': (f'{NOT_SETTLED_CONSECUTIVE_STOP} consecutive not_settled confirmations, or not_settled on more '
+                     f'than {NOT_SETTLED_SHARE_STOP:.0%} of >= {NOT_SETTLED_MIN_CONFIRMATIONS} confirmations '
+                     f'(integration ruling 5)')}
 
 
 def run_to_end(state, records, env, evaluate_fn, max_actions=100000):
@@ -484,7 +543,8 @@ def terminal_report(state, records=None):
             if k in ('unresolved', 'unresolved_after_confirmation', 'confirm_candidate_unconfirmed'):
                 unresolved.append({'pos': c['pos'], 'label': c['label'], 'class': k, 'dF_exit': c['dF_exit'],
                                    'e': c['e'], 'criterion': c['criterion'],
-                                   'confirmation_failed': (c['confirmation'] or {}).get('failed')})
+                                   'confirmation_failed': (c['confirmation'] or {}).get('failed'),
+                                   'not_settled': (c['confirmation'] or {}).get('not_settled') is True})
         partition['not_reached'] = final['n'] - len(final['classified'])
         if sum(partition.values()) != final['n']:
             raise PolicyError('the class partition does not sum to |N|')
@@ -515,6 +575,7 @@ def terminal_report(state, records=None):
         'distinct_plans_evaluated': distinct,
         'share_of_domain_evaluated': (distinct / dom) if dom else None,
         'count_identity': count_identity(state),
+        'not_settled_review': not_settled_review(state),
     }
 
 
