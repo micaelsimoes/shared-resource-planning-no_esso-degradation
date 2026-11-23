@@ -1,0 +1,539 @@
+{
+ "authority": [
+  "S56_COHORT_FORMULATION_PROPOSAL.md (rows 1-12, validation i-vii)",
+  "TASKS.md S56: Expert rulings E1-E7 recorded 2026-11-21 (arrangement A; transfers allowed, losses/degradation accounted; within-cohort simultaneity restricted or demonstrably negligible; closure conventions aligned; E3 non-uniqueness; E4 0.428 MW conditional; E5 Q slack)",
+  "S56_PLAN_v3.md section 2 (storage cohorts row; initialisation row)",
+  "Planner task to Worker 2026-11-23: ESSO-only implementation behind an ESS-params key, default legacy; detectors module; isolated validation T-i..T-vii; spec + script committed before solving; production change committed after T-i passes"
+ ],
+ "change_under_test": {
+  "closure_convention_implemented": {
+   "differences_from_network": [
+    "slack bound uses the cohort RATED energy (a Param) instead of the available energy (a Var in the ESSO): looser by the factor 1/SoH",
+    "EQUALITY_TOLERANCE is applied in MWh (ESSO units) where the network applies it in p.u. (x baseMVA MWh)",
+    "the ESSO objective is not divided by sigma in ADMM while the network objectives are: the same 1e3/MWh coefficient is not the same weight relative to the AL terms (reported, not resolved here)"
+   ],
+   "esso_per_cohort": "same form per (cohort, block, day), gated on the ESSO params.slacks (true in SRP1_ESS_Params.json): e[c,y,d,T] == 0.5*E_av[c,y] + up - down; 0 <= up, down <= 0.05*E_rated(c) + EQUALITY_TOLERANCE; PENALTY_SHARED_ESS_BALANCE per MWh in feasibility_penalty; without slacks the +-EQUALITY_TOLERANCE band",
+   "network_reference": "model_construction_helpers.sess_soc_final_rule at HEAD: with params.slacks.shared_ess.day_balance (true in every SRP1 network params file): soc[T] == E*0.5 + slack_up - slack_down; slack in [0, E*ESS_DAY_BALANCE_SLACK_FRACTION (0.05) + EQUALITY_TOLERANCE] (configure_shared_ess_operational_state), objective baseMVA*PENALTY_SHARED_ESS_BALANCE*(up+down) = PENALTY_SHARED_ESS_BALANCE (1e3) per MWh; without day_balance: -EQUALITY_TOLERANCE <= soc[T] - 0.5E <= EQUALITY_TOLERANCE. E = the available energy handed to the network (sum over cohorts of es_e_available_per_unit)"
+  },
+  "files": [
+   "shared_energy_storage_parameters.py",
+   "shared_energy_storage_data.py"
+  ],
+  "independent_units": {
+   "activation": "_configure_esso_cohort_units_rows (called at the end of _update_model_with_candidate_solution; no-op without the registry): per block y, multi = (>= 2 cohorts active by the _configure_esso_cohort_pnet_share_rows test); cohort rows/Vars of active cohorts on multi years on, else off/fixed 0; Q rows and Q slacks on multi years only; the aggregate circle rows of energy_storage_operation_agg deactivated on multi years, active otherwise",
+   "aggregation_p": "existing energy_storage_operation_agg P row, unchanged",
+   "aggregation_q": "es_qnet == sum_c q_c + slack_es_qnet_up - slack_es_qnet_down (E5), Q slack priced esso_slack_penalty per MVAr per period (as the P slack)",
+   "converter": "(pch - pdch)^2 + q^2 <= es_s_rated_per_unit[c,y]^2",
+   "degradation_objective": "unchanged rows; objective gains only the Q-slack and closure-slack terms (Vars fixed at 0 outside multi-cohort node-years)",
+   "h3": "unwired: the energy_storage_cohort_pnet_share_h3 rows are not added (Param, empty ConstraintList and the configure function retained)",
+   "new_rows": "energy_storage_cohort_soc, energy_storage_cohort_soc_window (lower, upper), energy_storage_cohort_soc_final, energy_storage_cohort_converter (per (y_inv, y) inside the calendar-life window), energy_storage_operation_agg_q (per y,d,p); all built DEACTIVATED, registry model._esso_cohort_units_rows (not _esso_cohort_constraints)",
+   "new_vars": "es_soc_per_unit[y_inv,y,d,p] (MWh, NonNegativeReals), es_q_per_unit[y_inv,y,d,p] (MVAr), slack_es_soc_final_per_unit_{up,down}[y_inv,y,d], slack_es_qnet_{up,down}[y,d,p] (the slack pairs only when params.slacks); all fixed at 0 at build",
+   "soc_row": "e[c,y,d,p] == e_prev + eta_ch(c)*pch*dt - pdch*dt/eta_dch(c); e_prev = ENERGY_STORAGE_RELATIVE_INIT_SOC (0.5) * es_e_available_per_unit[c,y] at p = 0 (network sess_soc_rule coefficients; eta from the cohort installation-year SharedEnergyStorage, as the throughput row)",
+   "window": "0.1 * E_av[c,y] <= e <= 0.9 * E_av[c,y] (ENERGY_STORAGE_MIN/MAX_ENERGY_STORED; E_av = es_e_available_per_unit, a Var)"
+  },
+  "key": "cohort_formulation (top level of the ESS params JSON): 'legacy_h3' (default when absent) | 'independent_units'; anything else raises ValueError",
+  "legacy_h3": "nothing new is constructed: the built model is the pre-change model (T-i G1 gates it bitwise)",
+  "not_changed": [
+   "network models, ADMM, harnesses, admm_parameters.py, every committed params file (none sets the key)"
+  ],
+  "within_cohort_simultaneity": "restricted exactly as in the single-cohort ESSO: no row; the EPS_ESSO_THROUGHPUT (1e-5) throughput regularization (same coefficient on pch and pdch) and the remedy-(h) IPOPT tolerances (ESSO_TOL_OVERRIDES tol 1e-10, acceptable_tol 1e-9); detector (i) measures it"
+ },
+ "deviations_declared_before_launch": [
+  "T-ii (b): the \">= 0.20 MWh pre-charge of the 2-h cohort\" is NOT imposed: its window headroom (0.9-0.5)*E_av <= 0.4*0.5*0.985^5 = 0.1854 MWh < 0.20 MWh (SRP1 data: eta_ch 0.97, eta_dch 0.96, phi 0.985, end-of-block SoH). The pre-charge is left to the solver (periods 0-5 free) and compared with the minimum needed s/eta_dch - 0.4*E_av ~ 0.075 MWh",
+  "T-ii: all periods of the test day other than the request period are free, so the per-cohort closure can be met; the rest of the model is fixed at 0 requests",
+  "T-iv: the peak is the midpoint 0.464 MW (the -0.5 MW peak is meetable with transfer only with a 0.0000-0.003 MW margin on these data); after the peak the request is free (recharge)",
+  "T-v: two starting points instead of two warm starts (see t_v.starts_note)",
+  "A zero-solve development smoke build of the p2025_2030 plan (independent_units and legacy) was run on a scratch export before this spec was written, to check that the code builds; its active-row counts equalled the proposal numbers used in tib. No NL comparison and no solve was run before the freeze"
+ ],
+ "environment": {
+  "LP_SOLVER_PATH": "/Users/micaelsimoes/coin-or/dist/bin/clp",
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python"
+ },
+ "failure_policy": "record, no tuning, no re-run (a harness fault is fixed and relaunched to a new output directory, the old one preserved)",
+ "frozen_utc": "2026-11-23",
+ "g0": "after-tree reader on scratch copies of SRP1_ESS_Params.json: absent -> legacy_h3; legacy_h3, independent_units accepted; true, null, 1, \"H3\", \"\", \"INDEPENDENT_UNITS\", [..], {} -> ValueError; SharedEnergyStorageParameters() default legacy_h3",
+ "g3": "declared fixture list as R8 (git-tracked *.pkl + W183c NAMED_FIXTURES + FrozenSMOPF/**), unpickled under before and after modules: same outcome per path, load count = present count (pre-existing failures carried, not re-scoped)",
+ "g3c": {
+  "definition": "before child pickles its read SharedEnergyStorageParameters (no cohort_formulation attribute) and an ESSO node-7 model built (legacy) for p2025_2030; after child: params unpickled -> attribute absent -> resolves legacy_h3 -> builds of x0, ref_unit, p2025_2030 (in_objective False, init and admm) bitwise equal to the after legacy cells; the pickled model is updated by the after _update_model_with_candidate_solution with params cohort_formulation = independent_units in memory -> no exception, no registry added, labelled+plain NL bitwise equal to its pre-pickle NL",
+  "plans": {
+   "p2025_2030": [
+    [
+     7,
+     2025,
+     0.25,
+     1.0
+    ],
+    [
+     7,
+     2030,
+     0.25,
+     0.5
+    ]
+   ],
+   "ref_unit": [
+    [
+     7,
+     2025,
+     0.25,
+     1.0
+    ]
+   ],
+   "x0": []
+  }
+ },
+ "grids": {
+  "fiveblock_3x3": {
+   "case_file": "SRP1__s53_3x3.json",
+   "ess_params_file": "SRP1_ESS_Params.json (as R8)",
+   "plans": {
+    "only2031": [
+     [
+      7,
+      2031,
+      0.25,
+      1.0
+     ]
+    ],
+    "ref_unit": [
+     [
+      7,
+      2025,
+      0.25,
+      1.0
+     ]
+    ],
+    "x0": []
+   },
+   "scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+   "source_case_rel": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+   "source_case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+   "years": {
+    "2025": 3,
+    "2028": 3,
+    "2031": 3,
+    "2034": 3,
+    "2037": 3
+   }
+  },
+  "srp1": {
+   "case_file": "SRP1.json",
+   "plans": {
+    "only2030": [
+     [
+      7,
+      2030,
+      0.25,
+      1.0
+     ]
+    ],
+    "only2035": [
+     [
+      7,
+      2035,
+      0.25,
+      1.0
+     ]
+    ],
+    "p2025_2030": [
+     [
+      7,
+      2025,
+      0.25,
+      1.0
+     ],
+     [
+      7,
+      2030,
+      0.25,
+      0.5
+     ]
+    ],
+    "ref_unit": [
+     [
+      7,
+      2025,
+      0.25,
+      1.0
+     ]
+    ],
+    "x0": []
+   },
+   "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+   "years": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   }
+  }
+ },
+ "not_permitted": [
+  "network-model, ADMM, harness or admm_parameters.py changes",
+  "setting the key in any committed file",
+  "push"
+ ],
+ "outputs": {
+  "files": "cohort_esso_tests.json (gate_result_io), fixtures_declared.json, child_*.json, child_*_{stdout,stderr}.log, nl/<tag>/*.gz (mtime 0), ipopt_logs/*.gz, manifest_sha256.json (--manifest)",
+  "launch_logs": "data/SRP1/Results/P515S56/cohort_esso_v1_launch_stdout.log / _stderr.log",
+  "out": "data/SRP1/Results/P515S56/cohort_esso_v1/ (must not exist)"
+ },
+ "predecessor": null,
+ "solves": {
+  "declared_count": 10,
+  "every_solve": "solver succeeded (optimal) -- recorded per test; the guard verifies exactly 10 solves",
+  "grid": "srp1",
+  "init_form": "T-ii/T-iii/T-iv: build_subproblem + update_model_with_candidate_solution (the first steps of create_shared_energy_storage_model), es_pnet and es_qnet fixed at 0 for every (y, d, p), then the test day's request applied (fixed values; listed periods unfixed = free). es_qnet fixed 0 everywhere",
+  "node": 7,
+  "order": [
+   "t_ii_a_indep",
+   "t_ii_a_legacy",
+   "t_ii_b",
+   "t_iii_indep",
+   "t_iii_legacy",
+   "t_iv_peak",
+   "t_iv_control",
+   "t_v_tv_on",
+   "t_v_tv_off_oldest",
+   "t_v_tv_off_newest"
+  ],
+  "permitted_site": "shared_energy_storage_data.py:_run_solver_attempt",
+  "predictions": {
+   "t_ii_a_indep_delivered": {
+    "op": "within",
+    "source": "proposal ii (a); E4 conditional on initial energy, efficiencies, capacities",
+    "tol": 0.003,
+    "value": 0.428
+   },
+   "t_ii_a_indep_slack": {
+    "op": "within",
+    "tol": 0.003,
+    "value": 0.072
+   },
+   "t_ii_a_legacy_delivered": {
+    "op": "within",
+    "source": "H3: 2025 cohort share 2/3 at its 0.25 MW box",
+    "tol": 1e-06,
+    "value": 0.375
+   },
+   "t_ii_b_precharge_at_least_needed": {
+    "op": "ge",
+    "value": -1e-08
+   },
+   "t_ii_b_slack": {
+    "op": "le",
+    "value": 1e-08
+   },
+   "t_iii_indep_p_slack": {
+    "op": "le",
+    "value": 1e-06
+   },
+   "t_iii_indep_window_margin": {
+    "op": "ge",
+    "value": -1e-08
+   },
+   "t_iii_legacy_old_cohort_max_fraction": {
+    "expected_about": 0.92,
+    "op": "gt",
+    "value": 0.9
+   },
+   "t_iii_legacy_old_cohort_min_fraction": {
+    "expected_about": 0.08,
+    "op": "lt",
+    "value": 0.1
+   },
+   "t_iv_control_transfer_over_s": {
+    "op": "le",
+    "source": "proposal iv (a)",
+    "value": 1e-06
+   },
+   "t_iv_peak_closure": {
+    "op": "le",
+    "value": 1e-08
+   },
+   "t_iv_peak_energy_accounting": {
+    "op": "le",
+    "value": 1e-08
+   },
+   "t_iv_peak_slack": {
+    "op": "le",
+    "value": 1e-08
+   },
+   "t_iv_peak_transfer_positive": {
+    "op": "gt",
+    "value": 0.0001
+   },
+   "t_iv_peak_within_cohort": {
+    "op": "le",
+    "value": 1e-06
+   },
+   "t_v_D_from_own_throughput": {
+    "op": "le",
+    "value": 1e-09
+   },
+   "t_v_tv_off_objective_agreement_rel": {
+    "op": "le",
+    "value": 1e-08
+   },
+   "t_v_tv_on_kappa_positive": {
+    "op": "gt",
+    "value": 0.0
+   },
+   "t_v_tv_on_oldest_cycles_more_than_share": {
+    "op": "gt",
+    "source": "proposal v-a / E4 (a possible result, not imposed): mean over multi-cohort blocks of (2025 cohort throughput share - its rated-energy share)",
+    "value": 0.0
+   }
+  },
+  "scope": "the solve child sets shared_ess_data.active_distribution_network_nodes = [7]; every solve is production SharedEnergyStorageData.optimize (remedy-(h) overrides, recovery as production), cycle stamp = test index (distinct IPOPT logs)",
+  "t_ii": {
+   "a": {
+    "discharge_period": 0,
+    "modes": [
+     "independent_units",
+     "legacy_h3"
+    ],
+    "other_periods_of_the_day": "free (so the daily closure can be met)",
+    "request_mw": -0.5
+   },
+   "b": {
+    "discharge_period": 6,
+    "other_periods_of_the_day": "free (periods 0-5: pre-charge window chosen by the solver)",
+    "precharged_cohort": 2030,
+    "request_mw": -0.5
+   },
+   "block": 2030,
+   "day": "Spring",
+   "plan": [
+    [
+     7,
+     2025,
+     0.25,
+     1.0
+    ],
+    [
+     7,
+     2030,
+     0.25,
+     0.5
+    ]
+   ]
+  },
+  "t_iii": {
+   "block": 2035,
+   "day": "Spring",
+   "fraction_f": 0.97,
+   "plan": [
+    [
+     7,
+     2025,
+     0.25,
+     1.0
+    ],
+    [
+     7,
+     2035,
+     0.25,
+     1.0
+    ]
+   ],
+   "profile_rule": "swing = (0.5-0.1) * f * sum_c E_cal(c) with E_cal = E_rated * phi^(n*k) (calendar-only end-of-block, an upper bound on E_av); phases at rate_mw from period 0, each on a new period, last partial: discharge swing*eta_dch, charge 2*swing/eta_ch, discharge swing*eta_dch; every other period 0; all periods fixed",
+   "rate_mw": 0.2,
+   "start_period": 0,
+   "zero_solve_numbers": {
+    "E_cal_2025_in_2035": 0.7971562536487744,
+    "E_cal_2035_in_2035": 0.9272165023656249,
+    "legacy_old_cohort_implied_fraction_range_calendar_only": [
+     0.0803,
+     0.9197
+    ],
+    "swing_mwh": 0.669056629333587
+   }
+  },
+  "t_iv": {
+   "block": 2030,
+   "control": "every period of the day fixed 0 (no peak)",
+   "day": "Spring",
+   "peak_period": 12,
+   "peak_rule": "peak = midpoint of no_transfer_max = sum_c min(s_c, 0.4*E_cal_c*eta_dch) and with_transfer_max = min(s_A, 0.4*E_A*eta_dch) + min(s_B, (0.4*E_B + gain)*eta_dch), gain = max(0, 0.4*E_A - s_A/eta_dch)*eta_dch*eta_ch (A = 2025 cohort, B = 2030 cohort, calendar-only E); periods before the peak fixed 0, after the peak free (recharge to the closure)",
+   "plan": [
+    [
+     7,
+     2025,
+     0.25,
+     1.0
+    ],
+    [
+     7,
+     2030,
+     0.25,
+     0.5
+    ]
+   ],
+   "zero_solve_numbers": {
+    "no_transfer_max_mw": 0.4280255684542,
+    "peak_mw": 0.4640127842271,
+    "with_transfer_max_mw": 0.5
+   }
+  },
+  "t_v": {
+   "p_req_profile_mw": {
+    "1": 0.15,
+    "17": -0.14,
+    "18": -0.14,
+    "19": -0.14,
+    "2": 0.15,
+    "20": -0.14,
+    "3": 0.15,
+    "4": 0.15
+   },
+   "plan": [
+    [
+     7,
+     2025,
+     0.25,
+     1.0
+    ],
+    [
+     7,
+     2030,
+     0.25,
+     1.0
+    ],
+    [
+     7,
+     2035,
+     0.25,
+     0.5
+    ]
+   ],
+   "stage": "ADMM: create_shared_energy_storage_model (initial solve stubbed) + update_shared_energy_storage_model_to_admm with production al-scale and sigma; p_req = profile on every (y, d), q_req 0, duals 0",
+   "starts": {
+    "as_built": "TV on: the built model values",
+    "newest": "TV off: the same on the newest",
+    "oldest": "TV off: on multi-cohort blocks the request placed on the oldest active cohort (pch/pdch values), others 0"
+   },
+   "starts_note": "'two warm starts' implemented as two cold production solves (from_warm_start False) from two different primal starting points",
+   "tv_off": "in_objective False",
+   "tv_on": "salvage in_objective True (in memory), kappa = a/sigma read from the model"
+  }
+ },
+ "t_i": {
+  "definition": "per grid x plan x salvage in_objective {False, True} x stage {init (stubbed initial ESSO solve), admm (after update_shared_energy_storage_model_to_admm; request/dual Params 0)} x node {5,7,9}: plain .nl (labels off) + labelled .nl/.row/.col. G1: legacy (key as read) before vs after, all four files bitwise, every node model. G1c: before vs a second before child. Measurement: after independent_units vs after legacy on the single-cohort and x0 plans (listing of differing rows/cols/lines when not identical); the multi-cohort plan p2025_2030 compared for information only",
+  "five_block_interpretation": "'one five-block block' = the five-block 3x3 grid with x0, the reference unit (2025) and a single unit in one later block (2031)",
+  "n_node_models_per_mode": 96,
+  "n_node_models_rule": "(5 srp1 + 3 five-block plans) x 2 in_objective x 2 stages x 3 nodes",
+  "n_single_cohort_node_models": 84,
+  "predictions": {
+   "G1": "all 96 node models bitwise (no new component is constructed under legacy_h3)",
+   "G1c": "bitwise",
+   "indep_vs_legacy_single_cohort": "all 84 identical: new Vars fixed (the NL writer omits fixed Vars), new rows inactive, the H3 rows absent under independent_units were inactive in legacy on single-cohort years, the aggregate circle active on single-cohort years in both; the Q-/closure-slack objective terms sit on fixed Vars and reduce to constant zeros (the one uncertainty: whether the writer renders those zero constants differently). If not identical, the listing is the result",
+   "registry": "present on every independent_units node model; no multi-cohort year on any single-cohort plan"
+  },
+  "single_cohort_plans": [
+   "x0",
+   "ref_unit",
+   "only2030",
+   "only2035",
+   "only2031"
+  ]
+ },
+ "tib": {
+  "closure_count_note": "proposal closure count 16 kept: the implemented form is 16 equality rows plus 16 slack pairs (32 Vars), as the network form",
+  "node": 7,
+  "plan": [
+   [
+    7,
+    2025,
+    0.25,
+    1.0
+   ],
+   [
+    7,
+    2030,
+    0.25,
+    0.5
+   ]
+  ],
+  "predictions": {
+   "aggregate_circle_active_by_block": {
+    "2025": 96,
+    "2030": 0,
+    "2035": 0
+   },
+   "closure_rows": 16,
+   "cohort_circle_rows": 384,
+   "h3_rows_active": 0,
+   "h3_rows_built": 0,
+   "legacy_h3_rows_active": 192,
+   "new_vars_free": {
+    "es_q_per_unit": 384,
+    "es_soc_per_unit": 384,
+    "slack_es_qnet_down": 192,
+    "slack_es_qnet_up": 192,
+    "slack_es_soc_final_per_unit_down": 16,
+    "slack_es_soc_final_per_unit_up": 16
+   },
+   "q_rows": 192,
+   "soc_rows": 384,
+   "window_rows": 768
+  },
+  "stage": "build_subproblem + update_model_with_candidate_solution (independent_units)"
+ },
+ "title": "P5.15 S56 cohort formulation (arrangement A) -- isolated ESSO validation, frozen spec v1",
+ "trees": "before = git archive BASE (root *.py + data/SRP1 inputs, Results excluded); after = before + the two production files from the working tree; five-block 3x3 case file copied from BASE; one child process per tree",
+ "tvii": {
+  "definition": "t_cal of the 2025 SharedEnergyStorage objects set to 10 y in memory after update_data_with_candidate_solution, before the build (tcal_norm = round(10/5) = 2: the 2025 cohort lives in 2025 and 2030 only)",
+  "plan": [
+   [
+    7,
+    2025,
+    0.25,
+    1.0
+   ],
+   [
+    7,
+    2030,
+    0.25,
+    0.5
+   ]
+  ],
+  "predictions": {
+   "aggregate_circle_active_by_block": {
+    "2025": 96,
+    "2030": 0,
+    "2035": 96
+   },
+   "closure_rows": 8,
+   "cohort_circle_rows": 192,
+   "multi_years": [
+    2030
+   ],
+   "new_vars_free": {
+    "es_q_per_unit": 192,
+    "es_soc_per_unit": 192,
+    "slack_es_qnet_down": 96,
+    "slack_es_qnet_up": 96,
+    "slack_es_soc_final_per_unit_down": 8,
+    "slack_es_soc_final_per_unit_up": 8
+   },
+   "new_vars_free_outside_lifetime": {
+    "es_q_per_unit": 0,
+    "es_soc_per_unit": 0,
+    "slack_es_qnet_down": 0,
+    "slack_es_qnet_up": 0,
+    "slack_es_soc_final_per_unit_down": 0,
+    "slack_es_soc_final_per_unit_up": 0
+   },
+   "q_rows": 96,
+   "shortened_cohort_rated_fixed_by_block": {
+    "2025": false,
+    "2030": false,
+    "2035": true
+   },
+   "soc_rows": 192,
+   "window_rows": 384
+  },
+  "shortened_cohort_year": 2025,
+  "t_cal_years": 10
+ }
+}
