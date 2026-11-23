@@ -142,3 +142,34 @@ in the ADMM model. This is not a defect; it is recorded for step 5.
   `interface_voltage_terminal.json`, `boyd_terminal.json` and `component_levels_terminal.json`.
 - **The projected cycle counts and hours under (a)** are a linear extrapolation of the tail decay, not a measurement.
 - **The P6 wall ratios** were not re-measured on an idle machine.
+
+## Addendum (same day): cohort follow-up result, one more decision
+
+The source is `P5_15_S56_COHORT_FOLLOWUP_REPORT.md` on branch `s56-cohort-followup`, commit `a2077281`, spec `287c0da6`.
+
+The new rows are built per D1, D2 and your ruling 3, on multi-cohort node-years only:
+- the network `sess_comp` switch;
+- the per-cohort complementarity row;
+- the per-cohort sum row;
+- exact per-cohort closure;
+- the efficiency-equality gate;
+- the single-cohort activation option.
+
+**Tests**
+- T1–T7 and T10 held.
+- **The default path is bitwise unchanged** (T1), and all 118 fixtures load (T2).
+- **T8 failed as frozen.** Within-cohort simultaneity is 2.475e-4 MWh/day (0.8508 before), against a predicted ≤ 1e-6.
+- **T9** recorded 14 unpredicted changes. 10 are exactly the removed closure slacks (n × 1e3 × 1e-8); 4 are ≤ 1.5e-3 and unexplained.
+
+**4. How to read T8.** The row is the relaxed product (p_ch/S_c)(p_dch/S_c) ≤ 1e-4, the same form and tolerance as the network `sess_comp` row. The leak sits at that bound, with no dependence on the barrier parameter: a 3.1× change in μ moves it by 2e-7 relative. So the row is doing what it was built to do. The prediction ignored the row's own tolerance: with charge at 0.122 MW and S_c = 0.25 MVA, the bound admits 5.1e-5 MW of discharge. The row cut the dump by 3,400×.
+   - **Options:**
+     - (a) Accept the residual as the row's designed slack. E2 is then met as "restricted", and the measured residual is reported.
+     - (b) Tighten the cohort row's tolerance, for example to 1e-6. This needs a new spec, the NL identity on multi-cohort builds and 2 ms solves.
+     - (c) Exact complementarity.
+   - **Recommendation: (a).**
+   - Also reported: with TV on, inter-cohort transfer is now 0.12–0.15 MWh/day, with losses of 0.008–0.011 MWh/day; it was 0.30–0.85 and 0.021–0.061 before. E2 allows transfers when their losses are accounted, and they are reported.
+
+**Not built yet** (spec v1 excluded harness edits; to come after the merge, under their own spec):
+- the exit-certificate reading of the Q slack, the per-cohort closure and the detectors (E6);
+- `cohort_formulation` in the harness keys;
+- the new sync step in `uncoordinated_benchmark.py`, which builds network models without it.
