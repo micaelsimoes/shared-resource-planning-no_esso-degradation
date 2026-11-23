@@ -1,12 +1,14 @@
 """P5.15 S56 step 4 SMOKE -- a serial 3-cycle smoke per arm per instance through the existing campaign harness, under
-ONE frozen addendum spec (`frozen_step4_smoke_spec_v1_<sha8>.json`; cites the diagnostics spec ff466289, the step 3 v3
-spec and S56_STEP4_DESIGN.md).
+ONE frozen addendum spec (`frozen_step4_smoke_spec_v2_<sha8>.json`; predecessor the smoke spec v1 2e60b2ca, whose
+first run was refused at zero solves because this launcher passed a relative campaign root; cites the diagnostics spec
+ff466289, the step 3 v3 spec and S56_STEP4_DESIGN.md).
 
 Authority: S56_PLAN_v3.md section 7 rows 3-4; S56_STEP4_DESIGN.md decision 9.2 ("a serial 3-cycle smoke per arm, which
 measures RSS, s/cycle and the identities"); TASKS.md S56 section (commit 9c88d89d); the Planner's task of 2026-11-23
 (item 2). The step 4 MAIN run is NOT part of this order (held for the Expert's X4-1 / X4-2).
 
-RUNS (8, serial, attached, one per invocation, each into a NEW campaign root `campaign_s56s4smoke_<inst>_<arm>`; cap 3;
+RUNS (8, serial, attached, one per invocation, each into a NEW campaign root `campaign_s56s4smoke_v2_<inst>_<arm>`
+(absolute path); cap 3;
 candidate x0; alpha 0 -- row 18 is not declared, production's default premium alpha is 0.0, so row 18 is not built):
   arm            coupling option (`interface_coupling`)                           AA
   V1             on, per_scenario_voltage_mode 'per_scenario', row18_charge_reactive False   forced off by production
@@ -75,7 +77,12 @@ import p515_s44_campaign_harness as H  # noqa: E402  (parent side: no model impo
 SOLVER_PATH = '/usr/local/bin/ipopt'
 RES = os.path.join('data', 'SRP1', 'Results', 'P515S56')
 SMOKE_DIR = os.path.join(RES, 'step4_smoke_v1')
-SPEC_PREFIX = 'frozen_step4_smoke_spec_v1_'
+SPEC_PREFIX = 'frozen_step4_smoke_spec_v2_'
+SPEC_V1 = os.path.join(SMOKE_DIR, 'frozen_step4_smoke_spec_v1_2e60b2ca.json')
+# spec v2 (2026-11-23): v1's first run was refused before any solve by run_admm_arm's rule-eleven assertion
+# ('results_dir not absolute'): this launcher had handed the harness a RELATIVE campaign root. Roots are now absolute
+# and carry the version tag, so no v2 artifact can collide with the preserved v1 attempt.
+ROOT_TAG = 'v2'
 DIAG_SPEC = os.path.join(RES, 'step4_diag_v1', 'frozen_step4_diag_spec_v2_ff466289.json')
 DIAG_RESULTS = os.path.join(RES, 'step4_diag_v1', 'run_v1', 'step4_diag_results.json')
 DIAG_CENTRAL = os.path.join(RES, 'step4_diag_v1', 'run_v1', 'central_interface_for_children.json')
@@ -235,11 +242,16 @@ def coupling_gates_literals():
 
 
 def root_name(inst, arm):
-    return f's56s4smoke_{inst}_{arm}'
+    return f's56s4smoke_{ROOT_TAG}_{inst}_{arm}'
 
 
 def root_path(inst, arm):
-    return os.path.join(SMOKE_DIR, f'campaign_{root_name(inst, arm)}')
+    """ABSOLUTE (the harness child's rule-eleven assertion requires absolute results dirs, which derive from it)."""
+    return os.path.join(REPO, SMOKE_DIR, f'campaign_{root_name(inst, arm)}')
+
+
+def run_tag(k, inst, arm):
+    return f'{ROOT_TAG}_run_{k}_{inst}_{arm}'
 
 
 def arm_options(arm, cg):
@@ -363,11 +375,19 @@ def build_spec():
         'stage': ('P5.15 S56 step 4 smoke: serial 3-cycle smoke per arm (V-1, V-2, pinned AA off, pinned AA on) on '
                   'instance A (2025|Winter) and instance B ({2025, 2035} x Summer); D-3 for 2025|Summer (frozen '
                   'addendum spec v1)'),
-        'version': 1, 'kind': 'addendum',
-        'predecessor': {'path': DIAG_SPEC, 'sha256': _sha(DIAG_SPEC),
-                        'relation': 'the step 3 v2 + step 4 diagnostics spec; this addendum adds the smoke runs and '
-                                    'D-3 for 2025|Summer; nothing in it is edited'},
-        'cites': {'design': {'path': DESIGN, 'sha256': _sha(DESIGN), 'item': 'decision 9.2 (serial 3-cycle smoke per '
+        'version': 2, 'kind': 'addendum',
+        'predecessor': {'path': SPEC_V1, 'sha256': _sha(SPEC_V1),
+                        'relation': ('smoke spec v1. Its run 1 (A, V1; root campaign_s56s4smoke_A_V1, preserved) was '
+                                     'refused before any solve by p515_g_g1_g4_admm_gates.assert_g_capture_paths '
+                                     '("results_dir not absolute/set"): the launcher passed a relative campaign root. '
+                                     'v2 changes ONLY the root naming (absolute, version-tagged roots '
+                                     'campaign_s56s4smoke_v2_<inst>_<arm>, launcher records and logs prefixed v2_); '
+                                     'arms, configuration, cap, predictions and every threshold are v1\'s')},
+        'cites': {'diag_spec': {'path': DIAG_SPEC, 'sha256': _sha(DIAG_SPEC),
+                                'relation': 'the step 3 v2 + step 4 diagnostics spec ff466289 (v1\'s predecessor); this '
+                                            'addendum adds the smoke runs and D-3 for 2025|Summer; nothing in it is '
+                                            'edited'},
+                  'design': {'path': DESIGN, 'sha256': _sha(DESIGN), 'item': 'decision 9.2 (serial 3-cycle smoke per '
                                                                             'arm)'},
                   'step3_v3_spec': {'path': S3V3_SPEC, 'sha256': _sha(S3V3_SPEC)},
                   'step3_v3_results': {'path': S3V3_RESULTS, 'sha256': _sha(S3V3_RESULTS)},
@@ -400,7 +420,7 @@ def build_spec():
                  for a in ARMS},
         'instances': inst,
         'order': [{'run': k + 1, 'instance': i, 'arm': a, 'campaign_id': root_name(i, a),
-                   'campaign_root': root_path(i, a),
+                   'campaign_root': os.path.relpath(root_path(i, a), REPO),
                    'init_identity_seeded_from': [root_name(i, x) for x in ARMS[:ARMS.index(a)]]}
                   for k, (i, a) in enumerate(ORDER)],
         'solves': {'per_instance': solves, 'launcher_parent': 0, 'd3': 0, 'evaluate': 0,
@@ -450,8 +470,8 @@ def build_spec():
                                  'beside it. Pinned arms: gross_operational_cost = contracted settlement and pin '
                                  'excluded. C_central: step 3 gross EUR/day (settlement weight 0, no salvage); '
                                  'Q_block - w_b C_central in EUR of total discounted cost'),
-        'outputs': {'runs': 'campaign_s56s4smoke_<inst>_<arm>/ (harness artifacts) + logs/run_<k>_<inst>_<arm>_'
-                            '{stdout,stderr}.log + run_<k>_<inst>_<arm>_launcher.json',
+        'outputs': {'runs': 'campaign_s56s4smoke_v2_<inst>_<arm>/ (harness artifacts) + logs/v2_run_<k>_<inst>_<arm>_'
+                            '{stdout,stderr}.log + v2_run_<k>_<inst>_<arm>_launcher.json',
                     'd3': 'd3_2025_Summer_<utc>.json', 'evaluation': 'smoke_evaluation_<utc>.json',
                     'manifest': 'step4_smoke_v1_manifest_sha256.json (sha256 of every file under the smoke dir)'},
     }
@@ -504,7 +524,7 @@ def run(args):
     spec, spec_sha, spec_rel = _spec(args)
     inst, arm = args.instance, args.arm
     k = ORDER.index((inst, arm)) + 1
-    tag = f'run_{k}_{inst}_{arm}'
+    tag = run_tag(k, inst, arm)
     rec = {'schema': 'p515_s56_step4_smoke_launcher_v1', 'run': k, 'instance': inst, 'arm': arm, 'utc_start': _utc(),
            'spec': {'path': spec_rel, 'sha256': spec_sha}, 'script': SCRIPT, 'script_sha256': _sha(SCRIPT),
            'git_head': _git('rev-parse', 'HEAD').strip(), 'interpreter': sys.executable,
@@ -738,7 +758,7 @@ def d3(args):
         ac = spec['configuration']
         cg = coupling_gates_literals()
         derived = H.validate_derived_instance(spec['instances']['B']['derived_instance'])
-        work = os.path.join(SMOKE_DIR, f'd3_work_{_stamp()}')
+        work = os.path.join(REPO, SMOKE_DIR, f'd3_work_{_stamp()}')
         os.makedirs(work)
         out['derived_installed'] = H.install_derived_instance(derived, os.path.join(work, 'derived'))
         report, holder = {}, {}
@@ -903,7 +923,7 @@ def evaluate_run(spec, inst, arm):
     resp = _read_jsonl(os.path.join(ev, H.PER_CYCLE_RESPONSE_FILE))
     with open(os.path.join(ev, 'exit_code.txt')) as handle:
         exit_txt = int(handle.read().strip())
-    launcher = _load(os.path.join(SMOKE_DIR, f'run_{k}_{inst}_{arm}_launcher.json'))
+    launcher = _load(os.path.join(SMOKE_DIR, f'{run_tag(k, inst, arm)}_launcher.json'))
     sp = rec.get('solve_profile') or {}
     obs = sp.get('observed') or {}
     declared = spec['solves']['declared_base_per_run'][inst]

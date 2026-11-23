@@ -1,0 +1,161 @@
+{
+ "authority": [
+  "S56_PLAN_v3.md section 7 rows 3-4",
+  "S56_STEP4_DESIGN.md decision 9.2",
+  "TASKS.md S56 section, commit 9c88d89d (step 3 v3 + step 4 smoke active; main run held)",
+  "Planner task 2026-11-23, item 2 (step 4 smoke)"
+ ],
+ "bar_window_cycles": 10,
+ "campaign_id": "s56s4smoke_A_V1",
+ "candidates": [
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "a918ba210411acec_x0_v1",
+   "eval_key": "a918ba210411acece96b1c22bb4f948e603d3a77c789c454ca306d895e9913eb",
+   "interface_coupling": {
+    "per_scenario_interface_coupling": true,
+    "per_scenario_voltage_mode": "per_scenario",
+    "row18_charge_reactive": false
+   },
+   "interface_coupling_label": "EVALUATION OPTION \u2014 per-scenario TN-DN interface coupling (S56 F1; not the published formulation)",
+   "key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "label": "x0_V1",
+   "overrides": {},
+   "post_certification": null,
+   "working_dir_ids": {
+    "precheck": "p515s44_s56s4smoke_a_v1_a918ba210411acec_precheck",
+    "run": "p515s44_s56s4smoke_a_v1_a918ba210411acec_run"
+   }
+  }
+ ],
+ "cap": 3,
+ "concurrency": 1,
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "convergence_depth_tail": {
+   "compl_inf_tol": 1e-06,
+   "enabled": true
+  },
+  "derived_instance": {
+   "case_path": "data/SRP1/Results/P515S56/step4_instances_v1/SRP1__s56_step4_2025_Winter.json",
+   "case_sha256": "92e6283bdb1dafcb328ec951095ebf2173d314754e7f946c0c2210694ca7537e",
+   "changes_vs_source": [
+    {
+     "from": {
+      "2025": 5,
+      "2030": 5,
+      "2035": 5
+     },
+     "key": "Years",
+     "to": {
+      "2025": 5
+     }
+    },
+    {
+     "from": {
+      "Autumn": 91,
+      "Spring": 92,
+      "Summer": 91,
+      "Winter": 91
+     },
+     "key": "Days",
+     "to": {
+      "Winter": 91
+     }
+    }
+   ],
+   "instance_label": "s56_step4_2025_Winter",
+   "scenario_checksum": "58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e",
+   "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+   "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+  },
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ess_params_file": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "full_diagnostics_in_rows": true,
+  "name": "S56 step 4 smoke run 1: instance A (2025|Winter), arm V1; x0, alpha 0, cap 3",
+  "note": "S56 step 4 smoke: the G-f / step 4 build configuration (p515_s56_coupling_gates.py literals) on the derived instance; no row 18 declaration (production default alpha 0.0), no model variant, no flex variant, no NRF, no rho0 scale, no post-certification",
+  "overrides": {}
+ },
+ "extra": {
+  "arm": "V1",
+  "campaign_script": "p515_s56_step4_smoke.py",
+  "campaign_script_sha256": "5646d112a67ad64b290b54c21db7ec7e55f043dd81b666bb23c81caded825b11",
+  "instance": "A",
+  "objective_convention": "Q in EUR of total discounted cost. Coupled arms: primary gross_operational_cost = settlement excluded in full (pin excluded, salvage separate), contracted-excluded beside it. Pinned arms: gross_operational_cost = contracted settlement and pin excluded. C_central: step 3 gross EUR/day (settlement weight 0, no salvage); Q_block - w_b C_central in EUR of total discounted cost",
+  "run": 1,
+  "smoke_spec": {
+   "path": "data/SRP1/Results/P515S56/step4_smoke_v1/frozen_step4_smoke_spec_v1_2e60b2ca.json",
+   "sha256": "2e60b2ca8225d3d13c2b3d4bfd5d4d1c09021dabfac6fd3af1f2450cbf0a2f7d"
+  }
+ },
+ "frozen_utc": "2026-11-23T13:16:29.270739+00:00",
+ "git_head": "4856bd460966426106b4ea052aefc6a59851bf4c",
+ "harness": {
+  "path": "p515_s44_campaign_harness.py",
+  "sha256": "16031daa1e623f1442d5c32723908bddcde1f113afa130e1f9c20ea2a22a8ae9"
+ },
+ "interface_coupling_label": "EVALUATION OPTION \u2014 per-scenario TN-DN interface coupling (S56 F1; not the published formulation)",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "nlp_solver_path_env": {
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "source": "environment"
+ },
+ "required_consecutive_cycles": 10,
+ "schema": "p515_s44_campaign_spec_v2",
+ "thread_caps": {
+  "MKL_NUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1"
+ }
+}
