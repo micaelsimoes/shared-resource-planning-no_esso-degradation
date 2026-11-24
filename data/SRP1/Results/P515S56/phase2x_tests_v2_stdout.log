@@ -1,0 +1,44 @@
+18:43:26 OK   [T1] classify_settled boundaries (12 cases)
+18:43:26 OK   [T1] classify_settled refuses mixed depth and a non-usable incumbent
+18:43:26 OK   [T1] efficiency rule: 11/22 (= 1/2) -> exit_then_confirm; 12/22 -> settled_direct; uncertified rows stay in the denominator
+18:43:26 OK   [T1] table row: |dF_exit| = e_EV in band, e_EV + 0.01 out; class by classify_exit with e = max(e_EV, bar sum)
+18:43:26 OK   [T1] candidates: best, then the next distinct in node AND year (same node and same year passed over); only confirm-candidate rows; fewer logged
+18:43:26 OK   [T1] ladder: best duration 4 h; node-years (7, 2025), (9, 2030); 1.0 MVA x 4 MWh in 2025 skipped (budget); 3 plans
+18:43:26 OK   [T1] the comparison is not vacuous: the policy at 6b1d98b2 differs from the working-tree policy
+18:43:26 OK   [T1] default search path (no poll_depth / poll_only): state and terminal report byte-identical to the policy at 6b1d98b2 (a39919ed1620) on 6 synthetic searches
+18:43:26 OK   [T1] the landscape comparison is not vacuous: the driver at 6b1d98b2 differs from the working tree
+18:43:26 OK   [T1] the plain synthetic landscape (no knobs) byte-identical to 6b1d98b2's on 382 plans x 2 depths
+18:43:26 OK   [T1] phase capture-path checklist (rule eleven) holds on the committed harness
+18:43:37 OK   [T2] whole phase (exit-then-confirm) through the launch CLI: freeze 0, codes 4...4, 0
+18:43:37 OK   [T2] final state == results state == the in-process phase (byte-equal)
+18:43:37 OK   [T2] every launch is one block of <= 5 evaluations at one depth; stages run in order
+18:43:37 OK   [T2] the phase ran every stage: 18 screen rows + ladder rows in the table, efficiency branch exit_then_confirm, 2 candidates distinct in node and year, both polled completely, best start from the pool, a search with >= 1 move ending complete_poll_no_accepted_candidate
+18:43:37 OK   [T2] count identities hold in the candidate polls and the search
+18:43:37 OK   [T2] the cached pool members (x0, unit, staged: the pilot records in the real phase) are never requested; the unit's screen row is served from the cache
+18:43:37 OK   [T2] hours: cumulative = sum of the launch records' accounted walls; every launch passed the ceiling check before it ran
+18:43:48 OK   [T3] settled-direct branch: exit 0; final state byte-equal to in process
+18:43:48 OK   [T3] every launch is one block of <= 5 evaluations at one depth; stages run in order
+18:43:48 OK   [T3] efficiency fraction > 1/2 -> settled_direct; every candidate-poll and search evaluation at settled depth; polls classified on settled values; the search moved; count identities hold
+18:43:50 OK   [T4] the ceiling stops with exit 6 before the first block that would cross it; nothing launched; the record's arithmetic (cumulative = sum of launch walls; projected = max(frozen, measured same depth)); a re-issue stops again (6), no new launch
+18:43:51 OK   [T5] harness_error_screen: exit 5, termination harness_error at stage screen; results written; byte-equal to in process
+18:43:53 OK   [T5] offset_candidate_confirmation: exit 5, termination stop_for_review_offset at stage candidate_confirmation; results written; byte-equal to in process
+18:43:58 OK   [T5] offset_search_confirmation: exit 5, termination stop_for_review_offset at stage search; results written; byte-equal to in process
+18:44:00 OK   [T5] not_settled_trigger: exit 5, termination stop_for_review_not_settled at stage candidate_polls; results written; byte-equal to in process
+18:44:00 OK   [T5] start_not_certified: exit 5, termination start_incumbent_not_certified at stage screen; results written; byte-equal to in process
+18:44:11 OK   [T6] kill at after_lock (launch 1, stage screen) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over
+18:44:22 OK   [T6] kill at after_launch_dir (launch 2, stage screen) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over
+18:44:32 OK   [T6] kill at during_evaluate (launch 5, stage ladder) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over
+18:44:41 OK   [T6] kill at after_evaluate (launch 6, stage candidate_confirmation) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over
+18:44:51 OK   [T6] kill at after_launch_record (launch 7, stage candidate_polls) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over
+18:45:01 OK   [T6] kill at after_manifest (launch 15, stage search) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over
+18:45:11 OK   [T6] kill at after_state_view (launch 17, stage search) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over
+18:45:22 OK   [T6] kill at after_results (launch 31, stage search) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over
+18:45:32 OK   [T7] the author's command (exact text, scratch --lock-path): prints every exit code, 4...4 then 0, stops; one stdout/stderr log pair per invocation (empty stderr); final state byte-equal to in process
+18:45:32 OK   [T7] the command re-issued on the finished phase: one invocation, exit 0, the next log number
+18:48:57 OK   [T8] stub children (harness evaluate, stub mode): freeze (collision scan clean) and the whole phase, exit 0; final state byte-equal to the in-process synthetic phase
+18:48:57 OK   [T8] each stub launch froze one harness spec whose keys recompute (replay verified every launch)
+18:48:58 OK   [T9] refused (exit 2): real freeze without predictions; synthetic phase not test-only; --preflight-only on a synthetic phase
+18:48:59 OK   [T9] a tampered evaluation record: the replay refuses (exit 2), nothing written; restored -> proceeds (4); re-freezing an existing root refused (write-once)
+18:48:59 OK   [guards] SolveProfileGuard(permitted=()) verify(0) == []
+18:48:59 OK   [guards] pickle load/loads 0
+18:49:00 checks 43/43 ok; wall 334 s; failed []

@@ -1,0 +1,169 @@
+18:21:11 OK   [1] diagnostic-1 table and json hash to their committed manifest, tracked and clean
+18:21:11 OK   [1] domain re-enumerated by the lattice rule: 37,042 plans == DOMAIN_SIZE == the committed table
+18:23:40 OK   [1] P.order accepts N(x) of every plan (no refusal)
+18:23:40 OK   [1] driver |N(x)| == committed table N_size on every plan
+18:23:40 OK   [1] max |N(x)| over the 37,042 plans <= 80 (CAP)
+18:23:40 OK   [1] CAP 60 of p516_lattice ignored: plans with |N| > 60 are ordered
+18:23:40 OK   [1] every diagonal move in N(x) is same-sign (no e_opp point)
+18:23:40 OK   [1] an 81-point neighbourhood is refused (CapExceeded)
+18:23:40 OK   [1] x0: driver N(x) == s56_neighbourhood == committed diagnostic-1 keys, |N| = 18
+18:23:40 OK   [1] reference_unit: driver N(x) == s56_neighbourhood == committed diagnostic-1 keys, |N| = 22
+18:23:40 OK   [1] plan_2030: driver N(x) == s56_neighbourhood == committed diagnostic-1 keys, |N| = 13
+18:27:17 OK   [2] three fresh processes (PYTHONHASHSEED 0 / 4242 / random; shuffled input) exit 0 with guard 0
+18:27:17 OK   [2] order digest over all 37,042 plans x 3 orders byte-identical across the three processes
+18:27:17 OK   [2] named-point orders identical across the processes
+18:30:36 OK   [2] in-process digest (another shuffle) == the workers
+18:30:36 OK   [3] first-poll order unchanged under perturbed cached values and at 1x vs 2x (43 plans, every neighbour value cached and perturbed)
+18:30:38 OK   [3] driver launches: the first two actions are identical at 1x, 2x and under a perturbed oracle
+18:30:51 OK   [4] smoke alias ABSENT (control, re-scoped by ruling 6): the 2x EV stub configuration FREEZES, its collision scan (committed smoke spec in scope) finds nothing, and none of the smoke spec's eval keys is among the configuration's 74,084 domain keys
+18:35:16 OK   [4] stub-children searches (concurrency 1 and 5) freeze and terminate through repeated launches
+18:35:16 OK   [4] history: serial stub == 5-way stub == in-process synthetic replay
+18:35:16 OK   [4] evaluated: serial stub == 5-way stub == in-process synthetic replay
+18:35:16 OK   [4] budget: serial stub == 5-way stub == in-process synthetic replay
+18:35:16 OK   [4] state: serial stub == 5-way stub == in-process synthetic replay
+18:35:16 OK   [4] concurrency observed from the stub records: 1 in the serial run, 5 in the 5-way run
+18:35:16 OK   [4] stub delays randomised per child (distinct sleeps)
+18:35:21 OK   [5] uninterrupted synthetic search terminates (exit 0) through repeated launches
+18:35:21 OK   [5] launch machinery final state == in-process run_to_end (byte-equal)
+18:35:27 OK   [5] kill at after_lock (launch 1) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over
+18:35:33 OK   [5] kill at after_lock (launch 2) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over
+18:35:39 OK   [5] kill at after_lock (launch 3) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over
+18:35:44 OK   [5] kill at after_lock (launch 22) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over
+18:35:50 OK   [5] kill at after_launch_dir (launch 1) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over
+18:35:56 OK   [5] kill at after_launch_dir (launch 2) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over
+18:36:01 OK   [5] kill at after_launch_dir (launch 3) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over
+18:36:07 OK   [5] kill at after_launch_dir (launch 22) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over
+18:36:13 OK   [5] kill at after_evaluate (launch 1) + resume: history byte-equal, budget equal, killed evaluations uncounted (1), stale lock taken over
+18:36:19 OK   [5] kill at after_evaluate (launch 2) + resume: history byte-equal, budget equal, killed evaluations uncounted (5), stale lock taken over
+18:36:25 OK   [5] kill at after_evaluate (launch 3) + resume: history byte-equal, budget equal, killed evaluations uncounted (2), stale lock taken over
+18:36:31 OK   [5] kill at after_evaluate (launch 22) + resume: history byte-equal, budget equal, killed evaluations uncounted (5), stale lock taken over
+18:36:37 OK   [5] kill at after_launch_record (launch 1) + resume: history byte-equal, budget equal, killed evaluations uncounted (1), stale lock taken over
+18:36:43 OK   [5] kill at after_launch_record (launch 2) + resume: history byte-equal, budget equal, killed evaluations uncounted (5), stale lock taken over
+18:36:50 OK   [5] kill at after_launch_record (launch 3) + resume: history byte-equal, budget equal, killed evaluations uncounted (2), stale lock taken over
+18:36:56 OK   [5] kill at after_launch_record (launch 22) + resume: history byte-equal, budget equal, killed evaluations uncounted (5), stale lock taken over
+18:37:02 OK   [5] kill at after_manifest (launch 1) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over
+18:37:09 OK   [5] kill at after_manifest (launch 2) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over
+18:37:15 OK   [5] kill at after_manifest (launch 3) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over
+18:37:21 OK   [5] kill at after_manifest (launch 22) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over
+18:37:27 OK   [5] kill at after_state_view (launch 1) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over
+18:37:33 OK   [5] kill at after_state_view (launch 2) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over
+18:37:39 OK   [5] kill at after_state_view (launch 3) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over
+18:37:45 OK   [5] kill at after_state_view (launch 22) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over
+18:37:51 OK   [5] kill at during_evaluate (launch 2) + resume: history byte-equal, budget equal, killed evaluations uncounted (4), stale lock taken over
+18:37:56 OK   [5] kill at during_evaluate (launch 3) + resume: history byte-equal, budget equal, killed evaluations uncounted (1), stale lock taken over
+18:38:02 OK   [5] kill at after_results (launch 22) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over
+18:38:04 OK   [5] a live lock, a lock naming another search, and a stale lock without --take-over-stale-lock are refused
+18:38:04 OK   [5] a tampered evaluation record: the replay refuses (exit 2) and writes nothing
+18:38:04 OK   [5] a state view that does not equal the replayed state: refused (exit 2)
+18:38:04 OK   [5] restored files: the launch proceeds (exit 0 or 4)
+18:38:05 OK   [5] a synthetic-oracle spec without --test-only is refused at freeze
+18:39:03 OK   [5] stub children: kill of the driver and its 5 running children during evaluate (launch 2) + resume: history byte-equal to the uninterrupted 5-way run, killed evaluations uncounted
+18:40:01 OK   [5] stub children: kill of the driver and its 2 running children during evaluate (launch 3) + resume: history byte-equal to the uninterrupted 5-way run, killed evaluations uncounted
+18:40:01 OK   [6] 37,042 distinct GeneralLattice.key over the domain
+18:40:02 OK   [6] labels distinct; canonical v2 round trip z -> canonical -> z exact on every plan
+18:40:04 OK   [6] synthetic eval keys distinct over {1x, 2x} x {exit, settled} x domain (148,168)
+18:40:04 OK   [6] collision scan: own root and declared cache root excluded -> no collision, no refusal
+18:40:04 OK   [6] collision scan: a foreign artefact carrying a search key is reported, and the refusal names it
+18:40:04 OK   [6] collision scan with the wrong own root (the parent) excludes everything: guard against a vacuous scan is the caller's (recorded: n_files_scanned 0)
+18:40:05 OK   [6] committed campaign/search specs and launch records under data/SRP1/Results carry no GeneralLattice key as an eval key
+18:40:05 OK   [6] harness vs b0391b80: insertions only (392 lines added, 0 deleted)
+18:40:05 OK   [6] the pre-change harness has no settled key (the change is the only source of it)
+18:40:05 OK   [6] settled key True refused: no S56 EV-plan key (single-year SRP1 candidate)
+18:40:05 OK   [6] settled key True refused: per-scenario coupling declared
+18:40:05 OK   [6] settled key True refused: together with the calibration key
+18:40:05 OK   [6] settled key True refused: no enabled convergence-depth tail
+18:40:05 OK   [6] settled key True refused: non-bool value
+18:40:06 OK   [6] ev: settled key True allowed; RE-SCOPED to the cap-in-key rule: exit = cap(b), settled = cap(sk(b)) != exit (b = the b0391b80 key); candidate key unchanged; absent -> no entry field
+18:40:06 OK   [6] ev: settled key False recorded in the entry, not keyed (the W33 default rule)
+18:40:06 OK   [6] draw0: settled key True allowed; RE-SCOPED to the cap-in-key rule: exit = cap(b), settled = cap(sk(b)) != exit (b = the b0391b80 key); candidate key unchanged; absent -> no entry field
+18:40:06 OK   [6] draw0: settled key False recorded in the entry, not keyed (the W33 default rule)
+18:40:06 OK   [6] option-off identity (srp1_single_year): frozen spec byte-identical pre vs post (volatile fields ['frozen_utc', 'harness', 'git_head'] excluded), eval keys equal
+18:40:07 OK   [6] option-off identity (s56_ev_staged), RE-SCOPED to the cap-in-key rule: post eval key = cap(pre) on every entry; spec otherwise byte-identical pre vs post (volatile fields ['frozen_utc', 'harness', 'git_head'] and entry fields ['eval_key', 'eval_dir', 'working_dir_ids', 's56_cycle_cap_keyed'] excluded)
+18:40:07 OK   [6] option-off identity (s56_draw0_staged), RE-SCOPED to the cap-in-key rule: post eval key = cap(pre) on every entry; spec otherwise byte-identical pre vs post (volatile fields ['frozen_utc', 'harness', 'git_head'] and entry fields ['eval_key', 'eval_dir', 'working_dir_ids', 's56_cycle_cap_keyed'] excluded)
+18:40:07 OK   [6] option-off identity (calibration_key_coupled), RE-SCOPED to the cap-in-key rule: post eval key = cap(pre) on every entry; spec otherwise byte-identical pre vs post (volatile fields ['frozen_utc', 'harness', 'git_head'] and entry fields ['eval_key', 'eval_dir', 'working_dir_ids', 's56_cycle_cap_keyed'] excluded)
+18:40:07 OK   [6] option-off identity: record fields empty when the key is absent
+18:40:11 OK   [6] staged key (harness s56_staged_canonical + candidate_key, case ev_twin) == GeneralLattice.key(z) on all 37,042 plans
+18:40:15 OK   [6] staged key (harness s56_staged_canonical + candidate_key, case draw0_srp1) == GeneralLattice.key(z) on all 37,042 plans
+18:42:07 OK   [6] 37,042 distinct eval keys in each of the 48 configurations
+18:42:07 OK   [6] eval keys pairwise distinct across {1x, 2x} x {exit, settled} x {EV, draw-0} x cohort formulation (3) x TV (2): 48 x 37,042 = 1,778,016
+18:42:15 OK   [6] the driver key composition == the eval key freeze_campaign_spec freezes (3 named points x 48 configurations)
+18:42:15 OK   [7] dF = R + e exactly -> worse
+18:42:15 OK   [7] dF = -R + e exactly -> confirm_candidate
+18:42:15 OK   [7] dF just below R + e -> unresolved
+18:42:15 OK   [7] dF just above -R + e -> unresolved
+18:42:15 OK   [7] e floor 15,000 applies (bars 4,000 + 5,000)
+18:42:15 OK   [7] e = bar sum above the floor (bars 4,000 + 20,000)
+18:42:15 OK   [7] missing bar (None) -> harness_error
+18:42:15 OK   [7] missing bar (absent) -> harness_error
+18:42:15 OK   [7] non-finite bar (nan) -> harness_error
+18:42:15 OK   [7] uncertified with a large improvement -> uncertified
+18:42:15 OK   [7] uncertified with a large loss -> uncertified (never worse)
+18:42:15 OK   [7] strict status: "Certified" is not certified -> harness_error (unknown status)
+18:42:15 OK   [7] status harness_error -> harness_error
+18:42:15 OK   [7] mixed depth (candidate settled vs incumbent exit) refused
+18:42:15 OK   [7] mixed depth (incumbent settled) refused
+18:42:15 OK   [7] confirm with an exit record as settled refused
+18:42:15 OK   [7] incumbent without a bar refused
+18:42:15 OK   [7] improvement exactly R, V_pair exactly R/4, A exactly R/2 -> accepted
+18:42:15 OK   [7] improvement just below R -> unresolved_after_confirmation
+18:42:15 OK   [7] V_pair just above R/4 -> unresolved_after_confirmation
+18:42:15 OK   [7] A sum above R/2 -> unresolved_after_confirmation
+18:42:15 OK   [7] a gate failed -> unresolved_after_confirmation
+18:42:15 OK   [7] held-out offset exactly e -> not a stop
+18:42:15 OK   [7] held-out offset above e -> stop_for_review
+18:42:15 OK   [7] candidate settled not_settled -> unresolved_after_confirmation, flagged, the candidate named
+18:42:15 OK   [7] incumbent settled not_settled -> unresolved_after_confirmation, the incumbent named
+18:42:15 OK   [7] both not_settled -> unresolved_after_confirmation, both named
+18:42:15 OK   [7] not_settled with an offset far above e -> no held-out stop (no test on a not-settled value)
+18:42:15 OK   [7] not_settled without V components -> still unresolved_after_confirmation (never accepted, never a stop)
+18:42:15 OK   [7] not_settled candidate vs incumbent harness_error -> harness_error (stops)
+18:42:15 OK   [7] unknown settled status "Settled" -> harness_error (strict)
+18:42:15 OK   [7] settled without V components -> harness_error
+18:42:15 OK   [7] gates_pass not a bool ("True") -> harness_error
+18:42:15 OK   [7] re-classification at a measured e = 20,000: dF 8,000 unresolved -> confirm_candidate; dF 40,000 stays worse
+18:42:15 OK   [7] review trigger: confirmations 'nn' -> stop False (consecutive False, share False)
+18:42:15 OK   [7] review trigger: confirmations 'nnn' -> stop True (consecutive True, share False)
+18:42:15 OK   [7] review trigger: confirmations 'n-u-n' -> stop False (consecutive False, share False)
+18:42:15 OK   [7] review trigger: confirmations 'uunu' -> stop False (consecutive False, share False)
+18:42:15 OK   [7] review trigger: confirmations 'unun' -> stop True (consecutive False, share True)
+18:42:15 OK   [7] review trigger: confirmations 'uuuunuuun' -> stop False (consecutive False, share False)
+18:42:15 OK   [7] review trigger: confirmations 'uuunun' -> stop True (consecutive False, share True)
+18:42:15 OK   [7] review trigger: confirmations 'aannn' -> stop True (consecutive True, share True)
+18:42:15 OK   [7] review trigger: confirmations 'nnxn' -> stop True (consecutive True, share False)
+18:42:15 OK   [7] review trigger: confirmations 'uunn' (2 polls) -> stop True (consecutive False, share True)
+18:42:15 OK   [7] review trigger: confirmations 'nnn' (2 polls) -> stop True (consecutive True, share False)
+18:42:15 OK   [8] x0: partition == |N_final|, roles == budget == evaluated set, no evaluation twice
+18:42:15 OK   [8] x0: count identity N_search = S_0 + sum(E_j + c_j) + E_f + c_f holds
+18:42:16 OK   [8] x0: every N_max in 0..56: arithmetic holds, budget never exceeded, budget_exhausted below 56, identical run at 56
+18:42:16 OK   [8] x0: every budget-limited run is a prefix of the unlimited run (last block truncated, never re-ordered)
+18:42:16 OK   [8] x0: budget exhaustion mid-poll exercised (mid-poll, truncated block, exhaustion before a block, confirmation not fitting)
+18:42:16 OK   [8] reference_unit: partition == |N_final|, roles == budget == evaluated set, no evaluation twice
+18:42:16 OK   [8] reference_unit: count identity N_search = S_0 + sum(E_j + c_j) + E_f + c_f holds
+18:42:17 OK   [8] reference_unit: every N_max in 0..68: arithmetic holds, budget never exceeded, budget_exhausted below 68, identical run at 68
+18:42:17 OK   [8] reference_unit: every budget-limited run is a prefix of the unlimited run (last block truncated, never re-ordered)
+18:42:17 OK   [8] reference_unit: budget exhaustion mid-poll exercised (mid-poll, truncated block, exhaustion before a block, confirmation not fitting)
+18:42:17 OK   [8] plan_2030: partition == |N_final|, roles == budget == evaluated set, no evaluation twice
+18:42:17 OK   [8] plan_2030: count identity N_search = S_0 + sum(E_j + c_j) + E_f + c_f holds
+18:42:17 OK   [8] plan_2030: every N_max in 0..16: arithmetic holds, budget never exceeded, budget_exhausted below 16, identical run at 16
+18:42:17 OK   [8] plan_2030: every budget-limited run is a prefix of the unlimited run (last block truncated, never re-ordered)
+18:42:17 OK   [8] plan_2030: budget exhaustion mid-poll exercised (mid-poll, truncated block, exhaustion before a block)
+18:42:17 OK   [8] harness_error at position 0 stops the search; positions 1-4 of the block become speculative_post_termination
+18:42:17 OK   [8] an uncertified start incumbent ends the search (start_incumbent_not_certified)
+18:42:17 OK   [8] a held-out offset above e at a confirmation stops the search (stop_for_review_offset)
+18:42:17 OK   [8] one not_settled confirmation: unresolved_after_confirmation, the search continues past it and terminates normally (arithmetic holds)
+18:42:17 OK   [8] 3 consecutive not_settled confirmations stop the search for review (stop_for_review_not_settled, the consecutive rule)
+18:42:17 OK   [8] the not_settled stop: terminal arithmetic holds (partition == |N|, roles == budget == evaluated set)
+18:42:17 OK   [8] not_settled on 2 of 4 confirmations (> 25 %, >= 4) stops the search for review (the share rule)
+18:42:17 OK   [8] not_settled on 1 confirmation only: never a review stop, however many confirmations follow (1 of >= 4 is <= 25 %)
+18:42:17 OK   [8] the driver maps stop_for_review_not_settled to exit 5 (review), and it is a policy termination
+18:42:17 OK   [8] terminal report: the final poll's not_settled confirmations are listed unresolved_after_confirmation with the flag, and the review record is reported
+18:42:17 OK   [9] s47_phase_b_1x: published history replayed (1 incumbent(s)); coverage of N(x) reported
+18:42:17 OK   [9] s47_phase_b_1x: I(x) of every published incumbent recomputed on the 3x3 lattice within 0.01 EUR
+18:42:17 OK   [9] s51_f2_phase_b_2x: published history replayed (2 incumbent(s)); coverage of N(x) reported
+18:42:17 OK   [9] s51_f2_phase_b_2x: I(x) of every published incumbent recomputed on the 3x3 lattice within 0.01 EUR
+18:42:17 OK   [9] s53_f2_certificate_2x: published history replayed (1 incumbent(s)); coverage of N(x) reported
+18:42:17 OK   [9] s53_f2_certificate_2x: I(x) of every published incumbent recomputed on the 3x3 lattice within 0.01 EUR
+18:42:17 OK   [guards] SolveProfileGuard(permitted=()) verify(0) == []
+18:42:17 OK   [guards] pickle load/loads 0
+18:42:18 items ['1', '2', '3', '4', '5', '6', '7', '8', '9']; pending harness: []; checks 167/167 ok; wall 1267 s
+18:42:18 failed: []
