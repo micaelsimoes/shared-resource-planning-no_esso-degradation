@@ -63,7 +63,11 @@ THE 2x PHASE (TASKS.md "Author decisions on report (i)", step 5a; section "THE 2
 `P.phase_step`): --phase-freeze (real: --oracle harness --predictions FILE; test-only: synthetic / stub_children with
 --phase-test-config) and --phase-run (one launch = one block of <= 5; exit 4 more work, 0 complete, 5 review, 6 the
 120 h ceiling, 2 refused, 1 crash; --preflight-only --out <new dir> at zero solves). The author's loop re-issues
---phase-run while the exit code is 4.
+--phase-run while the exit code is 4. Spec v2 (TASKS 5a, Planner decisions R1, R4, P1, P2): --unlaunched-predecessor
+ROOT@SHA (excluded from the collision scan once verified un-launched), --continuation-of ROOT@SHA (a stopped
+predecessor with launches as a cache root; with --ceiling-h / --ceiling-note and --no-pilot-exit-views), the
+code-drift refusal at every --phase-run, .DS_Store ignored; `phase_single_launch_command` (the first-block hold) and
+`s56_phase_check.py` (the launch-record check).
 """
 
 import argparse
@@ -161,10 +165,15 @@ def load_json(path):
         return json.load(handle)
 
 
+# Finder metadata files: never counted, manifested or treated as foreign wherever the driver lists files under a root
+# (phase spec v2, Planner decision P2). Exact name only.
+IGNORED_FILE_NAMES = ('.DS_Store',)
+
+
 def files_under(path):
     out = []
     for directory, _dirs, files in os.walk(path):
-        out += [os.path.join(directory, f) for f in files]
+        out += [os.path.join(directory, f) for f in files if f not in IGNORED_FILE_NAMES]
     return sorted(out)
 
 
@@ -275,6 +284,10 @@ class SyntheticLandscape:
             zs('settled_harness_error')
         self.k_not_settled, self.k_exit_unc = zs('not_settled'), zs('exit_uncertified')
         self.k_offset = {tuple(z): float(v) for z, v in k.get('settled_offset', [])}
+        # phase spec v2 tests: exit summaries carry a read_cycle and settled summaries the exit view of the same run
+        # (the real mapping's fields); 'exit_view_mismatch' = [[z, field]] perturbs one field of z's settled exit view
+        self.k_views = k.get('exit_views') is True
+        self.k_view_mismatch = {tuple(z): str(f) for z, f in k.get('exit_view_mismatch', [])}
 
     def describe(self):
         out = {'seed': self.seed, 'target': list(self.target), 'start': list(self.start), 'alpha': self.alpha,
@@ -299,18 +312,38 @@ class SyntheticLandscape:
                 else 'not_certified'
             if z in self.k_exit_unc:
                 status = 'not_certified'
-            return {'depth': P.DEPTH_EXIT, 'status': status, 'F': f_exit,
-                    'bar': 3600.0 + self._u(z, 'bar') * 26000.0, 'wall_s': 3600.0 * (1.0 + self._u(z, 'wall'))}
+            out = {'depth': P.DEPTH_EXIT, 'status': status, 'F': f_exit,
+                   'bar': 3600.0 + self._u(z, 'bar') * 26000.0, 'wall_s': 3600.0 * (1.0 + self._u(z, 'wall'))}
+            if self.k_views:
+                out['read_cycle'] = self._read_cycle(z)
+            return out
         if z in self.k_settled_he:
             return {'depth': P.DEPTH_SETTLED, 'status': 'harness_error', 'F': None, 'bar': None,
                     'wall_s': 7200.0 * (1.0 + self._u(z, 'wall'))}
         ok = z in self.always_ok
         s = 2400.0 if (self._u(z, 'vfail') < 0.10 and not ok) else 200.0 + self._u(z, 'S') * 400.0
-        return {'depth': P.DEPTH_SETTLED, 'status': 'not_settled' if z in self.k_not_settled else 'settled',
-                'F': f_exit + (self._u(z, 'off') - 0.5) * 2000.0 + self.k_offset.get(z, 0.0),
-                'V': {'S': s, 'PR': self._u(z, 'PR') * 500.0, 'G': self._u(z, 'G') * 300.0,
-                      'A': self._u(z, 'A') * 1000.0},
-                'gates_pass': ok or self._u(z, 'gate') >= 0.03, 'wall_s': 7200.0 * (1.0 + self._u(z, 'wall'))}
+        out = {'depth': P.DEPTH_SETTLED, 'status': 'not_settled' if z in self.k_not_settled else 'settled',
+               'F': f_exit + (self._u(z, 'off') - 0.5) * 2000.0 + self.k_offset.get(z, 0.0),
+               'V': {'S': s, 'PR': self._u(z, 'PR') * 500.0, 'G': self._u(z, 'G') * 300.0,
+                     'A': self._u(z, 'A') * 1000.0},
+               'gates_pass': ok or self._u(z, 'gate') >= 0.03, 'wall_s': 7200.0 * (1.0 + self._u(z, 'wall'))}
+        if self.k_views:
+            ex = self.summary(z, P.DEPTH_EXIT)
+            view = {'status': ex['status'], 'F': ex['F'], 'bar': ex['bar'], 'read_cycle': ex.get('read_cycle'),
+                    'read_at': 'would-be certification cycle (stop disabled; synthetic)'}
+            f = self.k_view_mismatch.get(z)
+            if f == 'read_cycle':
+                view['read_cycle'] = view['read_cycle'] + 1
+            elif f in ('F', 'bar'):
+                view[f] = math.nextafter(view[f], math.inf)   # one ulp: a bitwise, not a numerical, difference
+            elif f == 'absent':
+                view = None
+            if view is not None:
+                out['exit_view'] = view
+        return out
+
+    def _read_cycle(self, z):
+        return 100 + int(self._u(z, 'read_cycle') * 80.0)
 
 
 def synthetic_landscape_of(spec, lattice):
@@ -1697,6 +1730,15 @@ def pilot_evaluate(root, out_dir, s_share_eur, data_root):
 # ======================================================================================================================
 #  freeze
 # ======================================================================================================================
+def code_drift(spec):
+    """Spec v2 (Planner decision P2): the spec's frozen `code_sha256` against the files now -> [{'file', 'frozen',
+    'now'}] for every file that differs (empty = no drift)."""
+    frozen = spec.get('code_sha256') or {}
+    now = code_hashes()
+    return [{'file': n, 'frozen': frozen.get(n), 'now': now.get(n)} for n in sorted(set(frozen) | set(now))
+            if frozen.get(n) != now.get(n)]
+
+
 def code_hashes():
     out = {}
     for name in ('p515_s56_search_policy.py', SCRIPT_NAME, 'p515_s56_neighbourhood.py', 'p516_lattice.py',
@@ -1816,16 +1858,21 @@ def _collect_eval_keys(obj, out):
             _collect_eval_keys(v, out)
 
 
-def collision_scan(files, keys, own_root, allowed_roots=()):
+def collision_scan(files, keys, own_root, allowed_roots=(), predecessor_roots=()):
     """Pre-run key-collision check over artefacts (campaign / search specs, launch records): every `eval_key` they
     carry is compared with `keys`. Files under `own_root` (the search's own root) and under the declared cache roots
     are EXCLUDED -- a scan that included them would match the artefacts this search itself wrote (CLAUDE.md, the
-    W105 rule). -> {'n_files_scanned', 'excluded_own_root', 'excluded_cache_roots', 'collisions', 'refusals'}."""
+    W105 rule). `predecessor_roots` (phase spec v2, Planner decision P2): the roots of declared UN-LAUNCHED
+    predecessor phases, each verified by the caller (`verify_unlaunched_predecessor`) to hold only its spec and freeze
+    logs; excluded and listed separately. Nothing else is excluded.
+    -> {'n_files_scanned', 'excluded_own_root', 'excluded_cache_roots', 'excluded_predecessor_roots', 'collisions',
+    'refusals'}."""
     own = os.path.realpath(own_root) + os.sep
     allowed = [os.path.realpath(r) + os.sep for r in allowed_roots]
+    preds = [os.path.realpath(r) + os.sep for r in predecessor_roots]
     keys = set(keys)
-    out = {'n_files_scanned': 0, 'excluded_own_root': [], 'excluded_cache_roots': [], 'collisions': [],
-           'refusals': []}
+    out = {'n_files_scanned': 0, 'excluded_own_root': [], 'excluded_cache_roots': [], 'excluded_predecessor_roots': [],
+           'collisions': [], 'refusals': []}
     for f in files:
         real = os.path.realpath(f)
         if real.startswith(own):
@@ -1833,6 +1880,9 @@ def collision_scan(files, keys, own_root, allowed_roots=()):
             continue
         if any(real.startswith(a) for a in allowed):
             out['excluded_cache_roots'].append(f)
+            continue
+        if any(real.startswith(a) for a in preds):
+            out['excluded_predecessor_roots'].append(f)
             continue
         out['n_files_scanned'] += 1
         found = set()
@@ -1851,23 +1901,33 @@ def collision_scan(files, keys, own_root, allowed_roots=()):
     return out
 
 
-def freeze_collision_scan(spec, lattice, root, data_root):
+def freeze_collision_scan(spec, lattice, root, data_root, files=None):
     """At --freeze (harness oracles): every eval key the search can request (the domain x {exit, settled} under the
     spec's harness configuration) against the tracked campaign / search specs and launch records, the search's own
-    root and its declared cache roots excluded. A collision refuses the freeze."""
+    root, its declared cache roots and (phase spec v2) its declared un-launched predecessor roots -- each RE-VERIFIED
+    here as un-launched -- excluded. A collision refuses the freeze. `files`: tests only (default: the tracked
+    artefacts, `committed_spec_files`)."""
     oracle = HarnessOracle(spec, lattice, lock_path=None)
     keys = {oracle.eval_key(z, d) for z in enumerate_domain(lattice) for d in P.DEPTHS}
     if len(keys) != 2 * DOMAIN_SIZE:
         raise Refused(f'{len(keys)} distinct eval keys over the domain x 2 depths != {2 * DOMAIN_SIZE}')
-    res = collision_scan(committed_spec_files(data_root), keys, root,
-                         allowed_roots=[os.path.join(data_root, c['root']) for c in spec.get('cache_sources') or []])
+    preds = ((spec.get('predecessors') or {}).get('unlaunched') or [])
+    for pr in preds:
+        verify_unlaunched_predecessor(data_root, pr['root'], pr['spec_sha256'])
+    res = collision_scan(committed_spec_files(data_root) if files is None else files, keys, root,
+                         allowed_roots=[os.path.join(data_root, c['root']) for c in spec.get('cache_sources') or []],
+                         predecessor_roots=[os.path.join(data_root, pr['root']) for pr in preds])
     if res['refusals']:
         raise Refused(res['refusals'])
-    return {'n_keys': len(keys), 'n_files_scanned': res['n_files_scanned'],
-            'n_excluded_own_root': len(res['excluded_own_root']),
-            'n_excluded_cache_roots': len(res['excluded_cache_roots']), 'collisions': res['collisions'],
-            'scope': 'git ls-files data/SRP1/Results: campaign_spec_* / search_spec_* / phase_spec_* / '
-                     'launches/launch_*.json'}
+    out = {'n_keys': len(keys), 'n_files_scanned': res['n_files_scanned'],
+           'n_excluded_own_root': len(res['excluded_own_root']),
+           'n_excluded_cache_roots': len(res['excluded_cache_roots']), 'collisions': res['collisions'],
+           'scope': 'git ls-files data/SRP1/Results: campaign_spec_* / search_spec_* / phase_spec_* / '
+                    'launches/launch_*.json'}
+    if preds:
+        out['n_excluded_predecessor_roots'] = len(res['excluded_predecessor_roots'])
+        out['excluded_predecessor_files'] = [os.path.relpath(f, data_root) for f in res['excluded_predecessor_roots']]
+    return out
 
 
 def committed_spec_files(data_root):
@@ -2023,6 +2083,8 @@ def handle_interruptions(root, spec, oracle_kind, results_files=None):
         ldir = launch_paths(root, n)[0]
         evals = os.path.join(ldir, 'evals')
         for name in sorted(os.listdir(evals)) if os.path.isdir(evals) else []:
+            if name in IGNORED_FILE_NAMES:
+                continue
             ed = os.path.join(evals, name)
             lj = os.path.join(ed, 'launch.json')
             started = None
@@ -2293,8 +2355,20 @@ def dry_run(out_dir, data_root, starts=('x0', 'reference_unit', 'plan_2030'), se
 #  unit_i1 and staged_i1 at the settled key (K 300, stop-disabled, pricing capture, rho0 x 1). The EXIT summary of a
 #  cached settled record is its EXIT VIEW (`map_record(files, 'exit')`: read at the would-be certification cycle --
 #  the reading the pilot calibrated e_EV on), served only when no exit-depth record of that z exists and tagged
-#  `served_as` = 'exit_view_of_settled_cache_record' with the settled key and dir.
-PHASE_SPEC_SCHEMA = 'p515_s56_phase_spec_v1'
+#  `served_as` = 'exit_view_of_settled_cache_record' with the settled key and dir. Exit views are served only from
+#  a cache source whose `exit_views` is True (spec v2: the pilot source; False on a continuation predecessor, and on
+#  the pilot source of a continuation frozen with --no-pilot-exit-views, the R4 fallback).
+#  SPEC v2 (Advisor pre-launch review GO-WITH-CHANGES; Planner decisions R1, R4, P1, P2, TASKS 5a, 2026-11-24):
+#    - efficiency measure P1 and the exit-view check R4: `P.phase_step` (policy section comment);
+#    - PREDECESSORS: `predecessors.unlaunched` = declared predecessor phase roots verified UN-LAUNCHED (only the spec
+#      and the freeze logs; `verify_unlaunched_predecessor`), excluded from the collision scan and re-verified at every
+#      launch; `predecessors.continuation` = declared predecessor phase roots WITH launches, stopped at exit 5 or 6,
+#      indexed as cache roots from their complete launch records (`continuation_source`), their measured hours
+#      carried into the ceiling (`phase.ceiling.carried_h`), their launch count re-verified at every launch;
+#    - CODE DRIFT: every --phase-run (preflight-only included) recomputes `code_hashes()` and refuses (exit 2), naming
+#      the file, if any differs from the spec's `code_sha256`;
+#    - files named exactly .DS_Store are ignored wherever the driver counts or manifests files (IGNORED_FILE_NAMES).
+PHASE_SPEC_SCHEMA = 'p515_s56_phase_spec_v2'
 PHASE_LAUNCH_SCHEMA = 'p515_s56_phase_launch_record_v1'
 PHASE_RESULTS_SCHEMA = 'p515_s56_phase_results_v1'
 PHASE_RESULTS_FILE, PHASE_RESULTS_MANIFEST = 'phase_results.json', 'phase_results_manifest_sha256.json'
@@ -2313,8 +2387,10 @@ PHASE_N_CANDIDATES = 2              # author decision 3
 PHASE_LADDER_ZP = (2, 4)            # 0.5 and 1.0 MVA (Planner decision: size ladder)
 PHASE_LADDER_N_NODE_YEARS = 2
 PHASE_SCREEN_PAIRS = ((1, 2), (1, 1))   # 0.25 MVA with 1 MWh, 0.25 MVA with 0.5 MWh
-PHASE_PREDICTION_IDS = ('Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6')
+PHASE_PREDICTION_IDS = ('Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7')   # Q7: R4 (spec v2)
 PHASE_AUTHORITY = ['TASKS.md: Author decisions on report (i) (2026-11-24); step 5a',
+                   'TASKS.md step 5a: Advisor pre-launch review GO-WITH-CHANGES; Planner decisions R1, R4, R5, P1, P2 '
+                   '(2026-11-24): phase spec v2',
                    'P5_15_S56_REPORT_i.md; P5_15_S56_PILOT_REPORT.md', 'S56_SEARCH_DRIVER_DESIGN.md (all sections)',
                    'S56_PLAN_v4_1.md sections 3-4']
 
@@ -2394,6 +2470,12 @@ def phase_capture_checklist(H):
         'launch wall in the phase launch record (Q4, ceiling)': "'accounted_wall_s'" in run_src,
         'termination in the phase state (Q4)': "'termination'" in inspect.getsource(P._phase_terminate),
         'efficiency record in the phase state (Q6)': 'efficiency_rule(' in inspect.getsource(P.phase_step),
+        'efficiency per-class counts and the v1 band measure (Q6, P1)': "'class_counts'" in inspect.getsource(
+            P.efficiency_rule) and "'band_measure_information_only'" in inspect.getsource(P.efficiency_rule),
+        'exit_view in the settled summary (Q7, R4)': "exit_view={k: exit_view.get(k)" in inspect.getsource(map_record)
+                                                     and "'read_cycle'" in inspect.getsource(map_record),
+        'exit-view check per candidate in the phase state (Q7, R4)': "c['exit_view_check']" in inspect.getsource(
+            P.phase_step),
         'best start in the phase state (Q3)': "'chosen'" in inspect.getsource(P.phase_step),
         'per-cycle trajectory by default (stage template)': {'recourse', 'cycle_convergence', 'cycle'}
                                                             <= set(H.PER_CYCLE_TRAJECTORY_FIELDS),
@@ -2429,14 +2511,24 @@ def _screen_and_ladder_tables(lattice):
     return screen, ladder
 
 
+PROJECTION_FINAL_POLL_CONFIRM_SHARES = ((0, 1), (1, 4), (1, 2))
+
+
 def phase_hours_projection(lattice, screen, pool_z, projection_h, block=P.BLOCK):
     """PROJECTED phase hours (zero solves; the design's count with the frozen per-block projections). Cache at the
     candidate polls = the screen plans + the pool members (ladder plans ignored: unknown before the screen); the two
     candidates are bracketed by the two smallest and the two largest uncached |N| over the screen plans. Search from
     the pilot staged plan (the pool's lowest settled F among the pilot records): low = no move (one complete poll);
-    mid = 3 moves, each improver in the first block, 1 confirmation each; high = 6 moves, each improver last, 2
-    confirmations each. Exit-then-confirm: poll blocks at the exit projection, confirmations as settled blocks;
-    settled-direct: poll blocks at the settled projection, no confirmation step. -> dict (hours, counts, assumptions)."""
+    mid = 3 moves, each improver in the first block, 1 confirmation each; high = 6 moves, each improver last.
+    Exit-then-confirm: poll blocks at the exit projection; EVERY confirmation is one launch at the settled projection
+    (confirmations run one per launch, serially): the candidate-confirmation block, the confirmations of each move
+    (mid 1; high max(2, the final-poll count below), since an improver ranked last is preceded by every other
+    confirm-candidate of its poll), and the confirmations of the FINAL COMPLETE POLL -- every confirm-candidate of the
+    poll at the final incumbent is confirmed before the poll completes -- at a confirm-candidate share q of its
+    uncached |N| in PROJECTION_FINAL_POLL_CONFIRM_SHARES (0, 1/4, 1/2; the branch is exit-then-confirm only when at most
+    1/2 of the screen + ladder rows are not worse, Planner decision P1), ceil(q |N|) confirmations. v1 counted 0 here
+    (spec v2 correction, change 9). Settled-direct: poll blocks at the settled projection, no confirmation step.
+    -> dict (hours, counts, assumptions; break-even confirmations per complete poll)."""
     import math as _m
     env = LatticeEnv(lattice)
     cached = {tuple(z) for z in screen} | {tuple(z) for z in pool_z}
@@ -2446,28 +2538,189 @@ def phase_hours_projection(lattice, screen, pool_z, projection_h, block=P.BLOCK)
     n_screen = len([z for z in screen if tuple(z) not in {tuple(q) for q in pool_z}])
     pe, ps = projection_h[P.DEPTH_EXIT], projection_h[P.DEPTH_SETTLED]
     common = {'screen_blocks': _m.ceil(n_screen / block), 'ladder_blocks': 1, 'confirmation_blocks': 1}
+    b_poll = _m.ceil(n_st / block)
     out = {'assumptions': phase_hours_projection.__doc__, 'uncached_N_screen_plans_sorted': unc,
            'uncached_N_staged': n_st, 'N_staged': len(env.neighbourhood_points(staged)), 'n_screen_uncached': n_screen,
-           'per_block_h': dict(projection_h), 'cases': {}}
+           'per_block_h': dict(projection_h), 'final_poll_confirm_shares': [list(q) for q in
+                                                                            PROJECTION_FINAL_POLL_CONFIRM_SHARES],
+           'break_even_confirmations_per_complete_poll': {
+               'poll_blocks': b_poll, 'value': b_poll * (ps - pe) / ps,
+               'rule': 'exit-then-confirm costs b pe + n ps, settled-direct b ps: equal at n = b (ps - pe) / ps '
+                       '(one complete poll of the staged plan\'s uncached N)'},
+           'cases': {}}
     for cand_name, cn in (('cand_small', unc[:2]), ('cand_large', unc[-2:])):
         poll_blocks = sum(_m.ceil(n / block) for n in cn)
-        for sname, moves, conf in (('low', [], 0), ('mid', [5, 5, 5], 1), ('high', [n_st] * 6, 2)):
-            srch_blocks = sum(_m.ceil(m / block) for m in moves) + _m.ceil(n_st / block)
-            srch_conf = len(moves) * conf
-            for br in (P.BRANCH_EXIT_THEN_CONFIRM, P.BRANCH_SETTLED_DIRECT):
-                pp = pe if br == P.BRANCH_EXIT_THEN_CONFIRM else ps
-                h = (common['screen_blocks'] + common['ladder_blocks']) * pe + common['confirmation_blocks'] * ps \
-                    + poll_blocks * pp + srch_blocks * pp + (srch_conf * ps if br == P.BRANCH_EXIT_THEN_CONFIRM else 0)
-                out['cases'][f'{br}|{cand_name}|search_{sname}'] = {
+        for sname, n_moves, mv_blocks in (('low', 0, 0), ('mid', 3, 1), ('high', 6, b_poll)):
+            srch_blocks = n_moves * mv_blocks + b_poll
+            base_e = (common['screen_blocks'] + common['ladder_blocks']) * pe + common['confirmation_blocks'] * ps
+            h_sd = base_e + poll_blocks * ps + srch_blocks * ps
+            out['cases'][f'{P.BRANCH_SETTLED_DIRECT}|{cand_name}|search_{sname}'] = {
+                'hours': h_sd, 'poll_blocks_candidates': poll_blocks, 'search_poll_blocks': srch_blocks,
+                'search_confirmation_launches': 0, **common}
+            for qn, qd in PROJECTION_FINAL_POLL_CONFIRM_SHARES:
+                n_final = _m.ceil(qn * n_st / qd)
+                per_move = {'low': 0, 'mid': 1, 'high': max(2, n_final)}[sname]
+                n_conf = n_moves * per_move + n_final
+                h = base_e + poll_blocks * pe + srch_blocks * pe + n_conf * ps
+                out['cases'][f'{P.BRANCH_EXIT_THEN_CONFIRM}|{cand_name}|search_{sname}|q{qn}/{qd}'] = {
                     'hours': h, 'poll_blocks_candidates': poll_blocks, 'search_poll_blocks': srch_blocks,
-                    'search_confirmation_blocks': srch_conf if br == P.BRANCH_EXIT_THEN_CONFIRM else 0, **common}
+                    'search_confirmation_launches': n_conf, 'move_confirmations_each': per_move,
+                    'final_poll_confirmations': n_final, **common}
     return out
 
 
-def phase_spec(*, phase_id, oracle, test_only, data_root, predictions=None, test_config=None):
+def _split_root_sha(arg):
+    """'ROOT@SHA' (CLI form of a declared predecessor) -> (root, sha prefix of >= 8 hex characters)."""
+    root, _, sha = str(arg).rpartition('@')
+    if not root or len(sha) < 8 or any(c not in '0123456789abcdef' for c in sha):
+        raise Refused(f'a declared predecessor is ROOT@SHA (sha256 prefix >= 8 lower-case hex): {arg!r}')
+    return root, sha
+
+
+def verify_unlaunched_predecessor(data_root, root_rel, sha):
+    """Planner decision P2: a declared predecessor phase root is UN-LAUNCHED iff it holds exactly one phase spec whose
+    name carries its own hash and whose sha256 starts with the declared `sha`, plus at most its freeze logs
+    (freeze_stdout.log, freeze_stderr.log), and NOTHING else: no subdirectory at all (no launches/, no eval dirs, no
+    interrupted/, stale_locks/ or ceiling/), no state view, no results, no launch log. Files named exactly .DS_Store
+    are ignored. -> the record frozen in the spec; raises Refused naming what it found."""
+    absr = root_rel if os.path.isabs(root_rel) else os.path.join(data_root, root_rel)
+    rel = os.path.relpath(absr, data_root)
+    if not os.path.isdir(absr):
+        raise Refused(f'declared un-launched predecessor {rel}: no such directory')
+    names = sorted(n for n in os.listdir(absr) if n not in IGNORED_FILE_NAMES)
+    dirs = [n for n in names if os.path.isdir(os.path.join(absr, n))]
+    if dirs:
+        raise Refused(f'declared un-launched predecessor {rel} holds directories {dirs} (launches / eval dirs): it is '
+                      f'not un-launched; a launched predecessor is declared as a continuation, never excluded')
+    specs = [n for n in names if n.startswith('phase_spec_') and n.endswith('.json')]
+    if len(specs) != 1:
+        raise Refused(f'declared un-launched predecessor {rel}: expected exactly one phase_spec_*.json, found {specs}')
+    digest = sha256_file(os.path.join(absr, specs[0]))
+    if specs[0] != f'phase_spec_{digest[:8]}.json' or not digest.startswith(str(sha)):
+        raise Refused(f'declared un-launched predecessor {rel}: {specs[0]} has sha256 {digest[:16]}..., declared {sha}')
+    extra = sorted(set(names) - {specs[0], 'freeze_stdout.log', 'freeze_stderr.log'})
+    if extra:
+        raise Refused(f'declared un-launched predecessor {rel} holds files other than its spec and freeze logs: '
+                      f'{extra}')
+    return {'root': rel, 'phase_spec': specs[0], 'spec_sha256': digest, 'files': names,
+            'rule': 'un-launched: only the spec and its freeze logs, no directory (.DS_Store ignored); excluded from '
+                    'the collision scan, re-verified at every launch'}
+
+
+def _predecessor_stop(root, n_complete):
+    """How a continuation predecessor stopped: exit 5 (results with a review termination) or exit 6 (a ceiling stop
+    record after its last complete launch). -> dict; raises Refused otherwise."""
+    rp, rm = os.path.join(root, PHASE_RESULTS_FILE), os.path.join(root, PHASE_RESULTS_MANIFEST)
+    if os.path.exists(rp):
+        if not os.path.exists(rm) or load_json(rm).get(PHASE_RESULTS_FILE) != sha256_file(rp):
+            raise Refused(f'continuation predecessor {root}: results without a matching manifest')
+        res = load_json(rp)
+        reason = ((res.get('report') or {}).get('termination') or {}).get('reason')
+        if reason not in P.PHASE_REVIEW_TERMINATIONS or res.get('n_launches') != n_complete:
+            raise Refused(f'continuation predecessor {root}: terminated {reason!r} after {res.get("n_launches")} '
+                          f'launches -- a continuation resumes a review stop (exit 5) or a ceiling stop (exit 6) only')
+        return {'exit': EXIT_REVIEW, 'reason': reason, 'results_sha256': sha256_file(rp)}
+    cdir = os.path.join(root, 'ceiling')
+    stops = sorted(n for n in os.listdir(cdir) if n.startswith('ceiling_stop_')) if os.path.isdir(cdir) else []
+    if stops:
+        last = load_json(os.path.join(cdir, stops[-1]))
+        if last.get('n_launches_complete') == n_complete:
+            return {'exit': EXIT_CEILING, 'reason': 'ceiling', 'ceiling_stop': stops[-1],
+                    'ceiling_stop_sha256': sha256_file(os.path.join(cdir, stops[-1])),
+                    'ceiling_check': last.get('ceiling_check')}
+    raise Refused(f'continuation predecessor {root}: neither stopped for review (exit 5) nor at the ceiling (exit 6) '
+                  f'after its last complete launch {n_complete}')
+
+
+def continuation_source(orc, data_root, root_rel, sha):
+    """Planner decision P2: a declared predecessor phase root WITH launches, stopped at exit 5 or 6, as a CACHE ROOT of
+    a continuation spec. Its complete launches are verified (contiguous 1..n, none incomplete, each record names the
+    predecessor spec, the hash chain links, every manifest hash holds and the manifest is exactly the launch's files);
+    its records are indexed by exact eval key under THIS spec's harness configuration (another key: listed as
+    ignored); records of interrupted launches (moved aside) are never indexed. No exit view is served from it. Its
+    measured hours (`phase_hours`) are carried into the continuation's ceiling. -> the cache source."""
+    absr = root_rel if os.path.isabs(root_rel) else os.path.join(data_root, root_rel)
+    rel = os.path.relpath(absr, data_root)
+    spec_path, digest, pspec = load_phase_spec(absr)
+    if not digest.startswith(str(sha)):
+        raise Refused(f'continuation predecessor {rel}: spec sha256 {digest[:16]}..., declared {sha}')
+    idx, complete = _complete_indices(absr)
+    if not complete:
+        raise Refused(f'continuation predecessor {rel} has no complete launch: declare it as an un-launched '
+                      f'predecessor instead')
+    if set(idx) != set(complete) or complete != list(range(1, len(complete) + 1)):
+        raise Refused(f'continuation predecessor {rel}: launches {idx}, complete {complete} (an incomplete launch: '
+                      f'resume or move it aside with the predecessor\'s own --phase-run first)')
+    entries, ignored, prev = [], [], None
+    for n in complete:
+        ldir, rec_p, man_p = launch_paths(absr, n)
+        lr, man = load_json(rec_p), load_json(man_p)
+        rel_rec = os.path.relpath(rec_p, absr)
+        bad = []
+        if lr.get('phase_spec_sha256') != digest or lr.get('launch_index') != n:
+            bad.append('spec sha256 / index')
+        if lr.get('previous_launch_manifest_sha256') != prev:
+            bad.append('hash chain')
+        if man.get(rel_rec) != sha256_file(rec_p):
+            bad.append('manifest does not hold the launch record hash')
+        if set(man) != {os.path.relpath(f, absr) for f in files_under(ldir)} | {rel_rec}:
+            bad.append('manifest file set')
+        if any(not os.path.isfile(os.path.join(absr, f)) or sha256_file(os.path.join(absr, f)) != h
+               for f, h in man.items()):
+            bad.append('a manifest hash does not hold')
+        if bad:
+            raise Refused([f'continuation predecessor {rel} launch {n}: {b}' for b in bad])
+        prev = sha256_file(man_p)
+        for r in lr.get('records') or []:
+            z, depth = tuple(r['z']), r['depth']
+            ed = os.path.join(absr, r['eval_dir'])
+            if orc.eval_key(z, depth) != r['eval_key']:
+                ignored.append({'eval_dir': os.path.relpath(ed, data_root), 'reason': 'eval key is not this spec\'s '
+                                                                                     'key (another configuration)'})
+                continue
+            entries.append({'z': list(z), 'depth': depth, 'eval_dir': os.path.relpath(ed, data_root),
+                            'eval_key': r['eval_key'], 'record_sha256': r['record_sha256'], 'launch': n})
+    keys = [(tuple(e['z']), e['depth']) for e in entries]
+    if len(set(keys)) != len(keys):
+        raise Refused(f'continuation predecessor {rel}: a (z, depth) is indexed twice')
+    hours = phase_hours(absr, len(complete))
+    return {'root': rel, 'kind': 'continuation_predecessor', 'exit_views': False, 'entries': entries,
+            'ignored': ignored,
+            'predecessor': {'phase_spec': os.path.basename(spec_path), 'spec_sha256': digest,
+                            'phase_id': pspec.get('phase_id'), 'n_launches': len(complete),
+                            'last_launch_manifest_sha256': prev, 'stop': _predecessor_stop(absr, len(complete)),
+                            'hours': {'cumulative_h': hours['cumulative_h'],
+                                      'completed_launches_h': hours['completed_launches_h'],
+                                      'interrupted_launches_h': hours['interrupted_launches_h']},
+                            'interrupted_records': hours['interrupted']}}
+
+
+def verify_predecessors_at_launch(spec, data_root):
+    """Every --phase-run: the declared un-launched predecessors are still un-launched; each continuation predecessor
+    still holds exactly the complete launches indexed at the freeze (none added, none incomplete)."""
+    for pr in ((spec.get('predecessors') or {}).get('unlaunched') or []):
+        verify_unlaunched_predecessor(data_root, pr['root'], pr['spec_sha256'])
+    for src in spec.get('cache_sources') or []:
+        if src.get('kind') != 'continuation_predecessor':
+            continue
+        absr = os.path.join(data_root, src['root'])
+        idx, complete = _complete_indices(absr)
+        n = src['predecessor']['n_launches']
+        if idx != list(range(1, n + 1)) or complete != idx:
+            raise Refused(f"continuation predecessor {src['root']}: launches {idx} (complete {complete}) != the {n} "
+                          f"indexed at the freeze")
+
+
+def phase_spec(*, phase_id, oracle, test_only, data_root, predictions=None, test_config=None,
+               unlaunched_predecessors=(), continuation_of=(), ceiling_h=None, ceiling_note=None,
+               pilot_exit_views=True):
     """Build the phase spec (frozen by `phase_freeze`). Real: oracle 'harness', not test-only, recorded predictions
-    Q1-Q6, the pilot root as cache root, the collision scan and the cache-root key audit. Test-only: 'synthetic' or
-    'stub_children' oracle with a test config (landscape, knobs, precached pool members, ceiling, simulated walls)."""
+    Q1-Q7, the pilot root as cache root, the collision scan and the cache-root key audit. Test-only: 'synthetic' or
+    'stub_children' oracle with a test config (landscape, knobs, precached pool members, ceiling, simulated walls).
+    Spec v2: `unlaunched_predecessors` / `continuation_of` = [(root, sha prefix)] (section comment); a CONTINUATION
+    (harness oracles only) may raise the ceiling (`ceiling_h` with `ceiling_note`, the author's decision) and may stop
+    serving the pilot exit views (`pilot_exit_views=False`, the R4 fallback: x0, the unit and the staged plan then get
+    exit-depth runs, and the exit-view check is recorded, not stopping)."""
     import p515_s44_campaign_harness as H
     lattice, inst = build_lattice(data_root)
     tc = copy.deepcopy(test_config or {})
@@ -2477,6 +2730,14 @@ def phase_spec(*, phase_id, oracle, test_only, data_root, predictions=None, test
         raise Refused('a harness phase is the real phase: not test-only, no test config')
     if oracle != 'harness' and not test_only:
         raise Refused('a synthetic or stub-children phase must be test-only')
+    if continuation_of and oracle == 'synthetic':
+        raise Refused('a continuation needs a harness oracle (stub_children or harness): its predecessor is a cache root')
+    if (ceiling_h is not None or not pilot_exit_views) and not continuation_of:
+        raise Refused('a raised ceiling and --no-pilot-exit-views are for continuation specs only')
+    if ceiling_h is not None and (not isinstance(ceiling_note, str) or not ceiling_note.strip()):
+        raise Refused('a continuation ceiling needs --ceiling-note (the author\'s decision, quoted)')
+    if ceiling_h is not None and 'ceiling_h' in tc:
+        raise Refused('the ceiling is given twice (test config and --ceiling-h)')
     screen, ladder_all = _screen_and_ladder_tables(lattice)
     x0 = lattice.x0()
     unit = named_start(lattice, 'reference_unit')
@@ -2492,9 +2753,11 @@ def phase_spec(*, phase_id, oracle, test_only, data_root, predictions=None, test
     if not test_only and round(e_ev) != PHASE_E_EV_ROUNDED:
         raise Refused(f'e_EV {e_ev} != {PHASE_E_EV_ROUNDED} EUR (Planner decision)')
     k_ev = int(tc.get('k_ev', PHASE_K_EV))
-    ceiling_h = float(tc.get('ceiling_h', PHASE_CEILING_H))
-    if not test_only and (k_ev != PHASE_K_EV or ceiling_h != PHASE_CEILING_H):
-        raise Refused('the real phase uses K_EV 300 and the 120 h ceiling')
+    raised = ceiling_h is not None
+    ceiling_h = float(ceiling_h if raised else tc.get('ceiling_h', PHASE_CEILING_H))
+    if not test_only and (k_ev != PHASE_K_EV or (ceiling_h != PHASE_CEILING_H and not raised)):
+        raise Refused('the real phase uses K_EV 300 and the 120 h ceiling (a continuation may raise the ceiling)')
+    unl = [verify_unlaunched_predecessor(data_root, *rs) for rs in unlaunched_predecessors]
     spec = {
         'schema': PHASE_SPEC_SCHEMA, 'phase_id': phase_id, 'search_id': phase_id, 'arm': 'ev_2x',
         'frozen_utc': _utc(), 'authority': PHASE_AUTHORITY, 'test_only': bool(test_only),
@@ -2508,7 +2771,12 @@ def phase_spec(*, phase_id, oracle, test_only, data_root, predictions=None, test
                    'classification': 'P.classify_exit with e_floor = e_EV (worse dF >= R + e; confirm_candidate '
                                      'dF <= -R + e; else unresolved; e = max(e_EV, bar sum))',
                    'acceptance': 'plan v4.1 section 3 (P.confirm; settled-direct: P.classify_settled)',
-                   'not_settled': 'integration ruling 5 (601775c0), per sub-search and phase-wide'},
+                   'not_settled': 'integration ruling 5 (601775c0), per sub-search and phase-wide',
+                   'exit_view_check': 'stop' if pilot_exit_views else 'record',
+                   'exit_view_check_rule': ('Planner decision R4: for each candidate, its exit run\'s (read_cycle, F, '
+                                            'bar) == the exit_view of its settled summary, bitwise; mismatch -> exit 5 '
+                                            '"exit_view_mismatch" (mode stop) or recorded (mode record: no exit view '
+                                            'served)')},
         'phase': {
             'x0': list(x0),
             'screen': screen,
@@ -2516,16 +2784,22 @@ def phase_spec(*, phase_id, oracle, test_only, data_root, predictions=None, test
                        'rule': 'P.ladder_plan', 'all_possible_points': ladder_all,
                        'inadmissible_possible_points': [r['label'] for r in ladder_all if r['reasons']]},
             'candidates': {'n': PHASE_N_CANDIDATES, 'rule': 'P.select_candidates (author decision 3)'},
-            'efficiency': {'threshold': [1, 2], 'band_eur': e_ev, 'rule': 'P.efficiency_rule (author-approved)'},
+            'efficiency': {'threshold': [1, 2], 'band_eur': e_ev, 'measure': 'not_worse_against_x0',
+                           'not_worse_classes': list(P.EFFICIENCY_NOT_WORSE_CLASSES),
+                           'rule': 'P.efficiency_rule (author-approved; measure: Planner decision P1, spec v2); the v1 '
+                                   '+- e_EV band fraction recorded beside it, information only'},
+            'pilot_exit_views': bool(pilot_exit_views),
             'pool': {'fixed': [{'name': 'x0', 'z': list(x0)}, {'name': 'reference_unit', 'z': list(unit)},
                                {'name': 'pilot_staged', 'z': list(staged)}],
                      'cache_members': [], 'rule': 'P.phase_step stage pool'},
-            'ceiling': {'ceiling_h': ceiling_h, 'projection_h': proj['projection_h'], 'projection_inputs': proj,
+            'ceiling': {'ceiling_h': ceiling_h, 'raised_by_continuation': ({'note': ceiling_note} if raised else None),
+                        'carried_h': 0.0, 'projection_h': proj['projection_h'], 'projection_inputs': proj,
                         'simulated_walls': bool(test_only and tc.get('simulated_walls', True)),
-                        'rule': ('before each block: cumulative measured hours (completed launch walls + interrupted '
-                                 'launch walls) + projected wall of the next block (max(frozen projection at its '
-                                 'depth, largest measured wall of a completed launch at that depth)) <= ceiling_h; '
-                                 'otherwise exit 6 with an hours summary')},
+                        'rule': ('before each block: carried hours (a continuation\'s predecessors\' measured hours, '
+                                 'frozen; 0 otherwise) + cumulative measured hours (completed launch walls + '
+                                 'interrupted launch walls) + projected wall of the next block (max(frozen projection '
+                                 'at its depth, largest measured wall of a completed launch at that depth)) <= '
+                                 'ceiling_h; otherwise exit 6 with an hours summary')},
             'exit_codes': {'more_work': EXIT_SUSPENDED, 'complete': EXIT_TERMINATED, 'review': EXIT_REVIEW,
                            'ceiling': EXIT_CEILING, 'refused': EXIT_REFUSED, 'crash': EXIT_FAILED},
             'review_stops': list(P.PHASE_REVIEW_TERMINATIONS)},
@@ -2533,7 +2807,8 @@ def phase_spec(*, phase_id, oracle, test_only, data_root, predictions=None, test
                                                   proj['projection_h']),
         'instance': inst, 'domain_size': DOMAIN_SIZE, 'oracle': {'kind': oracle}, 'mapping': MAPPING_PARAMETERS,
         'cache_sources': [], 'code_sha256': code_hashes(), 'git_head': _git_head(data_root),
-        'interpreter': sys.executable}
+        'interpreter': sys.executable,
+        'predecessors': {'unlaunched': unl, 'continuation': [], 'rule': 'Planner decision P2 (spec v2)'}}
     if oracle == 'harness':
         validate_phase_predictions(predictions)
         spec['harness'] = phase_harness_config(data_root)
@@ -2542,6 +2817,7 @@ def phase_spec(*, phase_id, oracle, test_only, data_root, predictions=None, test
         domain = enumerate_domain(lattice)
         orc = HarnessOracle(spec, lattice, lock_path=None)
         spec['cache_sources'] = build_cache_index(orc, lattice, data_root, [PHASE_PILOT_ROOT_REL], domain)
+        spec['cache_sources'][0].update(kind='pilot', exit_views=bool(pilot_exit_views))
         got = {(tuple(e['z']), e['depth']) for s in spec['cache_sources'] for e in s['entries']}
         want = {(tuple(z), P.DEPTH_SETTLED) for z in (x0, unit, staged)}
         if got != want:
@@ -2550,7 +2826,9 @@ def phase_spec(*, phase_id, oracle, test_only, data_root, predictions=None, test
         spec['phase']['pool']['cache_members'] = []   # no other settled record in the declared cache roots
         spec['cache_exit_views'] = ('the exit summary of each cached settled record is its exit view (map_record at '
                                     'depth exit, read at the would-be certification cycle), served only when no '
-                                    'exit-depth record of the plan exists')
+                                    'exit-depth record of the plan exists, and only from a cache source whose '
+                                    'exit_views is True (the pilot source unless --no-pilot-exit-views)')
+        _add_continuations(spec, orc, data_root, continuation_of)
         spec['domain_keys_distinct'] = len({orc.eval_key(z, d) for z in domain for d in P.DEPTHS}) == 2 * DOMAIN_SIZE
         spec['cache_root_key_audit'] = cache_root_key_audit(spec, lattice, data_root, domain, orc)
         if not spec['cache_root_key_audit']['ok']:
@@ -2561,23 +2839,37 @@ def phase_spec(*, phase_id, oracle, test_only, data_root, predictions=None, test
         knobs = copy.deepcopy(land.get('knobs') or {})
         pre = [list(x0), list(unit), list(staged)]
         knobs['always_ok'] = [list(z) for z in knobs.get('always_ok', [])] + pre
+        knobs['exit_views'] = True   # spec v2: exit summaries carry read_cycle, settled ones their exit view
         spec['oracle'].update({'seed': str(land.get('seed', 'phase')), 'target': target,
                                'alpha': float(land.get('alpha', 30000.0)), 'f0': float(land.get('f0', 810.0e6)),
                                'knobs': knobs, 'precached': pre,
                                'note': 'SYNTHETIC VALUES -- not evaluations of the system; x0, the unit and the '
-                                       'staged plan precached at both depths (they stand for the pilot records)'})
+                                       'staged plan precached at both depths (they stand for the pilot records; '
+                                       'settled depth only when pilot_exit_views is False)'})
         if oracle == 'stub_children':
             hc = copy.deepcopy(tc['harness'])
             if hc['by_depth']['settled']['cap'] != k_ev:
                 raise Refused('stub phase: the settled cap must equal K_EV')
             spec['harness'] = hc
+            _add_continuations(spec, HarnessOracle(spec, lattice, lock_path=None), data_root, continuation_of)
     return spec
+
+
+def _add_continuations(spec, orc, data_root, continuation_of):
+    for root_rel, sha in continuation_of:
+        src = continuation_source(orc, data_root, root_rel, sha)
+        spec['cache_sources'].append(src)
+        spec['predecessors']['continuation'].append({'root': src['root'], **src['predecessor']})
+    if continuation_of:
+        spec['phase']['ceiling']['carried_h'] = sum(c['hours']['cumulative_h']
+                                                    for c in spec['predecessors']['continuation'])
 
 
 def cache_root_key_audit(spec, lattice, data_root, domain, orc):
     """The pilot-report item 4 check on the phase freeze: every eval key the phase can request (domain x 2 depths),
     against the TRACKED artefacts INSIDE the declared cache roots (the freeze scan excludes them). The only keys found
-    there must be exactly the indexed cache entries' (x0_i1, unit_i1, staged_i1 settled), and no exit-depth key."""
+    there must be exactly the indexed cache entries' (x0_i1, unit_i1, staged_i1 settled), and no exit-depth key
+    (spec v2: other than an indexed entry of a continuation predecessor, whose screen runs are exit-depth)."""
     keys = {orc.eval_key(z, d) for z in domain for d in P.DEPTHS}
     exit_keys = {orc.eval_key(z, P.DEPTH_EXIT) for z in domain}
     roots = [os.path.realpath(os.path.join(data_root, c['root'])) + os.sep for c in spec['cache_sources']]
@@ -2589,16 +2881,21 @@ def cache_root_key_audit(spec, lattice, data_root, domain, orc):
         for k in ks & keys:
             found.setdefault(k, []).append(os.path.relpath(f, data_root))
     expected = {e['eval_key'] for s in spec['cache_sources'] for e in s['entries']}
+    cont_exit = {e['eval_key'] for s in spec['cache_sources'] if s.get('kind') == 'continuation_predecessor'
+                 for e in s['entries'] if e['depth'] == P.DEPTH_EXIT}
     return {'n_files_in_cache_roots': len(files), 'files': [os.path.relpath(f, data_root) for f in files],
             'keys_found': {k[:16]: v for k, v in sorted(found.items())},
             'expected_cache_keys16': sorted(k[:16] for k in expected),
             'exit_depth_keys_found': sorted(k[:16] for k in set(found) & exit_keys),
-            'ok': set(found) == expected and not (set(found) & exit_keys),
+            'exit_depth_keys_found_outside_continuation_entries': sorted(k[:16] for k in (set(found) & exit_keys)
+                                                                         - cont_exit),
+            'ok': set(found) == expected and not ((set(found) & exit_keys) - cont_exit),
             'rule': 'keys of the phase found inside the declared cache roots == exactly the indexed cache entries'}
 
 
 def phase_freeze(root, spec):
-    if os.path.exists(root) and [n for n in os.listdir(root) if not n.endswith('.log')]:
+    if os.path.exists(root) and [n for n in os.listdir(root) if not n.endswith('.log')
+                                 and n not in IGNORED_FILE_NAMES]:
         raise Refused(f'phase root exists and holds files other than launch logs (write-once): {root}')
     os.makedirs(root, exist_ok=True)
     text = P.canonical_json(spec)
@@ -2635,17 +2932,21 @@ def phase_config(spec):
             'pool_fixed': copy.deepcopy(ph['pool']['fixed']), 'pool_cache_members': copy.deepcopy(
                 ph['pool']['cache_members']), 'R': pol['R'], 'e_ev': pol['e_ev'], 'k_ev': pol['k_ev'],
             'block': pol['block'], 'cap': pol['cap'], 'class_rank': list(pol['class_rank']),
-            'n_max_sub': pol['n_max_sub'], 'domain_size': spec['domain_size']}
+            'n_max_sub': pol['n_max_sub'], 'domain_size': spec['domain_size'],
+            'exit_view_check': pol['exit_view_check']}
 
 
 def phase_cache(spec, oracle, data_root, lattice):
     """The phase's cache records (section comment): the indexed cache entries re-verified and mapped, plus the exit
-    views of the cached settled records; test-only: the synthetic precached pool members."""
+    views of the cached settled records of the sources whose `exit_views` is True; test-only: the synthetic precached
+    pool members (settled depth only when the spec's pilot_exit_views is False)."""
     records = {}
     if spec.get('cache_sources'):
         for k, s in load_cache(spec, oracle, data_root).items():
             records[k] = dict(s, served_as='cache_record')
         for src in spec['cache_sources']:
+            if src.get('exit_views') is not True:
+                continue
             for e in src['entries']:
                 z = tuple(e['z'])
                 if e['depth'] != P.DEPTH_SETTLED or (z, P.DEPTH_EXIT) in records:
@@ -2659,8 +2960,11 @@ def phase_cache(spec, oracle, data_root, lattice):
         if not spec.get('test_only'):
             raise Refused('precached synthetic records on a non-test phase')
         land = synthetic_landscape_of(spec, lattice)
+        views = spec['phase'].get('pilot_exit_views', True) is not False
         for z in pre:
             for d in P.DEPTHS:
+                if d == P.DEPTH_EXIT and not views:
+                    continue
                 if (tuple(z), d) in records:
                     raise Refused(f'precached {z} {d} twice')
                 records[(tuple(z), d)] = dict(land.summary(z, d), served_as='synthetic_precached')
@@ -2729,7 +3033,8 @@ def phase_replay(root, spec, spec_sha, lattice, env, oracle, cache):
         prev_manifest = chain[-1]['manifest_sha256']
     allowed_top = {os.path.basename(load_phase_spec(root)[0]), 'launches', 'interrupted', 'stale_locks', 'ceiling',
                    PHASE_STATE_VIEW, PHASE_RESULTS_FILE, PHASE_RESULTS_MANIFEST}
-    foreign = [n for n in os.listdir(root) if n not in allowed_top and not n.endswith('.log')]
+    foreign = [n for n in os.listdir(root) if n not in allowed_top and not n.endswith('.log')
+               and n not in IGNORED_FILE_NAMES]
     if foreign:
         raise Refused(f'foreign files in the phase root: {foreign}')
     return state, records, chain, states
@@ -2762,8 +3067,10 @@ def ceiling_check(spec, hours, depth):
     ce = spec['phase']['ceiling']
     measured = [p['accounted_wall_s'] / 3600.0 for p in hours['per_launch'] if p['depth'] == depth]
     proj = max([ce['projection_h'][depth]] + measured)
-    total = hours['cumulative_h'] + proj
-    return {'cumulative_h': hours['cumulative_h'], 'projected_next_block_h': proj, 'next_block_depth': depth,
+    carried = float(ce.get('carried_h', 0.0))
+    total = carried + hours['cumulative_h'] + proj
+    return {'cumulative_h': hours['cumulative_h'], 'carried_h': carried, 'projected_next_block_h': proj,
+            'next_block_depth': depth,
             'frozen_projection_h': ce['projection_h'][depth], 'max_measured_same_depth_h': max(measured, default=None),
             'cumulative_plus_projected_h': total, 'ceiling_h': ce['ceiling_h'], 'stop': total > ce['ceiling_h'],
             'rule': ce['rule']}
@@ -2816,6 +3123,14 @@ def phase_prediction_inputs(spec, report, root, data_root, chain, records):
         'Q5': {'peak_child_rss_gib': max(rss) if rss else None, 'n_records_with_rss': len(rss),
                'ceiling_gib': PHASE_MEMORY_PER_SLOT_GIB},
         'Q6': report.get('efficiency'),
+        'Q7': {'mode': spec['policy'].get('exit_view_check'),
+               'candidates': [{'label': c['label'], 'exit_view_check': c.get('exit_view_check')}
+                              for c in (report.get('candidates') or [])],
+               'n_checked': sum(1 for c in (report.get('candidates') or []) if c.get('exit_view_check')),
+               'n_equal': sum(1 for c in (report.get('candidates') or [])
+                              if (c.get('exit_view_check') or {}).get('equal') is True),
+               'termination_reason': (report.get('termination') or {}).get('reason')},
+        'carried_h': spec['phase']['ceiling'].get('carried_h', 0.0),
     }
 
 
@@ -2841,8 +3156,14 @@ def _write_phase_results(root, spec, spec_sha, state, records, chain, hooks, dat
 def phase_run(root, *, data_root, lock_path, take_over_stale, preflight_only_out=None):
     """ONE phase launch = one block (section comment). -> exit code. `preflight_only_out` (a NEW directory): zero
     solves -- the lock, the replay, the next action, the ceiling check and `real_launch_preflight`, recorded there;
-    nothing launched, nothing written under the phase root."""
+    nothing launched, nothing written under the phase root. Spec v2: first the code-drift refusal and the predecessor
+    re-verification (exit 2, nothing written)."""
     spec_path, spec_sha, spec = load_phase_spec(root)
+    drift = code_drift(spec)
+    if drift:
+        raise Refused([f"code drift: {d['file']} sha256 now {str(d['now'])[:16]}..., frozen in the spec "
+                       f"{str(d['frozen'])[:16]}... -- the phase runs only the code its spec froze" for d in drift])
+    verify_predecessors_at_launch(spec, data_root)
     lattice, _inst = build_lattice(data_root)
     env = LatticeEnv(lattice)
     oracle = make_oracle(spec, lattice, lock_path)
@@ -3003,6 +3324,25 @@ def phase_author_command(repo, root_rel, python=CANONICAL_PYTHON, extra_args='')
     return f"cd {repo} && caffeinate -i zsh -c '{loop}'"
 
 
+def phase_single_launch_command(repo, root_rel, n=1, python=CANONICAL_PYTHON, extra_args=''):
+    """Spec v2, the first-block hold (Planner decision R2/P2): ONE invocation of --phase-run, logged exactly as the
+    loop logs invocation `n` (launch_NNN_stdout.log / _stderr.log), so that `phase_author_command` afterwards continues
+    the numbering at n + 1. Refuses to run (prints, runs nothing) if that invocation's stdout log already exists."""
+    one = (f'R={root_rel}; n={n:03d}; if [ -e "$R/launch_${{n}}_stdout.log" ]; then echo "launch_${{n}} logs exist: '
+           f'not re-run"; else NLP_SOLVER_PATH=/usr/local/bin/ipopt {python} -u p515_s56_search_driver.py --phase-run '
+           f'--root "$R" --take-over-stale-lock{extra_args} > "$R/launch_${{n}}_stdout.log" 2> '
+           f'"$R/launch_${{n}}_stderr.log"; rc=$?; echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) launch $n exit $rc"; fi')
+    return f"cd {repo} && caffeinate -i zsh -c '{one}'"
+
+
+PHASE_CHECK_SCRIPT = 's56_phase_check.py'   # its name and its command line must not contain the harness hazard string
+
+
+def phase_check_command(repo, root_rel, launch=1, python=CANONICAL_PYTHON):
+    """The author's check of one launch record (`s56_phase_check.py`, stdlib only, read-only)."""
+    return f'cd {repo} && {python} {PHASE_CHECK_SCRIPT} {root_rel} --launch {launch}'
+
+
 def phase_in_process(spec, lattice, max_actions=100000):
     """Zero solves, synthetic specs only: the whole phase in process (no files) -> (state, records). Used by the tests
     as the reference the launch machinery must reproduce byte for byte."""
@@ -3100,6 +3440,16 @@ def main(argv=None):
     ap.add_argument('--phase-id')
     ap.add_argument('--phase-test-config', help='--phase-freeze, test-only phases: JSON file (landscape, knobs, '
                                                 'ceiling_h, k_ev, harness for stub children)')
+    ap.add_argument('--unlaunched-predecessor', action='append', default=[],
+                    help='--phase-freeze (spec v2): ROOT@SHA of a declared predecessor phase root verified un-launched '
+                         '(excluded from the collision scan); repeatable')
+    ap.add_argument('--continuation-of', action='append', default=[],
+                    help='--phase-freeze (spec v2): ROOT@SHA of a predecessor phase root with launches, stopped at exit '
+                         '5 or 6, declared as a cache root of this continuation spec; repeatable')
+    ap.add_argument('--ceiling-h', type=float, help='--phase-freeze, continuation only: the raised ceiling (author)')
+    ap.add_argument('--ceiling-note', help='--phase-freeze with --ceiling-h: the author\'s decision, quoted')
+    ap.add_argument('--no-pilot-exit-views', action='store_true',
+                    help='--phase-freeze, continuation only: serve no pilot exit view (the R4 fallback)')
     ap.add_argument('--t-exit-h', type=float)
     ap.add_argument('--t-set-h', type=float)
     ap.add_argument('--psi', type=float)
@@ -3146,7 +3496,11 @@ def main(argv=None):
                 if args.phase_test_config:
                     tc = load_json(args.phase_test_config)
                 spec = phase_spec(phase_id=args.phase_id, oracle=args.oracle, test_only=args.test_only,
-                                  data_root=data_root, predictions=pred, test_config=tc)
+                                  data_root=data_root, predictions=pred, test_config=tc,
+                                  unlaunched_predecessors=[_split_root_sha(a) for a in args.unlaunched_predecessor],
+                                  continuation_of=[_split_root_sha(a) for a in args.continuation_of],
+                                  ceiling_h=args.ceiling_h, ceiling_note=args.ceiling_note,
+                                  pilot_exit_views=not args.no_pilot_exit_views)
                 if args.oracle in ('stub_children', 'harness'):
                     lat_f = build_lattice(data_root)[0]
                     spec['collision_scan'] = freeze_collision_scan(spec, lat_f, root, data_root)

@@ -29,6 +29,29 @@ TESTS
       byte-equal to the in-process synthetic phase.
   T9  refusals: real phase freeze without predictions; synthetic phase not test-only; --preflight-only on a synthetic
       phase; a tampered launch record (replay refuses, nothing written); an existing root (write-once).
+SPEC v2 TESTS (Advisor pre-launch review; Planner decisions R1, R4, P1, P2; TASKS.md step 5a, 2026-11-24):
+  T10 change 1 (P1): the efficiency rule decides on the share of rows NOT classed worse (confirm_candidate +
+      unresolved); 11/22 vs 12/22; uncertified rows in the denominator, not the numerator; per-class counts; the v1
+      band fraction recorded beside it and read by no decision (rows where the two measures disagree, both ways).
+  T11 change 3 (R4): the exit-view check -- bitwise (one ulp in F or bar, read_cycle + 1, an absent view: mismatch);
+      in the phase: a mismatch stops with exit_view_mismatch at candidate_confirmation (CLI: exit 5); a first-in-order
+      harness_error precedes it; it precedes the offset stop; mode 'record' records and continues; equal on T2.
+  T12 change 4 (P2): the un-launched predecessor: verification (spec + freeze logs only; .DS_Store ignored; refused
+      with launches/, an eval dir, a state view, a wrong sha); the collision scan excludes a declared verified root,
+      refuses an undeclared one, refuses when the declared one has launches; on the REAL artefacts: the real v2 spec's
+      keys collide with the v1 root when it is not declared, and the scan passes when it is.
+  T13 change 5 (P2): continuation on stubs -- after exit 6 (raised ceiling, carried hours) and after exit 5
+      (exit_view_mismatch, --no-pilot-exit-views: x0 re-run at exit depth, the check recorded); decisions equal to the
+      uninterrupted stub phase; no record re-requested; refusals (incomplete predecessor launch, a completed predecessor,
+      a wrong sha, a synthetic oracle, a raised ceiling without a continuation, an un-launched root as continuation).
+  T14 change 6: code drift -- a spec whose frozen code hash differs: --phase-run and --preflight-only refuse (exit 2)
+      naming the file, nothing written.
+  T15 change 7: files named .DS_Store under a phase root (top level, launches/, a launch dir, evals/, an interrupted
+      launch) are neither manifested nor foreign nor killed evaluations; the phase proceeds; a root holding only one
+      can be frozen.
+  T16 change 8: `s56_phase_check.py` on crafted launch records (PASS, each FAIL criterion, missing record); the
+      single-invocation command (launch 001 logs, refuses a re-run) followed by the loop continuing at 002; no command
+      line contains the harness hazard string.
 
 Launch (attached, both streams captured):
   python -u p515_s56_phase_tests.py --out <new dir> > <dir>_stdout.log 2> <dir>_stderr.log
@@ -229,11 +252,11 @@ def t1(lat, data_root, out_dir):
         except P.PolicyError:
             refused.append((name, True))
     ck('T1', 'classify_settled refuses mixed depth and a non-usable incumbent', all(v for _n, v in refused), refused)
-    # efficiency rule
-    row = (lambda band, st='certified': {'in_efficiency_band': band, 'status': st})
-    e11 = P.efficiency_rule([row(True)] * 11 + [row(False)] * 11, 17494.0)
-    e12 = P.efficiency_rule([row(True)] * 12 + [row(False)] * 10, 17494.0)
-    e_unc = P.efficiency_rule([row(True)] * 11 + [row(False, 'not_certified')] * 1 + [row(False)] * 10, 17494.0)
+    # efficiency rule (spec v2 measure: rows not classed worse; T10 holds the full set)
+    row = (lambda cls, band=False: {'class': cls, 'in_efficiency_band': band})
+    e11 = P.efficiency_rule([row('unresolved')] * 11 + [row('worse')] * 11, 17494.0)
+    e12 = P.efficiency_rule([row('confirm_candidate')] * 12 + [row('worse')] * 10, 17494.0)
+    e_unc = P.efficiency_rule([row('unresolved')] * 11 + [row('uncertified')] * 1 + [row('worse')] * 10, 17494.0)
     ck('T1', 'efficiency rule: 11/22 (= 1/2) -> exit_then_confirm; 12/22 -> settled_direct; uncertified rows stay in '
              'the denominator', e11['branch'] == 'exit_then_confirm' and e12['branch'] == 'settled_direct'
        and e_unc['n_rows'] == 22 and e_unc['branch'] == 'exit_then_confirm', [e11, e12, e_unc])
@@ -365,6 +388,16 @@ def t2(lat, data_root, out_dir, cf):
        and stages == list(P.PHASE_STAGES[:3]) + ['candidate_polls', 'search'],
        {'stages': stages, 'efficiency': rep['efficiency'], 'cands': [c['label'] for c in rep['candidates']],
         'pool': rep['pool']['chosen'], 'search': sr['termination']})
+    ck('T2', 'spec v2: the efficiency record carries the not-worse measure, the per-class counts and the v1 band measure '
+             '(information only); each candidate\'s exit-view check is recorded, equal, mode stop',
+       rep['efficiency']['measure'] == 'not_worse_against_x0'
+       and sum(rep['efficiency']['class_counts'].values()) == rep['efficiency']['n_rows']
+       and rep['efficiency']['n_not_worse'] == rep['efficiency']['class_counts']['confirm_candidate']
+       + rep['efficiency']['class_counts']['unresolved']
+       and 'band_measure_information_only' in rep['efficiency']
+       and all(c['exit_view_check']['equal'] is True and c['exit_view_check']['mode'] == 'stop'
+               for c in rep['candidates']) and f['results']['prediction_inputs']['Q7']['n_equal'] == 2,
+       {'efficiency': rep['efficiency'], 'q7': f['results']['prediction_inputs']['Q7']})
     ck('T2', 'count identities hold in the candidate polls and the search', all(
         c['poll_report']['count_identity']['holds'] for c in rep['candidates']) and sr['count_identity']['holds'])
     unit = D.named_start(lat, 'reference_unit')
@@ -471,6 +504,8 @@ def t5(lat, data_root, out_dir, cf):
                                 'stop_for_review_not_settled', 'candidate_polls'),
         'start_not_certified': (with_knobs(cf['exit_move'], exit_uncertified=[list(x0)]),
                                 'start_incumbent_not_certified', 'screen'),
+        'exit_view_mismatch_candidate': (with_knobs(cf['exit_move'], exit_view_mismatch=[[cand1, 'F']]),
+                                         'exit_view_mismatch', 'candidate_confirmation'),
     }
     for tag, (tc, reason, stage) in cases.items():
         root, logs, rc0 = freeze(base, tag, data_root, tc)
@@ -648,13 +683,521 @@ def t9(lat, data_root, out_dir, cf, ref_root):
 
 
 # ======================================================================================================================
+#  SPEC v2 tests: T10 efficiency measure (P1), T11 exit-view check (R4), T12 un-launched predecessor + collision scan,
+#  T13 continuation (stubs), T14 code drift, T15 .DS_Store, T16 the first-block hold commands and the check script
+# ======================================================================================================================
+HAZARD = 'p515_s' + '4'   # the harness pre-launch scan's process-name hazard (never written literally here)
+
+
+def dummy_predictions():
+    return {'predictions': {q: {'statement': 'test', 'evaluated_as': 'test', 'on_failure': 'test'}
+                            for q in D.PHASE_PREDICTION_IDS}}
+
+
+def t10(lat, data_root, out_dir):
+    row = (lambda cls, band=False: {'class': cls, 'in_efficiency_band': band})
+    e = P.efficiency_rule([row('confirm_candidate')] * 5 + [row('unresolved')] * 6 + [row('worse')] * 10
+                          + [row('uncertified')], 17494.0)
+    ck('T10', 'efficiency (P1): numerator = confirm_candidate + unresolved; per-class counts recorded; uncertified in '
+              'the denominator only; 11/22 -> exit_then_confirm',
+       e['n_not_worse'] == 11 and e['n_rows'] == 22 and e['fraction'] == [1, 2] and e['branch'] == 'exit_then_confirm'
+       and e['class_counts'] == {'confirm_candidate': 5, 'unresolved': 6, 'worse': 10, 'uncertified': 1,
+                                 'harness_error': 0} and e['measure'] == 'not_worse_against_x0', e)
+    e2 = P.efficiency_rule([row('confirm_candidate')] * 6 + [row('unresolved')] * 6 + [row('worse')] * 10, 17494.0)
+    ck('T10', 'efficiency (P1): 12/22 not worse -> settled_direct (strict > 1/2, exact rational)',
+       e2['fraction'] == [6, 11] and e2['branch'] == 'settled_direct', e2)
+    # the measures disagree: rows near -20 kEUR are confirm-candidates OUTSIDE the +- e_EV band (P1's case)
+    a = P.efficiency_rule([row('confirm_candidate', False)] * 14 + [row('worse')] * 8, 17494.0)
+    b = P.efficiency_rule([row('unresolved', True)] * 3 + [row('worse', True)] * 9 + [row('worse')] * 10, 17494.0)
+    ck('T10', 'the v1 band measure is information only: 14/22 not worse with 0 in band -> settled_direct (v1 would '
+              'give exit_then_confirm); 3/22 not worse with 12 in band -> exit_then_confirm (v1 would give '
+              'settled_direct)',
+       a['branch'] == 'settled_direct' and a['band_measure_information_only']['branch_the_v1_measure_would_give']
+       == 'exit_then_confirm' and a['band_measure_information_only']['n_in_band'] == 0
+       and b['branch'] == 'exit_then_confirm' and b['band_measure_information_only']['branch_the_v1_measure_would_give']
+       == 'settled_direct', [a, b])
+    try:
+        P.efficiency_rule([row('mystery')], 1.0)
+        bad = False
+    except P.PolicyError:
+        bad = True
+    ck('T10', 'an unknown row class is refused (no silent bucket)', bad)
+    # in the phase: the efficiency decision reads the class, never the band (table rows from the real classifier)
+    x0e = {'depth': 'exit', 'status': 'certified', 'F': 800e6, 'bar': 1000.0}
+    z1 = lat.with_pair(lat.x0(), 5, 2025, 1, 2)
+    r = P._table_row(lat, z1, 'screen', dict(x0e, F=800e6 - 20000.0, bar=1000.0), x0e, P.R_EUR, 17494.0)
+    ck('T10', 'a row at dF_exit = -20,000 EUR is confirm_candidate (counts as not worse) and outside the band',
+       r['class'] == 'confirm_candidate' and r['in_efficiency_band'] is False, r)
+    return {'examples': {'at_half': e, 'disagree_a': a['branch'], 'disagree_b': b['branch']}}
+
+
+def t11(lat, data_root, out_dir, cf):
+    ex = {'depth': 'exit', 'status': 'certified', 'F': 811976794.7754139, 'bar': 2490.025410294533, 'read_cycle': 127}
+    se = {'depth': 'settled', 'status': 'settled', 'exit_view': {'status': 'certified', 'F': 811976794.7754139,
+                                                                  'bar': 2490.025410294533, 'read_cycle': 127}}
+    eq = P.exit_view_check(ex, se)
+    import math as _m
+    ulp_f = P.exit_view_check(dict(ex, F=_m.nextafter(ex['F'], _m.inf)), se)
+    ulp_b = P.exit_view_check(ex, dict(se, exit_view=dict(se['exit_view'], bar=_m.nextafter(ex['bar'], 0.0))))
+    rc = P.exit_view_check(dict(ex, read_cycle=128), se)
+    rcf = P.exit_view_check(dict(ex, read_cycle=127.0), se)
+    ab = P.exit_view_check(ex, {'depth': 'settled', 'status': 'settled'})
+    ck('T11', 'exit-view check (R4) is bitwise: equal -> equal; one ulp in F or bar, read_cycle + 1, read_cycle as a '
+              'float, an absent exit_view -> mismatch naming the field',
+       eq['equal'] and not ulp_f['equal'] and ulp_f['differing'] == ['F'] and not ulp_b['equal']
+       and ulp_b['differing'] == ['bar'] and rc['differing'] == ['read_cycle'] and rcf['differing'] == ['read_cycle']
+       and not ab['equal'] and ab['exit_view'] is None, [eq, ulp_f, ulp_b, rc, rcf, ab])
+    # in the phase (in process)
+    spec0 = D.phase_spec(phase_id='probe', oracle='synthetic', test_only=True, data_root=data_root,
+                         test_config=cf['exit_move'])
+    st0, _r = D.phase_in_process(spec0, lat)
+    c1, c2 = st0['candidates'][0]['z'], st0['candidates'][1]['z']
+    out = {}
+
+    def run(tag, knobs, mode=None):
+        sp = D.phase_spec(phase_id='probe', oracle='synthetic', test_only=True, data_root=data_root,
+                          test_config=with_knobs(cf['exit_move'], **knobs))
+        if mode:
+            sp['policy']['exit_view_check'] = mode
+        st, _rr = D.phase_in_process(sp, lat)
+        out[tag] = {'termination': st['termination'], 'checks': [c.get('exit_view_check') for c in
+                                                                 st['candidates'] or []], 'log': st['log']}
+        return st
+    a = run('mismatch_F', {'exit_view_mismatch': [[c1, 'F']]})
+    b = run('mismatch_read_cycle_c2', {'exit_view_mismatch': [[c2, 'read_cycle']]})
+    c = run('absent', {'exit_view_mismatch': [[c1, 'absent']]})
+    d = run('harness_error_precedes', {'settled_harness_error': [c1], 'exit_view_mismatch': [[c2, 'F']]})
+    e = run('mismatch_precedes_offset', {'settled_offset': [[c1, 60000.0]], 'exit_view_mismatch': [[c2, 'bar']]})
+    f = run('mode_record', {'exit_view_mismatch': [[c1, 'F']]}, mode='record')
+    g = run('offset_alone', {'settled_offset': [[c1, 60000.0]]})
+    ok = (a['termination']['reason'] == 'exit_view_mismatch' and a['termination']['stage'] == 'candidate_confirmation'
+          and a['termination']['detail']['mismatches'][0]['differing'] == ['F']
+          and b['termination']['reason'] == 'exit_view_mismatch'
+          and b['termination']['detail']['mismatches'][0]['differing'] == ['read_cycle']
+          and c['termination']['reason'] == 'exit_view_mismatch'
+          and d['termination']['reason'] == 'harness_error'
+          and e['termination']['reason'] == 'exit_view_mismatch'
+          and g['termination']['reason'] == 'stop_for_review_offset'
+          and f['termination']['reason'] == 'phase_complete'
+          and f['candidates'][0]['exit_view_check']['equal'] is False
+          and f['candidates'][0]['exit_view_check']['mode'] == 'record'
+          and any('mode record' in m for m in f['log']))
+    ck('T11', 'in the phase: a mismatch stops exit_view_mismatch at candidate_confirmation (either candidate, any '
+              'field, an absent view); a first-in-order harness_error precedes it; it precedes the offset stop (the '
+              'offset alone still stops); mode record records the mismatch and the phase completes', ok,
+       {k: v['termination'] for k, v in out.items()})
+    try:
+        P.phase_initial_state(dict(D.phase_config(spec0), exit_view_check='sometimes'))
+        refused = False
+    except P.PolicyError:
+        refused = True
+    ck('T11', 'an unknown exit_view_check mode is refused', refused)
+    return {k: v['termination'] for k, v in out.items()}
+
+
+def t12(lat, data_root, out_dir, cf):
+    import shutil
+    base = os.path.join(out_dir, 't12')
+    os.makedirs(base)
+    tc = copy.deepcopy(cf['exit_move'])
+    tc['k_ev'] = 400
+    tc['harness'] = stub_harness_config()
+    spec = D.phase_spec(phase_id='t12', oracle='stub_children', test_only=True, data_root=data_root, test_config=tc)
+    orc = D.HarnessOracle(spec, lat, lock_path=None)
+    k = orc.eval_key(lat.x0(), P.DEPTH_EXIT)
+
+    def pred_root(tag):
+        r = os.path.join(base, tag)
+        D.phase_freeze(r, {'schema': D.PHASE_SPEC_SCHEMA, 'tag': tag,
+                           'cache_sources': [{'entries': [{'eval_key': k}]}]})
+        for n in ('freeze_stdout.log', 'freeze_stderr.log'):
+            open(os.path.join(r, n), 'w').close()
+        return r
+    ok_root = pred_root('pred_ok')
+    open(os.path.join(ok_root, '.DS_Store'), 'w').close()
+    sha_ok = D.load_phase_spec(ok_root)[1]
+    own = os.path.join(base, 'own_root')
+
+    def files(roots):
+        return sorted(f for r in roots for f in D.files_under(r) if os.path.basename(f).startswith('phase_spec_'))
+
+    def scan(preds, roots):
+        sp = copy.deepcopy(spec)
+        sp['predecessors'] = {'unlaunched': preds}
+        try:
+            return D.freeze_collision_scan(sp, lat, own, data_root, files=files(roots)), None
+        except D.Refused as error:
+            return None, error.reasons
+    rec_ok = D.verify_unlaunched_predecessor(data_root, ok_root, sha_ok[:8])
+    a, ra = scan([rec_ok], [ok_root])
+    b, rb = scan([], [ok_root])
+    ck('T12', 'a declared, verified un-launched predecessor (spec + freeze logs; .DS_Store ignored) is excluded: the '
+              'scan passes, 1 file excluded; the same root undeclared: the scan refuses, naming its spec',
+       a is not None and a['n_excluded_predecessor_roots'] == 1 and not a['collisions'] and rb
+       and any('pred_ok' in x for x in rb), {'declared': a, 'undeclared': rb})
+    # launched / altered predecessors
+    cases = {}
+    for tag, mutate in (('launches_dir', lambda r: os.makedirs(os.path.join(r, 'launches', 'launch_001'))),
+                        ('eval_dir', lambda r: os.makedirs(os.path.join(r, 'evals', 'k_label'))),
+                        ('state_view', lambda r: D.write_once_json(os.path.join(r, D.PHASE_STATE_VIEW), {})),
+                        ('launch_log', lambda r: open(os.path.join(r, 'launch_001_stdout.log'), 'w').close())):
+        r = os.path.join(base, f'pred_{tag}')
+        shutil.copytree(ok_root, r)
+        rec = D.verify_unlaunched_predecessor(data_root, r, sha_ok[:8])   # verified while clean ...
+        mutate(r)                                                         # ... then launched / altered
+        res, reasons = scan([rec], [r])
+        cases[tag] = reasons
+    try:
+        D.verify_unlaunched_predecessor(data_root, ok_root, 'f' * 8)
+        wrong = None
+    except D.Refused as error:
+        wrong = error.reasons
+    ck('T12', 'the scan refuses when the declared predecessor has launches (launches/), an eval dir, a state view or '
+              'a launch log (re-verified at the scan); a wrong declared sha is refused',
+       all(cases[t] for t in cases) and any('directories' in x for x in cases['launches_dir'])
+       and any('directories' in x for x in cases['eval_dir']) and any('other than' in x for x in cases['state_view'])
+       and wrong, {'cases': cases, 'wrong_sha': wrong})
+    # the REAL artefacts: the real v2 configuration's keys against the tracked specs, v1 declared / undeclared
+    v1 = os.path.join(D.RESULTS_PARENT_REL, 'phase2x_ev_v1')
+    t0 = time.time()
+    real = D.phase_spec(phase_id='t12_real_probe', oracle='harness', test_only=False, data_root=data_root,
+                        predictions=dummy_predictions(), unlaunched_predecessors=[(v1, 'de4e947e')])
+    own_real = os.path.join(base, 'real_own_root_never_created')
+    try:
+        decl = D.freeze_collision_scan(real, lat, own_real, data_root)
+        rd = None
+    except D.Refused as error:
+        decl, rd = None, error.reasons
+    real_u = copy.deepcopy(real)
+    real_u['predecessors']['unlaunched'] = []
+    try:
+        D.freeze_collision_scan(real_u, lat, own_real, data_root)
+        ru = None
+    except D.Refused as error:
+        ru = error.reasons
+    ck('T12', 'REAL artefacts (tracked specs): the real v2 configuration with v1 (de4e947e) declared un-launched -> '
+              'scan passes, v1\'s spec excluded; v1 undeclared -> the scan refuses, naming v1\'s spec',
+       decl is not None and not decl['collisions'] and decl['n_excluded_predecessor_roots'] == 1
+       and decl['excluded_predecessor_files'] == [os.path.join(v1, 'phase_spec_de4e947e.json')]
+       and ru is not None and any('phase2x_ev_v1/phase_spec_de4e947e.json' in x for x in ru),
+       {'declared': decl, 'refused': rd, 'undeclared_refusal': ru, 'wall_s': time.time() - t0})
+    ck('T12', 'the real v2 spec built in process: v1 recorded as un-launched predecessor (files = spec + 2 freeze '
+              'logs), cache-root key audit ok, pilot exit views on, exit-view check mode stop',
+       real['predecessors']['unlaunched'][0]['files'] == ['freeze_stderr.log', 'freeze_stdout.log',
+                                                         'phase_spec_de4e947e.json']
+       and real['cache_root_key_audit']['ok'] and real['phase']['pilot_exit_views'] is True
+       and real['policy']['exit_view_check'] == 'stop' and real['cache_sources'][0]['exit_views'] is True,
+       real['predecessors'])
+    return {'declared_real': decl, 'undeclared_real_refusal': ru}
+
+
+def _decisions(rep):
+    t = rep['marginal_value_table'] or {}
+    rows = [{k: v for k, v in r.items() if k != 'served_as'} for r in t.get('rows') or []]
+    return P.canonical_json({
+        'rows': rows, 'efficiency': rep['efficiency'],
+        'candidates': [[c['label'], (c.get('confirmation') or {}).get('result'), c.get('confirmed')]
+                       for c in rep['candidates'] or []],
+        'pool': (rep['pool'] or {}).get('chosen_label'),
+        'incumbents': [h['z'] for h in (rep['search_incumbent_history'] or [])],
+        'search_termination': ((rep['search_report'] or {}).get('termination') or {}).get('reason')})
+
+
+def t13(lat, data_root, out_dir, cf, t8_root):
+    import shutil
+    base = os.path.join(out_dir, 't13')
+    os.makedirs(base)
+    tc = copy.deepcopy(cf['exit_move'])
+    tc['k_ev'] = 400
+    tc['harness'] = stub_harness_config()
+    stub_env = {D.STUB_DELAY_ENV: '0.05:0.2:t13'}
+    ref = final(t8_root)['results']
+    ref_req = {(P.canonical_json(e['z']), e['depth']) for e in ref['state']['evaluated']}
+    # (a) exit 6 -> continuation with a raised ceiling
+    tca = dict(copy.deepcopy(tc), ceiling_h=12.0)
+    ra, la, rc0 = freeze(base, 'pred_ceiling', data_root, tca, oracle='stub_children')
+    rca, codes_a = run_phase(ra, data_root, os.path.join(base, 'lock_a'), la, env_extra=stub_env)
+    sha_a = D.load_phase_spec(ra)[1]
+    hours_a = D.phase_hours(ra, len(D._complete_indices(ra)[1]))['cumulative_h']
+    rb = os.path.join(base, 'cont_ceiling')
+    lb = os.path.join(base, 'cont_ceiling_logs')
+    os.makedirs(lb)
+    tcp = os.path.join(base, 'cont_ceiling_test_config.json')
+    D.write_once_json(tcp, tc)
+    rcf = drv(['--phase-freeze', '--root', rb, '--phase-id', 'ph_cont_ceiling', '--oracle', 'stub_children',
+               '--test-only', '--phase-test-config', tcp, '--continuation-of', f'{ra}@{sha_a[:8]}', '--ceiling-h',
+               '1000', '--ceiling-note', 'TEST: raised ceiling'], data_root, os.path.join(lb, 'freeze'))
+    rcb, codes_b = run_phase(rb, data_root, os.path.join(base, 'lock_b'), lb, env_extra=stub_env)
+    fb = final(rb)
+    spb = D.load_phase_spec(rb)[2]
+    req_a = {(P.canonical_json(e['z']), e['depth']) for e in json.loads(final(ra)['state'])['evaluated']}
+    req_b = {(P.canonical_json(e['z']), e['depth']) for e in fb['results']['state']['evaluated']}
+    lrs_b = launch_records(rb)
+    ck('T13', 'continuation after exit 6 (stubs): predecessor stops 6; the continuation (raised ceiling 1000, note) '
+              'freezes with it as cache root and runs to exit 0; its decisions equal the uninterrupted stub phase\'s '
+              '(T8); predecessor + continuation requests = T8\'s requests, disjoint',
+       rc0 == 0 and rca == D.EXIT_CEILING and rcf == 0 and rcb == 0
+       and _decisions(fb['results']['report']) == _decisions(ref['report'])
+       and not (req_a & req_b) and (req_a | req_b) == ref_req,
+       {'codes_a': codes_a[-2:], 'rcf': rcf, 'rcb': rcb, 'n_a': len(req_a), 'n_b': len(req_b), 'n_ref': len(ref_req)})
+    ck('T13', 'the continuation carries the predecessor\'s measured hours into its ceiling (carried_h = predecessor '
+              'cumulative; every launch\'s ceiling check includes it); its spec records the predecessor (sha, launches, '
+              'stop exit 6) and serves no exit view from it',
+       spb['phase']['ceiling']['carried_h'] == hours_a and all(
+           lr['ceiling_check_before_launch']['carried_h'] == hours_a for lr in lrs_b)
+       and spb['predecessors']['continuation'][0]['spec_sha256'] == sha_a
+       and spb['predecessors']['continuation'][0]['stop']['exit'] == D.EXIT_CEILING
+       and spb['cache_sources'][-1]['exit_views'] is False and spb['phase']['ceiling']['ceiling_h'] == 1000.0
+       and fb['results']['prediction_inputs']['carried_h'] == hours_a,
+       {'carried': spb['phase']['ceiling']['carried_h'], 'hours_a': hours_a})
+    # (b) exit 5 (exit_view_mismatch) -> continuation without the pilot exit views (the R4 fallback)
+    spec0 = D.phase_spec(phase_id='probe', oracle='synthetic', test_only=True, data_root=data_root,
+                         test_config=cf['exit_move'])
+    st0, _r = D.phase_in_process(spec0, lat)
+    cand1 = st0['candidates'][0]['z']
+    tcm = copy.deepcopy(tc)
+    tcm['landscape'].setdefault('knobs', {})['exit_view_mismatch'] = [[cand1, 'F']]
+    rm_, lm, rc0m = freeze(base, 'pred_mismatch', data_root, tcm, oracle='stub_children')
+    rcm, codes_m = run_phase(rm_, data_root, os.path.join(base, 'lock_m'), lm, env_extra=stub_env)
+    term_m = final(rm_)['results']['report']['termination']
+    sha_m = D.load_phase_spec(rm_)[1]
+    rn = os.path.join(base, 'cont_mismatch')
+    ln = os.path.join(base, 'cont_mismatch_logs')
+    os.makedirs(ln)
+    tcpm = os.path.join(base, 'cont_mismatch_test_config.json')
+    D.write_once_json(tcpm, tcm)
+    rcfn = drv(['--phase-freeze', '--root', rn, '--phase-id', 'ph_cont_mismatch', '--oracle', 'stub_children',
+                '--test-only', '--phase-test-config', tcpm, '--continuation-of', f'{rm_}@{sha_m[:8]}',
+                '--no-pilot-exit-views'], data_root, os.path.join(ln, 'freeze'))
+    rcn, codes_n = run_phase(rn, data_root, os.path.join(base, 'lock_n'), ln, env_extra=stub_env)
+    fn = final(rn)
+    lrs_n = launch_records(rn)
+    c0 = (fn['results']['report']['candidates'] or [{}])[0]
+    ck('T13', 'continuation after exit 5 (exit_view_mismatch, stubs): predecessor stops 5 at candidate_confirmation; '
+              'the continuation with --no-pilot-exit-views first runs x0 at exit depth, records the mismatch (mode '
+              'record) and completes (exit 0)',
+       rc0m == 0 and rcm == D.EXIT_REVIEW and term_m['reason'] == 'exit_view_mismatch' and rcfn == 0 and rcn == 0
+       and lrs_n and lrs_n[0]['action']['zs'] == [list(lat.x0())] and lrs_n[0]['action']['depth'] == 'exit'
+       and c0.get('exit_view_check', {}).get('equal') is False and c0['exit_view_check']['mode'] == 'record'
+       and fn['results']['report']['termination']['reason'] == 'phase_complete',
+       {'rcm': rcm, 'term_m': term_m, 'rcfn': rcfn, 'rcn': rcn,
+        'first_action': lrs_n[0]['action'] if lrs_n else None})
+    # (c) refusals
+    ref_cases = {}
+
+    def refuse(tag, **kw):
+        try:
+            D.phase_spec(phase_id='r', test_only=True, data_root=data_root, **kw)
+            ref_cases[tag] = None
+        except D.Refused as error:
+            ref_cases[tag] = error.reasons
+    inc = os.path.join(base, 'pred_incomplete')
+    shutil.copytree(ra, inc)
+    os.makedirs(D.launch_paths(inc, len(D._complete_indices(inc)[1]) + 1)[0])
+    refuse('incomplete_launch', oracle='stub_children', test_config=tc, continuation_of=[(inc, sha_a[:8])])
+    refuse('completed_predecessor', oracle='stub_children', test_config=tc,
+           continuation_of=[(t8_root, D.load_phase_spec(t8_root)[1][:8])])
+    refuse('wrong_sha', oracle='stub_children', test_config=tc, continuation_of=[(ra, 'f' * 8)])
+    refuse('synthetic_oracle', oracle='synthetic', test_config=cf['exit_move'], continuation_of=[(ra, sha_a[:8])])
+    refuse('ceiling_without_continuation', oracle='stub_children', test_config=tc, ceiling_h=500.0,
+           ceiling_note='x')
+    refuse('no_views_without_continuation', oracle='stub_children', test_config=tc, pilot_exit_views=False)
+    unl, _l, _rc = freeze(base, 'unlaunched_as_continuation', data_root, tc, oracle='stub_children')
+    refuse('unlaunched_as_continuation', oracle='stub_children', test_config=tc,
+           continuation_of=[(unl, D.load_phase_spec(unl)[1][:8])])
+    ck('T13', 'continuation refusals: an incomplete predecessor launch, a completed (phase_complete) predecessor, a wrong '
+              'sha, a synthetic oracle, a raised ceiling or --no-pilot-exit-views without a continuation, an '
+              'un-launched root declared as continuation', all(ref_cases.values()), ref_cases)
+    # (d) a predecessor launched further after the continuation's freeze: every continuation launch refuses
+    a2 = os.path.join(base, 'pred_grows')
+    shutil.copytree(ra, a2)
+    rg = os.path.join(base, 'cont_grows')
+    lg = os.path.join(base, 'cont_grows_logs')
+    os.makedirs(lg)
+    rcg0 = drv(['--phase-freeze', '--root', rg, '--phase-id', 'ph_cont_grows', '--oracle', 'stub_children',
+                '--test-only', '--phase-test-config', tcp, '--continuation-of', f'{a2}@{sha_a[:8]}', '--ceiling-h',
+                '1000', '--ceiling-note', 'TEST'], data_root, os.path.join(lg, 'freeze'))
+    os.makedirs(D.launch_paths(a2, len(D._complete_indices(a2)[1]) + 1)[0])
+    before = sorted(D.files_under(rg))
+    rcg = drv(['--phase-run', '--root', rg, '--lock-path', os.path.join(base, 'lock_g')], data_root,
+              os.path.join(lg, 'run'), stub_env)
+    msg = open(os.path.join(lg, 'run_stdout.log')).read()
+    ck('T13', 'a continuation whose predecessor gained a launch after the freeze refuses every launch (exit 2), nothing '
+              'written', rcg0 == 0 and rcg == D.EXIT_REFUSED and sorted(D.files_under(rg)) == before
+       and 'continuation predecessor' in msg, {'rcg0': rcg0, 'rcg': rcg, 'msg': msg[-400:]})
+    return {'ceiling_case': {'codes_a': len(codes_a), 'codes_b': len(codes_b), 'carried_h': hours_a},
+            'mismatch_case': {'term_pred': term_m, 'codes_n': len(codes_n)}, 'refusals': ref_cases}
+
+
+def t14(lat, data_root, out_dir, cf):
+    base = os.path.join(out_dir, 't14')
+    os.makedirs(base)
+    spec = D.phase_spec(phase_id='t14', oracle='synthetic', test_only=True, data_root=data_root,
+                        test_config=cf['exit_move'])
+    ok_root = os.path.join(base, 'no_drift')
+    D.phase_freeze(ok_root, spec)
+    bad = copy.deepcopy(spec)
+    bad['code_sha256']['p515_s56_search_policy.py'] = '0' * 64
+    root = os.path.join(base, 'drift')
+    D.phase_freeze(root, bad)
+    logs = os.path.join(base, 'logs')
+    os.makedirs(logs)
+    before = sorted(D.files_under(base))
+    r1 = drv(['--phase-run', '--root', root, '--lock-path', os.path.join(base, 'lock')], data_root,
+             os.path.join(logs, 'run'))
+    r2 = drv(['--phase-run', '--root', root, '--lock-path', os.path.join(base, 'lock'), '--preflight-only', '--out',
+              os.path.join(base, 'pf')], data_root, os.path.join(logs, 'pf'))
+    after = sorted(f for f in D.files_under(base) if not f.startswith(logs))
+    m1 = open(os.path.join(logs, 'run_stdout.log')).read()
+    m2 = open(os.path.join(logs, 'pf_stdout.log')).read()
+    lock_left = os.path.exists(os.path.join(base, 'lock'))
+    r3 = drv(['--phase-run', '--root', ok_root, '--lock-path', os.path.join(base, 'lock')], data_root,
+             os.path.join(logs, 'ok'))
+    ck('T14', 'code drift: --phase-run and --preflight-only refuse (exit 2) naming the file, nothing written, no lock '
+              'left; the same spec without drift launches (exit 4)',
+       r1 == D.EXIT_REFUSED and r2 == D.EXIT_REFUSED and 'code drift: p515_s56_search_policy.py' in m1
+       and 'code drift: p515_s56_search_policy.py' in m2 and before == [f for f in after]
+       and not os.path.exists(os.path.join(base, 'pf')) and not lock_left
+       and r3 == D.EXIT_SUSPENDED, {'r': [r1, r2, r3], 'm1': m1[-300:]})
+    drift = D.code_drift(bad)
+    ck('T14', 'code_drift lists exactly the altered file', [d['file'] for d in drift] == ['p515_s56_search_policy.py']
+       and not D.code_drift(spec), drift)
+    return {'codes': [r1, r2, r3]}
+
+
+def t15(lat, data_root, out_dir, cf, t2_root):
+    base = os.path.join(out_dir, 't15')
+    os.makedirs(base)
+    root, logs, rc0 = freeze(base, 'ds_store', data_root, cf['exit_move'], phase_id='ph_exit_move')
+    lock = os.path.join(base, 'lock')
+    for i in range(3):
+        drv(['--phase-run', '--root', root, '--lock-path', lock], data_root, os.path.join(logs, f'pre_{i}'))
+    l1 = D.launch_paths(root, 1)[0]
+    planted = [os.path.join(root, '.DS_Store'), os.path.join(root, 'launches', '.DS_Store'),
+               os.path.join(l1, '.DS_Store'), os.path.join(l1, 'evals', '.DS_Store')]
+    for f in planted:
+        open(f, 'w').close()
+    r4 = drv(['--phase-run', '--root', root, '--lock-path', lock], data_root, os.path.join(logs, 'after_plant'))
+    man4 = D.load_json(D.launch_paths(root, 4)[2])
+    # a killed launch whose launch dir holds only .DS_Store files
+    r5 = drv(['--phase-run', '--root', root, '--lock-path', lock], data_root, os.path.join(logs, 'killed'),
+             {D.KILL_ENV: 'after_launch_dir:5:0'})
+    l5 = D.launch_paths(root, 5)[0]
+    os.makedirs(os.path.join(l5, 'evals'), exist_ok=True)
+    open(os.path.join(l5, 'evals', '.DS_Store'), 'w').close()
+    open(os.path.join(l5, '.DS_Store'), 'w').close()
+    r6 = drv(['--phase-run', '--root', root, '--lock-path', lock, '--take-over-stale-lock'], data_root,
+             os.path.join(logs, 'resume'))
+    rc, codes = run_phase(root, data_root, lock, logs)
+    irecs = [D.load_json(os.path.join(root, 'interrupted', n)) for n in sorted(os.listdir(os.path.join(root,
+                                                                                                    'interrupted')))
+             if n.endswith('.json')] if os.path.isdir(os.path.join(root, 'interrupted')) else []
+    f = final(root)
+    ref = final(t2_root)
+    ck('T15', '.DS_Store planted at the top level, in launches/, in a launch dir and in its evals/: the next launch runs '
+              '(4) and its manifest lists none; a killed launch holding only .DS_Store files is moved aside with 0 '
+              'killed evaluations; the phase completes with the state of T2 (byte-equal)',
+       rc0 == 0 and r4 == D.EXIT_SUSPENDED and not any('.DS_Store' in k for k in man4) and r5 == -9
+       and r6 == D.EXIT_SUSPENDED and len(irecs) == 1 and irecs[0]['killed_evaluations'] == [] and rc == 0 and f['state'] == ref['state'],
+       {'r4': r4, 'r5': r5, 'r6': r6, 'rc': rc, 'irecs': irecs})
+    ck('T15', 'files_under ignores .DS_Store; a root holding only .DS_Store can be frozen',
+       not any(os.path.basename(x) == '.DS_Store' for x in D.files_under(root)) and _freeze_into_ds_only(base))
+    return {'interrupted': irecs}
+
+
+def _freeze_into_ds_only(base):
+    r = os.path.join(base, 'ds_only')
+    os.makedirs(r)
+    open(os.path.join(r, '.DS_Store'), 'w').close()
+    try:
+        D.phase_freeze(r, {'schema': D.PHASE_SPEC_SCHEMA, 'x': 1})
+        return True
+    except D.Refused:
+        return False
+
+
+def t16(lat, data_root, out_dir, cf):
+    base = os.path.join(out_dir, 't16')
+    os.makedirs(base)
+    chk = os.path.join(CODE_ROOT, D.PHASE_CHECK_SCRIPT)
+
+    def craft(tag, summaries, manifest=True):
+        r = os.path.join(base, tag)
+        os.makedirs(os.path.join(r, 'launches'))
+        lr = {'schema': D.PHASE_LAUNCH_SCHEMA, 'launch_index': 1, 'phase_id': 't16', 'wall_s': 4000.0,
+              'action': {'stage': 'screen', 'purpose': 'screen', 'depth': 'exit', 'zs': [[0]] * len(summaries)},
+              'records': [{'z': [i], 'depth': 'exit', 'eval_dir': f'launches/launch_001/evals/{i:016d}_p{i}',
+                           'summary': sm} for i, sm in enumerate(summaries)]}
+        rp = os.path.join(r, 'launches', 'launch_001.json')
+        sha = D.write_once_json(rp, lr)
+        if manifest:
+            D.write_once_json(os.path.join(r, 'launches', 'launch_001_manifest_sha256.json'),
+                              {'launches/launch_001.json': sha})
+        return r
+    g = {'child_exit_0': True, 'solve_profile_identity_holds': True, 'nothing_blocked': True}
+    good = {'status': 'certified', 'read_cycle': 121, 'guards': g, 'wall_s': 3600.0, 'F': 1.0, 'bar': 1.0}
+    roots = {'pass': craft('pass', [good, dict(good, wall_s=0.7 * 3600), dict(good, wall_s=1.6 * 3600)]),
+             'uncertified': craft('uncertified', [good, dict(good, status='not_certified')]),
+             'read_cycle_300': craft('read_cycle_300', [dict(good, read_cycle=300)]),
+             'guard_false': craft('guard_false', [dict(good, guards=dict(g, nothing_blocked=False))]),
+             'no_guards': craft('no_guards', [dict(good, guards={})]),
+             'wall_short': craft('wall_short', [dict(good, wall_s=0.69 * 3600)]),
+             'wall_long': craft('wall_long', [dict(good, wall_s=1.61 * 3600)]),
+             'no_manifest': craft('no_manifest', [good], manifest=False)}
+    res = {}
+    for tag, r in roots.items():
+        p = subprocess.run([sys.executable, chk, r], capture_output=True, text=True)
+        res[tag] = {'rc': p.returncode, 'n_pass': p.stdout.count('\nPASS'), 'n_fail': p.stdout.count('\nFAIL'),
+                    'tail': p.stdout[-200:]}
+    p = subprocess.run([sys.executable, chk, os.path.join(base, 'absent')], capture_output=True, text=True)
+    res['missing'] = {'rc': p.returncode}
+    ck('T16', 's56_phase_check.py: all-pass record -> 0 (walls 0.7 and 1.6 h inclusive); uncertified, read_cycle 300, '
+              'a guard false, no guards, wall 0.69 / 1.61 h -> 1 with FAIL; no manifest or no record -> 2',
+       res['pass']['rc'] == 0 and res['pass']['n_pass'] == 3 and all(res[t]['rc'] == 1 and res[t]['n_fail'] >= 1 for t in
+                                                                     ('uncertified', 'read_cycle_300', 'guard_false',
+                                                                      'no_guards', 'wall_short', 'wall_long'))
+       and res['no_manifest']['rc'] == 2 and res['missing']['rc'] == 2, res)
+    # the single invocation, then the loop
+    root, logs, rc0 = freeze(base, 'first_block', data_root, cf['exit_move'])
+    lock = os.path.join(base, 'lock')
+    rel = os.path.relpath(root, data_root)
+    one = D.phase_single_launch_command(data_root, rel, python=sys.executable, extra_args=f' --lock-path {lock}')
+    loop = D.phase_author_command(data_root, rel, python=sys.executable, extra_args=f' --lock-path {lock}')
+    real_rel = os.path.join(D.RESULTS_PARENT_REL, 'phase2x_ev_v2')
+    real_cmds = [D.phase_single_launch_command('/repo', real_rel), D.phase_author_command('/repo', real_rel),
+                 D.phase_check_command('/repo', real_rel)]
+    env = dict(os.environ)
+    env.pop(D.KILL_ENV, None)
+    p1 = subprocess.run(['zsh', '-c', one], capture_output=True, text=True, env=env)
+    p1b = subprocess.run(['zsh', '-c', one], capture_output=True, text=True, env=env)
+    n_launch_after_one = len(D._complete_indices(root)[1])
+    p2 = subprocess.run(['zsh', '-c', loop], capture_output=True, text=True, env=env)
+    lines = [ln for ln in p2.stdout.splitlines() if ' launch ' in ln and ' exit ' in ln]
+    f = final(root)
+    ref, _st = in_process(root, lat)
+    for name, txt in (('one_stdout.log', p1.stdout), ('one_again_stdout.log', p1b.stdout),
+                      ('loop_stdout.log', p2.stdout), ('loop_stderr.log', p2.stderr)):
+        with open(os.path.join(base, name), 'w') as h:
+            h.write(txt)
+    ck('T16', 'first-block hold: the single invocation runs launch 001 (exit 4, logs launch_001_*), a second issue '
+              'refuses to overwrite them; the loop then starts at 002 and runs to exit 0, state byte-equal to in '
+              'process', rc0 == 0 and p1.stdout.strip().endswith('launch 001 exit 4') and n_launch_after_one == 1
+       and 'logs exist: not re-run' in p1b.stdout and lines and ' launch 002 exit ' in lines[0]
+       and lines[-1].endswith('exit 0') and f['state'] == ref,
+       {'one': p1.stdout[-200:], 'again': p1b.stdout[-200:], 'loop_first': lines[:1], 'loop_last': lines[-1:]})
+    ck('T16', 'no author command line (single, loop, check) for the real v2 root contains the harness hazard string',
+       all(HAZARD not in c for c in real_cmds) and HAZARD not in os.path.basename(chk), real_cmds)
+    return {'check_script': res, 'real_commands': real_cmds}
+
+
+# ======================================================================================================================
 #  main
 # ======================================================================================================================
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--out', required=True)
     ap.add_argument('--data-root', default=CODE_ROOT)
-    ap.add_argument('--tests', default='1,2,3,4,5,6,7,8,9')
+    ap.add_argument('--tests', default='1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16')
     args = ap.parse_args()
     data_root = os.path.abspath(args.data_root)
     out_dir = args.out if os.path.isabs(args.out) else os.path.join(data_root, args.out)
@@ -669,7 +1212,7 @@ def main():
     res = {}
     if '1' in tests:
         res['T1'] = t1(lat, data_root, out_dir)
-    if any(t in tests for t in ('2', '6')):
+    if any(t in tests for t in ('2', '6', '15')):
         res['T2'] = t2(lat, data_root, out_dir, cf)
     if '3' in tests:
         res['T3'] = t3(lat, data_root, out_dir, cf)
@@ -681,20 +1224,35 @@ def main():
         res['T6'] = t6(lat, data_root, out_dir, cf, res['T2'])
     if '7' in tests:
         res['T7'] = t7(lat, data_root, out_dir, cf)
-    if '8' in tests:
+    if any(t in tests for t in ('8', '13')):
         res['T8'] = t8(lat, data_root, out_dir, cf)
     if '9' in tests:
         res['T9'] = t9(lat, data_root, out_dir, cf, res['T2']['root'] if 'T2' in res else None)
+    if '10' in tests:
+        res['T10'] = t10(lat, data_root, out_dir)
+    if '11' in tests:
+        res['T11'] = t11(lat, data_root, out_dir, cf)
+    if '12' in tests:
+        res['T12'] = t12(lat, data_root, out_dir, cf)
+    if '13' in tests:
+        res['T13'] = t13(lat, data_root, out_dir, cf, res['T8']['root'])
+    if '14' in tests:
+        res['T14'] = t14(lat, data_root, out_dir, cf)
+    if '15' in tests:
+        res['T15'] = t15(lat, data_root, out_dir, cf, res['T2']['root'])
+    if '16' in tests:
+        res['T16'] = t16(lat, data_root, out_dir, cf)
     gf = GUARD.verify(0)
     ck('guards', 'SolveProfileGuard(permitted=()) verify(0) == []', not gf, gf)
     ck('guards', 'pickle load/loads 0', PICKLE_COUNTS == {'load': 0, 'loads': 0}, PICKLE_COUNTS)
     code = {n: D.sha256_file(os.path.join(CODE_ROOT, n)) for n in (
         SCRIPT, 'p515_s56_search_driver.py', 'p515_s56_search_policy.py', 'p515_s56_neighbourhood.py',
-        'p516_lattice.py', 'p515_s44_campaign_harness.py', 'gate_result_io.py', 'p513_solve_profile_guard.py')}
+        'p516_lattice.py', 'p515_s44_campaign_harness.py', 'gate_result_io.py', 'p513_solve_profile_guard.py',
+        's56_phase_check.py')}
     head = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=data_root, capture_output=True, text=True).stdout.strip()
     dirty = subprocess.run(['git', 'status', '--porcelain', '--', *code], cwd=CODE_ROOT, capture_output=True,
                            text=True).stdout
-    payload = {'schema': 'p515_s56_phase_tests_v1', 'script': SCRIPT, 'started_utc': started,
+    payload = {'schema': 'p515_s56_phase_tests_v2', 'script': SCRIPT, 'started_utc': started,
                'finished_utc': datetime.now(timezone.utc).isoformat(), 'wall_s': time.time() - t0,
                'interpreter': sys.executable, 'python': platform.python_version(), 'git_head': head,
                'code_files_dirty_vs_head': dirty, 'instance': inst, 'tests': tests,

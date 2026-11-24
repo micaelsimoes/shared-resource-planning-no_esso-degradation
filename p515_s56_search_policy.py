@@ -825,10 +825,14 @@ def canonical_json(obj):
 #             and the class against x0 = `classify_exit(x, x0, R, e_floor = e_EV)` (worse dF >= R + e,
 #             confirm_candidate dF <= -R + e, else unresolved; e = max(e_EV, bar_x + bar_x0) -- the design rule with
 #             e_EV as its floor), uncertified / harness_error listed.
-#   EFFICIENCY RULE (author-approved, applied here automatically): fraction = #(table rows that are certified with
-#             |F_exit(x) - F_exit(x0)| <= e_EV) / #(table rows); fraction > 1/2 (exact rational comparison) ->
-#             branch 'settled_direct': every LATER POLL evaluation (candidate polls and the search) runs directly to
-#             K_EV and is classified on settled values (`classify_settled`); otherwise 'exit_then_confirm'.
+#   EFFICIENCY RULE (author-approved, applied here automatically; MEASURE re-defined by the Planner, decision P1,
+#             2026-11-24, phase spec v2): fraction = #(table rows whose class against x0 is NOT 'worse', i.e.
+#             confirm_candidate or unresolved: the rows the exit value cannot resolve) / #(table rows) (denominator:
+#             every screen and ladder row, uncertified ones included -- they are neither); fraction > 1/2 (exact
+#             rational comparison) -> branch 'settled_direct': every LATER POLL evaluation (candidate polls and the
+#             search) runs directly to K_EV and is classified on settled values (`classify_settled`); otherwise
+#             'exit_then_confirm'. The per-class counts are recorded; the v1 measure (certified rows with
+#             |F_exit(x) - F_exit(x0)| <= e_EV) is recorded beside it as INFORMATION ONLY (no decision reads it).
 #   candidate_confirmation   CANDIDATES: the rows classed confirm_candidate, by (F_exit, label); greedily the best,
 #             then the next whose node AND year both differ from every pick, up to n_candidates (2); fewer -> logged.
 #             Each gets a settled run (K_EV, stop-disabled, pricing capture; x0's settled run beside) and the plan
@@ -836,6 +840,14 @@ def canonical_json(obj):
 #             stop; offset > e -> stop_for_review_offset (the held-out check); not_settled -> not confirmed. CONFIRMED
 #             = settled status 'settled' with every gate passing (`settled_incumbent_ok`); the pair result is recorded
 #             beside, it does not gate pool entry.
+#             EXIT-VIEW CHECK (Planner decision R4, 2026-11-24, phase spec v2; `exit_view_check`): for each candidate,
+#             its exit run's (read_cycle, F, bar) must equal, BITWISE, the `exit_view` of its settled summary (the
+#             same three read at the would-be certification cycle of the stop-disabled run) -- the check that an exit
+#             view (x0's, the unit's and the staged plan's exit values in the phase) reads what an exit run reads.
+#             Config 'exit_view_check' = 'stop' (default; the phase serves exit views): a mismatch on any candidate
+#             whose confirmation is not a harness error stops the phase, 'exit_view_mismatch' (a first-in-order
+#             harness_error stop precedes it; it precedes the offset stop). 'record' (a continuation that serves no
+#             exit view, the R4 fallback): the check is recorded, nothing stops on it.
 #   candidate_polls   each confirmed candidate in order: a COMPLETE POLL of N(candidate) (`step` with poll_only, at
 #             the branch's depth). An unconfirmed candidate is not polled (logged).
 #   pool      members: x0, the reference unit, the pilot's staged plan, the cache-index members (recomputed
@@ -846,11 +858,12 @@ def canonical_json(obj):
 #  NOT-SETTLED REVIEW (integration ruling 5, phase-wide): the rule of `not_settled_review` over every confirmation of
 #  the phase in order -- candidate confirmations, then each candidate poll's and the search's confirmation history.
 #  TERMINATIONS: 'phase_complete' (the search ended complete_poll_no_accepted_candidate or budget_exhausted) or a
-#  review stop: harness_error, stop_for_review_offset, stop_for_review_not_settled, start_incumbent_not_certified.
-SCHEMA_PHASE_STATE = 'p515_s56_phase_state_v1'
+#  review stop: harness_error, stop_for_review_offset, stop_for_review_not_settled, start_incumbent_not_certified,
+#  exit_view_mismatch (phase spec v2).
+SCHEMA_PHASE_STATE = 'p515_s56_phase_state_v2'   # v2: efficiency measure P1, exit-view check R4 (phase spec v2)
 PHASE_STAGES = ('screen', 'ladder', 'candidate_confirmation', 'candidate_polls', 'pool', 'search')
 PHASE_TERMINATIONS = ('phase_complete', 'harness_error', 'stop_for_review_offset', 'stop_for_review_not_settled',
-                      'start_incumbent_not_certified')
+                      'start_incumbent_not_certified', 'exit_view_mismatch')
 PHASE_REVIEW_TERMINATIONS = PHASE_TERMINATIONS[1:]
 BRANCH_EXIT_THEN_CONFIRM, BRANCH_SETTLED_DIRECT = 'exit_then_confirm', 'settled_direct'
 EFFICIENCY_THRESHOLD = Fraction(1, 2)
@@ -858,6 +871,9 @@ DURATION_RATIO = {'4h': 2, '2h': 1}   # zE = ratio x zP: 0.25 MVA x 1 MWh = 4 h;
 PHASE_CONFIG_KEYS = ('phase_id', 'arm', 'x0', 'screen', 'ladder_zp', 'ladder_n_node_years', 'n_candidates',
                      'pool_fixed', 'pool_cache_members', 'R', 'e_ev', 'k_ev', 'block', 'cap', 'class_rank',
                      'n_max_sub', 'domain_size')
+EFFICIENCY_NOT_WORSE_CLASSES = ('confirm_candidate', 'unresolved')   # Planner decision P1: not resolvable at exit
+EXIT_VIEW_CHECK_MODES = ('stop', 'record')   # config 'exit_view_check' (optional; default 'stop')
+EXIT_VIEW_FIELDS = ('read_cycle', 'F', 'bar')
 
 
 def phase_initial_state(config):
@@ -869,6 +885,8 @@ def phase_initial_state(config):
         raise PolicyError(f'cap and block are fixed by the design ({CAP}, {BLOCK})')
     if not (_finite(cfg['e_ev']) and cfg['e_ev'] > 0 and _finite(cfg['R']) and cfg['R'] > 0):
         raise PolicyError('R and e_EV must be positive numbers')
+    if cfg.get('exit_view_check', 'stop') not in EXIT_VIEW_CHECK_MODES:
+        raise PolicyError(f"exit_view_check {cfg.get('exit_view_check')!r} not in {EXIT_VIEW_CHECK_MODES}")
     return {'schema': SCHEMA_PHASE_STATE, 'config': cfg, 'stage': 'screen', 'pending': None, 'n_actions': 0,
             'evaluated': [], 'x0_exit_check': None, 'ladder': None, 'table': None, 'efficiency': None,
             'candidates': None, 'candidate_selection': None, 'cand_pos': 0, 'pool': None, 'sub': None,
@@ -947,16 +965,61 @@ def ladder_plan(lattice, cfg, screen_rows):
 
 
 def efficiency_rule(rows, e_ev, threshold=EFFICIENCY_THRESHOLD):
+    """The efficiency rule (section comment; measure of Planner decision P1): the share of table rows NOT classed
+    'worse' against x0 (confirm_candidate + unresolved) decides; the v1 band measure is recorded as information."""
     n = len(rows)
-    k = sum(1 for r in rows if r['in_efficiency_band'])
+    counts = {c: 0 for c in EXIT_CLASSES}
+    for r in rows:
+        if r['class'] not in counts:
+            raise PolicyError(f"efficiency rule: unknown row class {r['class']!r}")
+        counts[r['class']] += 1
+    k = sum(counts[c] for c in EFFICIENCY_NOT_WORSE_CLASSES)
     frac = Fraction(k, n) if n else Fraction(0)
     branch = BRANCH_SETTLED_DIRECT if frac > threshold else BRANCH_EXIT_THEN_CONFIRM
-    return {'n_rows': n, 'n_in_band': k, 'fraction': [frac.numerator, frac.denominator],
-            'fraction_float': float(frac), 'threshold': [threshold.numerator, threshold.denominator],
-            'band_eur': e_ev, 'branch': branch,
-            'rule': ('fraction of the screen and ladder rows that are certified with |F_exit(x) - F_exit(x0)| <= e_EV '
-                     '(denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later '
-                     'poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm')}
+    kb = sum(1 for r in rows if r['in_efficiency_band'])
+    fb = Fraction(kb, n) if n else Fraction(0)
+    return {'measure': 'not_worse_against_x0', 'n_rows': n, 'n_not_worse': k, 'class_counts': counts,
+            'not_worse_classes': list(EFFICIENCY_NOT_WORSE_CLASSES),
+            'fraction': [frac.numerator, frac.denominator], 'fraction_float': float(frac),
+            'threshold': [threshold.numerator, threshold.denominator], 'branch': branch,
+            'rule': ('fraction of the screen and ladder rows whose class against x0 at exit is NOT worse '
+                     '(confirm_candidate + unresolved; Planner decision P1) (denominator: every screen and ladder '
+                     'row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV '
+                     '(settled_direct), else exit_then_confirm'),
+            'band_measure_information_only': {
+                'n_in_band': kb, 'fraction': [fb.numerator, fb.denominator], 'fraction_float': float(fb),
+                'band_eur': e_ev,
+                'branch_the_v1_measure_would_give': BRANCH_SETTLED_DIRECT if fb > threshold
+                else BRANCH_EXIT_THEN_CONFIRM,
+                'rule': ('v1 measure: certified rows with |F_exit(x) - F_exit(x0)| <= e_EV over every row; recorded '
+                         'beside the deciding measure, read by no decision (Planner decision P1)')}}
+
+
+def _bitwise(v):
+    """The exact identity of a JSON scalar for the exit-view check: floats by float.hex, ints by value, with the type."""
+    if isinstance(v, bool) or v is None:
+        return [type(v).__name__, v]
+    if isinstance(v, float):
+        return ['float', v.hex()]
+    if isinstance(v, int):
+        return ['int', v]
+    return [type(v).__name__, repr(v)]
+
+
+def exit_view_check(x_exit, x_set):
+    """R4 (section comment): the exit run's (read_cycle, F, bar) against the settled summary's `exit_view`, bitwise.
+    -> {'equal', 'differing', 'exit_run', 'exit_view', 'reason'}. A missing exit_view is a mismatch."""
+    a = {f: (x_exit or {}).get(f) for f in EXIT_VIEW_FIELDS}
+    ev = (x_set or {}).get('exit_view') if isinstance(x_set, dict) else None
+    if not isinstance(ev, dict):
+        return {'equal': False, 'differing': list(EXIT_VIEW_FIELDS), 'exit_run': a, 'exit_view': None,
+                'reason': 'the settled summary carries no exit_view', 'fields': list(EXIT_VIEW_FIELDS)}
+    b = {f: ev.get(f) for f in EXIT_VIEW_FIELDS}
+    diff = [f for f in EXIT_VIEW_FIELDS if _bitwise(a[f]) != _bitwise(b[f])]
+    return {'equal': not diff, 'differing': diff, 'exit_run': a, 'exit_view': b,
+            'exit_run_bits': {f: _bitwise(a[f]) for f in EXIT_VIEW_FIELDS},
+            'exit_view_bits': {f: _bitwise(b[f]) for f in EXIT_VIEW_FIELDS},
+            'reason': None if not diff else f'differs in {diff}', 'fields': list(EXIT_VIEW_FIELDS)}
 
 
 def select_candidates(rows, n_candidates):
@@ -1094,8 +1157,11 @@ def phase_step(state, records, env):
                               'objective_convention': 'F = I(x) + gross_operational_cost - TV credit, EUR of total '
                                                       'discounted planning cost; dF_exit = F_exit(x) - F_exit(x0)'}
             state['efficiency'] = efficiency_rule(rows, cfg['e_ev'])
-            state['log'].append(f"efficiency rule: {state['efficiency']['n_in_band']} of {state['efficiency']['n_rows']}"
-                                f" in band -> {state['efficiency']['branch']}")
+            state['log'].append(f"efficiency rule: {state['efficiency']['n_not_worse']} of "
+                                f"{state['efficiency']['n_rows']} not worse against x0 "
+                                f"{state['efficiency']['class_counts']} -> {state['efficiency']['branch']} (v1 band "
+                                f"measure, information only: "
+                                f"{state['efficiency']['band_measure_information_only']['n_in_band']} in band)")
             sel, picked = select_candidates(rows, cfg['n_candidates'])
             state['candidate_selection'] = sel
             state['log'] += sel['log']
@@ -1110,6 +1176,7 @@ def phase_step(state, records, env):
             if need:
                 return _phase_request(state, DEPTH_SETTLED, need[:B], 'candidate_confirmation')
             stop = None
+            mode = cfg.get('exit_view_check', 'stop')
             for c in state['candidates']:
                 z = tuple(c['z'])
                 res = confirm(records[_rk(z, DEPTH_SETTLED)], records[_rk(x0, DEPTH_SETTLED)],
@@ -1117,9 +1184,21 @@ def phase_step(state, records, env):
                 c['confirmation'] = res
                 c['confirmed'] = res['result'] in ('accepted', 'unresolved_after_confirmation') \
                     and not res.get('not_settled') and settled_incumbent_ok(records[_rk(z, DEPTH_SETTLED)])
+                c['exit_view_check'] = dict(exit_view_check(records[_rk(z, DEPTH_EXIT)], records[_rk(z, DEPTH_SETTLED)]),
+                                            mode=mode)
                 if stop is None and res['result'] in ('harness_error', 'stop_for_review'):
                     stop = ('harness_error' if res['result'] == 'harness_error' else 'stop_for_review_offset',
                             {'candidate': c['label'], 'failed': res['failed']})
+            if stop and stop[0] == 'harness_error':
+                return _phase_terminate(state, *stop)
+            mism = [{'candidate': c['label'], 'differing': c['exit_view_check']['differing'],
+                     'exit_run': c['exit_view_check']['exit_run'], 'exit_view': c['exit_view_check']['exit_view']}
+                    for c in state['candidates'] if c['confirmation']['result'] != 'harness_error'
+                    and not c['exit_view_check']['equal']]
+            if mism and mode == 'stop':
+                return _phase_terminate(state, 'exit_view_mismatch', {'mismatches': mism, 'rule': 'R4 (phase spec v2)'})
+            if mism:
+                state['log'].append(f'exit-view check (mode record): {len(mism)} mismatch(es) recorded, not stopping')
             if stop:
                 return _phase_terminate(state, *stop)
             rv = phase_not_settled_review(state)
