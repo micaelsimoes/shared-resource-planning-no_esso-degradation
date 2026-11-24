@@ -276,6 +276,106 @@ def _settled_files(lab='unit', K=2, conv=(True, True), tail=(True, True), leak=5
     return files
 
 
+# The S56 pilot's seven real eval dirs (committed with P5_15_S56_PILOT_REPORT.md): the settlement identity on real
+# cancelling block totals (TSO ~ -1.3e9 EUR, DSO ~ +1.3e9 EUR, net 6-72 EUR).
+PILOT_EVALS = [os.path.join('data', 'SRP1', 'Results', 'P515S56', 'pilot_ev_v1', 'launches', f'launch_00{n}', 'evals',
+                            d) for n, d in ((1, '142a02890a1d630f_x0_i1'), (1, 'fe40736832cfbdba_unit_i1'),
+                                            (1, 'dddc5b8382a39c0a_staged_i1'), (1, '830a6306e0c27969_x0_i2'),
+                                            (1, '6b05f4c326441274_unit_i2'), (2, '0f20f46f0a99c162_x0_i3'),
+                                            (2, 'ecac63e76319052f_unit_i3'))]
+
+
+def _production_order_total(blocks, part='total'):
+    """The order of shared_resources_planning._get_operational_recourse_components (:1254-1260): TSO blocks summed,
+    DSO blocks accumulated per node, total = tso + sum(per-node). Re-stated here to show the order is the cause."""
+    tso = sum(b[part] for b in blocks if b['kind'] == 'TSO')
+    dso = {}
+    for b in blocks:
+        if b['kind'] == 'DSO':
+            dso[b['node_id']] = dso.get(b['node_id'], 0.0) + b[part]
+    return tso + sum(dso.values())
+
+
+def settlement_identity_checks(params):
+    """The settlement identity checks under the identity tolerance (Expert handback 3 ruling 2; the Planner's ruling
+    of the pilot evaluation): max(64 u sum|per-block totals|, 1e-6 EUR)."""
+    def old_rule(a, b):
+        return abs(a - b) <= 1e-9 * max(1.0, abs(a))
+
+    ck(2, 'identity_tolerance: the 1e-6 EUR floor on small totals; 64 u sum|s| on large ones',
+       D.identity_tolerance([-100.0, 70.0]) == 1e-6 and D.identity_tolerance([-2.0e9, 2.0e9]) == 64 * 2.0 ** -53
+       * 4.0e9, [D.identity_tolerance([-100.0, 70.0]), D.identity_tolerance([-2.0e9, 2.0e9])])
+    # a cancelling fixture (SYNTHETIC values at the pilot's magnitudes): production order != list order
+    vals = [('TSO', None, -647616499.7659234), ('TSO', None, -647616499.7651111), ('DSO', 5, 431744001.11370003),
+            ('DSO', 7, 431744000.9), ('DSO', 9, 431745003.6273345)]
+    days = ('Spring', 'Summer', 'Autumn', 'Winter', 'Spring')
+
+    def big(record_offset=0.0, contracted_offset=0.0):
+        f = _settled_files()
+        f['pricing']['settlement_blocks'] = [
+            {'kind': k, 'node_id': n, 'year': 2025 if i < 4 else 2030, 'day': days[i], 'total': v,
+             'contracted': v + (contracted_offset if i == 0 else 0.0), 'deviation': 0.0}
+            for i, (k, n, v) in enumerate(vals)]
+        f['record']['recourse_components']['interface_settlement_total'] = \
+            _production_order_total(f['pricing']['settlement_blocks']) + record_offset
+        return f
+
+    fb = big()
+    blocks = fb['pricing']['settlement_blocks']
+    list_sum, prod_sum = sum(b['total'] for b in blocks), _production_order_total(blocks)
+    tol = D.identity_tolerance(b['total'] for b in blocks)
+    ck(2, 'settlement fixture sanity: production-order and list-order sums differ, beyond the old 1e-9 x max(1, |T|) '
+          'form and within the identity tolerance', list_sum != prod_sum and not old_rule(list_sum, prod_sum)
+       and abs(list_sum - prod_sum) <= tol, [list_sum, prod_sum, list_sum - prod_sum, tol])
+    sb = D.map_record(fb, P.DEPTH_SETTLED, params)
+    sc = sb.get('settlement_check') or (sb.get('pricing') or {}).get('settlement_check') or {}
+    ck(2, 'cancelling blocks summed in another order than production reconcile with the record (not harness_error)',
+       sb['status'] != 'harness_error' and sc.get('blocks_reconcile_with_record') is True
+       and sc.get('contracted_equals_total') is True and sc.get('identity_tolerance_eur') == tol,
+       [sb.get('status'), sb.get('reason'), sc])
+    for name, kw, key in (('record offset 2 x tolerance', {'record_offset': 2 * tol}, 'blocks_reconcile_with_record'),
+                          ('contracted offset 2 x tolerance', {'contracted_offset': 2 * tol},
+                           'contracted_equals_total')):
+        s_ = D.map_record(big(**kw), P.DEPTH_SETTLED, params)
+        sc_ = (s_.get('pricing') or {}).get('settlement_check') or {}
+        ck(2, f'settlement identity: {name} -> {key} False -> harness_error', s_['status'] == 'harness_error'
+           and sc_.get(key) is False, [s_.get('status'), sc_.get(key)])
+    for off, want in ((0.9e-6, True), (1.1e-6, False)):
+        f_ = _settled_files()
+        f_['record']['recourse_components']['interface_settlement_total'] += off
+        s_ = D.map_record(f_, P.DEPTH_SETTLED, params)
+        sc_ = s_.get('settlement_check') or (s_.get('pricing') or {}).get('settlement_check') or {}
+        ck(2, f'settlement identity floor 1e-6 EUR on the small fixture: record offset {off:g} -> reconcile {want}',
+           sc_.get('blocks_reconcile_with_record') is want and (s_['status'] == 'harness_error') is (not want),
+           [s_.get('status'), sc_])
+    # the seven real pilot records: the record's total is the production-order sum of the captured blocks BITWISE
+    # (both float64), and the mapping's list-order sum reconciles under the identity tolerance
+    rows = []
+    for rel in PILOT_EVALS:
+        files = D.read_eval_files(os.path.join(CODE_ROOT, rel))
+        if not files.get('record') or not files.get('pricing'):
+            rows.append({'eval_dir': rel, 'missing': True})
+            continue
+        bl, rec_t = files['pricing']['settlement_blocks'], files['record']['recourse_components'][
+            'interface_settlement_total']
+        lt, pt, tl = sum(b['total'] for b in bl), _production_order_total(bl), D.identity_tolerance(
+            b['total'] for b in bl)
+        rows.append({'eval_dir': rel, 'record': rec_t, 'production_order_sum': pt, 'list_order_sum': lt,
+                     'abs_diff': abs(lt - rec_t), 'tolerance': tl, 'ratio': abs(lt - rec_t) / tl,
+                     'record_is_production_order_bitwise': pt == rec_t,
+                     'contracted_record_is_production_order_bitwise': _production_order_total(bl, 'contracted') ==
+                     files['record']['recourse_components']['interface_settlement_contracted_total'],
+                     'old_rule_holds': old_rule(lt, rec_t), 'new_rule_holds': abs(lt - rec_t) <= tl})
+    ck(2, 'pilot records (7, real): record interface_settlement_total == production-order sum of the captured blocks '
+          'bitwise (and the contracted total likewise) -- summation order, not reduced precision',
+       len(rows) == 7 and all(r.get('record_is_production_order_bitwise') is True and
+                              r.get('contracted_record_is_production_order_bitwise') is True for r in rows), rows)
+    ck(2, 'pilot records (7, real): list-order sum reconciles under the identity tolerance on all 7; the old 1e-9 form '
+          'failed on all 7', all(r.get('new_rule_holds') is True and r.get('old_rule_holds') is False for r in rows),
+       rows)
+    return rows
+
+
 def t2():
     params = dict(D.MAPPING_PARAMETERS, W=2, bar_window=2)
     exp = fixture_expected()
@@ -348,6 +448,7 @@ def t2():
     s9 = D.map_record(f9, P.DEPTH_SETTLED, params)
     ck(2, 'a non-zero settlement deviation part (not one scenario) -> harness_error (the price derivation fails)',
        s9['status'] == 'harness_error', s9.get('reason'))
+    pilot_settlement_rows = settlement_identity_checks(params)
     # the policy consumes the summary
     try:
         c = P.confirm(s, s, dict(D.map_record(f, P.DEPTH_EXIT, params), status='certified'),
@@ -358,6 +459,7 @@ def t2():
     ck(2, 'the policy\'s confirm() consumes two mapped settled summaries (shape check)', ok, c)
     return {'fixture_expected': exp, 'summary': {k: s[k] for k in ('status', 'F', 'V', 'gates_pass', 'gates',
                                                                   'settled_checks')},
+            'pilot_settlement_identity_rows': pilot_settlement_rows,
             'note': 'SYNTHETIC pricing fixture on the real smoke files: an arithmetic check, not a measurement'}
 
 

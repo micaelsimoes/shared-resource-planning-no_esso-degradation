@@ -600,6 +600,21 @@ MAPPING_PARAMETERS = {
 }
 CORRECTED_COHORT_MODES = ('independent_units', 'independent_units_all_node_years')
 SETTLED_STATUS, NOT_SETTLED_STATUS = 'settled', 'not_settled'
+# The identity tolerance (Expert-adopted, P5_15_S56_STEP4_EXPERT_HANDBACK_3.md ruling 2; applied to the settlement
+# checks by the Planner's ruling of the S56 pilot evaluation): |a - b| <= max(c u sum|summands|, floor), c = 64,
+# u = 2^-53, floor 1e-6 EUR; the summands are the per-block settlement totals. NOT a mapping parameter (a frozen spec's
+# `mapping` does not carry it): it bounds float64 summation-order rounding only. Why it is needed: the per-block
+# totals cancel (TSO ~ -1.3e9 EUR against DSO ~ +1.3e9 EUR to a net of 6-72 EUR on the pilot), production sums them
+# TSO-first then per DSO node (shared_resources_planning.py:1254-1260) while the mapping sums the captured blocks in
+# list order, and the two orders differ by ~1-2 ulp of 1.3e9 (2.4e-7 EUR); the old 1e-9 x max(1, |total|) form gave
+# 6e-9 EUR on a 6 EUR net. Both sides are float64 (the production-order sum of the captured blocks reproduces the
+# record's interface_settlement_total bitwise on all 7 pilot records).
+IDENTITY_TOL_C, IDENTITY_TOL_U, IDENTITY_TOL_FLOOR_EUR = 64, 2.0 ** -53, 1e-6
+
+
+def identity_tolerance(summands):
+    """max(64 u sum|summands|, 1e-6 EUR) -- the identity tolerance above."""
+    return max(IDENTITY_TOL_C * IDENTITY_TOL_U * sum(abs(v) for v in summands), IDENTITY_TOL_FLOOR_EUR)
 
 
 def _jsonl(path):
@@ -772,12 +787,20 @@ def pricing_components(pricing, breakdown, record, params=MAPPING_PARAMETERS):
     if not _fin(g_leak):
         raise Refused('the cost breakdown carries no leak_detector.priced_loss_eur')
     rc = (record or {}).get('recourse_components') or {}
-    settle = {'interface_settlement_total_record': rc.get('interface_settlement_total'),
+    # Both identity checks use the identity tolerance (module constant IDENTITY_TOL_*; summands = the per-block
+    # settlement totals). Before the pilot evaluation ruling both used 1e-9 x max(1, |total|).
+    tol = identity_tolerance(s['total'] for s in pricing['settlement_blocks'])
+    rec_total = rc.get('interface_settlement_total')
+    settle = {'interface_settlement_total_record': rec_total,
               'sum_blocks_total': total, 'contracted_total': contracted_total, 'deviation_total': dev_total,
               'deviation_is_zero': dev_total == 0.0,
-              'contracted_equals_total': abs(contracted_total - total) <= 1e-9 * max(1.0, abs(total)),
-              'blocks_reconcile_with_record': (rc.get('interface_settlement_total') is not None and abs(
-                  total - rc['interface_settlement_total']) <= 1e-9 * max(1.0, abs(total)))}
+              'contracted_equals_total': abs(contracted_total - total) <= tol,
+              'blocks_reconcile_with_record': (rec_total is not None and abs(total - rec_total) <= tol),
+              'identity_tolerance_eur': tol,
+              'abs_diff_contracted_minus_total_eur': abs(contracted_total - total),
+              'abs_diff_blocks_minus_record_eur': None if rec_total is None else abs(total - rec_total),
+              'identity_tolerance_rule': ('max(64 u sum|per-block settlement totals|, 1e-6 EUR), u = 2^-53 '
+                                          '(Expert handback 3 ruling 2)')}
     return {
         'PR': pr, 'A': a, 'G': g_slack + g_leak + g_closure,
         'PR_parts': {'minus_price': -price, 'dual': dual_terms, **parts},
