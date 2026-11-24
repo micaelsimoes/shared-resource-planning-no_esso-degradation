@@ -1,0 +1,58 @@
+{
+ "code_sha256": {
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "p515_s44_campaign_harness.py": "05a9838c46f19837398af31252bd85c465a3794aa03e9cfc1a7a30c08c462b29",
+  "p515_s56_neighbourhood.py": "bd95342d2da2b0ecf2d99b9ef3b8a396e3637e18a050f8ce0117ec2ec9590cc0",
+  "p515_s56_search_driver.py": "0f54ed555a7fe73c1233d685c4927edaac39fae4d0d4c9b1c5ad3a20f1375482",
+  "p515_s56_search_policy.py": "a39919ed1620845c2ca2a5fbf1776b38aa3f578e95f30d14a1db30e467d7b71a",
+  "p516_lattice.py": "ff5d63ef897ccd04e5bbaa719b352537108180a31b83c1b8574506612af86e88"
+ },
+ "git_head": "33dc00fa85cecc2a9f61f9c71b32b086b13df0b3",
+ "launch_dir_created": false,
+ "launch_dir_would_be": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001",
+ "launched": false,
+ "lock_acquired": {
+  "campaign_id": "s56pilot_ev_v1_l001",
+  "campaign_spec_sha256": null,
+  "pid": 46579,
+  "search_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/pilot_ev_v1",
+  "started_utc": "2026-11-24T00:17:09.784882+00:00"
+ },
+ "next_block": [
+  "x0_i1",
+  "unit_i1",
+  "staged_i1",
+  "x0_i2",
+  "unit_i2"
+ ],
+ "next_launch_index": 1,
+ "pass": true,
+ "pilot_root": "data/SRP1/Results/P515S56/pilot_ev_v1",
+ "pilot_spec_sha256": "925472791ffd817746dec8556f3cc84b31d0b10ef21b7914a92bf3b11c6f83d1",
+ "previous_launch_manifest_sha256": null,
+ "real_launch_preflight": {
+  "harness_preconditions": [],
+  "memory": {
+   "available_gib": 24.486801147460938,
+   "concurrency": 5,
+   "hw_memsize_gib": 32.0,
+   "page_size": 16384,
+   "pages": {
+    "Anonymous pages": 236843,
+    "Pages occupied by compressor": 129453,
+    "Pages wired down": 126089
+   },
+   "pass": true,
+   "per_slot_gib": 4.0,
+   "required_gib": 20.0,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x the declared per-slot GiB (the rule of p515_s55_e1_launcher.memory_preflight, ~958-979, with the per-slot figure declared in the search / pilot spec instead of the S47 constant)",
+   "utc": "2026-11-24T00:17:09.886216+00:00"
+  },
+  "note": "the campaign lock is held by this driver (O_EXCL) when this runs; the lock-file check of check_campaign_preconditions is pointed at an absent path for that reason",
+  "refusals": [],
+  "utc": "2026-11-24T00:17:09.886242+00:00"
+ },
+ "schema": "p515_s56_pilot_preflight_only_v1",
+ "solves": 0,
+ "utc": "2026-11-24T00:17:09.785178+00:00"
+}
