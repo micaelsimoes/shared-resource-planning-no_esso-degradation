@@ -23,7 +23,10 @@ ITEMS
   5  a kill at every transition, then a resume: the history byte-equal to the uninterrupted run, killed evaluations
      uncounted (synthetic oracle at every transition; stub children during evaluate).
   6  keys: 37,042 distinct lattice keys; keys pairwise distinct across the configuration product; staged key ==
-     GeneralLattice.key; the collision scan excludes the campaign's own root.
+     GeneralLattice.key; the collision scan excludes the campaign's own root. RE-SCOPED (2x phase build, Planner
+     ruling on the pilot-ready report Blocked 2): the settled-key relation and the option-off identity of the S56
+     sets are checked under the cap-in-key rule (exit = cap(b), settled = cap(sk(b)); post = cap(pre)); the set
+     without an S56 key stays byte-identical.
   7  classification boundaries (dF = R + e exactly, -R + e exactly, the e floor, a missing bar, uncertified, strict
      status), confirmation boundaries, mixed depth refused, re-classification; a not_settled confirmation ->
      unresolved after confirmation, and the review trigger's boundaries (integration ruling 5, 601775c0).
@@ -1204,9 +1207,15 @@ PRE_SETTLED_KEY_REV = 'b0391b80'   # the harness before the settled-run key (the
 VOLATILE_SPEC_FIELDS = ('frozen_utc', 'harness', 'git_head')
 
 
-def _spec_body(path):
+CAP_RULE_ENTRY_FIELDS = ('eval_key', 'eval_dir', 'working_dir_ids', 's56_cycle_cap_keyed')   # item 6 re-scope
+
+
+def _spec_body(path, drop_entry_fields=()):
     s = D.load_json(path)
-    return P.canonical_json({k: v for k, v in s.items() if k not in VOLATILE_SPEC_FIELDS})
+    body = {k: v for k, v in s.items() if k not in VOLATILE_SPEC_FIELDS}
+    if drop_entry_fields:
+        body['candidates'] = [{k: v for k, v in e.items() if k not in drop_entry_fields} for e in body['candidates']]
+    return P.canonical_json(body)
 
 
 def item6_settled_key(lat, data_root, out_dir):
@@ -1268,7 +1277,12 @@ def item6_settled_key(lat, data_root, out_dir):
     }
     for name, msg in r.items():
         ck(6, f'settled key True refused: {name}', msg != 'not refused' and sk in msg, msg[:200])
-    # allowed and keyed on single-scenario EV and draw-0 S56 entries; False recorded, not keyed
+    # allowed and keyed on single-scenario EV and draw-0 S56 entries; False recorded, not keyed.
+    # RE-SCOPED (cap-in-key rule of 8948db26; Planner ruling on the pilot-ready report, Blocked 2; diagnosis
+    # search_driver_v2_item6_diagnosis): every S56 EV-plan key is wrapped LAST by the cap, so the relation checked is
+    # exit = cap(b) and settled = cap(sk(b)), b = the pre-change harness's key of the same exit entry (frozen at
+    # PRE_SETTLED_KEY_REV), with settled != exit.
+    cap_k = EXIT_CAP_TEST
     for tag, cfg, opts in (('ev', cfg_ev, ev_opts), ('draw0', cfg_d0, s56)):
         cands = []
         for n, plan in plans.items():
@@ -1277,8 +1291,12 @@ def item6_settled_key(lat, data_root, out_dir):
         try:
             _p, _s, sp = freeze(H, cands, cfg, f'allowed_{tag}')
             by = {e['label']: e for e in sp['candidates']}
-            ok = all(by[f'{n}_settled']['eval_key'] == H.s56_settled_stop_evaluation_key(by[f'{n}_exit']['eval_key'], True)
-                     != by[f'{n}_exit']['eval_key'] and by[f'{n}_settled'][sk] is True
+            _pb, _sb, spb = freeze(pre, [c for c in cands if c[0].endswith('_exit')], cfg, f'base_{tag}')
+            base_k = {e['label'][:-len('_exit')]: e['eval_key'] for e in spb['candidates']}
+            ok = all(by[f'{n}_exit']['eval_key'] == H.s56_cycle_cap_evaluation_key(base_k[n], cap_k)
+                     and by[f'{n}_settled']['eval_key'] == H.s56_cycle_cap_evaluation_key(
+                         H.s56_settled_stop_evaluation_key(base_k[n], True), cap_k)
+                     and by[f'{n}_settled']['eval_key'] != by[f'{n}_exit']['eval_key'] and by[f'{n}_settled'][sk] is True
                      and by[f'{n}_settled']['key'] == by[f'{n}_exit']['key'] == lat.key(D.named_start(lat, n))
                      for n in plans) and sk not in by['x0_exit']
             # False is the default: recorded, not keyed (so it cannot sit in the same spec as the exit entry)
@@ -1289,8 +1307,9 @@ def item6_settled_key(lat, data_root, out_dir):
             detail = None
         except ValueError as error:
             ok, ok_false, detail = False, False, str(error)
-        ck(6, f'{tag}: settled key True allowed; eval key = sha256{{base, key}} != the exit key; candidate key '
-              f'unchanged; absent -> no entry field', ok, detail)
+        ck(6, f'{tag}: settled key True allowed; RE-SCOPED to the cap-in-key rule: exit = cap(b), settled = '
+              f'cap(sk(b)) != exit (b = the {PRE_SETTLED_KEY_REV} key); candidate key unchanged; absent -> no entry '
+              f'field', ok, detail)
         ck(6, f'{tag}: settled key False recorded in the entry, not keyed (the W33 default rule)', ok_false, detail)
     # option-off identity: entries without the key freeze identically under the pre- and post-change harness
     sets = {
@@ -1304,17 +1323,35 @@ def item6_settled_key(lat, data_root, out_dir):
                                                             H.S56_CERTIFICATION_STOP_DISABLED_KEY: True}))
                                      for n, p in plans.items()], cfg_ev),
     }
+    # RE-SCOPED for the S56 sets (cap-in-key rule, as above): the S56 EV-plan entries' eval keys are post = cap(pre)
+    # and the only differing entry fields are CAP_RULE_ENTRY_FIELDS (the key, the dir named by it, the working-dir ids
+    # derived from it, and the cap-keyed flag); the set without an S56 key (srp1_single_year) is still byte-identical.
     for name, (cands, cfg) in sets.items():
+        s56_set = name != 'srp1_single_year'
         try:
             p_pre, _s1, s_pre = freeze(pre, cands, cfg, f'pre_{name}', cid=f'g6s_identity_{name}')
             p_post, _s2, s_post = freeze(H, cands, cfg, f'post_{name}', cid=f'g6s_identity_{name}')
-            same = _spec_body(p_pre) == _spec_body(p_post)
-            keys = [e['eval_key'] for e in s_pre['candidates']] == [e['eval_key'] for e in s_post['candidates']]
-            detail = None
+            if s56_set:
+                same = _spec_body(p_pre, CAP_RULE_ENTRY_FIELDS) == _spec_body(p_post, CAP_RULE_ENTRY_FIELDS)
+                keys = [H.s56_cycle_cap_evaluation_key(e['eval_key'], s_post['cap']) for e in s_pre['candidates']] == \
+                    [e['eval_key'] for e in s_post['candidates']]
+                diff = sorted({k for a, b in zip(s_pre['candidates'], s_post['candidates']) for k in set(a) | set(b)
+                               if a.get(k) != b.get(k)})
+                same = same and set(diff) <= set(CAP_RULE_ENTRY_FIELDS)
+                detail = {'entry_fields_differing': diff}
+            else:
+                same = _spec_body(p_pre) == _spec_body(p_post)
+                keys = [e['eval_key'] for e in s_pre['candidates']] == [e['eval_key'] for e in s_post['candidates']]
+                detail = None
         except ValueError as error:
             same, keys, detail = False, False, str(error)
-        ck(6, f'option-off identity ({name}): frozen spec byte-identical pre vs post (volatile fields '
-              f'{list(VOLATILE_SPEC_FIELDS)} excluded), eval keys equal', same and keys, detail)
+        if s56_set:
+            ck(6, f'option-off identity ({name}), RE-SCOPED to the cap-in-key rule: post eval key = cap(pre) on every '
+                  f'entry; spec otherwise byte-identical pre vs post (volatile fields {list(VOLATILE_SPEC_FIELDS)} and '
+                  f'entry fields {list(CAP_RULE_ENTRY_FIELDS)} excluded)', same and keys, detail)
+        else:
+            ck(6, f'option-off identity ({name}): frozen spec byte-identical pre vs post (volatile fields '
+                  f'{list(VOLATILE_SPEC_FIELDS)} excluded), eval keys equal', same and keys, detail)
     ck(6, 'option-off identity: record fields empty when the key is absent',
        H.s56_settled_stop_record_fields({'label': 'x'}, {}) == {})
     return {'pre_rev': PRE_SETTLED_KEY_REV, 'lines_added': len(added), 'lines_deleted': len(deleted)}

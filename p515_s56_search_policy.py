@@ -66,6 +66,25 @@ truncated to the remaining budget; a confirmation that does not fit, or a block 
 RE-CLASSIFICATION (`reclassify`): classification is a pure function of stored values; when step 5 measures e, the
 history is re-classified at zero solves with the measured floor and the changed classes are listed.
 
+POLL MODES (2x phase build, TASKS.md "Author decisions on report (i)" 2026-11-24, step 5a; both read from the config
+with `.get`, so a config without them -- every search frozen before the phase -- runs exactly as before):
+  poll_depth 'settled' (the EFFICIENCY RULE's settled-direct branch): every poll evaluation runs directly to K_EV
+     (settled depth) and is classified on settled values (`classify_settled`) under the plan section 3 rule:
+       improver    F_set(x) - F_set(inc) <= -R, V_pair <= R/4, A(x) + A(inc) <= R/2, every gate of both passes
+       worse       F_set(x) - F_set(inc) >= R with the same V_pair / A / gate conditions (determinate)
+       unresolved  otherwise (the failed conditions listed)
+       not_settled the candidate's settled summary is 'not_settled' (no test applied; integration ruling 5)
+       harness_error  stops the search.
+     The first improver is accepted (no confirmation step: the value IS settled; no held-out check: there is no exit
+     comparison). Every settled poll classification counts as a confirmation for the not_settled review trigger.
+     The incumbent's settled summary must be 'settled' with gates passing (else 'start_incumbent_not_certified').
+  poll_only True: a COMPLETE POLL of N(start) with no acceptance -- confirm-candidates (exit) are listed unconfirmed,
+     improvers (settled) are listed unaccepted; the poll ends 'complete_poll_only'. Used for the screen candidates'
+     polls of the 2x phase.
+THE 2x PHASE (`phase_step`; section "the 2x phase" below): screen -> ladder -> marginal-value table + efficiency
+rule -> candidate confirmations -> candidate polls -> start pool -> one search; every decision is a pure function of
+the phase state and the stored records.
+
 Interfaces (duck-typed; nothing imported):
   env.lattice                 -- a `p516_lattice.GeneralLattice` (uses .cohorts, .years, .nodes, .label, .pair, .dim)
   env.neighbourhood_points(z) -- the points of `s56_neighbourhood(lattice, z)` ({'class', 'part', 'move', 'z'})
@@ -104,7 +123,12 @@ PARTITION_CLASSES = ('accepted', 'unresolved_after_confirmation', 'confirm_candi
 ROLES = ('incumbent_exit', 'decision_relevant', 'speculative_post_acceptance', 'speculative_post_termination',
          'confirmation', 'unclassified')
 TERMINATIONS = ('complete_poll_no_accepted_candidate', 'budget_exhausted', 'harness_error', 'stop_for_review_offset',
-                'start_incumbent_not_certified', 'stop_for_review_not_settled')
+                'start_incumbent_not_certified', 'stop_for_review_not_settled', 'complete_poll_only')
+# settled-direct polls (poll_depth 'settled'): classes and the terminal partition
+SETTLED_CLASSES = ('improver', 'worse', 'unresolved', 'not_settled', 'harness_error')
+SETTLED_PARTITION_CLASSES = ('accepted', 'improver_unaccepted', 'worse', 'unresolved', 'not_settled', 'harness_error',
+                             'not_reached')
+ROLES_SETTLED_EXTRA = ('incumbent_settled',)
 SAME_SIGN_DIAGONALS = ('+1+1', '-1-1', '+1+2', '-1-2')
 
 
@@ -301,6 +325,59 @@ def confirm(x_set, inc_set, x_exit, inc_exit, e, R=R_EUR):
     return dict(out, result='accepted' if not failed else 'unresolved_after_confirmation', failed=failed)
 
 
+def _settled_complete(s):
+    v = s.get('V')
+    return _finite(s.get('F')) and isinstance(v, dict) and all(_finite(v.get(k)) for k in ('S', 'PR', 'G', 'A')) \
+        and isinstance(s.get('gates_pass'), bool)
+
+
+def settled_incumbent_ok(s):
+    """A settled summary usable as an incumbent / start: status 'settled', complete, every gate passing."""
+    return isinstance(s, dict) and s.get('depth') == DEPTH_SETTLED and s.get('status') == 'settled' \
+        and _settled_complete(s) and s.get('gates_pass') is True
+
+
+def classify_settled(x, inc, R=R_EUR):
+    """Settled-direct class of candidate settled summary `x` against the incumbent's (module docstring, POLL MODES).
+    The plan section 3 determinacy rule applied to settled values; no exit value is read."""
+    _need_depth(x, DEPTH_SETTLED, 'candidate settled')
+    _need_depth(inc, DEPTH_SETTLED, 'incumbent settled')
+    if not settled_incumbent_ok(inc):
+        raise PolicyError(f'the incumbent settled summary must be settled, complete and gate-passing: {inc}')
+    out = {'class': None, 'dF': None, 'V_pair': None, 'A_sum': None, 'gates_pass': None, 'failed': [], 'R': R,
+           'criterion': None, 'reason': None}
+    st = x.get('status')
+    if st not in SETTLED_STATUSES or st == 'harness_error':
+        return dict(out, **{'class': 'harness_error', 'reason': f'status {st!r}'})
+    if st == 'not_settled':
+        if _finite(x.get('F')):
+            out['dF'] = float(x['F']) - float(inc['F'])
+        return dict(out, **{'class': 'not_settled', 'reason': 'candidate settled status not_settled'})
+    if not _settled_complete(x):
+        return dict(out, **{'class': 'harness_error', 'reason': 'settled summary lacks F, V components or gates_pass'})
+    dF = float(x['F']) - float(inc['F'])
+    vp = v_pair(x['V'], inc['V'])
+    a_sum = x['V']['A'] + inc['V']['A']
+    gates = x['gates_pass'] is True and inc['gates_pass'] is True
+    failed = []
+    if not abs(dF) >= R:
+        failed.append('|F_set(x) - F_set(inc)| < R')
+    if not vp <= V_PAIR_FRACTION * R:
+        failed.append('V_pair > R/4')
+    if not a_sum <= A_GUARD_FRACTION * R:
+        failed.append('A(x) + A(inc) > R/2')
+    if not gates:
+        failed.append('a gate failed')
+    if failed:
+        cls, crit = 'unresolved', 'not determinate (plan v4.1 section 3)'
+    elif dF <= -R:
+        cls, crit = 'improver', 'F_set(inc) - F_set(x) >= R, determinate'
+    else:
+        cls, crit = 'worse', 'F_set(x) - F_set(inc) >= R, determinate'
+    return dict(out, **{'class': cls, 'dF': dF, 'V_pair': vp, 'A_sum': a_sum, 'gates_pass': gates,
+                        'failed': failed, 'criterion': crit})
+
+
 # ======================================================================================================================
 #  the state machine
 # ======================================================================================================================
@@ -381,6 +458,10 @@ def step(state, records, env):
     if state['terminated']:
         return state, {'kind': 'terminated', 'termination': copy.deepcopy(state['termination'])}
     cfg = state['config']
+    poll_depth = cfg.get('poll_depth', DEPTH_EXIT)
+    if poll_depth not in DEPTHS:
+        raise PolicyError(f'poll_depth {poll_depth!r}')
+    poll_only = cfg.get('poll_only') is True
     pend = state['pending']
     if pend is not None:
         missing = [z for z in pend['zs'] if _rk(z, pend['depth']) not in records]
@@ -390,13 +471,15 @@ def step(state, records, env):
             if _ev_index(state, z, pend['depth']) is not None:
                 raise PolicyError(f'evaluated twice: {z} {pend["depth"]}')
             role = {'block': 'unclassified', 'confirmation': 'confirmation',
-                    'incumbent_exit': 'incumbent_exit'}[pend['purpose']]
+                    'incumbent_exit': 'incumbent_exit', 'incumbent_settled': 'incumbent_settled'}[pend['purpose']]
             state['evaluated'].append({'z': list(z), 'depth': pend['depth'], 'role': role, 'poll': pend['poll'],
                                        'action_index': pend['action_index']})
             state['budget_used'] += 1
-            if state['poll'] is not None and pend['depth'] == DEPTH_EXIT:
+            if state['poll'] is not None and pend['depth'] == poll_depth:
                 state['poll']['requested_in_poll'].append(list(z))
         state['pending'] = None
+    if poll_depth == DEPTH_SETTLED:
+        return _step_settled(state, records, env, poll_only)
     while True:
         z_inc = tuple(state['incumbent'])
         inc_exit = records.get(_rk(z_inc, DEPTH_EXIT))
@@ -413,7 +496,7 @@ def step(state, records, env):
                                                     if _rk(r['z'], DEPTH_EXIT) in records]
         poll = state['poll']
         if poll['pos'] >= poll['n']:
-            return _terminate(state, 'complete_poll_no_accepted_candidate')
+            return _terminate(state, 'complete_poll_only' if poll_only else 'complete_poll_no_accepted_candidate')
         cand = poll['order'][poll['pos']]
         cz = tuple(cand['z'])
         x_exit = records.get(_rk(cz, DEPTH_EXIT))
@@ -435,7 +518,7 @@ def step(state, records, env):
             poll['classified'].append(entry)
             poll['pos'] += 1
             return _terminate(state, 'harness_error', {'pos': entry['pos'], 'z': entry['z'], 'reason': cls['reason']})
-        if cls['class'] != 'confirm_candidate':
+        if cls['class'] != 'confirm_candidate' or poll_only:   # poll_only: listed, never confirmed
             poll['classified'].append(entry)
             poll['pos'] += 1
             continue
@@ -476,13 +559,84 @@ def step(state, records, env):
         state['poll'] = None
 
 
+def _step_settled(state, records, env, poll_only):
+    """The settled-direct loop of `step` (module docstring, POLL MODES). `state` is already a private copy with the
+    pending action registered."""
+    cfg = state['config']
+    while True:
+        z_inc = tuple(state['incumbent'])
+        inc_set = records.get(_rk(z_inc, DEPTH_SETTLED))
+        if inc_set is None:
+            if _budget_left(state) < 1:
+                return _terminate(state, 'budget_exhausted', 'no budget for the start incumbent settled run')
+            return _request(state, DEPTH_SETTLED, [z_inc], 'incumbent_settled')
+        if state['poll'] is None:
+            if not settled_incumbent_ok(inc_set):
+                return _terminate(state, 'start_incumbent_not_certified',
+                                  {'status': inc_set.get('status'), 'depth': DEPTH_SETTLED,
+                                   'gates_pass': inc_set.get('gates_pass')})
+            _start_poll(state, env)
+            state['poll']['cache_hits_at_start'] = [r['pos'] for r in state['poll']['order']
+                                                    if _rk(r['z'], DEPTH_SETTLED) in records]
+        poll = state['poll']
+        if poll['pos'] >= poll['n']:
+            return _terminate(state, 'complete_poll_only' if poll_only else 'complete_poll_no_accepted_candidate')
+        cand = poll['order'][poll['pos']]
+        cz = tuple(cand['z'])
+        x_set = records.get(_rk(cz, DEPTH_SETTLED))
+        if x_set is None:
+            left = _budget_left(state)
+            if left < 1:
+                return _terminate(state, 'budget_exhausted', {'poll': poll['index'], 'pos': poll['pos']})
+            block = [r['z'] for r in poll['order'][poll['pos']:] if _rk(r['z'], DEPTH_SETTLED) not in records]
+            block = block[:min(cfg['block'], left)]
+            return _request(state, DEPTH_SETTLED, block, 'block')
+        cls = classify_settled(x_set, inc_set, cfg['R'])
+        i = _ev_index(state, cz, DEPTH_SETTLED)
+        if i is not None and state['evaluated'][i]['role'] == 'unclassified':
+            state['evaluated'][i]['role'] = 'decision_relevant'
+        entry = {'pos': poll['pos'], 'z': list(cz), 'label': cand['label'], 'exit_class': None,
+                 'settled_class': cls['class'], 'dF_set': cls['dF'], 'V_pair': cls['V_pair'], 'A_sum': cls['A_sum'],
+                 'gates_pass': cls['gates_pass'], 'failed': cls['failed'], 'criterion': cls['criterion'],
+                 'reason': cls['reason'], 'cache_hit': poll['pos'] in poll['cache_hits_at_start'],
+                 'confirmation': None}
+        poll['classified'].append(entry)
+        poll['pos'] += 1
+        if cls['class'] == 'harness_error':
+            return _terminate(state, 'harness_error', {'pos': entry['pos'], 'z': entry['z'], 'reason': cls['reason']})
+        if cls['class'] == 'not_settled':
+            review = not_settled_review(state)
+            if review['stop']:
+                return _terminate(state, 'stop_for_review_not_settled', dict(review, pos=entry['pos'], z=entry['z']))
+        if cls['class'] != 'improver' or poll_only:
+            continue
+        for e in state['evaluated']:
+            if e['role'] == 'unclassified':
+                e['role'] = 'speculative_post_acceptance'
+        state['last_move'] = [a - b for a, b in zip(cz, z_inc)]
+        state['incumbent'] = list(cz)
+        state['incumbent_history'].append({'z': list(cz), 'poll': poll['index'], 'how': 'accepted',
+                                           'pos': entry['pos'], 'label': cand['label'],
+                                           'improvement_set': -cls['dF'], 'V_pair': cls['V_pair']})
+        poll['closed'] = 'accepted'
+        state['polls'].append(poll)
+        state['poll'] = None
+
+
 def confirmation_history(state):
     """Every confirmation that produced a result ('accepted' / 'unresolved_after_confirmation'), in confirmation order
     (closed polls in order, then the open poll; within a poll by position) -> [{'poll', 'pos', 'result',
-    'not_settled'}]."""
+    'not_settled'}]. Settled-direct polls: every settled classification but harness_error counts (result
+    'settled_direct_<class>')."""
     out = []
     for p in state['polls'] + ([state['poll']] if state['poll'] else []):
         for c in sorted(p['classified'], key=lambda c: c['pos']):
+            sc = c.get('settled_class')
+            if sc is not None:
+                if sc in ('improver', 'worse', 'unresolved', 'not_settled'):
+                    out.append({'poll': p['index'], 'pos': c['pos'], 'result': f'settled_direct_{sc}',
+                                'not_settled': sc == 'not_settled'})
+                continue
             r = (c.get('confirmation') or {}).get('result')
             if r in ('accepted', 'unresolved_after_confirmation'):
                 out.append({'poll': p['index'], 'pos': c['pos'], 'result': r,
@@ -530,9 +684,23 @@ def terminal_report(state, records=None):
     if not state['terminated']:
         raise PolicyError('terminal_report on a search that has not terminated')
     final = state['polls'][-1] if state['polls'] else None
-    partition = {c: 0 for c in PARTITION_CLASSES}
+    direct = state['config'].get('poll_depth', DEPTH_EXIT) == DEPTH_SETTLED
+    poll_only = state['config'].get('poll_only') is True
+    partition = {c: 0 for c in (SETTLED_PARTITION_CLASSES if direct else PARTITION_CLASSES)}
     unresolved = []
-    if final is not None:
+    if final is not None and direct:
+        for c in final['classified']:
+            k = c['settled_class']
+            if k == 'improver':
+                k = 'improver_unaccepted' if poll_only else 'accepted'
+            partition[k] += 1
+            if k in ('unresolved', 'not_settled'):
+                unresolved.append({'pos': c['pos'], 'label': c['label'], 'class': k, 'dF_set': c['dF_set'],
+                                   'V_pair': c['V_pair'], 'failed': c['failed'], 'not_settled': k == 'not_settled'})
+        partition['not_reached'] = final['n'] - len(final['classified'])
+        if sum(partition.values()) != final['n']:
+            raise PolicyError('the class partition does not sum to |N|')
+    elif final is not None:
         for c in final['classified']:
             k = c['exit_class']
             if k == 'confirm_candidate':
@@ -548,7 +716,7 @@ def terminal_report(state, records=None):
         partition['not_reached'] = final['n'] - len(final['classified'])
         if sum(partition.values()) != final['n']:
             raise PolicyError('the class partition does not sum to |N|')
-    roles = {r: 0 for r in ROLES}
+    roles = {r: 0 for r in ROLES + (ROLES_SETTLED_EXTRA if direct else ())}
     for e in state['evaluated']:
         roles[e['role']] += 1
     if roles['unclassified']:
@@ -584,22 +752,27 @@ def count_identity(state):
     accepted poll (p_j = the number of uncached candidates up to and including the accepted one) and E_f = the
     uncached candidates the final poll requested. Checked against the budget actually used."""
     B = state['config']['block']
-    s0 = sum(1 for e in state['evaluated'] if e['role'] == 'incumbent_exit')
+    bd = state['config'].get('poll_depth', DEPTH_EXIT)   # the depth of the poll blocks (settled-direct: settled)
+    inc_roles = ('incumbent_exit', 'incumbent_settled')
+    s0 = sum(1 for e in state['evaluated'] if e['role'] in inc_roles)
     rows, total = [], s0
     for p in state['polls']:
         cached = set(p['cache_hits_at_start'] or [])
         n_j = p['n'] - len(cached)
-        c_j = sum(1 for e in state['evaluated'] if e['depth'] == DEPTH_SETTLED and e['poll'] == p['index'])
+        if bd == DEPTH_EXIT:
+            c_j = sum(1 for e in state['evaluated'] if e['depth'] == DEPTH_SETTLED and e['poll'] == p['index'])
+        else:   # settled-direct: no confirmation step (c_j = 0 by construction)
+            c_j = sum(1 for e in state['evaluated'] if e['role'] == 'confirmation' and e['poll'] == p['index'])
         if p['closed'] == 'accepted':
             acc = max(c['pos'] for c in p['classified'])
             p_j = sum(1 for r in p['order'][:acc + 1] if r['pos'] not in cached)
             e_j = min(n_j, B * -(-p_j // B))
         else:
             p_j = None
-            e_j = sum(1 for e in state['evaluated'] if e['depth'] == DEPTH_EXIT and e['poll'] == p['index']
-                      and e['role'] != 'incumbent_exit')
-        requested = sum(1 for e in state['evaluated'] if e['depth'] == DEPTH_EXIT and e['poll'] == p['index']
-                        and e['role'] != 'incumbent_exit')
+            e_j = sum(1 for e in state['evaluated'] if e['depth'] == bd and e['poll'] == p['index']
+                      and e['role'] not in inc_roles)
+        requested = sum(1 for e in state['evaluated'] if e['depth'] == bd and e['poll'] == p['index']
+                        and e['role'] not in inc_roles)
         rows.append({'poll': p['index'], 'closed': p['closed'], 'n_j': n_j, 'p_j': p_j, 'E_j': e_j, 'c_j': c_j,
                      'exit_requested': requested, 'formula_matches': e_j == requested})
         total += requested + c_j
@@ -617,6 +790,8 @@ def reclassify(state, records, e_floor):
     cfg = state['config']
     changes = []
     for p in state['polls'] + ([state['poll']] if state['poll'] else []):
+        if any(c.get('settled_class') is not None for c in p['classified']):
+            continue   # settled-direct polls carry no exit classification
         inc = records[_rk(p['z_inc'], DEPTH_EXIT)]
         for c in p['classified']:
             new = classify_exit(records[_rk(c['z'], DEPTH_EXIT)], inc, cfg['R'], e_floor)
@@ -629,3 +804,429 @@ def reclassify(state, records, e_floor):
 def canonical_json(obj):
     """The byte form used for every state comparison and hash."""
     return json.dumps(obj, sort_keys=True, separators=(',', ':'), allow_nan=False)
+
+
+# ======================================================================================================================
+#  THE 2x PHASE (TASKS.md "Author decisions on report (i)", 2026-11-24, and step 5a; S56_PLAN_v4_1.md section 4 (g)).
+#  Pure: `phase_step(state, records, env)` -> (new state, action), like `step`. The driver (`--phase-run`) evaluates
+#  what it asks for, one block of <= BLOCK evaluations per launch, and applies the 120 h ceiling (measured hours are
+#  not a decision input of this function: the ceiling suspends the phase, it never changes what runs next).
+# ======================================================================================================================
+#  STAGES (in order; every rule below is frozen in the phase spec):
+#   screen    the screen plans (3 nodes x 3 years x 2 durations: 0.25 MVA with 1 MWh, 0.25 MVA with 0.5 MWh = 18
+#             single-unit plans), at exit depth, in the spec's order; x0's exit summary (the start incumbent of the
+#             marginal-value table) must be certified (else 'start_incumbent_not_certified').
+#   ladder    the BEST DURATION is the duration of the certified screen plan with the lowest F_exit (ties by label);
+#             the TWO BEST NODE-YEARS are the node-years with the lowest F_exit among the certified screen plans AT
+#             that duration (ties by label); the ladder is P in ladder_zp (0.5, 1.0 MVA) at that duration at those
+#             node-years (node-year rank, then size). A ladder point the lattice refuses (reasons(z) non-empty; e.g.
+#             1.0 MVA x 4 h in 2025 exceeds the budget) is SKIPPED and logged; nothing replaces it.
+#   table     the marginal-value table, every screen and ladder plan: F_exit, bar, dF_exit = F_exit(x) - F_exit(x0)
+#             and the class against x0 = `classify_exit(x, x0, R, e_floor = e_EV)` (worse dF >= R + e,
+#             confirm_candidate dF <= -R + e, else unresolved; e = max(e_EV, bar_x + bar_x0) -- the design rule with
+#             e_EV as its floor), uncertified / harness_error listed.
+#   EFFICIENCY RULE (author-approved, applied here automatically): fraction = #(table rows that are certified with
+#             |F_exit(x) - F_exit(x0)| <= e_EV) / #(table rows); fraction > 1/2 (exact rational comparison) ->
+#             branch 'settled_direct': every LATER POLL evaluation (candidate polls and the search) runs directly to
+#             K_EV and is classified on settled values (`classify_settled`); otherwise 'exit_then_confirm'.
+#   candidate_confirmation   CANDIDATES: the rows classed confirm_candidate, by (F_exit, label); greedily the best,
+#             then the next whose node AND year both differ from every pick, up to n_candidates (2); fewer -> logged.
+#             Each gets a settled run (K_EV, stop-disabled, pricing capture; x0's settled run beside) and the plan
+#             section 3 pair test against x0 (`confirm`, e = the e of its table classification): harness_error ->
+#             stop; offset > e -> stop_for_review_offset (the held-out check); not_settled -> not confirmed. CONFIRMED
+#             = settled status 'settled' with every gate passing (`settled_incumbent_ok`); the pair result is recorded
+#             beside, it does not gate pool entry.
+#   candidate_polls   each confirmed candidate in order: a COMPLETE POLL of N(candidate) (`step` with poll_only, at
+#             the branch's depth). An unconfirmed candidate is not polled (logged).
+#   pool      members: x0, the reference unit, the pilot's staged plan, the cache-index members (recomputed
+#             historical plans found in the declared cache roots, if any), the confirmed candidates; BEST START = the
+#             lowest settled F among members whose settled summary passes `settled_incumbent_ok` (ties by label).
+#   search    one opportunistic search from the best start (`step`, the branch's poll depth), ending with a complete
+#             poll at the final incumbent.
+#  NOT-SETTLED REVIEW (integration ruling 5, phase-wide): the rule of `not_settled_review` over every confirmation of
+#  the phase in order -- candidate confirmations, then each candidate poll's and the search's confirmation history.
+#  TERMINATIONS: 'phase_complete' (the search ended complete_poll_no_accepted_candidate or budget_exhausted) or a
+#  review stop: harness_error, stop_for_review_offset, stop_for_review_not_settled, start_incumbent_not_certified.
+SCHEMA_PHASE_STATE = 'p515_s56_phase_state_v1'
+PHASE_STAGES = ('screen', 'ladder', 'candidate_confirmation', 'candidate_polls', 'pool', 'search')
+PHASE_TERMINATIONS = ('phase_complete', 'harness_error', 'stop_for_review_offset', 'stop_for_review_not_settled',
+                      'start_incumbent_not_certified')
+PHASE_REVIEW_TERMINATIONS = PHASE_TERMINATIONS[1:]
+BRANCH_EXIT_THEN_CONFIRM, BRANCH_SETTLED_DIRECT = 'exit_then_confirm', 'settled_direct'
+EFFICIENCY_THRESHOLD = Fraction(1, 2)
+DURATION_RATIO = {'4h': 2, '2h': 1}   # zE = ratio x zP: 0.25 MVA x 1 MWh = 4 h; 0.25 MVA x 0.5 MWh = 2 h
+PHASE_CONFIG_KEYS = ('phase_id', 'arm', 'x0', 'screen', 'ladder_zp', 'ladder_n_node_years', 'n_candidates',
+                     'pool_fixed', 'pool_cache_members', 'R', 'e_ev', 'k_ev', 'block', 'cap', 'class_rank',
+                     'n_max_sub', 'domain_size')
+
+
+def phase_initial_state(config):
+    cfg = copy.deepcopy(dict(config))
+    missing = [k for k in PHASE_CONFIG_KEYS if k not in cfg]
+    if missing:
+        raise PolicyError(f'phase config lacks {missing}')
+    if cfg['cap'] != CAP or cfg['block'] != BLOCK:
+        raise PolicyError(f'cap and block are fixed by the design ({CAP}, {BLOCK})')
+    if not (_finite(cfg['e_ev']) and cfg['e_ev'] > 0 and _finite(cfg['R']) and cfg['R'] > 0):
+        raise PolicyError('R and e_EV must be positive numbers')
+    return {'schema': SCHEMA_PHASE_STATE, 'config': cfg, 'stage': 'screen', 'pending': None, 'n_actions': 0,
+            'evaluated': [], 'x0_exit_check': None, 'ladder': None, 'table': None, 'efficiency': None,
+            'candidates': None, 'candidate_selection': None, 'cand_pos': 0, 'pool': None, 'sub': None,
+            'search': None, 'log': [], 'terminated': False, 'termination': None}
+
+
+def _phase_request(state, depth, zs, purpose, sub_action=None):
+    action = {'kind': 'evaluate', 'depth': depth, 'zs': [list(z) for z in zs], 'purpose': purpose,
+              'stage': state['stage'], 'action_index': state['n_actions'],
+              'sub_action': copy.deepcopy(sub_action)}
+    state['pending'] = action
+    state['n_actions'] += 1
+    return state, copy.deepcopy(action)
+
+
+def _phase_terminate(state, reason, detail=None):
+    if reason not in PHASE_TERMINATIONS:
+        raise PolicyError(f'unknown phase termination {reason}')
+    state['terminated'] = True
+    state['termination'] = {'reason': reason, 'detail': detail, 'stage': state['stage']}
+    return state, {'kind': 'terminated', 'termination': copy.deepcopy(state['termination'])}
+
+
+def _single_cohort(lattice, z):
+    act = lattice.active_cohorts(tuple(z))
+    if len(act) != 1:
+        return None
+    n, y = act[0]
+    zp, ze = lattice.pair(tuple(z), n, y)
+    return {'node': n, 'year': y, 'zp': zp, 'ze': ze,
+            'duration': next((k for k, r in DURATION_RATIO.items() if ze == r * zp), None)}
+
+
+def _table_row(lattice, z, source, summ, x0_exit, R, e_ev):
+    sc = _single_cohort(lattice, z) or {}
+    cls = classify_exit(summ, x0_exit, R, e_ev)
+    f = summ.get('F') if summ.get('status') == 'certified' and _finite(summ.get('F')) else None
+    in_band = f is not None and abs(float(f) - float(x0_exit['F'])) <= e_ev
+    return {'label': lattice.label(tuple(z)), 'z': list(z), 'source': source, 'node': sc.get('node'),
+            'year': sc.get('year'), 'zp': sc.get('zp'), 'ze': sc.get('ze'), 'duration': sc.get('duration'),
+            'status': summ.get('status'), 'F_exit': summ.get('F'), 'bar': summ.get('bar'), 'dF_exit': cls['dF'],
+            'e': cls['e'], 'class': cls['class'], 'criterion': cls['criterion'], 'reason': cls['reason'],
+            'in_efficiency_band': in_band, 'served_as': summ.get('served_as')}
+
+
+def ladder_plan(lattice, cfg, screen_rows):
+    """The ladder rule (section comment) from the screen rows -> {'best_duration', 'node_years', 'plans', 'skipped',
+    'log'}. Pure."""
+    cert = [r for r in screen_rows if r['status'] == 'certified' and _finite(r['F_exit']) and r['duration']]
+    out = {'rule': ('best duration = duration of the certified screen plan with the lowest F_exit (ties by label); '
+                    'two best node-years = lowest F_exit among certified screen plans at that duration (ties by '
+                    'label); P in ladder_zp at that duration; a ladder point the lattice refuses is skipped'),
+           'best_duration': None, 'node_years': [], 'plans': [], 'skipped': [], 'log': []}
+    if not cert:
+        out['log'].append('no certified screen plan: no ladder')
+        return out
+    best = min(cert, key=lambda r: (float(r['F_exit']), r['label']))
+    out['best_duration'] = best['duration']
+    at = sorted((r for r in cert if r['duration'] == best['duration']), key=lambda r: (float(r['F_exit']), r['label']))
+    ny = [(r['node'], r['year']) for r in at[:cfg['ladder_n_node_years']]]
+    out['node_years'] = [list(v) for v in ny]
+    if len(ny) < cfg['ladder_n_node_years']:
+        out['log'].append(f'only {len(ny)} certified node-year(s) at the best duration: fewer ladder points')
+    ratio = DURATION_RATIO[best['duration']]
+    for n, y in ny:
+        for zp in cfg['ladder_zp']:
+            z = lattice.with_pair(lattice.x0(), n, y, zp, ratio * zp)
+            why = lattice.reasons(z)
+            row = {'node': n, 'year': y, 'zp': zp, 'ze': ratio * zp, 'z': list(z), 'label': lattice.label(z)}
+            if why:
+                out['skipped'].append(dict(row, reasons=why))
+                out['log'].append(f'ladder point {row["label"]} skipped: {why}')
+            else:
+                out['plans'].append(row)
+    return out
+
+
+def efficiency_rule(rows, e_ev, threshold=EFFICIENCY_THRESHOLD):
+    n = len(rows)
+    k = sum(1 for r in rows if r['in_efficiency_band'])
+    frac = Fraction(k, n) if n else Fraction(0)
+    branch = BRANCH_SETTLED_DIRECT if frac > threshold else BRANCH_EXIT_THEN_CONFIRM
+    return {'n_rows': n, 'n_in_band': k, 'fraction': [frac.numerator, frac.denominator],
+            'fraction_float': float(frac), 'threshold': [threshold.numerator, threshold.denominator],
+            'band_eur': e_ev, 'branch': branch,
+            'rule': ('fraction of the screen and ladder rows that are certified with |F_exit(x) - F_exit(x0)| <= e_EV '
+                     '(denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later '
+                     'poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm')}
+
+
+def select_candidates(rows, n_candidates):
+    qual = sorted((r for r in rows if r['class'] == 'confirm_candidate'), key=lambda r: (float(r['F_exit']), r['label']))
+    picked, passed = [], []
+    for r in qual:
+        if len(picked) == n_candidates:
+            break
+        if all(r['node'] != p['node'] and r['year'] != p['year'] for p in picked):
+            picked.append(r)
+        else:
+            passed.append({'label': r['label'], 'reason': 'shares a node or a year with a pick'})
+    log = []
+    if len(picked) < n_candidates:
+        log.append(f'{len(picked)} of {n_candidates} candidates: {len(qual)} row(s) classed confirm_candidate')
+    return {'rule': ('rows classed confirm_candidate against x0, by (F_exit, label); greedily the best, then the next '
+                     'whose node AND year both differ from every pick'),
+            'n_qualified': len(qual), 'qualified': [r['label'] for r in qual], 'passed_over': passed,
+            'picked': [r['label'] for r in picked], 'log': log}, picked
+
+
+def _sub_config(cfg, start, poll_only, branch, tag):
+    c = {'start': list(start), 'n_max': cfg['n_max_sub'], 'arm': cfg['arm'], 'R': cfg['R'], 'e_floor': cfg['e_ev'],
+         'block': cfg['block'], 'cap': cfg['cap'], 'class_rank': list(cfg['class_rank']),
+         'domain_size': cfg['domain_size'], 'k_ev': cfg['k_ev'], 'search_id': f"{cfg['phase_id']}_{tag}"}
+    if branch == BRANCH_SETTLED_DIRECT:
+        c['poll_depth'] = DEPTH_SETTLED
+    if poll_only:
+        c['poll_only'] = True
+    return c
+
+
+def phase_confirmation_history(state):
+    out = []
+    for c in state['candidates'] or []:
+        conf = c.get('confirmation') or {}
+        if conf.get('result') in ('accepted', 'unresolved_after_confirmation'):
+            out.append({'where': f"candidate {c['label']}", 'result': conf['result'],
+                        'not_settled': conf.get('not_settled') is True})
+    for c in state['candidates'] or []:
+        if c.get('poll_state') is not None:
+            out += [dict(h, where=f"poll {c['label']}") for h in confirmation_history(c['poll_state'])]
+    if state['sub'] is not None:
+        out += [dict(h, where=state['sub']['config']['search_id']) for h in confirmation_history(state['sub'])]
+    if state['search'] is not None:
+        out += [dict(h, where='search') for h in confirmation_history(state['search']['state'])]
+    return out
+
+
+def phase_not_settled_review(state):
+    hist = phase_confirmation_history(state)
+    n, n_ns = len(hist), sum(1 for h in hist if h['not_settled'])
+    tail = 0
+    for h in reversed(hist):
+        if not h['not_settled']:
+            break
+        tail += 1
+    consecutive = tail >= NOT_SETTLED_CONSECUTIVE_STOP
+    share = n >= NOT_SETTLED_MIN_CONFIRMATIONS and n_ns > NOT_SETTLED_SHARE_STOP * n
+    return {'stop': consecutive or share, 'n_confirmations': n, 'n_not_settled': n_ns, 'consecutive_not_settled': tail,
+            'rule_consecutive': consecutive, 'rule_share': share, 'scope': 'phase-wide'}
+
+
+def _sub_review_reason(reason):
+    return reason if reason in PHASE_REVIEW_TERMINATIONS else None
+
+
+def phase_step(state, records, env):
+    """One phase decision step (section comment). Pure: returns a NEW state and the action
+    {'kind': 'evaluate', 'depth', 'zs', 'purpose', 'stage', 'action_index', 'sub_action'} or
+    {'kind': 'terminated', 'termination'}."""
+    state = copy.deepcopy(state)
+    if state['schema'] != SCHEMA_PHASE_STATE:
+        raise PolicyError(f"phase state schema {state['schema']!r}")
+    if state['terminated']:
+        return state, {'kind': 'terminated', 'termination': copy.deepcopy(state['termination'])}
+    cfg = state['config']
+    lat = env.lattice
+    x0 = tuple(cfg['x0'])
+    pend = state['pending']
+    if pend is not None:
+        if [z for z in pend['zs'] if _rk(z, pend['depth']) not in records]:
+            return state, copy.deepcopy(pend)   # not delivered (killed): re-issue, nothing counted
+        for z in pend['zs']:
+            if any(e['z'] == list(z) and e['depth'] == pend['depth'] for e in state['evaluated']):
+                raise PolicyError(f'phase: evaluated twice: {z} {pend["depth"]}')
+            state['evaluated'].append({'z': list(z), 'depth': pend['depth'], 'stage': pend['stage'],
+                                       'purpose': pend['purpose'], 'action_index': pend['action_index']})
+        state['pending'] = None
+    B = cfg['block']
+    while True:
+        stage = state['stage']
+        x0_exit = records.get(_rk(x0, DEPTH_EXIT))
+        if stage in ('screen', 'ladder'):
+            if x0_exit is None:
+                return _phase_request(state, DEPTH_EXIT, [x0], 'x0_exit')
+            if state['x0_exit_check'] is None:
+                ok = x0_exit.get('status') == 'certified' and _finite(x0_exit.get('F')) and _finite(x0_exit.get('bar'))
+                state['x0_exit_check'] = {'status': x0_exit.get('status'), 'F': x0_exit.get('F'),
+                                          'bar': x0_exit.get('bar'), 'ok': ok, 'served_as': x0_exit.get('served_as')}
+                if not ok:
+                    return _phase_terminate(state, 'start_incumbent_not_certified',
+                                            {'z': list(x0), 'status': x0_exit.get('status')})
+        if stage == 'screen':
+            need = [z for z in cfg['screen'] if _rk(z, DEPTH_EXIT) not in records]
+            if need:
+                return _phase_request(state, DEPTH_EXIT, need[:B], 'screen')
+            bad = [lat.label(tuple(z)) for z in cfg['screen']
+                   if classify_exit(records[_rk(z, DEPTH_EXIT)], x0_exit, cfg['R'], cfg['e_ev'])['class']
+                   == 'harness_error']
+            if bad:
+                return _phase_terminate(state, 'harness_error', {'stage': 'screen', 'labels': bad})
+            rows = [_table_row(lat, z, 'screen', records[_rk(z, DEPTH_EXIT)], x0_exit, cfg['R'], cfg['e_ev'])
+                    for z in cfg['screen']]
+            state['ladder'] = ladder_plan(lat, cfg, rows)
+            state['log'] += state['ladder']['log']
+            state['stage'] = 'ladder'
+            continue
+        if stage == 'ladder':
+            lz = [p['z'] for p in state['ladder']['plans']]
+            need = [z for z in lz if _rk(z, DEPTH_EXIT) not in records]
+            if need:
+                return _phase_request(state, DEPTH_EXIT, need[:B], 'ladder')
+            rows = [_table_row(lat, z, 'screen', records[_rk(z, DEPTH_EXIT)], x0_exit, cfg['R'], cfg['e_ev'])
+                    for z in cfg['screen']]
+            rows += [_table_row(lat, z, 'ladder', records[_rk(z, DEPTH_EXIT)], x0_exit, cfg['R'], cfg['e_ev'])
+                     for z in lz]
+            bad = [r['label'] for r in rows if r['class'] == 'harness_error']
+            if bad:
+                return _phase_terminate(state, 'harness_error', {'stage': 'ladder', 'labels': bad})
+            state['table'] = {'x0': {'F_exit': x0_exit['F'], 'bar': x0_exit['bar'],
+                                     'served_as': x0_exit.get('served_as')},
+                              'R': cfg['R'], 'e_ev': cfg['e_ev'], 'rows': rows,
+                              'classification': 'classify_exit(x, x0, R, e_floor = e_EV); e = max(e_EV, bar_x + bar_x0)',
+                              'objective_convention': 'F = I(x) + gross_operational_cost - TV credit, EUR of total '
+                                                      'discounted planning cost; dF_exit = F_exit(x) - F_exit(x0)'}
+            state['efficiency'] = efficiency_rule(rows, cfg['e_ev'])
+            state['log'].append(f"efficiency rule: {state['efficiency']['n_in_band']} of {state['efficiency']['n_rows']}"
+                                f" in band -> {state['efficiency']['branch']}")
+            sel, picked = select_candidates(rows, cfg['n_candidates'])
+            state['candidate_selection'] = sel
+            state['log'] += sel['log']
+            state['candidates'] = [{'label': r['label'], 'z': r['z'], 'node': r['node'], 'year': r['year'],
+                                    'F_exit': r['F_exit'], 'e': r['e'], 'confirmation': None, 'confirmed': None,
+                                    'poll_state': None, 'poll_report': None, 'poll_skipped': None} for r in picked]
+            state['stage'] = 'candidate_confirmation'
+            continue
+        if stage == 'candidate_confirmation':
+            cz = [tuple(c['z']) for c in state['candidates']]
+            need = [z for z in ([x0] + cz if cz else []) if _rk(z, DEPTH_SETTLED) not in records]
+            if need:
+                return _phase_request(state, DEPTH_SETTLED, need[:B], 'candidate_confirmation')
+            stop = None
+            for c in state['candidates']:
+                z = tuple(c['z'])
+                res = confirm(records[_rk(z, DEPTH_SETTLED)], records[_rk(x0, DEPTH_SETTLED)],
+                              records[_rk(z, DEPTH_EXIT)], x0_exit, c['e'], cfg['R'])
+                c['confirmation'] = res
+                c['confirmed'] = res['result'] in ('accepted', 'unresolved_after_confirmation') \
+                    and not res.get('not_settled') and settled_incumbent_ok(records[_rk(z, DEPTH_SETTLED)])
+                if stop is None and res['result'] in ('harness_error', 'stop_for_review'):
+                    stop = ('harness_error' if res['result'] == 'harness_error' else 'stop_for_review_offset',
+                            {'candidate': c['label'], 'failed': res['failed']})
+            if stop:
+                return _phase_terminate(state, *stop)
+            rv = phase_not_settled_review(state)
+            if rv['stop']:
+                return _phase_terminate(state, 'stop_for_review_not_settled', rv)
+            state['stage'] = 'candidate_polls'
+            continue
+        if stage == 'candidate_polls':
+            if state['cand_pos'] >= len(state['candidates']):
+                state['stage'] = 'pool'
+                continue
+            c = state['candidates'][state['cand_pos']]
+            if not c['confirmed']:
+                c['poll_skipped'] = 'candidate not confirmed (settled status / gates)'
+                state['log'].append(f"candidate {c['label']} not confirmed: poll skipped")
+                state['cand_pos'] += 1
+                continue
+            if state['sub'] is None:
+                state['sub'] = initial_state(_sub_config(cfg, c['z'], True, state['efficiency']['branch'],
+                                                         f"cand{state['cand_pos'] + 1}_poll"))
+            sub, act = step(state['sub'], records, env)
+            state['sub'] = sub
+            rv = phase_not_settled_review(state)
+            if rv['stop'] and not sub['terminated']:
+                c['poll_state'], state['sub'] = sub, None
+                return _phase_terminate(state, 'stop_for_review_not_settled', rv)
+            if act['kind'] == 'evaluate':
+                return _phase_request(state, act['depth'], act['zs'], 'candidate_poll', act)
+            c['poll_state'], c['poll_report'], state['sub'] = sub, terminal_report(sub), None
+            why = _sub_review_reason(act['termination']['reason'])
+            if why:
+                return _phase_terminate(state, why, {'candidate': c['label'], 'sub': act['termination']})
+            if rv['stop']:
+                return _phase_terminate(state, 'stop_for_review_not_settled', rv)
+            if act['termination']['reason'] != 'complete_poll_only':
+                state['log'].append(f"candidate {c['label']} poll ended {act['termination']['reason']}")
+            state['cand_pos'] += 1
+            continue
+        if stage == 'pool':
+            members = [dict(m, kind='fixed') for m in cfg['pool_fixed']]
+            members += [dict(m, kind='cache_member') for m in cfg['pool_cache_members']]
+            members += [{'name': f'candidate_{i + 1}', 'z': c['z'], 'kind': 'confirmed_candidate'}
+                        for i, c in enumerate(state['candidates']) if c['confirmed']]
+            seen, uniq, aliases = {}, [], []
+            for m in members:
+                k = tuple(m['z'])
+                if k in seen:
+                    aliases.append({'name': m['name'], 'same_as': seen[k]})
+                    continue
+                seen[k] = m['name']
+                uniq.append(m)
+            need = [tuple(m['z']) for m in uniq if _rk(m['z'], DEPTH_SETTLED) not in records]
+            if need:
+                return _phase_request(state, DEPTH_SETTLED, need[:B], 'pool_settled')
+            rows = []
+            for m in uniq:
+                s = records[_rk(m['z'], DEPTH_SETTLED)]
+                rows.append({'name': m['name'], 'kind': m['kind'], 'z': list(m['z']), 'label': lat.label(tuple(m['z'])),
+                             'status': s.get('status'), 'F_set': s.get('F'), 'gates_pass': s.get('gates_pass'),
+                             'eligible': settled_incumbent_ok(s), 'served_as': s.get('served_as')})
+            elig = sorted((r for r in rows if r['eligible']), key=lambda r: (float(r['F_set']), r['label']))
+            state['pool'] = {'rule': 'argmin settled F over the members whose settled summary is settled, complete and '
+                                     'gate-passing (ties by label)', 'members': rows, 'aliases': aliases,
+                             'chosen': elig[0]['name'] if elig else None,
+                             'chosen_label': elig[0]['label'] if elig else None,
+                             'runner_up': ({'name': elig[1]['name'], 'label': elig[1]['label'],
+                                            'margin_eur': float(elig[1]['F_set']) - float(elig[0]['F_set'])}
+                                           if len(elig) > 1 else None)}
+            if not elig:
+                return _phase_terminate(state, 'start_incumbent_not_certified', {'stage': 'pool'})
+            state['sub'] = initial_state(_sub_config(cfg, elig[0]['z'], False, state['efficiency']['branch'],
+                                                     'search'))
+            state['stage'] = 'search'
+            continue
+        if stage == 'search':
+            sub, act = step(state['sub'], records, env)
+            state['sub'] = sub
+            rv = phase_not_settled_review(state)
+            if act['kind'] == 'evaluate':
+                if rv['stop']:
+                    state['search'], state['sub'] = {'state': sub, 'report': None}, None
+                    return _phase_terminate(state, 'stop_for_review_not_settled', rv)
+                return _phase_request(state, act['depth'], act['zs'], 'search', act)
+            state['search'], state['sub'] = {'state': sub, 'report': terminal_report(sub)}, None
+            why = _sub_review_reason(act['termination']['reason'])
+            if why:
+                return _phase_terminate(state, why, {'search': act['termination']})
+            if rv['stop']:
+                return _phase_terminate(state, 'stop_for_review_not_settled', rv)
+            return _phase_terminate(state, 'phase_complete', {'search': act['termination']})
+        raise PolicyError(f'unknown phase stage {stage}')
+
+
+def phase_terminal_report(state):
+    """The phase record from the state alone (the driver adds hours and per-record facts)."""
+    if not state['terminated']:
+        raise PolicyError('phase_terminal_report on a phase that has not terminated')
+    by_stage = {}
+    for e in state['evaluated']:
+        k = f"{e['stage']}|{e['depth']}"
+        by_stage[k] = by_stage.get(k, 0) + 1
+    srch = state['search']
+    return {'termination': state['termination'], 'x0_exit_check': state['x0_exit_check'],
+            'ladder': state['ladder'], 'marginal_value_table': state['table'], 'efficiency': state['efficiency'],
+            'candidate_selection': state['candidate_selection'],
+            'candidates': [{k: v for k, v in c.items() if k != 'poll_state'} for c in (state['candidates'] or [])],
+            'pool': state['pool'], 'search_report': srch['report'] if srch else None,
+            'search_incumbent_history': srch['state']['incumbent_history'] if srch else None,
+            'evaluations_requested': len(state['evaluated']), 'evaluations_by_stage_depth': by_stage,
+            'phase_not_settled_review': phase_not_settled_review(state), 'log': state['log']}
