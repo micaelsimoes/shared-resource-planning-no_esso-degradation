@@ -862,7 +862,10 @@ def t12(lat, data_root, out_dir, cf):
     t0 = time.time()
     real = D.phase_spec(phase_id='t12_real_probe', oracle='harness', test_only=False, data_root=data_root,
                         predictions=dummy_predictions(), unlaunched_predecessors=[(v1, 'de4e947e')])
-    own_real = os.path.join(base, 'real_own_root_never_created')
+    # the scan's own root is the REAL v2 root (read only, never written here): once spec v2 is frozen and committed it
+    # is a tracked artefact carrying the same pilot keys, and the scan must exclude the run's own root (CLAUDE.md,
+    # W105). v1 of this check used a scratch own root, valid only before the v2 freeze (tests v3, failed as run).
+    own_real = os.path.join(data_root, D.RESULTS_PARENT_REL, 'phase2x_ev_v2')
     try:
         decl = D.freeze_collision_scan(real, lat, own_real, data_root)
         rd = None
@@ -875,12 +878,17 @@ def t12(lat, data_root, out_dir, cf):
         ru = None
     except D.Refused as error:
         ru = error.reasons
-    ck('T12', 'REAL artefacts (tracked specs): the real v2 configuration with v1 (de4e947e) declared un-launched -> '
-              'scan passes, v1\'s spec excluded; v1 undeclared -> the scan refuses, naming v1\'s spec',
+    v2_tracked = any(os.path.dirname(f) == own_real for f in D.committed_spec_files(data_root))
+    ck('T12', 'REAL artefacts (tracked specs; own root = the real v2 root): the real v2 configuration with v1 '
+              '(de4e947e) declared un-launched -> scan passes, v1\'s spec excluded (and v2\'s own spec, if tracked, as '
+              'the own root); v1 undeclared -> the scan refuses, naming v1\'s spec and nothing else',
        decl is not None and not decl['collisions'] and decl['n_excluded_predecessor_roots'] == 1
        and decl['excluded_predecessor_files'] == [os.path.join(v1, 'phase_spec_de4e947e.json')]
-       and ru is not None and any('phase2x_ev_v1/phase_spec_de4e947e.json' in x for x in ru),
-       {'declared': decl, 'refused': rd, 'undeclared_refusal': ru, 'wall_s': time.time() - t0})
+       and decl['n_excluded_own_root'] == (1 if v2_tracked else 0)
+       and ru is not None and len(ru) == 1 and 'phase2x_ev_v1/phase_spec_de4e947e.json' in ru[0]
+       and ru[0].startswith('collision scan: 1 artefact(s)'),
+       {'declared': decl, 'refused': rd, 'undeclared_refusal': ru, 'v2_spec_tracked': v2_tracked,
+        'wall_s': time.time() - t0})
     ck('T12', 'the real v2 spec built in process: v1 recorded as un-launched predecessor (files = spec + 2 freeze '
               'logs), cache-root key audit ok, pilot exit views on, exit-view check mode stop',
        real['predecessors']['unlaunched'][0]['files'] == ['freeze_stderr.log', 'freeze_stdout.log',
