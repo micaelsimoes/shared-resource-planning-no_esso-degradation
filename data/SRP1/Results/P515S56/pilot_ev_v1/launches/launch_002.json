@@ -1,0 +1,56 @@
+{
+ "block": [
+  "x0_i3",
+  "unit_i3"
+ ],
+ "launch_index": 2,
+ "lock": {
+  "campaign_id": "s56pilot_ev_v1_l002",
+  "campaign_spec_sha256": "abf0855bf84e04468a190d607181f86109bda9bfaf3bbc3c2d2a1163a4809c5b",
+  "pid": 35007,
+  "search_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/pilot_ev_v1",
+  "started_utc": "2026-11-24T12:10:34.068345+00:00"
+ },
+ "pilot_spec_sha256": "925472791ffd817746dec8556f3cc84b31d0b10ef21b7914a92bf3b11c6f83d1",
+ "previous_launch_manifest_sha256": "ceac1be330aab1e66831902c3770d405de30f207b53a37c16e4eed7d23c7d538",
+ "real_launch_preflight": {
+  "harness_preconditions": [],
+  "memory": {
+   "available_gib": 22.015045166015625,
+   "concurrency": 2,
+   "hw_memsize_gib": 32.0,
+   "page_size": 16384,
+   "pages": {
+    "Anonymous pages": 459122,
+    "Pages occupied by compressor": 71458,
+    "Pages wired down": 123794
+   },
+   "pass": true,
+   "per_slot_gib": 4.0,
+   "required_gib": 8.0,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x the declared per-slot GiB (the rule of p515_s55_e1_launcher.memory_preflight, ~958-979, with the per-slot figure declared in the search / pilot spec instead of the S47 constant)",
+   "utc": "2026-11-24T12:10:35.189548+00:00"
+  },
+  "note": "the campaign lock is held by this driver (O_EXCL) when this runs; the lock-file check of check_campaign_preconditions is pointed at an absent path for that reason",
+  "refusals": [],
+  "utc": "2026-11-24T12:10:35.189579+00:00"
+ },
+ "records": [
+  {
+   "eval_dir": "launches/launch_002/evals/0f20f46f0a99c162_x0_i3",
+   "eval_key": "0f20f46f0a99c162bd07bf880b0c2d28b90ca62fd640a75db206e4854393547b",
+   "exit_code": "0",
+   "label": "x0_i3",
+   "record_sha256": "ed7b77a3ae2b655085db1df94fbf538a39e91e2bcb066fcbbe33cea7a0e0986f"
+  },
+  {
+   "eval_dir": "launches/launch_002/evals/ecac63e76319052f_unit_i3",
+   "eval_key": "ecac63e76319052fd30003eb0dd242fc390860d1411e379cc7f70b8a7c52a383",
+   "exit_code": "0",
+   "label": "unit_i3",
+   "record_sha256": "15fdfad007b746ba448b7294dd67ebd0c5df8ac5431bbc53dbff53a57f4e369b"
+  }
+ ],
+ "schema": "p515_s56_pilot_launch_v1",
+ "wall_s": 8255.983852624893
+}
