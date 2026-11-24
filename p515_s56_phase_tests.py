@@ -8,8 +8,9 @@ TESTS
   T1  pure units: classify_settled boundaries; efficiency-rule boundary (11 / 22 vs 12 / 22, uncertified rows in the
       denominator); candidate selection (distinct node AND year, confirm-candidate only, fewer logged); the ladder rule
       (best duration, two best node-years, the inadmissible 1.0 MVA x 4 h 2025 point skipped); the DEFAULT search path
-      byte-identical to the policy at HEAD (`git show HEAD:p515_s56_search_policy.py`) on synthetic searches from three
-      starts, both class ranks; the plain synthetic landscape byte-identical to HEAD's; the phase capture checklist.
+      byte-identical to the policy at PRE_PHASE_REV 6b1d98b2 (the commit before the phase build; v1 compared against
+      HEAD, vacuous after the build commit) on synthetic searches from three starts, both class ranks; the plain
+      synthetic landscape byte-identical to 6b1d98b2's; both comparisons asserted non-vacuous; the capture checklist.
   T2  the whole phase through the launch CLI (synthetic oracle), exit-then-confirm branch, a search that moves:
       screen -> ladder -> table -> candidates -> polls -> pool -> search -> results; codes 4...4,0; the final state
       byte-equal to the in-process phase; stage order; every launch <= 5 evaluations at one depth.
@@ -74,6 +75,10 @@ import p515_s56_search_policy as P  # noqa: E402
 
 SCRIPT = os.path.basename(os.path.abspath(__file__))
 CHECKS = []
+# The pre-phase revision (the last commit before the 2x phase build 637090ba): the default-path identity checks of T1
+# compare against THIS revision, never HEAD (v1 of these tests compared against HEAD, which after the build commit is
+# the new code itself -- a vacuous comparison; v2 fixes it and asserts the two files differ).
+PRE_PHASE_REV = '6b1d98b2'
 
 
 def log(msg):
@@ -183,9 +188,9 @@ def _se(F, S=100.0, PR=0.0, G=0.0, A=0.0, gates=True, status='settled'):
             'gates_pass': gates}
 
 
-def _load_head_module(name, rel, out_dir):
-    src = subprocess.run(['git', 'show', f'HEAD:{rel}'], cwd=CODE_ROOT, capture_output=True, text=True, check=True)
-    path = os.path.join(out_dir, f'head_{rel}')
+def _load_head_module(name, rel, out_dir, rev=PRE_PHASE_REV):
+    src = subprocess.run(['git', 'show', f'{rev}:{rel}'], cwd=CODE_ROOT, capture_output=True, text=True, check=True)
+    path = os.path.join(out_dir, f'pre_{rev}_{rel}')
     with open(path, 'w') as h:
         h.write(src.stdout)
     spec = importlib.util.spec_from_file_location(name, path)
@@ -262,8 +267,10 @@ def t1(lat, data_root, out_dir):
        and [p['label'] for p in lp['plans']] == ['n7_y2025_p0.5_e2', 'n9_y2030_p0.5_e2', 'n9_y2030_p1_e4']
        and [s['label'] for s in lp['skipped']] == ['n7_y2025_p1_e4'] and 'budget' in lp['skipped'][0]['reasons'][0],
        lp)
-    # default search path byte-identical to HEAD's policy
-    head_p, head_sha = _load_head_module('head_policy', 'p515_s56_search_policy.py', out_dir)
+    # default search path byte-identical to the pre-phase policy (PRE_PHASE_REV)
+    head_p, head_sha = _load_head_module('pre_policy', 'p515_s56_search_policy.py', out_dir)
+    ck('T1', f'the comparison is not vacuous: the policy at {PRE_PHASE_REV} differs from the working-tree policy',
+       head_sha != D.sha256_file(P.__file__), [head_sha, D.sha256_file(P.__file__)])
     env = D.LatticeEnv(lat)
     same = []
     for start in ('x0', 'reference_unit', 'plan_2030'):
@@ -281,10 +288,12 @@ def t1(lat, data_root, out_dir):
                          P.canonical_json(s_old), 'report_equal': P.canonical_json(rep_new) == P.canonical_json(rep_old),
                          'budget': s_new['budget_used'], 'moves': len(s_new['incumbent_history']) - 1})
     ck('T1', 'default search path (no poll_depth / poll_only): state and terminal report byte-identical to the policy '
-             f'at HEAD ({head_sha[:12]}) on 6 synthetic searches', all(r['state_equal'] and r['report_equal']
+             f'at {PRE_PHASE_REV} ({head_sha[:12]}) on 6 synthetic searches', all(r['state_equal'] and r['report_equal']
                                                                          for r in same), same)
-    head_d_src = subprocess.run(['git', 'show', 'HEAD:p515_s56_search_driver.py'], cwd=CODE_ROOT, capture_output=True,
-                                text=True, check=True).stdout
+    head_d_src = subprocess.run(['git', 'show', f'{PRE_PHASE_REV}:p515_s56_search_driver.py'], cwd=CODE_ROOT,
+                                capture_output=True, text=True, check=True).stdout
+    ck('T1', f'the landscape comparison is not vacuous: the driver at {PRE_PHASE_REV} differs from the working tree',
+       D.sha256_text(head_d_src) != D.sha256_file(D.__file__))
     ns = {}
     start = head_d_src.index('class SyntheticLandscape:')
     end = head_d_src.index('def synthetic_landscape_of(')
@@ -296,7 +305,8 @@ def t1(lat, data_root, out_dir):
     dom = D.enumerate_domain(lat)[::97]
     eq = all(P.canonical_json(old_land.summary(z, d)) == P.canonical_json(new_land.summary(z, d))
              for z in dom for d in P.DEPTHS) and old_land.describe() == new_land.describe()
-    ck('T1', f'the plain synthetic landscape (no knobs) byte-identical to HEAD\'s on {len(dom)} plans x 2 depths',
+    ck('T1', f'the plain synthetic landscape (no knobs) byte-identical to {PRE_PHASE_REV}\'s on {len(dom)} plans x 2 '
+             'depths',
        eq)
     import p515_s44_campaign_harness as H
     try:
