@@ -1,0 +1,915 @@
+{
+ "authority": [
+  "S56_DESIGN_NOTE_v1.md, section Parallelism (D6): bitwise equivalence gate over 3 cycles, one candidate alone vs the same candidate inside a full batch, in separate roots, on the per-cycle record",
+  "author's request (S56 order, 2026-11-21): compare representative serial and parallel evaluations using the same inputs and numerical criteria",
+  "Planner task: S56 concurrency gate (Advisor: the gate must be bitwise; predictions P1-P3 recorded before the run)",
+  "TASKS.md, S56 order",
+  "S56_SEARCH_DRIVER_DESIGN.md, Execution: \"Gate F (5 concurrent children, bitwise) is re-run on the final harness before the driver relies on it\"; Integration rulings 1-7 (601775c0)",
+  "Planner task (pilot-ready Worker, 2026-11-23): EV twin, 2025/2030/2035, 2x, all S56 EV keys, cap 3, five distinct candidates incl. x0, the reference unit and the staged plan; serial vs 5-way, bitwise on the per-cycle records with timing fields excluded (exclusion list declared in advance)"
+ ],
+ "bar_window_cycles": 10,
+ "campaign_id": "s56_cgate_ev_v1_rootA_serial",
+ "candidates": [
+  {
+   "canonical": {
+    "nodes": {
+     "5": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     },
+     "7": {
+      "2025": [
+       0.25,
+       1.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     },
+     "9": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "schema": "v2"
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "ae3193097a25324e_n7_y2025_p0_25_e1",
+   "eval_key": "ae3193097a25324e6f3b6f5a3b746849bdf8c3d80c2f7bd046da806a942685d7",
+   "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+   "flex_price_multiplier": 2.0,
+   "key": "0998d02182570fc09538c2b58e9a16313dbb0225db0595442fcaba0b3c308000",
+   "label": "n7_y2025_p0.25_e1",
+   "overrides": {},
+   "post_certification": null,
+   "s56_cohort_formulation": "independent_units_all_node_years",
+   "s56_cycle_cap_keyed": 3,
+   "s56_ess_params_check": {
+    "available_energy_soh_point_in_file": null,
+    "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+    "cohort_formulation_in_file": null,
+    "ess_params_file": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "esso_slack_penalty_in_file": null,
+    "salvage_value_in_objective_in_file": null,
+    "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+   },
+   "s56_esso_slack_penalty": 10000.0,
+   "s56_ev_plan_label": "EVALUATION OPTION \u2014 S56 EV-plan formulation (cohort mode, terminal value in the ESSO objective, ESSO slack penalty, EV injection, staged candidate)",
+   "s56_ev_profiles": {
+    "ev_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+    "profiles_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+    "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729"
+   },
+   "s56_investment": {
+    "active_cohorts": [
+     [
+      7,
+      2025
+     ]
+    ],
+    "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+    "cumulative_energy_mwh": {
+     "5|2025": 0.0,
+     "5|2030": 0.0,
+     "5|2035": 0.0,
+     "7|2025": 1.0,
+     "7|2030": 1.0,
+     "7|2035": 1.0,
+     "9|2025": 0.0,
+     "9|2030": 0.0,
+     "9|2035": 0.0
+    },
+    "investment_cost_definition": "I(x) = sum_n sum_y sum_m (1+d)^-(y-y1) omega_m (c^S_my P_ny + c^E_my E_ny), the master investment_cost expression in its own term order (p516_lattice.GeneralLattice.investment_cost)",
+    "investment_cost_eur": 317957.0085035586,
+    "lattice_instance_sha256": "1c2d23f7f21b0a058fa7107d9a8bfefd95e85ccec47987d109432ad5d5c7366f",
+    "lattice_label": "n7_y2025_p0.25_e1"
+   },
+   "s56_pricing_capture": true,
+   "s56_settled_stop_disabled": true,
+   "s56_staged_investment": {
+    "5": {
+     "2025": [
+      0.0,
+      0.0
+     ],
+     "2030": [
+      0.0,
+      0.0
+     ],
+     "2035": [
+      0.0,
+      0.0
+     ]
+    },
+    "7": {
+     "2025": [
+      0.25,
+      1.0
+     ],
+     "2030": [
+      0.0,
+      0.0
+     ],
+     "2035": [
+      0.0,
+      0.0
+     ]
+    },
+    "9": {
+     "2025": [
+      0.0,
+      0.0
+     ],
+     "2030": [
+      0.0,
+      0.0
+     ],
+     "2035": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "s56_terminal_value_in_objective": true,
+   "working_dir_ids": {
+    "precheck": "p515s44_s56_cgate_ev_v1_roota_serial_ae3193097a25324e_precheck",
+    "run": "p515s44_s56_cgate_ev_v1_roota_serial_ae3193097a25324e_run"
+   }
+  },
+  {
+   "canonical": {
+    "nodes": {
+     "5": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     },
+     "7": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     },
+     "9": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "schema": "v2"
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "d8617f71494a5b15_x0",
+   "eval_key": "d8617f71494a5b150761c09fe2a20a95ef82381368f878511b9dffb6eada2aa7",
+   "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+   "flex_price_multiplier": 2.0,
+   "key": "dcb43218986e026f00649f3988dbc50bbd67f4e4ef3670aa43b3c7805f8aee1f",
+   "label": "x0",
+   "overrides": {},
+   "post_certification": null,
+   "s56_cohort_formulation": "independent_units_all_node_years",
+   "s56_cycle_cap_keyed": 3,
+   "s56_ess_params_check": {
+    "available_energy_soh_point_in_file": null,
+    "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+    "cohort_formulation_in_file": null,
+    "ess_params_file": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "esso_slack_penalty_in_file": null,
+    "salvage_value_in_objective_in_file": null,
+    "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+   },
+   "s56_esso_slack_penalty": 10000.0,
+   "s56_ev_plan_label": "EVALUATION OPTION \u2014 S56 EV-plan formulation (cohort mode, terminal value in the ESSO objective, ESSO slack penalty, EV injection, staged candidate)",
+   "s56_ev_profiles": {
+    "ev_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+    "profiles_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+    "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729"
+   },
+   "s56_investment": {
+    "active_cohorts": [],
+    "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+    "cumulative_energy_mwh": {
+     "5|2025": 0.0,
+     "5|2030": 0.0,
+     "5|2035": 0.0,
+     "7|2025": 0.0,
+     "7|2030": 0.0,
+     "7|2035": 0.0,
+     "9|2025": 0.0,
+     "9|2030": 0.0,
+     "9|2035": 0.0
+    },
+    "investment_cost_definition": "I(x) = sum_n sum_y sum_m (1+d)^-(y-y1) omega_m (c^S_my P_ny + c^E_my E_ny), the master investment_cost expression in its own term order (p516_lattice.GeneralLattice.investment_cost)",
+    "investment_cost_eur": 0.0,
+    "lattice_instance_sha256": "1c2d23f7f21b0a058fa7107d9a8bfefd95e85ccec47987d109432ad5d5c7366f",
+    "lattice_label": "x0"
+   },
+   "s56_pricing_capture": true,
+   "s56_settled_stop_disabled": true,
+   "s56_staged_investment": {
+    "5": {
+     "2025": [
+      0.0,
+      0.0
+     ],
+     "2030": [
+      0.0,
+      0.0
+     ],
+     "2035": [
+      0.0,
+      0.0
+     ]
+    },
+    "7": {
+     "2025": [
+      0.0,
+      0.0
+     ],
+     "2030": [
+      0.0,
+      0.0
+     ],
+     "2035": [
+      0.0,
+      0.0
+     ]
+    },
+    "9": {
+     "2025": [
+      0.0,
+      0.0
+     ],
+     "2030": [
+      0.0,
+      0.0
+     ],
+     "2035": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "s56_terminal_value_in_objective": true,
+   "working_dir_ids": {
+    "precheck": "p515s44_s56_cgate_ev_v1_roota_serial_d8617f71494a5b15_precheck",
+    "run": "p515s44_s56_cgate_ev_v1_roota_serial_d8617f71494a5b15_run"
+   }
+  },
+  {
+   "canonical": {
+    "nodes": {
+     "5": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2030": [
+       0.5,
+       1.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     },
+     "7": {
+      "2025": [
+       0.25,
+       1.0
+      ],
+      "2030": [
+       0.25,
+       0.5
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     },
+     "9": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.25,
+       0.5
+      ]
+     }
+    },
+    "schema": "v2"
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "c400fd49be5b5eda_n5_y2030_p0_5_e1__n7_y2025_p0_25_e1__n7_y2030_p0_25_e0_5__n9_y2035_p0_25_e0_5",
+   "eval_key": "c400fd49be5b5edab9e9fdebf50dea376a2b444fb046c396b6ecad3c9cd2868d",
+   "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+   "flex_price_multiplier": 2.0,
+   "key": "87170f8d2133558f7e41b78671a8e43fc5453dd25b8a834739dd4498506d3f4d",
+   "label": "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5",
+   "overrides": {},
+   "post_certification": null,
+   "s56_cohort_formulation": "independent_units_all_node_years",
+   "s56_cycle_cap_keyed": 3,
+   "s56_ess_params_check": {
+    "available_energy_soh_point_in_file": null,
+    "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+    "cohort_formulation_in_file": null,
+    "ess_params_file": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "esso_slack_penalty_in_file": null,
+    "salvage_value_in_objective_in_file": null,
+    "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+   },
+   "s56_esso_slack_penalty": 10000.0,
+   "s56_ev_plan_label": "EVALUATION OPTION \u2014 S56 EV-plan formulation (cohort mode, terminal value in the ESSO objective, ESSO slack penalty, EV injection, staged candidate)",
+   "s56_ev_profiles": {
+    "ev_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+    "profiles_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+    "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729"
+   },
+   "s56_investment": {
+    "active_cohorts": [
+     [
+      5,
+      2030
+     ],
+     [
+      7,
+      2025
+     ],
+     [
+      7,
+      2030
+     ],
+     [
+      9,
+      2035
+     ]
+    ],
+    "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+    "cumulative_energy_mwh": {
+     "5|2025": 0.0,
+     "5|2030": 1.0,
+     "5|2035": 1.0,
+     "7|2025": 1.0,
+     "7|2030": 1.5,
+     "7|2035": 1.5,
+     "9|2025": 0.0,
+     "9|2030": 0.0,
+     "9|2035": 0.5
+    },
+    "investment_cost_definition": "I(x) = sum_n sum_y sum_m (1+d)^-(y-y1) omega_m (c^S_my P_ny + c^E_my E_ny), the master investment_cost expression in its own term order (p516_lattice.GeneralLattice.investment_cost)",
+    "investment_cost_eur": 862548.6983358284,
+    "lattice_instance_sha256": "1c2d23f7f21b0a058fa7107d9a8bfefd95e85ccec47987d109432ad5d5c7366f",
+    "lattice_label": "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5"
+   },
+   "s56_pricing_capture": true,
+   "s56_settled_stop_disabled": true,
+   "s56_staged_investment": {
+    "5": {
+     "2025": [
+      0.0,
+      0.0
+     ],
+     "2030": [
+      0.5,
+      1.0
+     ],
+     "2035": [
+      0.0,
+      0.0
+     ]
+    },
+    "7": {
+     "2025": [
+      0.25,
+      1.0
+     ],
+     "2030": [
+      0.25,
+      0.5
+     ],
+     "2035": [
+      0.0,
+      0.0
+     ]
+    },
+    "9": {
+     "2025": [
+      0.0,
+      0.0
+     ],
+     "2030": [
+      0.0,
+      0.0
+     ],
+     "2035": [
+      0.25,
+      0.5
+     ]
+    }
+   },
+   "s56_terminal_value_in_objective": true,
+   "working_dir_ids": {
+    "precheck": "p515s44_s56_cgate_ev_v1_roota_serial_c400fd49be5b5eda_precheck",
+    "run": "p515s44_s56_cgate_ev_v1_roota_serial_c400fd49be5b5eda_run"
+   }
+  },
+  {
+   "canonical": {
+    "nodes": {
+     "5": {
+      "2025": [
+       0.25,
+       0.5
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     },
+     "7": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     },
+     "9": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "schema": "v2"
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "d5efc8b73566a51a_n5_y2025_p0_25_e0_5",
+   "eval_key": "d5efc8b73566a51a9efaa8a382960b0ef888631406c52adf8c7c570954e100b3",
+   "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+   "flex_price_multiplier": 2.0,
+   "key": "aeb5515dee716bac12ec8c787b2920d893b27a6cd1ca536de0187ad9fbd0fac1",
+   "label": "n5_y2025_p0.25_e0.5",
+   "overrides": {},
+   "post_certification": null,
+   "s56_cohort_formulation": "independent_units_all_node_years",
+   "s56_cycle_cap_keyed": 3,
+   "s56_ess_params_check": {
+    "available_energy_soh_point_in_file": null,
+    "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+    "cohort_formulation_in_file": null,
+    "ess_params_file": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "esso_slack_penalty_in_file": null,
+    "salvage_value_in_objective_in_file": null,
+    "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+   },
+   "s56_esso_slack_penalty": 10000.0,
+   "s56_ev_plan_label": "EVALUATION OPTION \u2014 S56 EV-plan formulation (cohort mode, terminal value in the ESSO objective, ESSO slack penalty, EV injection, staged candidate)",
+   "s56_ev_profiles": {
+    "ev_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+    "profiles_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+    "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729"
+   },
+   "s56_investment": {
+    "active_cohorts": [
+     [
+      5,
+      2025
+     ]
+    ],
+    "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+    "cumulative_energy_mwh": {
+     "5|2025": 0.5,
+     "5|2030": 0.5,
+     "5|2035": 0.5,
+     "7|2025": 0.0,
+     "7|2030": 0.0,
+     "7|2035": 0.0,
+     "9|2025": 0.0,
+     "9|2030": 0.0,
+     "9|2035": 0.0
+    },
+    "investment_cost_definition": "I(x) = sum_n sum_y sum_m (1+d)^-(y-y1) omega_m (c^S_my P_ny + c^E_my E_ny), the master investment_cost expression in its own term order (p516_lattice.GeneralLattice.investment_cost)",
+    "investment_cost_eur": 191018.169784262,
+    "lattice_instance_sha256": "1c2d23f7f21b0a058fa7107d9a8bfefd95e85ccec47987d109432ad5d5c7366f",
+    "lattice_label": "n5_y2025_p0.25_e0.5"
+   },
+   "s56_pricing_capture": true,
+   "s56_settled_stop_disabled": true,
+   "s56_staged_investment": {
+    "5": {
+     "2025": [
+      0.25,
+      0.5
+     ],
+     "2030": [
+      0.0,
+      0.0
+     ],
+     "2035": [
+      0.0,
+      0.0
+     ]
+    },
+    "7": {
+     "2025": [
+      0.0,
+      0.0
+     ],
+     "2030": [
+      0.0,
+      0.0
+     ],
+     "2035": [
+      0.0,
+      0.0
+     ]
+    },
+    "9": {
+     "2025": [
+      0.0,
+      0.0
+     ],
+     "2030": [
+      0.0,
+      0.0
+     ],
+     "2035": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "s56_terminal_value_in_objective": true,
+   "working_dir_ids": {
+    "precheck": "p515s44_s56_cgate_ev_v1_roota_serial_d5efc8b73566a51a_precheck",
+    "run": "p515s44_s56_cgate_ev_v1_roota_serial_d5efc8b73566a51a_run"
+   }
+  },
+  {
+   "canonical": {
+    "nodes": {
+     "5": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     },
+     "7": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     },
+     "9": {
+      "2025": [
+       0.25,
+       1.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "schema": "v2"
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "fbcef374d3e73fd8_n9_y2025_p0_25_e1",
+   "eval_key": "fbcef374d3e73fd83ae79653989e32d283ea125af581e0504716650d49561bfa",
+   "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+   "flex_price_multiplier": 2.0,
+   "key": "e8578c6effe2ff49e163b175a469f8aa17ad3b994fc5f7b6dd7b455562e49667",
+   "label": "n9_y2025_p0.25_e1",
+   "overrides": {},
+   "post_certification": null,
+   "s56_cohort_formulation": "independent_units_all_node_years",
+   "s56_cycle_cap_keyed": 3,
+   "s56_ess_params_check": {
+    "available_energy_soh_point_in_file": null,
+    "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+    "cohort_formulation_in_file": null,
+    "ess_params_file": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "esso_slack_penalty_in_file": null,
+    "salvage_value_in_objective_in_file": null,
+    "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+   },
+   "s56_esso_slack_penalty": 10000.0,
+   "s56_ev_plan_label": "EVALUATION OPTION \u2014 S56 EV-plan formulation (cohort mode, terminal value in the ESSO objective, ESSO slack penalty, EV injection, staged candidate)",
+   "s56_ev_profiles": {
+    "ev_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+    "profiles_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+    "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729"
+   },
+   "s56_investment": {
+    "active_cohorts": [
+     [
+      9,
+      2025
+     ]
+    ],
+    "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+    "cumulative_energy_mwh": {
+     "5|2025": 0.0,
+     "5|2030": 0.0,
+     "5|2035": 0.0,
+     "7|2025": 0.0,
+     "7|2030": 0.0,
+     "7|2035": 0.0,
+     "9|2025": 1.0,
+     "9|2030": 1.0,
+     "9|2035": 1.0
+    },
+    "investment_cost_definition": "I(x) = sum_n sum_y sum_m (1+d)^-(y-y1) omega_m (c^S_my P_ny + c^E_my E_ny), the master investment_cost expression in its own term order (p516_lattice.GeneralLattice.investment_cost)",
+    "investment_cost_eur": 317957.0085035586,
+    "lattice_instance_sha256": "1c2d23f7f21b0a058fa7107d9a8bfefd95e85ccec47987d109432ad5d5c7366f",
+    "lattice_label": "n9_y2025_p0.25_e1"
+   },
+   "s56_pricing_capture": true,
+   "s56_settled_stop_disabled": true,
+   "s56_staged_investment": {
+    "5": {
+     "2025": [
+      0.0,
+      0.0
+     ],
+     "2030": [
+      0.0,
+      0.0
+     ],
+     "2035": [
+      0.0,
+      0.0
+     ]
+    },
+    "7": {
+     "2025": [
+      0.0,
+      0.0
+     ],
+     "2030": [
+      0.0,
+      0.0
+     ],
+     "2035": [
+      0.0,
+      0.0
+     ]
+    },
+    "9": {
+     "2025": [
+      0.25,
+      1.0
+     ],
+     "2030": [
+      0.0,
+      0.0
+     ],
+     "2035": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "s56_terminal_value_in_objective": true,
+   "working_dir_ids": {
+    "precheck": "p515s44_s56_cgate_ev_v1_roota_serial_fbcef374d3e73fd8_precheck",
+    "run": "p515s44_s56_cgate_ev_v1_roota_serial_fbcef374d3e73fd8_run"
+   }
+  }
+ ],
+ "cap": 3,
+ "concurrency": 1,
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "convergence_depth_tail": {
+   "compl_inf_tol": 1e-06,
+   "enabled": true
+  },
+  "derived_instance": {
+   "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+   "case_sha256": "45e8e700a547de22b2c9cd2f9373c4307da30764461e647424eca7eb2d1594b3",
+   "changes_vs_source": [
+    {
+     "from": 3,
+     "key": "NumMarketScenarios",
+     "to": 1
+    },
+    {
+     "from": 3,
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "to": 1
+    },
+    {
+     "from": 3,
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "to": 1
+    },
+    {
+     "from": 3,
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "to": 1
+    },
+    {
+     "from": 3,
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "to": 1
+    },
+    {
+     "from": "production synthesis at one scenario (= the published draw 0)",
+     "key": "scenario arrays (all but A5)",
+     "to": "probability-weighted means of s56_srp1grid_3x3, injected at shared_resources_planning._compute_scenario_metadata from data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json (sha256 f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729)"
+    }
+   ],
+   "instance_label": "s56_srp1grid_3x3_ev",
+   "scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+   "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+   "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+  },
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ess_params_file": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "full_diagnostics_in_rows": true,
+  "name": "S56 GATE F (EV re-run) -- the SRP1-grid 3 x 3 EV twin as p515_s56_ev_harness_tests._spec_like declares it (case-file AA, ESS ageing baseline, convergence-depth tail), cap 3",
+  "note": "identical in both roots; the S56 EV-plan keys are entry options (the pilot's i1 entries); cap 3 (cannot certify: 10 consecutive passing cycles required)",
+  "overrides": {}
+ },
+ "extra": {
+  "campaign_script": "p515_s56_concurrency_gate.py",
+  "campaign_script_sha256": "8038374f73b453bccc23e72e74ddcbfdea01ed2f99098205894b518f262e4c01",
+  "gate_spec": {
+   "path": "data/SRP1/Results/P515S56/concurrency_gate_ev_v1/frozen_concurrency_gate_ev_spec_v1_8a2dfc66.json",
+   "sha256": "8a2dfc66e78cf168757596493f540d600ca79dde5c8436295cf3bdb7cac0189e"
+  },
+  "objective_convention": "Q = gross_operational_cost (contracted interface settlement excluded; salvage reported separately); no objective difference is quoted -- records are compared bitwise",
+  "root": "A"
+ },
+ "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+ "frozen_utc": "2026-11-23T23:49:54.471467+00:00",
+ "git_head": "9e0e825072a192fae62e28398b2e2841a5047bff",
+ "harness": {
+  "path": "p515_s44_campaign_harness.py",
+  "sha256": "05a9838c46f19837398af31252bd85c465a3794aa03e9cfc1a7a30c08c462b29"
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "nlp_solver_path_env": {
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "source": "environment"
+ },
+ "required_consecutive_cycles": 10,
+ "s56_ev_plan_label": "EVALUATION OPTION \u2014 S56 EV-plan formulation (cohort mode, terminal value in the ESSO objective, ESSO slack penalty, EV injection, staged candidate)",
+ "schema": "p515_s44_campaign_spec_v2",
+ "thread_caps": {
+  "MKL_NUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1"
+ }
+}

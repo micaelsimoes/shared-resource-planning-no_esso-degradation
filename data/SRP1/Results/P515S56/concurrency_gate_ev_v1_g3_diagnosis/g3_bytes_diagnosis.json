@@ -1,0 +1,231 @@
+{
+ "all_hold": true,
+ "hypothesis": "Zero-solve diagnosis of gate F ev_v1's G3 failure (gate_result.json f4d6905c): the only non-excluded G3 differences\nare interface_dual_capture.bytes_written / bytes_per_cycle_line_max (1-2 bytes) on 3 of 5 candidates. Hypothesis: the\nlines of interface_duals_per_cycle.jsonl carry a timing field `capture_s` whose decimal text length varies, so the\nbyte counts differ while every other value of the file is bitwise equal. Reads the A and B eval dirs only (no solve,\nno unpickle). For each candidate: per line, (a) the parsed JSON with `capture_s` removed, compared bitwise (floats by\nIEEE bytes via repr of float.hex); (b) byte length A - B; (c) len(repr(capture_s)) A - B. Holds iff (a) equal on every\nline and (b) == (c) on every line.",
+ "per_candidate": {
+  "n5_y2025_p0.25_e0.5": {
+   "file_bytes_A": 240487,
+   "file_bytes_B": 240487,
+   "holds": true,
+   "lines": [
+    {
+     "bytes_A_minus_B": 0,
+     "capture_s_A": null,
+     "capture_s_B": null,
+     "capture_s_text_len_A_minus_B": 0,
+     "rest_bitwise_equal": true
+    },
+    {
+     "bytes_A_minus_B": 0,
+     "capture_s_A": 0.0009212493896484375,
+     "capture_s_B": 0.0012881755828857422,
+     "capture_s_text_len_A_minus_B": 0,
+     "rest_bitwise_equal": true
+    },
+    {
+     "bytes_A_minus_B": 0,
+     "capture_s_A": 0.00010395050048828125,
+     "capture_s_B": 0.00023818016052246094,
+     "capture_s_text_len_A_minus_B": 0,
+     "rest_bitwise_equal": true
+    },
+    {
+     "bytes_A_minus_B": 0,
+     "capture_s_A": 0.00011301040649414062,
+     "capture_s_B": 0.00012183189392089844,
+     "capture_s_text_len_A_minus_B": 0,
+     "rest_bitwise_equal": true
+    }
+   ],
+   "n_lines_A": 4,
+   "n_lines_B": 4,
+   "record_bytes_written_A_B": [
+    240487,
+    240487
+   ],
+   "record_line_max_A_B": [
+    76157,
+    76157
+   ]
+  },
+  "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5": {
+   "file_bytes_A": 240574,
+   "file_bytes_B": 240575,
+   "holds": true,
+   "lines": [
+    {
+     "bytes_A_minus_B": 0,
+     "capture_s_A": null,
+     "capture_s_B": null,
+     "capture_s_text_len_A_minus_B": 0,
+     "rest_bitwise_equal": true
+    },
+    {
+     "bytes_A_minus_B": 0,
+     "capture_s_A": 0.0007181167602539062,
+     "capture_s_B": 0.0012791156768798828,
+     "capture_s_text_len_A_minus_B": 0,
+     "rest_bitwise_equal": true
+    },
+    {
+     "bytes_A_minus_B": -1,
+     "capture_s_A": 9.393692016601562e-05,
+     "capture_s_B": 0.00014209747314453125,
+     "capture_s_text_len_A_minus_B": -1,
+     "rest_bitwise_equal": true
+    },
+    {
+     "bytes_A_minus_B": 0,
+     "capture_s_A": 0.00010585784912109375,
+     "capture_s_B": 0.00010585784912109375,
+     "capture_s_text_len_A_minus_B": 0,
+     "rest_bitwise_equal": true
+    }
+   ],
+   "n_lines_A": 4,
+   "n_lines_B": 4,
+   "record_bytes_written_A_B": [
+    240574,
+    240575
+   ],
+   "record_line_max_A_B": [
+    76155,
+    76155
+   ]
+  },
+  "n7_y2025_p0.25_e1": {
+   "file_bytes_A": 240585,
+   "file_bytes_B": 240584,
+   "holds": true,
+   "lines": [
+    {
+     "bytes_A_minus_B": 0,
+     "capture_s_A": null,
+     "capture_s_B": null,
+     "capture_s_text_len_A_minus_B": 0,
+     "rest_bitwise_equal": true
+    },
+    {
+     "bytes_A_minus_B": 0,
+     "capture_s_A": 0.0008120536804199219,
+     "capture_s_B": 0.0008740425109863281,
+     "capture_s_text_len_A_minus_B": 0,
+     "rest_bitwise_equal": true
+    },
+    {
+     "bytes_A_minus_B": 0,
+     "capture_s_A": 0.00010609626770019531,
+     "capture_s_B": 0.00011301040649414062,
+     "capture_s_text_len_A_minus_B": 0,
+     "rest_bitwise_equal": true
+    },
+    {
+     "bytes_A_minus_B": 1,
+     "capture_s_A": 0.00011897087097167969,
+     "capture_s_B": 0.0001621246337890625,
+     "capture_s_text_len_A_minus_B": 1,
+     "rest_bitwise_equal": true
+    }
+   ],
+   "n_lines_A": 4,
+   "n_lines_B": 4,
+   "record_bytes_written_A_B": [
+    240585,
+    240584
+   ],
+   "record_line_max_A_B": [
+    76147,
+    76146
+   ]
+  },
+  "n9_y2025_p0.25_e1": {
+   "file_bytes_A": 240607,
+   "file_bytes_B": 240609,
+   "holds": true,
+   "lines": [
+    {
+     "bytes_A_minus_B": 0,
+     "capture_s_A": null,
+     "capture_s_B": null,
+     "capture_s_text_len_A_minus_B": 0,
+     "rest_bitwise_equal": true
+    },
+    {
+     "bytes_A_minus_B": 0,
+     "capture_s_A": 0.0007600784301757812,
+     "capture_s_B": 0.0008599758148193359,
+     "capture_s_text_len_A_minus_B": 0,
+     "rest_bitwise_equal": true
+    },
+    {
+     "bytes_A_minus_B": -1,
+     "capture_s_A": 9.512901306152344e-05,
+     "capture_s_B": 0.00016379356384277344,
+     "capture_s_text_len_A_minus_B": -1,
+     "rest_bitwise_equal": true
+    },
+    {
+     "bytes_A_minus_B": -1,
+     "capture_s_A": 9.417533874511719e-05,
+     "capture_s_B": 0.00012087821960449219,
+     "capture_s_text_len_A_minus_B": -1,
+     "rest_bitwise_equal": true
+    }
+   ],
+   "n_lines_A": 4,
+   "n_lines_B": 4,
+   "record_bytes_written_A_B": [
+    240607,
+    240609
+   ],
+   "record_line_max_A_B": [
+    76198,
+    76199
+   ]
+  },
+  "x0": {
+   "file_bytes_A": 240523,
+   "file_bytes_B": 240523,
+   "holds": true,
+   "lines": [
+    {
+     "bytes_A_minus_B": 0,
+     "capture_s_A": null,
+     "capture_s_B": null,
+     "capture_s_text_len_A_minus_B": 0,
+     "rest_bitwise_equal": true
+    },
+    {
+     "bytes_A_minus_B": 0,
+     "capture_s_A": 0.0007469654083251953,
+     "capture_s_B": 0.0009691715240478516,
+     "capture_s_text_len_A_minus_B": 0,
+     "rest_bitwise_equal": true
+    },
+    {
+     "bytes_A_minus_B": 0,
+     "capture_s_A": 0.00010275840759277344,
+     "capture_s_B": 0.00018215179443359375,
+     "capture_s_text_len_A_minus_B": 0,
+     "rest_bitwise_equal": true
+    },
+    {
+     "bytes_A_minus_B": 0,
+     "capture_s_A": 0.00010824203491210938,
+     "capture_s_B": 0.00015473365783691406,
+     "capture_s_text_len_A_minus_B": 0,
+     "rest_bitwise_equal": true
+    }
+   ],
+   "n_lines_A": 4,
+   "n_lines_B": 4,
+   "record_bytes_written_A_B": [
+    240523,
+    240523
+   ],
+   "record_line_max_A_B": [
+    76153,
+    76153
+   ]
+  }
+ }
+}
