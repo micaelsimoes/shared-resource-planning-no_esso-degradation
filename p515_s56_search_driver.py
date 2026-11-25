@@ -612,7 +612,8 @@ def make_oracle(spec, lattice, lock_path=None):
 #           per-cycle certification test held at each of them (cycle_convergence = boyd_all_pass and local_solves_ok,
 #           shared_resources_planning.py:3469 -- the test that advances the certificate counter; W = 10 = the
 #           certificate length, so (iii) is 'the run would have certified at K'), (iv) guards exact (the child's solve
-#           profile identity holds, nothing blocked, the stop-disabling hook summary ok, the tail state matches its
+#           profile reconciles -- `solve_profile_reconciliation`, mapping v2 --, nothing blocked, the stop-disabling
+#           hook summary ok, the tail state matches its
 #           declaration) and no local-solve failure. Otherwise 'not_settled' (the design's "uncertified").
 #  S        max - min of F over the last W cycles ending at K.
 #  PR       signed priced consensus residual, Expert ruling 3 sign: the first-order estimate is Q - price + dual, so
@@ -647,7 +648,9 @@ SETTLEMENT_DERIVATION = (
     'settlement price part: it excludes the whole settlement, exactly as the coupled step 4 arm\'s Q did, and the '
     'price term is the full weighted settlement, price = -sum w_b settlement_total (= -interface_settlement_total of '
     'the record\'s recourse_components). Checked per record: |deviation total| == 0 and contracted total == total.')
-MAPPING_SCHEMA = 'p515_s56_oracle_mapping_v1'
+# v2 (TASKS 5b, 2026-11-25): guards['solve_profile_identity_holds'] reads `solve_profile_reconciliation` (the ESSO
+# recovery solves counted exactly); the summaries carry its detail. v1: the harness's identity_holds alone.
+MAPPING_SCHEMA = 'p515_s56_oracle_mapping_v2'
 MAPPING_PARAMETERS = {
     'W': 10, 'bar_window': 10, 'interface_p_ceiling_mw': 0.0125, 'leak_ceiling_eur': 25.0,
     # FINAL (integration ruling 1, S56_SEARCH_DRIVER_DESIGN.md "Integration rulings", 601775c0: "confirmed as built";
@@ -700,6 +703,16 @@ def read_eval_files(eval_dir):
         out[key] = reader(p) if os.path.isfile(p) else None
     p = os.path.join(eval_dir, 'exit_code.txt')
     out['exit_code'] = int(open(p).read().strip()) if os.path.isfile(p) else None
+    # the ESSO recovery events of the run (read by `solve_profile_reconciliation`): the sibling of the record's network
+    # failure file, named by the harness's own rule (p515_g_g1_g4_admm_gates._scan_and_write_network_failures:
+    # 'network_failures_' -> 'esso_recovery_events_'), looked up inside THIS eval dir. None when the record names no
+    # failure file or the file is absent (a missing file is never read as "no event").
+    nf = ((out['record'] or {}).get('network_failures_summary') or {}).get('path')
+    name = os.path.basename(nf).replace('network_failures_', 'esso_recovery_events_', 1) if isinstance(nf, str) \
+        else None
+    p = os.path.join(eval_dir, name) if name and name.startswith('esso_recovery_events_') else None
+    out['esso_recovery_events_file'] = name
+    out['esso_recovery_events'] = _jsonl(p) if p and os.path.isfile(p) else None
     return out
 
 
@@ -755,12 +768,100 @@ def triangle_bound(rows, c, window):
     return max(gsteps) + (max(tvs) - min(tvs))
 
 
+def _int(v):
+    return isinstance(v, int) and not isinstance(v, bool)
+
+
+# SOLVE-PROFILE RECONCILIATION (Planner decision, TASKS 5b, 2026-11-25: "extend the reconciliation exactly (ESSO
+# recovery solves counted; every failure recovered) -- harness accounting, not formulation"). The harness's identity
+# (p515_g_g1_g4_admm_gates.py, "W35 item 3": observed == base + retry_solves_credited, retries = the network-failure
+# events' [recovery_attempted] + [tier2_attempted]) is declared UNSUPPORTED (identity_holds False) whenever an ESSO
+# recovery event exists, because "ESSO recovery events carry no attempt count". They do carry it, in the event record
+# the production ESSO path writes (shared_energy_storage_data._optimize): an event is appended to the diagnostic sink
+# iff `recovery_attempted` (the primary IPOPT solve ended internalSolverError / maxIterations / infeasible), and then
+# exactly one tier-1 cold retry ran (`_run_solver_attempt(..., log_suffix='recovery')`, one OptSolver.solve) plus one
+# tier-2 retry iff `tier2_attempted` (`log_suffix='recovery_tier2'`); the guard counts every OptSolver.solve entry
+# (p513_solve_profile_guard.guarded_solve), raising or not. So one ESSO event costs 1 + [tier2_attempted] solves, and
+# `recovery_succeeded` is solver_result_succeeded of the solution finally loaded. The harness writes the events to
+# esso_recovery_events_<label>.jsonl (every sink entry, tagged with its round) and counts them in
+# network_failures_summary.n_esso_recovery_events. The guard holds iff the harness identity holds (unchanged), or -- only
+# when the harness declared the reconciliation unsupported BECAUSE of >= 1 ESSO event -- ALL of:
+#   (1) the extended identity, exactly: observed == base_solves + retry_solves_credited + sum_events (1 + [tier2]);
+#   (2) every network failure recovered: classes recovered_tier1 + recovered_tier2 == n_blocks, no unrecovered /
+#       not_attempted / indeterminate block, and retry_solves_credited == recovered_tier1 + 2 x recovered_tier2 (the
+#       harness's per-event credit of an all-recovered set);
+#   (3) every ESSO event recorded as succeeded (`recovery_succeeded` is True), with a consistent tier record, and the
+#       events file holds exactly n_esso_recovery_events events.
+# Otherwise the guard fails, as before. Computed here from fields the harness already records; the harness is unchanged.
+SOLVE_PROFILE_RECONCILIATION_RULE = (
+    'harness identity (observed == base + network retries credited) holds; or, when it is unsupported because of >= 1 '
+    'ESSO recovery event: observed == base + retry_solves_credited + sum over ESSO events of (1 + [tier2_attempted]) '
+    'exactly, every network failure recovered (recovered_tier1 + recovered_tier2 == n_blocks; credited == tier1 + 2 '
+    'tier2), every ESSO event recovery_succeeded True, events file count == n_esso_recovery_events')
+
+
+def solve_profile_reconciliation(record, files):
+    """The solve-count reconciliation of one record (section comment above). Pure. -> {'holds', 'via', ...}."""
+    sp = (record or {}).get('solve_profile') or {}
+    if sp.get('identity_holds') is True:
+        return {'holds': True, 'via': 'harness_identity', 'failed': []}
+    nfs = (record or {}).get('network_failures_summary') or {}
+    cls = nfs.get('classes') or {}
+    obs = (sp.get('observed') or {}).get('permitted_solve')
+    base, cred, n_esso = sp.get('base_solves'), sp.get('retry_solves_credited'), nfs.get('n_esso_recovery_events')
+    events = files.get('esso_recovery_events')
+    failed = []
+    if not all(_int(v) for v in (obs, base, cred, n_esso)):
+        failed.append('observed / base_solves / retry_solves_credited / n_esso_recovery_events not all integers')
+    if not (_int(n_esso) and n_esso >= 1):
+        failed.append('no ESSO recovery event: the harness identity is the rule, and it does not hold')
+    if sp.get('reconciliation_supported') is not False:
+        failed.append('the harness did not declare the reconciliation unsupported')
+    t1, t2 = cls.get('recovered_tier1'), cls.get('recovered_tier2')
+    n_blocks = nfs.get('n_blocks')
+    net_ok = (all(_int(v) for v in (t1, t2, n_blocks)) and t1 + t2 == n_blocks
+              and all(cls.get(k) == 0 for k in ('unrecovered', 'not_attempted', 'indeterminate')))
+    if not net_ok:
+        failed.append('a network failure is not recovered (or the classes are incomplete)')
+    elif not (_int(cred) and cred == t1 + 2 * t2):
+        failed.append('retry_solves_credited != recovered_tier1 + 2 x recovered_tier2')
+    esso_solves, per_event = None, []
+    if events is None:
+        failed.append(f"ESSO recovery events file {files.get('esso_recovery_events_file')!r} not found")
+    else:
+        if not (_int(n_esso) and len(events) == n_esso):
+            failed.append(f'events file holds {len(events)} events, the summary counts {n_esso}')
+        esso_solves = 0
+        for ev in events:
+            t2a = ev.get('tier2_attempted')
+            ok = (ev.get('record_type') == 'esso_recovery' and ev.get('subsystem') == 'esso'
+                  and isinstance(t2a, bool) and ev.get('tier') == ('tier2' if t2a else 'tier1')
+                  and ev.get('recovery_succeeded') is True)
+            per_event.append({'node_id': ev.get('node_id'), 'cycle': ev.get('cycle'), 'tier': ev.get('tier'),
+                              'tier2_attempted': t2a, 'recovery_succeeded': ev.get('recovery_succeeded'),
+                              'extra_solves': 1 + int(t2a is True), 'ok': ok})
+            esso_solves += 1 + int(t2a is True)
+            if not ok:
+                failed.append(f"ESSO event node {ev.get('node_id')} cycle {ev.get('cycle')}: not recorded as a "
+                              f"succeeded recovery with a consistent tier")
+    expected = (base + cred + esso_solves) if (_int(base) and _int(cred) and esso_solves is not None) else None
+    identity = expected is not None and _int(obs) and obs == expected
+    if not identity:
+        failed.append(f'observed {obs} != base {base} + credited {cred} + ESSO recovery solves {esso_solves}')
+    return {'holds': not failed, 'via': 'extended_esso_recovery', 'failed': failed, 'observed': obs,
+            'base_solves': base, 'retry_solves_credited': cred, 'esso_recovery_solves': esso_solves,
+            'expected_solves': expected, 'n_esso_recovery_events': n_esso, 'esso_events': per_event,
+            'network_classes': {k: cls.get(k) for k in ('recovered_tier1', 'recovered_tier2', 'unrecovered',
+                                                        'not_attempted', 'indeterminate')}, 'n_blocks': n_blocks,
+            'rule': SOLVE_PROFILE_RECONCILIATION_RULE}
+
+
 def guards_exact(record, files):
     sp = (record or {}).get('solve_profile') or {}
     obs = sp.get('observed') or {}
     checks = {
         'child_exit_0': files.get('exit_code') == 0,
-        'solve_profile_identity_holds': sp.get('identity_holds') is True,
+        'solve_profile_identity_holds': solve_profile_reconciliation(record, files)['holds'],
         'nothing_blocked': obs.get('blocked_solve') == 0 and obs.get('blocked_exec') == 0,
         'no_local_solve_failure': (record or {}).get('local_solve_failures') == 0,
         'tail_state_matches_declaration': ((record or {}).get('convergence_depth_tail_state_check') or {}).get('match')
@@ -920,6 +1021,7 @@ def map_record(files, depth, params=MAPPING_PARAMETERS, read_cycle=None):
     required = int((rec.get('certification') or {}).get('required_consecutive_cycles') or
                    rec.get('required_consecutive_cycles'))
     guards = guards_exact(rec, files)
+    recon = solve_profile_reconciliation(rec, files)   # the detail behind guards['solve_profile_identity_holds']
     stop_disabled = rec.get('s56_settled_stop_disabled') is True
     if depth == P.DEPTH_EXIT:
         if read_cycle is None:
@@ -937,8 +1039,8 @@ def map_record(files, depth, params=MAPPING_PARAMETERS, read_cycle=None):
                              else 'certification cycle'),
                     I=inv, bar_steps_n=len(steps), bar_triangle_bound=tri,
                     bar_within_triangle_bound=(tri is None or bar is None or bar <= tri * (1 + 1e-12) + 1e-9),
-                    recourse_identity_bad_cycles=bad, guards=guards, cycles_run=rec.get('cycles_run'),
-                    wall_s=(rec.get('wall_time_s') or {}).get('child_process_s'))
+                    recourse_identity_bad_cycles=bad, guards=guards, solve_profile_reconciliation=recon,
+                    cycles_run=rec.get('cycles_run'), wall_s=(rec.get('wall_time_s') or {}).get('child_process_s'))
     # settled
     K = rec.get('cap')
     W = params['W']
@@ -992,8 +1094,13 @@ def map_record(files, depth, params=MAPPING_PARAMETERS, read_cycle=None):
                                           and abs(total_bd - F[K]) <= 1e-9 * abs(total_bd)),
                 breakdown_schema=bk.get('schema'), recourse_identity_bad_cycles=bad,
                 exit_view={k: exit_view.get(k) for k in ('status', 'F', 'bar', 'read_cycle', 'read_at')},
-                mapping_parameters=params, guards=guards, cycles_run=rec.get('cycles_run'),
-                wall_s=(rec.get('wall_time_s') or {}).get('child_process_s'))
+                mapping_parameters=params, guards=guards, solve_profile_reconciliation=recon,
+                cycles_run=rec.get('cycles_run'), wall_s=(rec.get('wall_time_s') or {}).get('child_process_s'))
+
+
+def _code_text(name):
+    p = os.path.join(CODE_ROOT, name)
+    return open(p).read() if os.path.isfile(p) else ''
 
 
 def assert_mapping_capture_paths(H, hz=None):
@@ -1023,6 +1130,18 @@ def assert_mapping_capture_paths(H, hz=None):
             H.s56_settled_stop_record_fields),
         'equality_tolerance_anchor': __import__('definitions').EQUALITY_TOLERANCE == MAPPING_PARAMETERS['tau_cl_pu']
                                      == MAPPING_PARAMETERS['esso_slack_tol'],
+        # mapping v2, `solve_profile_reconciliation`: its inputs, checked in the source text as committed (no model
+        # import): the record carries the failure summary; the runner writes the ESSO events file and counts them;
+        # production's ESSO event records the tier-2 attempt and the success of the loaded solution
+        'network_failures_summary_in_record': "'network_failures_summary'" in rec_src,
+        'esso_recovery_events_written': all(t in _code_text('p515_g_g1_g4_admm_gates.py') for t in (
+            "basename.replace('network_failures_', 'esso_recovery_events_', 1)",
+            "'n_esso_recovery_events': len(final_esso_events)", "'retry_solves_credited': _retries",
+            "'reconciliation_supported': _supported")),
+        'esso_recovery_event_fields': all(t in _code_text('shared_energy_storage_data.py') for t in (
+            "'recovery_succeeded': solver_result_succeeded(result)", "'tier2_attempted': tier2_attempted",
+            "'tier': 'tier2' if tier2_attempted else 'tier1'", "log_suffix='recovery'",
+            "log_suffix='recovery_tier2'")),
     }
     if hz is not None:
         st, ex = hz['by_depth']['settled']['entry_options'], hz['by_depth']['exit']['entry_options']
