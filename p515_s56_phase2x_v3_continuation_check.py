@@ -16,7 +16,11 @@ PART resume (after the v3 freeze; reads the v2 and v3 roots only)
   D  the v3 spec as frozen: its cache (`phase_cache`: the pilot source + the v2 continuation source), the v3 replay (no
      launch), one `phase_step` -> the first v3 action. Checked: it equals C's next action; it is the remainder of
      candidate 2's poll; none of its plans is cached; every v2 record and the pilot cache records are served from
-     cache, and the stage-by-stage decisions equal C's.
+     cache, and the stage-by-stage decisions equal C's. Compared on decision-bearing fields: BOOKKEEPING (sub-search ids,
+     a sub-search's action_index and budget_used: requests issued in this phase) is reported, not compared.
+PART freeze-sim (zero solves; nothing frozen in the repository)
+  E  the v3 freeze in process with the v2 launch artefacts added to the tracked-artefact list (the real freeze refused
+     at the cache-root key audit: only v2's spec is tracked), frozen into a scratch root under --out, then D on it.
 
 Guards: SolveProfileGuard(permitted=()) installed before any repository import, verify(0); pickle load/loads blocked
 (0). Nothing is written outside --out (a NEW directory, outside both phase roots).
@@ -24,6 +28,7 @@ Guards: SolveProfileGuard(permitted=()) installed before any repository import, 
 Launch (attached, both streams captured):
   python -u p515_s56_phase2x_v3_continuation_check.py --part remap --out <new dir> > <dir>_stdout.log 2> ..._stderr.log
   python -u p515_s56_phase2x_v3_continuation_check.py --part resume --v3-root <root> --remap <remap dir> --out <new dir>
+  python -u p515_s56_phase2x_v3_continuation_check.py --part freeze-sim --remap <remap dir> --out <new dir>
 Exit: 0 every check holds; 3 a check failed; 2 refused.
 """
 import os
@@ -140,6 +145,28 @@ def decisions(state, lat):
     return out
 
 
+# Fields that differ between a continuation and the run it continues by construction, and decide nothing: the
+# sub-searches' ids carry the phase id; a sub-search's action_index and budget_used count the requests issued IN THIS
+# phase (a cached plan is classified without a request; the sub-search N_max is the domain size, non-binding).
+BOOKKEEPING = ('sub_action.action_index', 'candidates[].poll_search_id', 'candidates[].poll_termination.budget_used')
+
+
+def action_decision(a):
+    sub = {k: v for k, v in (a.get('sub_action') or {}).items() if k != 'action_index'}
+    return dict({k: a.get(k) for k in ('kind', 'stage', 'purpose', 'depth', 'zs', 'labels')}, sub_action=sub)
+
+
+def strip_bookkeeping(d):
+    import copy as _copy
+    d = _copy.deepcopy(d)
+    book = []
+    for c in d.get('candidates') or []:
+        pt = c.get('poll_termination') or {}
+        book.append({'label': c['label'], 'poll_search_id': c.pop('poll_search_id', None),
+                     'budget_used': pt.pop('budget_used', None) if isinstance(pt, dict) else None})
+    return d, book
+
+
 def phase_wide_review(state):
     return P.phase_not_settled_review(state)
 
@@ -237,8 +264,11 @@ def part_resume(data_root, out_dir, v3_root, remap_dir):
     labels = [lattice.label(tuple(z)) for z in action.get('zs') or []]
     got = {k: action.get(k) for k in ('kind', 'stage', 'purpose', 'depth', 'zs', 'sub_action')}
     got['labels'] = labels
-    ck('D', 'the first v3 action equals the remap part C next action (v2 under the corrected guard)',
-       CJ(got) == CJ(C['C_next_action']), [got, C['C_next_action']])
+    ga, ca = action_decision(got), action_decision(C['C_next_action'])
+    ck('D', 'the first v3 action equals the remap part C next action (v2 under the corrected guard): kind, stage, '
+            'purpose, depth, plans, sub-action (bookkeeping fields apart: BOOKKEEPING)', CJ(ga) == CJ(ca), [ga, ca])
+    action_bookkeeping = {'v3': (got.get('sub_action') or {}).get('action_index'),
+                          'remap_C': (C['C_next_action'].get('sub_action') or {}).get('action_index')}
     cands = state.get('candidates') or []
     sub = state.get('sub') or {}
     ck('D', 'the first v3 action is candidate 2\'s poll (n7_y2025_p0.25_e1), settled, stage candidate_polls',
@@ -265,22 +295,72 @@ def part_resume(data_root, out_dir, v3_root, remap_dir):
     ck('D', 'the v3 state has evaluated nothing (every decision so far read from cache)', ev == [], len(ev))
     dD = decisions(state, lattice)
     dC = C['C_decisions']
-    same = {k: CJ(dD[k]) == CJ(dC[k]) for k in dC}
+    sD, bD = strip_bookkeeping(dD)
+    sC, bC = strip_bookkeeping(dC)
+    same = {k: CJ(sD[k]) == CJ(sC[k]) for k in sC}
     ck('D', 'the v3 decisions (table, efficiency, candidates, confirmations, both polls so far) equal remap part C',
        all(same.values()), [k for k, v in same.items() if not v])
     hours = spec['phase']['ceiling']
     return {'v3_phase_spec_sha256': v3_sha, 'first_action': got, 'stage': state['stage'],
             'cache_served_as_counts': src, 'n_cache_records': len(cache), 'n_v2_entries': len(v2_entries),
             'n_v2_records': n_v2, 'decisions': dD, 'decisions_equal_remap_C': same,
+            'bookkeeping': {'rule': BOOKKEEPING, 'sub_action_index': action_bookkeeping, 'v3': bD, 'remap_C': bC},
             'phase_not_settled_review': phase_wide_review(state),
             'ceiling': {k: hours.get(k) for k in ('ceiling_h', 'carried_h', 'raised_by_continuation')},
             'cache_records': sorted([lattice.label(z), d, s.get('served_as'), s.get('status')]
                                     for (z, d), s in cache.items())}
 
 
+def part_freeze_sim(data_root, out_dir, remap_dir):
+    """E (zero solves; NOTHING frozen in the repository): the v3 freeze as `--phase-freeze` would run it, in process,
+    with the tracked-artefact list of the collision scan and the cache-root key audit (`committed_spec_files`)
+    AUGMENTED by the v2 root's launch artefacts of the same name patterns (launches/launch_*.json and the campaign_spec_*
+    in each launch dir: what tracking them would add), frozen into a SCRATCH root under --out; then part D on it. Why:
+    the real freeze refused at the cache-root key audit because only v2's spec is tracked in the v2 root."""
+    v2 = os.path.join(data_root, V2_ROOT_REL)
+    extra = sorted(f for f in D.files_under(os.path.join(v2, 'launches'))
+                   if os.path.basename(f).startswith('campaign_spec_')
+                   or (os.path.basename(f).startswith('launch_') and f.endswith('.json') and '/launches/' in f))
+    tracked = D.committed_spec_files(data_root)
+    added = [f for f in extra if f not in tracked]
+    orig = D.committed_spec_files
+    D.committed_spec_files = lambda root: orig(root) + added
+    try:
+        pp = os.path.join(data_root, 'data', 'SRP1', 'Results', 'P515S56', 'phase2x_ev_v2_predictions.json')
+        pred = dict(D.load_json(pp), source_file_sha256=D.sha256_file(pp))
+        spec = D.phase_spec(phase_id='s56phase2x_ev_v3', oracle='harness', test_only=False, data_root=data_root,
+                            predictions=pred,
+                            unlaunched_predecessors=[(os.path.join('data', 'SRP1', 'Results', 'P515S56',
+                                                                   'phase2x_ev_v1'), 'de4e947e')],
+                            continuation_of=[(V2_ROOT_REL, '18a224d1')])
+        root = os.path.join(out_dir, 'sim_root', 'phase2x_ev_v3')
+        spec['collision_scan'] = D.freeze_collision_scan(spec, D.build_lattice(data_root)[0], root, data_root)
+        path, digest = D.phase_freeze(root, spec)
+    finally:
+        D.committed_spec_files = orig
+    ck('E', f'simulated freeze: the cache-root key audit holds with the {len(added)} v2 launch artefacts scanned',
+       spec['cache_root_key_audit']['ok'] is True, spec['cache_root_key_audit'])
+    ck('E', 'simulated freeze: collision scan clean', spec['collision_scan']['collisions'] == [], spec['collision_scan'])
+    ce = spec['phase']['ceiling']
+    ck('E', 'simulated freeze: ceiling 120 h, not raised, the v2 measured hours carried',
+       ce['ceiling_h'] == 120.0 and ce['raised_by_continuation'] is None and 17.9 < ce['carried_h'] < 18.1, ce)
+    pol = spec['policy']
+    ck('E', 'simulated freeze: R, e_EV, K_EV, exit-view check, efficiency threshold, pilot exit views as in v2',
+       pol['R'] == 10000.0 and round(pol['e_ev']) == 17494 and pol['k_ev'] == 300 and pol['exit_view_check'] == 'stop'
+       and spec['phase']['efficiency']['threshold'] == [1, 2] and spec['phase']['pilot_exit_views'] is True,
+       {k: pol[k] for k in ('R', 'e_ev', 'k_ev', 'exit_view_check')})
+    res = part_resume(data_root, out_dir, root, remap_dir)
+    return {'simulated': True, 'sim_spec_rel': os.path.relpath(path, out_dir), 'sim_spec_sha256': digest,
+            'added_to_tracked_list': [os.path.relpath(f, data_root) for f in added],
+            'cache_root_key_audit': spec['cache_root_key_audit'], 'collision_scan': spec['collision_scan'],
+            'ceiling': {k: ce[k] for k in ('ceiling_h', 'carried_h', 'raised_by_continuation')},
+            'predecessors': spec['predecessors'], 'code_sha256': spec['code_sha256'], 'git_head': spec['git_head'],
+            'resume': res}
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--part', choices=('remap', 'resume'), required=True)
+    ap.add_argument('--part', choices=('remap', 'resume', 'freeze-sim'), required=True)
     ap.add_argument('--out', required=True)
     ap.add_argument('--v3-root')
     ap.add_argument('--remap')
@@ -299,6 +379,9 @@ def main():
     started, t0 = datetime.now(timezone.utc).isoformat(), time.time()
     if args.part == 'remap':
         res = part_remap(data_root, out_dir)
+    elif args.part == 'freeze-sim':
+        rmd = args.remap if os.path.isabs(args.remap) else os.path.join(data_root, args.remap)
+        res = part_freeze_sim(data_root, out_dir, rmd)
     else:
         v3 = args.v3_root if os.path.isabs(args.v3_root) else os.path.join(data_root, args.v3_root)
         rmd = args.remap if os.path.isabs(args.remap) else os.path.join(data_root, args.remap)
