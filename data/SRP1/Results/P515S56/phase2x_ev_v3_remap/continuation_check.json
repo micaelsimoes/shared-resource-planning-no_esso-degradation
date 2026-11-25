@@ -1,0 +1,2709 @@
+{
+ "all_checks_ok": true,
+ "checks": [
+  {
+   "check": "v2: 10 complete launches, results after launch 10, terminated stop_for_review_not_settled",
+   "detail": null,
+   "ok": true,
+   "test": "pre"
+  },
+  {
+   "check": "41 v2 records re-read; every record file unchanged since its launch",
+   "detail": null,
+   "ok": true,
+   "test": "A"
+  },
+  {
+   "check": "the records whose summary changes are exactly the 4 with an ESSO recovery event, each from guard False to True via the extended identity",
+   "detail": [
+    [
+     "n9_y2025_p0.25_e0.5",
+     [
+      "guards",
+      "status"
+     ]
+    ],
+    [
+     "n5_y2030_p1_e3.5__n5_y2035_p0.25_e0.5",
+     [
+      "exit_view",
+      "gates",
+      "gates_pass",
+      "guards",
+      "not_settled_reasons",
+      "settled_checks",
+      "status"
+     ]
+    ],
+    [
+     "n7_y2025_p0.25_e0.5",
+     [
+      "exit_view",
+      "gates",
+      "gates_pass",
+      "guards",
+      "not_settled_reasons",
+      "settled_checks",
+      "status"
+     ]
+    ],
+    [
+     "n5_y2025_p0.25_e0.5__n7_y2025_p0.25_e1",
+     [
+      "exit_view",
+      "gates",
+      "gates_pass",
+      "guards",
+      "not_settled_reasons",
+      "settled_checks",
+      "status"
+     ]
+    ]
+   ],
+   "ok": true,
+   "test": "A"
+  },
+  {
+   "check": "stored (v1) summaries: every launch action and state_with_action re-derived equal to the recorded ones",
+   "detail": [],
+   "ok": true,
+   "test": "B"
+  },
+  {
+   "check": "stored summaries: after launch 10 the phase terminates stop_for_review_not_settled with the recorded terminal state",
+   "detail": [
+    "terminated",
+    "stop_for_review_not_settled"
+   ],
+   "ok": true,
+   "test": "B"
+  },
+  {
+   "check": "re-mapped (v2) summaries: every launch action 1..10 re-derived equal to the recorded one (the corrected guard changes no request of v2)",
+   "detail": [],
+   "ok": true,
+   "test": "C"
+  },
+  {
+   "check": "re-mapped summaries: after launch 10 the phase continues (an evaluate action), stage candidate_polls",
+   "detail": [
+    "evaluate",
+    "candidate_polls",
+    null
+   ],
+   "ok": true,
+   "test": "C"
+  },
+  {
+   "check": "the ladder plans, the candidates picked and the efficiency branch are unchanged",
+   "detail": [
+    [
+     "n5_y2030_p0.5_e2",
+     "n5_y2030_p1_e4",
+     "n9_y2030_p0.5_e2",
+     "n9_y2030_p1_e4"
+    ],
+    [
+     "n5_y2030_p0.5_e2",
+     "n5_y2030_p1_e4",
+     "n9_y2030_p0.5_e2",
+     "n9_y2030_p1_e4"
+    ],
+    [
+     "n5_y2030_p1_e4",
+     "n7_y2025_p0.25_e1"
+    ],
+    [
+     "n5_y2030_p1_e4",
+     "n7_y2025_p0.25_e1"
+    ]
+   ],
+   "ok": true,
+   "test": "C"
+  },
+  {
+   "check": "SolveProfileGuard(permitted=()) verify(0) == []",
+   "detail": [],
+   "ok": true,
+   "test": "guards"
+  },
+  {
+   "check": "pickle load/loads 0",
+   "detail": {
+    "load": 0,
+    "loads": 0
+   },
+   "ok": true,
+   "test": "guards"
+  }
+ ],
+ "code_files": {
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+  "p515_s44_campaign_harness.py": "05a9838c46f19837398af31252bd85c465a3794aa03e9cfc1a7a30c08c462b29",
+  "p515_s56_neighbourhood.py": "bd95342d2da2b0ecf2d99b9ef3b8a396e3637e18a050f8ce0117ec2ec9590cc0",
+  "p515_s56_phase2x_v3_continuation_check.py": "456f046345c5987880be956ea2bcc829a5de0d477ae71ae3a30df89c840c969c",
+  "p515_s56_search_driver.py": "3371b9c238e86b9fff2260dad49b06e0205cf0de2fc41805593d8a5e602e44e0",
+  "p515_s56_search_policy.py": "27d9347839f22367e178d76646a1cfdeb0f14acf51ecd34fe15c4d85860507c1",
+  "p516_lattice.py": "ff5d63ef897ccd04e5bbaa719b352537108180a31b83c1b8574506612af86e88"
+ },
+ "code_files_dirty_vs_head": "",
+ "failed_checks": [],
+ "finished_utc": "2026-11-25T19:17:46.381434+00:00",
+ "git_head": "4030508f1d42bf8651f0361735d86c580863c20f",
+ "guards": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "pickle": {
+   "load": 0,
+   "loads": 0
+  },
+  "verify_0": []
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "objective_convention": "F = I(x) + gross_operational_cost - TV credit (oracle mapping p515_s56_oracle_mapping_v2), EUR of total discounted planning cost; dF_exit = F_exit(x) - F_exit(x0); dF_set = F_set(x) - F_set(incumbent)",
+ "part": "remap",
+ "python": "3.11.11",
+ "results": {
+  "A_changed": [
+   {
+    "changed_fields": [
+     "guards",
+     "status"
+    ],
+    "depth": "exit",
+    "label": "n9_y2025_p0.25_e0.5",
+    "launch": 3,
+    "new_status": "certified",
+    "old_status": "not_certified"
+   },
+   {
+    "changed_fields": [
+     "exit_view",
+     "gates",
+     "gates_pass",
+     "guards",
+     "not_settled_reasons",
+     "settled_checks",
+     "status"
+    ],
+    "depth": "settled",
+    "label": "n5_y2030_p1_e3.5__n5_y2035_p0.25_e0.5",
+    "launch": 7,
+    "new_status": "settled",
+    "old_status": "not_settled"
+   },
+   {
+    "changed_fields": [
+     "exit_view",
+     "gates",
+     "gates_pass",
+     "guards",
+     "not_settled_reasons",
+     "settled_checks",
+     "status"
+    ],
+    "depth": "settled",
+    "label": "n7_y2025_p0.25_e0.5",
+    "launch": 9,
+    "new_status": "settled",
+    "old_status": "not_settled"
+   },
+   {
+    "changed_fields": [
+     "exit_view",
+     "gates",
+     "gates_pass",
+     "guards",
+     "not_settled_reasons",
+     "settled_checks",
+     "status"
+    ],
+    "depth": "settled",
+    "label": "n5_y2025_p0.25_e0.5__n7_y2025_p0.25_e1",
+    "launch": 10,
+    "new_status": "settled",
+    "old_status": "not_settled"
+   }
+  ],
+  "A_records": [
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_001/evals/1bc669ad71d00fa7_n5_y2025_p0_25_e1__exit__ev_2x",
+    "label": "n5_y2025_p0.25_e1",
+    "launch": 1,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_001/evals/f879ec919f4c9364_n5_y2025_p0_25_e0_5__exit__ev_2x",
+    "label": "n5_y2025_p0.25_e0.5",
+    "launch": 1,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_001/evals/c8a54462dc1e4e94_n5_y2030_p0_25_e1__exit__ev_2x",
+    "label": "n5_y2030_p0.25_e1",
+    "launch": 1,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_001/evals/d9f3fb6771ba4cc7_n5_y2030_p0_25_e0_5__exit__ev_2x",
+    "label": "n5_y2030_p0.25_e0.5",
+    "launch": 1,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_001/evals/ef9bd520b422db22_n5_y2035_p0_25_e1__exit__ev_2x",
+    "label": "n5_y2035_p0.25_e1",
+    "launch": 1,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_002/evals/3e3f94cecc96b7cd_n5_y2035_p0_25_e0_5__exit__ev_2x",
+    "label": "n5_y2035_p0.25_e0.5",
+    "launch": 2,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_002/evals/bf0b97d2ffcac356_n7_y2025_p0_25_e0_5__exit__ev_2x",
+    "label": "n7_y2025_p0.25_e0.5",
+    "launch": 2,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_002/evals/0b278b5b1840f198_n7_y2030_p0_25_e1__exit__ev_2x",
+    "label": "n7_y2030_p0.25_e1",
+    "launch": 2,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_002/evals/59a7326dc23967e7_n7_y2030_p0_25_e0_5__exit__ev_2x",
+    "label": "n7_y2030_p0.25_e0.5",
+    "launch": 2,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_002/evals/cb15efe692ac1ef6_n7_y2035_p0_25_e1__exit__ev_2x",
+    "label": "n7_y2035_p0.25_e1",
+    "launch": 2,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_003/evals/6d50972239b21b3a_n7_y2035_p0_25_e0_5__exit__ev_2x",
+    "label": "n7_y2035_p0.25_e0.5",
+    "launch": 3,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_003/evals/e142ceef34b90210_n9_y2025_p0_25_e1__exit__ev_2x",
+    "label": "n9_y2025_p0.25_e1",
+    "launch": 3,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": {
+     "guards": [
+      {
+       "child_exit_0": true,
+       "no_local_solve_failure": true,
+       "nothing_blocked": true,
+       "solve_profile_identity_holds": false,
+       "tail_state_matches_declaration": true
+      },
+      {
+       "child_exit_0": true,
+       "no_local_solve_failure": true,
+       "nothing_blocked": true,
+       "solve_profile_identity_holds": true,
+       "tail_state_matches_declaration": true
+      }
+     ],
+     "status": [
+      "not_certified",
+      "certified"
+     ]
+    },
+    "changed_fields": [
+     "guards",
+     "status"
+    ],
+    "depth": "exit",
+    "eval_dir": "launches/launch_003/evals/4193f7f81fbaa8de_n9_y2025_p0_25_e0_5__exit__ev_2x",
+    "label": "n9_y2025_p0.25_e0.5",
+    "launch": 3,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": false,
+    "old_status": "not_certified",
+    "reconciliation_via": "extended_esso_recovery",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_003/evals/f78fd5510ad0e994_n9_y2030_p0_25_e1__exit__ev_2x",
+    "label": "n9_y2030_p0.25_e1",
+    "launch": 3,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_003/evals/5d6f131dc773c722_n9_y2030_p0_25_e0_5__exit__ev_2x",
+    "label": "n9_y2030_p0.25_e0.5",
+    "launch": 3,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_004/evals/0b97aee72e3190fc_n9_y2035_p0_25_e1__exit__ev_2x",
+    "label": "n9_y2035_p0.25_e1",
+    "launch": 4,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_004/evals/9d6d881a2fb04b92_n9_y2035_p0_25_e0_5__exit__ev_2x",
+    "label": "n9_y2035_p0.25_e0.5",
+    "launch": 4,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_005/evals/8ccbf20016f6603f_n5_y2030_p0_5_e2__exit__ev_2x",
+    "label": "n5_y2030_p0.5_e2",
+    "launch": 5,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_005/evals/a3ca7f4c7f6ced52_n5_y2030_p1_e4__exit__ev_2x",
+    "label": "n5_y2030_p1_e4",
+    "launch": 5,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_005/evals/8f9526b34d734ecc_n9_y2030_p0_5_e2__exit__ev_2x",
+    "label": "n9_y2030_p0.5_e2",
+    "launch": 5,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "exit",
+    "eval_dir": "launches/launch_005/evals/cd036b306cf0253f_n9_y2030_p1_e4__exit__ev_2x",
+    "label": "n9_y2030_p1_e4",
+    "launch": 5,
+    "new_guard": true,
+    "new_status": "certified",
+    "old_guard": true,
+    "old_status": "certified",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "settled",
+    "eval_dir": "launches/launch_006/evals/241b04a8d9d43881_n5_y2030_p1_e4__settled__ev_2x",
+    "label": "n5_y2030_p1_e4",
+    "launch": 6,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": true,
+    "old_status": "settled",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "settled",
+    "eval_dir": "launches/launch_007/evals/f355ea4cf85b4f21_n5_y2030_p0_75_e3__settled__ev_2x",
+    "label": "n5_y2030_p0.75_e3",
+    "launch": 7,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": true,
+    "old_status": "settled",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "settled",
+    "eval_dir": "launches/launch_007/evals/bda68ee7f6267b4d_n5_y2030_p1_25_e4__settled__ev_2x",
+    "label": "n5_y2030_p1.25_e4",
+    "launch": 7,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": true,
+    "old_status": "settled",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "settled",
+    "eval_dir": "launches/launch_007/evals/54477e41b8d2c201_n5_y2030_p1_e3_5__settled__ev_2x",
+    "label": "n5_y2030_p1_e3.5",
+    "launch": 7,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": true,
+    "old_status": "settled",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "settled",
+    "eval_dir": "launches/launch_007/evals/4a0d635fbddeea27_n5_y2035_p1_e4__settled__ev_2x",
+    "label": "n5_y2035_p1_e4",
+    "launch": 7,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": true,
+    "old_status": "settled",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": {
+     "exit_view": [
+      {
+       "F": 811884770.1324707,
+       "bar": 1738.6160185337067,
+       "read_at": "would-be certification cycle (stop disabled)",
+       "read_cycle": 131,
+       "status": "not_certified"
+      },
+      {
+       "F": 811884770.1324707,
+       "bar": 1738.6160185337067,
+       "read_at": "would-be certification cycle (stop disabled)",
+       "read_cycle": 131,
+       "status": "certified"
+      }
+     ],
+     "gates": [
+      {
+       "d1_efficiency_equality": true,
+       "esso_slack_gate": true,
+       "interface_p_ceiling_12p5kw": true,
+       "network_closure_slack_le_tau_cl": true,
+       "status_ok_and_guards_exact": false
+      },
+      {
+       "d1_efficiency_equality": true,
+       "esso_slack_gate": true,
+       "interface_p_ceiling_12p5kw": true,
+       "network_closure_slack_le_tau_cl": true,
+       "status_ok_and_guards_exact": true
+      }
+     ],
+     "gates_pass": [
+      false,
+      true
+     ],
+     "guards": [
+      {
+       "child_exit_0": true,
+       "no_local_solve_failure": true,
+       "nothing_blocked": true,
+       "solve_profile_identity_holds": false,
+       "stop_disabling_summary_ok": true,
+       "tail_state_matches_declaration": true
+      },
+      {
+       "child_exit_0": true,
+       "no_local_solve_failure": true,
+       "nothing_blocked": true,
+       "solve_profile_identity_holds": true,
+       "stop_disabling_summary_ok": true,
+       "tail_state_matches_declaration": true
+      }
+     ],
+     "not_settled_reasons": [
+      [
+       "guards_exact_and_no_local_failure"
+      ],
+      []
+     ],
+     "settled_checks": [
+      {
+       "K_at_least_W": true,
+       "guards_exact_and_no_local_failure": false,
+       "last_W_at_tail_depth": true,
+       "reached_K": true,
+       "stop_disabled_declared": true,
+       "would_have_certified_each_of_last_W": true
+      },
+      {
+       "K_at_least_W": true,
+       "guards_exact_and_no_local_failure": true,
+       "last_W_at_tail_depth": true,
+       "reached_K": true,
+       "stop_disabled_declared": true,
+       "would_have_certified_each_of_last_W": true
+      }
+     ],
+     "status": [
+      "not_settled",
+      "settled"
+     ]
+    },
+    "changed_fields": [
+     "exit_view",
+     "gates",
+     "gates_pass",
+     "guards",
+     "not_settled_reasons",
+     "settled_checks",
+     "status"
+    ],
+    "depth": "settled",
+    "eval_dir": "launches/launch_007/evals/643d2614a24412b1_n5_y2030_p1_e3_5__n5_y2035_p0_25_e0_5__settled__ev_2x",
+    "label": "n5_y2030_p1_e3.5__n5_y2035_p0.25_e0.5",
+    "launch": 7,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": false,
+    "old_status": "not_settled",
+    "reconciliation_via": "extended_esso_recovery",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "settled",
+    "eval_dir": "launches/launch_008/evals/8f0307c30dccab55_n5_y2030_p1_e3_5__n7_y2030_p0_25_e0_5__settled__ev_2x",
+    "label": "n5_y2030_p1_e3.5__n7_y2030_p0.25_e0.5",
+    "launch": 8,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": true,
+    "old_status": "settled",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "settled",
+    "eval_dir": "launches/launch_008/evals/ef60e750c8bcfb87_n5_y2030_p1_e3_5__n7_y2035_p0_25_e0_5__settled__ev_2x",
+    "label": "n5_y2030_p1_e3.5__n7_y2035_p0.25_e0.5",
+    "launch": 8,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": true,
+    "old_status": "settled",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "settled",
+    "eval_dir": "launches/launch_008/evals/17144f60235804ff_n5_y2030_p1_e3_5__n9_y2030_p0_25_e0_5__settled__ev_2x",
+    "label": "n5_y2030_p1_e3.5__n9_y2030_p0.25_e0.5",
+    "launch": 8,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": true,
+    "old_status": "settled",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "settled",
+    "eval_dir": "launches/launch_008/evals/e77f25087c29b7d3_n5_y2030_p1_e3_5__n9_y2035_p0_25_e0_5__settled__ev_2x",
+    "label": "n5_y2030_p1_e3.5__n9_y2035_p0.25_e0.5",
+    "launch": 8,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": true,
+    "old_status": "settled",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": {
+     "exit_view": [
+      {
+       "F": 812023299.4231855,
+       "bar": 1704.3324270248413,
+       "read_at": "would-be certification cycle (stop disabled)",
+       "read_cycle": 124,
+       "status": "not_certified"
+      },
+      {
+       "F": 812023299.4231855,
+       "bar": 1704.3324270248413,
+       "read_at": "would-be certification cycle (stop disabled)",
+       "read_cycle": 124,
+       "status": "certified"
+      }
+     ],
+     "gates": [
+      {
+       "d1_efficiency_equality": true,
+       "esso_slack_gate": true,
+       "interface_p_ceiling_12p5kw": true,
+       "network_closure_slack_le_tau_cl": true,
+       "status_ok_and_guards_exact": false
+      },
+      {
+       "d1_efficiency_equality": true,
+       "esso_slack_gate": true,
+       "interface_p_ceiling_12p5kw": true,
+       "network_closure_slack_le_tau_cl": true,
+       "status_ok_and_guards_exact": true
+      }
+     ],
+     "gates_pass": [
+      false,
+      true
+     ],
+     "guards": [
+      {
+       "child_exit_0": true,
+       "no_local_solve_failure": true,
+       "nothing_blocked": true,
+       "solve_profile_identity_holds": false,
+       "stop_disabling_summary_ok": true,
+       "tail_state_matches_declaration": true
+      },
+      {
+       "child_exit_0": true,
+       "no_local_solve_failure": true,
+       "nothing_blocked": true,
+       "solve_profile_identity_holds": true,
+       "stop_disabling_summary_ok": true,
+       "tail_state_matches_declaration": true
+      }
+     ],
+     "not_settled_reasons": [
+      [
+       "guards_exact_and_no_local_failure"
+      ],
+      []
+     ],
+     "settled_checks": [
+      {
+       "K_at_least_W": true,
+       "guards_exact_and_no_local_failure": false,
+       "last_W_at_tail_depth": true,
+       "reached_K": true,
+       "stop_disabled_declared": true,
+       "would_have_certified_each_of_last_W": true
+      },
+      {
+       "K_at_least_W": true,
+       "guards_exact_and_no_local_failure": true,
+       "last_W_at_tail_depth": true,
+       "reached_K": true,
+       "stop_disabled_declared": true,
+       "would_have_certified_each_of_last_W": true
+      }
+     ],
+     "status": [
+      "not_settled",
+      "settled"
+     ]
+    },
+    "changed_fields": [
+     "exit_view",
+     "gates",
+     "gates_pass",
+     "guards",
+     "not_settled_reasons",
+     "settled_checks",
+     "status"
+    ],
+    "depth": "settled",
+    "eval_dir": "launches/launch_009/evals/862c0cdc1636f348_n7_y2025_p0_25_e0_5__settled__ev_2x",
+    "label": "n7_y2025_p0.25_e0.5",
+    "launch": 9,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": false,
+    "old_status": "not_settled",
+    "reconciliation_via": "extended_esso_recovery",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "settled",
+    "eval_dir": "launches/launch_009/evals/f874bbb36e331f4b_n7_y2025_p0_5_e1__settled__ev_2x",
+    "label": "n7_y2025_p0.5_e1",
+    "launch": 9,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": true,
+    "old_status": "settled",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "settled",
+    "eval_dir": "launches/launch_009/evals/0d2bf8755f51a62d_n7_y2025_p0_5_e1_5__settled__ev_2x",
+    "label": "n7_y2025_p0.5_e1.5",
+    "launch": 9,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": true,
+    "old_status": "settled",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "settled",
+    "eval_dir": "launches/launch_009/evals/2f9843dfb452e8ac_n7_y2025_p0_5_e2__settled__ev_2x",
+    "label": "n7_y2025_p0.5_e2",
+    "launch": 9,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": true,
+    "old_status": "settled",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "settled",
+    "eval_dir": "launches/launch_009/evals/24aa7c6964a29600_n7_y2030_p0_25_e1__settled__ev_2x",
+    "label": "n7_y2030_p0.25_e1",
+    "launch": 9,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": true,
+    "old_status": "settled",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": {
+     "exit_view": [
+      {
+       "F": 811999157.1966323,
+       "bar": 1372.2334699630737,
+       "read_at": "would-be certification cycle (stop disabled)",
+       "read_cycle": 125,
+       "status": "not_certified"
+      },
+      {
+       "F": 811999157.1966323,
+       "bar": 1372.2334699630737,
+       "read_at": "would-be certification cycle (stop disabled)",
+       "read_cycle": 125,
+       "status": "certified"
+      }
+     ],
+     "gates": [
+      {
+       "d1_efficiency_equality": true,
+       "esso_slack_gate": true,
+       "interface_p_ceiling_12p5kw": true,
+       "network_closure_slack_le_tau_cl": true,
+       "status_ok_and_guards_exact": false
+      },
+      {
+       "d1_efficiency_equality": true,
+       "esso_slack_gate": true,
+       "interface_p_ceiling_12p5kw": true,
+       "network_closure_slack_le_tau_cl": true,
+       "status_ok_and_guards_exact": true
+      }
+     ],
+     "gates_pass": [
+      false,
+      true
+     ],
+     "guards": [
+      {
+       "child_exit_0": true,
+       "no_local_solve_failure": true,
+       "nothing_blocked": true,
+       "solve_profile_identity_holds": false,
+       "stop_disabling_summary_ok": true,
+       "tail_state_matches_declaration": true
+      },
+      {
+       "child_exit_0": true,
+       "no_local_solve_failure": true,
+       "nothing_blocked": true,
+       "solve_profile_identity_holds": true,
+       "stop_disabling_summary_ok": true,
+       "tail_state_matches_declaration": true
+      }
+     ],
+     "not_settled_reasons": [
+      [
+       "guards_exact_and_no_local_failure"
+      ],
+      []
+     ],
+     "settled_checks": [
+      {
+       "K_at_least_W": true,
+       "guards_exact_and_no_local_failure": false,
+       "last_W_at_tail_depth": true,
+       "reached_K": true,
+       "stop_disabled_declared": true,
+       "would_have_certified_each_of_last_W": true
+      },
+      {
+       "K_at_least_W": true,
+       "guards_exact_and_no_local_failure": true,
+       "last_W_at_tail_depth": true,
+       "reached_K": true,
+       "stop_disabled_declared": true,
+       "would_have_certified_each_of_last_W": true
+      }
+     ],
+     "status": [
+      "not_settled",
+      "settled"
+     ]
+    },
+    "changed_fields": [
+     "exit_view",
+     "gates",
+     "gates_pass",
+     "guards",
+     "not_settled_reasons",
+     "settled_checks",
+     "status"
+    ],
+    "depth": "settled",
+    "eval_dir": "launches/launch_010/evals/a3337e25e72fe9ce_n5_y2025_p0_25_e0_5__n7_y2025_p0_25_e1__settled__ev_2x",
+    "label": "n5_y2025_p0.25_e0.5__n7_y2025_p0.25_e1",
+    "launch": 10,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": false,
+    "old_status": "not_settled",
+    "reconciliation_via": "extended_esso_recovery",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "settled",
+    "eval_dir": "launches/launch_010/evals/12b59566f7f0ae08_n5_y2025_p0_25_e1__n7_y2025_p0_25_e1__settled__ev_2x",
+    "label": "n5_y2025_p0.25_e1__n7_y2025_p0.25_e1",
+    "launch": 10,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": true,
+    "old_status": "settled",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "settled",
+    "eval_dir": "launches/launch_010/evals/2cc5da9cfbca6e17_n5_y2030_p0_25_e0_5__n7_y2025_p0_25_e1__settled__ev_2x",
+    "label": "n5_y2030_p0.25_e0.5__n7_y2025_p0.25_e1",
+    "launch": 10,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": true,
+    "old_status": "settled",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "settled",
+    "eval_dir": "launches/launch_010/evals/b78fb4705c303e66_n5_y2030_p0_25_e1__n7_y2025_p0_25_e1__settled__ev_2x",
+    "label": "n5_y2030_p0.25_e1__n7_y2025_p0.25_e1",
+    "launch": 10,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": true,
+    "old_status": "settled",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   },
+   {
+    "changed": null,
+    "changed_fields": [],
+    "depth": "settled",
+    "eval_dir": "launches/launch_010/evals/b4c681d8b460f8cd_n5_y2035_p0_25_e0_5__n7_y2025_p0_25_e1__settled__ev_2x",
+    "label": "n5_y2035_p0.25_e0.5__n7_y2025_p0.25_e1",
+    "launch": 10,
+    "new_guard": true,
+    "new_status": "settled",
+    "old_guard": true,
+    "old_status": "settled",
+    "reconciliation_via": "harness_identity",
+    "record_unchanged_since_launch": true
+   }
+  ],
+  "B_decisions": {
+   "candidates": [
+    {
+     "confirmation_result": "accepted",
+     "confirmed": true,
+     "dF_set": -182404.10968244076,
+     "exit_view_check_equal": true,
+     "label": "n5_y2030_p1_e4",
+     "poll_not_settled_review": {
+      "consecutive_not_settled": 0,
+      "n_confirmations": 10,
+      "n_not_settled": 1,
+      "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+      "rule_consecutive": false,
+      "rule_share": false,
+      "stop": false
+     },
+     "poll_open": false,
+     "poll_search_id": "s56phase2x_ev_v2_cand1_poll",
+     "poll_skipped": null,
+     "poll_termination": {
+      "budget_used": 9,
+      "detail": null,
+      "reason": "complete_poll_only"
+     },
+     "polls": [
+      {
+       "classified": [
+        {
+         "V_pair": 649.3635890663177,
+         "dF_set": 45845.4875613451,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2030_p0.75_e3",
+         "pos": 0,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 1386.1635606737627,
+         "dF_set": 2668.0769814252853,
+         "exit_class": null,
+         "failed": [
+          "|F_set(x) - F_set(inc)| < R"
+         ],
+         "gates_pass": true,
+         "label": "n5_y2030_p1.25_e4",
+         "pos": 1,
+         "settled_class": "unresolved"
+        },
+        {
+         "V_pair": 760.8020411605339,
+         "dF_set": 24046.910059571266,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2030_p1_e3.5",
+         "pos": 2,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 630.0198175552028,
+         "dF_set": 169397.4294718504,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2035_p1_e4",
+         "pos": 3,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": null,
+         "dF_set": 51578.02048456669,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": null,
+         "label": "n5_y2030_p1_e3.5__n5_y2035_p0.25_e0.5",
+         "pos": 4,
+         "settled_class": "not_settled"
+        },
+        {
+         "V_pair": 789.5110617212583,
+         "dF_set": 17989.695333123207,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2030_p1_e3.5__n7_y2030_p0.25_e0.5",
+         "pos": 5,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 747.6017007900493,
+         "dF_set": 37015.38226163387,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2030_p1_e3.5__n7_y2035_p0.25_e0.5",
+         "pos": 6,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 861.6579007412278,
+         "dF_set": 12972.261351585388,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2030_p1_e3.5__n9_y2030_p0.25_e0.5",
+         "pos": 7,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 804.3373876826992,
+         "dF_set": 34960.014872431755,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2030_p1_e3.5__n9_y2035_p0.25_e0.5",
+         "pos": 8,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 469.3587874839642,
+         "dF_set": 182404.10968244076,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "x0",
+         "pos": 9,
+         "settled_class": "worse"
+        }
+       ],
+       "closed": "complete_poll_only",
+       "index": 0,
+       "n": 10,
+       "pos": 10
+      }
+     ]
+    },
+    {
+     "confirmation_result": "accepted",
+     "confirmed": true,
+     "dF_set": -21851.60880291462,
+     "exit_view_check_equal": true,
+     "label": "n7_y2025_p0.25_e1",
+     "poll_not_settled_review": {
+      "consecutive_not_settled": 1,
+      "n_confirmations": 6,
+      "n_not_settled": 2,
+      "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+      "rule_consecutive": false,
+      "rule_share": true,
+      "stop": true
+     },
+     "poll_open": false,
+     "poll_search_id": "s56phase2x_ev_v2_cand2_poll",
+     "poll_skipped": null,
+     "poll_termination": {
+      "budget_used": 10,
+      "detail": {
+       "consecutive_not_settled": 1,
+       "n_confirmations": 6,
+       "n_not_settled": 2,
+       "pos": 5,
+       "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+       "rule_consecutive": false,
+       "rule_share": true,
+       "stop": true,
+       "z": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      "reason": "stop_for_review_not_settled"
+     },
+     "polls": [
+      {
+       "classified": [
+        {
+         "V_pair": null,
+         "dF_set": 36228.70764005184,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": null,
+         "label": "n7_y2025_p0.25_e0.5",
+         "pos": 0,
+         "settled_class": "not_settled"
+        },
+        {
+         "V_pair": 180.91099332106953,
+         "dF_set": 51632.40342140198,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n7_y2025_p0.5_e1",
+         "pos": 1,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 200.16872256917014,
+         "dF_set": 11378.40948843956,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n7_y2025_p0.5_e1.5",
+         "pos": 2,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 84.91585488055135,
+         "dF_set": -22057.685631155968,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n7_y2025_p0.5_e2",
+         "pos": 3,
+         "settled_class": "improver"
+        },
+        {
+         "V_pair": 44.73860292806441,
+         "dF_set": -18366.37466466427,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n7_y2030_p0.25_e1",
+         "pos": 4,
+         "settled_class": "improver"
+        },
+        {
+         "V_pair": null,
+         "dF_set": 6530.275579333305,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": null,
+         "label": "n5_y2025_p0.25_e0.5__n7_y2025_p0.25_e1",
+         "pos": 5,
+         "settled_class": "not_settled"
+        }
+       ],
+       "closed": "stop_for_review_not_settled",
+       "index": 0,
+       "n": 22,
+       "pos": 6
+      }
+     ]
+    }
+   ],
+   "candidates_picked": [
+    "n5_y2030_p1_e4",
+    "n7_y2025_p0.25_e1"
+   ],
+   "efficiency": {
+    "branch": "settled_direct",
+    "class_counts": {
+     "confirm_candidate": 16,
+     "harness_error": 0,
+     "uncertified": 1,
+     "unresolved": 5,
+     "worse": 0
+    },
+    "fraction": [
+     21,
+     22
+    ],
+    "n_not_worse": 21,
+    "n_rows": 22
+   },
+   "ladder_plans": [
+    "n5_y2030_p0.5_e2",
+    "n5_y2030_p1_e4",
+    "n9_y2030_p0.5_e2",
+    "n9_y2030_p1_e4"
+   ],
+   "stage": "candidate_polls",
+   "table": [
+    {
+     "F_exit": 811983211.3031776,
+     "bar": 4154.730579137802,
+     "class": "confirm_candidate",
+     "dF_exit": -25997.409665107727,
+     "e": 17494.04935669899,
+     "label": "n5_y2025_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812020466.5118557,
+     "bar": 1514.2242387533188,
+     "class": "unresolved",
+     "dF_exit": 11257.799013018608,
+     "e": 17494.04935669899,
+     "label": "n5_y2025_p0.25_e0.5",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811963838.2272131,
+     "bar": 1327.343136548996,
+     "class": "confirm_candidate",
+     "dF_exit": -45370.48562955856,
+     "e": 17494.04935669899,
+     "label": "n5_y2030_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811996642.1332484,
+     "bar": 1401.0237038135529,
+     "class": "confirm_candidate",
+     "dF_exit": -12566.579594254494,
+     "e": 17494.04935669899,
+     "label": "n5_y2030_p0.25_e0.5",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812005048.4610908,
+     "bar": 1095.7591344118118,
+     "class": "confirm_candidate",
+     "dF_exit": -4160.251751899719,
+     "e": 17494.04935669899,
+     "label": "n5_y2035_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812019255.4569353,
+     "bar": 4923.27134001255,
+     "class": "unresolved",
+     "dF_exit": 10046.744092583656,
+     "e": 17494.04935669899,
+     "label": "n5_y2035_p0.25_e0.5",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811988275.9168296,
+     "bar": 1406.105488538742,
+     "class": "confirm_candidate",
+     "dF_exit": -20932.796013116837,
+     "e": 17494.04935669899,
+     "label": "n7_y2025_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812023299.4231855,
+     "bar": 1704.3324270248413,
+     "class": "unresolved",
+     "dF_exit": 14090.710342764854,
+     "e": 17494.04935669899,
+     "label": "n7_y2025_p0.25_e0.5",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811969937.2151045,
+     "bar": 7757.7476323843,
+     "class": "confirm_candidate",
+     "dF_exit": -39271.49773824215,
+     "e": 17494.04935669899,
+     "label": "n7_y2030_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812000908.0627353,
+     "bar": 2074.4568285942078,
+     "class": "confirm_candidate",
+     "dF_exit": -8300.650107383728,
+     "e": 17494.04935669899,
+     "label": "n7_y2030_p0.25_e0.5",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812008024.1691828,
+     "bar": 1653.4753328561783,
+     "class": "confirm_candidate",
+     "dF_exit": -1184.5436599254608,
+     "e": 17494.04935669899,
+     "label": "n7_y2035_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812023910.1056037,
+     "bar": 9085.329409718513,
+     "class": "unresolved",
+     "dF_exit": 14701.39276099205,
+     "e": 17494.04935669899,
+     "label": "n7_y2035_p0.25_e0.5",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811988988.2418362,
+     "bar": 2840.496600151062,
+     "class": "confirm_candidate",
+     "dF_exit": -20220.471006512642,
+     "e": 17494.04935669899,
+     "label": "n9_y2025_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812020693.3235373,
+     "bar": 816.4646825790405,
+     "class": "uncertified",
+     "dF_exit": null,
+     "e": null,
+     "label": "n9_y2025_p0.25_e0.5",
+     "source": "screen",
+     "status": "not_certified"
+    },
+    {
+     "F_exit": 811965120.7445035,
+     "bar": 1544.040856719017,
+     "class": "confirm_candidate",
+     "dF_exit": -44087.96833920479,
+     "e": 17494.04935669899,
+     "label": "n9_y2030_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812001164.918042,
+     "bar": 2014.8174167871475,
+     "class": "confirm_candidate",
+     "dF_exit": -8043.794800758362,
+     "e": 17494.04935669899,
+     "label": "n9_y2030_p0.25_e0.5",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812006668.0965345,
+     "bar": 907.0414525270462,
+     "class": "confirm_candidate",
+     "dF_exit": -2540.6163082122803,
+     "e": 17494.04935669899,
+     "label": "n9_y2035_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812020182.4813304,
+     "bar": 1028.5152782201767,
+     "class": "unresolved",
+     "dF_exit": 10973.76848769188,
+     "e": 17494.04935669899,
+     "label": "n9_y2035_p0.25_e0.5",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811917782.4099576,
+     "bar": 3196.9692702293396,
+     "class": "confirm_candidate",
+     "dF_exit": -91426.30288505554,
+     "e": 17494.04935669899,
+     "label": "n5_y2030_p0.5_e2",
+     "source": "ladder",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811830358.7184356,
+     "bar": 809.940866112709,
+     "class": "confirm_candidate",
+     "dF_exit": -178849.99440705776,
+     "e": 17494.04935669899,
+     "label": "n5_y2030_p1_e4",
+     "source": "ladder",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811924597.9241779,
+     "bar": 1731.6864861249924,
+     "class": "confirm_candidate",
+     "dF_exit": -84610.78866481781,
+     "e": 17494.04935669899,
+     "label": "n9_y2030_p0.5_e2",
+     "source": "ladder",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811840298.8783633,
+     "bar": 1633.2795219421387,
+     "class": "confirm_candidate",
+     "dF_exit": -168909.83447945118,
+     "e": 17494.04935669899,
+     "label": "n9_y2030_p1_e4",
+     "source": "ladder",
+     "status": "certified"
+    }
+   ],
+   "terminated": true,
+   "termination": {
+    "detail": {
+     "candidate": "n7_y2025_p0.25_e1",
+     "sub": {
+      "budget_used": 10,
+      "detail": {
+       "consecutive_not_settled": 1,
+       "n_confirmations": 6,
+       "n_not_settled": 2,
+       "pos": 5,
+       "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+       "rule_consecutive": false,
+       "rule_share": true,
+       "stop": true,
+       "z": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      "reason": "stop_for_review_not_settled"
+     }
+    },
+    "reason": "stop_for_review_not_settled",
+    "stage": "candidate_polls"
+   },
+   "x0_exit_check": {
+    "F": 812009208.7128427,
+    "bar": 4271.357581973076,
+    "ok": true,
+    "served_as": "exit_view_of_settled_cache_record",
+    "status": "certified"
+   }
+  },
+  "B_per_launch": [
+   {
+    "action": {
+     "depth": "exit",
+     "kind": "evaluate",
+     "purpose": "screen",
+     "stage": "screen"
+    },
+    "action_equal": true,
+    "launch": 1,
+    "state_equal": true
+   },
+   {
+    "action": {
+     "depth": "exit",
+     "kind": "evaluate",
+     "purpose": "screen",
+     "stage": "screen"
+    },
+    "action_equal": true,
+    "launch": 2,
+    "state_equal": true
+   },
+   {
+    "action": {
+     "depth": "exit",
+     "kind": "evaluate",
+     "purpose": "screen",
+     "stage": "screen"
+    },
+    "action_equal": true,
+    "launch": 3,
+    "state_equal": true
+   },
+   {
+    "action": {
+     "depth": "exit",
+     "kind": "evaluate",
+     "purpose": "screen",
+     "stage": "screen"
+    },
+    "action_equal": true,
+    "launch": 4,
+    "state_equal": true
+   },
+   {
+    "action": {
+     "depth": "exit",
+     "kind": "evaluate",
+     "purpose": "ladder",
+     "stage": "ladder"
+    },
+    "action_equal": true,
+    "launch": 5,
+    "state_equal": true
+   },
+   {
+    "action": {
+     "depth": "settled",
+     "kind": "evaluate",
+     "purpose": "candidate_confirmation",
+     "stage": "candidate_confirmation"
+    },
+    "action_equal": true,
+    "launch": 6,
+    "state_equal": true
+   },
+   {
+    "action": {
+     "depth": "settled",
+     "kind": "evaluate",
+     "purpose": "candidate_poll",
+     "stage": "candidate_polls"
+    },
+    "action_equal": true,
+    "launch": 7,
+    "state_equal": true
+   },
+   {
+    "action": {
+     "depth": "settled",
+     "kind": "evaluate",
+     "purpose": "candidate_poll",
+     "stage": "candidate_polls"
+    },
+    "action_equal": true,
+    "launch": 8,
+    "state_equal": true
+   },
+   {
+    "action": {
+     "depth": "settled",
+     "kind": "evaluate",
+     "purpose": "candidate_poll",
+     "stage": "candidate_polls"
+    },
+    "action_equal": true,
+    "launch": 9,
+    "state_equal": true
+   },
+   {
+    "action": {
+     "depth": "settled",
+     "kind": "evaluate",
+     "purpose": "candidate_poll",
+     "stage": "candidate_polls"
+    },
+    "action_equal": true,
+    "launch": 10,
+    "state_equal": true
+   }
+  ],
+  "B_phase_not_settled_review": {
+   "consecutive_not_settled": 1,
+   "n_confirmations": 18,
+   "n_not_settled": 3,
+   "rule_consecutive": false,
+   "rule_share": false,
+   "scope": "phase-wide",
+   "stop": false
+  },
+  "C_decisions": {
+   "candidates": [
+    {
+     "confirmation_result": "accepted",
+     "confirmed": true,
+     "dF_set": -182404.10968244076,
+     "exit_view_check_equal": true,
+     "label": "n5_y2030_p1_e4",
+     "poll_not_settled_review": {
+      "consecutive_not_settled": 0,
+      "n_confirmations": 10,
+      "n_not_settled": 0,
+      "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+      "rule_consecutive": false,
+      "rule_share": false,
+      "stop": false
+     },
+     "poll_open": false,
+     "poll_search_id": "s56phase2x_ev_v2_cand1_poll",
+     "poll_skipped": null,
+     "poll_termination": {
+      "budget_used": 9,
+      "detail": null,
+      "reason": "complete_poll_only"
+     },
+     "polls": [
+      {
+       "classified": [
+        {
+         "V_pair": 649.3635890663177,
+         "dF_set": 45845.4875613451,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2030_p0.75_e3",
+         "pos": 0,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 1386.1635606737627,
+         "dF_set": 2668.0769814252853,
+         "exit_class": null,
+         "failed": [
+          "|F_set(x) - F_set(inc)| < R"
+         ],
+         "gates_pass": true,
+         "label": "n5_y2030_p1.25_e4",
+         "pos": 1,
+         "settled_class": "unresolved"
+        },
+        {
+         "V_pair": 760.8020411605339,
+         "dF_set": 24046.910059571266,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2030_p1_e3.5",
+         "pos": 2,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 630.0198175552028,
+         "dF_set": 169397.4294718504,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2035_p1_e4",
+         "pos": 3,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 830.2249812380354,
+         "dF_set": 51578.02048456669,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2030_p1_e3.5__n5_y2035_p0.25_e0.5",
+         "pos": 4,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 789.5110617212583,
+         "dF_set": 17989.695333123207,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2030_p1_e3.5__n7_y2030_p0.25_e0.5",
+         "pos": 5,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 747.6017007900493,
+         "dF_set": 37015.38226163387,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2030_p1_e3.5__n7_y2035_p0.25_e0.5",
+         "pos": 6,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 861.6579007412278,
+         "dF_set": 12972.261351585388,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2030_p1_e3.5__n9_y2030_p0.25_e0.5",
+         "pos": 7,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 804.3373876826992,
+         "dF_set": 34960.014872431755,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2030_p1_e3.5__n9_y2035_p0.25_e0.5",
+         "pos": 8,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 469.3587874839642,
+         "dF_set": 182404.10968244076,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "x0",
+         "pos": 9,
+         "settled_class": "worse"
+        }
+       ],
+       "closed": "complete_poll_only",
+       "index": 0,
+       "n": 10,
+       "pos": 10
+      }
+     ]
+    },
+    {
+     "confirmation_result": "accepted",
+     "confirmed": true,
+     "dF_set": -21851.60880291462,
+     "exit_view_check_equal": true,
+     "label": "n7_y2025_p0.25_e1",
+     "poll_not_settled_review": {
+      "consecutive_not_settled": 0,
+      "n_confirmations": 10,
+      "n_not_settled": 0,
+      "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+      "rule_consecutive": false,
+      "rule_share": false,
+      "stop": false
+     },
+     "poll_open": true,
+     "poll_search_id": "s56phase2x_ev_v2_cand2_poll",
+     "poll_skipped": null,
+     "poll_termination": null,
+     "polls": [
+      {
+       "classified": [
+        {
+         "V_pair": 74.09186296238535,
+         "dF_set": 36228.70764005184,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n7_y2025_p0.25_e0.5",
+         "pos": 0,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 180.91099332106953,
+         "dF_set": 51632.40342140198,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n7_y2025_p0.5_e1",
+         "pos": 1,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 200.16872256917014,
+         "dF_set": 11378.40948843956,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n7_y2025_p0.5_e1.5",
+         "pos": 2,
+         "settled_class": "worse"
+        },
+        {
+         "V_pair": 84.91585488055135,
+         "dF_set": -22057.685631155968,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n7_y2025_p0.5_e2",
+         "pos": 3,
+         "settled_class": "improver"
+        },
+        {
+         "V_pair": 44.73860292806441,
+         "dF_set": -18366.37466466427,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n7_y2030_p0.25_e1",
+         "pos": 4,
+         "settled_class": "improver"
+        },
+        {
+         "V_pair": 181.50346145699154,
+         "dF_set": 6530.275579333305,
+         "exit_class": null,
+         "failed": [
+          "|F_set(x) - F_set(inc)| < R"
+         ],
+         "gates_pass": true,
+         "label": "n5_y2025_p0.25_e0.5__n7_y2025_p0.25_e1",
+         "pos": 5,
+         "settled_class": "unresolved"
+        },
+        {
+         "V_pair": 149.20431494665738,
+         "dF_set": -29465.442676067352,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2025_p0.25_e1__n7_y2025_p0.25_e1",
+         "pos": 6,
+         "settled_class": "improver"
+        },
+        {
+         "V_pair": 137.23650805679716,
+         "dF_set": -10313.150428771973,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2030_p0.25_e0.5__n7_y2025_p0.25_e1",
+         "pos": 7,
+         "settled_class": "improver"
+        },
+        {
+         "V_pair": 110.17260217083783,
+         "dF_set": -45564.5012871027,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2030_p0.25_e1__n7_y2025_p0.25_e1",
+         "pos": 8,
+         "settled_class": "improver"
+        },
+        {
+         "V_pair": 77.20387648355151,
+         "dF_set": 11481.245905518532,
+         "exit_class": null,
+         "failed": [],
+         "gates_pass": true,
+         "label": "n5_y2035_p0.25_e0.5__n7_y2025_p0.25_e1",
+         "pos": 9,
+         "settled_class": "worse"
+        }
+       ],
+       "closed": null,
+       "index": 0,
+       "n": 22,
+       "pos": 10
+      }
+     ]
+    }
+   ],
+   "candidates_picked": [
+    "n5_y2030_p1_e4",
+    "n7_y2025_p0.25_e1"
+   ],
+   "efficiency": {
+    "branch": "settled_direct",
+    "class_counts": {
+     "confirm_candidate": 16,
+     "harness_error": 0,
+     "uncertified": 0,
+     "unresolved": 6,
+     "worse": 0
+    },
+    "fraction": [
+     1,
+     1
+    ],
+    "n_not_worse": 22,
+    "n_rows": 22
+   },
+   "ladder_plans": [
+    "n5_y2030_p0.5_e2",
+    "n5_y2030_p1_e4",
+    "n9_y2030_p0.5_e2",
+    "n9_y2030_p1_e4"
+   ],
+   "stage": "candidate_polls",
+   "table": [
+    {
+     "F_exit": 811983211.3031776,
+     "bar": 4154.730579137802,
+     "class": "confirm_candidate",
+     "dF_exit": -25997.409665107727,
+     "e": 17494.04935669899,
+     "label": "n5_y2025_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812020466.5118557,
+     "bar": 1514.2242387533188,
+     "class": "unresolved",
+     "dF_exit": 11257.799013018608,
+     "e": 17494.04935669899,
+     "label": "n5_y2025_p0.25_e0.5",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811963838.2272131,
+     "bar": 1327.343136548996,
+     "class": "confirm_candidate",
+     "dF_exit": -45370.48562955856,
+     "e": 17494.04935669899,
+     "label": "n5_y2030_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811996642.1332484,
+     "bar": 1401.0237038135529,
+     "class": "confirm_candidate",
+     "dF_exit": -12566.579594254494,
+     "e": 17494.04935669899,
+     "label": "n5_y2030_p0.25_e0.5",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812005048.4610908,
+     "bar": 1095.7591344118118,
+     "class": "confirm_candidate",
+     "dF_exit": -4160.251751899719,
+     "e": 17494.04935669899,
+     "label": "n5_y2035_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812019255.4569353,
+     "bar": 4923.27134001255,
+     "class": "unresolved",
+     "dF_exit": 10046.744092583656,
+     "e": 17494.04935669899,
+     "label": "n5_y2035_p0.25_e0.5",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811988275.9168296,
+     "bar": 1406.105488538742,
+     "class": "confirm_candidate",
+     "dF_exit": -20932.796013116837,
+     "e": 17494.04935669899,
+     "label": "n7_y2025_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812023299.4231855,
+     "bar": 1704.3324270248413,
+     "class": "unresolved",
+     "dF_exit": 14090.710342764854,
+     "e": 17494.04935669899,
+     "label": "n7_y2025_p0.25_e0.5",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811969937.2151045,
+     "bar": 7757.7476323843,
+     "class": "confirm_candidate",
+     "dF_exit": -39271.49773824215,
+     "e": 17494.04935669899,
+     "label": "n7_y2030_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812000908.0627353,
+     "bar": 2074.4568285942078,
+     "class": "confirm_candidate",
+     "dF_exit": -8300.650107383728,
+     "e": 17494.04935669899,
+     "label": "n7_y2030_p0.25_e0.5",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812008024.1691828,
+     "bar": 1653.4753328561783,
+     "class": "confirm_candidate",
+     "dF_exit": -1184.5436599254608,
+     "e": 17494.04935669899,
+     "label": "n7_y2035_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812023910.1056037,
+     "bar": 9085.329409718513,
+     "class": "unresolved",
+     "dF_exit": 14701.39276099205,
+     "e": 17494.04935669899,
+     "label": "n7_y2035_p0.25_e0.5",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811988988.2418362,
+     "bar": 2840.496600151062,
+     "class": "confirm_candidate",
+     "dF_exit": -20220.471006512642,
+     "e": 17494.04935669899,
+     "label": "n9_y2025_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812020693.3235373,
+     "bar": 816.4646825790405,
+     "class": "unresolved",
+     "dF_exit": 11484.610694646835,
+     "e": 17494.04935669899,
+     "label": "n9_y2025_p0.25_e0.5",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811965120.7445035,
+     "bar": 1544.040856719017,
+     "class": "confirm_candidate",
+     "dF_exit": -44087.96833920479,
+     "e": 17494.04935669899,
+     "label": "n9_y2030_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812001164.918042,
+     "bar": 2014.8174167871475,
+     "class": "confirm_candidate",
+     "dF_exit": -8043.794800758362,
+     "e": 17494.04935669899,
+     "label": "n9_y2030_p0.25_e0.5",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812006668.0965345,
+     "bar": 907.0414525270462,
+     "class": "confirm_candidate",
+     "dF_exit": -2540.6163082122803,
+     "e": 17494.04935669899,
+     "label": "n9_y2035_p0.25_e1",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 812020182.4813304,
+     "bar": 1028.5152782201767,
+     "class": "unresolved",
+     "dF_exit": 10973.76848769188,
+     "e": 17494.04935669899,
+     "label": "n9_y2035_p0.25_e0.5",
+     "source": "screen",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811917782.4099576,
+     "bar": 3196.9692702293396,
+     "class": "confirm_candidate",
+     "dF_exit": -91426.30288505554,
+     "e": 17494.04935669899,
+     "label": "n5_y2030_p0.5_e2",
+     "source": "ladder",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811830358.7184356,
+     "bar": 809.940866112709,
+     "class": "confirm_candidate",
+     "dF_exit": -178849.99440705776,
+     "e": 17494.04935669899,
+     "label": "n5_y2030_p1_e4",
+     "source": "ladder",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811924597.9241779,
+     "bar": 1731.6864861249924,
+     "class": "confirm_candidate",
+     "dF_exit": -84610.78866481781,
+     "e": 17494.04935669899,
+     "label": "n9_y2030_p0.5_e2",
+     "source": "ladder",
+     "status": "certified"
+    },
+    {
+     "F_exit": 811840298.8783633,
+     "bar": 1633.2795219421387,
+     "class": "confirm_candidate",
+     "dF_exit": -168909.83447945118,
+     "e": 17494.04935669899,
+     "label": "n9_y2030_p1_e4",
+     "source": "ladder",
+     "status": "certified"
+    }
+   ],
+   "terminated": false,
+   "termination": null,
+   "x0_exit_check": {
+    "F": 812009208.7128427,
+    "bar": 4271.357581973076,
+    "ok": true,
+    "served_as": "exit_view_of_settled_cache_record",
+    "status": "certified"
+   }
+  },
+  "C_next_action": {
+   "depth": "settled",
+   "kind": "evaluate",
+   "labels": [
+    "n5_y2035_p0.25_e1__n7_y2025_p0.25_e1",
+    "n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5",
+    "n7_y2025_p0.25_e1__n7_y2030_p0.25_e1",
+    "n7_y2025_p0.25_e1__n7_y2035_p0.25_e0.5",
+    "n7_y2025_p0.25_e1__n7_y2035_p0.25_e1"
+   ],
+   "purpose": "candidate_poll",
+   "stage": "candidate_polls",
+   "sub_action": {
+    "action_index": 2,
+    "depth": "settled",
+    "kind": "evaluate",
+    "poll": 0,
+    "purpose": "block",
+    "zs": [
+     [
+      0,
+      0,
+      0,
+      0,
+      1,
+      2,
+      1,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      2,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      2,
+      1,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      2,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      2,
+      0,
+      0,
+      1,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ]
+   },
+   "zs": [
+    [
+     0,
+     0,
+     0,
+     0,
+     1,
+     2,
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     2,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     2,
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     2,
+     0,
+     0,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     2,
+     0,
+     0,
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   ]
+  },
+  "C_per_launch": [
+   {
+    "action": {
+     "depth": "exit",
+     "kind": "evaluate",
+     "purpose": "screen",
+     "stage": "screen"
+    },
+    "action_equal": true,
+    "launch": 1,
+    "state_equal": true
+   },
+   {
+    "action": {
+     "depth": "exit",
+     "kind": "evaluate",
+     "purpose": "screen",
+     "stage": "screen"
+    },
+    "action_equal": true,
+    "launch": 2,
+    "state_equal": true
+   },
+   {
+    "action": {
+     "depth": "exit",
+     "kind": "evaluate",
+     "purpose": "screen",
+     "stage": "screen"
+    },
+    "action_equal": true,
+    "launch": 3,
+    "state_equal": true
+   },
+   {
+    "action": {
+     "depth": "exit",
+     "kind": "evaluate",
+     "purpose": "screen",
+     "stage": "screen"
+    },
+    "action_equal": true,
+    "launch": 4,
+    "state_equal": true
+   },
+   {
+    "action": {
+     "depth": "exit",
+     "kind": "evaluate",
+     "purpose": "ladder",
+     "stage": "ladder"
+    },
+    "action_equal": true,
+    "launch": 5,
+    "state_equal": true
+   },
+   {
+    "action": {
+     "depth": "settled",
+     "kind": "evaluate",
+     "purpose": "candidate_confirmation",
+     "stage": "candidate_confirmation"
+    },
+    "action_equal": true,
+    "launch": 6,
+    "state_equal": false
+   },
+   {
+    "action": {
+     "depth": "settled",
+     "kind": "evaluate",
+     "purpose": "candidate_poll",
+     "stage": "candidate_polls"
+    },
+    "action_equal": true,
+    "launch": 7,
+    "state_equal": false
+   },
+   {
+    "action": {
+     "depth": "settled",
+     "kind": "evaluate",
+     "purpose": "candidate_poll",
+     "stage": "candidate_polls"
+    },
+    "action_equal": true,
+    "launch": 8,
+    "state_equal": false
+   },
+   {
+    "action": {
+     "depth": "settled",
+     "kind": "evaluate",
+     "purpose": "candidate_poll",
+     "stage": "candidate_polls"
+    },
+    "action_equal": true,
+    "launch": 9,
+    "state_equal": false
+   },
+   {
+    "action": {
+     "depth": "settled",
+     "kind": "evaluate",
+     "purpose": "candidate_poll",
+     "stage": "candidate_polls"
+    },
+    "action_equal": true,
+    "launch": 10,
+    "state_equal": false
+   }
+  ],
+  "C_phase_not_settled_review": {
+   "consecutive_not_settled": 0,
+   "n_confirmations": 22,
+   "n_not_settled": 0,
+   "rule_consecutive": false,
+   "rule_share": false,
+   "scope": "phase-wide",
+   "stop": false
+  },
+  "C_state_sha256": "f546caada6a02a4095073000e759ed4125aa3b2b029097621add5398cfc41729",
+  "cache_records": [
+   [
+    "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5",
+    "exit",
+    "exit_view_of_settled_cache_record",
+    "certified"
+   ],
+   [
+    "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5",
+    "settled",
+    "cache_record",
+    "settled"
+   ],
+   [
+    "n7_y2025_p0.25_e1",
+    "exit",
+    "exit_view_of_settled_cache_record",
+    "certified"
+   ],
+   [
+    "n7_y2025_p0.25_e1",
+    "settled",
+    "cache_record",
+    "settled"
+   ],
+   [
+    "x0",
+    "exit",
+    "exit_view_of_settled_cache_record",
+    "certified"
+   ],
+   [
+    "x0",
+    "settled",
+    "cache_record",
+    "settled"
+   ]
+  ],
+  "v2_phase_spec_sha256": "18a224d13f9bc04e3c3177fb678ced009f5f845b77ab895817228b2ad28c1ce8"
+ },
+ "schema": "p515_s56_phase2x_v3_continuation_check_v1",
+ "script": "p515_s56_phase2x_v3_continuation_check.py",
+ "solve_claim": "ZERO SOLVES, guard-verified (SolveProfileGuard(permitted=()) installed before any repository import, verify(0)); pickle blocked (0); phase roots read only",
+ "started_utc": "2026-11-25T19:17:45.783771+00:00",
+ "wall_s": 0.5975468158721924
+}
