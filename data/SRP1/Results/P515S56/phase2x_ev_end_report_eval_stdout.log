@@ -1,0 +1,47 @@
+07:43:39 p515_s56_phase2x_report_eval.py: zero solves; guard armed; pickle blocked
+07:43:39 OK   [A] v3 spec sha256 = 600bbceb...
+07:43:39 OK   [A] no code drift against the v3 spec (driver, policy, neighbourhood, lattice, harness, gate_result_io)
+07:43:39 OK   [A] predecessors re-verified (v1 un-launched, v2 continuation)
+07:43:43 OK   [A] v3 chain replays: 3 launches, every record / manifest / action / state re-derived
+07:43:43 OK   [A] one more phase_step terminates phase_complete
+07:43:43 OK   [A] the replayed terminal state equals phase_results.json state (canonical JSON)
+07:43:43 OK   [A] phase_results manifest holds the results hash
+07:43:43 OK   [B] every record of both phases is served by the v3 phase (v2 via its cache, v3 via its replay)
+07:43:43 OK   [B] ESSO events file count == record n_esso_recovery_events on every evaluation
+07:43:43 OK   [C] v2 launch 1: wall in phase_results == launch record wall
+07:43:43 OK   [C] v2 launch 2: wall in phase_results == launch record wall
+07:43:43 OK   [C] v2 launch 3: wall in phase_results == launch record wall
+07:43:43 OK   [C] v2 launch 4: wall in phase_results == launch record wall
+07:43:43 OK   [C] v2 launch 5: wall in phase_results == launch record wall
+07:43:43 OK   [C] v2 launch 6: wall in phase_results == launch record wall
+07:43:43 OK   [C] v2 launch 7: wall in phase_results == launch record wall
+07:43:43 OK   [C] v2 launch 8: wall in phase_results == launch record wall
+07:43:43 OK   [C] v2 launch 9: wall in phase_results == launch record wall
+07:43:43 OK   [C] v2 launch 10: wall in phase_results == launch record wall
+07:43:43 OK   [C] v2: interrupted launches 0 (interrupted hours 0)
+07:43:43 OK   [C] v3 launch 1: wall in phase_results == launch record wall
+07:43:43 OK   [C] v3 launch 2: wall in phase_results == launch record wall
+07:43:43 OK   [C] v3 launch 3: wall in phase_results == launch record wall
+07:43:43 OK   [C] v3: interrupted launches 0 (interrupted hours 0)
+07:43:43 OK   [C] sum of v2 launch walls == v2 cumulative_h
+07:43:43 OK   [C] sum of v3 launch walls == v3 cumulative_h
+07:43:43 OK   [C] v3 carried_h == v2 cumulative_h
+07:43:43 OK   [C] the projection re-composes to the spec case total (65.24 h)
+07:43:43 OK   [D] 22 rows (18 screen + 4 ladder)
+07:43:43 OK   [F] |N(final incumbent)| = 10 and equals the polled set
+07:43:43 OK   [F] |N| <= CAP (80)
+07:43:43 OK   [G] v3: 3 campaign specs, 6 launch records/manifests
+07:43:43 OK   [G] the scan scope under the v3 root = its phase spec + the 3 campaign specs + the 6 launch records/manifests
+07:43:55 OK   [G] compose_eval_key reproduces the oracle key at cap 300
+07:43:55 OK   [G] the cap enters the key (cap 400 != cap 300)
+07:43:55 OK   [G] the price level enters the key (1x domain keys disjoint from 2x domain keys)
+07:43:55 OK   [G] domain keys distinct: 2x 74084, 1x 74084 (= 2 x 37042)
+07:43:55 OK   [G] keys carried by the v3 campaign specs are a subset of the keys carried by its launch records
+07:43:55 OK   [G] the 2x domain keys the v3 campaign specs carry == the keys of the 11 v3 evaluations
+07:43:55 OK   [G] no 1x domain key in any v3 campaign spec, launch record or manifest
+07:43:56 OK   [G] simulated 1x freeze scan: 0 collisions with v3 campaign specs tracked
+07:43:56 OK   [G] simulated 2x control freeze declaring pilot, v2, v3 as cache roots: 0 collisions
+07:43:56 OK   [G] without v3 declared, the launch records alone already collide (tracking the specs adds no new blocking condition: same refusal either way)
+07:43:56 OK   [B] every ESSO recovery event is on a node holding a 0.5 MWh cohort
+07:43:56 OK   [B] every ESSO recovery event recovered at tier 1
+07:43:56 wrote data/SRP1/Results/P515S56/phase2x_ev_end_report_eval/report_eval.json (4427e1421e0cf88c8026a37dfa87b1d2afc817f724c8d7b562efb67ba0dc4e09); checks 45/45; guard verify(0) []; pickle {'load': 0, 'loads': 0}
