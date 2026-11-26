@@ -1,0 +1,5233 @@
+{
+ "all_checks_ok": true,
+ "checks": [
+  {
+   "check": "spec sha256 = feb487b7...",
+   "detail": "feb487b788c9a769113a1e24e32c4db8e8c296375553168aa12bcee118d8c0ac",
+   "ok": true,
+   "part": "A"
+  },
+  {
+   "check": "no code drift against the spec code_sha256 (driver, policy, neighbourhood, lattice, harness, gate_result_io): the checkout is byte-identical to the frozen code",
+   "detail": [],
+   "ok": true,
+   "part": "A"
+  },
+  {
+   "check": "no cache source declared (D2: no record carries over)",
+   "detail": [],
+   "ok": true,
+   "part": "A"
+  },
+  {
+   "check": "predecessors verified (none: no continuation, no un-launched predecessor)",
+   "detail": {
+    "continuation": [],
+    "rule": "Planner decision P2 (spec v2)",
+    "unlaunched": []
+   },
+   "ok": true,
+   "part": "A"
+  },
+  {
+   "check": "phase cache empty",
+   "detail": 0,
+   "ok": true,
+   "part": "A"
+  },
+  {
+   "check": "chain replays: 7 launches, every record / manifest / action / state re-derived",
+   "detail": 7,
+   "ok": true,
+   "part": "A"
+  },
+  {
+   "check": "one more phase_step terminates phase_complete",
+   "detail": {
+    "kind": "terminated",
+    "termination": {
+     "detail": {
+      "search": {
+       "budget_used": 0,
+       "detail": null,
+       "reason": "complete_poll_no_accepted_candidate"
+      }
+     },
+     "reason": "phase_complete",
+     "stage": "search"
+    }
+   },
+   "ok": true,
+   "part": "A"
+  },
+  {
+   "check": "the replayed terminal state equals phase_results.json state (canonical JSON)",
+   "detail": null,
+   "ok": true,
+   "part": "A"
+  },
+  {
+   "check": "phase_results manifest holds the results hash",
+   "detail": {
+    "phase_results.json": "ee346a211993aa4b1c610fb579c63bbae6310a3826e6b4b333d04fe88208457e"
+   },
+   "ok": true,
+   "part": "A"
+  },
+  {
+   "check": "phase_results.json names this spec",
+   "detail": null,
+   "ok": true,
+   "part": "A"
+  },
+  {
+   "check": "26 records (x0 exit, 18 screen, 4 ladder at exit; 3 settled)",
+   "detail": 26,
+   "ok": true,
+   "part": "A"
+  },
+  {
+   "check": "26 evaluations launched by the phase (every one served by the replay)",
+   "detail": 26,
+   "ok": true,
+   "part": "B"
+  },
+  {
+   "check": "ESSO events file rows == record n_esso_recovery_events on every evaluation",
+   "detail": [],
+   "ok": true,
+   "part": "B"
+  },
+  {
+   "check": "every exit run stopped at its read cycle (cycles_run == read_cycle)",
+   "detail": null,
+   "ok": true,
+   "part": "B"
+  },
+  {
+   "check": "launch 1: wall in phase_results == launch record wall",
+   "detail": null,
+   "ok": true,
+   "part": "C"
+  },
+  {
+   "check": "launch 2: wall in phase_results == launch record wall",
+   "detail": null,
+   "ok": true,
+   "part": "C"
+  },
+  {
+   "check": "launch 3: wall in phase_results == launch record wall",
+   "detail": null,
+   "ok": true,
+   "part": "C"
+  },
+  {
+   "check": "launch 4: wall in phase_results == launch record wall",
+   "detail": null,
+   "ok": true,
+   "part": "C"
+  },
+  {
+   "check": "launch 5: wall in phase_results == launch record wall",
+   "detail": null,
+   "ok": true,
+   "part": "C"
+  },
+  {
+   "check": "launch 6: wall in phase_results == launch record wall",
+   "detail": null,
+   "ok": true,
+   "part": "C"
+  },
+  {
+   "check": "launch 7: wall in phase_results == launch record wall",
+   "detail": null,
+   "ok": true,
+   "part": "C"
+  },
+  {
+   "check": "interrupted launches 0 (interrupted hours 0)",
+   "detail": null,
+   "ok": true,
+   "part": "C"
+  },
+  {
+   "check": "sum of launch walls == cumulative_h",
+   "detail": [
+    6.744029661152098,
+    6.744029661152098
+   ],
+   "ok": true,
+   "part": "C"
+  },
+  {
+   "check": "table x0 = x0 exit run (F, bar bitwise)",
+   "detail": null,
+   "ok": true,
+   "part": "D"
+  },
+  {
+   "check": "22 rows (18 screen + 4 ladder)",
+   "detail": null,
+   "ok": true,
+   "part": "D"
+  },
+  {
+   "check": "e recomputed = max(e_EV, bar_x + bar_x0) equals the recorded e on every row",
+   "detail": [],
+   "ok": true,
+   "part": "D"
+  },
+  {
+   "check": "P.classify_exit recomputed equals the recorded class and dF_exit on every row",
+   "detail": [],
+   "ok": true,
+   "part": "D"
+  },
+  {
+   "check": "every worse row has margin_to_worse >= 0; every unresolved row lies strictly between the boundaries",
+   "detail": null,
+   "ok": true,
+   "part": "D"
+  },
+  {
+   "check": "x0: settled summary exit_view == independent re-read map_record(files, exit) (bitwise)",
+   "detail": [
+    85,
+    665232237.9698584,
+    13215.197726130486
+   ],
+   "ok": true,
+   "part": "E"
+  },
+  {
+   "check": "x0: exit run (read_cycle, F, bar) == settled exit_view, bitwise (the Q7 reading)",
+   "detail": {
+    "differing": [],
+    "equal": true,
+    "exit_run": {
+     "F": 665232237.9698584,
+     "bar": 13215.197726130486,
+     "read_cycle": 85
+    },
+    "exit_run_bits": {
+     "F": [
+      "float",
+      "0x1.3d351b6fc2452p+29"
+     ],
+     "bar": [
+      "float",
+      "0x1.9cf994f170000p+13"
+     ],
+     "read_cycle": [
+      "int",
+      85
+     ]
+    },
+    "exit_view": {
+     "F": 665232237.9698584,
+     "bar": 13215.197726130486,
+     "read_cycle": 85
+    },
+    "exit_view_bits": {
+     "F": [
+      "float",
+      "0x1.3d351b6fc2452p+29"
+     ],
+     "bar": [
+      "float",
+      "0x1.9cf994f170000p+13"
+     ],
+     "read_cycle": [
+      "int",
+      85
+     ]
+    },
+    "fields": [
+     "read_cycle",
+     "F",
+     "bar"
+    ],
+    "reason": null
+   },
+   "ok": true,
+   "part": "E"
+  },
+  {
+   "check": "n7_y2025_p0.25_e1: settled summary exit_view == independent re-read map_record(files, exit) (bitwise)",
+   "detail": [
+    83,
+    665290557.8583921,
+    13188.481404781342
+   ],
+   "ok": true,
+   "part": "E"
+  },
+  {
+   "check": "n7_y2025_p0.25_e1: exit run (read_cycle, F, bar) == settled exit_view, bitwise (the Q7 reading)",
+   "detail": {
+    "differing": [],
+    "equal": true,
+    "exit_run": {
+     "F": 665290557.8583921,
+     "bar": 13188.481404781342,
+     "read_cycle": 83
+    },
+    "exit_run_bits": {
+     "F": [
+      "float",
+      "0x1.3d3c39eeddfcbp+29"
+     ],
+     "bar": [
+      "float",
+      "0x1.9c23d9eac0000p+13"
+     ],
+     "read_cycle": [
+      "int",
+      83
+     ]
+    },
+    "exit_view": {
+     "F": 665290557.8583921,
+     "bar": 13188.481404781342,
+     "read_cycle": 83
+    },
+    "exit_view_bits": {
+     "F": [
+      "float",
+      "0x1.3d3c39eeddfcbp+29"
+     ],
+     "bar": [
+      "float",
+      "0x1.9c23d9eac0000p+13"
+     ],
+     "read_cycle": [
+      "int",
+      83
+     ]
+    },
+    "fields": [
+     "read_cycle",
+     "F",
+     "bar"
+    ],
+    "reason": null
+   },
+   "ok": true,
+   "part": "E"
+  },
+  {
+   "check": "pilot_staged: settled summary exit_view == independent re-read map_record(files, exit) (bitwise)",
+   "detail": [
+    82,
+    665493482.5449587,
+    7502.052960515022
+   ],
+   "ok": true,
+   "part": "E"
+  },
+  {
+   "check": "x0: recourse identity gross - TV == net on every settled-run cycle",
+   "detail": [],
+   "ok": true,
+   "part": "E"
+  },
+  {
+   "check": "x0: settled run F(k) == exit run F(k) bitwise for every exit-run cycle",
+   "detail": {
+    "exit_run_cycles": 85,
+    "first_differing_cycle": null,
+    "identical_prefix": true
+   },
+   "ok": true,
+   "part": "E"
+  },
+  {
+   "check": "n7_y2025_p0.25_e1: recourse identity gross - TV == net on every settled-run cycle",
+   "detail": [],
+   "ok": true,
+   "part": "E"
+  },
+  {
+   "check": "n7_y2025_p0.25_e1: settled run F(k) == exit run F(k) bitwise for every exit-run cycle",
+   "detail": {
+    "exit_run_cycles": 83,
+    "first_differing_cycle": null,
+    "identical_prefix": true
+   },
+   "ok": true,
+   "part": "E"
+  },
+  {
+   "check": "pilot_staged: recourse identity gross - TV == net on every settled-run cycle",
+   "detail": [],
+   "ok": true,
+   "part": "E"
+  },
+  {
+   "check": "final incumbent = x0; 0 moves",
+   "detail": null,
+   "ok": true,
+   "part": "F"
+  },
+  {
+   "check": "N(x0) = the 18 screen plans (zero-solve neighbourhood module)",
+   "detail": 18,
+   "ok": true,
+   "part": "F"
+  },
+  {
+   "check": "terminal poll 18 of 18 classified, all from cache",
+   "detail": null,
+   "ok": true,
+   "part": "F"
+  },
+  {
+   "check": "7 campaign specs, 14 launch records/manifests",
+   "detail": [
+    7,
+    14
+   ],
+   "ok": true,
+   "part": "G"
+  },
+  {
+   "check": "keys carried by the 1x campaign specs are a subset of those of its launch records",
+   "detail": 0,
+   "ok": true,
+   "part": "G"
+  },
+  {
+   "check": "the 1x domain keys the campaign specs carry == the 26 evaluation keys",
+   "detail": [
+    26,
+    26
+   ],
+   "ok": true,
+   "part": "G"
+  },
+  {
+   "check": "simulated 1x confirmation freeze declaring phase1x_ev_v1 as a cache root: 0 collisions",
+   "detail": {
+    "collision_files": [],
+    "n_collisions": 0,
+    "n_files_scanned": 361
+   },
+   "ok": true,
+   "part": "G"
+  },
+  {
+   "check": "without the root declared, the launch records alone already collide (tracking the campaign specs adds no new blocking condition)",
+   "detail": [
+    [
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_001.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_001/campaign_spec_s56phase1x_ev_v1_l001_42fcbdb8.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_002.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_002/campaign_spec_s56phase1x_ev_v1_l002_d4520e98.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/campaign_spec_s56phase1x_ev_v1_l003_5be81277.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_004.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_004/campaign_spec_s56phase1x_ev_v1_l004_f989b014.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_005.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_005/campaign_spec_s56phase1x_ev_v1_l005_822be4e5.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_006.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_006/campaign_spec_s56phase1x_ev_v1_l006_b1009b86.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_007.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_007/campaign_spec_s56phase1x_ev_v1_l007_0d6d3b7c.json"
+    ],
+    [
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_001.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_002.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_004.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_005.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_006.json",
+     "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_007.json"
+    ]
+   ],
+   "ok": true,
+   "part": "G"
+  },
+  {
+   "check": "predictions file sha256 = de8313a4...",
+   "detail": null,
+   "ok": true,
+   "part": "H"
+  },
+  {
+   "check": "Q1 input recomputes from the table rows",
+   "detail": null,
+   "ok": true,
+   "part": "H"
+  },
+  {
+   "check": "Q2 inputs recompute (harness_error summaries, local-solve failures)",
+   "detail": null,
+   "ok": true,
+   "part": "H"
+  },
+  {
+   "check": "Q5 input recomputes (max child RSS over the 26 evaluations)",
+   "detail": null,
+   "ok": true,
+   "part": "H"
+  },
+  {
+   "check": "Q8: sha256 of phase2x_ev_v3/phase_results.json == the sha256 the predictions file names",
+   "detail": "2f8778b5ed573492d5d8bd4e2bf31c1113c61b946a56bc65c20c20d85f2a898c",
+   "ok": true,
+   "part": "H"
+  },
+  {
+   "check": "Q8: the 2x values copied into the predictions file == the v3 results rows (bitwise)",
+   "detail": null,
+   "ok": true,
+   "part": "H"
+  },
+  {
+   "check": "Q8: 1x dF_exit from the table rows == prediction_inputs.Q8.screen_dF_exit",
+   "detail": null,
+   "ok": true,
+   "part": "H"
+  },
+  {
+   "check": "Q9 inputs recompute (n settled summaries, n above ceiling, without leak)",
+   "detail": null,
+   "ok": true,
+   "part": "H"
+  },
+  {
+   "check": "committed 2x evaluation sha256 = 4427e142...",
+   "detail": null,
+   "ok": true,
+   "part": "I"
+  },
+  {
+   "check": "memory probe SRP1-grid SP: 2 cycle walls read (cycle 1, cycle 2)",
+   "detail": [
+    452.0477077960968,
+    307.57364892959595
+   ],
+   "ok": true,
+   "part": "J"
+  },
+  {
+   "check": "every ESSO recovery event recovered at tier 1 (vacuous if none)",
+   "detail": 0,
+   "ok": true,
+   "part": "B"
+  },
+  {
+   "check": "all 3 settled runs: settled, gates pass, every settled check true",
+   "detail": null,
+   "ok": true,
+   "part": "B"
+  },
+  {
+   "check": "every guard exact on all 26 evaluations",
+   "detail": null,
+   "ok": true,
+   "part": "B"
+  },
+  {
+   "check": "no code drift at the end of the evaluation",
+   "detail": [],
+   "ok": true,
+   "part": "A"
+  }
+ ],
+ "git_head": "d5430072d6361d12f4dd9bc43980ca945eb6d80a",
+ "guard": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "pickle": {
+   "load": 0,
+   "loads": 0
+  },
+  "pickle_2x_module": {
+   "load": 0,
+   "loads": 0
+  },
+  "verify_0": [],
+  "verify_0_2x_module": []
+ },
+ "inputs": {
+  "code_sha256_now": {
+   "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+   "p515_s44_campaign_harness.py": "05a9838c46f19837398af31252bd85c465a3794aa03e9cfc1a7a30c08c462b29",
+   "p515_s56_neighbourhood.py": "bd95342d2da2b0ecf2d99b9ef3b8a396e3637e18a050f8ce0117ec2ec9590cc0",
+   "p515_s56_search_driver.py": "566ab7c9f09b8ab3162158925c08e28d677eb3d73a6704c2d31ee03f1181023e",
+   "p515_s56_search_policy.py": "27d9347839f22367e178d76646a1cfdeb0f14acf51ecd34fe15c4d85860507c1",
+   "p516_lattice.py": "ff5d63ef897ccd04e5bbaa719b352537108180a31b83c1b8574506612af86e88"
+  },
+  "memory_probe": "data/SRP1/Results/P515S56/memory_probe_v1/srp1grid/memory_probe_srp1grid.json",
+  "memory_probe_sha256": "1aaeeadd2bafc001cafc3c2cedf8f1dd9cfd681a6d9467d3549d09e2e53a784e",
+  "phase_results_sha256": "ee346a211993aa4b1c610fb579c63bbae6310a3826e6b4b333d04fe88208457e",
+  "phase_root": "data/SRP1/Results/P515S56/phase1x_ev_v1",
+  "phase_spec_sha256": "feb487b788c9a769113a1e24e32c4db8e8c296375553168aa12bcee118d8c0ac",
+  "predictions": "data/SRP1/Results/P515S56/phase1x_ev_v1_predictions.json",
+  "predictions_sha256": "de8313a44aae2806db3d06d24cc4b15be8376e195a08207616e7dc958bc7ce65",
+  "two_x_evaluation": "data/SRP1/Results/P515S56/phase2x_ev_end_report_eval/report_eval.json",
+  "two_x_evaluation_sha256": "4427e1421e0cf88c8026a37dfa87b1d2afc817f724c8d7b562efb67ba0dc4e09"
+ },
+ "objective_convention": "F = I(x) + gross_operational_cost - TV credit, EUR of total discounted planning cost (oracle mapping v2; gross settlement-excluded)",
+ "results": {
+  "G": {
+   "campaign_specs": [
+    "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_001/campaign_spec_s56phase1x_ev_v1_l001_42fcbdb8.json",
+    "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_002/campaign_spec_s56phase1x_ev_v1_l002_d4520e98.json",
+    "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/campaign_spec_s56phase1x_ev_v1_l003_5be81277.json",
+    "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_004/campaign_spec_s56phase1x_ev_v1_l004_f989b014.json",
+    "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_005/campaign_spec_s56phase1x_ev_v1_l005_822be4e5.json",
+    "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_006/campaign_spec_s56phase1x_ev_v1_l006_b1009b86.json",
+    "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_007/campaign_spec_s56phase1x_ev_v1_l007_0d6d3b7c.json"
+   ],
+   "decision": "track 1x campaign specs",
+   "n_1x_domain_keys": 74084,
+   "n_keys_campaign_specs": 26,
+   "n_keys_launch_records": 26,
+   "simulated_scans": {
+    "1x_confirmation_freeze_declaring_phase1x_ev_v1_as_cache_root": {
+     "collision_files": [],
+     "n_collisions": 0,
+     "n_files_scanned": 361
+    },
+    "1x_confirmation_freeze_not_declared_launch_records_only": {
+     "collision_files": [
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_001.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_002.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_004.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_005.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_006.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_007.json"
+     ],
+     "n_collisions": 7,
+     "n_files_scanned": 376
+    },
+    "1x_confirmation_freeze_phase1x_ev_v1_not_declared": {
+     "collision_files": [
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_001.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_001/campaign_spec_s56phase1x_ev_v1_l001_42fcbdb8.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_002.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_002/campaign_spec_s56phase1x_ev_v1_l002_d4520e98.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/campaign_spec_s56phase1x_ev_v1_l003_5be81277.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_004.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_004/campaign_spec_s56phase1x_ev_v1_l004_f989b014.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_005.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_005/campaign_spec_s56phase1x_ev_v1_l005_822be4e5.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_006.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_006/campaign_spec_s56phase1x_ev_v1_l006_b1009b86.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_007.json",
+      "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_007/campaign_spec_s56phase1x_ev_v1_l007_0d6d3b7c.json"
+     ],
+     "n_collisions": 14,
+     "n_files_scanned": 383
+    }
+   }
+  },
+  "evaluations": [
+   {
+    "F": 665232237.9698584,
+    "I_x_eur": 0.0,
+    "V": null,
+    "bar": 13215.197726130486,
+    "candidate_key": "dcb43218986e026f00649f3988dbc50bbd67f4e4ef3670aa43b3c7805f8aee1f",
+    "child_wall_s": 1974.7036862373352,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [],
+    "cycles_run": 85,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_001/evals/9a4396f604a8a3af_x0__exit__ev_1x",
+    "eval_key": "9a4396f604a8a3af3036546b398d187eb87ae7e2b788b9d3b9ed36f7fe33910c",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "x0",
+    "launch": 1,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 0,
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.7243194580078125,
+    "purpose": "x0_exit",
+    "read_cycle": 85,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665284016.7468579,
+    "I_x_eur": 317957.0085035586,
+    "V": null,
+    "bar": 14097.589530706406,
+    "candidate_key": "6abf37bf8f719508ed6f37697361f0bdb632c32d232b1cc616f61f20af867371",
+    "child_wall_s": 2792.904191970825,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 1.0,
+      "P_mva": 0.25,
+      "node": 5,
+      "year": 2025
+     }
+    ],
+    "cycles_run": 83,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_002/evals/3754ac36c10c0f30_n5_y2025_p0_25_e1__exit__ev_1x",
+    "eval_key": "3754ac36c10c0f3059c049bac75a7558e5d7c32d6457eb2f507f09f344bb7837",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n5_y2025_p0.25_e1",
+    "launch": 2,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 0,
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.7295379638671875,
+    "purpose": "screen",
+    "read_cycle": 83,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665289190.3562238,
+    "I_x_eur": 191018.169784262,
+    "V": null,
+    "bar": 5648.6706635952,
+    "candidate_key": "aeb5515dee716bac12ec8c787b2920d893b27a6cd1ca536de0187ad9fbd0fac1",
+    "child_wall_s": 2646.3189692497253,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 0.5,
+      "P_mva": 0.25,
+      "node": 5,
+      "year": 2025
+     }
+    ],
+    "cycles_run": 86,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_002/evals/abf8cf49e497e22b_n5_y2025_p0_25_e0_5__exit__ev_1x",
+    "eval_key": "abf8cf49e497e22b83f951f34c3ce9d58284f4f255842f0dbfd16e66a330a292",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n5_y2025_p0.25_e0.5",
+    "launch": 2,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 0,
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.7449951171875,
+    "purpose": "screen",
+    "read_cycle": 86,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665268173.1708288,
+    "I_x_eur": 236168.02151912605,
+    "V": null,
+    "bar": 12196.484182715416,
+    "candidate_key": "5623bf80645413d97376418bfb531d77483e364d3721b91ddaec21bc5fe928de",
+    "child_wall_s": 2720.0237839221954,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 1.0,
+      "P_mva": 0.25,
+      "node": 5,
+      "year": 2030
+     }
+    ],
+    "cycles_run": 84,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_002/evals/11ba8ea0ab4b9ae5_n5_y2030_p0_25_e1__exit__ev_1x",
+    "eval_key": "11ba8ea0ab4b9ae5afe504073869df55e53914ab6e09c1cceb8b5d2405564ddd",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n5_y2030_p0.25_e1",
+    "launch": 2,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 1,
+     "recovered_tier1": 1,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.73162841796875,
+    "purpose": "screen",
+    "read_cycle": 84,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665261923.1519948,
+    "I_x_eur": 141882.02186349593,
+    "V": null,
+    "bar": 10267.623571395874,
+    "candidate_key": "bd3fbd1a60318bde8a33d318e4648997bd338d419e1d31fff194c7bcda516a30",
+    "child_wall_s": 2573.4450631141663,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 0.5,
+      "P_mva": 0.25,
+      "node": 5,
+      "year": 2030
+     }
+    ],
+    "cycles_run": 84,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_002/evals/1e8758df0fb775e7_n5_y2030_p0_25_e0_5__exit__ev_1x",
+    "eval_key": "1e8758df0fb775e75fbb78e1ec0bb2065d6eeed4b5b178d2b979b39ad7f36b5a",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n5_y2030_p0.25_e0.5",
+    "launch": 2,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 1,
+     "recovered_tier1": 1,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.7469024658203125,
+    "purpose": "screen",
+    "read_cycle": 84,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665288852.4753351,
+    "I_x_eur": 197989.5153493472,
+    "V": null,
+    "bar": 11707.661873936653,
+    "candidate_key": "bd7fbe99cef04d63e0201853d2b86eafb844420f9ba89154b6e3a8844522e0c4",
+    "child_wall_s": 2425.5122299194336,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 1.0,
+      "P_mva": 0.25,
+      "node": 5,
+      "year": 2035
+     }
+    ],
+    "cycles_run": 82,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_002/evals/a79bedfae8a65e13_n5_y2035_p0_25_e1__exit__ev_1x",
+    "eval_key": "a79bedfae8a65e136cce2cac90863ee874115bba17d69aaedea3ad885a9c9695",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n5_y2035_p0.25_e1",
+    "launch": 2,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 0,
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.72576904296875,
+    "purpose": "screen",
+    "read_cycle": 82,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665282848.9141548,
+    "I_x_eur": 118945.62424178196,
+    "V": null,
+    "bar": 6356.270311951637,
+    "candidate_key": "5234d09abd8b80856b3b6111b3f754c7d03990378dda82d1a28b6ac8cdb2ce1d",
+    "child_wall_s": 2407.5803637504578,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 0.5,
+      "P_mva": 0.25,
+      "node": 5,
+      "year": 2035
+     }
+    ],
+    "cycles_run": 81,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/a79bfe01b90d025b_n5_y2035_p0_25_e0_5__exit__ev_1x",
+    "eval_key": "a79bfe01b90d025b48e237543bb0c35ce0b7b67a2689f7e70a07f4ca3dc267cf",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n5_y2035_p0.25_e0.5",
+    "launch": 3,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 0,
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.6887664794921875,
+    "purpose": "screen",
+    "read_cycle": 81,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665290557.8583921,
+    "I_x_eur": 317957.0085035586,
+    "V": null,
+    "bar": 13188.481404781342,
+    "candidate_key": "0998d02182570fc09538c2b58e9a16313dbb0225db0595442fcaba0b3c308000",
+    "child_wall_s": 2588.5126581192017,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 1.0,
+      "P_mva": 0.25,
+      "node": 7,
+      "year": 2025
+     }
+    ],
+    "cycles_run": 83,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/a209444066d81f49_n7_y2025_p0_25_e1__exit__ev_1x",
+    "eval_key": "a209444066d81f49b1bc1f4a6365c60669997f5f7620466a9d1649fde2aceac8",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n7_y2025_p0.25_e1",
+    "launch": 3,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 0,
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.690582275390625,
+    "purpose": "screen",
+    "read_cycle": 83,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665287328.4181896,
+    "I_x_eur": 191018.169784262,
+    "V": null,
+    "bar": 9513.06659245491,
+    "candidate_key": "411f7b2e88ff08cef7e565ff50e93f17d48680f04ea27d0148b7fcd11a8257a4",
+    "child_wall_s": 2736.3768949508667,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 0.5,
+      "P_mva": 0.25,
+      "node": 7,
+      "year": 2025
+     }
+    ],
+    "cycles_run": 84,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/b208064d83583776_n7_y2025_p0_25_e0_5__exit__ev_1x",
+    "eval_key": "b208064d835837763cf1dafc408ba266e6db8fe985f7eff127d6536e2c22f0a2",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n7_y2025_p0.25_e0.5",
+    "launch": 3,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 0,
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.70574951171875,
+    "purpose": "screen",
+    "read_cycle": 84,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665281040.705798,
+    "I_x_eur": 236168.02151912605,
+    "V": null,
+    "bar": 9908.47154712677,
+    "candidate_key": "d41f7545e47d9844b44e87e4197475218f6ef8de602003895b0643e88422aa14",
+    "child_wall_s": 2515.89071893692,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 1.0,
+      "P_mva": 0.25,
+      "node": 7,
+      "year": 2030
+     }
+    ],
+    "cycles_run": 83,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/a2825e71581b039f_n7_y2030_p0_25_e1__exit__ev_1x",
+    "eval_key": "a2825e71581b039f767cfa6f49099829cdd825e97d835df83f5ea1b17d987c80",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n7_y2030_p0.25_e1",
+    "launch": 3,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 0,
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.6653289794921875,
+    "purpose": "screen",
+    "read_cycle": 83,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665264365.8251923,
+    "I_x_eur": 141882.02186349593,
+    "V": null,
+    "bar": 10154.924403429031,
+    "candidate_key": "8d29d2e06ef816f8a7fc5352929c1d38dfe0e1d932a34d1d97acad189d8825b1",
+    "child_wall_s": 2660.541297197342,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 0.5,
+      "P_mva": 0.25,
+      "node": 7,
+      "year": 2030
+     }
+    ],
+    "cycles_run": 84,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/de22f4e14ca61976_n7_y2030_p0_25_e0_5__exit__ev_1x",
+    "eval_key": "de22f4e14ca619769b264d339fcfbfa14c46f3f5338a163f6ff72d350a6e6306",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n7_y2030_p0.25_e0.5",
+    "launch": 3,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 1,
+     "recovered_tier1": 1,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.6933746337890625,
+    "purpose": "screen",
+    "read_cycle": 84,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665301083.3732133,
+    "I_x_eur": 197989.5153493472,
+    "V": null,
+    "bar": 5474.092869877815,
+    "candidate_key": "58d0f2cee3f1ca5ea70ed6a85188575af1511117432a4054c399db9cbb425be6",
+    "child_wall_s": 2641.8274738788605,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 1.0,
+      "P_mva": 0.25,
+      "node": 7,
+      "year": 2035
+     }
+    ],
+    "cycles_run": 88,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_004/evals/33f2a5da93db98d2_n7_y2035_p0_25_e1__exit__ev_1x",
+    "eval_key": "33f2a5da93db98d2638c42d0a93f222a6ceb8f48cfc268b9f6bcd557b3e3444e",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n7_y2035_p0.25_e1",
+    "launch": 4,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 0,
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.6866302490234375,
+    "purpose": "screen",
+    "read_cycle": 88,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665279159.0944369,
+    "I_x_eur": 118945.62424178196,
+    "V": null,
+    "bar": 8213.207327961922,
+    "candidate_key": "f6a03679883c1291449ed906756414a0a89c99c5c9129d20c887a3f33ea4bf5d",
+    "child_wall_s": 2492.9793841838837,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 0.5,
+      "P_mva": 0.25,
+      "node": 7,
+      "year": 2035
+     }
+    ],
+    "cycles_run": 85,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_004/evals/9ff6db3807cfe070_n7_y2035_p0_25_e0_5__exit__ev_1x",
+    "eval_key": "9ff6db3807cfe070481b19453b7cf5e1d900dae2249625a258fd9736fbb456a3",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n7_y2035_p0.25_e0.5",
+    "launch": 4,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 0,
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.6894073486328125,
+    "purpose": "screen",
+    "read_cycle": 85,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665284401.0273794,
+    "I_x_eur": 317957.0085035586,
+    "V": null,
+    "bar": 14402.030747652054,
+    "candidate_key": "e8578c6effe2ff49e163b175a469f8aa17ad3b994fc5f7b6dd7b455562e49667",
+    "child_wall_s": 2714.0222527980804,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 1.0,
+      "P_mva": 0.25,
+      "node": 9,
+      "year": 2025
+     }
+    ],
+    "cycles_run": 83,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_004/evals/994249d5ed807b2e_n9_y2025_p0_25_e1__exit__ev_1x",
+    "eval_key": "994249d5ed807b2e866ed950bf760a34558e6034c7dade05beee22a7abb6c752",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n9_y2025_p0.25_e1",
+    "launch": 4,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 1,
+     "recovered_tier1": 1,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.6695404052734375,
+    "purpose": "screen",
+    "read_cycle": 83,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     2,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665288424.3244627,
+    "I_x_eur": 191018.169784262,
+    "V": null,
+    "bar": 9127.34294962883,
+    "candidate_key": "62225584ee3afb64343647f964453b067190568f86fd391bfbb12c3d0acac434",
+    "child_wall_s": 2790.0991978645325,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 0.5,
+      "P_mva": 0.25,
+      "node": 9,
+      "year": 2025
+     }
+    ],
+    "cycles_run": 85,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_004/evals/6a9d165cef37b35d_n9_y2025_p0_25_e0_5__exit__ev_1x",
+    "eval_key": "6a9d165cef37b35d9d73592911fac7b42e8e79e6a33d360e654e32777075e596",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n9_y2025_p0.25_e0.5",
+    "launch": 4,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 2,
+     "recovered_tier1": 2,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.7245635986328125,
+    "purpose": "screen",
+    "read_cycle": 85,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665275381.5476835,
+    "I_x_eur": 236168.02151912605,
+    "V": null,
+    "bar": 12852.528566241264,
+    "candidate_key": "dfc7d43feb066b142632e56954229ff8dd3178171b4db44199b05a042894f6f7",
+    "child_wall_s": 2570.1128208637238,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 1.0,
+      "P_mva": 0.25,
+      "node": 9,
+      "year": 2030
+     }
+    ],
+    "cycles_run": 84,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_004/evals/f66929163c04f346_n9_y2030_p0_25_e1__exit__ev_1x",
+    "eval_key": "f66929163c04f346f992e8c7a9f0667f8bf268e9faf50c65acfe482f50f8fc21",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n9_y2030_p0.25_e1",
+    "launch": 4,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 0,
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.687835693359375,
+    "purpose": "screen",
+    "read_cycle": 84,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     2,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665259593.2231604,
+    "I_x_eur": 141882.02186349593,
+    "V": null,
+    "bar": 12027.601452589035,
+    "candidate_key": "6427eb8e6c12ba28beff2c3e3f35bd9516b9deeb6d165a7cffe1a70c110043e5",
+    "child_wall_s": 2456.948348045349,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 0.5,
+      "P_mva": 0.25,
+      "node": 9,
+      "year": 2030
+     }
+    ],
+    "cycles_run": 83,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_005/evals/7002dfaf83c9b7db_n9_y2030_p0_25_e0_5__exit__ev_1x",
+    "eval_key": "7002dfaf83c9b7db4241261519659df4e711e12138bc02951962711c11962d62",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n9_y2030_p0.25_e0.5",
+    "launch": 5,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 1,
+     "recovered_tier1": 1,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.730255126953125,
+    "purpose": "screen",
+    "read_cycle": 83,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     1,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665295462.3116984,
+    "I_x_eur": 197989.5153493472,
+    "V": null,
+    "bar": 4271.533282518387,
+    "candidate_key": "966f7bfa6e22adcd7241045faf6c426875f79153b6e6aff0acd8b261bad21872",
+    "child_wall_s": 2385.49383187294,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 1.0,
+      "P_mva": 0.25,
+      "node": 9,
+      "year": 2035
+     }
+    ],
+    "cycles_run": 87,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_005/evals/ec26b9ca55e63b69_n9_y2035_p0_25_e1__exit__ev_1x",
+    "eval_key": "ec26b9ca55e63b69c91c576ab34a336bfb6fc51934f89c7ca10f82f4b43f5936",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n9_y2035_p0.25_e1",
+    "launch": 5,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 0,
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.7013702392578125,
+    "purpose": "screen",
+    "read_cycle": 87,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     2
+    ]
+   },
+   {
+    "F": 665287933.802253,
+    "I_x_eur": 118945.62424178196,
+    "V": null,
+    "bar": 13771.734726548195,
+    "candidate_key": "ac901257f14dbe93306b53b6b9d66086e63f260405b31c3009bd993a181ac655",
+    "child_wall_s": 2311.5676250457764,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 0.5,
+      "P_mva": 0.25,
+      "node": 9,
+      "year": 2035
+     }
+    ],
+    "cycles_run": 84,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_005/evals/a7deddf2b3260675_n9_y2035_p0_25_e0_5__exit__ev_1x",
+    "eval_key": "a7deddf2b326067504be578d5b53c133f5b8b6c5b0374ae99b88f39b81cd6087",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n9_y2035_p0.25_e0.5",
+    "launch": 5,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 0,
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.7160186767578125,
+    "purpose": "screen",
+    "read_cycle": 84,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "screen",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     1
+    ]
+   },
+   {
+    "F": 665298258.6187377,
+    "I_x_eur": 283764.04372699186,
+    "V": null,
+    "bar": 20466.858976125717,
+    "candidate_key": "3958c1422c273c0d28c7a0ec83dbbb010b7df1b3824c6996a9488fbcb935f78a",
+    "child_wall_s": 2495.814055919647,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 1.0,
+      "P_mva": 0.5,
+      "node": 9,
+      "year": 2030
+     }
+    ],
+    "cycles_run": 85,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_006/evals/f075097917a4b72c_n9_y2030_p0_5_e1__exit__ev_1x",
+    "eval_key": "f075097917a4b72c576112c47127a8c6f202c09390f29571e5a01a5a2337e3ec",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n9_y2030_p0.5_e1",
+    "launch": 6,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 2,
+     "recovered_tier1": 2,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.734466552734375,
+    "purpose": "ladder",
+    "read_cycle": 85,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "ladder",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     2,
+     2,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665425423.8220419,
+    "I_x_eur": 567528.0874539837,
+    "V": null,
+    "bar": 8199.440504908562,
+    "candidate_key": "87cef9bbef46d752481d7c2fba26d3e05c892f6263e6ccaa0c3e46f0b2516989",
+    "child_wall_s": 2421.053097963333,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 2.0,
+      "P_mva": 1.0,
+      "node": 9,
+      "year": 2030
+     }
+    ],
+    "cycles_run": 81,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_006/evals/a657991ef1a418fa_n9_y2030_p1_e2__exit__ev_1x",
+    "eval_key": "a657991ef1a418fa37b00df847507f4077d6855ac673682024efe2be0c49ace3",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n9_y2030_p1_e2",
+    "launch": 6,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 6,
+     "recovered_tier1": 5,
+     "recovered_tier2": 1,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.7392120361328125,
+    "purpose": "ladder",
+    "read_cycle": 81,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "ladder",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     4,
+     4,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665295672.2190886,
+    "I_x_eur": 283764.04372699186,
+    "V": null,
+    "bar": 27515.202830314636,
+    "candidate_key": "37c3bab2a10d6adb6d46c40ea0241c9bcee3073c3450edc5becd61c3f0575e50",
+    "child_wall_s": 2571.020825147629,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 1.0,
+      "P_mva": 0.5,
+      "node": 5,
+      "year": 2030
+     }
+    ],
+    "cycles_run": 83,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_006/evals/33b8c0a44b1066d6_n5_y2030_p0_5_e1__exit__ev_1x",
+    "eval_key": "33b8c0a44b1066d62bfe011594fabd01baf9f274b42f435f7c62f028857328bc",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n5_y2030_p0.5_e1",
+    "launch": 6,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 2,
+     "recovered_tier1": 2,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.7334442138671875,
+    "purpose": "ladder",
+    "read_cycle": 83,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "ladder",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665437364.1352195,
+    "I_x_eur": 567528.0874539837,
+    "V": null,
+    "bar": 7927.821134090424,
+    "candidate_key": "0fdd5003bdf47274b444232fada26de2248b9244dc545e2e466ed14ea388f84e",
+    "child_wall_s": 2344.503757238388,
+    "closure_max_abs_net_mwh": null,
+    "cohorts": [
+     {
+      "E_mwh": 2.0,
+      "P_mva": 1.0,
+      "node": 5,
+      "year": 2030
+     }
+    ],
+    "cycles_run": 79,
+    "depth": "exit",
+    "esso_events": [],
+    "esso_slack_eur": null,
+    "esso_slack_max_abs_net": null,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_006/evals/768718f3861e8ca9_n5_y2030_p1_e2__exit__ev_1x",
+    "eval_key": "768718f3861e8ca99a4cda709e84beb041b1ab1b2a3c7dac7e77a485e84d484d",
+    "exit_view": null,
+    "gates": null,
+    "gates_pass": null,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n5_y2030_p1_e2",
+    "launch": 6,
+    "leak_L_weighted_mwh": null,
+    "leak_priced_full_eur": null,
+    "leak_priced_loss_eur": null,
+    "leak_within_ceiling": null,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 10,
+     "recovered_tier1": 9,
+     "recovered_tier2": 1,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.721527099609375,
+    "purpose": "ladder",
+    "read_cycle": 79,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": null,
+    "stage": "ladder",
+    "status": "certified",
+    "z": [
+     0,
+     0,
+     4,
+     4,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665242478.8076568,
+    "I_x_eur": 0.0,
+    "V": {
+     "A": 249.4386973161441,
+     "G": 0.0,
+     "PR": 140.8805605001871,
+     "S": 14.964313268661499
+    },
+    "bar": null,
+    "candidate_key": "dcb43218986e026f00649f3988dbc50bbd67f4e4ef3670aa43b3c7805f8aee1f",
+    "child_wall_s": 7844.272734880447,
+    "closure_max_abs_net_mwh": 0.0,
+    "cohorts": [],
+    "cycles_run": 300,
+    "depth": "settled",
+    "esso_events": [],
+    "esso_slack_eur": 0.0,
+    "esso_slack_max_abs_net": 0.0,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_007/evals/cad9c4b0c8e61a8a_x0__settled__ev_1x",
+    "eval_key": "cad9c4b0c8e61a8af5458b42d60de00e4e494199de5206633d18aa55bbac079a",
+    "exit_view": {
+     "F": 665232237.9698584,
+     "bar": 13215.197726130486,
+     "read_at": "would-be certification cycle (stop disabled)",
+     "read_cycle": 85,
+     "status": "certified"
+    },
+    "gates": {
+     "d1_efficiency_equality": true,
+     "esso_slack_gate": true,
+     "interface_p_ceiling_12p5kw": true,
+     "network_closure_slack_le_tau_cl": true,
+     "status_ok_and_guards_exact": true
+    },
+    "gates_pass": true,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "stop_disabling_summary_ok": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "x0",
+    "launch": 7,
+    "leak_L_weighted_mwh": 0.0,
+    "leak_priced_full_eur": 0.0,
+    "leak_priced_loss_eur": 0.0,
+    "leak_within_ceiling": true,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 0,
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.83392333984375,
+    "purpose": "pool_settled",
+    "read_cycle": null,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": {
+     "K_at_least_W": true,
+     "guards_exact_and_no_local_failure": true,
+     "last_W_at_tail_depth": true,
+     "reached_K": true,
+     "stop_disabled_declared": true,
+     "would_have_certified_each_of_last_W": true
+    },
+    "stage": "pool",
+    "status": "settled",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665321216.5949967,
+    "I_x_eur": 317957.0085035586,
+    "V": {
+     "A": 245.0608890633895,
+     "G": 3.2788879249895015,
+     "PR": 148.29772811617937,
+     "S": 29.202881455421448
+    },
+    "bar": null,
+    "candidate_key": "0998d02182570fc09538c2b58e9a16313dbb0225db0595442fcaba0b3c308000",
+    "child_wall_s": 8416.116714000702,
+    "closure_max_abs_net_mwh": 2.673755977807131e-11,
+    "cohorts": [
+     {
+      "E_mwh": 1.0,
+      "P_mva": 0.25,
+      "node": 7,
+      "year": 2025
+     }
+    ],
+    "cycles_run": 300,
+    "depth": "settled",
+    "esso_events": [],
+    "esso_slack_eur": 1.4827539728454414e-10,
+    "esso_slack_max_abs_net": 5.256286115243712e-16,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_007/evals/353293e6343e38d7_n7_y2025_p0_25_e1__settled__ev_1x",
+    "eval_key": "353293e6343e38d7271ac8764b93f07e93a2ef3d71f2bae6052d9c42af7532e9",
+    "exit_view": {
+     "F": 665290557.8583921,
+     "bar": 13188.481404781342,
+     "read_at": "would-be certification cycle (stop disabled)",
+     "read_cycle": 83,
+     "status": "certified"
+    },
+    "gates": {
+     "d1_efficiency_equality": true,
+     "esso_slack_gate": true,
+     "interface_p_ceiling_12p5kw": true,
+     "network_closure_slack_le_tau_cl": true,
+     "status_ok_and_guards_exact": true
+    },
+    "gates_pass": true,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "stop_disabling_summary_ok": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n7_y2025_p0.25_e1",
+    "launch": 7,
+    "leak_L_weighted_mwh": 0.0,
+    "leak_priced_full_eur": 0.0,
+    "leak_priced_loss_eur": 0.0,
+    "leak_within_ceiling": true,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 0,
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.77545166015625,
+    "purpose": "pool_settled",
+    "read_cycle": null,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": {
+     "K_at_least_W": true,
+     "guards_exact_and_no_local_failure": true,
+     "last_W_at_tail_depth": true,
+     "reached_K": true,
+     "stop_disabled_declared": true,
+     "would_have_certified_each_of_last_W": true
+    },
+    "stage": "pool",
+    "status": "settled",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "F": 665499465.6111947,
+    "I_x_eur": 862548.6983358284,
+    "V": {
+     "A": 363.6083420515682,
+     "G": 6.799669214329079,
+     "PR": 198.09229785951862,
+     "S": 333.4490441083908
+    },
+    "bar": null,
+    "candidate_key": "87170f8d2133558f7e41b78671a8e43fc5453dd25b8a834739dd4498506d3f4d",
+    "child_wall_s": 8910.298321008682,
+    "closure_max_abs_net_mwh": 2.807466547949084e-11,
+    "cohorts": [
+     {
+      "E_mwh": 1.0,
+      "P_mva": 0.5,
+      "node": 5,
+      "year": 2030
+     },
+     {
+      "E_mwh": 1.0,
+      "P_mva": 0.25,
+      "node": 7,
+      "year": 2025
+     },
+     {
+      "E_mwh": 0.5,
+      "P_mva": 0.25,
+      "node": 7,
+      "year": 2030
+     },
+     {
+      "E_mwh": 0.5,
+      "P_mva": 0.25,
+      "node": 9,
+      "year": 2035
+     }
+    ],
+    "cycles_run": 300,
+    "depth": "settled",
+    "esso_events": [],
+    "esso_slack_eur": 2.0918175151502002e-10,
+    "esso_slack_max_abs_net": 5.740602018254735e-16,
+    "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_007/evals/dd1233660d884286_n5_y2030_p0_5_e1__n7_y2025_p0_25_e1__n7_y2030_p0_25_e0_5__n9_y2035_p0_25_e0_5__settled__ev_1x",
+    "eval_key": "dd1233660d884286ef0ecb28989c142f31d7c7e401de31535b68e32219df8fcd",
+    "exit_view": {
+     "F": 665493482.5449587,
+     "bar": 7502.052960515022,
+     "read_at": "would-be certification cycle (stop disabled)",
+     "read_cycle": 82,
+     "status": "certified"
+    },
+    "gates": {
+     "d1_efficiency_equality": true,
+     "esso_slack_gate": true,
+     "interface_p_ceiling_12p5kw": true,
+     "network_closure_slack_le_tau_cl": true,
+     "status_ok_and_guards_exact": true
+    },
+    "gates_pass": true,
+    "guard": true,
+    "guards": {
+     "child_exit_0": true,
+     "no_local_solve_failure": true,
+     "nothing_blocked": true,
+     "solve_profile_identity_holds": true,
+     "stop_disabling_summary_ok": true,
+     "tail_state_matches_declaration": true
+    },
+    "label": "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5",
+    "launch": 7,
+    "leak_L_weighted_mwh": 0.0,
+    "leak_priced_full_eur": 0.0,
+    "leak_priced_loss_eur": 0.0,
+    "leak_within_ceiling": true,
+    "local_solve_failures": 0,
+    "n_esso_events_file": 0,
+    "n_esso_recovery_events_record": 0,
+    "network_failure_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 4,
+     "recovered_tier1": 4,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "peak_rss_gib": 2.8344879150390625,
+    "purpose": "pool_settled",
+    "read_cycle": null,
+    "reconciliation_via": "harness_identity",
+    "settled_checks": {
+     "K_at_least_W": true,
+     "guards_exact_and_no_local_failure": true,
+     "last_W_at_tail_depth": true,
+     "reached_K": true,
+     "stop_disabled_declared": true,
+     "would_have_certified_each_of_last_W": true
+    },
+    "stage": "pool",
+    "status": "settled",
+    "z": [
+     0,
+     0,
+     2,
+     2,
+     0,
+     0,
+     1,
+     2,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     1
+    ]
+   }
+  ],
+  "hours": {
+   "by_stage": {
+    "candidate_confirmations": {
+     "evaluations": 0,
+     "h": 0.0,
+     "launches": 0
+    },
+    "candidate_polls": {
+     "evaluations": 0,
+     "h": 0.0,
+     "launches": 0
+    },
+    "ladder": {
+     "evaluations": 4,
+     "h": 0.7153981019390954,
+     "launches": 1
+    },
+    "pool_settled": {
+     "evaluations": 3,
+     "h": 2.4770119157764645,
+     "launches": 1
+    },
+    "screen": {
+     "evaluations": 18,
+     "h": 3.001439852250947,
+     "launches": 4
+    },
+    "search": {
+     "evaluations": 0,
+     "h": 0.0,
+     "launches": 0
+    },
+    "x0_exit": {
+     "evaluations": 1,
+     "h": 0.5501797911855909,
+     "launches": 1
+    }
+   },
+   "ceiling_h": 60.0,
+   "child_walls_h": {
+    "exit": {
+     "max": 0.7758067199918959,
+     "mean": 0.7033484604853939,
+     "min": 0.5485288017325931,
+     "n": 23,
+     "sum": 16.17701459116406
+    },
+    "settled": {
+     "max": 2.475082866946856,
+     "mean": 2.3306192379527624,
+     "min": 2.178964648577902,
+     "n": 3,
+     "sum": 6.991857713858287
+    }
+   },
+   "exit_read_cycles": {
+    "max": 88.0,
+    "mean": 83.73913043478261,
+    "min": 79.0,
+    "n": 23,
+    "sum": 1926.0
+   },
+   "measured_block_walls_h": {
+    "exit": {
+     "max": 0.7783948177761502,
+     "mean": 0.7111696242292722,
+     "min": 0.5501797911855909,
+     "n": 6,
+     "sum": 4.267017745375633
+    },
+    "exit_block_of_5": {
+     "max": 0.7783948177761502,
+     "mean": 0.7721747176735491,
+     "min": 0.7613879733615452,
+     "n": 3,
+     "sum": 2.316524153020647
+    },
+    "settled": {
+     "max": 2.4770119157764645,
+     "mean": 2.4770119157764645,
+     "min": 2.4770119157764645,
+     "n": 1,
+     "sum": 2.4770119157764645
+    }
+   },
+   "per_launch": [
+    {
+     "child_wall_h": {
+      "max": 0.5485288017325931,
+      "mean": 0.5485288017325931,
+      "min": 0.5485288017325931,
+      "n": 1,
+      "sum": 0.5485288017325931
+     },
+     "cycles_run": {
+      "max": 85.0,
+      "mean": 85.0,
+      "min": 85.0,
+      "n": 1,
+      "sum": 85.0
+     },
+     "depth": "exit",
+     "finished_utc": "2026-11-26T11:39:52.933390+00:00",
+     "labels": [
+      "x0"
+     ],
+     "launch": 1,
+     "n_evaluations": 1,
+     "purpose": "x0_exit",
+     "stage": "x0_exit",
+     "started_utc": "2026-11-26T11:06:52.286107+00:00",
+     "wall_h": 0.5501797911855909,
+     "wall_s": 1980.6472482681274
+    },
+    {
+     "child_wall_h": {
+      "max": 0.7758067199918959,
+      "mean": 0.7310113465653524,
+      "min": 0.6737533971998426,
+      "n": 5,
+      "sum": 3.655056732826762
+     },
+     "cycles_run": {
+      "max": 86.0,
+      "mean": 83.8,
+      "min": 82.0,
+      "n": 5,
+      "sum": 419.0
+     },
+     "depth": "exit",
+     "finished_utc": "2026-11-26T14:13:58.091260+00:00",
+     "labels": [
+      "n5_y2025_p0.25_e1",
+      "n5_y2025_p0.25_e0.5",
+      "n5_y2030_p0.25_e1",
+      "n5_y2030_p0.25_e0.5",
+      "n5_y2035_p0.25_e1"
+     ],
+     "launch": 2,
+     "n_evaluations": 5,
+     "purpose": "screen",
+     "stage": "screen",
+     "started_utc": "2026-11-26T13:27:15.869898+00:00",
+     "wall_h": 0.7783948177761502,
+     "wall_s": 2802.2213439941406
+    },
+    {
+     "child_wall_h": {
+      "max": 0.7601046930419074,
+      "mean": 0.7171612184974883,
+      "min": 0.668772323264016,
+      "n": 5,
+      "sum": 3.585806092487441
+     },
+     "cycles_run": {
+      "max": 84.0,
+      "mean": 83.0,
+      "min": 81.0,
+      "n": 5,
+      "sum": 415.0
+     },
+     "depth": "exit",
+     "finished_utc": "2026-11-26T14:59:40.400190+00:00",
+     "labels": [
+      "n5_y2035_p0.25_e0.5",
+      "n7_y2025_p0.25_e1",
+      "n7_y2025_p0.25_e0.5",
+      "n7_y2030_p0.25_e1",
+      "n7_y2030_p0.25_e0.5"
+     ],
+     "launch": 3,
+     "n_evaluations": 5,
+     "purpose": "screen",
+     "stage": "screen",
+     "started_utc": "2026-11-26T14:13:59.403452+00:00",
+     "wall_h": 0.7613879733615452,
+     "wall_s": 2740.9967041015625
+    },
+    {
+     "child_wall_h": {
+      "max": 0.7750275549623701,
+      "mean": 0.7338356183105044,
+      "min": 0.6924942733844122,
+      "n": 5,
+      "sum": 3.669178091552522
+     },
+     "cycles_run": {
+      "max": 88.0,
+      "mean": 85.0,
+      "min": 83.0,
+      "n": 5,
+      "sum": 425.0
+     },
+     "depth": "exit",
+     "finished_utc": "2026-11-26T15:46:18.693366+00:00",
+     "labels": [
+      "n7_y2035_p0.25_e1",
+      "n7_y2035_p0.25_e0.5",
+      "n9_y2025_p0.25_e1",
+      "n9_y2025_p0.25_e0.5",
+      "n9_y2030_p0.25_e1"
+     ],
+     "launch": 4,
+     "n_evaluations": 5,
+     "purpose": "screen",
+     "stage": "screen",
+     "started_utc": "2026-11-26T14:59:42.424430+00:00",
+     "wall_h": 0.7767413618829515,
+     "wall_s": 2796.2689027786255
+    },
+    {
+     "child_wall_h": {
+      "max": 0.6824856522348192,
+      "mean": 0.6624083152744505,
+      "min": 0.6421021180682712,
+      "n": 3,
+      "sum": 1.9872249458233515
+     },
+     "cycles_run": {
+      "max": 87.0,
+      "mean": 84.66666666666667,
+      "min": 83.0,
+      "n": 3,
+      "sum": 254.0
+     },
+     "depth": "exit",
+     "finished_utc": "2026-11-26T16:27:26.956029+00:00",
+     "labels": [
+      "n9_y2030_p0.25_e0.5",
+      "n9_y2035_p0.25_e1",
+      "n9_y2035_p0.25_e0.5"
+     ],
+     "launch": 5,
+     "n_evaluations": 3,
+     "purpose": "screen",
+     "stage": "screen",
+     "started_utc": "2026-11-26T15:46:21.259477+00:00",
+     "wall_h": 0.6849156992303,
+     "wall_s": 2465.69651722908
+    },
+    {
+     "child_wall_h": {
+      "max": 0.7141724514298969,
+      "mean": 0.6828049816853471,
+      "min": 0.65125104367733,
+      "n": 4,
+      "sum": 2.7312199267413884
+     },
+     "cycles_run": {
+      "max": 85.0,
+      "mean": 82.0,
+      "min": 79.0,
+      "n": 4,
+      "sum": 328.0
+     },
+     "depth": "exit",
+     "finished_utc": "2026-11-26T17:10:24.645135+00:00",
+     "labels": [
+      "n9_y2030_p0.5_e1",
+      "n9_y2030_p1_e2",
+      "n5_y2030_p0.5_e1",
+      "n5_y2030_p1_e2"
+     ],
+     "launch": 6,
+     "n_evaluations": 4,
+     "purpose": "ladder",
+     "stage": "ladder",
+     "started_utc": "2026-11-26T16:27:29.211925+00:00",
+     "wall_h": 0.7153981019390954,
+     "wall_s": 2575.4331669807434
+    },
+    {
+     "child_wall_h": {
+      "max": 2.475082866946856,
+      "mean": 2.3306192379527624,
+      "min": 2.178964648577902,
+      "n": 3,
+      "sum": 6.991857713858287
+     },
+     "cycles_run": {
+      "max": 300.0,
+      "mean": 300.0,
+      "min": 300.0,
+      "n": 3,
+      "sum": 900.0
+     },
+     "depth": "settled",
+     "finished_utc": "2026-11-26T19:39:04.929588+00:00",
+     "labels": [
+      "x0",
+      "n7_y2025_p0.25_e1",
+      "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5"
+     ],
+     "launch": 7,
+     "n_evaluations": 3,
+     "purpose": "pool_settled",
+     "stage": "pool_settled",
+     "started_utc": "2026-11-26T17:10:27.686678+00:00",
+     "wall_h": 2.4770119157764645,
+     "wall_s": 8917.242896795273
+    }
+   ],
+   "projection_restated_1x": {
+    "each_search_move_adds_h": [
+     8.0,
+     22.0
+    ],
+    "no_confirm_candidate_in_the_screen_h": [
+     7.8,
+     22.0
+    ],
+    "note": "the spec field projected_hours is computed as at 2x and assumes x0, the unit and the staged plan cached (they are not at 1x: + 1 exit launch for x0 and + 1 settled launch for the unit and the staged plan, which the restated projection includes)",
+    "source": "P5_15_S56_PHASE2X_REPORT.md (50d7dc67) section 7b, restated by the Planner (TASKS 5d): a PROJECTION, not a prediction",
+    "two_candidates_no_search_move_h": [
+     16.7,
+     32.8
+    ]
+   },
+   "share_of_ceiling": 0.11240049435253496,
+   "spec_projected_hours_report_only": {
+    "case": {
+     "confirmation_blocks": 1,
+     "final_poll_confirmations": 0,
+     "hours": 32.818806525105,
+     "ladder_blocks": 1,
+     "move_confirmations_each": 0,
+     "poll_blocks_candidates": 8,
+     "screen_blocks": 4,
+     "search_confirmation_launches": 0,
+     "search_poll_blocks": 10
+    },
+    "case_nearest_to_what_ran": "exit_then_confirm|cand_small|search_low|q0/1",
+    "note": "assumes two candidates polled (8 candidate poll blocks); no candidate existed at 1x, so no spec case matches exactly",
+    "per_block_h": {
+     "exit": 1.292401447922688,
+     "settled": 3.0935732228831774
+    }
+   },
+   "total_h": 6.744029661152098
+  },
+  "leak_slack_memory": {
+   "esso_events_by_plan": [],
+   "esso_slack_eur_settled": {
+    "max": 2.0918175151502002e-10,
+    "mean": 1.1915238293318806e-10,
+    "min": 0.0,
+    "n": 3,
+    "sum": 3.5745714879956416e-10
+   },
+   "esso_slack_max_abs_net_settled": {
+    "max": 5.740602018254735e-16,
+    "mean": 3.665629377832816e-16,
+    "min": 0.0,
+    "n": 3,
+    "sum": 1.0996888133498447e-15
+   },
+   "leak_priced_full_eur_settled": {
+    "max": 0.0,
+    "mean": 0.0,
+    "min": 0.0,
+    "n": 3,
+    "sum": 0.0
+   },
+   "leak_priced_loss_eur_settled": {
+    "max": 0.0,
+    "mean": 0.0,
+    "min": 0.0,
+    "n": 3,
+    "sum": 0.0
+   },
+   "n_esso_events_total": 0,
+   "peak_rss_gib_by_depth": {
+    "exit": {
+     "max": 2.7469024658203125,
+     "mean": 2.712227199388587,
+     "min": 2.6653289794921875,
+     "n": 23,
+     "sum": 62.3812255859375
+    },
+    "settled": {
+     "max": 2.8344879150390625,
+     "mean": 2.8146209716796875,
+     "min": 2.77545166015625,
+     "n": 3,
+     "sum": 8.443862915039062
+    }
+   },
+   "plans_with_a_0p5_mwh_cohort": 10,
+   "settled_runs": [
+    {
+     "V": {
+      "A": 249.4386973161441,
+      "G": 0.0,
+      "PR": 140.8805605001871,
+      "S": 14.964313268661499
+     },
+     "cycles_run": 300,
+     "esso_slack_eur": 0.0,
+     "gates": {
+      "d1_efficiency_equality": true,
+      "esso_slack_gate": true,
+      "interface_p_ceiling_12p5kw": true,
+      "network_closure_slack_le_tau_cl": true,
+      "status_ok_and_guards_exact": true
+     },
+     "gates_pass": true,
+     "label": "x0",
+     "leak_priced_loss_eur": 0.0,
+     "settled_checks": {
+      "K_at_least_W": true,
+      "guards_exact_and_no_local_failure": true,
+      "last_W_at_tail_depth": true,
+      "reached_K": true,
+      "stop_disabled_declared": true,
+      "would_have_certified_each_of_last_W": true
+     },
+     "status": "settled"
+    },
+    {
+     "V": {
+      "A": 245.0608890633895,
+      "G": 3.2788879249895015,
+      "PR": 148.29772811617937,
+      "S": 29.202881455421448
+     },
+     "cycles_run": 300,
+     "esso_slack_eur": 1.4827539728454414e-10,
+     "gates": {
+      "d1_efficiency_equality": true,
+      "esso_slack_gate": true,
+      "interface_p_ceiling_12p5kw": true,
+      "network_closure_slack_le_tau_cl": true,
+      "status_ok_and_guards_exact": true
+     },
+     "gates_pass": true,
+     "label": "n7_y2025_p0.25_e1",
+     "leak_priced_loss_eur": 0.0,
+     "settled_checks": {
+      "K_at_least_W": true,
+      "guards_exact_and_no_local_failure": true,
+      "last_W_at_tail_depth": true,
+      "reached_K": true,
+      "stop_disabled_declared": true,
+      "would_have_certified_each_of_last_W": true
+     },
+     "status": "settled"
+    },
+    {
+     "V": {
+      "A": 363.6083420515682,
+      "G": 6.799669214329079,
+      "PR": 198.09229785951862,
+      "S": 333.4490441083908
+     },
+     "cycles_run": 300,
+     "esso_slack_eur": 2.0918175151502002e-10,
+     "gates": {
+      "d1_efficiency_equality": true,
+      "esso_slack_gate": true,
+      "interface_p_ceiling_12p5kw": true,
+      "network_closure_slack_le_tau_cl": true,
+      "status_ok_and_guards_exact": true
+     },
+     "gates_pass": true,
+     "label": "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5",
+     "leak_priced_loss_eur": 0.0,
+     "settled_checks": {
+      "K_at_least_W": true,
+      "guards_exact_and_no_local_failure": true,
+      "last_W_at_tail_depth": true,
+      "reached_K": true,
+      "stop_disabled_declared": true,
+      "would_have_certified_each_of_last_W": true
+     },
+     "status": "settled"
+    }
+   ],
+   "terminal_step_to_threshold_ratio": "not computed: the 2x evaluation did not report it (no 2x definition to reuse); settled last step |F(300) - F(299)| is in PART E"
+  },
+  "offsets": {
+   "definitions": {
+    "e_unit_row": "max(e_EV, bar_unit + bar_x0)",
+    "offset": "F_set(x) - F_exit(x)",
+    "pair_offset": "[F_set(unit) - F_set(x0)] - [F_exit(unit) - F_exit(x0)]"
+   },
+   "pair_unit_minus_x0_over_cycles_from_read_to_300": {
+    "at_300": 78737.78733992577,
+    "from_cycle": 85,
+    "max": 94194.3192256689,
+    "max_cycle": 99,
+    "min": 52183.171682477,
+    "min_cycle": 87
+   },
+   "pair_unit_x0": {
+    "bar_unit_exit": 13188.481404781342,
+    "bar_x0_exit": 13215.197726130486,
+    "dF_exit_unit_minus_x0": 58319.88853371143,
+    "dF_set_unit_minus_x0": 78737.78733992577,
+    "e_EV": 17494.04935669899,
+    "e_used_for_unit_row": 26403.679130911827,
+    "pair_offset": 20417.898806214333,
+    "pair_offset_as_offset_difference": 20417.898806214333,
+    "pair_offset_exceeds_e_EV": true,
+    "pair_offset_within_unit_row_e": true
+   },
+   "per_plan": {
+    "n7_y2025_p0.25_e1": {
+     "F_exit": 665290557.8583921,
+     "F_set": 665321216.5949967,
+     "bar_exit": 13188.481404781342,
+     "exit_view": {
+      "F": 665290557.8583921,
+      "bar": 13188.481404781342,
+      "read_at": "would-be certification cycle (stop disabled)",
+      "read_cycle": 83,
+      "status": "certified"
+     },
+     "exit_view_check": {
+      "differing": [],
+      "equal": true,
+      "exit_run": {
+       "F": 665290557.8583921,
+       "bar": 13188.481404781342,
+       "read_cycle": 83
+      },
+      "exit_run_bits": {
+       "F": [
+        "float",
+        "0x1.3d3c39eeddfcbp+29"
+       ],
+       "bar": [
+        "float",
+        "0x1.9c23d9eac0000p+13"
+       ],
+       "read_cycle": [
+        "int",
+        83
+       ]
+      },
+      "exit_view": {
+       "F": 665290557.8583921,
+       "bar": 13188.481404781342,
+       "read_cycle": 83
+      },
+      "exit_view_bits": {
+       "F": [
+        "float",
+        "0x1.3d3c39eeddfcbp+29"
+       ],
+       "bar": [
+        "float",
+        "0x1.9c23d9eac0000p+13"
+       ],
+       "read_cycle": [
+        "int",
+        83
+       ]
+      },
+      "fields": [
+       "read_cycle",
+       "F",
+       "bar"
+      ],
+      "reason": null
+     },
+     "exit_view_reread": {
+      "F": 665290557.8583921,
+      "bar": 13188.481404781342,
+      "read_at": "would-be certification cycle (stop disabled)",
+      "read_cycle": 83,
+      "status": "certified"
+     },
+     "exit_view_reread_equal": true,
+     "has_exit_run": true,
+     "label": "n7_y2025_p0.25_e1",
+     "offset_F_set_minus_F_exit": 30658.736604571342,
+     "read_cycle_exit": 83,
+     "settled_status": "settled"
+    },
+    "pilot_staged": {
+     "F_exit_view": 665493482.5449587,
+     "F_set": 665499465.6111947,
+     "bar_exit_view": 7502.052960515022,
+     "exit_view": {
+      "F": 665493482.5449587,
+      "bar": 7502.052960515022,
+      "read_at": "would-be certification cycle (stop disabled)",
+      "read_cycle": 82,
+      "status": "certified"
+     },
+     "exit_view_reread": {
+      "F": 665493482.5449587,
+      "bar": 7502.052960515022,
+      "read_at": "would-be certification cycle (stop disabled)",
+      "read_cycle": 82,
+      "status": "certified"
+     },
+     "exit_view_reread_equal": true,
+     "has_exit_run": false,
+     "label": "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5",
+     "note": "information only: no exit run; the offset is against the exit view of the settled run",
+     "offset_F_set_minus_F_exit_view": 5983.0662360191345,
+     "read_cycle_exit_view": 82,
+     "settled_status": "settled"
+    },
+    "x0": {
+     "F_exit": 665232237.9698584,
+     "F_set": 665242478.8076568,
+     "bar_exit": 13215.197726130486,
+     "exit_view": {
+      "F": 665232237.9698584,
+      "bar": 13215.197726130486,
+      "read_at": "would-be certification cycle (stop disabled)",
+      "read_cycle": 85,
+      "status": "certified"
+     },
+     "exit_view_check": {
+      "differing": [],
+      "equal": true,
+      "exit_run": {
+       "F": 665232237.9698584,
+       "bar": 13215.197726130486,
+       "read_cycle": 85
+      },
+      "exit_run_bits": {
+       "F": [
+        "float",
+        "0x1.3d351b6fc2452p+29"
+       ],
+       "bar": [
+        "float",
+        "0x1.9cf994f170000p+13"
+       ],
+       "read_cycle": [
+        "int",
+        85
+       ]
+      },
+      "exit_view": {
+       "F": 665232237.9698584,
+       "bar": 13215.197726130486,
+       "read_cycle": 85
+      },
+      "exit_view_bits": {
+       "F": [
+        "float",
+        "0x1.3d351b6fc2452p+29"
+       ],
+       "bar": [
+        "float",
+        "0x1.9cf994f170000p+13"
+       ],
+       "read_cycle": [
+        "int",
+        85
+       ]
+      },
+      "fields": [
+       "read_cycle",
+       "F",
+       "bar"
+      ],
+      "reason": null
+     },
+     "exit_view_reread": {
+      "F": 665232237.9698584,
+      "bar": 13215.197726130486,
+      "read_at": "would-be certification cycle (stop disabled)",
+      "read_cycle": 85,
+      "status": "certified"
+     },
+     "exit_view_reread_equal": true,
+     "has_exit_run": true,
+     "label": "x0",
+     "offset_F_set_minus_F_exit": 10240.83779835701,
+     "read_cycle_exit": 85,
+     "settled_status": "settled"
+    }
+   },
+   "prefix_identity": {
+    "n7_y2025_p0.25_e1": {
+     "exit_run_cycles": 83,
+     "first_differing_cycle": null,
+     "identical_prefix": true
+    },
+    "x0": {
+     "exit_run_cycles": 85,
+     "first_differing_cycle": null,
+     "identical_prefix": true
+    }
+   },
+   "settled_last_step_abs_F300_minus_F299": {
+    "n7_y2025_p0.25_e1": 2.9840301275253296,
+    "pilot_staged": 36.86720430850983,
+    "x0": 1.8551188707351685
+   },
+   "staged_information_only": {
+    "dF_exit_view_staged_minus_x0": 261244.5751003027,
+    "dF_set_staged_minus_x0": 256986.80353796482,
+    "pair_offset_information_only": -4257.771562337875
+   },
+   "trajectory_at_cycles": {
+    "100": {
+     "F_staged": 665505595.990303,
+     "F_unit": 665337909.6278467,
+     "F_x0": 665244097.558568,
+     "staged_minus_x0": 261498.43173503876,
+     "unit_minus_x0": 93812.06927871704
+    },
+    "125": {
+     "F_staged": 665506654.6216302,
+     "F_unit": 665326245.5291024,
+     "F_x0": 665243849.5724385,
+     "staged_minus_x0": 262805.04919171333,
+     "unit_minus_x0": 82395.95666396618
+    },
+    "150": {
+     "F_staged": 665505163.2570511,
+     "F_unit": 665322779.7447325,
+     "F_x0": 665242726.3222165,
+     "staged_minus_x0": 262436.9348345995,
+     "unit_minus_x0": 80053.42251598835
+    },
+    "175": {
+     "F_staged": 665504076.0952379,
+     "F_unit": 665321882.7464843,
+     "F_x0": 665242297.9659467,
+     "staged_minus_x0": 261778.1292911768,
+     "unit_minus_x0": 79584.78053760529
+    },
+    "200": {
+     "F_staged": 665502924.0197484,
+     "F_unit": 665321471.5822717,
+     "F_x0": 665242281.5787122,
+     "staged_minus_x0": 260642.44103622437,
+     "unit_minus_x0": 79190.00355947018
+    },
+    "250": {
+     "F_staged": 665501101.1853763,
+     "F_unit": 665321323.2825521,
+     "F_x0": 665242358.185378,
+     "staged_minus_x0": 258742.99999833107,
+     "unit_minus_x0": 78965.09717416763
+    },
+    "300": {
+     "F_staged": 665499465.6111947,
+     "F_unit": 665321216.5949967,
+     "F_x0": 665242478.8076568,
+     "staged_minus_x0": 256986.80353796482,
+     "unit_minus_x0": 78737.78733992577
+    },
+    "80": {
+     "F_staged": 665485862.9881828,
+     "F_unit": 665315688.1098661,
+     "F_x0": 665222935.6669655,
+     "staged_minus_x0": 262927.3212172985,
+     "unit_minus_x0": 92752.44290065765
+    },
+    "83": {
+     "F_staged": 665498594.8756932,
+     "F_unit": 665290557.8583921,
+     "F_x0": 665224454.1686854,
+     "staged_minus_x0": 274140.70700776577,
+     "unit_minus_x0": 66103.68970668316
+    },
+    "85": {
+     "F_staged": 665509226.1167072,
+     "F_unit": 665287520.7764797,
+     "F_x0": 665232237.9698584,
+     "staged_minus_x0": 276988.1468487978,
+     "unit_minus_x0": 55282.806621313095
+    },
+    "90": {
+     "F_staged": 665524393.7291123,
+     "F_unit": 665312996.300321,
+     "F_x0": 665253398.5128833,
+     "staged_minus_x0": 270995.21622896194,
+     "unit_minus_x0": 59597.78743767738
+    }
+   },
+   "two_x_offsets_from_committed_evaluation": {
+    "n5_y2030_p1_e4": {
+     "F_exit": 811830358.7184356,
+     "F_set": 811825206.3398672,
+     "dF_exit": -178849.99440705776,
+     "dF_set": -182404.10968244076,
+     "offset": -5152.378568410873,
+     "pair_offset_vs_x0": -3554.1152753829956
+    },
+    "n7_y2025_p0.25_e0.5": {
+     "F_exit": 812023299.4231855,
+     "F_set": 812021987.5483868,
+     "dF_exit": 14090.710342764854,
+     "dF_set": 14377.098837137222,
+     "offset": -1311.87479865551,
+     "pair_offset_vs_x0": 286.38849437236786
+    },
+    "n7_y2025_p0.25_e1": {
+     "F_exit": 811988275.9168296,
+     "F_set": 811985758.8407468,
+     "dF_exit": -20932.796013116837,
+     "dF_set": -21851.60880291462,
+     "offset": -2517.0760828256607,
+     "pair_offset_vs_x0": -918.8127897977829
+    },
+    "n7_y2030_p0.25_e1": {
+     "F_exit": 811969937.2151045,
+     "F_set": 811967392.4660821,
+     "dF_exit": -39271.49773824215,
+     "dF_set": -40217.98346757889,
+     "offset": -2544.7490223646164,
+     "pair_offset_vs_x0": -946.4857293367386
+    },
+    "x0": {
+     "F_exit": 812009208.7128427,
+     "F_set": 812007610.4495497,
+     "exit_served_as": "exit_view_of_settled_cache_record",
+     "offset": -1598.2632930278778
+    }
+   }
+  },
+  "pool_search": {
+   "N_x0": {
+    "counts": {
+     "d": {
+      "admissible": 0,
+      "dropped_by_reason_class": {},
+      "dup_of_earlier": 0,
+      "new": 0,
+      "raw": 0
+     },
+     "e": {
+      "admissible": 0,
+      "dropped_by_reason_class": {},
+      "dup_of_earlier": 0,
+      "new": 0,
+      "raw": 0
+     },
+     "e_opp": {
+      "admissible": 0,
+      "dropped_by_reason_class": {},
+      "dup_of_earlier": 0,
+      "new": 0,
+      "raw": 0
+     },
+     "f": {
+      "admissible": 0,
+      "dropped_by_reason_class": {},
+      "dup_of_earlier": 0,
+      "new": 0,
+      "raw": 0
+     },
+     "r3": {
+      "admissible": 18,
+      "admissible_by_part": {
+       "a": 0,
+       "b": 18,
+       "c": 0
+      },
+      "dropped_by_reason_class": {},
+      "dup_of_earlier": 0,
+      "new": 18,
+      "raw": 18,
+      "raw_by_part": {
+       "a": 0,
+       "b": 18,
+       "c": 0
+      }
+     }
+    },
+    "equals_screen": true,
+    "size": 18
+   },
+   "indistinguishable": {
+    "R": 10000.0,
+    "n_plans_with_any_record": 24,
+    "plans": [],
+    "rule": "plan v4.1 section 4: every evaluated plan within R of the final incumbent (settled vs settled; exit-only vs the incumbent exit run)"
+   },
+   "pool": {
+    "aliases": [],
+    "chosen": "x0",
+    "chosen_label": "x0",
+    "members": [
+     {
+      "F_set": 665242478.8076568,
+      "eligible": true,
+      "gates_pass": true,
+      "kind": "fixed",
+      "label": "x0",
+      "name": "x0",
+      "served_as": null,
+      "status": "settled",
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     {
+      "F_set": 665321216.5949967,
+      "eligible": true,
+      "gates_pass": true,
+      "kind": "fixed",
+      "label": "n7_y2025_p0.25_e1",
+      "name": "reference_unit",
+      "served_as": null,
+      "status": "settled",
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       2,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     {
+      "F_set": 665499465.6111947,
+      "eligible": true,
+      "gates_pass": true,
+      "kind": "fixed",
+      "label": "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5",
+      "name": "pilot_staged",
+      "served_as": null,
+      "status": "settled",
+      "z": [
+       0,
+       0,
+       2,
+       2,
+       0,
+       0,
+       1,
+       2,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       1
+      ]
+     }
+    ],
+    "rule": "argmin settled F over the members whose settled summary is settled, complete and gate-passing (ties by label)",
+    "runner_up": {
+     "label": "n7_y2025_p0.25_e1",
+     "margin_eur": 78737.78733992577,
+     "name": "reference_unit"
+    }
+   },
+   "search": {
+    "budget_used": 0,
+    "final_incumbent_label": "x0",
+    "incumbent_history": [
+     {
+      "how": "start",
+      "poll": null,
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     }
+    ],
+    "polls": [
+     {
+      "N": 18,
+      "cache_hits_at_start": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12,
+       13,
+       14,
+       15,
+       16,
+       17
+      ],
+      "closed": "complete_poll_no_accepted_candidate",
+      "index": 0,
+      "k_classified": 18,
+      "partition": {
+       "confirm_candidate": 0,
+       "harness_error": 0,
+       "uncertified": 0,
+       "unresolved": 3,
+       "worse": 15
+      },
+      "requested_in_poll": [],
+      "rows": [
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "dF_exit >= R + e",
+        "dF_exit": 56952.386365413666,
+        "e": 18863.868389725685,
+        "exit_class": "worse",
+        "label": "n5_y2025_p0.25_e0.5",
+        "pos": 0
+       },
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "dF_exit >= R + e",
+        "dF_exit": 51778.77699947357,
+        "e": 27312.78725683689,
+        "exit_class": "worse",
+        "label": "n5_y2025_p0.25_e1",
+        "pos": 1
+       },
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "-R + e < dF_exit < R + e",
+        "dF_exit": 29685.182136416435,
+        "e": 23482.82129752636,
+        "exit_class": "unresolved",
+        "label": "n5_y2030_p0.25_e0.5",
+        "pos": 2
+       },
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "dF_exit >= R + e",
+        "dF_exit": 35935.2009704113,
+        "e": 25411.6819088459,
+        "exit_class": "worse",
+        "label": "n5_y2030_p0.25_e1",
+        "pos": 3
+       },
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "dF_exit >= R + e",
+        "dF_exit": 50610.944296360016,
+        "e": 19571.468038082123,
+        "exit_class": "worse",
+        "label": "n5_y2035_p0.25_e0.5",
+        "pos": 4
+       },
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "dF_exit >= R + e",
+        "dF_exit": 56614.50547671318,
+        "e": 24922.85960006714,
+        "exit_class": "worse",
+        "label": "n5_y2035_p0.25_e1",
+        "pos": 5
+       },
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "dF_exit >= R + e",
+        "dF_exit": 55090.44833123684,
+        "e": 22728.264318585396,
+        "exit_class": "worse",
+        "label": "n7_y2025_p0.25_e0.5",
+        "pos": 6
+       },
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "dF_exit >= R + e",
+        "dF_exit": 58319.88853371143,
+        "e": 26403.679130911827,
+        "exit_class": "worse",
+        "label": "n7_y2025_p0.25_e1",
+        "pos": 7
+       },
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "-R + e < dF_exit < R + e",
+        "dF_exit": 32127.855333924294,
+        "e": 23370.122129559517,
+        "exit_class": "unresolved",
+        "label": "n7_y2030_p0.25_e0.5",
+        "pos": 8
+       },
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "dF_exit >= R + e",
+        "dF_exit": 48802.735939621925,
+        "e": 23123.669273257256,
+        "exit_class": "worse",
+        "label": "n7_y2030_p0.25_e1",
+        "pos": 9
+       },
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "dF_exit >= R + e",
+        "dF_exit": 46921.12457847595,
+        "e": 21428.405054092407,
+        "exit_class": "worse",
+        "label": "n7_y2035_p0.25_e0.5",
+        "pos": 10
+       },
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "dF_exit >= R + e",
+        "dF_exit": 68845.4033548832,
+        "e": 18689.2905960083,
+        "exit_class": "worse",
+        "label": "n7_y2035_p0.25_e1",
+        "pos": 11
+       },
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "dF_exit >= R + e",
+        "dF_exit": 56186.35460424423,
+        "e": 22342.540675759315,
+        "exit_class": "worse",
+        "label": "n9_y2025_p0.25_e0.5",
+        "pos": 12
+       },
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "dF_exit >= R + e",
+        "dF_exit": 52163.0575209856,
+        "e": 27617.22847378254,
+        "exit_class": "worse",
+        "label": "n9_y2025_p0.25_e1",
+        "pos": 13
+       },
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "-R + e < dF_exit < R + e",
+        "dF_exit": 27355.25330197811,
+        "e": 25242.79917871952,
+        "exit_class": "unresolved",
+        "label": "n9_y2030_p0.25_e0.5",
+        "pos": 14
+       },
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "dF_exit >= R + e",
+        "dF_exit": 43143.57782506943,
+        "e": 26067.72629237175,
+        "exit_class": "worse",
+        "label": "n9_y2030_p0.25_e1",
+        "pos": 15
+       },
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "dF_exit >= R + e",
+        "dF_exit": 55695.832394599915,
+        "e": 26986.93245267868,
+        "exit_class": "worse",
+        "label": "n9_y2035_p0.25_e0.5",
+        "pos": 16
+       },
+       {
+        "cache_hit": true,
+        "confirmation": null,
+        "criterion": "dF_exit >= R + e",
+        "dF_exit": 63224.34184002876,
+        "e": 17494.04935669899,
+        "exit_class": "worse",
+        "label": "n9_y2035_p0.25_e1",
+        "pos": 17
+       }
+      ]
+     }
+    ],
+    "start_label": "x0",
+    "termination": {
+     "budget_used": 0,
+     "detail": null,
+     "reason": "complete_poll_no_accepted_candidate"
+    }
+   }
+  },
+  "predictions": {
+   "Q1": {
+    "evaluated_as": "phase_results.json prediction_inputs.Q1.screen_dF_exit_below_0 <= 9, over report.marginal_value_table.rows with source == \"screen\" (18 rows; dF_exit = F_exit(x) - F_exit(x0), x0 = this phase's x0 exit run, report.marginal_value_table.x0). A row without a numeric dF_exit (uncertified / harness_error) is not counted as dF_exit < 0; the number of such rows = prediction_inputs.Q1.screen_rows - prediction_inputs.Q1.screen_certified, reported beside",
+    "held": true,
+    "max_screen_dF_exit": 68845.4033548832,
+    "min_screen_dF_exit": 27355.25330197811,
+    "rows_without_numeric_dF_exit": 0,
+    "screen_certified": 18,
+    "screen_dF_exit_below_0": 0,
+    "screen_rows": 18,
+    "statement": "at most 9 of the 18 screen plans have dF_exit < 0 against 1\u00d7 x0",
+    "threshold_max": 9
+   },
+   "Q2": {
+    "evaluated_as": "phase_results.json prediction_inputs.Q2: harness_error_summaries == 0 (every summary the phase read, cache included) and local_solve_failures_total == 0 (sum of evaluation_record.local_solve_failures over every evaluation the phase launched)",
+    "harness_error_summaries": 0,
+    "held": true,
+    "local_solve_failures_total": 0,
+    "records_read": 26,
+    "statement": "0 harness_error and 0 local-solve failures over the phase"
+   },
+   "Q3": {
+    "best_start_is_x0": true,
+    "chosen_label": "x0",
+    "evaluated_as": "phase_results.json report.pool.chosen_label == \"x0\" (prediction_inputs.Q3.best_start_is_x0 is true)",
+    "held": true,
+    "runner_up": {
+     "label": "n7_y2025_p0.25_e1",
+     "margin_eur": 78737.78733992577,
+     "name": "reference_unit"
+    },
+    "statement": "the best start is x0"
+   },
+   "Q4": {
+    "cumulative_h": 6.744029661152098,
+    "evaluated_as": "the author's loop ends with exit 0 (phase_results.json report.termination.reason == \"phase_complete\") and phase_results.json hours.cumulative_h <= 60 (prediction_inputs.Q4)",
+    "held": true,
+    "statement": "the search terminates (exit 0) inside the 60 h ceiling",
+    "termination_reason": "phase_complete"
+   },
+   "Q5": {
+    "evaluated_as": "phase_results.json prediction_inputs.Q5.peak_child_rss_gib = max over every evaluation the phase launched of evaluation_record.peak_rss.child_python_process_ru_maxrss / 2^30 <= 3.29",
+    "held": true,
+    "peak_child_rss_gib": 2.8344879150390625,
+    "run": "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5",
+    "run_depth": "settled",
+    "run_launch": 7,
+    "statement": "peak child RSS \u2264 3.29 GiB"
+   },
+   "Q6": {
+    "efficiency": {
+     "band_measure_information_only": {
+      "band_eur": 17494.04935669899,
+      "branch_the_v1_measure_would_give": "exit_then_confirm",
+      "fraction": [
+       0,
+       1
+      ],
+      "fraction_float": 0.0,
+      "n_in_band": 0,
+      "rule": "v1 measure: certified rows with |F_exit(x) - F_exit(x0)| <= e_EV over every row; recorded beside the deciding measure, read by no decision (Planner decision P1)"
+     },
+     "branch": "exit_then_confirm",
+     "class_counts": {
+      "confirm_candidate": 0,
+      "harness_error": 0,
+      "uncertified": 0,
+      "unresolved": 3,
+      "worse": 19
+     },
+     "fraction": [
+      3,
+      22
+     ],
+     "fraction_float": 0.13636363636363635,
+     "measure": "not_worse_against_x0",
+     "n_not_worse": 3,
+     "n_rows": 22,
+     "not_worse_classes": [
+      "confirm_candidate",
+      "unresolved"
+     ],
+     "rule": "fraction of the screen and ladder rows whose class against x0 at exit is NOT worse (confirm_candidate + unresolved; Planner decision P1) (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+     "threshold": [
+      1,
+      2
+     ]
+    },
+    "evaluated_as": "phase_results.json report.efficiency holds n_not_worse, n_rows, class_counts (per exit class), the exact fraction, the branch taken, the rule, and band_measure_information_only (the v1 band fraction and the branch it would have given) (prediction_inputs.Q6)",
+    "fields_present": true,
+    "held": "recorded",
+    "statement": "the efficiency fraction is recorded (no direction predicted)"
+   },
+   "Q7": {
+    "evaluated_as": "AUTOMATIC: P.exit_view_check in phase_step at candidate_confirmation (fields read_cycle, F, bar; float.hex identity). phase_results.json report.candidates[i].exit_view_check (equal, differing, exit_run, exit_view, mode) and prediction_inputs.Q7 (n_checked, n_equal, termination_reason)",
+    "held": "vacuous (no candidate: 0 rows classed confirm_candidate)",
+    "n_candidates": 0,
+    "n_checked": 0,
+    "n_equal": 0,
+    "statement": "as at 2\u00d7: for each candidate, the exit run's (read_cycle, F, bar) equals bitwise the exit_view of the candidate's settled summary",
+    "termination_reason": "phase_complete"
+   },
+   "Q8": {
+    "evaluated_as": "after the phase, at zero solves: for each of the 18 screen labels, d = dF_exit(1x) - dF_exit(2x), dF_exit(1x) from this phase's phase_results.json report.marginal_value_table.rows (source == \"screen\"; also prediction_inputs.Q8.screen_dF_exit), dF_exit(2x) from reference_2x.screen_dF_exit_2x (= phase2x_ev_v3/phase_results.json, sha256 cited); mean(d) > 0 over the labels with a numeric dF_exit at both levels; n of such labels reported (the statement's 18 holds iff n = 18; all 18 are certified at 2x)",
+    "held": true,
+    "max_difference": 88074.23367786407,
+    "mean_difference": 58309.7171681126,
+    "min_difference": 32219.731817483902,
+    "n_labels": 18,
+    "n_positive": 18,
+    "per_label": {
+     "n5_y2025_p0.25_e0.5": 45694.58735239506,
+     "n5_y2025_p0.25_e1": 77776.1866645813,
+     "n5_y2030_p0.25_e0.5": 42251.76173067093,
+     "n5_y2030_p0.25_e1": 81305.68659996986,
+     "n5_y2035_p0.25_e0.5": 40564.20020377636,
+     "n5_y2035_p0.25_e1": 60774.7572286129,
+     "n7_y2025_p0.25_e0.5": 40999.737988471985,
+     "n7_y2025_p0.25_e1": 79252.68454682827,
+     "n7_y2030_p0.25_e0.5": 40428.50544130802,
+     "n7_y2030_p0.25_e1": 88074.23367786407,
+     "n7_y2035_p0.25_e0.5": 32219.731817483902,
+     "n7_y2035_p0.25_e1": 70029.94701480865,
+     "n9_y2025_p0.25_e0.5": 44701.7439095974,
+     "n9_y2025_p0.25_e1": 72383.52852749825,
+     "n9_y2030_p0.25_e0.5": 35399.04810273647,
+     "n9_y2030_p0.25_e1": 87231.54616427422,
+     "n9_y2035_p0.25_e0.5": 44722.063906908035,
+     "n9_y2035_p0.25_e1": 65764.95814824104
+    },
+    "reference_2x_sha256": "2f8778b5ed573492d5d8bd4e2bf31c1113c61b946a56bc65c20c20d85f2a898c",
+    "statement": "price monotonicity \u2014 the mean over the 18 screen plans of [dF_exit(1\u00d7) \u2212 dF_exit(2\u00d7)], each against its own price level's x0, is > 0"
+   },
+   "Q9": {
+    "above": [],
+    "evaluated_as": "phase_results.json prediction_inputs.Q9: over every settled summary the phase read, leak.priced_loss_eur (the cost breakdown's leak_detector.priced_loss_eur, mapping v2) <= 25 (mapping leak_ceiling_eur): n_above_ceiling == 0 and without_leak_z empty (a settled summary without a numeric leak is listed, not counted as holding)",
+    "held": true,
+    "n_above_ceiling": 0,
+    "n_settled_summaries": 3,
+    "per_settled_evaluation": [
+     {
+      "L_weighted_mwh": 0.0,
+      "label": "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5",
+      "priced_full_eur": 0.0,
+      "priced_loss_eur": 0.0,
+      "within_ceiling": true
+     },
+     {
+      "L_weighted_mwh": 0.0,
+      "label": "n7_y2025_p0.25_e1",
+      "priced_full_eur": 0.0,
+      "priced_loss_eur": 0.0,
+      "within_ceiling": true
+     },
+     {
+      "L_weighted_mwh": 0.0,
+      "label": "x0",
+      "priced_full_eur": 0.0,
+      "priced_loss_eur": 0.0,
+      "within_ceiling": true
+     }
+    ],
+    "statement": "the within-cohort leak, loss-priced, is \u2264 25 \u20ac on every settled evaluation",
+    "without_numeric_leak_listed_not_counted": []
+   }
+  },
+  "projections": {
+   "calibration_a": {
+    "A_h": 0.6166666666666667,
+    "B_h": 2.6,
+    "source": "TASKS.md (Deferred to idle time; handback 3)"
+   },
+   "confirmation_launch_1x": {
+    "basis": "one settled launch of 5 at K_EV = 300; x0 settled at 1x exists (reused); range = min/max of the 1x pool settled launch wall (3 evaluations) and the 2x settled launch walls of 5",
+    "measured_1x_pool_settled_launch_wall_h": [
+     2.4770119157764645
+    ],
+    "measured_2x_settled_launch_walls_block_of_5_h": {
+     "max": 2.7204160183668136,
+     "mean": 2.6127456279065875,
+     "min": 2.4838509889443716,
+     "n": 5,
+     "sum": 13.063728139532937
+    },
+    "measured_2x_settled_launch_walls_h": {
+     "max": 2.7204160183668136,
+     "mean": 2.4723295605431,
+     "min": 2.013912531402376,
+     "n": 8,
+     "sum": 19.7786364843448
+    },
+    "n": 5,
+    "plans": [
+     "n5_y2030_p0.25_e0.5",
+     "n7_y2030_p0.25_e0.5",
+     "n9_y2030_p0.25_e0.5",
+     "n5_y2030_p0.25_e1",
+     "n9_y2030_p0.25_e1"
+    ],
+    "projected_h": [
+     2.4770119157764645,
+     2.7204160183668136
+    ]
+   },
+   "t_sp_extrapolation": {
+    "cycle_counts_measured_in_ev_phases": {
+     "exit_1x_max": 88.0,
+     "exit_1x_min": 79.0,
+     "exit_2x_max": 185,
+     "exit_2x_min": 119,
+     "settled_K_EV": 300
+    },
+    "dependence_stress_test_2_at_K300_h": [
+     51.26227482159933,
+     75.3412846326828
+    ],
+    "formula": "t_SP(n cycles) = n x s/cycle, bracketed by the cycle-2 wall (low) and the cycle-1 wall (high); EXTRAPOLATION: EV cycle counts applied to SP, s/cycle measured on 2 cycles only",
+    "plan_v4_1_section_8": {
+     "dependence_stress_test_h": [
+      13,
+      30
+     ],
+     "sp_evaluations_h": [
+      40,
+      120
+     ],
+     "step5_pair_h": [
+      5,
+      12
+     ],
+     "t_SP_h": [
+      6.5,
+      15.0
+     ],
+     "wait_and_see_h": [
+      7,
+      11
+     ]
+    },
+    "probe_cycle_wall_s": [
+     452.0477077960968,
+     307.57364892959595
+    ],
+    "probe_source": "data/SRP1/Results/P515S56/memory_probe_v1/srp1grid/memory_probe_srp1grid.json",
+    "reading": "cycle 1 = 452.0 s, cycle 2 = 307.6 s (memory_probe_srp1grid.json readings.cycle_wall_s); SRP1-grid 3 x 3 SP instance, staged plan, two cycles only",
+    "sp_evaluation_set": "{x0, the 2x-selected plan n5_y2030_p1_e4, the reference unit} x {1x, 2x} = 6",
+    "sp_evaluations_6_at_K300_serial_h": [
+     153.78682446479797,
+     226.0238538980484
+    ],
+    "sp_evaluations_6_at_exit_depth_serial_h": [
+     40.497197109063464,
+     139.3813765704632
+    ],
+    "t_sp_h": {
+     "exit_1x_max": [
+      7.518466973834568,
+      11.050055079460144
+     ],
+     "exit_1x_min": [
+      6.749532851510578,
+      9.919935809969902
+     ],
+     "exit_2x_max": [
+      15.805868069993124,
+      23.23022942841053
+     ],
+     "exit_2x_min": [
+      10.1670178396172,
+      14.942688118815422
+     ],
+     "settled_K_EV": [
+      25.631137410799663,
+      37.6706423163414
+     ]
+    }
+   },
+   "wait_and_see": {
+    "basis": "2 plans x 9 scenarios x {1x, 2x} single-scenario evaluations, 5-way, at the measured EV block walls (exit: 1x and 2x exit launches of 5; settled: as the confirmation launch); a single-scenario evaluation assumed to cost an EV evaluation (EXTRAPOLATION)",
+    "blocks_of_5": 8,
+    "n_single_scenario_evaluations": 36,
+    "projected_h_exit_depth": [
+     6.091103786892361,
+     8.751708480517069
+    ],
+    "projected_h_settled_depth": [
+     19.816095326211716,
+     21.76332814693451
+    ]
+   }
+  },
+  "table": {
+   "R": 10000.0,
+   "class_counts": {
+    "confirm_candidate": 0,
+    "harness_error": 0,
+    "uncertified": 0,
+    "unresolved": 3,
+    "worse": 19
+   },
+   "e_ev": 17494.04935669899,
+   "margin_definitions": {
+    "e": "max(e_EV, bar_x + bar_x0)",
+    "margin_to_confirm": "dF_exit - (-R + e); <= 0 is confirm-candidate",
+    "margin_to_worse": "dF_exit - (R + e); >= 0 is worse"
+   },
+   "rows": [
+    {
+     "F_exit": 665284016.7468579,
+     "I_x_eur": 317957.0085035586,
+     "bar": 14097.589530706406,
+     "bar_sum": 27312.78725683689,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 17312.78725683689,
+     "dF_exit": 51778.77699947357,
+     "duration": "4h",
+     "e": 27312.78725683689,
+     "e_is_e_ev": false,
+     "label": "n5_y2025_p0.25_e1",
+     "margin_to_confirm": 34465.98974263668,
+     "margin_to_worse": 14465.98974263668,
+     "node": 5,
+     "read_cycle": 83,
+     "served_as": null,
+     "settled": null,
+     "source": "screen",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 37312.78725683689,
+     "year": 2025,
+     "ze": 2,
+     "zp": 1
+    },
+    {
+     "F_exit": 665289190.3562238,
+     "I_x_eur": 191018.169784262,
+     "bar": 5648.6706635952,
+     "bar_sum": 18863.868389725685,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 8863.868389725685,
+     "dF_exit": 56952.386365413666,
+     "duration": "2h",
+     "e": 18863.868389725685,
+     "e_is_e_ev": false,
+     "label": "n5_y2025_p0.25_e0.5",
+     "margin_to_confirm": 48088.51797568798,
+     "margin_to_worse": 28088.51797568798,
+     "node": 5,
+     "read_cycle": 86,
+     "served_as": null,
+     "settled": null,
+     "source": "screen",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 28863.868389725685,
+     "year": 2025,
+     "ze": 1,
+     "zp": 1
+    },
+    {
+     "F_exit": 665268173.1708288,
+     "I_x_eur": 236168.02151912605,
+     "bar": 12196.484182715416,
+     "bar_sum": 25411.6819088459,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 15411.681908845901,
+     "dF_exit": 35935.2009704113,
+     "duration": "4h",
+     "e": 25411.6819088459,
+     "e_is_e_ev": false,
+     "label": "n5_y2030_p0.25_e1",
+     "margin_to_confirm": 20523.5190615654,
+     "margin_to_worse": 523.5190615653992,
+     "node": 5,
+     "read_cycle": 84,
+     "served_as": null,
+     "settled": null,
+     "source": "screen",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 35411.6819088459,
+     "year": 2030,
+     "ze": 2,
+     "zp": 1
+    },
+    {
+     "F_exit": 665261923.1519948,
+     "I_x_eur": 141882.02186349593,
+     "bar": 10267.623571395874,
+     "bar_sum": 23482.82129752636,
+     "class": "unresolved",
+     "confirm_boundary_minus_R_plus_e": 13482.82129752636,
+     "dF_exit": 29685.182136416435,
+     "duration": "2h",
+     "e": 23482.82129752636,
+     "e_is_e_ev": false,
+     "label": "n5_y2030_p0.25_e0.5",
+     "margin_to_confirm": 16202.360838890076,
+     "margin_to_worse": -3797.6391611099243,
+     "node": 5,
+     "read_cycle": 84,
+     "served_as": null,
+     "settled": null,
+     "source": "screen",
+     "status": "certified",
+     "unresolved_distance_above_confirm_boundary": 16202.360838890076,
+     "unresolved_distance_below_worse_boundary": 3797.6391611099243,
+     "worse_boundary_R_plus_e": 33482.82129752636,
+     "year": 2030,
+     "ze": 1,
+     "zp": 1
+    },
+    {
+     "F_exit": 665288852.4753351,
+     "I_x_eur": 197989.5153493472,
+     "bar": 11707.661873936653,
+     "bar_sum": 24922.85960006714,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 14922.859600067139,
+     "dF_exit": 56614.50547671318,
+     "duration": "4h",
+     "e": 24922.85960006714,
+     "e_is_e_ev": false,
+     "label": "n5_y2035_p0.25_e1",
+     "margin_to_confirm": 41691.64587664604,
+     "margin_to_worse": 21691.645876646042,
+     "node": 5,
+     "read_cycle": 82,
+     "served_as": null,
+     "settled": null,
+     "source": "screen",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 34922.85960006714,
+     "year": 2035,
+     "ze": 2,
+     "zp": 1
+    },
+    {
+     "F_exit": 665282848.9141548,
+     "I_x_eur": 118945.62424178196,
+     "bar": 6356.270311951637,
+     "bar_sum": 19571.468038082123,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 9571.468038082123,
+     "dF_exit": 50610.944296360016,
+     "duration": "2h",
+     "e": 19571.468038082123,
+     "e_is_e_ev": false,
+     "label": "n5_y2035_p0.25_e0.5",
+     "margin_to_confirm": 41039.47625827789,
+     "margin_to_worse": 21039.476258277893,
+     "node": 5,
+     "read_cycle": 81,
+     "served_as": null,
+     "settled": null,
+     "source": "screen",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 29571.468038082123,
+     "year": 2035,
+     "ze": 1,
+     "zp": 1
+    },
+    {
+     "F_exit": 665290557.8583921,
+     "I_x_eur": 317957.0085035586,
+     "bar": 13188.481404781342,
+     "bar_sum": 26403.679130911827,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 16403.679130911827,
+     "dF_exit": 58319.88853371143,
+     "duration": "4h",
+     "e": 26403.679130911827,
+     "e_is_e_ev": false,
+     "label": "n7_y2025_p0.25_e1",
+     "margin_to_confirm": 41916.209402799606,
+     "margin_to_worse": 21916.209402799606,
+     "node": 7,
+     "read_cycle": 83,
+     "served_as": null,
+     "settled": {
+      "A_sum_vs_x0": 494.49958637953364,
+      "F_set": 665321216.5949967,
+      "V_pair_vs_x0": 54.86325026506472,
+      "class_vs_x0": "worse",
+      "dF_set_vs_x0": 78737.78733992577,
+      "failed": [],
+      "status": "settled"
+     },
+     "source": "screen",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 36403.67913091183,
+     "year": 2025,
+     "ze": 2,
+     "zp": 1
+    },
+    {
+     "F_exit": 665287328.4181896,
+     "I_x_eur": 191018.169784262,
+     "bar": 9513.06659245491,
+     "bar_sum": 22728.264318585396,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 12728.264318585396,
+     "dF_exit": 55090.44833123684,
+     "duration": "2h",
+     "e": 22728.264318585396,
+     "e_is_e_ev": false,
+     "label": "n7_y2025_p0.25_e0.5",
+     "margin_to_confirm": 42362.18401265144,
+     "margin_to_worse": 22362.184012651443,
+     "node": 7,
+     "read_cycle": 84,
+     "served_as": null,
+     "settled": null,
+     "source": "screen",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 32728.264318585396,
+     "year": 2025,
+     "ze": 1,
+     "zp": 1
+    },
+    {
+     "F_exit": 665281040.705798,
+     "I_x_eur": 236168.02151912605,
+     "bar": 9908.47154712677,
+     "bar_sum": 23123.669273257256,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 13123.669273257256,
+     "dF_exit": 48802.735939621925,
+     "duration": "4h",
+     "e": 23123.669273257256,
+     "e_is_e_ev": false,
+     "label": "n7_y2030_p0.25_e1",
+     "margin_to_confirm": 35679.06666636467,
+     "margin_to_worse": 15679.06666636467,
+     "node": 7,
+     "read_cycle": 83,
+     "served_as": null,
+     "settled": null,
+     "source": "screen",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 33123.669273257256,
+     "year": 2030,
+     "ze": 2,
+     "zp": 1
+    },
+    {
+     "F_exit": 665264365.8251923,
+     "I_x_eur": 141882.02186349593,
+     "bar": 10154.924403429031,
+     "bar_sum": 23370.122129559517,
+     "class": "unresolved",
+     "confirm_boundary_minus_R_plus_e": 13370.122129559517,
+     "dF_exit": 32127.855333924294,
+     "duration": "2h",
+     "e": 23370.122129559517,
+     "e_is_e_ev": false,
+     "label": "n7_y2030_p0.25_e0.5",
+     "margin_to_confirm": 18757.733204364777,
+     "margin_to_worse": -1242.2667956352234,
+     "node": 7,
+     "read_cycle": 84,
+     "served_as": null,
+     "settled": null,
+     "source": "screen",
+     "status": "certified",
+     "unresolved_distance_above_confirm_boundary": 18757.733204364777,
+     "unresolved_distance_below_worse_boundary": 1242.2667956352234,
+     "worse_boundary_R_plus_e": 33370.12212955952,
+     "year": 2030,
+     "ze": 1,
+     "zp": 1
+    },
+    {
+     "F_exit": 665301083.3732133,
+     "I_x_eur": 197989.5153493472,
+     "bar": 5474.092869877815,
+     "bar_sum": 18689.2905960083,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 8689.2905960083,
+     "dF_exit": 68845.4033548832,
+     "duration": "4h",
+     "e": 18689.2905960083,
+     "e_is_e_ev": false,
+     "label": "n7_y2035_p0.25_e1",
+     "margin_to_confirm": 60156.11275887489,
+     "margin_to_worse": 40156.11275887489,
+     "node": 7,
+     "read_cycle": 88,
+     "served_as": null,
+     "settled": null,
+     "source": "screen",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 28689.2905960083,
+     "year": 2035,
+     "ze": 2,
+     "zp": 1
+    },
+    {
+     "F_exit": 665279159.0944369,
+     "I_x_eur": 118945.62424178196,
+     "bar": 8213.207327961922,
+     "bar_sum": 21428.405054092407,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 11428.405054092407,
+     "dF_exit": 46921.12457847595,
+     "duration": "2h",
+     "e": 21428.405054092407,
+     "e_is_e_ev": false,
+     "label": "n7_y2035_p0.25_e0.5",
+     "margin_to_confirm": 35492.719524383545,
+     "margin_to_worse": 15492.719524383545,
+     "node": 7,
+     "read_cycle": 85,
+     "served_as": null,
+     "settled": null,
+     "source": "screen",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 31428.405054092407,
+     "year": 2035,
+     "ze": 1,
+     "zp": 1
+    },
+    {
+     "F_exit": 665284401.0273794,
+     "I_x_eur": 317957.0085035586,
+     "bar": 14402.030747652054,
+     "bar_sum": 27617.22847378254,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 17617.22847378254,
+     "dF_exit": 52163.0575209856,
+     "duration": "4h",
+     "e": 27617.22847378254,
+     "e_is_e_ev": false,
+     "label": "n9_y2025_p0.25_e1",
+     "margin_to_confirm": 34545.829047203064,
+     "margin_to_worse": 14545.829047203064,
+     "node": 9,
+     "read_cycle": 83,
+     "served_as": null,
+     "settled": null,
+     "source": "screen",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 37617.22847378254,
+     "year": 2025,
+     "ze": 2,
+     "zp": 1
+    },
+    {
+     "F_exit": 665288424.3244627,
+     "I_x_eur": 191018.169784262,
+     "bar": 9127.34294962883,
+     "bar_sum": 22342.540675759315,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 12342.540675759315,
+     "dF_exit": 56186.35460424423,
+     "duration": "2h",
+     "e": 22342.540675759315,
+     "e_is_e_ev": false,
+     "label": "n9_y2025_p0.25_e0.5",
+     "margin_to_confirm": 43843.81392848492,
+     "margin_to_worse": 23843.813928484917,
+     "node": 9,
+     "read_cycle": 85,
+     "served_as": null,
+     "settled": null,
+     "source": "screen",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 32342.540675759315,
+     "year": 2025,
+     "ze": 1,
+     "zp": 1
+    },
+    {
+     "F_exit": 665275381.5476835,
+     "I_x_eur": 236168.02151912605,
+     "bar": 12852.528566241264,
+     "bar_sum": 26067.72629237175,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 16067.72629237175,
+     "dF_exit": 43143.57782506943,
+     "duration": "4h",
+     "e": 26067.72629237175,
+     "e_is_e_ev": false,
+     "label": "n9_y2030_p0.25_e1",
+     "margin_to_confirm": 27075.851532697678,
+     "margin_to_worse": 7075.851532697678,
+     "node": 9,
+     "read_cycle": 84,
+     "served_as": null,
+     "settled": null,
+     "source": "screen",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 36067.72629237175,
+     "year": 2030,
+     "ze": 2,
+     "zp": 1
+    },
+    {
+     "F_exit": 665259593.2231604,
+     "I_x_eur": 141882.02186349593,
+     "bar": 12027.601452589035,
+     "bar_sum": 25242.79917871952,
+     "class": "unresolved",
+     "confirm_boundary_minus_R_plus_e": 15242.79917871952,
+     "dF_exit": 27355.25330197811,
+     "duration": "2h",
+     "e": 25242.79917871952,
+     "e_is_e_ev": false,
+     "label": "n9_y2030_p0.25_e0.5",
+     "margin_to_confirm": 12112.45412325859,
+     "margin_to_worse": -7887.545876741409,
+     "node": 9,
+     "read_cycle": 83,
+     "served_as": null,
+     "settled": null,
+     "source": "screen",
+     "status": "certified",
+     "unresolved_distance_above_confirm_boundary": 12112.45412325859,
+     "unresolved_distance_below_worse_boundary": 7887.545876741409,
+     "worse_boundary_R_plus_e": 35242.79917871952,
+     "year": 2030,
+     "ze": 1,
+     "zp": 1
+    },
+    {
+     "F_exit": 665295462.3116984,
+     "I_x_eur": 197989.5153493472,
+     "bar": 4271.533282518387,
+     "bar_sum": 17486.731008648872,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 7494.04935669899,
+     "dF_exit": 63224.34184002876,
+     "duration": "4h",
+     "e": 17494.04935669899,
+     "e_is_e_ev": true,
+     "label": "n9_y2035_p0.25_e1",
+     "margin_to_confirm": 55730.29248332977,
+     "margin_to_worse": 35730.29248332977,
+     "node": 9,
+     "read_cycle": 87,
+     "served_as": null,
+     "settled": null,
+     "source": "screen",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 27494.04935669899,
+     "year": 2035,
+     "ze": 2,
+     "zp": 1
+    },
+    {
+     "F_exit": 665287933.802253,
+     "I_x_eur": 118945.62424178196,
+     "bar": 13771.734726548195,
+     "bar_sum": 26986.93245267868,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 16986.93245267868,
+     "dF_exit": 55695.832394599915,
+     "duration": "2h",
+     "e": 26986.93245267868,
+     "e_is_e_ev": false,
+     "label": "n9_y2035_p0.25_e0.5",
+     "margin_to_confirm": 38708.899941921234,
+     "margin_to_worse": 18708.899941921234,
+     "node": 9,
+     "read_cycle": 84,
+     "served_as": null,
+     "settled": null,
+     "source": "screen",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 36986.93245267868,
+     "year": 2035,
+     "ze": 1,
+     "zp": 1
+    },
+    {
+     "F_exit": 665298258.6187377,
+     "I_x_eur": 283764.04372699186,
+     "bar": 20466.858976125717,
+     "bar_sum": 33682.0567022562,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 23682.056702256203,
+     "dF_exit": 66020.64887928963,
+     "duration": "2h",
+     "e": 33682.0567022562,
+     "e_is_e_ev": false,
+     "label": "n9_y2030_p0.5_e1",
+     "margin_to_confirm": 42338.592177033424,
+     "margin_to_worse": 22338.592177033424,
+     "node": 9,
+     "read_cycle": 85,
+     "served_as": null,
+     "settled": null,
+     "source": "ladder",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 43682.0567022562,
+     "year": 2030,
+     "ze": 2,
+     "zp": 2
+    },
+    {
+     "F_exit": 665425423.8220419,
+     "I_x_eur": 567528.0874539837,
+     "bar": 8199.440504908562,
+     "bar_sum": 21414.638231039047,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 11414.638231039047,
+     "dF_exit": 193185.8521834612,
+     "duration": "2h",
+     "e": 21414.638231039047,
+     "e_is_e_ev": false,
+     "label": "n9_y2030_p1_e2",
+     "margin_to_confirm": 181771.21395242214,
+     "margin_to_worse": 161771.21395242214,
+     "node": 9,
+     "read_cycle": 81,
+     "served_as": null,
+     "settled": null,
+     "source": "ladder",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 31414.638231039047,
+     "year": 2030,
+     "ze": 4,
+     "zp": 4
+    },
+    {
+     "F_exit": 665295672.2190886,
+     "I_x_eur": 283764.04372699186,
+     "bar": 27515.202830314636,
+     "bar_sum": 40730.40055644512,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 30730.40055644512,
+     "dF_exit": 63434.24923014641,
+     "duration": "2h",
+     "e": 40730.40055644512,
+     "e_is_e_ev": false,
+     "label": "n5_y2030_p0.5_e1",
+     "margin_to_confirm": 32703.848673701286,
+     "margin_to_worse": 12703.848673701286,
+     "node": 5,
+     "read_cycle": 83,
+     "served_as": null,
+     "settled": null,
+     "source": "ladder",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 50730.40055644512,
+     "year": 2030,
+     "ze": 2,
+     "zp": 2
+    },
+    {
+     "F_exit": 665437364.1352195,
+     "I_x_eur": 567528.0874539837,
+     "bar": 7927.821134090424,
+     "bar_sum": 21143.01886022091,
+     "class": "worse",
+     "confirm_boundary_minus_R_plus_e": 11143.01886022091,
+     "dF_exit": 205126.1653610468,
+     "duration": "2h",
+     "e": 21143.01886022091,
+     "e_is_e_ev": false,
+     "label": "n5_y2030_p1_e2",
+     "margin_to_confirm": 193983.14650082588,
+     "margin_to_worse": 173983.14650082588,
+     "node": 5,
+     "read_cycle": 79,
+     "served_as": null,
+     "settled": null,
+     "source": "ladder",
+     "status": "certified",
+     "worse_boundary_R_plus_e": 31143.01886022091,
+     "year": 2030,
+     "ze": 4,
+     "zp": 4
+    }
+   ],
+   "two_closest_worse": [
+    "n5_y2030_p0.25_e1",
+    "n9_y2030_p0.25_e1"
+   ],
+   "unresolved": [
+    {
+     "above_confirm_boundary": 16202.360838890076,
+     "below_worse_boundary": 3797.6391611099243,
+     "dF_exit": 29685.182136416435,
+     "e": 23482.82129752636,
+     "label": "n5_y2030_p0.25_e0.5"
+    },
+    {
+     "above_confirm_boundary": 18757.733204364777,
+     "below_worse_boundary": 1242.2667956352234,
+     "dF_exit": 32127.855333924294,
+     "e": 23370.122129559517,
+     "label": "n7_y2030_p0.25_e0.5"
+    },
+    {
+     "above_confirm_boundary": 12112.45412325859,
+     "below_worse_boundary": 7887.545876741409,
+     "dF_exit": 27355.25330197811,
+     "e": 25242.79917871952,
+     "label": "n9_y2030_p0.25_e0.5"
+    }
+   ],
+   "worse_by_margin": [
+    {
+     "dF_exit": 35935.2009704113,
+     "e": 25411.6819088459,
+     "label": "n5_y2030_p0.25_e1",
+     "margin_to_worse": 523.5190615653992,
+     "source": "screen"
+    },
+    {
+     "dF_exit": 43143.57782506943,
+     "e": 26067.72629237175,
+     "label": "n9_y2030_p0.25_e1",
+     "margin_to_worse": 7075.851532697678,
+     "source": "screen"
+    },
+    {
+     "dF_exit": 63434.24923014641,
+     "e": 40730.40055644512,
+     "label": "n5_y2030_p0.5_e1",
+     "margin_to_worse": 12703.848673701286,
+     "source": "ladder"
+    },
+    {
+     "dF_exit": 51778.77699947357,
+     "e": 27312.78725683689,
+     "label": "n5_y2025_p0.25_e1",
+     "margin_to_worse": 14465.98974263668,
+     "source": "screen"
+    },
+    {
+     "dF_exit": 52163.0575209856,
+     "e": 27617.22847378254,
+     "label": "n9_y2025_p0.25_e1",
+     "margin_to_worse": 14545.829047203064,
+     "source": "screen"
+    },
+    {
+     "dF_exit": 46921.12457847595,
+     "e": 21428.405054092407,
+     "label": "n7_y2035_p0.25_e0.5",
+     "margin_to_worse": 15492.719524383545,
+     "source": "screen"
+    },
+    {
+     "dF_exit": 48802.735939621925,
+     "e": 23123.669273257256,
+     "label": "n7_y2030_p0.25_e1",
+     "margin_to_worse": 15679.06666636467,
+     "source": "screen"
+    },
+    {
+     "dF_exit": 55695.832394599915,
+     "e": 26986.93245267868,
+     "label": "n9_y2035_p0.25_e0.5",
+     "margin_to_worse": 18708.899941921234,
+     "source": "screen"
+    },
+    {
+     "dF_exit": 50610.944296360016,
+     "e": 19571.468038082123,
+     "label": "n5_y2035_p0.25_e0.5",
+     "margin_to_worse": 21039.476258277893,
+     "source": "screen"
+    },
+    {
+     "dF_exit": 56614.50547671318,
+     "e": 24922.85960006714,
+     "label": "n5_y2035_p0.25_e1",
+     "margin_to_worse": 21691.645876646042,
+     "source": "screen"
+    },
+    {
+     "dF_exit": 58319.88853371143,
+     "e": 26403.679130911827,
+     "label": "n7_y2025_p0.25_e1",
+     "margin_to_worse": 21916.209402799606,
+     "source": "screen"
+    },
+    {
+     "dF_exit": 66020.64887928963,
+     "e": 33682.0567022562,
+     "label": "n9_y2030_p0.5_e1",
+     "margin_to_worse": 22338.592177033424,
+     "source": "ladder"
+    },
+    {
+     "dF_exit": 55090.44833123684,
+     "e": 22728.264318585396,
+     "label": "n7_y2025_p0.25_e0.5",
+     "margin_to_worse": 22362.184012651443,
+     "source": "screen"
+    },
+    {
+     "dF_exit": 56186.35460424423,
+     "e": 22342.540675759315,
+     "label": "n9_y2025_p0.25_e0.5",
+     "margin_to_worse": 23843.813928484917,
+     "source": "screen"
+    },
+    {
+     "dF_exit": 56952.386365413666,
+     "e": 18863.868389725685,
+     "label": "n5_y2025_p0.25_e0.5",
+     "margin_to_worse": 28088.51797568798,
+     "source": "screen"
+    },
+    {
+     "dF_exit": 63224.34184002876,
+     "e": 17494.04935669899,
+     "label": "n9_y2035_p0.25_e1",
+     "margin_to_worse": 35730.29248332977,
+     "source": "screen"
+    },
+    {
+     "dF_exit": 68845.4033548832,
+     "e": 18689.2905960083,
+     "label": "n7_y2035_p0.25_e1",
+     "margin_to_worse": 40156.11275887489,
+     "source": "screen"
+    },
+    {
+     "dF_exit": 193185.8521834612,
+     "e": 21414.638231039047,
+     "label": "n9_y2030_p1_e2",
+     "margin_to_worse": 161771.21395242214,
+     "source": "ladder"
+    },
+    {
+     "dF_exit": 205126.1653610468,
+     "e": 21143.01886022091,
+     "label": "n5_y2030_p1_e2",
+     "margin_to_worse": 173983.14650082588,
+     "source": "ladder"
+    }
+   ],
+   "x0": {
+    "F_exit": 665232237.9698584,
+    "F_set": 665242478.8076568,
+    "bar_exit": 13215.197726130486,
+    "read_cycle": 85,
+    "status_set": "settled"
+   }
+  },
+  "two_x_vs_one_x": {
+   "screen": [
+    {
+     "class_1x": "worse",
+     "class_2x": "unresolved",
+     "dF_exit_1x": 56952.386365413666,
+     "dF_exit_2x": 11257.799013018608,
+     "difference_1x_minus_2x": 45694.58735239506,
+     "label": "n5_y2025_p0.25_e0.5"
+    },
+    {
+     "class_1x": "worse",
+     "class_2x": "confirm_candidate",
+     "dF_exit_1x": 51778.77699947357,
+     "dF_exit_2x": -25997.409665107727,
+     "difference_1x_minus_2x": 77776.1866645813,
+     "label": "n5_y2025_p0.25_e1"
+    },
+    {
+     "class_1x": "unresolved",
+     "class_2x": "confirm_candidate",
+     "dF_exit_1x": 29685.182136416435,
+     "dF_exit_2x": -12566.579594254494,
+     "difference_1x_minus_2x": 42251.76173067093,
+     "label": "n5_y2030_p0.25_e0.5"
+    },
+    {
+     "class_1x": "worse",
+     "class_2x": "confirm_candidate",
+     "dF_exit_1x": 35935.2009704113,
+     "dF_exit_2x": -45370.48562955856,
+     "difference_1x_minus_2x": 81305.68659996986,
+     "label": "n5_y2030_p0.25_e1"
+    },
+    {
+     "class_1x": "worse",
+     "class_2x": "unresolved",
+     "dF_exit_1x": 50610.944296360016,
+     "dF_exit_2x": 10046.744092583656,
+     "difference_1x_minus_2x": 40564.20020377636,
+     "label": "n5_y2035_p0.25_e0.5"
+    },
+    {
+     "class_1x": "worse",
+     "class_2x": "confirm_candidate",
+     "dF_exit_1x": 56614.50547671318,
+     "dF_exit_2x": -4160.251751899719,
+     "difference_1x_minus_2x": 60774.7572286129,
+     "label": "n5_y2035_p0.25_e1"
+    },
+    {
+     "class_1x": "worse",
+     "class_2x": "unresolved",
+     "dF_exit_1x": 55090.44833123684,
+     "dF_exit_2x": 14090.710342764854,
+     "difference_1x_minus_2x": 40999.737988471985,
+     "label": "n7_y2025_p0.25_e0.5"
+    },
+    {
+     "class_1x": "worse",
+     "class_2x": "confirm_candidate",
+     "dF_exit_1x": 58319.88853371143,
+     "dF_exit_2x": -20932.796013116837,
+     "difference_1x_minus_2x": 79252.68454682827,
+     "label": "n7_y2025_p0.25_e1"
+    },
+    {
+     "class_1x": "unresolved",
+     "class_2x": "confirm_candidate",
+     "dF_exit_1x": 32127.855333924294,
+     "dF_exit_2x": -8300.650107383728,
+     "difference_1x_minus_2x": 40428.50544130802,
+     "label": "n7_y2030_p0.25_e0.5"
+    },
+    {
+     "class_1x": "worse",
+     "class_2x": "confirm_candidate",
+     "dF_exit_1x": 48802.735939621925,
+     "dF_exit_2x": -39271.49773824215,
+     "difference_1x_minus_2x": 88074.23367786407,
+     "label": "n7_y2030_p0.25_e1"
+    },
+    {
+     "class_1x": "worse",
+     "class_2x": "unresolved",
+     "dF_exit_1x": 46921.12457847595,
+     "dF_exit_2x": 14701.39276099205,
+     "difference_1x_minus_2x": 32219.731817483902,
+     "label": "n7_y2035_p0.25_e0.5"
+    },
+    {
+     "class_1x": "worse",
+     "class_2x": "confirm_candidate",
+     "dF_exit_1x": 68845.4033548832,
+     "dF_exit_2x": -1184.5436599254608,
+     "difference_1x_minus_2x": 70029.94701480865,
+     "label": "n7_y2035_p0.25_e1"
+    },
+    {
+     "class_1x": "worse",
+     "class_2x": "unresolved",
+     "dF_exit_1x": 56186.35460424423,
+     "dF_exit_2x": 11484.610694646835,
+     "difference_1x_minus_2x": 44701.7439095974,
+     "label": "n9_y2025_p0.25_e0.5"
+    },
+    {
+     "class_1x": "worse",
+     "class_2x": "confirm_candidate",
+     "dF_exit_1x": 52163.0575209856,
+     "dF_exit_2x": -20220.471006512642,
+     "difference_1x_minus_2x": 72383.52852749825,
+     "label": "n9_y2025_p0.25_e1"
+    },
+    {
+     "class_1x": "unresolved",
+     "class_2x": "confirm_candidate",
+     "dF_exit_1x": 27355.25330197811,
+     "dF_exit_2x": -8043.794800758362,
+     "difference_1x_minus_2x": 35399.04810273647,
+     "label": "n9_y2030_p0.25_e0.5"
+    },
+    {
+     "class_1x": "worse",
+     "class_2x": "confirm_candidate",
+     "dF_exit_1x": 43143.57782506943,
+     "dF_exit_2x": -44087.96833920479,
+     "difference_1x_minus_2x": 87231.54616427422,
+     "label": "n9_y2030_p0.25_e1"
+    },
+    {
+     "class_1x": "worse",
+     "class_2x": "unresolved",
+     "dF_exit_1x": 55695.832394599915,
+     "dF_exit_2x": 10973.76848769188,
+     "difference_1x_minus_2x": 44722.063906908035,
+     "label": "n9_y2035_p0.25_e0.5"
+    },
+    {
+     "class_1x": "worse",
+     "class_2x": "confirm_candidate",
+     "dF_exit_1x": 63224.34184002876,
+     "dF_exit_2x": -2540.6163082122803,
+     "difference_1x_minus_2x": 65764.95814824104,
+     "label": "n9_y2035_p0.25_e1"
+    }
+   ],
+   "selected": {
+    "1x": {
+     "F_set": 665242478.8076568,
+     "label": "x0",
+     "note": "search from x0, 0 moves"
+    },
+    "2x": {
+     "F_set": 811825206.3398672,
+     "dF_set_vs_x0": -182404.10968244076,
+     "label": "n5_y2030_p1_e4",
+     "note": "budget-limited (author 2026-11-26: B = 1,000,000 EUR kept)"
+    }
+   },
+   "source_2x": {
+    "path": "data/SRP1/Results/P515S56/phase2x_ev_end_report_eval/report_eval.json",
+    "sha256": "4427e1421e0cf88c8026a37dfa87b1d2afc817f724c8d7b562efb67ba0dc4e09"
+   },
+   "x0": {
+    "1x": {
+     "F_exit": 665232237.9698584,
+     "F_set": 665242478.8076568,
+     "bar_exit": 13215.197726130486,
+     "exit_served_as": "exit run of the phase"
+    },
+    "2x": {
+     "F_exit": 812009208.7128427,
+     "F_set": 812007610.4495497,
+     "bar_exit": 4271.357581973076,
+     "exit_served_as": "exit_view_of_settled_cache_record"
+    }
+   }
+  }
+ },
+ "schema": "p515_s56_phase1x_report_eval_v1",
+ "script": "p515_s56_phase1x_report_eval.py",
+ "script_sha256": "22c1e4476cbd273f1a6b08a1c4d86f5833174adb73c2c6ef6ec0033a3472d50e",
+ "utc": "2026-11-26T21:51:47.197736+00:00"
+}
