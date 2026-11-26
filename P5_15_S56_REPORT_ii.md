@@ -63,7 +63,8 @@ Sources:
 |---|---|---|
 | TV repricing under four conventions (plan v4.1 §3a.1, 3a.3) | **0 h** (zero-solve) | every evaluated plan, from records |
 | Calibration (a) re-run (deferred to idle time) | A ≈ 37 min, B ≈ 2.6 h at the declared caps 140/320 | TASKS "Deferred to idle time"; **needs spec v4** (new roots; C9 fraction-at-limit; SIGTERM handler): zero-solve build |
-| Step 5 + SP calibration | step 5 pair: 5–12 h (plan v4.1 §8; no new measurement) | SP calibration has no §8 line of its own (Not confirmed) |
+| Step 5 | step 5 pair: 5–12 h (plan v4.1 §8; no new measurement) | "SP calibration" in the working mode = calibration (a) above (Planner reading: TASKS "calibration (a) … gates only the SP evaluations"); no separate line |
+| SP pilot (plan v4.1 §7 step 8, SP part: x0, unit, staged to settling) — already authorized, but > 4 h, so its hours are listed before launch | **EXTRAPOLATED: 77–113 h** (3 × t_SP at K = 300) | measures t_SP; its first evaluation can serve as an SP evaluation of x0 if the configuration matches |
 | SP evaluations: {x0, n5_y2030_p1_e4 (2×-selected), reference unit} × {1×, 2×} = 6 | **EXTRAPOLATED: 154–226 h to K = 300; 40–139 h at exit depth** (serial: one SP at a time, 15 GiB) | t_SP below; plan v4.1 §8: 40–120 h |
 | Wait-and-see bracket: 2 plans × 9 scenarios × {1×, 2×} = 36 single-scenario evaluations | **EXTRAPOLATED: 6.1–8.8 h at exit depth; 19.8–21.8 h at K = 300** (8 blocks of 5) | measured EV block walls; plan v4.1 §8: 7–11 h |
 | Dependence stress test: 2 fixed-plan SP evaluations | **EXTRAPOLATED: 51–75 h to K = 300** | t_SP below; plan v4.1 §8: 13–30 h |
@@ -385,9 +386,9 @@ By the S56 selection rule (`p515_s56_ev_harness_tests.committed_by_rule`):
 - **t_SP.** It is extrapolated from two SP cycles of one plan (memory probe) and from EV cycle counts. SP cycle counts to
   certification, and the depth at which SP evaluations will be read (exit or K = 300), are not measured or decided.
   The wait-and-see figure also assumes that a single-scenario evaluation costs the same as an EV evaluation.
-- **"SP calibration".** Plan v4.1 §8 has no line for it. I read it as step 5 plus the SP part of the plan §7 step 8
-  pilot (SP x0, unit, staged to settling). By the same extrapolation that would be 3 × 25.6–37.7 h = 77–113 h. This
-  reading was not confirmed.
+- **"SP calibration".** Plan v4.1 §8 has no line for it. Planner reading (recorded in Decision 2): it is calibration
+  (a), which TASKS says "gates only the SP evaluations". The SP part of the step 8 pilot is listed as its own row
+  (77–113 h, extrapolated).
 - **Terminal-step-to-threshold ratio.** It is not reported at either level. Searched for a 2× definition:
   `p515_s56_phase2x_report_eval.py`, `P5_15_S56_PHASE2X_REPORT.md`, `P5_15_S56_PILOT_REPORT.md` and
   `p515_s56_pilot_report_eval.py` (terms "terminal-step", "threshold", "ratio"). None was found.
