@@ -68,6 +68,8 @@ ROOT@SHA (excluded from the collision scan once verified un-launched), --continu
 predecessor with launches as a cache root; with --ceiling-h / --ceiling-note and --no-pilot-exit-views), the
 code-drift refusal at every --phase-run, .DS_Store ignored; `phase_single_launch_command` (the first-block hold) and
 `s56_phase_check.py` (the launch-record check).
+THE 1x PHASE (TASKS.md step 5d, 2026-11-26): --phase-freeze --phase-flex 1.0 --no-pilot-exit-views -- the same design at
+flexibility price 1.0, ceiling 60 h, predictions Q1-Q9, no cache source (section comment at PHASE_FLEX_LEVELS).
 """
 
 import argparse
@@ -2500,6 +2502,64 @@ PHASE_E_EV_ROUNDED = 17494          # e_EV = 17,494 EUR (Planner decision; the f
 PHASE_MEMORY_PER_SLOT_GIB = 3.29    # Planner decision: measured peak x 1.15
 PHASE_CEILING_H = 120.0             # author decision 1 (2026-11-24)
 PHASE_FLEX = 2.0
+#  THE 1x PHASE (TASKS.md step 5d; author, 2026-11-26: 1x phase authorized, ceiling 60 h, same execution, budget kept):
+#  the 2x phase's design and configuration with the declared price level `flex_price` = 1.0 (--phase-flex) and NOTHING
+#  else changed (R, K_EV, e_EV, the efficiency rule, the screen / ladder, the search policy, the gates, the mapping).
+#  Planner decisions (TASKS 5d, 2026-11-26): (D1) e_EV and K_EV carry over from the 2x pilot (no 1x pilot); the offset
+#  review stop and the exit-view check (Q7) guard the carry-over. (D2) no record carries over -- the price level is in
+#  the eval key -- so x0, the reference unit and the staged plan are evaluated by the phase itself: the R4 path
+#  (pilot_exit_views False: x0 gets an exit-depth run; x0's settled run in the candidate confirmation; the unit's and
+#  the staged plan's settled runs in the pool), with NO cache source (the pilot root is not declared: it carries no 1x
+#  key, and undeclared it stays inside the collision scan). The exit-view check keeps mode 'stop' (Q7 "as at 2x"):
+#  'record' is kept for a continuation that serves no exit view. A 1x spec carries `phase.price_level`; a 2x spec is
+#  built exactly as before (no new field). Default 2.0: every 2x call is unchanged.
+PHASE_FLEX_LEVELS = (2.0, 1.0)
+PHASE_CEILING_1X_H = 60.0           # author, 2026-11-26 (TASKS 5d)
+PHASE_PREDICTION_IDS_1X = ('Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9')
+PHASE_AUTHORITY_1X = ['TASKS.md step 5d (2026-11-26): author decisions on the 2x report -- 2x controls recorded as '
+                      'decided at zero solves; 1x phase authorized, ceiling 60 h, execution as at 2x (author\'s '
+                      'Terminal, app closed, 5 at a time, first-block hold then loop); budget B = 1,000,000 EUR kept',
+                      'TASKS.md step 5d: Planner decisions D1 (e_EV = 17,494 EUR and K_EV = 300 carry over from the 2x '
+                      'pilot; no 1x pilot) and D2 (no record carries over: the price level is in the eval key; x0, the '
+                      'reference unit and the staged plan evaluated by the phase itself on the R4 path; no cache source)',
+                      'P5_15_S56_PHASE2X_REPORT.md (50d7dc67) sections 7b and 8',
+                      'configuration: phase2x_ev_v3/phase_spec_600bbceb.json with flex_price_multiplier 1.0; mapping '
+                      'v2 extended solve-count reconciliation (4030508f); identity tolerance (28ce9f08)',
+                      'TASKS.md step 5a: Advisor pre-launch review GO-WITH-CHANGES; Planner decisions R1, R4, R5, P1, P2 '
+                      '(2026-11-24): phase spec v2',
+                      'S56_SEARCH_DRIVER_DESIGN.md (all sections)', 'S56_PLAN_v4_1.md sections 3-4']
+PHASE_PROJECTION_1X = {
+    'source': 'P5_15_S56_PHASE2X_REPORT.md (50d7dc67) section 7b, restated by the Planner (TASKS 5d): a PROJECTION, '
+              'not a prediction',
+    'two_candidates_no_search_move_h': [16.7, 32.8],
+    'no_confirm_candidate_in_the_screen_h': [7.8, 22.0],
+    'each_search_move_adds_h': [8.0, 22.0],
+    'note': 'the spec field projected_hours is computed as at 2x and assumes x0, the unit and the staged plan cached '
+            '(they are not at 1x: + 1 exit launch for x0 and + 1 settled launch for the unit and the staged plan, '
+            'which the restated projection includes)'}
+
+
+def phase_flex_level(flex_price):
+    """The declared price level of a phase (allowed: PHASE_FLEX_LEVELS) -> float; raises Refused otherwise."""
+    if isinstance(flex_price, bool) or not isinstance(flex_price, (int, float)) or \
+            float(flex_price) not in PHASE_FLEX_LEVELS:
+        raise Refused(f'phase price level {flex_price!r} not in {PHASE_FLEX_LEVELS}')
+    return float(flex_price)
+
+
+def phase_flex_of(spec):
+    """The price level a (frozen) phase spec runs at: its harness entry options' flex_price_multiplier, equal at both
+    depths (a 2x spec carries 2.0 there; a 1x spec 1.0, and `phase.price_level` beside it). None for a synthetic spec
+    (no harness configuration)."""
+    hz = spec.get('harness')
+    if not hz:
+        return None
+    lv = {hz['by_depth'][d]['entry_options'].get('flex_price_multiplier') for d in P.DEPTHS}
+    if len(lv) != 1:
+        raise Refused(f'phase spec {spec.get("phase_id")}: price levels differ across depths {sorted(map(str, lv))}')
+    return lv.pop()
+
+
 PHASE_EXIT_CAP = 300                # Worker reading, logged: the exit depth runs to the same cap as the pilot runs
 PHASE_CONCURRENCY = 5               # author decision 2: 5 at a time
 PHASE_N_CANDIDATES = 2              # author decision 3
@@ -2514,11 +2574,13 @@ PHASE_AUTHORITY = ['TASKS.md: Author decisions on report (i) (2026-11-24); step 
                    'S56_PLAN_v4_1.md sections 3-4']
 
 
-def phase_harness_config(data_root):
+def phase_harness_config(data_root, flex_price=PHASE_FLEX):
     """The phase's per-depth harness configuration, taken from the pilot spec's x0_i1 entry (rho0 x 1): settled =
     its options (stop-disabled + pricing capture) at cap K_EV = 300; exit = the same without those two keys, at cap
-    PHASE_EXIT_CAP. The staged plan is per entry."""
+    PHASE_EXIT_CAP. The staged plan is per entry. 1x phase (TASKS 5d): the same, with flex_price_multiplier set to the
+    declared price level 1.0 (nothing else changed); 2.0 (default) returns exactly what it always did."""
     import p515_s44_campaign_harness as H
+    flex = phase_flex_level(flex_price)
     sp, sha, ps = load_pilot_spec(os.path.join(data_root, PHASE_PILOT_ROOT_REL))
     e = next(x for x in ps['entries'] if x['label'] == 'x0_i1')
     opts = copy.deepcopy(e['options'])
@@ -2526,6 +2588,8 @@ def phase_harness_config(data_root):
     if opts.get(H.S56_SETTLED_STOP_DISABLED_KEY) is not True or opts.get(H.S56_PRICING_CAPTURE_KEY) is not True or \
             'rho0_scale' in opts or opts.get('flex_price_multiplier') != PHASE_FLEX or ps['k_pilot'] != PHASE_K_EV:
         raise Refused('the pilot x0_i1 entry is not the settled 2x rho0 x 1 configuration at K 300')
+    if flex != PHASE_FLEX:   # the 1x phase: the pilot's configuration at the declared price level, nothing else
+        opts['flex_price_multiplier'] = flex
     exit_opts = {k: v for k, v in opts.items() if k not in (H.S56_SETTLED_STOP_DISABLED_KEY, H.S56_PRICING_CAPTURE_KEY)}
     return {'by_depth': {'exit': {'configuration': copy.deepcopy(ps['configuration']), 'cap': PHASE_EXIT_CAP,
                                   'entry_options': exit_opts},
@@ -2533,9 +2597,12 @@ def phase_harness_config(data_root):
                                      'entry_options': opts}},
             'concurrency': PHASE_CONCURRENCY, 'required_consecutive_cycles': ps['required_consecutive_cycles'],
             'memory_per_slot_gib': PHASE_MEMORY_PER_SLOT_GIB,
-            'source': {'pilot_spec': os.path.relpath(sp, data_root), 'pilot_spec_sha256': sha,
-                       'entry': 'x0_i1 options without the staged plan; exit depth also without the stop-disabled and '
-                                'pricing-capture keys'}}
+            'source': dict({'pilot_spec': os.path.relpath(sp, data_root), 'pilot_spec_sha256': sha,
+                            'entry': 'x0_i1 options without the staged plan; exit depth also without the stop-disabled '
+                                     'and pricing-capture keys'},
+                           **({} if flex == PHASE_FLEX else {
+                               'price_level': f'flex_price_multiplier set to {flex} (the pilot ran at {PHASE_FLEX}); '
+                                              f'nothing else changed (TASKS 5d)'}))}
 
 
 def phase_projection_inputs(data_root):
@@ -2562,10 +2629,10 @@ def phase_projection_inputs(data_root):
                        'pilot_root': PHASE_PILOT_ROOT_REL}}
 
 
-def validate_phase_predictions(pred):
+def validate_phase_predictions(pred, ids=PHASE_PREDICTION_IDS):
     if not isinstance(pred, dict) or not isinstance(pred.get('predictions'), dict):
         raise Refused('the predictions file must hold {"predictions": {...}}')
-    missing = [k for k in PHASE_PREDICTION_IDS if k not in pred['predictions']]
+    missing = [k for k in ids if k not in pred['predictions']]
     bad = [k for k, v in pred['predictions'].items()
            if not all(isinstance(v.get(f), str) and v[f] for f in ('statement', 'evaluated_as', 'on_failure'))]
     if missing or bad:
@@ -2574,9 +2641,11 @@ def validate_phase_predictions(pred):
     return pred
 
 
-def phase_capture_checklist(H):
+def phase_capture_checklist(H, price_level_1x=False):
     """Rule eleven for the phase, before any run: a capture path for every quantity the phase rules and the recorded
-    predictions read. -> checklist; raises Refused naming the failed checks."""
+    predictions read. -> checklist; raises Refused naming the failed checks. `price_level_1x` (the 1x phase, TASKS
+    5d): also the paths its added predictions read (Q8 price level, Q9 leak) and the ESSO recovery reconciliation
+    (4030508f); the 2x checklist is unchanged."""
     import inspect
     rec_src = inspect.getsource(H.build_evaluation_record)
     run_src = inspect.getsource(phase_run)
@@ -2599,6 +2668,26 @@ def phase_capture_checklist(H):
         'per-cycle trajectory by default (stage template)': {'recourse', 'cycle_convergence', 'cycle'}
                                                             <= set(H.PER_CYCLE_TRAJECTORY_FIELDS),
     }
+    if price_level_1x:
+        map_src = inspect.getsource(map_record)
+        child_src = inspect.getsource(H._child_real)
+        checks.update({
+            'leak priced as conversion loss in every settled summary (Q9)':
+                "leak=pc['leak']" in map_src and "'priced_loss_eur': g_leak" in inspect.getsource(pricing_components)
+                and "'priced_loss_eur'" in inspect.getsource(H.s56_leak_detector),
+            'leak per settled evaluation in the phase prediction inputs (Q9)':
+                "'Q9'" in inspect.getsource(phase_prediction_inputs),
+            'ESSO recovery reconciliation in the guards (Q2; 4030508f)':
+                "solve_profile_reconciliation(record, files)['holds']" in inspect.getsource(guards_exact)
+                and "'esso_recovery_solves'" in inspect.getsource(solve_profile_reconciliation)
+                and "'esso_recovery_events'" in inspect.getsource(read_eval_files),
+            'price level applied and read back in the child, recorded (Q8)':
+                "holder['flex_price_readback_terminal']" in child_src
+                and "'flex_price_readback_terminal'" in child_src
+                and "'flex_price_multiplier'" in inspect.getsource(H._flex_price_record_fields),
+            'screen dF_exit per row in the phase results (Q1, Q8)':
+                "'dF_exit': cls['dF']" in inspect.getsource(P._table_row),
+        })
     failed = sorted(k for k, v in checks.items() if not v)
     if failed:
         raise Refused(f'phase capture path missing: {failed}')
@@ -2763,6 +2852,9 @@ def continuation_source(orc, data_root, root_rel, sha):
     spec_path, digest, pspec = load_phase_spec(absr)
     if not digest.startswith(str(sha)):
         raise Refused(f'continuation predecessor {rel}: spec sha256 {digest[:16]}..., declared {sha}')
+    if phase_flex_of(pspec) != phase_flex_of(orc.spec):   # TASKS 5d: a continuation never crosses price levels
+        raise Refused(f'continuation predecessor {rel}: price level {phase_flex_of(pspec)} != this spec\'s '
+                      f'{phase_flex_of(orc.spec)} (a continuation resumes a phase at its own price level)')
     idx, complete = _complete_indices(absr)
     if not complete:
         raise Refused(f'continuation predecessor {rel} has no complete launch: declare it as an un-launched '
@@ -2832,15 +2924,21 @@ def verify_predecessors_at_launch(spec, data_root):
 
 def phase_spec(*, phase_id, oracle, test_only, data_root, predictions=None, test_config=None,
                unlaunched_predecessors=(), continuation_of=(), ceiling_h=None, ceiling_note=None,
-               pilot_exit_views=True):
+               pilot_exit_views=True, flex_price=PHASE_FLEX):
     """Build the phase spec (frozen by `phase_freeze`). Real: oracle 'harness', not test-only, recorded predictions
     Q1-Q7, the pilot root as cache root, the collision scan and the cache-root key audit. Test-only: 'synthetic' or
     'stub_children' oracle with a test config (landscape, knobs, precached pool members, ceiling, simulated walls).
     Spec v2: `unlaunched_predecessors` / `continuation_of` = [(root, sha prefix)] (section comment); a CONTINUATION
     (harness oracles only) may raise the ceiling (`ceiling_h` with `ceiling_note`, the author's decision) and may stop
     serving the pilot exit views (`pilot_exit_views=False`, the R4 fallback: x0, the unit and the staged plan then get
-    exit-depth runs, and the exit-view check is recorded, not stopping)."""
+    exit-depth runs, and the exit-view check is recorded, not stopping).
+    1x phase (TASKS 5d; section comment at PHASE_FLEX_LEVELS): `flex_price` = 1.0 -- the 1x arm, the 60 h ceiling,
+    the predictions Q1-Q9, the harness configuration at 1.0, and NO pilot record (a non-continuation 1x spec MUST pass
+    pilot_exit_views=False: x0, the unit and the staged plan are evaluated by the phase; the exit-view check stays
+    'stop'); no cache source. `flex_price` = 2.0 (default): exactly the 2x spec as before."""
     import p515_s44_campaign_harness as H
+    flex = phase_flex_level(flex_price)
+    one_x = flex != PHASE_FLEX
     lattice, inst = build_lattice(data_root)
     tc = copy.deepcopy(test_config or {})
     if oracle not in ORACLES:
@@ -2851,8 +2949,11 @@ def phase_spec(*, phase_id, oracle, test_only, data_root, predictions=None, test
         raise Refused('a synthetic or stub-children phase must be test-only')
     if continuation_of and oracle == 'synthetic':
         raise Refused('a continuation needs a harness oracle (stub_children or harness): its predecessor is a cache root')
-    if (ceiling_h is not None or not pilot_exit_views) and not continuation_of:
+    if (ceiling_h is not None or (not pilot_exit_views and not one_x)) and not continuation_of:
         raise Refused('a raised ceiling and --no-pilot-exit-views are for continuation specs only')
+    if one_x and pilot_exit_views:
+        raise Refused('a 1x phase serves no pilot exit view (no pilot record carries a 1x key; Planner decision D2): '
+                      'freeze it with --no-pilot-exit-views')
     if ceiling_h is not None and (not isinstance(ceiling_note, str) or not ceiling_note.strip()):
         raise Refused('a continuation ceiling needs --ceiling-note (the author\'s decision, quoted)')
     if ceiling_h is not None and 'ceiling_h' in tc:
@@ -2873,25 +2974,28 @@ def phase_spec(*, phase_id, oracle, test_only, data_root, predictions=None, test
         raise Refused(f'e_EV {e_ev} != {PHASE_E_EV_ROUNDED} EUR (Planner decision)')
     k_ev = int(tc.get('k_ev', PHASE_K_EV))
     raised = ceiling_h is not None
-    ceiling_h = float(ceiling_h if raised else tc.get('ceiling_h', PHASE_CEILING_H))
-    if not test_only and (k_ev != PHASE_K_EV or (ceiling_h != PHASE_CEILING_H and not raised)):
-        raise Refused('the real phase uses K_EV 300 and the 120 h ceiling (a continuation may raise the ceiling)')
+    level_ceiling = PHASE_CEILING_1X_H if one_x else PHASE_CEILING_H
+    ceiling_h = float(ceiling_h if raised else tc.get('ceiling_h', level_ceiling))
+    if not test_only and (k_ev != PHASE_K_EV or (ceiling_h != level_ceiling and not raised)):
+        raise Refused(f'the real phase uses K_EV 300 and the {level_ceiling:g} h ceiling at price level {flex:g}x (a '
+                      f'continuation may raise the ceiling)')
     unl = [verify_unlaunched_predecessor(data_root, *rs) for rs in unlaunched_predecessors]
     spec = {
-        'schema': PHASE_SPEC_SCHEMA, 'phase_id': phase_id, 'search_id': phase_id, 'arm': 'ev_2x',
-        'frozen_utc': _utc(), 'authority': PHASE_AUTHORITY, 'test_only': bool(test_only),
+        'schema': PHASE_SPEC_SCHEMA, 'phase_id': phase_id, 'search_id': phase_id, 'arm': 'ev_1x' if one_x else 'ev_2x',
+        'frozen_utc': _utc(), 'authority': PHASE_AUTHORITY_1X if one_x else PHASE_AUTHORITY,
+        'test_only': bool(test_only),
         'start': {'name': 'x0', 'z': list(x0), 'label': lattice.label(x0), 'key': lattice.key(x0),
                   'note': 'the start incumbent of the marginal-value table and the efficiency rule'},
         'policy': {'R': P.R_EUR, 'e_ev': e_ev, 'e_floor': e_ev, 'block': P.BLOCK, 'cap': P.CAP,
                    'class_rank': list(P.CLASS_RANK), 'k_ev': k_ev, 'n_max_sub': DOMAIN_SIZE,
-                   'n_max_note': 'no evaluation count is declared for the phase: the author\'s 120 h ceiling is its '
-                                 'budget, so each sub-search (candidate polls, the search) has N_max = the domain size '
-                                 '(non-binding)',
+                   'n_max_note': f'no evaluation count is declared for the phase: the author\'s {level_ceiling:g} h '
+                                 'ceiling is its budget, so each sub-search (candidate polls, the search) has N_max = '
+                                 'the domain size (non-binding)',
                    'classification': 'P.classify_exit with e_floor = e_EV (worse dF >= R + e; confirm_candidate '
                                      'dF <= -R + e; else unresolved; e = max(e_EV, bar sum))',
                    'acceptance': 'plan v4.1 section 3 (P.confirm; settled-direct: P.classify_settled)',
                    'not_settled': 'integration ruling 5 (601775c0), per sub-search and phase-wide',
-                   'exit_view_check': 'stop' if pilot_exit_views else 'record',
+                   'exit_view_check': 'stop' if pilot_exit_views or one_x and not continuation_of else 'record',
                    'exit_view_check_rule': ('Planner decision R4: for each candidate, its exit run\'s (read_cycle, F, '
                                             'bar) == the exit_view of its settled summary, bitwise; mismatch -> exit 5 '
                                             '"exit_view_mismatch" (mode stop) or recorded (mode record: no exit view '
@@ -2928,25 +3032,39 @@ def phase_spec(*, phase_id, oracle, test_only, data_root, predictions=None, test
         'cache_sources': [], 'code_sha256': code_hashes(), 'git_head': _git_head(data_root),
         'interpreter': sys.executable,
         'predecessors': {'unlaunched': unl, 'continuation': [], 'rule': 'Planner decision P2 (spec v2)'}}
+    if one_x:   # TASKS 5d: only a 1x spec carries these (a 2x spec keeps its exact format)
+        spec['phase']['price_level'] = {
+            'flex_price_multiplier': flex, 'levels_allowed': list(PHASE_FLEX_LEVELS),
+            'D1': 'e_EV = 17,494 EUR and K_EV = 300 carry over from the 2x pilot; no 1x pilot (the offset review stop '
+                  'and the exit-view check Q7 guard the carry-over)',
+            'D2': 'no record carries over (the price level is in the eval key): x0 (exit and settled), the reference '
+                  'unit and the staged plan (settled) are evaluated by the phase itself on the R4 path '
+                  '(pilot_exit_views False); no cache source is declared',
+            'exit_view_check': 'stop (Q7 as at 2x; record is for a continuation that serves no exit view)'}
+        spec['phase']['ceiling']['projection_restated_1x'] = copy.deepcopy(PHASE_PROJECTION_1X)
     if oracle == 'harness':
-        validate_phase_predictions(predictions)
-        spec['harness'] = phase_harness_config(data_root)
-        spec['capture_path_checklist'] = phase_capture_checklist(H)
+        validate_phase_predictions(predictions, PHASE_PREDICTION_IDS_1X if one_x else PHASE_PREDICTION_IDS)
+        spec['harness'] = phase_harness_config(data_root, flex)
+        spec['capture_path_checklist'] = phase_capture_checklist(H, price_level_1x=one_x)
         spec['predictions_recorded_before_run'] = predictions
         domain = enumerate_domain(lattice)
         orc = HarnessOracle(spec, lattice, lock_path=None)
-        spec['cache_sources'] = build_cache_index(orc, lattice, data_root, [PHASE_PILOT_ROOT_REL], domain)
-        spec['cache_sources'][0].update(kind='pilot', exit_views=bool(pilot_exit_views))
-        got = {(tuple(e['z']), e['depth']) for s in spec['cache_sources'] for e in s['entries']}
-        want = {(tuple(z), P.DEPTH_SETTLED) for z in (x0, unit, staged)}
-        if got != want:
-            raise Refused(f'the pilot cache index is not exactly x0 / unit / staged at the settled key: '
-                          f'{sorted((lattice.label(z), d) for z, d in got)}')
+        if not one_x:
+            spec['cache_sources'] = build_cache_index(orc, lattice, data_root, [PHASE_PILOT_ROOT_REL], domain)
+            spec['cache_sources'][0].update(kind='pilot', exit_views=bool(pilot_exit_views))
+            got = {(tuple(e['z']), e['depth']) for s in spec['cache_sources'] for e in s['entries']}
+            want = {(tuple(z), P.DEPTH_SETTLED) for z in (x0, unit, staged)}
+            if got != want:
+                raise Refused(f'the pilot cache index is not exactly x0 / unit / staged at the settled key: '
+                              f'{sorted((lattice.label(z), d) for z, d in got)}')
         spec['phase']['pool']['cache_members'] = []   # no other settled record in the declared cache roots
         spec['cache_exit_views'] = ('the exit summary of each cached settled record is its exit view (map_record at '
                                     'depth exit, read at the would-be certification cycle), served only when no '
                                     'exit-depth record of the plan exists, and only from a cache source whose '
                                     'exit_views is True (the pilot source unless --no-pilot-exit-views)')
+        if one_x:
+            spec['cache_exit_views'] = ('1x phase: no cache source and no exit view served (D2); every exit value is '
+                                        'an exit run, every settled value a settled run of this phase')
         _add_continuations(spec, orc, data_root, continuation_of)
         spec['domain_keys_distinct'] = len({orc.eval_key(z, d) for z in domain for d in P.DEPTHS}) == 2 * DOMAIN_SIZE
         spec['cache_root_key_audit'] = cache_root_key_audit(spec, lattice, data_root, domain, orc)
@@ -2961,7 +3079,7 @@ def phase_spec(*, phase_id, oracle, test_only, data_root, predictions=None, test
         knobs['exit_views'] = True   # spec v2: exit summaries carry read_cycle, settled ones their exit view
         spec['oracle'].update({'seed': str(land.get('seed', 'phase')), 'target': target,
                                'alpha': float(land.get('alpha', 30000.0)), 'f0': float(land.get('f0', 810.0e6)),
-                               'knobs': knobs, 'precached': pre,
+                               'knobs': knobs, 'precached': [] if one_x else pre,   # 1x: nothing carries over (D2)
                                'note': 'SYNTHETIC VALUES -- not evaluations of the system; x0, the unit and the '
                                        'staged plan precached at both depths (they stand for the pilot records; '
                                        'settled depth only when pilot_exit_views is False)'})
@@ -3225,7 +3343,7 @@ def phase_prediction_inputs(spec, report, root, data_root, chain, records):
                 if isinstance(b, (int, float)):
                     rss.append(b / GIB)
     pool = report.get('pool') or {}
-    return {
+    out = {
         'Q1': {'screen_rows': len(scr), 'screen_certified': sum(1 for r in scr if r['status'] == 'certified'),
                'screen_dF_exit_below_0': sum(1 for r in scr if isinstance(r['dF_exit'], (int, float))
                                              and r['dF_exit'] < 0),
@@ -3251,6 +3369,22 @@ def phase_prediction_inputs(spec, report, root, data_root, chain, records):
                'termination_reason': (report.get('termination') or {}).get('reason')},
         'carried_h': spec['phase']['ceiling'].get('carried_h', 0.0),
     }
+    if spec['phase'].get('price_level'):   # the 1x phase (TASKS 5d): Q8 (computed after the phase), Q9 (the leak)
+        st = sorted((('|'.join(map(str, z)), s) for (z, d), s in records.items() if d == P.DEPTH_SETTLED),
+                    key=lambda t: t[0])
+        lk = [((s.get('leak') or {}).get('priced_loss_eur'), zk) for zk, s in st]
+        vals = [v for v, _zk in lk if _fin(v)]
+        ceil = (spec.get('mapping') or MAPPING_PARAMETERS).get('leak_ceiling_eur')
+        out['Q8'] = {'price_level': spec['phase']['price_level'].get('flex_price_multiplier'),
+                     'screen_dF_exit': {r['label']: r['dF_exit'] for r in scr},
+                     'note': 'the 2x values and the mean difference are computed after the phase at zero solves '
+                             '(the predictions file names the 2x results file and its sha256)'}
+        out['Q9'] = {'n_settled_summaries': len(st), 'n_with_leak': len(vals),
+                     'max_priced_loss_eur': max(vals) if vals else None, 'ceiling_eur': ceil,
+                     'n_above_ceiling': sum(1 for v in vals if _fin(ceil) and v > ceil),
+                     'above_ceiling_z': [zk for v, zk in lk if _fin(v) and _fin(ceil) and v > ceil],
+                     'without_leak_z': [zk for v, zk in lk if not _fin(v)]}
+    return out
 
 
 def _write_phase_results(root, spec, spec_sha, state, records, chain, hooks, data_root):
@@ -3362,7 +3496,8 @@ def phase_run(root, *, data_root, lock_path, take_over_stale, preflight_only_out
             summary = {'schema': 'p515_s56_phase_ceiling_stop_v1', 'utc': _utc(), 'index': m,
                        'n_launches_complete': len(chain), 'next_launch_would_be': n_next, 'next_action': action,
                        'stage': state['stage'], 'ceiling_check': cc, 'hours': hours,
-                       'note': 'the author decided the 120 h ceiling; the phase is suspended, not terminated'}
+                       'note': f"the author decided the {spec['phase']['ceiling']['ceiling_h']:g} h ceiling; the "
+                               f"phase is suspended, not terminated"}
             write_once_json(os.path.join(cdir, f'ceiling_stop_{m:03d}.json'), summary)
             _phase_view(root, chain, state)
             _log(f"CEILING: cumulative {cc['cumulative_h']:.2f} h + projected next block {cc['projected_next_block_h']:.2f}"
@@ -3568,7 +3703,11 @@ def main(argv=None):
     ap.add_argument('--ceiling-h', type=float, help='--phase-freeze, continuation only: the raised ceiling (author)')
     ap.add_argument('--ceiling-note', help='--phase-freeze with --ceiling-h: the author\'s decision, quoted')
     ap.add_argument('--no-pilot-exit-views', action='store_true',
-                    help='--phase-freeze, continuation only: serve no pilot exit view (the R4 fallback)')
+                    help='--phase-freeze, continuation (or a 1x phase, where it is required): serve no pilot exit view '
+                         '(the R4 fallback)')
+    ap.add_argument('--phase-flex', type=float, default=PHASE_FLEX,
+                    help=f'--phase-freeze: the phase\'s price level, one of {PHASE_FLEX_LEVELS} (default {PHASE_FLEX}; '
+                         f'1.0 = the 1x phase, TASKS 5d)')
     ap.add_argument('--t-exit-h', type=float)
     ap.add_argument('--t-set-h', type=float)
     ap.add_argument('--psi', type=float)
@@ -3619,7 +3758,7 @@ def main(argv=None):
                                   unlaunched_predecessors=[_split_root_sha(a) for a in args.unlaunched_predecessor],
                                   continuation_of=[_split_root_sha(a) for a in args.continuation_of],
                                   ceiling_h=args.ceiling_h, ceiling_note=args.ceiling_note,
-                                  pilot_exit_views=not args.no_pilot_exit_views)
+                                  pilot_exit_views=not args.no_pilot_exit_views, flex_price=args.phase_flex)
                 if args.oracle in ('stub_children', 'harness'):
                     lat_f = build_lattice(data_root)[0]
                     spec['collision_scan'] = freeze_collision_scan(spec, lat_f, root, data_root)

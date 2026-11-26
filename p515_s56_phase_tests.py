@@ -52,6 +52,22 @@ SPEC v2 TESTS (Advisor pre-launch review; Planner decisions R1, R4, P1, P2; TASK
   T16 change 8: `s56_phase_check.py` on crafted launch records (PASS, each FAIL criterion, missing record); the
       single-invocation command (launch 001 logs, refuses a re-run) followed by the loop continuing at 002; no command
       line contains the harness hazard string.
+1x PHASE TESTS (TASKS.md step 5d, 2026-11-26; the declared price level --phase-flex 1.0):
+  T17 2x option-off identity: the driver at PRE_1X_REV (8fe07ca5, the commit before the 1x build) loaded beside the
+      working tree; the REAL 2x spec (as v2: non-continuation; as v3: continuation of v2 with v1 un-launched) and a
+      test-only stub spec built by both are equal in every field except frozen_utc, code_sha256 and git_head; the
+      collision-scan outcomes equal; non-vacuous (the two driver files differ).
+  T18 the REAL 1x spec built in process: arm ev_1x, ceiling 60, exit-view check stop, no pilot exit view, no cache
+      source, the 1x authority and price-level record, Q1-Q9 required, the 1x capture items; it differs from the 2x spec
+      only in the declared fields (flat path diff); every one of the 74,084 eval keys is the 1.0-multiplier key (1.0 is
+      the absent key by the harness rule) and none is a 2x key; the harness freezes the real 1x configuration (scratch
+      dir outside the repository; keys recompute); the freeze collision scan over the tracked artefacts and over every
+      phase / pilot launch artefact on disk: 0 collisions; refusals (a 1x ceiling other than 60, a price level outside
+      {1.0, 2.0}, a 1x spec serving pilot exit views, a 1x continuation of a 2x root, the CLI --phase-flex 1.5).
+  T19 the 1x flow (synthetic and stub children, test-only, --phase-flex 1.0 --no-pilot-exit-views): nothing
+      precached; launch 1 = x0's exit run alone; x0 run at exit and settled, the unit and the staged plan settled (the
+      unit's screen row an exit run), no pool member served from cache; exit 0; state byte-equal to in process; the test
+      ceiling defaults to 60; the author commands for the real 1x root carry no hazard string.
 
 Launch (attached, both streams captured):
   python -u p515_s56_phase_tests.py --out <new dir> > <dir>_stdout.log 2> <dir>_stderr.log
@@ -102,6 +118,9 @@ CHECKS = []
 # compare against THIS revision, never HEAD (v1 of these tests compared against HEAD, which after the build commit is
 # the new code itself -- a vacuous comparison; v2 fixes it and asserts the two files differ).
 PRE_PHASE_REV = '6b1d98b2'
+# The pre-1x revision (TASKS 5d): the 2x option-off identity of T17 compares the working tree against THIS revision.
+PRE_1X_REV = '8fe07ca5'
+PHASE1X_ROOT_REL = os.path.join('data', 'SRP1', 'Results', 'P515S56', 'phase1x_ev_v1')
 
 
 def log(msg):
@@ -150,7 +169,7 @@ def drv(argv, data_root, log_prefix, env_extra=None):
     return p.returncode
 
 
-def freeze(base, tag, data_root, tc, oracle='synthetic', phase_id=None):
+def freeze(base, tag, data_root, tc, oracle='synthetic', phase_id=None, extra=()):
     root = os.path.join(base, tag)
     logs = os.path.join(base, f'{tag}_logs')
     os.makedirs(logs)
@@ -158,7 +177,7 @@ def freeze(base, tag, data_root, tc, oracle='synthetic', phase_id=None):
     D.write_once_json(tcp, tc)
     rc = drv(['--phase-freeze', '--root', root, '--phase-id', phase_id or f'ph_{tag}'[:40], '--oracle', oracle,
               '--test-only',
-              '--phase-test-config', tcp], data_root, os.path.join(logs, 'freeze'))
+              '--phase-test-config', tcp, *extra], data_root, os.path.join(logs, 'freeze'))
     return root, logs, rc
 
 
@@ -689,9 +708,9 @@ def t9(lat, data_root, out_dir, cf, ref_root):
 HAZARD = 'p515_s' + '4'   # the harness pre-launch scan's process-name hazard (never written literally here)
 
 
-def dummy_predictions():
+def dummy_predictions(ids=None):
     return {'predictions': {q: {'statement': 'test', 'evaluated_as': 'test', 'on_failure': 'test'}
-                            for q in D.PHASE_PREDICTION_IDS}}
+                            for q in (ids or D.PHASE_PREDICTION_IDS)}}
 
 
 def t10(lat, data_root, out_dir):
@@ -1199,13 +1218,358 @@ def t16(lat, data_root, out_dir, cf):
 
 
 # ======================================================================================================================
+#  1x PHASE tests (TASKS 5d): T17 2x option-off identity, T18 the real 1x spec, T19 the 1x flow
+# ======================================================================================================================
+SPEC_VOLATILE = ('frozen_utc', 'code_sha256', 'git_head')
+FLAG_1X = ('--phase-flex', '1.0', '--no-pilot-exit-views')
+
+
+def _flat(obj, path=''):
+    if isinstance(obj, dict):
+        out = {}
+        for k, v in obj.items():
+            out.update(_flat(v, f'{path}/{k}'))
+        return out if obj else {path: {}}
+    if isinstance(obj, list):
+        out = {}
+        for i, v in enumerate(obj):
+            out.update(_flat(v, f'{path}[{i}]'))
+        return out if obj else {path: []}
+    return {path: P.canonical_json(obj)}
+
+
+def _diff_paths(a, b):
+    fa, fb = _flat(a), _flat(b)
+    return sorted(k for k in set(fa) | set(fb) if fa.get(k) != fb.get(k))
+
+
+def _stable(spec):
+    return {k: v for k, v in spec.items() if k not in SPEC_VOLATILE}
+
+
+def _build(mod, **kw):
+    try:
+        return mod.phase_spec(**kw), None
+    except Exception as error:   # either module's Refused (two classes)
+        return None, list(getattr(error, 'reasons', [repr(error)]))
+
+
+def _scan(mod, spec, lat, own, data_root):
+    try:
+        return mod.freeze_collision_scan(spec, lat, own, data_root), None
+    except Exception as error:
+        return None, list(getattr(error, 'reasons', [repr(error)]))
+
+
+def t17(lat, data_root, out_dir, cf):
+    base = os.path.join(out_dir, 't17')
+    os.makedirs(base)
+    old, old_sha = _load_head_module('pre1x_driver', 'p515_s56_search_driver.py', base, rev=PRE_1X_REV)
+    old.CODE_ROOT = CODE_ROOT   # its source-text capture checks read the repository files, as the module at its rev
+    ck('T17', f'the comparison is not vacuous: the driver at {PRE_1X_REV} differs from the working-tree driver',
+       old_sha != D.sha256_file(D.__file__), [old_sha, D.sha256_file(D.__file__)])
+    v1 = os.path.join(D.RESULTS_PARENT_REL, 'phase2x_ev_v1')
+    v2 = os.path.join(D.RESULTS_PARENT_REL, 'phase2x_ev_v2')
+    tc_stub = copy.deepcopy(cf['exit_move'])
+    tc_stub['k_ev'] = 400
+    tc_stub['harness'] = stub_harness_config()
+    pp = os.path.join(data_root, D.RESULTS_PARENT_REL, 'phase2x_ev_v2_predictions.json')   # v2's and v3's file
+    pred_v3 = dict(D.load_json(pp), source_file_sha256=D.sha256_file(pp))
+    cases = {
+        'real_2x_as_v2': dict(phase_id='t17_2x', oracle='harness', test_only=False, data_root=data_root,
+                              predictions=dummy_predictions()),
+        'real_2x_as_v3': dict(phase_id='s56phase2x_ev_v3', oracle='harness', test_only=False, data_root=data_root,
+                              predictions=pred_v3, unlaunched_predecessors=[(v1, 'de4e947e')],
+                              continuation_of=[(v2, '18a224d1')]),
+        'stub_2x': dict(phase_id='t17_stub', oracle='stub_children', test_only=True, data_root=data_root,
+                        test_config=tc_stub),
+        'synthetic_2x': dict(phase_id='t17_syn', oracle='synthetic', test_only=True, data_root=data_root,
+                             test_config=cf['exit_move']),
+    }
+    res, built = {}, {}
+    for name, kw in cases.items():
+        t0 = time.time()
+        s_new, e_new = _build(D, **kw)
+        s_old, e_old = _build(old, **kw)
+        both = s_new is not None and s_old is not None
+        diff = _diff_paths(_stable(s_new), _stable(s_old)) if both else None
+        res[name] = {'built_new': s_new is not None, 'built_old': s_old is not None, 'refused_new': e_new,
+                     'refused_old': e_old, 'differing_paths': diff, 'wall_s': time.time() - t0,
+                     'volatile_differing': [k for k in SPEC_VOLATILE if both and s_new.get(k) != s_old.get(k)]}
+        built[name] = (s_new, s_old)
+        ck('T17', f'{name}: the spec built by the working tree equals the spec built by {PRE_1X_REV} in every field '
+                  f'except {list(SPEC_VOLATILE)}', both and diff == [] and P.canonical_json(_stable(s_new))
+           == P.canonical_json(_stable(s_old)), res[name])
+    sn, so = built['real_2x_as_v2']
+    own = os.path.join(base, 'own_root_2x')
+    c_new, r_new = _scan(D, sn, lat, own, data_root)
+    c_old, r_old = _scan(old, so, lat, own, data_root)
+    ck('T17', 'the 2x freeze collision scan: the same outcome under both drivers (result or refusal, equal)',
+       P.canonical_json([c_new, r_new]) == P.canonical_json([c_old, r_old]),
+       {'new': [c_new, r_new], 'old': [c_old, r_old]})
+    # T12's REAL-artefact call exactly (the v2 declaration with v1 un-launched; own root = the real v2 root): its
+    # outcome is a property of the tracked artefacts, not of the driver version (phase1x_tests_v1: T12 failed on the v3
+    # artefacts tracked since tests v4 -- 690d4737, 50d7dc67)
+    kw12 = dict(phase_id='t12_real_probe', oracle='harness', test_only=False, data_root=data_root,
+                predictions=dummy_predictions(), unlaunched_predecessors=[(v1, 'de4e947e')])
+    s12n, e12n = _build(D, **kw12)
+    s12o, e12o = _build(old, **kw12)
+    own_v2 = os.path.join(data_root, v2)
+    a12 = _scan(D, s12n, lat, own_v2, data_root) if s12n is not None else (None, e12n)
+    b12 = _scan(old, s12o, lat, own_v2, data_root) if s12o is not None else (None, e12o)
+    ck('T17', 'T12\'s real-artefact scan (v2 declaration, v1 un-launched, own root = the real v2 root): the same '
+              'outcome under both drivers', s12n is not None and s12o is not None
+       and P.canonical_json(a12) == P.canonical_json(b12), {'new': a12, 'old': b12})
+    res['t12_real_scan_both_drivers'] = {'new': a12, 'old_equal': P.canonical_json(a12) == P.canonical_json(b12)}
+    v3p = os.path.join(data_root, D.RESULTS_PARENT_REL, 'phase2x_ev_v3', 'phase_spec_600bbceb.json')
+    v3 = D.load_json(v3p)
+    info_v3 = _diff_paths({k: v for k, v in _stable(v3).items() if k != 'collision_scan'},
+                          _stable(built['real_2x_as_v3'][0]))
+    res['information_only_v3_committed_spec_vs_rebuilt'] = {
+        'differing_paths': info_v3[:60], 'n_differing_paths': len(info_v3),
+        'note': 'the committed v3 spec (frozen 2026-11-25) against the same declaration (phase id, predictions file, '
+                'v1 un-launched, continuation of v2) rebuilt now by the working tree, collision_scan and the volatile '
+                'fields excluded; a difference here would be tracked files added since its freeze (cache-root audit) '
+                'or v2-root state -- information, read by no check'}
+    res['collision_scan_2x'] = {'new': [c_new, r_new], 'old_equal': P.canonical_json([c_new, r_new])
+                                == P.canonical_json([c_old, r_old])}
+    return res
+
+
+def t18(lat, data_root, out_dir):
+    import shutil
+    import tempfile
+    import p515_s44_campaign_harness as H
+    base = os.path.join(out_dir, 't18')
+    os.makedirs(base)
+    pred1 = dummy_predictions(D.PHASE_PREDICTION_IDS_1X)
+    kw1 = dict(phase_id='t18_probe', oracle='harness', test_only=False, data_root=data_root, predictions=pred1,
+               pilot_exit_views=False, flex_price=1.0)
+    t0 = time.time()
+    s1 = D.phase_spec(**kw1)
+    s2 = D.phase_spec(phase_id='t18_probe', oracle='harness', test_only=False, data_root=data_root,
+                      predictions=dummy_predictions())
+    build_s = time.time() - t0
+    hz = s1['harness']['by_depth']
+    cl1, cl2 = s1['capture_path_checklist'], s2['capture_path_checklist']
+    added = sorted(set(cl1) - set(cl2))
+    ck('T18', 'the real 1x spec: arm ev_1x, ceiling 60 (carried 0, not raised), exit-view check stop, no pilot exit '
+              'view, no cache source, no pool cache member, the 1x authority, price_level 1.0 with D1 / D2, the '
+              'restated projection; the 2x spec unchanged on these fields',
+       s1['arm'] == 'ev_1x' and s1['phase']['ceiling']['ceiling_h'] == 60.0 and s1['phase']['ceiling']['carried_h']
+       == 0.0 and s1['phase']['ceiling']['raised_by_continuation'] is None and s1['policy']['exit_view_check'] == 'stop'
+       and s1['phase']['pilot_exit_views'] is False and s1['cache_sources'] == []
+       and s1['phase']['pool']['cache_members'] == [] and s1['authority'] == D.PHASE_AUTHORITY_1X
+       and s1['phase']['price_level']['flex_price_multiplier'] == 1.0 and 'D1' in s1['phase']['price_level']
+       and 'D2' in s1['phase']['price_level'] and s1['phase']['ceiling']['projection_restated_1x']
+       == D.PHASE_PROJECTION_1X and s2['arm'] == 'ev_2x' and s2['phase']['ceiling']['ceiling_h'] == 120.0
+       and 'price_level' not in s2['phase'] and s2['phase']['pilot_exit_views'] is True,
+       {'arm': s1['arm'], 'ceiling': s1['phase']['ceiling']['ceiling_h'], 'mode': s1['policy']['exit_view_check'],
+        'cache_sources': s1['cache_sources']})
+    ck('T18', 'harness configuration: flex_price_multiplier 1.0 at both depths; everything else equal to the 2x '
+              'configuration (entry options, configuration, caps, concurrency, cycles, memory)',
+       all(hz[d]['entry_options'].get('flex_price_multiplier') == 1.0 for d in P.DEPTHS)
+       and D.phase_flex_of(s1) == 1.0 and D.phase_flex_of(s2) == 2.0
+       and _diff_paths({k: v for k, v in s1['harness'].items() if k != 'source'},
+                       {k: v for k, v in s2['harness'].items() if k != 'source'})
+       == sorted(f'/by_depth/{d}/entry_options/flex_price_multiplier' for d in P.DEPTHS),
+       {d: hz[d]['entry_options'] for d in P.DEPTHS})
+    ck('T18', 'capture checklist (rule eleven): every 2x item held with the same value, plus the 1x items (Q8 price '
+              'level, Q9 leak, the ESSO recovery reconciliation), all true',
+       all(cl1.get(k) == v for k, v in cl2.items()) and len(added) == 5 and all(cl1[k] is True for k in added)
+       and all(v for v in cl1.values()), {'added': added})
+    allowed = ('/arm', '/authority', '/policy/n_max_note', '/phase/ceiling/ceiling_h',
+               '/phase/ceiling/projection_restated_1x', '/phase/price_level', '/phase/pilot_exit_views',
+               '/harness/by_depth/exit/entry_options/flex_price_multiplier',
+               '/harness/by_depth/settled/entry_options/flex_price_multiplier', '/harness/source/price_level',
+               '/capture_path_checklist', '/predictions_recorded_before_run', '/cache_sources', '/cache_exit_views',
+               '/cache_root_key_audit')
+    diff = _diff_paths(_stable(s1), _stable(s2))
+    outside = [k for k in diff if not any(k == a or k.startswith(a + '/') or k.startswith(a + '[') for a in allowed)]
+    ck('T18', 'the 1x spec differs from the 2x spec only in the declared fields (flat path diff; no other field, in '
+              'particular policy R / e_EV / K_EV / caps / efficiency / screen / ladder / mapping / projected_hours, '
+              'differs)', not outside and diff, {'outside': outside, 'n_diff': len(diff), 'diff': diff[:40]})
+    aud = s1['cache_root_key_audit']
+    ck('T18', 'cache-root key audit with no cache root: ok, 0 files, 0 keys found; 2^1 x 37,042 domain keys distinct',
+       aud['ok'] and aud['n_files_in_cache_roots'] == 0 and not aud['keys_found'] and s1['domain_keys_distinct'],
+       aud)
+    # every eval key the 1x phase can request
+    t1 = time.time()
+    dom = D.enumerate_domain(lat)
+    o1, o2 = D.HarnessOracle(s1, lat, lock_path=None), D.HarnessOracle(s2, lat, lock_path=None)
+    k1, k2, bad_absent, bad_flex = set(), set(), [], []
+    for z in dom:
+        ckey = H.candidate_key(lat.canonical_of_z(tuple(z)))
+        for d in P.DEPTHS:
+            k = o1.eval_key(z, d)
+            opts = o1.entry_options(z, d)
+            if opts.get('flex_price_multiplier') != 1.0:
+                bad_flex.append(lat.label(tuple(z)))
+            absent = {kk: vv for kk, vv in opts.items() if kk != 'flex_price_multiplier'}
+            if D.compose_eval_key(H, hz[d]['configuration'], absent, int(hz[d]['cap']), ckey) != k:
+                bad_absent.append((lat.label(tuple(z)), d))
+            k1.add(k)
+            k2.add(o2.eval_key(z, d))
+    keys_s = time.time() - t1
+    ck('T18', 'every eval key of the 1x phase (37,042 plans x 2 depths) is composed with flex_price_multiplier 1.0 and '
+              'equals the multiplier-absent key (the harness rule: 1.0 = today\'s price, not keyed); 74,084 distinct; '
+              '0 shared with the 74,084 2x keys',
+       not bad_flex and not bad_absent and len(k1) == 2 * D.DOMAIN_SIZE == len(k2) and not (k1 & k2),
+       {'bad_flex': bad_flex[:5], 'bad_absent': bad_absent[:5], 'n1': len(k1), 'n2': len(k2),
+        'shared': len(k1 & k2), 'wall_s': keys_s})
+    # the harness freezes the REAL 1x configuration (scratch dir outside the repository; nothing else written)
+    tmp = tempfile.mkdtemp(prefix='s56_t18_harness_freeze_')
+    probe = {}
+    try:
+        x0, unit = lat.x0(), D.named_start(lat, 'reference_unit')
+        for d in P.DEPTHS:
+            bd = hz[d]
+            cands = [(D.eval_label(lat, z, d, s1['arm']), None, o1.entry_options(z, d)) for z in (x0, unit)]
+            cfg = dict(copy.deepcopy(bd['configuration']), name=f't18 harness freeze probe {d}')
+            try:
+                _p, _sha, hspec = H.freeze_campaign_spec(
+                    os.path.join(tmp, d), f't18_probe_{d}', cands, cfg, bd['cap'], s1['harness']['concurrency'],
+                    D.AUTHORITY, required_consecutive_cycles=s1['harness']['required_consecutive_cycles'],
+                    extra={'test_only_probe': 'T18, scratch dir, deleted after the check'})
+                ents = hspec['candidates']
+                probe[d] = {'frozen': True, 'keys_recompute': [e['eval_key'] for e in ents]
+                            == [o1.eval_key(z, d) for z in (x0, unit)],
+                            'flex_in_entries': [e.get('flex_price_multiplier') for e in ents],
+                            'flex_label_in_entries': [e.get('flex_price_label') for e in ents]}
+            except Exception as error:
+                probe[d] = {'frozen': False, 'error': repr(error)}
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    ck('T18', 'the harness freezes the real 1x configuration for x0 and the unit at both depths (no refusal of the 1.0 '
+              'multiplier on S56 EV entries): keys recompute, entries carry flex_price_multiplier 1.0 and no flex '
+              'label (1.0 runs unlabelled); scratch dir outside the repository, removed',
+       all(probe.get(d, {}).get('frozen') and probe[d]['keys_recompute'] and probe[d]['flex_in_entries'] == [1.0, 1.0]
+           and probe[d]['flex_label_in_entries'] == [None, None] for d in P.DEPTHS) and not os.path.exists(tmp),
+       probe)
+    # collisions: the tracked artefacts (the freeze scan), then every phase / pilot artefact on disk
+    own = os.path.join(data_root, PHASE1X_ROOT_REL)
+    try:
+        cs, cs_err = D.freeze_collision_scan(s1, lat, own, data_root), None
+    except D.Refused as error:
+        cs, cs_err = None, error.reasons
+    disk_roots = ['phase2x_ev_v1', 'phase2x_ev_v2', 'phase2x_ev_v3', 'pilot_ev_v1']
+    disk = []
+    for r in disk_roots:
+        for f in D.files_under(os.path.join(data_root, D.RESULTS_PARENT_REL, r)):
+            b = os.path.basename(f)
+            if (b.startswith(('campaign_spec_', 'phase_spec_', 'pilot_spec_')) and b.endswith('.json')) \
+                    or b == 'evaluation_record.json' or (b.startswith('launch_') and b.endswith('.json')):
+                disk.append(f)
+    dscan = D.collision_scan(disk, k1, own)
+    ck('T18', 'collision scan of the 1x keys: 0 collisions over the tracked artefacts (the freeze scan; own root = the '
+              'real 1x root, absent) and 0 over every spec, launch record and evaluation record on disk under the 2x '
+              'phase roots v1-v3 and the pilot root',
+       cs is not None and not cs['collisions'] and cs['n_excluded_cache_roots'] == 0 and not dscan['collisions']
+       and dscan['n_files_scanned'] == len(disk) > 0,
+       {'freeze_scan': cs, 'refused': cs_err, 'disk_files': len(disk), 'disk_collisions': dscan['collisions']})
+    # refusals
+    v2 = os.path.join(D.RESULTS_PARENT_REL, 'phase2x_ev_v2')
+    ref = {}
+    for name, kw in (('ceiling_80', dict(kw1, ceiling_h=80.0, ceiling_note='test')),
+                     ('ceiling_60_declared_without_continuation', dict(kw1, ceiling_h=60.0, ceiling_note='test')),
+                     ('price_1.5', dict(kw1, flex_price=1.5)), ('price_0', dict(kw1, flex_price=0.0)),
+                     ('price_bool', dict(kw1, flex_price=True)), ('price_str', dict(kw1, flex_price='1.0')),
+                     ('1x_serving_pilot_exit_views', dict(kw1, pilot_exit_views=True)),
+                     ('1x_continuation_of_2x_v2', dict(kw1, continuation_of=[(v2, '18a224d1')])),
+                     ('2x_no_pilot_exit_views_unchanged', dict(phase_id='x', oracle='harness', test_only=False,
+                                                                data_root=data_root, predictions=dummy_predictions(),
+                                                                pilot_exit_views=False)),
+                     ('1x_predictions_q1_q7_only', dict(kw1, predictions=dummy_predictions()))):
+        _s, e = _build(D, **kw)
+        ref[name] = e
+    ck('T18', 'refused: a 1x ceiling other than 60 (and any --ceiling-h without a continuation), a price level outside '
+              '{1.0, 2.0} (1.5, 0, a bool, a string), a 1x spec serving pilot exit views, a 1x continuation of the 2x '
+              'root v2 (named as a price-level refusal), predictions without Q8 / Q9; the 2x non-continuation '
+              '--no-pilot-exit-views refusal unchanged',
+       all(ref[k] for k in ref) and any('price level' in x for x in ref['1x_continuation_of_2x_v2'])
+       and any('Q8' in x and 'Q9' in x for x in ref['1x_predictions_q1_q7_only'])
+       and any('not in' in x for x in ref['price_1.5']), ref)
+    pp = os.path.join(base, 'pred_1x_dummy.json')
+    D.write_once_json(pp, pred1)
+    logs = os.path.join(base, 'logs')
+    os.makedirs(logs)
+    rc = drv(['--phase-freeze', '--root', os.path.join(base, 'cli_15'), '--phase-id', 'x', '--oracle', 'harness',
+              '--predictions', pp, '--phase-flex', '1.5', '--no-pilot-exit-views'], data_root,
+             os.path.join(logs, 'cli_15'))
+    ck('T18', 'CLI --phase-flex 1.5: exit 2, nothing written', rc == 2 and not os.path.exists(os.path.join(base,
+                                                                                                         'cli_15')), rc)
+    return {'build_s': build_s, 'keys_s': keys_s, 'n_keys_1x': len(k1), 'freeze_collision_scan': cs,
+            'disk_scan_files': len(disk), 'refusals': ref, 'diff_vs_2x': diff, 'checklist_added': added,
+            'harness_freeze_probe': probe}
+
+
+def t19(lat, data_root, out_dir, cf):
+    base = os.path.join(out_dir, 't19')
+    os.makedirs(base)
+    tc = copy.deepcopy(cf['exit_move'])
+    tc['ceiling_h'] = 1000.0   # synthetic walls: the flow, not the ceiling, is under test here
+    root, logs, rc0 = freeze(base, 'syn1x', data_root, tc, extra=FLAG_1X)
+    spec = D.load_phase_spec(root)[2] if rc0 == 0 else {}
+    rc, codes = run_phase(root, data_root, os.path.join(base, 'lock'), logs)
+    f = final(root)
+    ref, st = in_process(root, lat)
+    lrs = launch_records(root)
+    x0, unit, staged = lat.x0(), D.named_start(lat, 'reference_unit'), staged_z(lat)
+    rep = f['results']['report'] if f['results'] else {}
+    reqd = {(tuple(e['z']), e['depth']) for e in st['evaluated']}
+    rows = (rep.get('marginal_value_table') or {}).get('rows') or []
+    ck('T19', '1x synthetic phase: freeze 0 (arm ev_1x, nothing precached, no exit view, mode stop), codes 4...4, 0; '
+              'final state == results state == in process',
+       rc0 == 0 and spec.get('arm') == 'ev_1x' and spec['oracle']['precached'] == []
+       and spec['phase']['pilot_exit_views'] is False and spec['policy']['exit_view_check'] == 'stop'
+       and rc == 0 and set(codes[:-1]) == {4} and f['state'] == ref == f['results_state'],
+       {'rc0': rc0, 'rc': rc, 'codes_tail': codes[-3:]})
+    a1, a2 = lrs[0]['action'], lrs[1]['action']
+    ck('T19', 'launch 1 = x0\'s exit run alone (purpose x0_exit); launch 2 = the first screen block of 5',
+       a1['purpose'] == 'x0_exit' and a1['depth'] == 'exit' and a1['zs'] == [list(x0)] and a2['purpose'] == 'screen'
+       and len(a2['zs']) == 5 and a2['depth'] == 'exit', [a1, a2])
+    ck('T19', 'x0 run at exit and settled, the unit and the staged plan settled (the unit\'s screen row an exit run); '
+              'no record served from a cache or precached; x0\'s exit check from its own run',
+       {(tuple(x0), 'exit'), (tuple(x0), 'settled'), (tuple(unit), 'exit'), (tuple(unit), 'settled'),
+        (tuple(staged), 'settled')} <= reqd and all(r.get('served_as') is None for r in rows)
+       and (rep.get('table') or rep.get('marginal_value_table') or {}).get('x0', {}).get('served_as') is None
+       and all(m.get('served_as') is None for m in (rep.get('pool') or {}).get('members') or []),
+       {'pool': (rep.get('pool') or {}).get('members'), 'n_rows': len(rows)})
+    # stub children (the harness evaluate path, harness stub mode; the test harness config is at 1.0)
+    tcs = copy.deepcopy(cf['exit_move'])
+    tcs['k_ev'] = 400
+    tcs['harness'] = stub_harness_config()
+    tcs['ceiling_h'] = 1000.0
+    sroot, slogs, src0 = freeze(base, 'stub1x', data_root, tcs, oracle='stub_children', extra=FLAG_1X)
+    src, scodes = run_phase(sroot, data_root, os.path.join(base, 'slock'), slogs,
+                            env_extra={D.STUB_DELAY_ENV: '0.1:0.3:t19'})
+    sf = final(sroot)
+    sref, _sst = in_process(sroot, lat)
+    sspec = D.load_phase_spec(sroot)[2] if src0 == 0 else {}
+    ck('T19', '1x stub-children phase: freeze 0 (collision scan clean, no cache source), exit 0, state byte-equal to '
+              'the in-process phase', src0 == 0 and src == 0 and sf['state'] == sref and sspec.get('cache_sources') == []
+       and not sspec['collision_scan']['collisions'], {'rc0': src0, 'rc': src, 'codes_tail': scodes[-3:]})
+    # the test-only 1x ceiling default
+    r60, _l60, rc60 = freeze(base, 'ceiling_default', data_root, cf['exit_move'], extra=FLAG_1X)
+    c60 = D.load_phase_spec(r60)[2]['phase']['ceiling']['ceiling_h'] if rc60 == 0 else None
+    ck('T19', 'a 1x spec without a declared ceiling gets 60 h (test-only default = the real 1x ceiling)', c60 == 60.0,
+       c60)
+    real_cmds = [D.phase_single_launch_command('/repo', PHASE1X_ROOT_REL),
+                 D.phase_author_command('/repo', PHASE1X_ROOT_REL), D.phase_check_command('/repo', PHASE1X_ROOT_REL)]
+    ck('T19', 'no author command line (single, loop, check) for the real 1x root contains the harness hazard string',
+       all(HAZARD not in c for c in real_cmds), real_cmds)
+    return {'root': root, 'n_launches': len(lrs), 'stub_launches': len(launch_records(sroot)),
+            'evaluations': rep.get('evaluations_by_stage_depth'), 'real_commands': real_cmds}
+
+
+# ======================================================================================================================
 #  main
 # ======================================================================================================================
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--out', required=True)
     ap.add_argument('--data-root', default=CODE_ROOT)
-    ap.add_argument('--tests', default='1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16')
+    ap.add_argument('--tests', default='1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19')
     args = ap.parse_args()
     data_root = os.path.abspath(args.data_root)
     out_dir = args.out if os.path.isabs(args.out) else os.path.join(data_root, args.out)
@@ -1250,6 +1614,12 @@ def main():
         res['T15'] = t15(lat, data_root, out_dir, cf, res['T2']['root'])
     if '16' in tests:
         res['T16'] = t16(lat, data_root, out_dir, cf)
+    if '17' in tests:
+        res['T17'] = t17(lat, data_root, out_dir, cf)
+    if '18' in tests:
+        res['T18'] = t18(lat, data_root, out_dir)
+    if '19' in tests:
+        res['T19'] = t19(lat, data_root, out_dir, cf)
     gf = GUARD.verify(0)
     ck('guards', 'SolveProfileGuard(permitted=()) verify(0) == []', not gf, gf)
     ck('guards', 'pickle load/loads 0', PICKLE_COUNTS == {'load': 0, 'loads': 0}, PICKLE_COUNTS)
