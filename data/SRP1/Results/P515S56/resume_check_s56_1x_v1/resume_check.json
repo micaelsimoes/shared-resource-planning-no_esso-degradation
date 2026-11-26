@@ -1,0 +1,1238 @@
+{
+ "all_checks_ok": true,
+ "checks": [
+  {
+   "check": "the spec file name carries its sha256 prefix; schema p515_s56_phase_spec_v2; oracle harness; not test-only",
+   "detail": "phase_spec_feb487b7.json",
+   "ok": true,
+   "test": "A"
+  },
+  {
+   "check": "arm ev_1x; price level 1.0 at both harness depths; phase.price_level 1.0 with D1 and D2; the 1x authority",
+   "detail": {
+    "arm": "ev_1x",
+    "flex": 1.0
+   },
+   "ok": true,
+   "test": "A"
+  },
+  {
+   "check": "ceiling 60 h, carried 0, not raised; R 10,000; e_EV 17,494 (rounded); K_EV 300; caps 300 / 300; block 5; cap 80; concurrency 5; memory 3.29 GiB per slot",
+   "detail": {
+    "ceiling": 60.0,
+    "e_ev": 17494.04935669899
+   },
+   "ok": true,
+   "test": "A"
+  },
+  {
+   "check": "no cache source, no pool cache member, no pilot exit view, exit-view check stop (Q7 automatic)",
+   "detail": {
+    "mode": "stop"
+   },
+   "ok": true,
+   "test": "A"
+  },
+  {
+   "check": "predictions Q1-Q9 recorded (statement, evaluated_as, on_failure), with the source file sha256",
+   "detail": [
+    "Q1",
+    "Q2",
+    "Q3",
+    "Q4",
+    "Q5",
+    "Q6",
+    "Q7",
+    "Q8",
+    "Q9"
+   ],
+   "ok": true,
+   "test": "A"
+  },
+  {
+   "check": "capture checklist all true, the 1x items present; collision scan 0 collisions; cache-root key audit ok; domain keys distinct",
+   "detail": {
+    "n_checklist": 17,
+    "scan": {
+     "collisions": [],
+     "n_excluded_cache_roots": 0,
+     "n_excluded_own_root": 0,
+     "n_files_scanned": 361,
+     "n_keys": 74084,
+     "scope": "git ls-files data/SRP1/Results: campaign_spec_* / search_spec_* / phase_spec_* / launches/launch_*.json"
+    }
+   },
+   "ok": true,
+   "test": "A"
+  },
+  {
+   "check": "no code drift against the spec (the files a --phase-run checks)",
+   "detail": [],
+   "ok": true,
+   "test": "A"
+  },
+  {
+   "check": "no predecessor (un-launched or continuation)",
+   "detail": {
+    "continuation": [],
+    "rule": "Planner decision P2 (spec v2)",
+    "unlaunched": []
+   },
+   "ok": true,
+   "test": "A"
+  },
+  {
+   "check": "the root holds only the spec and its freeze logs (no launches/, state view, results, launch logs)",
+   "detail": [
+    "freeze_stderr.log",
+    "freeze_stdout.log",
+    "phase_spec_feb487b7.json"
+   ],
+   "ok": true,
+   "test": "B"
+  },
+  {
+   "check": "no launch (complete or incomplete)",
+   "detail": [
+    [],
+    []
+   ],
+   "ok": true,
+   "test": "B"
+  },
+  {
+   "check": "the driver's cache is empty (D2: nothing carries over; no exit view served)",
+   "detail": [],
+   "ok": true,
+   "test": "C"
+  },
+  {
+   "check": "the replay of the empty chain gives the initial phase state",
+   "detail": null,
+   "ok": true,
+   "test": "C"
+  },
+  {
+   "check": "the first action = x0's exit run alone (stage screen, purpose x0_exit, depth exit)",
+   "detail": {
+    "action_index": 0,
+    "depth": "exit",
+    "kind": "evaluate",
+    "purpose": "x0_exit",
+    "stage": "screen",
+    "sub_action": null,
+    "zs": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ]
+   },
+   "ok": true,
+   "test": "C"
+  },
+  {
+   "check": "the ceiling check before the first block passes (0 h + projected exit block <= 60 h)",
+   "detail": {
+    "carried_h": 0.0,
+    "ceiling_h": 60.0,
+    "cumulative_h": 0.0,
+    "cumulative_plus_projected_h": 1.292401447922688,
+    "frozen_projection_h": 1.292401447922688,
+    "max_measured_same_depth_h": null,
+    "next_block_depth": "exit",
+    "projected_next_block_h": 1.292401447922688,
+    "rule": "before each block: carried hours (a continuation's predecessors' measured hours, frozen; 0 otherwise) + cumulative measured hours (completed launch walls + interrupted launch walls) + projected wall of the next block (max(frozen projection at its depth, largest measured wall of a completed launch at that depth)) <= ceiling_h; otherwise exit 6 with an hours summary",
+    "stop": false
+   },
+   "ok": true,
+   "test": "C"
+  },
+  {
+   "check": "memory for a full block: available >= 5 x 3.29 GiB (read now; the author runs with the Claude app closed)",
+   "detail": {
+    "available_gib": 19.8201904296875,
+    "concurrency": 5,
+    "hw_memsize_gib": 32.0,
+    "page_size": 16384,
+    "pages": {
+     "Anonymous pages": 585923,
+     "Pages occupied by compressor": 69198,
+     "Pages wired down": 143095
+    },
+    "pass": true,
+    "per_slot_gib": 3.29,
+    "required_gib": 16.45,
+    "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x the declared per-slot GiB (the rule of p515_s55_e1_launcher.memory_preflight, ~958-979, with the per-slot figure declared in the search / pilot spec instead of the S47 constant)",
+    "utc": "2026-11-26T10:52:50.615195+00:00"
+   },
+   "ok": true,
+   "test": "C"
+  },
+  {
+   "check": "disk: free space >= the most the 60 h ceiling admits (blocks at the frozen projections x 5 x the largest 2x eval dir at that depth, worse depth)",
+   "detail": {
+    "by_depth_gib": {
+     "exit": 52.674038456752896,
+     "settled": 45.440824925899506
+    },
+    "free_gib": 100.9818115234375,
+    "required_gib": 52.674038456752896
+   },
+   "ok": true,
+   "test": "C"
+  },
+  {
+   "check": "synthetic order: x0 exit first, alone; then the 18 screen plans in blocks of <= 5 at exit (spec order), the unit's screen row among them",
+   "detail": [
+    {
+     "depth": "exit",
+     "labels": [
+      "x0"
+     ],
+     "purpose": "x0_exit",
+     "stage": "screen"
+    },
+    {
+     "depth": "exit",
+     "labels": [
+      "n5_y2025_p0.25_e1",
+      "n5_y2025_p0.25_e0.5",
+      "n5_y2030_p0.25_e1",
+      "n5_y2030_p0.25_e0.5",
+      "n5_y2035_p0.25_e1"
+     ],
+     "purpose": "screen",
+     "stage": "screen"
+    },
+    {
+     "depth": "exit",
+     "labels": [
+      "n5_y2035_p0.25_e0.5",
+      "n7_y2025_p0.25_e1",
+      "n7_y2025_p0.25_e0.5",
+      "n7_y2030_p0.25_e1",
+      "n7_y2030_p0.25_e0.5"
+     ],
+     "purpose": "screen",
+     "stage": "screen"
+    },
+    {
+     "depth": "exit",
+     "labels": [
+      "n7_y2035_p0.25_e1",
+      "n7_y2035_p0.25_e0.5",
+      "n9_y2025_p0.25_e1",
+      "n9_y2025_p0.25_e0.5",
+      "n9_y2030_p0.25_e1"
+     ],
+     "purpose": "screen",
+     "stage": "screen"
+    },
+    {
+     "depth": "exit",
+     "labels": [
+      "n9_y2030_p0.25_e0.5",
+      "n9_y2035_p0.25_e1",
+      "n9_y2035_p0.25_e0.5"
+     ],
+     "purpose": "screen",
+     "stage": "screen"
+    },
+    {
+     "depth": "exit",
+     "labels": [
+      "n5_y2030_p0.5_e2",
+      "n5_y2030_p1_e4",
+      "n7_y2025_p0.5_e2"
+     ],
+     "purpose": "ladder",
+     "stage": "ladder"
+    }
+   ],
+   "ok": true,
+   "test": "D"
+  },
+  {
+   "check": "synthetic order: x0 settled in the candidate confirmation; x0, the unit and the staged plan each run at settled depth by the phase (the unit in the confirmation when it is a candidate, else in the pool); every action <= 5 plans at one depth; no (plan, depth) requested twice",
+   "detail": {
+    "confirmation": [
+     {
+      "depth": "settled",
+      "labels": [
+       "x0",
+       "n5_y2030_p0.25_e1",
+       "n7_y2025_p0.25_e1"
+      ],
+      "purpose": "candidate_confirmation",
+      "stage": "candidate_confirmation"
+     }
+    ],
+    "pool_settled": [
+     "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5"
+    ],
+    "stages": [
+     "screen",
+     "ladder",
+     "candidate_confirmation",
+     "candidate_polls",
+     "pool",
+     "search"
+    ]
+   },
+   "ok": true,
+   "test": "D"
+  },
+  {
+   "check": "the root is unchanged by this check (same file list before and after)",
+   "detail": null,
+   "ok": true,
+   "test": "B"
+  },
+  {
+   "check": "SolveProfileGuard(permitted=()) verify(0) == []",
+   "detail": [],
+   "ok": true,
+   "test": "guards"
+  },
+  {
+   "check": "pickle load/loads 0",
+   "detail": {
+    "load": 0,
+    "loads": 0
+   },
+   "ok": true,
+   "test": "guards"
+  }
+ ],
+ "code_files": {
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+  "p515_s44_campaign_harness.py": "05a9838c46f19837398af31252bd85c465a3794aa03e9cfc1a7a30c08c462b29",
+  "p515_s56_neighbourhood.py": "bd95342d2da2b0ecf2d99b9ef3b8a396e3637e18a050f8ce0117ec2ec9590cc0",
+  "p515_s56_phase1x_resume_check.py": "8acee38655a3710534de1e71c4729b3f588054cc9f9b1dab0ee25710eae91d68",
+  "p515_s56_search_driver.py": "566ab7c9f09b8ab3162158925c08e28d677eb3d73a6704c2d31ee03f1181023e",
+  "p515_s56_search_policy.py": "27d9347839f22367e178d76646a1cfdeb0f14acf51ecd34fe15c4d85860507c1",
+  "p516_lattice.py": "ff5d63ef897ccd04e5bbaa719b352537108180a31b83c1b8574506612af86e88"
+ },
+ "code_files_dirty_vs_head": "",
+ "failed_checks": [],
+ "finished_utc": "2026-11-26T10:52:50.877762+00:00",
+ "git_head": "105ae315deade6de1e010bf69c170c0ff7b2ec3c",
+ "guards": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "pickle": {
+   "load": 0,
+   "loads": 0
+  },
+  "verify_0": []
+ },
+ "instance": {
+  "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+  "lattice": {
+   "block_widths": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "budget_eur": 1000000.0,
+   "cost_energy": {
+    "0": {
+     "2025": 212132.83090957787,
+     "2030": 167114.2595388713,
+     "2035": 152464.16443904658
+    },
+    "1": {
+     "2025": 264982.3635447595,
+     "2030": 222115.86276729195,
+     "2035": 204988.41411333327
+    },
+    "2": {
+     "2025": 338908.86670623126,
+     "2030": 275450.090999905,
+     "2035": 266020.3907359085
+    }
+   },
+   "cost_power": {
+    "0": {
+     "2025": 214171.32910223768,
+     "2030": 168720.15012439265,
+     "2035": 153929.27440020515
+    },
+    "1": {
+     "2025": 267528.7212530719,
+     "2030": 224250.2932694956,
+     "2035": 206958.25777164166
+    },
+    "2": {
+     "2025": 342165.6238488894,
+     "2030": 278097.0387178216,
+     "2035": 268576.723404457
+    }
+   },
+   "discount_factor": 0.02,
+   "max_capacity_mwh": 5.0,
+   "max_energy_to_power_ratio": 4.0,
+   "min_energy_to_power_ratio": 2.0,
+   "nodes": [
+    5,
+    7,
+    9
+   ],
+   "prob_market": [
+    0.35,
+    0.55,
+    0.1
+   ],
+   "sources": {
+    "case": {
+     "path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+     "sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+    },
+    "cost_file": {
+     "cells": "Scenarios!B1 = number of market scenarios, Scenarios!C1.. = omega_m; 'Investment Cost, Power'/'Investment Cost, Energy' row 1 (from column B) = years, row 1 + m = scenario m (EUR/MVA, EUR/MWh, undiscounted)",
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/SharedESS/SRP1_ESS.xlsx",
+     "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+     "sheets": {
+      "energy": "Investment Cost, Energy",
+      "power": "Investment Cost, Power",
+      "scenarios": "Scenarios"
+     }
+    },
+    "note": "omega_m is read from the workbook Scenarios sheet, as production does; it is independent of the case file NumMarketScenarios",
+    "num_market_scenarios_case_file": 3,
+    "params_file": {
+     "fields": "budget, max_capacity, min_energy_to_power_factor, max_energy_to_power_factor, ageing.calendar_life_years",
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/SharedESS/SRP1_ESS_Params.json",
+     "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+    }
+   },
+   "t_cal_years": 15.0,
+   "years": [
+    2025,
+    2030,
+    2035
+   ]
+  }
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "objective_convention": "no objective value of the system is read or written here; part D values are SYNTHETIC",
+ "part": "resume",
+ "phase_root": "data/SRP1/Results/P515S56/phase1x_ev_v1",
+ "phase_spec": "phase_spec_feb487b7.json",
+ "phase_spec_sha256": "feb487b788c9a769113a1e24e32c4db8e8c296375553168aa12bcee118d8c0ac",
+ "python": "3.11.11",
+ "results": {
+  "resume_point": {
+   "ceiling_check": {
+    "carried_h": 0.0,
+    "ceiling_h": 60.0,
+    "cumulative_h": 0.0,
+    "cumulative_plus_projected_h": 1.292401447922688,
+    "frozen_projection_h": 1.292401447922688,
+    "max_measured_same_depth_h": null,
+    "next_block_depth": "exit",
+    "projected_next_block_h": 1.292401447922688,
+    "rule": "before each block: carried hours (a continuation's predecessors' measured hours, frozen; 0 otherwise) + cumulative measured hours (completed launch walls + interrupted launch walls) + projected wall of the next block (max(frozen projection at its depth, largest measured wall of a completed launch at that depth)) <= ceiling_h; otherwise exit 6 with an hours summary",
+    "stop": false
+   },
+   "disk": {
+    "ceiling_bounded_worst_bytes": {
+     "exit": 56558318130,
+     "settled": 48791714240
+    },
+    "eval_dir_sizes_2x": {
+     "exit": {
+      "max_bytes": 245905731,
+      "mean_bytes": 184179082.76190478,
+      "n": 21
+     },
+     "settled": {
+      "max_bytes": 513596992,
+      "mean_bytes": 435956427.9677419,
+      "n": 31
+     }
+    },
+    "free_bytes": 108428394496,
+    "free_gib": 100.9818115234375,
+    "information_only_R5_2x_bytes": 117000000000.0,
+    "information_only_R5_covered": false,
+    "required_bytes": 56558318130,
+    "total_bytes": 994662584320
+   },
+   "first_action": {
+    "action_index": 0,
+    "depth": "exit",
+    "kind": "evaluate",
+    "purpose": "x0_exit",
+    "stage": "screen",
+    "sub_action": null,
+    "zs": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ]
+   },
+   "memory_full_block": {
+    "available_gib": 19.8201904296875,
+    "concurrency": 5,
+    "hw_memsize_gib": 32.0,
+    "page_size": 16384,
+    "pages": {
+     "Anonymous pages": 585923,
+     "Pages occupied by compressor": 69198,
+     "Pages wired down": 143095
+    },
+    "pass": true,
+    "per_slot_gib": 3.29,
+    "required_gib": 16.45,
+    "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x the declared per-slot GiB (the rule of p515_s55_e1_launcher.memory_preflight, ~958-979, with the per-slot figure declared in the search / pilot spec instead of the S47 constant)",
+    "utc": "2026-11-26T10:52:50.615195+00:00"
+   },
+   "state_after_first_step": {
+    "cand_pos": 0,
+    "candidate_selection": null,
+    "candidates": null,
+    "config": {
+     "R": 10000.0,
+     "arm": "ev_1x",
+     "block": 5,
+     "cap": 80,
+     "class_rank": [
+      "resize",
+      "shift",
+      "redistribute",
+      "activate",
+      "remove"
+     ],
+     "domain_size": 37042,
+     "e_ev": 17494.04935669899,
+     "exit_view_check": "stop",
+     "k_ev": 300,
+     "ladder_n_node_years": 2,
+     "ladder_zp": [
+      2,
+      4
+     ],
+     "n_candidates": 2,
+     "n_max_sub": 37042,
+     "phase_id": "s56phase1x_ev_v1",
+     "pool_cache_members": [],
+     "pool_fixed": [
+      {
+       "name": "x0",
+       "z": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "name": "reference_unit",
+       "z": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "name": "pilot_staged",
+       "z": [
+        0,
+        0,
+        2,
+        2,
+        0,
+        0,
+        1,
+        2,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1
+       ]
+      }
+     ],
+     "screen": [
+      [
+       1,
+       2,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       2,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       1,
+       2,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       2,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       2,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       2,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       2,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       2,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       1,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       2
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       1
+      ]
+     ],
+     "x0": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    "efficiency": null,
+    "evaluated": [],
+    "ladder": null,
+    "log": [],
+    "n_actions": 1,
+    "pending": {
+     "action_index": 0,
+     "depth": "exit",
+     "kind": "evaluate",
+     "purpose": "x0_exit",
+     "stage": "screen",
+     "sub_action": null,
+     "zs": [
+      [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     ]
+    },
+    "pool": null,
+    "schema": "p515_s56_phase_state_v2",
+    "search": null,
+    "stage": "screen",
+    "sub": null,
+    "table": null,
+    "terminated": false,
+    "termination": null,
+    "x0_exit_check": null
+   },
+   "x0_exit_entry_options": {
+    "flex_price_multiplier": 1.0,
+    "s56_cohort_formulation": "independent_units_all_node_years",
+    "s56_esso_slack_penalty": 10000.0,
+    "s56_ev_profiles": {
+     "ev_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+     "profiles_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+     "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729"
+    },
+    "s56_staged_investment": {
+     "5": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     },
+     "7": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     },
+     "9": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2030": [
+       0.0,
+       0.0
+      ],
+      "2035": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "s56_terminal_value_in_objective": true
+   },
+   "x0_exit_eval_key": "9a4396f604a8a3af3036546b398d187eb87ae7e2b788b9d3b9ed36f7fe33910c",
+   "x0_exit_label": "x0__exit__ev_1x"
+  },
+  "synthetic_order": {
+   "actions_head": [
+    {
+     "depth": "exit",
+     "labels": [
+      "x0"
+     ],
+     "purpose": "x0_exit",
+     "stage": "screen"
+    },
+    {
+     "depth": "exit",
+     "labels": [
+      "n5_y2025_p0.25_e1",
+      "n5_y2025_p0.25_e0.5",
+      "n5_y2030_p0.25_e1",
+      "n5_y2030_p0.25_e0.5",
+      "n5_y2035_p0.25_e1"
+     ],
+     "purpose": "screen",
+     "stage": "screen"
+    },
+    {
+     "depth": "exit",
+     "labels": [
+      "n5_y2035_p0.25_e0.5",
+      "n7_y2025_p0.25_e1",
+      "n7_y2025_p0.25_e0.5",
+      "n7_y2030_p0.25_e1",
+      "n7_y2030_p0.25_e0.5"
+     ],
+     "purpose": "screen",
+     "stage": "screen"
+    },
+    {
+     "depth": "exit",
+     "labels": [
+      "n7_y2035_p0.25_e1",
+      "n7_y2035_p0.25_e0.5",
+      "n9_y2025_p0.25_e1",
+      "n9_y2025_p0.25_e0.5",
+      "n9_y2030_p0.25_e1"
+     ],
+     "purpose": "screen",
+     "stage": "screen"
+    },
+    {
+     "depth": "exit",
+     "labels": [
+      "n9_y2030_p0.25_e0.5",
+      "n9_y2035_p0.25_e1",
+      "n9_y2035_p0.25_e0.5"
+     ],
+     "purpose": "screen",
+     "stage": "screen"
+    },
+    {
+     "depth": "exit",
+     "labels": [
+      "n5_y2030_p0.5_e2",
+      "n5_y2030_p1_e4",
+      "n7_y2025_p0.5_e2"
+     ],
+     "purpose": "ladder",
+     "stage": "ladder"
+    },
+    {
+     "depth": "settled",
+     "labels": [
+      "x0",
+      "n5_y2030_p0.25_e1",
+      "n7_y2025_p0.25_e1"
+     ],
+     "purpose": "candidate_confirmation",
+     "stage": "candidate_confirmation"
+    },
+    {
+     "depth": "exit",
+     "labels": [
+      "n5_y2030_p0.5_e1",
+      "n5_y2030_p0.5_e1.5",
+      "n5_y2025_p0.25_e0.5__n5_y2030_p0.25_e1",
+      "n5_y2025_p0.25_e1__n5_y2030_p0.25_e1",
+      "n5_y2030_p0.25_e1__n5_y2035_p0.25_e0.5"
+     ],
+     "purpose": "candidate_poll",
+     "stage": "candidate_polls"
+    }
+   ],
+   "efficiency_branch": "exit_then_confirm",
+   "n_actions": 33,
+   "note": "SYNTHETIC values (SyntheticLandscape seed resume-1x, target the staged plan): the ORDER of the requests on the frozen configuration, not evaluations of the system",
+   "pool_settled_requests": [
+    "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5"
+   ],
+   "stages_in_order": [
+    "screen",
+    "ladder",
+    "candidate_confirmation",
+    "candidate_polls",
+    "pool",
+    "search"
+   ],
+   "termination": {
+    "detail": {
+     "search": {
+      "budget_used": 53,
+      "detail": null,
+      "reason": "complete_poll_no_accepted_candidate"
+     }
+    },
+    "reason": "phase_complete",
+    "stage": "search"
+   }
+  }
+ },
+ "schema": "p515_s56_phase1x_resume_check_v1",
+ "script": "p515_s56_phase1x_resume_check.py",
+ "solve_claim": "ZERO SOLVES, guard-verified (SolveProfileGuard(permitted=()) installed before any repository import, verify(0)); pickle blocked (0); the phase root read only",
+ "started_utc": "2026-11-26T10:52:50.492219+00:00",
+ "wall_s": 0.3854038715362549
+}

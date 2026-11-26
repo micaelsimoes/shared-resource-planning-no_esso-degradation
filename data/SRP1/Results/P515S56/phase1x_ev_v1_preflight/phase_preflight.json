@@ -1,0 +1,102 @@
+{
+ "cache_records": [],
+ "ceiling_check": {
+  "carried_h": 0.0,
+  "ceiling_h": 60.0,
+  "cumulative_h": 0.0,
+  "cumulative_plus_projected_h": 1.292401447922688,
+  "frozen_projection_h": 1.292401447922688,
+  "max_measured_same_depth_h": null,
+  "next_block_depth": "exit",
+  "projected_next_block_h": 1.292401447922688,
+  "rule": "before each block: carried hours (a continuation's predecessors' measured hours, frozen; 0 otherwise) + cumulative measured hours (completed launch walls + interrupted launch walls) + projected wall of the next block (max(frozen projection at its depth, largest measured wall of a completed launch at that depth)) <= ceiling_h; otherwise exit 6 with an hours summary",
+  "stop": false
+ },
+ "code_sha256": {
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "p515_s44_campaign_harness.py": "05a9838c46f19837398af31252bd85c465a3794aa03e9cfc1a7a30c08c462b29",
+  "p515_s56_neighbourhood.py": "bd95342d2da2b0ecf2d99b9ef3b8a396e3637e18a050f8ce0117ec2ec9590cc0",
+  "p515_s56_search_driver.py": "566ab7c9f09b8ab3162158925c08e28d677eb3d73a6704c2d31ee03f1181023e",
+  "p515_s56_search_policy.py": "27d9347839f22367e178d76646a1cfdeb0f14acf51ecd34fe15c4d85860507c1",
+  "p516_lattice.py": "ff5d63ef897ccd04e5bbaa719b352537108180a31b83c1b8574506612af86e88"
+ },
+ "git_head": "105ae315deade6de1e010bf69c170c0ff7b2ec3c",
+ "hours": {
+  "completed_launches_h": 0.0,
+  "cumulative_h": 0.0,
+  "interrupted": [],
+  "interrupted_launches_h": 0,
+  "per_launch": []
+ },
+ "launch_dir_created": false,
+ "launch_dir_would_be": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_001",
+ "launched": false,
+ "lock_acquired": {
+  "campaign_id": "s56phase1x_ev_v1_l001",
+  "campaign_spec_sha256": null,
+  "pid": 49594,
+  "search_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase1x_ev_v1",
+  "started_utc": "2026-11-26T10:52:38.017207+00:00"
+ },
+ "next_action": {
+  "action_index": 0,
+  "depth": "exit",
+  "kind": "evaluate",
+  "purpose": "x0_exit",
+  "stage": "screen",
+  "sub_action": null,
+  "zs": [
+   [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  ]
+ },
+ "next_launch_index": 1,
+ "pass": true,
+ "phase_root": "data/SRP1/Results/P515S56/phase1x_ev_v1",
+ "phase_spec_sha256": "feb487b788c9a769113a1e24e32c4db8e8c296375553168aa12bcee118d8c0ac",
+ "previous_launch_manifest_sha256": null,
+ "real_launch_preflight": {
+  "harness_preconditions": [],
+  "memory": {
+   "available_gib": 19.806381225585938,
+   "concurrency": 1,
+   "hw_memsize_gib": 32.0,
+   "page_size": 16384,
+   "pages": {
+    "Anonymous pages": 582533,
+    "Pages occupied by compressor": 69198,
+    "Pages wired down": 147390
+   },
+   "pass": true,
+   "per_slot_gib": 3.29,
+   "required_gib": 3.29,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x the declared per-slot GiB (the rule of p515_s55_e1_launcher.memory_preflight, ~958-979, with the per-slot figure declared in the search / pilot spec instead of the S47 constant)",
+   "utc": "2026-11-26T10:52:38.158636+00:00"
+  },
+  "note": "the campaign lock is held by this driver (O_EXCL) when this runs; the lock-file check of check_campaign_preconditions is pointed at an absent path for that reason",
+  "refusals": [],
+  "utc": "2026-11-26T10:52:38.158677+00:00"
+ },
+ "schema": "p515_s56_phase_preflight_only_v1",
+ "solves": 0,
+ "stage": "screen",
+ "utc": "2026-11-26T10:52:38.017999+00:00"
+}
