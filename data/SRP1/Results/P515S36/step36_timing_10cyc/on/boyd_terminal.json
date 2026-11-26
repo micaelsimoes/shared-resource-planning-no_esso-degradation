@@ -1,0 +1,916 @@
+{
+ "stage": "P5.15 Addendum 16 item 1 (s35ref, run 1) -- reference equilibrium at cap 500, rho_ess=0.1125 -- terminal report",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 16 item 1",
+  "data/SRP1/Results/P515S35/frozen_s35_reference_spec_v5_995548ab.json"
+ ],
+ "spec_file": "data/SRP1/Results/P515S35/frozen_s35_reference_spec_v5_995548ab.json",
+ "spec_file_sha256": "995548ababa1b428e9bc4354a078ffd8322cc54d00f04b9ef7a694e43311c7ba",
+ "predecessor_spec_file": "data/SRP1/Results/P515S34/frozen_s34_spec_v4_966940a7.json",
+ "predecessor_spec_sha256": "966940a789db3093a57d5fdc23be8ccb172b762bf02d0cd09eeaaf0f52f544e9",
+ "timestamp_utc": "2026-09-17T23:49:22.567709+00:00",
+ "label": "on",
+ "objective_convention": "gross_operational_cost (matched-cycle and terminal comparisons below use gross, NOT net_operational_recourse -- see CLAUDE.md \"Reporting conventions\")",
+ "cycles": 10,
+ "stopped_by": "cap",
+ "converged_at_cycle": null,
+ "consecutive_converged_at_stop": 0,
+ "consecutive_converged_run_began_at_cycle": null,
+ "binding_test_per_channel": {
+  "v": {
+   "r": 0.005419705394306394,
+   "s": 0.0015676896551481325,
+   "eps_pri": 0.0033275110106052966,
+   "eps_dual": 0.00029404962611243827,
+   "primal_ratio": 1.628756562197074,
+   "dual_ratio": 5.331377821744557,
+   "dual_ratio_balance": 3.769853410823141,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  },
+  "pf": {
+   "r": 0.1742625781827058,
+   "s": 0.07365019961262924,
+   "eps_pri": 0.0013222907517884165,
+   "eps_dual": 0.00045106908451519667,
+   "primal_ratio": 131.78839672516295,
+   "dual_ratio": 163.27920077206696,
+   "dual_ratio_balance": 115.45583009264831,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  },
+  "ess": {
+   "r": 0.0013334265352170597,
+   "s": 0.0010480411485575844,
+   "eps_pri": 0.0012992209576285188,
+   "eps_dual": 0.0007201398622075933,
+   "primal_ratio": 1.0263277600224188,
+   "dual_ratio": 1.4553300040145087,
+   "dual_ratio_balance": 1.2409418989860954,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  }
+ },
+ "rho_gamma_freeze_trajectory_per_channel": {
+  "v": [
+   {
+    "cycle": 1,
+    "rho_before": 0.0076999999999999985,
+    "rho_after": 0.011549999999999998,
+    "action": "increased",
+    "gamma_before": 0.007699999999999999,
+    "gamma_after": 0.011550000000000003,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 2,
+    "rho_before": 0.011549999999999998,
+    "rho_after": 0.011549999999999998,
+    "action": "held",
+    "gamma_before": 0.011550000000000003,
+    "gamma_after": 0.011550000000000003,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 1,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 3,
+    "rho_before": 0.011549999999999998,
+    "rho_after": 0.011549999999999998,
+    "action": "held",
+    "gamma_before": 0.011550000000000003,
+    "gamma_after": 0.011550000000000003,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 2,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 4,
+    "rho_before": 0.011549999999999998,
+    "rho_after": 0.011549999999999998,
+    "action": "held",
+    "gamma_before": 0.011550000000000003,
+    "gamma_after": 0.011550000000000003,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 3,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 5,
+    "rho_before": 0.011549999999999998,
+    "rho_after": 0.011549999999999998,
+    "action": "held",
+    "gamma_before": 0.011550000000000003,
+    "gamma_after": 0.011550000000000003,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 4,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 6,
+    "rho_before": 0.011549999999999998,
+    "rho_after": 0.011549999999999998,
+    "action": "held",
+    "gamma_before": 0.011550000000000003,
+    "gamma_after": 0.011550000000000003,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 5,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 7,
+    "rho_before": 0.011549999999999998,
+    "rho_after": 0.011549999999999998,
+    "action": "held",
+    "gamma_before": 0.011550000000000003,
+    "gamma_after": 0.011550000000000003,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 6,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 8,
+    "rho_before": 0.011549999999999998,
+    "rho_after": 0.011549999999999998,
+    "action": "held",
+    "gamma_before": 0.011550000000000003,
+    "gamma_after": 0.011550000000000003,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 7,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 9,
+    "rho_before": 0.011549999999999998,
+    "rho_after": 0.011549999999999998,
+    "action": "held",
+    "gamma_before": 0.011550000000000003,
+    "gamma_after": 0.011550000000000003,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 8,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 10,
+    "rho_before": 0.011549999999999998,
+    "rho_after": 0.011549999999999998,
+    "action": "held",
+    "gamma_before": 0.011550000000000003,
+    "gamma_after": 0.011550000000000003,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 9,
+    "rho_at_clamp": false
+   }
+  ],
+  "pf": [
+   {
+    "cycle": 1,
+    "rho_before": 0.1980000000000002,
+    "rho_after": 0.1980000000000002,
+    "action": "held",
+    "gamma_before": 0.19799999999999998,
+    "gamma_after": 0.19799999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 1,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 2,
+    "rho_before": 0.1980000000000002,
+    "rho_after": 0.1980000000000002,
+    "action": "held",
+    "gamma_before": 0.19799999999999998,
+    "gamma_after": 0.19799999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 2,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 3,
+    "rho_before": 0.1980000000000002,
+    "rho_after": 0.1980000000000002,
+    "action": "held",
+    "gamma_before": 0.19799999999999998,
+    "gamma_after": 0.19799999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 3,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 4,
+    "rho_before": 0.1980000000000002,
+    "rho_after": 0.1980000000000002,
+    "action": "held",
+    "gamma_before": 0.19799999999999998,
+    "gamma_after": 0.19799999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 4,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 5,
+    "rho_before": 0.1980000000000002,
+    "rho_after": 0.1980000000000002,
+    "action": "held",
+    "gamma_before": 0.19799999999999998,
+    "gamma_after": 0.19799999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 5,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 6,
+    "rho_before": 0.1980000000000002,
+    "rho_after": 0.1980000000000002,
+    "action": "held",
+    "gamma_before": 0.19799999999999998,
+    "gamma_after": 0.19799999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 6,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 7,
+    "rho_before": 0.1980000000000002,
+    "rho_after": 0.1980000000000002,
+    "action": "held",
+    "gamma_before": 0.19799999999999998,
+    "gamma_after": 0.19799999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 7,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 8,
+    "rho_before": 0.1980000000000002,
+    "rho_after": 0.1980000000000002,
+    "action": "held",
+    "gamma_before": 0.19799999999999998,
+    "gamma_after": 0.19799999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 8,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 9,
+    "rho_before": 0.1980000000000002,
+    "rho_after": 0.1980000000000002,
+    "action": "held",
+    "gamma_before": 0.19799999999999998,
+    "gamma_after": 0.19799999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 9,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 10,
+    "rho_before": 0.1980000000000002,
+    "rho_after": 0.1980000000000002,
+    "action": "held",
+    "gamma_before": 0.19799999999999998,
+    "gamma_after": 0.19799999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 10,
+    "rho_at_clamp": false
+   }
+  ],
+  "ess": [
+   {
+    "cycle": 1,
+    "rho_before": 0.11249999999999989,
+    "rho_after": 0.16875000000000007,
+    "action": "increased",
+    "gamma_before": 0.11250000000000003,
+    "gamma_after": 0.16874999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 2,
+    "rho_before": 0.16875000000000007,
+    "rho_after": 0.16875000000000007,
+    "action": "held",
+    "gamma_before": 0.16874999999999998,
+    "gamma_after": 0.16874999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 1,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 3,
+    "rho_before": 0.16875000000000007,
+    "rho_after": 0.16875000000000007,
+    "action": "held",
+    "gamma_before": 0.16874999999999998,
+    "gamma_after": 0.16874999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 2,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 4,
+    "rho_before": 0.16875000000000007,
+    "rho_after": 0.16875000000000007,
+    "action": "held",
+    "gamma_before": 0.16874999999999998,
+    "gamma_after": 0.16874999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 3,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 5,
+    "rho_before": 0.16875000000000007,
+    "rho_after": 0.16875000000000007,
+    "action": "held",
+    "gamma_before": 0.16874999999999998,
+    "gamma_after": 0.16874999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 4,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 6,
+    "rho_before": 0.16875000000000007,
+    "rho_after": 0.16875000000000007,
+    "action": "held",
+    "gamma_before": 0.16874999999999998,
+    "gamma_after": 0.16874999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 5,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 7,
+    "rho_before": 0.16875000000000007,
+    "rho_after": 0.16875000000000007,
+    "action": "held",
+    "gamma_before": 0.16874999999999998,
+    "gamma_after": 0.16874999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 6,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 8,
+    "rho_before": 0.16875000000000007,
+    "rho_after": 0.16875000000000007,
+    "action": "held",
+    "gamma_before": 0.16874999999999998,
+    "gamma_after": 0.16874999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 7,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 9,
+    "rho_before": 0.16875000000000007,
+    "rho_after": 0.16875000000000007,
+    "action": "held",
+    "gamma_before": 0.16874999999999998,
+    "gamma_after": 0.16874999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 8,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 10,
+    "rho_before": 0.16875000000000007,
+    "rho_after": 0.16875000000000007,
+    "action": "held",
+    "gamma_before": 0.16874999999999998,
+    "gamma_after": 0.16874999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 9,
+    "rho_at_clamp": false
+   }
+  ]
+ },
+ "sigma_fixed": 93635360.0,
+ "sigma_computed": 93635360.28800085,
+ "al_scale_esso": 227210.9966521344,
+ "shared_ess_reference_rating_mva": 2.5,
+ "initial_rho": {
+  "v": {
+   "case9": 0.0077,
+   "case33_1": 0.0077,
+   "case33_2": 0.0077,
+   "case33_3": 0.0077
+  },
+  "pf": {
+   "case9": 0.198,
+   "case33_1": 0.198,
+   "case33_2": 0.198,
+   "case33_3": 0.198
+  },
+  "ess": {
+   "case9": 0.1125,
+   "case33_1": 0.1125,
+   "case33_2": 0.1125,
+   "case33_3": 0.1125,
+   "esso": 0.1125
+  }
+ },
+ "initial_rho_ess_value_v5": 0.1125,
+ "freeze_after_unchanged_cycles": 10,
+ "freeze_backstop_cycle": 60,
+ "freeze_cycle_per_channel": {
+  "v": null,
+  "pf": null,
+  "ess": null
+ },
+ "rho_at_clamp_per_channel_at_terminal": {
+  "v": false,
+  "pf": false,
+  "ess": false
+ },
+ "rho_at_clamp_any_true_gate_failure_flag": false,
+ "efc_per_day_max_terminal": 1.1915131708076063,
+ "soh_floor_multiplier_and_efc_per_cohort_year_terminal": {
+  "available": true,
+  "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S36/step36_timing_10cyc/on/soh_floor_sidecar_on.jsonl",
+  "cycle": 10,
+  "dual_sign_convention": "model.dual.get(con) as returned by Pyomo (Suffix direction=IMPORT_EXPORT, populated from the IPOPT .sol file) for the row es_soh_per_unit_cumul[y_inv, y] >= soh_min; NO sign flip applied -- the SAME mechanism _duals_for_keys uses elsewhere in this harness",
+  "threshold_efc_binding": 1.4612,
+  "per_node_per_cohort_year": [
+   {
+    "node_id": 5,
+    "y_inv": "0",
+    "y": "0",
+    "constraint_idx": 3,
+    "dual": 2.769238107030383e-10,
+    "es_soh_per_unit_cumul": 0.8282792116308693,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 1.1914999009729583,
+    "efc_margin_to_threshold": 0.26970009902704173,
+    "efc_fraction_of_threshold": 0.815425609754283
+   },
+   {
+    "node_id": 5,
+    "y_inv": "0",
+    "y": "1",
+    "constraint_idx": 6,
+    "dual": 4.869895682085031e-10,
+    "es_soh_per_unit_cumul": 0.6866729795970052,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 1.185727056982567,
+    "efc_margin_to_threshold": 0.27547294301743297,
+    "efc_fraction_of_threshold": 0.8114748542174699
+   },
+   {
+    "node_id": 5,
+    "y_inv": "0",
+    "y": "2",
+    "constraint_idx": 9,
+    "dual": 1.01457291811549e-09,
+    "es_soh_per_unit_cumul": 0.5896005936065303,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.9638804079700133,
+    "efc_margin_to_threshold": 0.49731959202998677,
+    "efc_fraction_of_threshold": 0.659649882268008
+   },
+   {
+    "node_id": 5,
+    "y_inv": "1",
+    "y": "1",
+    "constraint_idx": 12,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 5,
+    "y_inv": "1",
+    "y": "2",
+    "constraint_idx": 15,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 5,
+    "y_inv": "2",
+    "y": "2",
+    "constraint_idx": 18,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "0",
+    "y": "0",
+    "constraint_idx": 3,
+    "dual": 2.7692583196615494e-10,
+    "es_soh_per_unit_cumul": 0.8282774736746389,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 1.1915131708076063,
+    "efc_margin_to_threshold": 0.26968682919239373,
+    "efc_fraction_of_threshold": 0.8154346912179073
+   },
+   {
+    "node_id": 7,
+    "y_inv": "0",
+    "y": "1",
+    "constraint_idx": 6,
+    "dual": 4.869965687912177e-10,
+    "es_soh_per_unit_cumul": 0.6866714261782217,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 1.1857280940361978,
+    "efc_margin_to_threshold": 0.2754719059638022,
+    "efc_fraction_of_threshold": 0.8114755639448383
+   },
+   {
+    "node_id": 7,
+    "y_inv": "0",
+    "y": "2",
+    "constraint_idx": 9,
+    "dual": 1.0145706525303289e-09,
+    "es_soh_per_unit_cumul": 0.5896022528197677,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.9638483045057147,
+    "efc_margin_to_threshold": 0.4973516954942854,
+    "efc_fraction_of_threshold": 0.6596279116518715
+   },
+   {
+    "node_id": 7,
+    "y_inv": "1",
+    "y": "1",
+    "constraint_idx": 12,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "1",
+    "y": "2",
+    "constraint_idx": 15,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "2",
+    "y": "2",
+    "constraint_idx": 18,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "0",
+    "y": "0",
+    "constraint_idx": 3,
+    "dual": 2.769236279951831e-10,
+    "es_soh_per_unit_cumul": 0.8282799295803805,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 1.1914944192600876,
+    "efc_margin_to_threshold": 0.26970558073991246,
+    "efc_fraction_of_threshold": 0.8154218582398628
+   },
+   {
+    "node_id": 9,
+    "y_inv": "0",
+    "y": "1",
+    "constraint_idx": 6,
+    "dual": 4.869937377008738e-10,
+    "es_soh_per_unit_cumul": 0.6866722683138665,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 1.1857390896111881,
+    "efc_margin_to_threshold": 0.27546091038881193,
+    "efc_fraction_of_threshold": 0.8114830889756283
+   },
+   {
+    "node_id": 9,
+    "y_inv": "0",
+    "y": "2",
+    "constraint_idx": 9,
+    "dual": 1.0145673810636803e-09,
+    "es_soh_per_unit_cumul": 0.5896022674051004,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.9638559039683219,
+    "efc_margin_to_threshold": 0.4973440960316782,
+    "efc_fraction_of_threshold": 0.659633112488586
+   },
+   {
+    "node_id": 9,
+    "y_inv": "1",
+    "y": "1",
+    "constraint_idx": 12,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "1",
+    "y": "2",
+    "constraint_idx": 15,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "2",
+    "y": "2",
+    "constraint_idx": 18,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   }
+  ],
+  "per_node_max_efc_per_day": {
+   "5": {
+    "efc_per_day": 1.1914999009729583,
+    "y_inv": "0",
+    "y": "0",
+    "margin_to_threshold": 0.26970009902704173,
+    "fraction_of_threshold": 0.815425609754283
+   },
+   "7": {
+    "efc_per_day": 1.1915131708076063,
+    "y_inv": "0",
+    "y": "0",
+    "margin_to_threshold": 0.26968682919239373,
+    "fraction_of_threshold": 0.8154346912179073
+   },
+   "9": {
+    "efc_per_day": 1.1914944192600876,
+    "y_inv": "0",
+    "y": "0",
+    "margin_to_threshold": 0.26970558073991246,
+    "fraction_of_threshold": 0.8154218582398628
+   }
+  }
+ },
+ "soh_floor_row_counts_by_node": {
+  "5": 6,
+  "7": 6,
+  "9": 6
+ },
+ "system_cost_vs_s31c_s32_s33e2_s34": {
+  "s31c": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S31C_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s34_gross_operational_cost": 904886897.7198681,
+     "s31c_gross_operational_cost": 2359311749.284464,
+     "difference": -1454424851.5645957
+    },
+    {
+     "cycle": 2,
+     "s34_gross_operational_cost": 1122165290.754859,
+     "s31c_gross_operational_cost": 1635793408.6698973,
+     "difference": -513628117.91503835
+    },
+    {
+     "cycle": 3,
+     "s34_gross_operational_cost": 1052362270.4235613,
+     "s31c_gross_operational_cost": 1416323507.6458967,
+     "difference": -363961237.22233534
+    },
+    {
+     "cycle": 5,
+     "s34_gross_operational_cost": 694720304.0580208,
+     "s31c_gross_operational_cost": 1357909196.3566816,
+     "difference": -663188892.2986608
+    },
+    {
+     "cycle": 10,
+     "s34_gross_operational_cost": 675707074.5632892,
+     "s31c_gross_operational_cost": 1191551992.2462602,
+     "difference": -515844917.682971
+    }
+   ],
+   "terminal": {
+    "s34_cycle": 10,
+    "s31c_cycle": 90,
+    "s34_gross_operational_cost": 675707074.5632892,
+    "s31c_gross_operational_cost": 661400927.7360976,
+    "difference": 14306146.827191591,
+    "s34_terminal_step_objective_change_abs": 15710261.458336353,
+    "s31c_terminal_step_objective_change_abs": 129616.68283557892,
+    "error_bar_sum_of_terminal_steps": 15839878.141171932,
+    "determinate_at_gt_error_bar": false
+   }
+  },
+  "s32": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S32_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s34_gross_operational_cost": 904886897.7198681,
+     "s32_gross_operational_cost": 968494925.0938367,
+     "difference": -63608027.3739686
+    },
+    {
+     "cycle": 2,
+     "s34_gross_operational_cost": 1122165290.754859,
+     "s32_gross_operational_cost": 1219820650.0962644,
+     "difference": -97655359.34140539
+    },
+    {
+     "cycle": 3,
+     "s34_gross_operational_cost": 1052362270.4235613,
+     "s32_gross_operational_cost": 1157573767.643047,
+     "difference": -105211497.21948576
+    },
+    {
+     "cycle": 5,
+     "s34_gross_operational_cost": 694720304.0580208,
+     "s32_gross_operational_cost": 799099849.7294499,
+     "difference": -104379545.67142904
+    },
+    {
+     "cycle": 10,
+     "s34_gross_operational_cost": 675707074.5632892,
+     "s32_gross_operational_cost": 651281159.4925663,
+     "difference": 24425915.07072282
+    }
+   ],
+   "terminal": {
+    "s34_cycle": 10,
+    "s32_cycle": 150,
+    "s34_gross_operational_cost": 675707074.5632892,
+    "s32_gross_operational_cost": 654413409.7351172,
+    "difference": 21293664.82817197,
+    "s34_terminal_step_objective_change_abs": 15710261.458336353,
+    "s32_terminal_step_objective_change_abs": 30394.44314610958,
+    "error_bar_sum_of_terminal_steps": 15740655.901482463,
+    "determinate_at_gt_error_bar": true
+   }
+  },
+  "s33e2": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S33_E2_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s34_gross_operational_cost": 904886897.7198681,
+     "s33e2_gross_operational_cost": 968494925.0938367,
+     "difference": -63608027.3739686
+    },
+    {
+     "cycle": 2,
+     "s34_gross_operational_cost": 1122165290.754859,
+     "s33e2_gross_operational_cost": 1219820650.0962644,
+     "difference": -97655359.34140539
+    },
+    {
+     "cycle": 3,
+     "s34_gross_operational_cost": 1052362270.4235613,
+     "s33e2_gross_operational_cost": 1157551155.8654451,
+     "difference": -105188885.4418838
+    },
+    {
+     "cycle": 5,
+     "s34_gross_operational_cost": 694720304.0580208,
+     "s33e2_gross_operational_cost": 754691931.0576913,
+     "difference": -59971626.999670506
+    },
+    {
+     "cycle": 10,
+     "s34_gross_operational_cost": 675707074.5632892,
+     "s33e2_gross_operational_cost": 729117524.632208,
+     "difference": -53410450.068918824
+    }
+   ],
+   "terminal": {
+    "s34_cycle": 10,
+    "s33e2_cycle": 150,
+    "s34_gross_operational_cost": 675707074.5632892,
+    "s33e2_gross_operational_cost": 653826841.6344557,
+    "difference": 21880232.928833485,
+    "s34_terminal_step_objective_change_abs": 15710261.458336353,
+    "s33e2_terminal_step_objective_change_abs": 5179.306692242622,
+    "error_bar_sum_of_terminal_steps": 15715440.765028596,
+    "determinate_at_gt_error_bar": true
+   }
+  },
+  "s34": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S34_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s35ref_gross_operational_cost": 904886897.7198681,
+     "s34_gross_operational_cost": 907716715.668015,
+     "difference": -2829817.9481469393
+    },
+    {
+     "cycle": 2,
+     "s35ref_gross_operational_cost": 1122165290.754859,
+     "s34_gross_operational_cost": 1124883514.3571718,
+     "difference": -2718223.6023128033
+    },
+    {
+     "cycle": 3,
+     "s35ref_gross_operational_cost": 1052362270.4235613,
+     "s34_gross_operational_cost": 1054599784.1834378,
+     "difference": -2237513.7598764896
+    },
+    {
+     "cycle": 5,
+     "s35ref_gross_operational_cost": 694720304.0580208,
+     "s34_gross_operational_cost": 695849750.9617386,
+     "difference": -1129446.9037177563
+    },
+    {
+     "cycle": 10,
+     "s35ref_gross_operational_cost": 675707074.5632892,
+     "s34_gross_operational_cost": 677327878.808085,
+     "difference": -1620804.2447957993
+    }
+   ],
+   "terminal": {
+    "s35ref_cycle": 10,
+    "s34_cycle": 150,
+    "s35ref_gross_operational_cost": 675707074.5632892,
+    "s34_gross_operational_cost": 651180637.2519937,
+    "difference": 24526437.31129551,
+    "s35ref_terminal_step_objective_change_abs": 15710261.458336353,
+    "s34_terminal_step_objective_change_abs": 4682.301938891411,
+    "error_bar_sum_of_terminal_steps": 15714943.760275245,
+    "determinate_at_gt_error_bar": true
+   }
+  }
+ },
+ "network_failures_summary": {
+  "n_blocks": 3,
+  "classes": {
+   "recovered_tier1": 3,
+   "recovered_tier2": 0,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 3
+  },
+  "n_frozen_snapshots": 2,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S36/step36_timing_10cyc/on/network_failures_on.jsonl"
+ },
+ "component_levels_terminal_and_settlement_detail_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S36/step36_timing_10cyc/on/interface_settlement_detail_s31c.json",
+ "interface_voltage_terminal_path": "data/SRP1/Results/P515S36/step36_timing_10cyc/on/interface_voltage_terminal.json",
+ "recourse_jump_sidecar_path": null,
+ "ess_entry_stride_sidecar_path": null,
+ "soh_floor_sidecar_path": null,
+ "note_D_rows_and_cancellation_residual": "D rows are in component_levels_terminal.json (written by write_component_levels_terminal, called first by write_interface_settlement_detail_s31c above); the cancellation residual T_TSO + sum(T_DSO) is \"t_tso_plus_t_dso_terminal\" and per-DSO settlement/flexibility volumes are \"interface_consensus_residual_per_dso\" / \"flexibility_volumes_per_dso\" in interface_settlement_detail_s31c.json."
+}

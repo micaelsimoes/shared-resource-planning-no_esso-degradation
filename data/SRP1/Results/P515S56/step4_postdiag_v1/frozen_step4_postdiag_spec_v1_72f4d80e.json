@@ -1,0 +1,568 @@
+{
+ "authority": "Planner task 2026-11-23 (bounded zero-solve diagnostic task on the committed step 4 main-run evidence; commit 5f1db156, P5_15_S56_STEP4_RESULT_REPORT.md)",
+ "code_lines_sign_conventions": [
+  {
+   "file": "model_construction_helpers.py",
+   "line": 1771,
+   "meaning": "TSO block: accumulates prob x pi x baseMVA x P_T",
+   "snippet": "settlement += probability * c_p[p] * network.baseMVA * model.pc_adn[dn, s_m, s_o, p]",
+   "verbatim": true
+  },
+  {
+   "file": "model_construction_helpers.py",
+   "line": 1772,
+   "meaning": "TSO interface_settlement = -sum omega pi baseMVA P_T",
+   "snippet": "return -settlement",
+   "verbatim": true
+  },
+  {
+   "file": "model_construction_helpers.py",
+   "line": 1779,
+   "meaning": "DSO block: accumulates prob x pi x baseMVA x P_D",
+   "snippet": "settlement += probability * c_p[p] * network.baseMVA * model.pg_adn[s_m, s_o, p]",
+   "verbatim": true
+  },
+  {
+   "file": "model_construction_helpers.py",
+   "line": 1780,
+   "meaning": "DSO interface_settlement = +sum omega pi baseMVA P_D",
+   "snippet": "return settlement",
+   "verbatim": true
+  },
+  {
+   "file": "model_construction_helpers.py",
+   "line": 1847,
+   "meaning": "the settlement is in each local objective (weight 1 in the ADMM path)",
+   "snippet": "obj += model.interface_settlement_weight * model.interface_settlement",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 1390,
+   "meaning": "per-block Q (capture q_blocks): the whole settlement subtracted while the coupling is wired",
+   "snippet": "settlement_part = 'total' if _per_scenario_interface_coupling_wired(models) else 'contracted'",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 4876,
+   "meaning": "Q in full = sum of local costs at each side's own copy, settlement and pin excluded",
+   "snippet": "gross_in_full = gross_including_settlement - settlement_total - voltage_pin_total",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 4802,
+   "meaning": "production pr_price = +sum w omega pi (P_T - P_D)",
+   "snippet": "pr_price += weight * omega * price * d_p",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 5847,
+   "meaning": "TSO ADMM objective scale",
+   "snippet": "effective_scale = objective_scale / block_weight",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 5852,
+   "meaning": "TSO local cost / effective scale",
+   "snippet": "obj = copy(model[year][day].objective.expr) / effective_scale",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 5866,
+   "meaning": "TSO expectation term argument (P_T - P_D)/R",
+   "snippet": "constraint_p_req = (model[year][day].expected_interface_pf_p[dn, p] - model[year][day].p_pf_req[dn, p]) / interface_transf_rating",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 5868,
+   "meaning": "TSO term +mu_T (P_T - P_D)/R",
+   "snippet": "obj += model[year][day].dual_pf_p_req[dn, p] * constraint_p_req",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 6120,
+   "meaning": "DSO ADMM objective scale",
+   "snippet": "effective_scale = objective_scale / block_weight",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 6146,
+   "meaning": "DSO expectation term argument (P_D - P_T)/R",
+   "snippet": "constraint_p_req = (dso_model[year][day].expected_interface_pf_p[p] - dso_model[year][day].p_pf_req[p]) / interface_transf_rating",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 6148,
+   "meaning": "DSO term +mu_D (P_D - P_T)/R",
+   "snippet": "obj += (dso_model[year][day].dual_pf_p_req[p]) * constraint_p_req",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 6824,
+   "meaning": "TSO model Param = stored dual / s_base",
+   "snippet": "model[year][day].dual_pf_p_req[dn, p].set_value(dual_pf['current'][node_id][year][day]['p'][p] / s_base)",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 7153,
+   "meaning": "DSO model Param = stored dual / s_base",
+   "snippet": "model[year][day].dual_pf_p_req[p].set_value(dual_pf['current'][node_id][year][day]['p'][p] / s_base)",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 9248,
+   "meaning": "TSO residual = T - D",
+   "snippet": "error_p_pf_req_tso = interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p]",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 9251,
+   "meaning": "mu_T += rho_T (T - D) s_base_T / R",
+   "snippet": "dual_vars['pf']['tso']['current'][node_id][year][day]['p'][p] += rho_pf_tso * error_p_pf_req_tso / interface_rating * tso_s_base",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 9258,
+   "meaning": "DSO residual = D - T",
+   "snippet": "error_p_pf_req_dso = interface_vars['pf']['dso']['current'][node_id][year][day]['p'][p] - interface_vars['pf']['tso']['current'][node_id][year][day]['p'][p]",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 9261,
+   "meaning": "mu_D += rho_D (D - T) s_base_D / R (its own rho)",
+   "snippet": "dual_vars['pf']['dso']['current'][node_id][year][day]['p'][p] += rho_pf_dso * error_p_pf_req_dso / interface_rating * dso_s_base",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 9250,
+   "meaning": "mu_V,T += rho_v,T (V_T - V_D)",
+   "snippet": "dual_vars['vmag']['tso']['current'][node_id][year][day][p] += rho_v_tso * error_v_req_tso",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 9260,
+   "meaning": "mu_V,D += rho_v,D (V_D - V_T)",
+   "snippet": "dual_vars['vmag']['dso']['current'][node_id][year][day][p] += rho_v_dso * error_v_req_dso",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 4505,
+   "meaning": "TSO deviation term omega mu_s (d_T,s - d_D,s)/R",
+   "snippet": "extra += w * (dual * c + (rho / 2) * c ** 2)",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 4537,
+   "meaning": "DSO deviation term omega mu_s (d_D,s - d_T,s)/R",
+   "snippet": "d_extra += w * (dual * c + (rho / 2) * c ** 2)",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 4607,
+   "meaning": "deviation model Param = stored / base",
+   "snippet": "dual[index].set_value(dual_src[kind][k][p] / base)",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 4690,
+   "meaning": "deviation V: mu_T += rho_v,T (d_T - d_D)",
+   "snippet": "tso_dual[kind][k][p] += rho_v_tso * error_tso",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 4691,
+   "meaning": "deviation V: mu_D += rho_v,D (d_D - d_T)",
+   "snippet": "dso_dual[kind][k][p] += rho_v_dso * error_dso",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 4693,
+   "meaning": "deviation P/Q: mu_T += rho_T (d_T - d_D) s_base / R",
+   "snippet": "tso_dual[kind][k][p] += rho_pf_tso * error_tso / interface_rating * tso_s_base",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 4694,
+   "meaning": "deviation P/Q: mu_D += rho_D (d_D - d_T) s_base / R",
+   "snippet": "dso_dual[kind][k][p] += rho_pf_dso * error_dso / interface_rating * dso_s_base",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 4478,
+   "meaning": "per-scenario TSO delta copy box: lower -rating (pu)",
+   "snippet": "copy_var.setlb(-rating)",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 4479,
+   "meaning": "per-scenario TSO delta copy box: upper +rating (pu)",
+   "snippet": "copy_var.setub(rating)",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 4962,
+   "meaning": "alias delta copy box (P)",
+   "snippet": "tso_model[year][day].interface_delta_p[dn, s_m, s_o, p].setlb(-interface_transf_rating)",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 4964,
+   "meaning": "alias delta copy box (Q)",
+   "snippet": "tso_model[year][day].interface_delta_q[dn, s_m, s_o, p].setlb(-interface_transf_rating)",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 4933,
+   "meaning": "pc fixed at the DSO initial expectation (pc_init); P_T,s = pc_init + delta_s",
+   "snippet": "fix_or_set(tso_model[year][day].pc[adn_load_idx, s_m, s_o, p], interface_pf_p)",
+   "verbatim": true
+  },
+  {
+   "file": "shared_resources_planning.py",
+   "line": 4922,
+   "meaning": "TSO interface-bus voltage slacks fixed at 0 in the ADMM model (the V row is hard there)",
+   "snippet": "tso_model[year][day].slack_v_sqr_down[adn_node_idx, s_m, s_o, p].fix(0.00)",
+   "verbatim": true
+  }
+ ],
+ "constants": {
+  "active_tol_rel": 1e-06,
+  "c": 64,
+  "d2_last_cycles": 10,
+  "holdout_cycles": 3,
+  "min_cycle": 21,
+  "near_active_rel": 0.001,
+  "p7_factor": 5.0,
+  "q3_decay_per_cycle": 0.03,
+  "q3_plateau_total_rel": 0.03,
+  "u": "2^-53",
+  "u_float": 1.1102230246251565e-16,
+  "validation_rel": 1e-12
+ },
+ "definitions": {
+  "D1_fit": "window = tail-depth cycles (E/L rule: every solve record of round k has compl_inf_tol_in_force == 1e-6). PRIMARY: E.settling_bar(series, cycles=window, W=20, h=3): r_fit from OLS of ln|step| on the window minus its last 3 cycles; held-out H = max abs error of its predictions on the last 3; r from all steps; projected limit Q_hat_inf = X(K) + d_K r / (1 - r). Recorded beside: the limit implied by the held-out fit alone, X(k0) + d_k0 r_fit / (1 - r_fit) (k0 the last fitted cycle); and LSQ3: X(k) = L + A r^(k - k_first) by least squares on the window minus its last 3 (r grid 0.001..0.999 step 0.001 + golden refinement, linear L, A), held-out error on the last 3, boundary flag when r hits the grid edge",
+  "D2": "per coordinate: mu~_T = w_T x admm_objective_scale_tso x lambda_T / (tso_base_mva x R_MVA) (P, Q; EUR per MW / MVAr), w_T x scale_T x lambda_T / v_b,T^2 (V; EUR per kV); mu~_D likewise with w_D (capture per_agent DSO weight), admm_objective_scale_dso, dso_base_mva, v_b,D (capture DSO v / interface_voltage_terminal dso_pu). Each mu~ is the EUR coefficient the side's objective places on ITS OWN copy (CODE_LINES 5852/5868, 6125/6148, 4505/4537 with the Param = stored / base). Residual r = x_T - x_D on the channel the dual update uses (expectation: Pbar_T - Pbar_D; deviation: d_T,s - d_D,s). EUR value per coordinate: (mu~_T + mu~_D) x r (deviation: x omega_s). Aggregates per run / cycle / block / channel / kind: max |mu~_T + mu~_D|, omega-RMS (sqrt(sum_s omega_s mean_{dn,t} x^2); expectation: RMS over dn, t), max |mu~_T|, EUR signed sum, EUR absolute sum, count of stored duals with lambda_T == -lambda_D exactly. Plus rho_T == rho_D (pf and v) per block at every captured cycle",
+  "D2_equal_and_opposite": "\"equal and opposite\" := mu~_D = -mu~_T at every coordinate, i.e. the DSO's EUR coefficient on its own copy x_D is minus the TSO's EUR coefficient on its own copy x_T -- what one Lagrangian term lambda (x_T - x_D) would give both sides. From the update lines (9251/9261, 9250/9260, 4690-4694): mu_T += rho_T r s_base_T / R and mu_D += rho_D (-r) s_base_D / R from mu = 0, so mu_T + mu_D = 0 exactly when rho_T = rho_D and s_base_T = s_base_D at every update (and the EUR conversions agree when w_T scale_T = w_D scale_D)",
+  "D3": "terminal state. TSO P/Q: interface_settlement_detail_s31c.json delta_p_mw / delta_q_mvar per (DN, block, period, scenario) (= interface_delta x s_base, the copy each scenario references) against [-R, +R] (R = interface_rating_mva), i.e. P_T,s against anchor_p_mw (= pc_init) +- R; margin = R - |delta|; active iff margin <= 1e-6 x max(1, R); near-active iff margin / R < 1e-3. Cross-check (coupled): anchor + delta_s against the capture terminal Pbar_T + d_T,s. Beside: (i) the same TSO box at every cycle >= 21 from the capture with the terminal anchor (pc is fixed); (ii) DSO reference generator P_D,s, Q_D,s (capture) against step 3 relaxation_limits ref_gen_p_mw / ref_gen_q_mvar (the D-3 model box for DN7 P was +-100.001: 0.001 MW wider); (iii) interface V rows: V-1 per scenario (capture, pu = kV / v_b), V-2 and pinned the expectation (interface_voltage_terminal), against v_min_pu / v_max_pu (TSO) and dn_ref_node_v_pu (DSO); active iff margin <= 1e-6 pu",
+  "D4": "cycles k >= 21 of each coupled run, per block: frozen P7 = sum |e + PR| vs sum |e| (factor = sum|e| / sum|e + PR|, held iff >= 5); POST HOC corrected (a) sum |e - price + dual| = sum |o2|, (b) sum |e - price| = sum |o1|, same factor and threshold. Beside: the same on the tail-depth window. Labelled post hoc; never replaces the frozen outcome",
+  "D5": "every cycle 1..K of every coupled run. T = sum_a w_a s_a (s_a = settlement_total_unweighted), D = sum_a w_a (s_a - c_a) (c_a = settlement_contracted_unweighted), each exactly as fractions.Fraction of the stored doubles; also math.fsum and the evaluator's float sum. Test (i): |pr_price + T| <= c u S_T, S_T = sum_a |w_a s_a| (exact). Beside (ii): |(gross_contracted_excluded - gross) - D| <= c u S_ii, S_ii = sum_a (|q_full_a| + |q_cont_a| + |w_a s_a| + |w_a c_a|). Beside: S_fine = sum_{b,dn,s,t} w omega |pi| (|P_T,s| + |P_D,s|) (prices from interface_settlement_detail, P from the capture) and the recomputed s_a against the stored s_a. Sign of (pr_price + T) per cycle; Spearman rank correlation (average ranks) of (pr_price + T) and |pr_price + T| with |T| and with the PF residual norm sqrt(boyd_pf_r_expectation_part^2 + boyd_pf_r_deviation_part^2)",
+  "dual_parts": "TSO-side dual terms, EUR, as E.priced_residual: fac_pq = w x admm_objective_scale_tso / (tso_base_mva x interface_rating_mva), fac_v = w x admm_objective_scale_tso / v_b^2 (v_b from E.v_base). exp_P = sum_{dn,t} lambda_pf_p_tso x (Pbar_T - Pbar_D) x fac_pq; exp_Q likewise with Q; exp_V = sum dual_expectation_v.tso x (Vbar_T - Vbar_D) x fac_v; dev_X = sum_{dn,s,t} omega_s lambda_dev_x_tso,s x (X_T,s - X_D,s) x fac, X_side,s = Xbar_side + d_side,s (V-2: no V deviation channel, dev_V absent). dual = exp_P + exp_Q + exp_V + dev_P + dev_Q + dev_V",
+  "o_series": "o1 = e - price; o2 = e - price + dual; o3 = e - price - dual = e - PR (PR = price + dual)",
+  "objective_convention": "EUR of total discounted cost. Coupled arms: Q_b(k) = capture q_blocks per_year_day[b] settlement_excluded_in_full (production primary; pin excluded, salvage separate). e_b(k) = Q_b(k) - w_b C_central (step 4 spec ii_central_and_allowance.blocks[b].w_b_C_central_eur; 2025|Summer is MERGED-ONLY, reported not calibrated)",
+  "price_b": "price_b(k) = -sum_{agents a in block b} w_a x settlement_total_unweighted_a (capture per_agent) = +sum w omega pi (P_T - P_D) (sign from the CODE_LINES); computed by E.priced_residual (V-1) and by the per-channel decomposition below (both runs), cross-validated"
+ },
+ "evidence": {
+  "runs": {
+   "A|V1": {
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "cycles_run": 46,
+    "derived_instance": {
+     "case_sha256": "92e6283bdb1dafcb328ec951095ebf2173d314754e7f946c0c2210694ca7537e",
+     "instance_label": "s56_step4_2025_Winter",
+     "scenario_checksum": "58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e"
+    },
+    "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/a918ba210411acec_x0_v1_main"
+   },
+   "A|V2": {
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "cycles_run": 40,
+    "derived_instance": {
+     "case_sha256": "92e6283bdb1dafcb328ec951095ebf2173d314754e7f946c0c2210694ca7537e",
+     "instance_label": "s56_step4_2025_Winter",
+     "scenario_checksum": "58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e"
+    },
+    "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/8074c395fce45fae_x0_v2_main"
+   },
+   "A|pinned_aa_off": {
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "cycles_run": 44,
+    "derived_instance": {
+     "case_sha256": "92e6283bdb1dafcb328ec951095ebf2173d314754e7f946c0c2210694ca7537e",
+     "instance_label": "s56_step4_2025_Winter",
+     "scenario_checksum": "58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e"
+    },
+    "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/f7d156742d1bf952_x0_pinned_aa_off_main"
+   },
+   "A|pinned_aa_on": {
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "cycles_run": 36,
+    "derived_instance": {
+     "case_sha256": "92e6283bdb1dafcb328ec951095ebf2173d314754e7f946c0c2210694ca7537e",
+     "instance_label": "s56_step4_2025_Winter",
+     "scenario_checksum": "58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e"
+    },
+    "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main"
+   },
+   "B|V1": {
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "cycles_run": 107,
+    "derived_instance": {
+     "case_sha256": "b1cd5440e70fb8cde8694b12f9e897037dcb072c4551fe97753e3785a1b6a00c",
+     "instance_label": "s56_step4_2025_2035_Summer",
+     "scenario_checksum": "ade7456c3d110e4cbc9aec7f701feb431854bd03ec1dc8f37601fc164721ed1a"
+    },
+    "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/917aa06e2a2e1b55_x0_v1_main"
+   },
+   "B|V2": {
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "cycles_run": 84,
+    "derived_instance": {
+     "case_sha256": "b1cd5440e70fb8cde8694b12f9e897037dcb072c4551fe97753e3785a1b6a00c",
+     "instance_label": "s56_step4_2025_2035_Summer",
+     "scenario_checksum": "ade7456c3d110e4cbc9aec7f701feb431854bd03ec1dc8f37601fc164721ed1a"
+    },
+    "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/069f9dfb8b920dfc_x0_v2_main"
+   },
+   "B|pinned_aa_off": {
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "cycles_run": 97,
+    "derived_instance": {
+     "case_sha256": "b1cd5440e70fb8cde8694b12f9e897037dcb072c4551fe97753e3785a1b6a00c",
+     "instance_label": "s56_step4_2025_2035_Summer",
+     "scenario_checksum": "ade7456c3d110e4cbc9aec7f701feb431854bd03ec1dc8f37601fc164721ed1a"
+    },
+    "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/28ae4f1905fc503f_x0_pinned_aa_off_main"
+   },
+   "B|pinned_aa_on": {
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "cycles_run": 52,
+    "derived_instance": {
+     "case_sha256": "b1cd5440e70fb8cde8694b12f9e897037dcb072c4551fe97753e3785a1b6a00c",
+     "instance_label": "s56_step4_2025_2035_Summer",
+     "scenario_checksum": "ade7456c3d110e4cbc9aec7f701feb431854bd03ec1dc8f37601fc164721ed1a"
+    },
+    "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/7138c52526c7ac55_x0_pinned_aa_on_main"
+   }
+  },
+  "step4_diag_results": "data/SRP1/Results/P515S56/step4_diag_v1/run_v1/step4_diag_results.json",
+  "step4_evaluation": "data/SRP1/Results/P515S56/step4_main_v2/step4_main_evaluation_20261123T163553.json",
+  "step4_manifest": "data/SRP1/Results/P515S56/step4_main_v2/step4_main_v2_manifest_sha256.json",
+  "step4_report": "P5_15_S56_STEP4_RESULT_REPORT.md",
+  "step4_spec": {
+   "path": "data/SRP1/Results/P515S56/step4_main_v2/frozen_step4_main_spec_v2_7ca210fb.json",
+   "sha256": "7ca210fbcd645cc3f3d46554ce7efbdbf2abcedcd183aa825a8eaf160794ccb0"
+  }
+ },
+ "facts_recorded_at_freeze": {
+  "Q5_background_margins": "P5_15_S56_STEP4_DIAG_REPORT.md table (central solution, D-3): 2025|Winter P 47.33 MW (TSO delta box), 37.02 MW (DSO ref-gen), Q 98.66 / 89.93 MVAr; 2035|Summer P 27.34 MW (TSO delta box), 0.563 MW (DSO7 ref-gen), Q 97.95 / 85.53 MVAr; V at its bound strictly (-4.6e-10 / -1.9e-10 pu) inside tolerance. The task's \">= 37 MW and >= 85 MVAr\" holds for the TSO delta box and for the 2025|Winter DSO box, not for the 2035|Summer DSO7 P box"
+ },
+ "failure_policy": "a failed prediction is recorded, never a stop. A capture-path, input-hash or code-line mismatch, a cross-validation failure or a guard count != 0 is a harness fault: the run refuses / records it and the Worker reports",
+ "git_head_at_freeze": "36dbcaeb2c868b12034dc3244a7a1d328f3e5368",
+ "hand_values_to_compare": {
+  "A|V1|2025|Winter|o1": {
+   "cycles": [
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46
+   ],
+   "values": [
+    349,
+    323,
+    299,
+    279,
+    261,
+    242,
+    225,
+    210,
+    197
+   ]
+  },
+  "A|V1|2025|Winter|o2": {
+   "cycles": [
+    46
+   ],
+   "values": [
+    156
+   ]
+  },
+  "A|V2|2025|Winter|o1": {
+   "cycles": [
+    32,
+    40
+   ],
+   "values": [
+    308,
+    207
+   ]
+  },
+  "B|V1|2035|Summer|o3": {
+   "cycles": [
+    101,
+    107
+   ],
+   "values": [
+    960,
+    827
+   ]
+  }
+ },
+ "input_sha256_inventory": {
+  "P5_15_S56_STEP4_RESULT_REPORT.md": "c8001921e078b8ca1d001d35f5d4f4212dd4d23823b156e0d952d7ca7c5579d5",
+  "data/SRP1/Results/P515S56/step4_diag_v1/run_v1/step4_diag_results.json": "d4e023beb6bebd8b0d1d9f408ca09f555d5fa1dbc4dcb0b2a34e07e75c947118",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/8074c395fce45fae_x0_v2_main/evaluation_record.json": "80079fa2fbf3ef5805cf18bb110baa3fa61c3841a377b5239798abdc09906f52",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/8074c395fce45fae_x0_v2_main/exit_code.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/8074c395fce45fae_x0_v2_main/interface_duals_per_cycle.jsonl": "01fe48224c194e4602fa87b285890bdead33d1884d1e6d4c432d0a1656a64bdf",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/8074c395fce45fae_x0_v2_main/interface_settlement_detail_s31c.json": "4e8e8c8f33672c352a8149f5bb90ab7d96366ee5f548f29c8117b5d0361e239a",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/8074c395fce45fae_x0_v2_main/interface_voltage_terminal.json": "1e8872526662da117c1edf5706b544c066a838da5169cae72630f97bdaddcadf",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/8074c395fce45fae_x0_v2_main/multiscenario_terminal.json": "15ade774102c28c9315f30445d50acbea18e0c05d48d67979eb6cfdb0047bc6c",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/8074c395fce45fae_x0_v2_main/network_ipopt_solve_records.jsonl": "e3520da4ff9bc30903ffefbec9ae4e8922a54c1c4111e1a4a7d6c31aa019d852",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/8074c395fce45fae_x0_v2_main/per_cycle_record.jsonl": "8adea1dae6c532215e818d186f8e2342840ad484548808946e6f956ba3834383",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/8074c395fce45fae_x0_v2_main/per_cycle_response.jsonl": "664b0979ac6c5bb93673ec142058b502fa010fff6985a1a8bf7b1898e6710646",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/8074c395fce45fae_x0_v2_main/s56_cycle_capture.jsonl": "824c8386e90ad122baf93bb9082344647919ba315d46778772c5afb8365d3e5d",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/a918ba210411acec_x0_v1_main/evaluation_record.json": "e4a605bd8ec43d0063cf995c9999b30782aca106204e6ce17d94303857f16d2f",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/a918ba210411acec_x0_v1_main/exit_code.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/a918ba210411acec_x0_v1_main/interface_duals_per_cycle.jsonl": "9f60aa4fefdd0090ded83259f5f65ed0df324aa5a7743181b090bc4bd9fd1722",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/a918ba210411acec_x0_v1_main/interface_settlement_detail_s31c.json": "cbd9915f9144ea5bb5d7eb775ee5ef0debeb7f3216c4475b9077c95369751d2c",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/a918ba210411acec_x0_v1_main/interface_voltage_terminal.json": "249d62017ea353c717d5bc18a535f43dcb2f62f28e8c3ab51f5679ef60cc4a29",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/a918ba210411acec_x0_v1_main/multiscenario_terminal.json": "3ea5a43906cf5c8181dba6b4fa9ecb4e5db8bf17108c9892455a1b6c40435404",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/a918ba210411acec_x0_v1_main/network_ipopt_solve_records.jsonl": "c0e19c5260907199151b5b62b4c7630f1f384f5910de4f605f0c8be1f040345d",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/a918ba210411acec_x0_v1_main/per_cycle_record.jsonl": "13b696eeb7184f823d52f5d76c03c79ff91d19f4d87c977f36cac3ae038d4d56",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/a918ba210411acec_x0_v1_main/per_cycle_response.jsonl": "6adcbe111c1fb664cc7a16170928088ddec609d59dc76ccd65ddbdf1df079517",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/a918ba210411acec_x0_v1_main/s56_cycle_capture.jsonl": "38e92197b98467eaa98a296faa295842cf4ad3b009ba10d92e4818589c04b6c0",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/f7d156742d1bf952_x0_pinned_aa_off_main/evaluation_record.json": "73dd61f1301206a21e8e38dae128f3966b80b2f54971f22cf0dae27e0d083a41",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/f7d156742d1bf952_x0_pinned_aa_off_main/exit_code.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/f7d156742d1bf952_x0_pinned_aa_off_main/interface_duals_per_cycle.jsonl": "2d857af2e1e8de981a96e8155f648b77b00a4d6f310791ffb1bdcabc16ce203a",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/f7d156742d1bf952_x0_pinned_aa_off_main/interface_settlement_detail_s31c.json": "8827715478b971ea7d28a2607c98fa24a80c7054818779f58cf5d7dc655cb40e",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/f7d156742d1bf952_x0_pinned_aa_off_main/interface_voltage_terminal.json": "fa0c9e4bf7b3de9e6ece18923045993edc322b5827f477699654a473b52e851b",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/f7d156742d1bf952_x0_pinned_aa_off_main/multiscenario_terminal.json": "b1e305e3b8a4ba99b696da04b24f65446b8cb49b15b33773fbdfa068014edb2c",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/f7d156742d1bf952_x0_pinned_aa_off_main/network_ipopt_solve_records.jsonl": "3e9b86639544d3851530e1c4bd825125a914b543a0fadec8df6f596a36cd3859",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/f7d156742d1bf952_x0_pinned_aa_off_main/per_cycle_record.jsonl": "8ff9a266267e5d888c1c0731fc1ebdc8ff8e7eb3a61984e8fbea3556f01adbd9",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/f7d156742d1bf952_x0_pinned_aa_off_main/per_cycle_response.jsonl": "2c112bf714565f0b77be9909e078673a138146b6d0cf1039e50dde4de750d9da",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/f7d156742d1bf952_x0_pinned_aa_off_main/s56_cycle_capture.jsonl": "52aaddf067d610eba6f2f1c934c050235ed4c8ea0f47e594c7ea8090784a7a79",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main/evaluation_record.json": "411b308bf8e5e9522ea20669448967ee3a921c1c206d8da9edef10da9f03844e",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main/exit_code.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main/interface_duals_per_cycle.jsonl": "a04f9be3a14134167eba24e1e913b5e0ddf7e132143404587ee56c0aa566a27d",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main/interface_settlement_detail_s31c.json": "d501204e177417a4998c1ef0fc10702b13f44e35ad9db2093e160cfbfc918b38",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main/interface_voltage_terminal.json": "7cf20036b830a1063041c0501200024585b9a053cc968fc20d8c9c6efb74d501",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main/multiscenario_terminal.json": "474c1a655d714aebb764ffc85fdca5aaea71d31118c7c0e08b1d4b73a5d9901b",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main/network_ipopt_solve_records.jsonl": "43c0d40be31c44602db2cd9a094289d212d6bfbf23dd33d36c4f498f4b914cb7",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main/per_cycle_record.jsonl": "a5a5a3b8b1b7370c67659cd1f4e5c61828b0b1608a96210b1b27a0f622a14c3c",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main/per_cycle_response.jsonl": "06f900d8eafcbec8664f0c1bcf2198a1c8ea20db0de06a41888d4ee5c0ab7abc",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main/s56_cycle_capture.jsonl": "3cde433de1dfe4cc2449c3e5b714b5958c73c602271e347f8349ebb141590a4f",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/069f9dfb8b920dfc_x0_v2_main/evaluation_record.json": "5e487ec400842ea99278c5b4215382f1f1262211b083beadea15d4bd187dedbf",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/069f9dfb8b920dfc_x0_v2_main/exit_code.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/069f9dfb8b920dfc_x0_v2_main/interface_duals_per_cycle.jsonl": "ebc18bb91afc2cb8a00d74775742ecff6b281a1d96b623523115ce646ac73798",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/069f9dfb8b920dfc_x0_v2_main/interface_settlement_detail_s31c.json": "91ba6cce5ebd24c396b72204124ab50987aacb7539f14831661e1dab2e7c393c",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/069f9dfb8b920dfc_x0_v2_main/interface_voltage_terminal.json": "070c09ee95135e25b2ea512f19eb08aae02146acfb53a30dec06b07d33201adb",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/069f9dfb8b920dfc_x0_v2_main/multiscenario_terminal.json": "592747ecc2a5dcfbb5acbcdf2b2469cb45238a0d4c6708e5670a75ec6cbb09a3",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/069f9dfb8b920dfc_x0_v2_main/network_ipopt_solve_records.jsonl": "a39f747bd8c6fe39cab8f598791d942d58ca520f7078db0e65d727a0643ece2e",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/069f9dfb8b920dfc_x0_v2_main/per_cycle_record.jsonl": "3162af860e90a1f15de5fd1ca1344fe67c85ab433025488c308287739cf4c6f7",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/069f9dfb8b920dfc_x0_v2_main/per_cycle_response.jsonl": "5a7d65385162630ed2cc113a5e2f294002664ab683648f0b8d33ce33dd31c8b8",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/069f9dfb8b920dfc_x0_v2_main/s56_cycle_capture.jsonl": "45a6436841e59d97c758d988000c2cafd27d2c5e9ab9571ca832e961b6619f79",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/28ae4f1905fc503f_x0_pinned_aa_off_main/evaluation_record.json": "348d8dc9bfc3d1206d4d343acd8313e20efb762a549b7d1ecb084fddbab89b81",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/28ae4f1905fc503f_x0_pinned_aa_off_main/exit_code.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/28ae4f1905fc503f_x0_pinned_aa_off_main/interface_duals_per_cycle.jsonl": "7525c0a708952bdb73a12e211db8ad0dd6f4846e473deffccdfee50d4f80df1d",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/28ae4f1905fc503f_x0_pinned_aa_off_main/interface_settlement_detail_s31c.json": "ca8c744c627ccbcb80856b7810d9a7fd1ba275d72f4dedf8f30e291e066cef00",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/28ae4f1905fc503f_x0_pinned_aa_off_main/interface_voltage_terminal.json": "842dee60bc9f0947f5161339a2fdab9060d6653e6e89a2015aec213cd10ca024",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/28ae4f1905fc503f_x0_pinned_aa_off_main/multiscenario_terminal.json": "dfc0e041ef79620483c8f5f264ea1ccfc692ec3e736297a5045fe553d3564082",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/28ae4f1905fc503f_x0_pinned_aa_off_main/network_ipopt_solve_records.jsonl": "e28940741dfe01a62dc308f6b6a265034ddcdb0e82c3cda9d1ed7f856135d28b",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/28ae4f1905fc503f_x0_pinned_aa_off_main/per_cycle_record.jsonl": "1b0bd2a64c7294627f165c9abfb9377474929d9cadeef91740342a5cbc1257f5",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/28ae4f1905fc503f_x0_pinned_aa_off_main/per_cycle_response.jsonl": "dc10982f35e28830572471e40b5c221184a8b15f1b5d2c4586ae52f582a86aee",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/28ae4f1905fc503f_x0_pinned_aa_off_main/s56_cycle_capture.jsonl": "102a8715c140b254113fc15b23fdfb7503683a76202ed73c6512fa8c5a8dbb5f",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/7138c52526c7ac55_x0_pinned_aa_on_main/evaluation_record.json": "f5aa2e75eb0a83ea839628432125a9b88c8cfee739bf35fb320a4420571eeef5",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/7138c52526c7ac55_x0_pinned_aa_on_main/exit_code.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/7138c52526c7ac55_x0_pinned_aa_on_main/interface_duals_per_cycle.jsonl": "bdd7e97278fd23257dcbd1cce0cfa928c0533e3493cd0eb7d52e90e725a2c504",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/7138c52526c7ac55_x0_pinned_aa_on_main/interface_settlement_detail_s31c.json": "1de54942f5c11531bacf0dbd4ee8e990c548116cc13f57d95edfed8b31794281",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/7138c52526c7ac55_x0_pinned_aa_on_main/interface_voltage_terminal.json": "388e2958b5e6b5d63ae281b6a9ace692b255041700867790b05bc0419c2682ab",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/7138c52526c7ac55_x0_pinned_aa_on_main/multiscenario_terminal.json": "af0ece0d4d881b5e851f9d349e604200c67b1884dd53bccbcad3a788b5da88d5",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/7138c52526c7ac55_x0_pinned_aa_on_main/network_ipopt_solve_records.jsonl": "f7b930ff6df351dfdf56778d146b0ac964e2d55ee5add591e98323b817e0c9b5",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/7138c52526c7ac55_x0_pinned_aa_on_main/per_cycle_record.jsonl": "1b8a514438085c7de3ebc3ec20da3f4b5197b4f1e048e6cbadac0aa2976d249f",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/7138c52526c7ac55_x0_pinned_aa_on_main/per_cycle_response.jsonl": "b7d6c9e5c8b786d5c159c35c9f4522417a7c22c06acc5fbc6b35fa74867082b6",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/7138c52526c7ac55_x0_pinned_aa_on_main/s56_cycle_capture.jsonl": "9ee3b3a7dcf67c43bea99aa487032728b57facbc5d58f051daf60379b1732c70",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/917aa06e2a2e1b55_x0_v1_main/evaluation_record.json": "8a140283be70cd8d06aa1253177da2a1e5607304306831c699399fb1fe2e115d",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/917aa06e2a2e1b55_x0_v1_main/exit_code.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/917aa06e2a2e1b55_x0_v1_main/interface_duals_per_cycle.jsonl": "ee8b2c63b036d111ff8fe22b0b5f601072a415565d5887a1418c4e4a1e33a91b",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/917aa06e2a2e1b55_x0_v1_main/interface_settlement_detail_s31c.json": "7c86aec67cd59f42f999871b2b94279e44ae6df9a7d319be2fdbf53242f5341e",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/917aa06e2a2e1b55_x0_v1_main/interface_voltage_terminal.json": "b983c1ac5491cbeb8e0b73dca3c845d905b4f9ef64b89ad3ff558ee29519023a",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/917aa06e2a2e1b55_x0_v1_main/multiscenario_terminal.json": "b007f1782e63465316b3686f207b795cae1244e4284c85b5a63cbd8d1a12a21b",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/917aa06e2a2e1b55_x0_v1_main/network_ipopt_solve_records.jsonl": "4954deca37eea2bdb298a8f98b06e460a289c0b506c1f37791dc0c1142423715",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/917aa06e2a2e1b55_x0_v1_main/per_cycle_record.jsonl": "6c2a5be1bf88f4ee28a270608c15e064a8967734a54f08257c1df775c3169a06",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/917aa06e2a2e1b55_x0_v1_main/per_cycle_response.jsonl": "34e843bbd1f84a6ae7ffc94f4ccbc3931e29ccd45b84181aa6102e3d3ffb2923",
+  "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/917aa06e2a2e1b55_x0_v1_main/s56_cycle_capture.jsonl": "762a8d281a4335185bb337d7ad5b314762d988b3b9208beb4fa221ddd6a0fc9a",
+  "data/SRP1/Results/P515S56/step4_main_v2/frozen_step4_main_spec_v2_7ca210fb.json": "7ca210fbcd645cc3f3d46554ce7efbdbf2abcedcd183aa825a8eaf160794ccb0",
+  "data/SRP1/Results/P515S56/step4_main_v2/step4_main_evaluation_20261123T163553.json": "95a4c7d640cd1c4f8eb16f872f7082f725b5327f94f71929d84e8ddc216d6c9b",
+  "data/SRP1/Results/P515S56/step4_main_v2/step4_main_v2_manifest_sha256.json": "59bf89daebb7d454783763da817a6c11ec69cc0a1952763a89b3d00c61b545af"
+ },
+ "inputs_used": [
+  "the evaluator loaders E.Run / E.eval_dir / E.probabilities, E.priced_residual, E.settling_bar, E.v_base (imported)",
+  "L.tail_depth_rounds via E.Run",
+  "L._spec / apply_spec_roots / root_path / label_of"
+ ],
+ "not_permitted": [
+  "any solve (guard permitted=(), verified 0)",
+  "any model build",
+  "any production change",
+  "any edit to p515_s56_step4_main_evaluate.py, the launcher or existing artifacts",
+  "re-running the step 4 evaluator onto its output path",
+  "any ADMM run",
+  "TASKS.md",
+  ".claude/worktrees/"
+ ],
+ "objective_convention": "EUR of total discounted cost. Coupled arms: Q_b(k) = capture q_blocks per_year_day[b] settlement_excluded_in_full (production primary; pin excluded, salvage separate). e_b(k) = Q_b(k) - w_b C_central (step 4 spec ii_central_and_allowance.blocks[b].w_b_C_central_eur; 2025|Summer is MERGED-ONLY, reported not calibrated)",
+ "out_dir": "data/SRP1/Results/P515S56/step4_postdiag_v1",
+ "outputs": {
+  "logs": "data/SRP1/Results/P515S56/step4_postdiag_v1/postdiag_run_stdout.log, postdiag_run_stderr.log",
+  "manifest": "data/SRP1/Results/P515S56/step4_postdiag_v1/step4_postdiag_v1_manifest_sha256.json",
+  "results": "data/SRP1/Results/P515S56/step4_postdiag_v1/postdiag_results_<UTC stamp>.json (open mode x)"
+ },
+ "predecessor": null,
+ "predictions_operational": {
+  "Q1": "runs A|V1 and A|V2, block 2025|Winter, tail-depth cycles T (evaluator rule). (a) o1(k) > 0 for every k in T and o1(k) < o1(k-1) for every k in T with k-1 in T; (b) E.settling_bar(o2 series, cycles=T, W=20, h=3) is valid (one-sign steps, >= 6 steps, r < 1, r_fit < 1) with Q_hat_inf in [0, 100] and H <= 50. Held iff (a) and (b) on both runs. A run with no valid settling_bar fit fails clause (b) (recorded as not evaluable); the 3-parameter fit is reported beside, non-deciding",
+  "Q2": "decisive on A|V1 (the arm the hand value +156 and the frozen P7 come from): o2(K) in [100, 230], K = the last cycle. A|V2 reported beside with its own in/out flag, non-deciding",
+  "Q3": "decisive on B|V1, block 2035|Summer (the hand window 101-107 exists only on V-1): o1(K) in [700, 850]. Competing outcomes, classified on o1 over B|V1 tail-depth cycles K1..K (recorded, never a verdict): total_rel = (o1(K) - o1(K1)) / |o1(K1)|; g = (o1(K) / o1(K1))^(1/(K - K1)) - 1 (None if a sign change or a zero); \"plateau\" if |total_rel| <= 0.03; else \"decays at <= 3 %/cycle (B open)\" if -0.03 <= g < 0; else \"decays faster than 3 %/cycle\" if g < -0.03; else \"grows or changes sign\". B|V2 beside",
+  "Q4": "decisive on A|V1 at its terminal cycle: D2 EUR mismatch (absolute form) = sum over every coordinate of |(mu~_T + mu~_D) x r| (expectation P/Q/V; deviation P/Q/V weighted by omega_s) <= 50. Signed form and A|V2 beside, non-deciding",
+  "Q5": "decisive scope = the D3 task definition: the per-scenario TSO copies P_T,s = pc_init + delta_s against pc_init +- rating, i.e. |delta_s| <= R (P in MW, Q in MVAr), at the terminal state of every run of A and B (8 runs: coupled arms all 9 scenario copies; pinned arms the alias copy that every scenario references). A bound is ACTIVE when margin = R - |delta| <= 1e-6 x max(1, R). Held iff no active bound. Beside, non-deciding (\"Q5 extended\"): DSO reference-generator P/Q boxes and the interface V rows (coupled arms)",
+  "Q6": "on every coupled run (A|V1, A|V2, B|V1, B|V2) and every cycle 1..K: |pr_price + T| <= c u S_T with c = 64, u = 2^-53, S_T = sum_agents |w_a s_a| (exact rational arithmetic on the stored doubles; pr_price = per_cycle_record priced_residual_price_part); AND on each coupled run both signs of (pr_price + T) occur among its cycles (zeros excluded). Held iff both parts hold on all four runs"
+ },
+ "predictions_verbatim": {
+  "Q1": "on A V-1 and V-2, o1 > 0 at every tail-depth cycle and decreasing. The fitted limit of o2 is in [0, 100] EUR and its held-out error is <= 50 EUR.",
+  "Q2": "on A, terminal o2 in [100, 230] EUR (the Advisor's hand value is +156).",
+  "Q3": "on B 2035|Summer, terminal o1 in [700, 850] EUR. Two outcomes are recorded as competing, not predicted: o1 decays at <= 3 % per cycle (B open), or it plateaus.",
+  "Q4": "on A, the D2 EUR value of the dual-sum mismatch at the terminal cycle is <= 50 EUR (consistent duals).",
+  "Q5": "no ADMM-only box is active at the terminal cycle on A or B (D-3 margins were >= 37 MW and >= 85 MVAr at the central solution).",
+  "Q6": "D5 holds on every cycle of every coupled run, and the sign of (pr_price + T) is mixed.",
+  "policy": "A failed prediction is recorded, not a stop: this is a zero-solve diagnostic stage."
+ },
+ "production_unchanged_since_runs": "git log cb062834..HEAD -- shared_resources_planning.py model_construction_helpers.py p515_s44_campaign_harness.py interface_dual_capture.py is empty at freeze (checked by the Worker); the CODE_LINES are re-verified verbatim at run time",
+ "runs_git_head": "cb0628340686753862bef1ec90c941fe0535a8fb",
+ "schema": "p515_s56_step4_postdiag_spec_v1",
+ "script": "p515_s56_step4_postdiag.py",
+ "script_sha256_at_freeze": "20eb85808b66209a4fc1716e4ee68c707fee79e50f1c40e2331fb0db4f934a71",
+ "stage": "P5.15 S56 step 4 post-run zero-solve diagnostics D1-D5",
+ "version": 1
+}

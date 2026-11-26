@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py", line 6369, in main_child
+    outcome = _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started,
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py", line 6127, in _child_real
+    report, report_path = G.run_admm_arm(
+                          ^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_g_g1_g4_admm_gates.py", line 1283, in run_admm_arm
+    _c, _results, models, _s, _p, state = planning.run_operational_planning(
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/shared_resources_planning.py", line 94, in run_operational_planning
+    convergence, results, models, sensitivities, primal_evolution, execution_time, state = _run_operational_planning(self, candidate_solution, initial_state=initial_state, debug_flag=debug_flag)
+                                                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/shared_resources_planning.py", line 3261, in _run_operational_planning
+    boyd_metrics = get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py", line 4631, in w_boyd
+    result = originals['get_admm_boyd_residual_metrics'](planning_problem, tso_model, dso_models, esso_model,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_g_g1_g4_admm_gates.py", line 5375, in wrapper3
+    raise RuntimeError(
+RuntimeError: S38 PF entry-capture identity FAILED at cycle 1: reconstructed r=27.59582098706081 (production boyd_pf_r=27.78019072685824, rel_err=0.006636734125053284); reconstructed s=9.487103872871836 (production boyd_pf_s=9.507527672498906, rel_err=0.0021481714627185986)
+

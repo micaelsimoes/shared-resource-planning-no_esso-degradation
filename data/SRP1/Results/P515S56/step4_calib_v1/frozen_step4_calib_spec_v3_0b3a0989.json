@@ -1,0 +1,709 @@
+{
+ "authority": [
+  "TASKS.md \"Expert rulings on handback 3 (2026-11-23)\" item 1 (decision 1 (a) approved, (b) beside as diagnostic only; caps 140 / 320; prefix 46 / 107 bitwise; decision rule; capture interface V upper-bound multipliers); item 2 (M1 tolerance adopted); item 3 (P7 re-defined, diagnostic only)",
+  "P5_15_S56_STEP4_EXPERT_HANDBACK_3.md decision 1",
+  "Planner task 2026-11-23 (calibration re-run)"
+ ],
+ "cap": {
+  "calib": {
+   "A": 140,
+   "B": 320
+  }
+ },
+ "captures": {
+  "capture_path_assertion": "before launch the launcher asserts a capture path for every quantity above (the main launcher checklist, the two harness key paths, the post hoc sources and functions, the prefix references and their hashes, the NL identity check)",
+  "every_cycle_live": "the interface V upper-limit multipliers, both sides (v_multiplier_capture)",
+  "every_cycle_post_hoc": "e_b, price_b, o1, o2 with the dual split (P / Q / V, expectation and deviation), and Delta P / Q / V omega-RMS and max per block: computed POST HOC from the per-cycle capture (s56_cycle_capture.jsonl, interface_duals_per_cycle.jsonl) with the imported post-diagnostic / evaluator functions (decision_rule.operational)"
+ },
+ "cites": {
+  "design": {
+   "governs": "its \"Status: ruled (2026-11-23)\" paragraph governs where the design text conflicts",
+   "path": "S56_STEP4_DESIGN.md",
+   "sha256": "cc1ea169c61d8f33d1f33b2bc51c5747da338ed9d56a986bbabf592ed849d885"
+  },
+  "diag_results": {
+   "path": "data/SRP1/Results/P515S56/step4_diag_v1/run_v1/step4_diag_results.json",
+   "sha256": "d4e023beb6bebd8b0d1d9f408ca09f555d5fa1dbc4dcb0b2a34e07e75c947118"
+  },
+  "diag_spec_ff466289": {
+   "path": "data/SRP1/Results/P515S56/step4_diag_v1/frozen_step4_diag_spec_v2_ff466289.json",
+   "sha256": "ff4662895b10382d92b710b7862f1684e71eb8f9cb7370d29c3056c4e8defed4"
+  },
+  "evaluator_step4": {
+   "path": "p515_s56_step4_main_evaluate.py",
+   "sha256": "cb24ec1123dd4e9d2817c5dc7eb7a6b8f2fd1d774eeb9f30bac20c4087fddd85"
+  },
+  "handback_3": {
+   "path": "P5_15_S56_STEP4_EXPERT_HANDBACK_3.md",
+   "sha256": "8c5003fc27a8ba519833531b7fb7844279d12d349bb20f7d62bbc2a21ba904b0"
+  },
+  "harness_checks_compare": {
+   "path": "data/SRP1/Results/P515S56/step4_calib_v1/harness_checks/stub/compare_20261123T185032.json",
+   "sha256": "b4b680b4e8e672da83222e2d5a60e9e8e68f921760d66dba682940f6bfd6285f"
+  },
+  "harness_checks_manifest": {
+   "path": "data/SRP1/Results/P515S56/step4_calib_v1/harness_checks_manifest_sha256.json",
+   "sha256": "7706cab2e82d22fc9c088860e8562b6fe4e10d46d7e51a914a4e2447e59be7c8"
+  },
+  "harness_checks_nokey": {
+   "path": "data/SRP1/Results/P515S56/step4_calib_v1/harness_checks/nokey/nokey_check.json",
+   "sha256": "7287ec517233d279606784de7506c716642baec12b8ffe419aa7181b17d9aabe"
+  },
+  "plan_v4": {
+   "path": "S56_PLAN_v4.md",
+   "sections": [
+    "3",
+    "7 (row 4)"
+   ],
+   "sha256": "fbf13f46ac0210e54053982058b314ddf629b0cdbba1dfbda36c403203dd1790"
+  },
+  "postdiag_script": {
+   "path": "p515_s56_step4_postdiag.py",
+   "sha256": "20eb85808b66209a4fc1716e4ee68c707fee79e50f1c40e2331fb0db4f934a71"
+  },
+  "smoke_evaluation": {
+   "path": "data/SRP1/Results/P515S56/step4_smoke_v1/smoke_evaluation_20261123T135123.json",
+   "sha256": "5aea08d66a951bcb02d6bbfdb07654e6572ad5c222e4f93f388f50ea1fd7d317"
+  },
+  "smoke_launcher": {
+   "path": "p515_s56_step4_smoke.py",
+   "reused_by_import": [
+    "arm_options",
+    "coupling_gates_literals",
+    "capture_path_checklist",
+    "root_path",
+    "SMOKE_DIR",
+    "DIAG_SPEC"
+   ],
+   "sha256": "2a9d2981cbeb33bc11356f9cbc1be56bb1b5971b3476248ce775595897257a48"
+  },
+  "smoke_spec_v2": {
+   "path": "data/SRP1/Results/P515S56/step4_smoke_v1/frozen_step4_smoke_spec_v2_e36c29bd.json",
+   "sha256": "e36c29bdd7791a4639156d2fa0aa6d5bb28bbf02bc586a416199a057d8859795"
+  },
+  "step4_main_evaluation": {
+   "path": "data/SRP1/Results/P515S56/step4_main_v2/step4_main_evaluation_20261123T163553.json",
+   "sha256": "95a4c7d640cd1c4f8eb16f872f7082f725b5327f94f71929d84e8ddc216d6c9b"
+  },
+  "step4_main_v2_manifest": {
+   "path": "data/SRP1/Results/P515S56/step4_main_v2/step4_main_v2_manifest_sha256.json",
+   "sha256": "59bf89daebb7d454783763da817a6c11ec69cc0a1952763a89b3d00c61b545af"
+  },
+  "step4_main_v2_spec": {
+   "path": "data/SRP1/Results/P515S56/step4_main_v2/frozen_step4_main_spec_v2_7ca210fb.json",
+   "sha256": "7ca210fbcd645cc3f3d46554ce7efbdbf2abcedcd183aa825a8eaf160794ccb0"
+  },
+  "step4_postdiag_report": {
+   "path": "P5_15_S56_STEP4_POSTDIAG_REPORT.md",
+   "sha256": "bb3d731293848ca161d1a526a014f21ed285b801c210248d10d191323067240f"
+  },
+  "step4_postdiag_results": {
+   "path": "data/SRP1/Results/P515S56/step4_postdiag_v1/postdiag_results_20261123T170607.json",
+   "sha256": "bbd1aae1dab8a351883d5181f1dc81ee6d29cc0c5baf5ecaa9b6395c49fd41b4"
+  },
+  "step4_postdiag_spec": {
+   "path": "data/SRP1/Results/P515S56/step4_postdiag_v1/frozen_step4_postdiag_spec_v1_72f4d80e.json",
+   "sha256": "72f4d80edf82bf429c36f186145df9316bdf4f91a99e2063455db6efbc4218c6"
+  },
+  "step4_result_report": {
+   "path": "P5_15_S56_STEP4_RESULT_REPORT.md",
+   "sha256": "c8001921e078b8ca1d001d35f5d4f4212dd4d23823b156e0d952d7ca7c5579d5"
+  },
+  "tasks": {
+   "items": "\"Expert rulings on handback 3 (2026-11-23)\" items 1-3; Order (2026-11-23, after handback 3 rulings) step (a)",
+   "path": "TASKS.md",
+   "sha256_at_freeze": "187fa6b240e6332de3be64388aec93398d758d89ebb77cbc275386c2d5f88b2f"
+  }
+ },
+ "concurrency_per_campaign": 1,
+ "coupling_gates_literals_source": {
+  "path": "p515_s56_coupling_gates.py",
+  "sha256": "b46faf10bd2ffa0072061d6c19829bbcd08083c7b9ada9bb3fb38dc7ea61b3fb"
+ },
+ "decision_rule": {
+  "K_old": {
+   "A": 46,
+   "B": 107
+  },
+  "operational": {
+   "C1": "held iff the prefix gate (prefix_gate) held on A and on B (live and post-run)",
+   "C10": "evaluated only if A enters and stays: held iff L_2025|Winter in [3e-5, 2.5e-4] MW",
+   "C2": "held iff 2025|Winter enters and stays with k_in <= 100 and |e_b(140)| <= 150 EUR",
+   "C3": "recorded: the 2035|Summer decision-rule verdict (enters and stays, or not), no direction predicted",
+   "C4": "held iff |price_b(cap)| <= 50 EUR on 2025|Winter (k = 140) and on 2035|Summer (k = 320)",
+   "C5": "held iff, per run, evaluation record peak_rss.child_python_process_ru_maxrss <= 4 GiB and the mean of per_cycle_record cycle_wall_s over every cycle lies in [18, 26] s (A) / [38, 52] s (B)",
+   "C6": "per instance and side (tso, dso), at the terminal cycle (the cap) of the multiplier sidecar, entries = every (block, scenario, period): m = |row_dual| + |zU_vmag_sqr| + |zU_vmag| / (2 sqrt(vmag_sqr)) + |zU_e| / (2 |e|) (the upper-limit multipliers expressed on vmag_sqr; None -> 0); \"nonzero\" iff m >= 1e-3 x max m over that side's entries at that cycle. Held iff the nonzero fraction >= 0.90 on every (instance, side). Recorded beside (not deciding): the fractions at absolute thresholds 1e-8, 1e-6, 1e-4, 1e-2; the fraction at the limit by primal margin (v_max - sqrt(vmag_sqr) <= 1e-6 x max(1, v_max)); the joint table; the component (row / vmag_sqr / vmag / e) carrying the multiplier",
+   "C7": "held iff o1_2025|Winter(140) in [40, 110] EUR",
+   "C8": "held iff o2_2025|Winter(140) in [80, 130] EUR",
+   "C9": "held iff the primal-margin at-limit fraction (C6 beside) lies in [0.10, 0.40] on every (instance, side)",
+   "M1": "F1 identities every cycle, adopted tolerance (Expert ruling 2): (i) |priced_residual_price_part + T| <= 64 u (sum_agents |w s_total| + |priced_residual_price_part|), (ii) |(gross_contracted_excluded - gross) - D| <= 64 u (sum_agents (|Q_full| + |Q_contracted| + |w s_total| + |w s_contracted|) + |gross_contracted_excluded| + |gross|), u = 2^-53, floor 1e-6 EUR on each bound; (iii) gauge |sum_s omega_s mu_s| <= 1e-9 x max|mu| per cycle / agent / kind; (iv) V-1 pin total == 0.0 every cycle. Recorded, not a stop",
+   "Q_b_and_e_b": "Q_b(k) = the run's s56_cycle_capture.jsonl q_blocks.per_year_day[b].settlement_excluded_in_full (EUR of total discounted cost); e_b(k) = Q_b(k) - w_b x C_central (ii_central_and_allowance)",
+   "R_eff": "R_eff_b = 4 x min over k in [K_old_b, cap] of |e_b(k)| x Sigma_12 w / w_b, K_old = 46 (A), 107 (B) (step 4 main V-1 certification cycles); Sigma_12 w = ii_central_and_allowance.sum_12_w",
+   "enters_and_stays": "k_in exists and cap - k_in >= 20",
+   "interface_mismatch": "per block b and cycle k, p515_s56_step4_main_evaluate.capture_scenario_mismatch (imported, unchanged): dX_s = (xbar_T + d_T,s) - (xbar_D + d_D,s) from the capture's expectation + deviation copies (P MW, Q MVAr, V kV); omega-RMS = sqrt(sum_s omega_s x mean over the block's nodes and periods of dX_s^2); max = max |dX_s|",
+   "k_in": "the smallest tail-depth cycle k0 such that |e_b(k)| <= allowance_b for EVERY cycle k in [k0, cap] (every cycle, tail-depth or not); evaluable only when the run reached the cap (cycles_run == cap); otherwise \"not evaluable\" with the cycle the run stopped at",
+   "measured_level": "L_b = max over k in [k_in, cap] of the block's Delta P omega-RMS; beside: the same max of Delta Q and Delta V omega-RMS, and the Delta P / Q / V max-abs over those cycles",
+   "price_o1_o2": "price_b(k) = -sum over the block's agents of weight x settlement_total_unweighted (capture); dual_b(k) = the TSO-side dual terms (expectation P / Q / V + omega-weighted deviation P / Q / V) of p515_s56_step4_postdiag.channel_parts (imported, unchanged), recorded split; o1 = e_b - price_b; o2 = e_b - price_b + dual_b (diagnostic only, Expert ruling 3)",
+   "proposal": "both calibration blocks enter and stay -> proposed criterion: interface Delta P omega-RMS <= max(L_2025|Winter, L_2035|Summer) MW (a proposal; no production change)",
+   "record_certification_fields": "the evaluation record's certification / status fields are computed by the harness from the trajectory under required_consecutive_cycles 10 (structural); with the stop disabled they are recorded, never read as a stop or a certification of this run",
+   "solve_identity": "per run: solve_profile.identity_holds True, base_solves == per_round x (cycles_run + 1), blocked 0, exit 0",
+   "tables": "e_b, o1, o2 (with its dual split), price_b, Delta P / Q / V omega-RMS at k_in, at k = 20, 40, ... and at the cap, per block (2025|Summer beside, merged-only)",
+   "tail_depth_cycle": "iii_tail_depth_only.tail_depth_cycle, on the run's network_ipopt_solve_records.jsonl",
+   "terminal_settling_bar": "p515_s56_step4_main_evaluate.settling_bar (imported, unchanged; spec v2 operational S_b) on the series e_b over the run's tail-depth cycles (last W = 20, h = 3)",
+   "terminal_step_to_threshold": "the evaluation record rule_ten.terminal_step_over_threshold and the terminal Boyd ratio max per channel"
+  },
+  "verbatim": "Calibration blocks: 2025|Winter (A) and 2035|Summer (B). 2025|Summer (B) is reported, merged-only, not deciding.\nFor each calibration block:\n- Entry cycle: k_in is the smallest tail-depth cycle such that |e_b(k)| <= allowance (228.64 EUR or 187.56 EUR) for every cycle k from k_in to the cap.\n- \"Enters and stays\" requires that k_in exists and that cap - k_in >= 20.\n- Measured level: max over k >= k_in of the interface Delta P omega-RMS. Report Delta Q and Delta V beside it.\nOutcomes:\n- If both calibration blocks enter and stay: the report proposes an added stopping criterion, interface Delta P omega-RMS <= the larger of the two measured levels. It is a proposal only; no production change.\n- Otherwise: the report states \"R not demonstrated at this stopping depth\", with R_eff = 4 x min_{k >= K_old} |e_b(k)| x Sigma_12 w / w_b per block, and the terminal e_b with its settling bar. Nothing touches R.\no2 is reported beside, as a diagnostic only (Expert ruling 3: P7 is re-defined as Q - price + dual, diagnostic only). Report the terminal-step-to-threshold ratio as usual."
+ },
+ "evaluation": {
+  "output": "data/SRP1/Results/P515S56/step4_calib_v1",
+  "script": "p515_s56_step4_calib_evaluate.py (zero-solve; written per decision_rule.operational, committed with the evidence)"
+ },
+ "failure_policy": "stops (stops): a non-bitwise prefix, a harness fault, the B 4.5 h projection. Everything else (C1-C10, M1, the decision-rule verdict) is recorded, never re-run or tuned",
+ "harness": {
+  "commit_of_calibration_keys": "091b7745",
+  "commit_of_pinned_capture_key": "a662c9bf",
+  "path": "p515_s44_campaign_harness.py",
+  "predecessor_sha256_in_v2": "450bf677096fbee4c95d5db3b29181b75137b250a6b3df764813775714067c7d",
+  "sha256": "c5c477075ce39fbed6f66bb2f7c1c6378cc35c961a425cdd83a8ffdf64326aa5"
+ },
+ "i_arms_instances_cap": {
+  "alpha": {
+   "how": "interface_deviation_premium not declared: admm_parameters default {'alpha': 0.0}; model_construction_helpers.add_scenario_commitment_terms builds row 18 only when premium_alpha > 0, so row18_charge_reactive is inert",
+   "value": 0.0
+  },
+  "arms": {
+   "V1": {
+    "aa": "forced off by production under the option",
+    "init_identity_group": "voltage_pin_not_constructed",
+    "options": {
+     "interface_coupling": {
+      "per_scenario_interface_coupling": true,
+      "per_scenario_voltage_mode": "per_scenario",
+      "row18_charge_reactive": false
+     },
+     "s56_certification_stop_disabled": true,
+     "s56_interface_v_multiplier_capture": true
+    },
+    "q_primary": "settlement_excluded_in_full",
+    "role": "calibration arm; formulation of record (Expert ruling 2); certification stop disabled to the declared cap (Expert decision 1 (a))"
+   }
+  },
+  "cap": {
+   "A": 140,
+   "B": 320
+  },
+  "configuration": {
+   "arm_label": "s39_D",
+   "case_file_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "convergence_depth_tail": {
+    "compl_inf_tol": 1e-06,
+    "enabled": true
+   },
+   "ess_ageing_baseline": {
+    "calendar_life_years": 15,
+    "calendar_retention_per_year": 0.985,
+    "calibration": {
+     "cycles_n": 10000,
+     "eol_retention_r": 0.8,
+     "reference_dod_d": 0.8,
+     "status": "ACTIVE"
+    },
+    "cycle_life_nominal": 10000,
+    "depth_of_discharge_nominal": 0.8,
+    "minimum_soh": 0.7
+   },
+   "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+   "note": "S56 step 4 smoke: the G-f / step 4 build configuration (p515_s56_coupling_gates.py literals) on the derived instance; no row 18 declaration (production default alpha 0.0), no model variant, no flex variant, no NRF, no rho0 scale, no post-certification",
+   "overrides": {}
+  },
+  "execution_order": "instance A (one campaign, one entry, concurrency 1), then instance B (likewise), serially: one campaign lock per checkout. B is refused unless A exited 0 at its cap, its prefix gate held and no stop fired",
+  "instances": {
+   "A": {
+    "blocks": [
+     "2025|Winter"
+    ],
+    "derived_instance": {
+     "case_path": "data/SRP1/Results/P515S56/step4_instances_v1/SRP1__s56_step4_2025_Winter.json",
+     "case_sha256": "92e6283bdb1dafcb328ec951095ebf2173d314754e7f946c0c2210694ca7537e",
+     "changes_vs_source": [
+      {
+       "from": {
+        "2025": 5,
+        "2030": 5,
+        "2035": 5
+       },
+       "key": "Years",
+       "to": {
+        "2025": 5
+       }
+      },
+      {
+       "from": {
+        "Autumn": 91,
+        "Spring": 92,
+        "Summer": 91,
+        "Winter": 91
+       },
+       "key": "Days",
+       "to": {
+        "Winter": 91
+       }
+      }
+     ],
+     "instance_label": "s56_step4_2025_Winter",
+     "scenario_checksum": "58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e",
+     "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+     "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+    },
+    "n_days": 1,
+    "n_years": 1,
+    "record": {
+     "path": "data/SRP1/Results/P515S56/step4_instances_v1/step4_instances.json",
+     "sha256": "2d95b73d30b4572abb0459efa0b817866142473038c0d50db20c2dd16d95d425"
+    },
+    "w_b_own": {
+     "2025|Winter": 455.0
+    }
+   },
+   "B": {
+    "blocks": [
+     "2025|Summer",
+     "2035|Summer"
+    ],
+    "derived_instance": {
+     "case_path": "data/SRP1/Results/P515S56/step4_instances_v2/SRP1__s56_step4_2025_2035_Summer.json",
+     "case_sha256": "b1cd5440e70fb8cde8694b12f9e897037dcb072c4551fe97753e3785a1b6a00c",
+     "changes_vs_source": [
+      {
+       "from": {
+        "2025": 5,
+        "2030": 5,
+        "2035": 5
+       },
+       "key": "Years",
+       "to": {
+        "2025": 5,
+        "2035": 5
+       }
+      },
+      {
+       "from": {
+        "Autumn": 91,
+        "Spring": 92,
+        "Summer": 91,
+        "Winter": 91
+       },
+       "key": "Days",
+       "to": {
+        "Summer": 91
+       }
+      }
+     ],
+     "instance_label": "s56_step4_2025_2035_Summer",
+     "scenario_checksum": "ade7456c3d110e4cbc9aec7f701feb431854bd03ec1dc8f37601fc164721ed1a",
+     "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+     "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+    },
+    "n_days": 1,
+    "n_years": 2,
+    "record": {
+     "path": "data/SRP1/Results/P515S56/step4_instances_v2/step4_instance_b.json",
+     "sha256": "94e3c5ab6489c611207782ae40f4efe38f8f3383f87512c0db47bf4768b6a70d"
+    },
+    "w_b_own": {
+     "2025|Summer": 455.0,
+     "2035|Summer": 373.2584764431956
+    }
+   }
+  },
+  "required_consecutive_cycles": 10,
+  "runs": [
+   {
+    "arm": "V1",
+    "campaign_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_calib_v1/campaign_s56s4calib_v3_calib_A",
+    "cap": 140,
+    "instance": "A",
+    "label": "x0_V1_calib",
+    "phase": "calib"
+   },
+   {
+    "arm": "V1",
+    "campaign_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_calib_v1/campaign_s56s4calib_v3_calib_B",
+    "cap": 320,
+    "instance": "B",
+    "label": "x0_V1_calib",
+    "phase": "calib"
+   }
+  ],
+  "sigma_fixed_expected": 93635360.0,
+  "stopping": "production's per-cycle convergence (every Boyd channel passes and every local solve succeeded), its consecutive count, the convergence-depth tail (active in cycle k+1 iff cycle k converged; not sticky) and every other production rule are UNCHANGED; only the certificate length is raised to 10**9 by the harness key s56_certification_stop_disabled (stop_key), so each run ends at its cap (A 140, B 320) or at a declared stop (stops). Production's rho freeze backstop (freeze_backstop_cycle 200) applies unchanged and falls inside B's cap",
+  "v2_declaration": "V-2 is not run in v3 (V-1 only).",
+  "x0": {
+   "investment_year": 2025,
+   "label": "x0",
+   "map": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.0,
+     0.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   }
+  }
+ },
+ "ii_central_and_allowance": {
+  "R_eur": 10000.0,
+  "R_over_4_eur": 2500.0,
+  "allowance_rule": "e_b <= (R/4) x w_b / Sigma_12 w (S56_PLAN_v4 section 3)",
+  "blocks": {
+   "2025|Summer": {
+    "C_central_eur_per_day": 185674.155753,
+    "D1_floor_eur": null,
+    "allowance_eur": null,
+    "allowance_formula_value": null,
+    "calibrated": false,
+    "delta_pin_eur_per_day": null,
+    "instance": "B",
+    "w_b": 455.0,
+    "w_b_C_central_eur": 84481740.867615
+   },
+   "2025|Winter": {
+    "C_central_eur_per_day": 175188.67874987266,
+    "D1_floor_eur": {
+     "production_depth": 597.67,
+     "tail_depth": 45.67
+    },
+    "allowance_eur": 228.64,
+    "allowance_formula_value": 228.6388788256071,
+    "calibrated": true,
+    "delta_pin_eur_per_day": 0.4056,
+    "instance": "A",
+    "w_b": 455.0,
+    "w_b_C_central_eur": 79710848.83119206
+   },
+   "2035|Summer": {
+    "C_central_eur_per_day": 153017.21416429273,
+    "D1_floor_eur": {
+     "production_depth": 499.03,
+     "tail_depth": 40.58
+    },
+    "allowance_eur": 187.56,
+    "allowance_formula_value": 187.5635155299484,
+    "calibrated": true,
+    "delta_pin_eur_per_day": 4.8856,
+    "instance": "B",
+    "w_b": 373.2584764431956,
+    "w_b_C_central_eur": 57114972.228546076
+   }
+  },
+  "central": {
+   "2025|Summer": {
+    "C_central_eur_per_day": 185674.155753,
+    "role": "reported, not calibrated",
+    "source": "step 3 v2 S3-2 merged-default solution (185,674.1557530493 EUR/day); Planner ruling at 98b7f597: labelled merged-only (bias +0.035 EUR/day on 26 pairs), not used for calibration",
+    "status": "MERGED-ONLY"
+   },
+   "2025|Winter": {
+    "C_central_eur_per_day": 175188.67874987266,
+    "C_central_hex": "0x1.562a56e1469cap+17",
+    "source": "data/SRP1/Results/P515S56/step4_diag_v1/run_v1/step4_diag_results.json central.2025|Winter (run_v1 singles + S3-1 single 02)"
+   },
+   "2035|Summer": {
+    "C_central_eur_per_day": 153017.21416429273,
+    "C_central_hex": "0x1.2adc9b69bc4cap+17",
+    "source": "data/SRP1/Results/P515S56/step4_diag_v1/run_v1/step4_diag_results.json central.2035|Summer (step 3 run_v1 singles)"
+   }
+  },
+  "sum_12_w": 4975.0943752117555
+ },
+ "iii_tail_depth_only": {
+  "cross_check": "the S56 capture line of cycle k (read after the cycle's solves) records the options in force for the NEXT cycle's solves; recorded beside, never used to classify",
+  "rule": "calibration and acceptance on tail-depth cycles only (Expert X4-2 (a)); the production-depth floor (D-1: +597.67 EUR 2025|Winter, +499.03 EUR 2035|Summer, one-signed) is reported as a limitation",
+  "tail_depth_cycle": "cycle k (k >= 1) is tail-depth iff every record of round k in the run's network_ipopt_solve_records.jsonl (agents TSO, DSO5, DSO7, DSO9; every attempt) has compl_inf_tol_in_force == 1e-6, and there is at least one such record"
+ },
+ "kind": "addendum",
+ "labels": {
+  "calib": {
+   "V1": "x0_V1_calib"
+  }
+ },
+ "launcher": "p515_s56_step4_calib.py",
+ "measured_vs_projected": "every reported value is labelled measured, fitted or projected",
+ "memory_rule": "record vm_stat (free + inactive GiB) before each campaign and during it (at the cycle-40 look and at least hourly while a campaign runs)",
+ "nl_identity_check": {
+  "compare": {
+   "path": "data/SRP1/Results/P515S56/step4_calib_v1/harness_checks/stub/compare_20261123T185032.json",
+   "sha256": "b4b680b4e8e672da83222e2d5a60e9e8e68f921760d66dba682940f6bfd6285f"
+  },
+  "manifest": {
+   "path": "data/SRP1/Results/P515S56/step4_calib_v1/harness_checks_manifest_sha256.json",
+   "sha256": "7706cab2e82d22fc9c088860e8562b6fe4e10d46d7e51a914a4e2447e59be7c8"
+  },
+  "nokey": {
+   "path": "data/SRP1/Results/P515S56/step4_calib_v1/harness_checks/nokey/nokey_check.json",
+   "sha256": "7287ec517233d279606784de7506c716642baec12b8ffe419aa7181b17d9aabe"
+  },
+  "what": "zero-solve, instance A, stubbed solves with synthetic suffix values, keys off vs on: NL of every block at ADMM cycles 1-3 identical (12/12); diagnostics cycles 1-10 identical except required_consecutive_cycles; off certifies at 10, on runs to the cap; multiplier capture = stub values bitwise; option-off identity (nokey) 21/21"
+ },
+ "not_permitted": [
+  "production edits",
+  "other arms",
+  "any continuation beyond the caps",
+  "any run not in this spec",
+  "cap changes",
+  "overwriting committed artifacts (the step 4 evaluator / post-diagnostics are not re-run onto their outputs)",
+  "detached runs (screen, nohup, shell backgrounding)",
+  "pgrep -f wait loops",
+  "writes into .claude/worktrees/",
+  "touching TASKS.md",
+  "touching step4_db_resolve_v1/ or cohort_t8_binding_v1/"
+ ],
+ "objective_convention": "Q in EUR of total discounted cost. Coupled arms: primary gross_operational_cost = settlement excluded in full (pin excluded, salvage separate), contracted-excluded beside it. Pinned arms: gross_operational_cost = contracted settlement and pin excluded. C_central: step 3 gross EUR/day (settlement weight 0, no row 18, no pin, no salvage). e_b(k) = Q_b(k) - w_b C_central and D_b = w_b C_central - Q_pin,b in EUR of total discounted cost",
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S56/step4_main_v2/frozen_step4_main_spec_v2_7ca210fb.json",
+  "relation": "spec v2 7ca210fb (the step 4 main run, committed 5f1db156). v3 is v2 with the calibration re-run of Expert decision 1 (a): arm V-1 only, certification stop disabled, caps A 140 / B 320, prefix 46 / 107 bitwise against v2's V-1 runs, frozen decision rule, interface V upper-bound multipliers captured. Every v2 key not listed in why_v3.changed is verbatim",
+  "sha256": "7ca210fbcd645cc3f3d46554ce7efbdbf2abcedcd183aa825a8eaf160794ccb0"
+ },
+ "prefix_gate": {
+  "equality": "canonical json.dumps(sort_keys=True) of each line / record with the excluded keys removed recursively; floats compare by their JSON repr (exact round trip)",
+  "excluded_keys_declared_in_advance": [
+   "cycle_wall_s",
+   "rss_bytes",
+   "ru_maxrss_bytes",
+   "response_capture_s",
+   "capture_s",
+   "log_path",
+   "log_bytes",
+   "utc",
+   "pid",
+   "timestamp_utc",
+   "wall_s"
+  ],
+  "excluded_keys_source": "spec v2 m3 (unchanged): timing / process / path / byte-count fields only",
+  "files": {
+   "interface_duals_per_cycle.jsonl": "every cycle line with cycle <= P, header excluded (live and after)",
+   "network_ipopt_solve_records_append.jsonl": "every record of rounds 0..P in file order (live and after)",
+   "per_cycle_record.jsonl": "every line with cycle <= P (after the run)",
+   "s56_cycle_capture.jsonl": "every cycle line with cycle <= P, header excluded (live and after)"
+  },
+  "note_required_consecutive_cycles": "production's in-memory diagnostics row field required_consecutive_cycles records the certificate length in force (10**9 in v3); it is not a per_cycle_record field and is not compared",
+  "on_difference": "the run is stopped (stops) and reported",
+  "prefix_cycles": {
+   "A": 46,
+   "B": 107
+  },
+  "reference": {
+   "A": {
+    "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/a918ba210411acec_x0_v1_main",
+    "eval_key": "a918ba210411acece96b1c22bb4f948e603d3a77c789c454ca306d895e9913eb",
+    "files_sha256": {
+     "interface_duals_per_cycle.jsonl": "9f60aa4fefdd0090ded83259f5f65ed0df324aa5a7743181b090bc4bd9fd1722",
+     "network_ipopt_solve_records_append.jsonl": "c0e19c5260907199151b5b62b4c7630f1f384f5910de4f605f0c8be1f040345d",
+     "per_cycle_record.jsonl": "13b696eeb7184f823d52f5d76c03c79ff91d19f4d87c977f36cac3ae038d4d56",
+     "s56_cycle_capture.jsonl": "38e92197b98467eaa98a296faa295842cf4ad3b009ba10d92e4818589c04b6c0"
+    },
+    "manifest_class": {
+     "interface_duals_per_cycle.jsonl": "committed",
+     "network_ipopt_solve_records_append.jsonl": "hash-recorded only",
+     "per_cycle_record.jsonl": "committed",
+     "s56_cycle_capture.jsonl": "committed"
+    }
+   },
+   "B": {
+    "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/917aa06e2a2e1b55_x0_v1_main",
+    "eval_key": "917aa06e2a2e1b5574004b2be26037d1274973541a2bd34bac888e7f7f4f5e13",
+    "files_sha256": {
+     "interface_duals_per_cycle.jsonl": "ee8b2c63b036d111ff8fe22b0b5f601072a415565d5887a1418c4e4a1e33a91b",
+     "network_ipopt_solve_records_append.jsonl": "4954deca37eea2bdb298a8f98b06e460a289c0b506c1f37791dc0c1142423715",
+     "per_cycle_record.jsonl": "6c2a5be1bf88f4ee28a270608c15e064a8967734a54f08257c1df775c3169a06",
+     "s56_cycle_capture.jsonl": "762a8d281a4335185bb337d7ad5b314762d988b3b9208beb4fa221ddd6a0fc9a"
+    },
+    "manifest_class": {
+     "interface_duals_per_cycle.jsonl": "committed",
+     "network_ipopt_solve_records_append.jsonl": "hash-recorded only",
+     "per_cycle_record.jsonl": "committed",
+     "s56_cycle_capture.jsonl": "committed"
+    }
+   }
+  },
+  "what": "cycles 1..46 (A) / 1..107 (B) of the v3 run must reproduce step 4 main's V-1 per-cycle records bitwise, with the declared keys excluded; this also checks that the merged cohort code (7636fa7c) leaves the x0 coupled path unchanged"
+ },
+ "roots": {
+  "campaign_roots": {
+   "calib": {
+    "A": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_calib_v1/campaign_s56s4calib_v3_calib_A",
+    "B": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_calib_v1/campaign_s56s4calib_v3_calib_B"
+   }
+  },
+  "main_dir": "data/SRP1/Results/P515S56/step4_calib_v1",
+  "root_tag": "v3"
+ },
+ "solves": {
+  "evaluate": 0,
+  "expected_base_at_cap": {
+   "A": 987,
+   "B": 3531
+  },
+  "launcher_parent": 0,
+  "per_round": {
+   "A": 7,
+   "B": 11
+  },
+  "per_run": "per_round x (cycles_run + 1) + every recovery retry actually attempted (credited per failure event by the solve_profile identity)"
+ },
+ "stage": "P5.15 S56 validation step 4 CALIBRATION RE-RUN (Expert decision 1 (a)): arm V-1 only on instance A (2025|Winter) and instance B ({2025, 2035} x Summer); x0, alpha 0; certification stop disabled; caps A 140, B 320; prefix 1..46 / 1..107 bitwise against step 4 main V-1; frozen decision rule; interface V upper-bound multipliers captured",
+ "stop_key": {
+  "eval_key": "not keyed (W98 rule: the cap and the certificate length are spec-level); V-1 eval key = step 4 main's",
+  "harness_commit": "091b7745",
+  "how": "harness wrapper over production _capture_convergence_depth_tail_baseline (called once before cycle 1 when the tail is enabled): minimum_consecutive_converged_cycles 10 -> 10**9; restored after the run; no production edit",
+  "key": "s56_certification_stop_disabled",
+  "reads_of_the_parameter": {
+   "admm_parameters.py": {
+    "23": "default 2",
+    "396": "loaded from the case file",
+    "515-516": "validated >= 1"
+   },
+   "other_production_modules": "none (asserted before any solve by the harness, module-wide scan)",
+   "shared_resources_planning.py": {
+    "3474": "convergence = (consecutive_converged_cycles >= admm_parameters.minimum_consecutive_converged_cycles)  [the stop test]",
+    "3600": "'required_consecutive_cycles': admm_parameters.minimum_consecutive_converged_cycles,  [diagnostics row, reporting]",
+    "3774": "f'{admm_parameters.minimum_consecutive_converged_cycles} | '  [INFO print, reporting]",
+    "8774": "docstring text only (REMOVED: ...)"
+   }
+  },
+  "threshold": 1000000000
+ },
+ "stops": {
+  "harness_fault": "an exception, a guard mismatch, a child exit != 0",
+  "prefix": "a prefix item differs (live monitor, SIGINT to the launcher: the harness interrupt path)",
+  "projection": {
+   "at_cycle": 20,
+   "definition": "t(k) = the time the launcher monitor observed cycle k's capture line; mean s/cycle = (t(20) - t(1)) / 19; projection = (t(1) - t_launch) + mean x (cap - 1), t_launch = the mtime of the child's launch.json; projection > 4.5 h stops B",
+   "instances": [
+    "B"
+   ],
+   "limit_h": 4.5
+  }
+ },
+ "v_continuation": {
+  "status": "none: no continuation beyond the caps (not permitted in v3)"
+ },
+ "v_multiplier_capture": {
+  "file": "s56_interface_v_multipliers.jsonl",
+  "finding_row_or_bound": "the interface V upper limit is a constraint ROW voltage_magnitude_upper_cons (vmag_sqr - slack_up <= v_max^2) on both sides; on the TSO interface bus (PQ) the slack is fixed at 0 in the ADMM model and the vmag / vmag_sqr bounds are relaxed (1.15 / 1.3225), so the row carries the limit alone; on the DSO reference bus the slack is bounded [0, 0] AND vmag <= 1.1, vmag_sqr <= 1.21 are hard variable bounds (and e <= 1.1501), so the limit is held by the row and two coincident bounds (degenerate). All are captured: row dual (model.dual) and ipopt_zU_out of vmag_sqr, vmag, e, with vmag_sqr and e",
+  "harness_commit": "091b7745",
+  "how": "read from the import suffixes production already declares and loads after every solve; pure reads; no NL / solve change (nl_identity_check)",
+  "key": "s56_interface_v_multiplier_capture"
+ },
+ "version": 3,
+ "vi_predictions": {
+  "M1_adopted_tolerance": "decision_rule.operational.M1 (recorded, not a stop)",
+  "also_record": [
+   "terminal-step-to-threshold ratio and terminal Boyd ratios",
+   "local-solve failures",
+   "solve-count identity",
+   "peak RSS (child, IPOPT)",
+   "mean and per-cycle wall",
+   "vm_stat before, hourly, after",
+   "the evaluation record certification fields (structural; not a stop)"
+  ],
+  "recorded": {
+   "C1": "the prefix is bitwise on both instances.",
+   "C10": "if A enters and stays: its measured level (max over k >= k_in of the 2025|Winter Delta P omega-RMS) lies in [3e-5, 2.5e-4] MW. Basis: handback 3, ~1.2-1.3e-4 MW at the allowance's resolution; 9.4e-4 MW at the old exit.",
+   "C2": "A enters and stays, with k_in <= 100 and terminal |e_b(140)| <= 150 EUR. Basis: o1 decays ~0.93 per cycle; price -> 0; the o2 limit was fitted at 95-109 EUR.",
+   "C3": "on B 2035|Summer, the outcome is recorded as competing, with no directional prediction: enters and stays, or not.",
+   "C4": "price_b -> |price_b| <= 50 EUR by the cap on both calibration blocks.",
+   "C5": "peak child RSS <= 4 GiB; mean s/cycle A 18-26, B 38-52.",
+   "C6": "the V upper-bound multipliers are nonzero (the bound is active) on at least 90 % of interface entries at the terminal cycle.",
+   "C7": "A 2025|Winter: o1(140) in [40, 110] EUR. Basis: D1 o1 limit estimates 62.5 (held-out fit), 66.4 (settling_bar), 84.1 (LSQ3) EUR, r ~0.91.",
+   "C8": "A 2025|Winter: o2(140) in [80, 130] EUR. Basis: D1 o2 limit estimates 95.1, 97.2, 108.6 EUR, r ~0.85-0.86.",
+   "C9": "at the terminal cycle, the fraction of interface entries whose voltage sits at its 1.1 pu limit (margin <= 1.1e-6 pu) lies in [0.10, 0.40] on each side of each instance. Basis: D3 at the old exit: A TSO 186/648 = 0.287, DSO 116/648 = 0.179; B TSO 253/1296 = 0.195, DSO 179/1296 = 0.138. (This contradicts C6 unless the multipliers of entries below the limit are nonzero.)"
+  },
+  "recorded_failure": "failed predictions are recorded; the stops are only those of stops"
+ },
+ "why_v2": {
+  "changed": [
+   "version",
+   "predecessor",
+   "why_v2",
+   "roots",
+   "i_arms_instances_cap.runs[*].campaign_root",
+   "v_continuation.how (root name only)"
+  ],
+  "derivation_script": "p515_s56_step4_main_spec_v2_derive.py",
+  "killed_attempt_note": {
+   "path": "data/SRP1/Results/P515S56/step4_main_v1/killed_attempt_v1_note.json",
+   "sha256": "8a89c1d3a7475eda7f4cd6263453a562f96e941297558248c588d600c0a1866e"
+  },
+  "launcher_change": "p515_s56_step4_main.py takes MAIN_DIR, ROOT_TAG and the absolute campaign roots from this spec's roots block (apply_spec_roots); nothing else changed. Launcher records, logs, vm_stat snapshots and look-40 files go to roots.main_dir",
+  "reason": "relaunch of the step 4 main run (author authorization 2026-11-23, inside the existing 10-20 h). The v1 attempt (instance B, step4_main_v1/campaign_s56s4main_v1_main_B, launched 14:47:08 UTC) was killed by the Claude session exit before cycle 1; its root is preserved and committed (4e6bb1d3), so v1's roots cannot be reused (write-once)",
+  "unchanged": "everything else, verbatim from v1 (arms, instances, predictions, cap, cycle-40 look, continuation)"
+ },
+ "why_v3": {
+  "changed_in_i_arms_instances_cap": [
+   "i_arms_instances_cap.arms",
+   "i_arms_instances_cap.cap",
+   "i_arms_instances_cap.runs",
+   "i_arms_instances_cap.execution_order",
+   "i_arms_instances_cap.stopping",
+   "i_arms_instances_cap.v2_declaration"
+  ],
+  "changed_top_level": [
+   "version",
+   "predecessor",
+   "why_v3",
+   "stage",
+   "authority",
+   "cites",
+   "roots",
+   "cap",
+   "labels",
+   "launcher",
+   "harness",
+   "solves",
+   "concurrency_per_campaign",
+   "failure_policy",
+   "not_permitted",
+   "iv_cycle40_look",
+   "v_continuation",
+   "vi_predictions",
+   "m3",
+   "prefix_gate",
+   "stops",
+   "captures",
+   "decision_rule",
+   "nl_identity_check",
+   "stop_key",
+   "v_multiplier_capture",
+   "evaluation"
+  ],
+  "derivation_script": "p515_s56_step4_calib_spec_v3_derive.py",
+  "reason": "Expert handback 3 decision 1 (a) APPROVED (TASKS.md \"Expert rulings on handback 3 (2026-11-23)\" item 1): the per-block allowance cannot be reached at production certification; re-run V-1 with the certification stop disabled to a declared cap",
+  "unchanged_checked_equal": [
+   "ii_central_and_allowance",
+   "iii_tail_depth_only",
+   "objective_convention",
+   "memory_rule",
+   "measured_vs_projected",
+   "kind",
+   "coupling_gates_literals_source",
+   "i_arms_instances_cap.alpha",
+   "i_arms_instances_cap.configuration",
+   "i_arms_instances_cap.instances",
+   "i_arms_instances_cap.required_consecutive_cycles",
+   "i_arms_instances_cap.sigma_fixed_expected",
+   "i_arms_instances_cap.x0"
+  ]
+ }
+}

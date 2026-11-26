@@ -1,0 +1,443 @@
+{
+ "schema": "p515_s53_w89_3x3_instance_record_v1",
+ "stage": "P5.15 Addendum 46, W89 step 2 -- the 3 x 3 pair (x = 0 and the smallest node-7 unit) on the prefix-draw 3 x 3 instance under production + the tight tail {True, 1e-6}; certified-model persistence and concurrency decided by the declared memory rule",
+ "utc": "2026-09-25T19:42:30.039485+00:00",
+ "git_head": "fb73b9b0d0a6819d2bb3dea18e09b74c7d26635d",
+ "script": "p515_s53_w89_3x3_campaign.py",
+ "script_sha256_at_instance_freeze": "efab5da1ee67d4c3fa5df3e990e192aa99c8fca9e921f578cfc8c5bbb9a1cf2d",
+ "instance_label": "s53_3x3",
+ "case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+ "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+ "derive_base": "paper",
+ "derive_overrides": {
+  "num_market_scenarios": 3,
+  "num_operation_scenarios": 3
+ },
+ "derive_description": "the paper instance: 5 representative years (2025, 2028, 2031, 2034, 2037; each a 3-year block, sum 15) x 4 days x 5 market x 5 operation scenarios (25 combinations per block)",
+ "changes_vs_source": [
+  {
+   "key": "Years",
+   "from": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "to": {
+    "2025": 3,
+    "2028": 3,
+    "2031": 3,
+    "2034": 3,
+    "2037": 3
+   }
+  },
+  {
+   "key": "NumMarketScenarios",
+   "from": 1,
+   "to": 3
+  },
+  {
+   "key": "TransmissionNetwork[case9].num_operation_scenarios",
+   "from": 1,
+   "to": 3
+  },
+  {
+   "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+   "from": 1,
+   "to": 3
+  },
+  {
+   "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+   "from": 1,
+   "to": 3
+  },
+  {
+   "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+   "from": 1,
+   "to": 3
+  }
+ ],
+ "source_case": {
+  "path": "data/SRP1/SRP1.json",
+  "sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+ },
+ "paper_case": {
+  "path": "data/SRP1/Results/P515S44/scale_measurement/paper_build/case/SRP1__paper.json",
+  "sha256": "d726307c1949d91b34b00241fbc713412c689b113222929133eda38d9756ca14",
+  "scenario_checksum": "1e8bdd3e5233442a87fbe44b78281c8ae61b09c09700388fed20ab9684d18aef",
+  "rederived_byte_identical": true,
+  "paper_changes_vs_source": [
+   {
+    "key": "Years",
+    "from": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "to": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    }
+   },
+   {
+    "key": "NumMarketScenarios",
+    "from": 1,
+    "to": 5
+   },
+   {
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "from": 1,
+    "to": 5
+   },
+   {
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "from": 1,
+    "to": 5
+   },
+   {
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "from": 1,
+    "to": 5
+   },
+   {
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "from": 1,
+    "to": 5
+   }
+  ],
+  "read_checksum": "1e8bdd3e5233442a87fbe44b78281c8ae61b09c09700388fed20ab9684d18aef"
+ },
+ "derived_instance_declaration": {
+  "instance_label": "s53_3x3",
+  "case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+  "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+  "scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+  "source_case_path": "data/SRP1/SRP1.json",
+  "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+  "changes_vs_source": [
+   {
+    "key": "Years",
+    "from": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "to": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    }
+   },
+   {
+    "key": "NumMarketScenarios",
+    "from": 1,
+    "to": 3
+   },
+   {
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "from": 1,
+    "to": 3
+   },
+   {
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "from": 1,
+    "to": 3
+   },
+   {
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "from": 1,
+    "to": 3
+   },
+   {
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "from": 1,
+    "to": 3
+   }
+  ]
+ },
+ "prefix_verification": {
+  "definition": "for every network block of the 3 x 3 read: every realized scenario array (market energy and flexibility prices; per load pd, qd, flexibility active-power up / down; per generator pg, qg), as float64 bytes, equals the first 3 scenario rows of the same array in the 5 x 5 read",
+  "n_blocks": 80,
+  "n_arrays_compared": 9040,
+  "arrays_per_family": {
+   "cost_energy_p": 80,
+   "cost_flex": 80,
+   "gen.pg": 480,
+   "gen.qg": 480,
+   "load.flex_p_down": 1980,
+   "load.flex_p_up": 1980,
+   "load.pd": 1980,
+   "load.qd": 1980
+  },
+  "n_mismatches": 0,
+  "mismatches_first": [],
+  "same_networks_years_days": true,
+  "probabilities_3x3_all_one_third": true,
+  "probabilities_sample": {
+   "TSO|2025|Spring": {
+    "market": [
+     0.3333333333333333,
+     0.3333333333333333,
+     0.3333333333333333
+    ],
+    "operation": [
+     0.3333333333333333,
+     0.3333333333333333,
+     0.3333333333333333
+    ]
+   },
+   "TSO|2025|Summer": {
+    "market": [
+     0.3333333333333333,
+     0.3333333333333333,
+     0.3333333333333333
+    ],
+    "operation": [
+     0.3333333333333333,
+     0.3333333333333333,
+     0.3333333333333333
+    ]
+   }
+  },
+  "prefix_holds": true,
+  "realized_subset_market": [
+   1,
+   2,
+   3
+  ],
+  "realized_subset_operation": [
+   1,
+   2,
+   3
+  ]
+ },
+ "prefix_draw": {
+  "market": [
+   1,
+   2,
+   3
+  ],
+  "operation": [
+   1,
+   2,
+   3
+  ],
+  "R_recorded": 0.9331,
+  "selection_source": {
+   "path": "data/SRP1/Results/P515S53/selection_3x3/selection_3x3.json",
+   "sha256": "291be9c798d7914a8d5962871aa266e3e88d9a6f01ef8cbaa9a69101605cdd12"
+  },
+  "selection_row_for_subset": {
+   "subset": [
+    1,
+    2,
+    3
+   ],
+   "spread_u": 91.29940620053189,
+   "spread_r2": 90.53144561322347,
+   "R_u": 0.9317134866483382,
+   "R_r2": 0.933141801512231,
+   "R_gn": 0.9111032979671895,
+   "abs_diff_u_to_target": 0.4283531963870928
+  },
+  "selection_rank_of_subset": 4,
+  "selection_selected": [
+   2,
+   3,
+   4
+  ],
+  "R_r2_rounds_to_recorded": true,
+  "w52_index_level_check": {
+   "note": "index-level only, dummy frame of the pool size; seeds recomputed with production's derive_random_seed and the labels of _read_market_data_from_file and _update_network_with_operational_data (network.random_seed read from the production objects). Checks whether DataFrame.sample(n=3) is the first 3 rows of DataFrame.sample(n=5) for the same seed. No seed depends on the scenario count.",
+   "market_seeds_checked": 40,
+   "market_prefix_true": 40,
+   "operation_seeds_checked": 10620,
+   "operation_prefix_true": 10620,
+   "first_failures": [],
+   "implication": "market prefix 40/40, operation prefix 10620/10620. If all true, a case derived with NumMarketScenarios = 3 and num_operation_scenarios = 3 (the p515_s44_scale_measurement.derive_case route used for the 2 x 2 pilot) holds exactly indices [1, 2, 3] in both dimensions, NOT the selected market [2, 3, 4] x operation [4, 5, 1]. Indices [1, 2, 3] rank 4 of 10 on the market rule (spread_u 91.2994, R_r2 0.9331). Realizing the selected set needs a selection mechanism the derive route does not have."
+  }
+ },
+ "facts": {
+  "scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+  "planning_dimensions": {
+   "years": {
+    "2025": 3,
+    "2028": 3,
+    "2031": 3,
+    "2034": 3,
+    "2037": 3
+   },
+   "days": {
+    "Spring": 92,
+    "Summer": 91,
+    "Autumn": 91,
+    "Winter": 91
+   },
+   "num_instants": 24,
+   "random_seed": 2026,
+   "num_market_scenarios": 3,
+   "num_operation_scenarios": {
+    "case9": 3,
+    "case33_1": 3,
+    "case33_2": 3,
+    "case33_3": 3
+   },
+   "active_distribution_network_nodes": [
+    5,
+    7,
+    9
+   ],
+   "scenario_metadata": {
+    "random_seed": 2026,
+    "deterministic_scenarios": true,
+    "market_scenario_checksum": "bf2869084ed4bf59f6b1b5bd875e7ef5b2a6e7c764f7a160ebb3bdb2684d7904",
+    "operational_scenario_checksum": "4497bf25605b718972fc96cd6bb723eb6cbd9045e793f8b96a420e0fafb001c2",
+    "combined_scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193"
+   }
+  },
+  "expected_block_counts": {
+   "tso_blocks": 20,
+   "dso_blocks": 60,
+   "network_blocks": 80,
+   "esso_models": 3,
+   "solves_per_cycle": 83
+  },
+  "declared_solve_profile_per_cycle": 83,
+  "n_tso_blocks": 20,
+  "n_dso_blocks": 60,
+  "num_market_scenarios": 3,
+  "num_operation_scenarios_per_network": {
+   "TSO": 3,
+   "DSO5": 3,
+   "DSO7": 3,
+   "DSO9": 3
+  },
+  "B_blocks_per_round": 80,
+  "block_weights_tso": {
+   "2025|Spring": 276.0,
+   "2025|Summer": 273.0,
+   "2025|Autumn": 273.0,
+   "2025|Winter": 273.0,
+   "2028|Spring": 260.08096433498423,
+   "2028|Summer": 257.2539973313431,
+   "2028|Autumn": 257.2539973313431,
+   "2028|Winter": 257.2539973313431,
+   "2031|Spring": 245.080101483389,
+   "2031|Summer": 242.4161873368304,
+   "2031|Autumn": 242.4161873368304,
+   "2031|Winter": 242.4161873368304,
+   "2034|Spring": 230.94445338085367,
+   "2034|Summer": 228.4341875832357,
+   "2034|Autumn": 228.4341875832357,
+   "2034|Winter": 228.4341875832357,
+   "2037|Spring": 217.62411646053712,
+   "2037|Summer": 215.25863693379213,
+   "2037|Autumn": 215.25863693379213,
+   "2037|Winter": 215.25863693379213
+  },
+  "median_block_weight_production": 242.4161873368304,
+  "min_hourly_mean_price": 8.835305263705715,
+  "premium_floor_needed": false,
+  "investment_cost": {
+   "x0": {
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "I_x_eur_master_expression": 0.0,
+    "I_x_eur_p56a_transcription": 0.0,
+    "case_file_budget_eur": 1000000.0
+   },
+   "n7_4h_e1": {
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "I_x_eur_master_expression": 317957.0085035586,
+    "I_x_eur_p56a_transcription": 317957.0085035586,
+    "case_file_budget_eur": 1000000.0
+   }
+  },
+  "investment_cost_note": "production master expression on THIS instance (no solve); scenario-free, so it equals the 2 x 2 instance's (same years)"
+ },
+ "checks": {
+  "years_as_paper": true,
+  "changes_only_scenario_counts_and_years": true,
+  "paper_case_rederives_byte_identical": true,
+  "paper_read_checksum_equals_committed": true,
+  "prefix_holds_on_realized_arrays": true,
+  "probabilities_one_third": true,
+  "B_equals_80": true,
+  "dso_tso_blocks": true,
+  "solves_per_cycle_83": true,
+  "no_premium_floor_needed": true,
+  "scenario_checksum_differs_from_5x5": true
+ },
+ "all_checks_pass": true,
+ "reads": {
+  "3x3": {
+   "redirected_to": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w89_instance2/w89_3x3_s5fw2n6w",
+   "wall_s": 14.614297151565552
+  },
+  "5x5": {
+   "redirected_to": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w89_instance2/w89_5x5_b13d_3lz",
+   "wall_s": 12.211843967437744
+  }
+ },
+ "solve_claim": "ZERO SOLVES, guard-verified (every armed permitted=() guard verify(0))",
+ "guards": {
+  "alpha_row_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w86_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w87": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w88": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_step1": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_3x3_parent": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  }
+ },
+ "wall_s": 26.928891897201538
+}

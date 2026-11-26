@@ -1,0 +1,984 @@
+{
+ "stage": "P5.15 Addendum 26 zero-solve confirmations (frozen spec v14)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 26",
+  "STEP4_DFO_METHOD.md v1 Sec 1.2-1.3, Sec 9",
+  "data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json (key addendum26_confirmations_zero_solve)"
+ ],
+ "spec_sha256": "e4500e272be84e158e763256e1c7156593f89bdb50d197d0801dbf70d1d22c9b",
+ "spec_key": [
+  "confirm the committed data/SRP1/SharedESS/SRP1_ESS.xlsx is the author's corrected cost file (git history, content of the unit-cost sheets) and record its sha256",
+  "report I(x) (STEP4_DFO_METHOD.md 1.3: discounted, scenario-weighted, exactly model.investment_cost) and the budget slack B - I(x), B = budget 1e6, at the paper's plan and at C*; state units and whether budget and max_capacity (5.0) are active in the model",
+  "confirm whether x = 0 (no storage at ANY node) is evaluable by the oracle",
+  "report whether the ESSO capacity multipliers (duals of the capacity rows) are available without extra solves"
+ ],
+ "started_utc": "2026-09-19T08:14:35.598117+00:00",
+ "git_HEAD": "96fa8cc8b3c8727d3576da5b94cced5140bc3627",
+ "script_sha256": "95aba9475c2a57532215cbd238e8906606bd09892445246e67807d9c8c7f52c2",
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "preflight": {
+  "checked_with": "ps -axo pid=,command=",
+  "other_p5_harness_processes": []
+ },
+ "result": {
+  "formula": {
+   "I_x": "sum_{e,y} (1+d)^-(year_y - year_0) * sum_m omega_m * (c^S_{m,year_y} * es_s_investment[e,y] + c^E_{m,year_y} * es_e_investment[e,y])",
+   "source_expression": "shared_energy_storage_data.py:381",
+   "objective_uses_it": "shared_energy_storage_data.py:382",
+   "salvage_in_I_x": false,
+   "evaluation": "production master built by shared_ess_data.build_master_problem(); candidate loaded by shared_ess_data.load_candidate_solution_into_master_model (shared_energy_storage_data.py:1406-1416); pe.value(model.investment_cost); no solve",
+   "cross_check": "p56a_oracle.investment_cost (p56a_oracle.py:214-231)"
+  },
+  "units": {
+   "x_power": "MVA",
+   "x_energy": "MWh",
+   "unit_costs": "EUR/MVA (\"S, [\u20ac/MVA]\") and EUR/MWh (\"E, [\u20ac, MWh]\") per sheet header",
+   "I_x_and_budget": "EUR (budget: case file \"budget\" 1e6; SharedEnergyStorageParameters default comment \"1 M m.u.\")",
+   "candidate_units_evidence": "network_data.py:2909 (candidate MVA divided by baseMVA)"
+  },
+  "case_file_values": {
+   "budget": 1000000.0,
+   "max_capacity": 5.0,
+   "min_energy_to_power_ratio": 2.0,
+   "max_energy_to_power_ratio": 10.0,
+   "discount_factor": 0.02,
+   "scenario_weights": [
+    0.35,
+    0.55,
+    0.1
+   ]
+  },
+  "committed_cost_file": {
+   "paper_plan": {
+    "source": "spec v14 item3_selection_run.candidates.paper_plan; Addendum 26 task",
+    "investment_mva_mwh_year_2025": {
+     "7": {
+      "s_mva": 1.62,
+      "e_mwh": 3.24
+     }
+    },
+    "I_x_eur_master_expression": 1073285.0052218095,
+    "I_x_per_node_eur": {
+     "5": 0.0,
+     "7": 1073285.0052218095,
+     "9": 0.0
+    },
+    "budget_eur": 1000000.0,
+    "budget_slack_B_minus_I_eur": -73285.0052218095,
+    "I_over_B": 1.0732850052218095,
+    "master_rows": {
+     "budget_row_body_eur": 1073285.0052218095,
+     "budget_row_ub_eur": 1000000.0,
+     "budget_slack_from_row_eur": -73285.0052218095,
+     "max_capacity_rows_violated": [],
+     "ratio_rows_violated": []
+    },
+    "first_stage_feasible": false,
+    "first_stage_reasons": "investment budget violated",
+    "I_x_eur_p56a_transcription": 1073285.0052218093,
+    "abs_diff_master_vs_transcription_eur": 2.3283064365386963e-10
+   },
+   "c_star": {
+    "source": "spec v14 item3_selection_run.candidates.C_star; Addendum 26 task",
+    "investment_mva_mwh_year_2025": {
+     "5": {
+      "s_mva": 0.96875,
+      "e_mwh": 3.875
+     },
+     "7": {
+      "s_mva": 0.96875,
+      "e_mwh": 3.875
+     },
+     "9": {
+      "s_mva": 0.96875,
+      "e_mwh": 3.875
+     }
+    },
+    "I_x_eur_master_expression": 3105984.6238091392,
+    "I_x_per_node_eur": {
+     "5": 1035328.2079363797,
+     "7": 1035328.2079363797,
+     "9": 1035328.2079363797
+    },
+    "budget_eur": 1000000.0,
+    "budget_slack_B_minus_I_eur": -2105984.6238091392,
+    "I_over_B": 3.1059846238091393,
+    "master_rows": {
+     "budget_row_body_eur": 3105984.6238091392,
+     "budget_row_ub_eur": 1000000.0,
+     "budget_slack_from_row_eur": -2105984.6238091392,
+     "max_capacity_rows_violated": [],
+     "ratio_rows_violated": []
+    },
+    "first_stage_feasible": false,
+    "first_stage_reasons": "investment budget violated",
+    "I_x_eur_p56a_transcription": 3105984.623809139,
+    "abs_diff_master_vs_transcription_eur": 4.656612873077393e-10
+   },
+   "lattice_c_star": {
+    "source": "Addendum 26 \"Reference candidates on the lattice\": C* -> 1.0 MVA / 4.0 MWh at all nodes",
+    "investment_mva_mwh_year_2025": {
+     "5": {
+      "s_mva": 1.0,
+      "e_mwh": 4.0
+     },
+     "7": {
+      "s_mva": 1.0,
+      "e_mwh": 4.0
+     },
+     "9": {
+      "s_mva": 1.0,
+      "e_mwh": 4.0
+     }
+    },
+    "I_x_eur_master_expression": 3206177.676190079,
+    "I_x_per_node_eur": {
+     "5": 1068725.8920633597,
+     "7": 1068725.8920633597,
+     "9": 1068725.8920633597
+    },
+    "budget_eur": 1000000.0,
+    "budget_slack_B_minus_I_eur": -2206177.676190079,
+    "I_over_B": 3.2061776761900793,
+    "master_rows": {
+     "budget_row_body_eur": 3206177.676190079,
+     "budget_row_ub_eur": 1000000.0,
+     "budget_slack_from_row_eur": -2206177.676190079,
+     "max_capacity_rows_violated": [],
+     "ratio_rows_violated": []
+    },
+    "first_stage_feasible": false,
+    "first_stage_reasons": "investment budget violated",
+    "I_x_eur_p56a_transcription": 3206177.676190079,
+    "abs_diff_master_vs_transcription_eur": 0.0
+   },
+   "lattice_paper_plan": {
+    "source": "Addendum 26 \"Reference candidates on the lattice\": plan -> 1.5 MVA / 3.0 MWh at node 7",
+    "investment_mva_mwh_year_2025": {
+     "7": {
+      "s_mva": 1.5,
+      "e_mwh": 3.0
+     }
+    },
+    "I_x_eur_master_expression": 993782.4122424161,
+    "I_x_per_node_eur": {
+     "5": 0.0,
+     "7": 993782.4122424161,
+     "9": 0.0
+    },
+    "budget_eur": 1000000.0,
+    "budget_slack_B_minus_I_eur": 6217.58775758394,
+    "I_over_B": 0.993782412242416,
+    "master_rows": {
+     "budget_row_body_eur": 993782.4122424161,
+     "budget_row_ub_eur": 1000000.0,
+     "budget_slack_from_row_eur": 6217.58775758394,
+     "max_capacity_rows_violated": [],
+     "ratio_rows_violated": []
+    },
+    "first_stage_feasible": true,
+    "first_stage_reasons": "",
+    "I_x_eur_p56a_transcription": 993782.412242416,
+    "abs_diff_master_vs_transcription_eur": 1.1641532182693481e-10
+   },
+   "node7_empty": {
+    "source": "spec v14 item3_selection_run.candidates.node7_empty (context only)",
+    "investment_mva_mwh_year_2025": {
+     "5": {
+      "s_mva": 0.96875,
+      "e_mwh": 3.875
+     },
+     "9": {
+      "s_mva": 0.96875,
+      "e_mwh": 3.875
+     }
+    },
+    "I_x_eur_master_expression": 2070656.4158727594,
+    "I_x_per_node_eur": {
+     "5": 1035328.2079363797,
+     "7": 0.0,
+     "9": 1035328.2079363797
+    },
+    "budget_eur": 1000000.0,
+    "budget_slack_B_minus_I_eur": -1070656.4158727594,
+    "I_over_B": 2.0706564158727594,
+    "master_rows": {
+     "budget_row_body_eur": 2070656.4158727594,
+     "budget_row_ub_eur": 1000000.0,
+     "budget_slack_from_row_eur": -1070656.4158727594,
+     "max_capacity_rows_violated": [],
+     "ratio_rows_violated": []
+    },
+    "first_stage_feasible": false,
+    "first_stage_reasons": "investment budget violated",
+    "I_x_eur_p56a_transcription": 2070656.4158727592,
+    "abs_diff_master_vs_transcription_eur": 2.3283064365386963e-10
+   },
+   "two_c_star": {
+    "source": "spec v14 item3_selection_run.candidates.two_c_star (context only)",
+    "investment_mva_mwh_year_2025": {
+     "5": {
+      "s_mva": 1.9375,
+      "e_mwh": 7.75
+     },
+     "7": {
+      "s_mva": 1.9375,
+      "e_mwh": 7.75
+     },
+     "9": {
+      "s_mva": 1.9375,
+      "e_mwh": 7.75
+     }
+    },
+    "I_x_eur_master_expression": 6211969.2476182785,
+    "I_x_per_node_eur": {
+     "5": 2070656.4158727594,
+     "7": 2070656.4158727594,
+     "9": 2070656.4158727594
+    },
+    "budget_eur": 1000000.0,
+    "budget_slack_B_minus_I_eur": -5211969.2476182785,
+    "I_over_B": 6.211969247618279,
+    "master_rows": {
+     "budget_row_body_eur": 6211969.2476182785,
+     "budget_row_ub_eur": 1000000.0,
+     "budget_slack_from_row_eur": -5211969.2476182785,
+     "max_capacity_rows_violated": [
+      {
+       "row": 1,
+       "body_mwh": 7.75,
+       "ub": 5.0
+      },
+      {
+       "row": 2,
+       "body_mwh": 7.75,
+       "ub": 5.0
+      },
+      {
+       "row": 3,
+       "body_mwh": 7.75,
+       "ub": 5.0
+      },
+      {
+       "row": 4,
+       "body_mwh": 7.75,
+       "ub": 5.0
+      },
+      {
+       "row": 5,
+       "body_mwh": 7.75,
+       "ub": 5.0
+      },
+      {
+       "row": 6,
+       "body_mwh": 7.75,
+       "ub": 5.0
+      },
+      {
+       "row": 7,
+       "body_mwh": 7.75,
+       "ub": 5.0
+      },
+      {
+       "row": 8,
+       "body_mwh": 7.75,
+       "ub": 5.0
+      },
+      {
+       "row": 9,
+       "body_mwh": 7.75,
+       "ub": 5.0
+      }
+     ],
+     "ratio_rows_violated": []
+    },
+    "first_stage_feasible": false,
+    "first_stage_reasons": "maximum energy capacity violated at node 5, year 2025; maximum energy capacity violated at node 5, year 2030; maximum energy capacity violated at node 5, year 2035; maximum energy capacity violated at node 7, year 2025; maximum energy capacity violated at node 7, year 2030; maximum energy capacity violated at node 7, year 2035; maximum energy capacity violated at node 9, year 2025; maximum energy capacity violated at node 9, year 2030; maximum energy capacity violated at node 9, year 2035; investment budget violated",
+    "I_x_eur_p56a_transcription": 6211969.247618278,
+    "abs_diff_master_vs_transcription_eur": 9.313225746154785e-10
+   },
+   "zero": {
+    "source": "item 3 (x = 0 at every node)",
+    "investment_mva_mwh_year_2025": {},
+    "I_x_eur_master_expression": 0.0,
+    "I_x_per_node_eur": {
+     "5": 0.0,
+     "7": 0.0,
+     "9": 0.0
+    },
+    "budget_eur": 1000000.0,
+    "budget_slack_B_minus_I_eur": 1000000.0,
+    "I_over_B": 0.0,
+    "master_rows": {
+     "budget_row_body_eur": 0.0,
+     "budget_row_ub_eur": 1000000.0,
+     "budget_slack_from_row_eur": 1000000.0,
+     "max_capacity_rows_violated": [],
+     "ratio_rows_violated": []
+    },
+    "first_stage_feasible": true,
+    "first_stage_reasons": "",
+    "I_x_eur_p56a_transcription": 0.0,
+    "abs_diff_master_vs_transcription_eur": 0.0
+   }
+  },
+  "other_blobs_of_the_same_path_sensitivity": {
+   "8a7e374445de4ccd9e5a07248967388fd804b552": {
+    "blob_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+    "read_by": "shared_energy_storage_data.py:1641-1651 (production reader, temporary copy of the git blob)",
+    "expected_unit_costs_per_case_year": {
+     "2025": {
+      "discount_multiplier": 1.0,
+      "power_eur_per_mva_undiscounted": 256317.32425986166,
+      "energy_eur_per_mwh_undiscounted": 253877.6774385931,
+      "power_eur_per_mva_discounted": 256317.32425986166,
+      "energy_eur_per_mwh_discounted": 253877.6774385931
+     },
+     "2030": {
+      "discount_multiplier": 0.9057308098299159,
+      "power_eur_per_mva_undiscounted": 210199.41771354218,
+      "energy_eur_per_mwh_undiscounted": 208198.72446060603,
+      "power_eur_per_mva_discounted": 190384.08883146333,
+      "energy_eur_per_mwh_discounted": 188571.99931126024
+     },
+     "2035": {
+      "discount_multiplier": 0.8203482998751551,
+      "power_eur_per_mva_undiscounted": 194559.9601549204,
+      "energy_eur_per_mwh_undiscounted": 192708.1243895905,
+      "power_eur_per_mva_discounted": 159606.93253686687,
+      "energy_eur_per_mwh_discounted": 158087.7822151305
+     }
+    },
+    "candidates": {
+     "paper_plan": {
+      "source": "spec v14 item3_selection_run.candidates.paper_plan; Addendum 26 task",
+      "investment_mva_mwh_year_2025": {
+       "7": {
+        "s_mva": 1.62,
+        "e_mwh": 3.24
+       }
+      },
+      "I_x_eur_master_expression": 1237797.7402020176,
+      "I_x_per_node_eur": {
+       "5": 0.0,
+       "7": 1237797.7402020176,
+       "9": 0.0
+      },
+      "budget_eur": 1000000.0,
+      "budget_slack_B_minus_I_eur": -237797.7402020176,
+      "I_over_B": 1.2377977402020175,
+      "master_rows": {
+       "budget_row_body_eur": 1237797.7402020176,
+       "budget_row_ub_eur": 1000000.0,
+       "budget_slack_from_row_eur": -237797.7402020176,
+       "max_capacity_rows_violated": [],
+       "ratio_rows_violated": []
+      },
+      "first_stage_feasible": false,
+      "first_stage_reasons": "investment budget violated"
+     },
+     "c_star": {
+      "source": "spec v14 item3_selection_run.candidates.C_star; Addendum 26 task",
+      "investment_mva_mwh_year_2025": {
+       "5": {
+        "s_mva": 0.96875,
+        "e_mwh": 3.875
+       },
+       "7": {
+        "s_mva": 0.96875,
+        "e_mwh": 3.875
+       },
+       "9": {
+        "s_mva": 0.96875,
+        "e_mwh": 3.875
+       }
+      },
+      "I_x_eur_master_expression": 3696250.2238538675,
+      "I_x_per_node_eur": {
+       "5": 1232083.4079512893,
+       "7": 1232083.4079512893,
+       "9": 1232083.4079512893
+      },
+      "budget_eur": 1000000.0,
+      "budget_slack_B_minus_I_eur": -2696250.2238538675,
+      "I_over_B": 3.6962502238538675,
+      "master_rows": {
+       "budget_row_body_eur": 3696250.2238538675,
+       "budget_row_ub_eur": 1000000.0,
+       "budget_slack_from_row_eur": -2696250.2238538675,
+       "max_capacity_rows_violated": [],
+       "ratio_rows_violated": []
+      },
+      "first_stage_feasible": false,
+      "first_stage_reasons": "investment budget violated"
+     },
+     "lattice_c_star": {
+      "source": "Addendum 26 \"Reference candidates on the lattice\": C* -> 1.0 MVA / 4.0 MWh at all nodes",
+      "investment_mva_mwh_year_2025": {
+       "5": {
+        "s_mva": 1.0,
+        "e_mwh": 4.0
+       },
+       "7": {
+        "s_mva": 1.0,
+        "e_mwh": 4.0
+       },
+       "9": {
+        "s_mva": 1.0,
+        "e_mwh": 4.0
+       }
+      },
+      "I_x_eur_master_expression": 3815484.102042702,
+      "I_x_per_node_eur": {
+       "5": 1271828.0340142343,
+       "7": 1271828.0340142343,
+       "9": 1271828.0340142343
+      },
+      "budget_eur": 1000000.0,
+      "budget_slack_B_minus_I_eur": -2815484.102042702,
+      "I_over_B": 3.815484102042702,
+      "master_rows": {
+       "budget_row_body_eur": 3815484.102042702,
+       "budget_row_ub_eur": 1000000.0,
+       "budget_slack_from_row_eur": -2815484.102042702,
+       "max_capacity_rows_violated": [],
+       "ratio_rows_violated": []
+      },
+      "first_stage_feasible": false,
+      "first_stage_reasons": "investment budget violated"
+     },
+     "lattice_paper_plan": {
+      "source": "Addendum 26 \"Reference candidates on the lattice\": plan -> 1.5 MVA / 3.0 MWh at node 7",
+      "investment_mva_mwh_year_2025": {
+       "7": {
+        "s_mva": 1.5,
+        "e_mwh": 3.0
+       }
+      },
+      "I_x_eur_master_expression": 1146109.018705572,
+      "I_x_per_node_eur": {
+       "5": 0.0,
+       "7": 1146109.018705572,
+       "9": 0.0
+      },
+      "budget_eur": 1000000.0,
+      "budget_slack_B_minus_I_eur": -146109.018705572,
+      "I_over_B": 1.146109018705572,
+      "master_rows": {
+       "budget_row_body_eur": 1146109.018705572,
+       "budget_row_ub_eur": 1000000.0,
+       "budget_slack_from_row_eur": -146109.018705572,
+       "max_capacity_rows_violated": [],
+       "ratio_rows_violated": []
+      },
+      "first_stage_feasible": false,
+      "first_stage_reasons": "investment budget violated"
+     },
+     "node7_empty": {
+      "source": "spec v14 item3_selection_run.candidates.node7_empty (context only)",
+      "investment_mva_mwh_year_2025": {
+       "5": {
+        "s_mva": 0.96875,
+        "e_mwh": 3.875
+       },
+       "9": {
+        "s_mva": 0.96875,
+        "e_mwh": 3.875
+       }
+      },
+      "I_x_eur_master_expression": 2464166.815902578,
+      "I_x_per_node_eur": {
+       "5": 1232083.4079512893,
+       "7": 0.0,
+       "9": 1232083.4079512893
+      },
+      "budget_eur": 1000000.0,
+      "budget_slack_B_minus_I_eur": -1464166.8159025782,
+      "I_over_B": 2.464166815902578,
+      "master_rows": {
+       "budget_row_body_eur": 2464166.815902578,
+       "budget_row_ub_eur": 1000000.0,
+       "budget_slack_from_row_eur": -1464166.8159025782,
+       "max_capacity_rows_violated": [],
+       "ratio_rows_violated": []
+      },
+      "first_stage_feasible": false,
+      "first_stage_reasons": "investment budget violated"
+     },
+     "two_c_star": {
+      "source": "spec v14 item3_selection_run.candidates.two_c_star (context only)",
+      "investment_mva_mwh_year_2025": {
+       "5": {
+        "s_mva": 1.9375,
+        "e_mwh": 7.75
+       },
+       "7": {
+        "s_mva": 1.9375,
+        "e_mwh": 7.75
+       },
+       "9": {
+        "s_mva": 1.9375,
+        "e_mwh": 7.75
+       }
+      },
+      "I_x_eur_master_expression": 7392500.447707735,
+      "I_x_per_node_eur": {
+       "5": 2464166.8159025786,
+       "7": 2464166.8159025786,
+       "9": 2464166.8159025786
+      },
+      "budget_eur": 1000000.0,
+      "budget_slack_B_minus_I_eur": -6392500.447707735,
+      "I_over_B": 7.392500447707735,
+      "master_rows": {
+       "budget_row_body_eur": 7392500.447707735,
+       "budget_row_ub_eur": 1000000.0,
+       "budget_slack_from_row_eur": -6392500.447707735,
+       "max_capacity_rows_violated": [
+        {
+         "row": 1,
+         "body_mwh": 7.75,
+         "ub": 5.0
+        },
+        {
+         "row": 2,
+         "body_mwh": 7.75,
+         "ub": 5.0
+        },
+        {
+         "row": 3,
+         "body_mwh": 7.75,
+         "ub": 5.0
+        },
+        {
+         "row": 4,
+         "body_mwh": 7.75,
+         "ub": 5.0
+        },
+        {
+         "row": 5,
+         "body_mwh": 7.75,
+         "ub": 5.0
+        },
+        {
+         "row": 6,
+         "body_mwh": 7.75,
+         "ub": 5.0
+        },
+        {
+         "row": 7,
+         "body_mwh": 7.75,
+         "ub": 5.0
+        },
+        {
+         "row": 8,
+         "body_mwh": 7.75,
+         "ub": 5.0
+        },
+        {
+         "row": 9,
+         "body_mwh": 7.75,
+         "ub": 5.0
+        }
+       ],
+       "ratio_rows_violated": []
+      },
+      "first_stage_feasible": false,
+      "first_stage_reasons": "maximum energy capacity violated at node 5, year 2025; maximum energy capacity violated at node 5, year 2030; maximum energy capacity violated at node 5, year 2035; maximum energy capacity violated at node 7, year 2025; maximum energy capacity violated at node 7, year 2030; maximum energy capacity violated at node 7, year 2035; maximum energy capacity violated at node 9, year 2025; maximum energy capacity violated at node 9, year 2030; maximum energy capacity violated at node 9, year 2035; investment budget violated"
+     },
+     "zero": {
+      "source": "item 3 (x = 0 at every node)",
+      "investment_mva_mwh_year_2025": {},
+      "I_x_eur_master_expression": 0.0,
+      "I_x_per_node_eur": {
+       "5": 0.0,
+       "7": 0.0,
+       "9": 0.0
+      },
+      "budget_eur": 1000000.0,
+      "budget_slack_B_minus_I_eur": 1000000.0,
+      "I_over_B": 0.0,
+      "master_rows": {
+       "budget_row_body_eur": 0.0,
+       "budget_row_ub_eur": 1000000.0,
+       "budget_slack_from_row_eur": 1000000.0,
+       "max_capacity_rows_violated": [],
+       "ratio_rows_violated": []
+      },
+      "first_stage_feasible": true,
+      "first_stage_reasons": ""
+     }
+    }
+   }
+  },
+  "budget_and_max_capacity_in_the_model": {
+   "benders_master_rows": {
+    "max_capacity_row": "shared_energy_storage_data.py:338",
+    "max_capacity_row_variables": [
+     "es_e_rated"
+    ],
+    "max_capacity_bounds_energy_not_power": true,
+    "ratio_rows": "shared_energy_storage_data.py:344",
+    "budget_row": "shared_energy_storage_data.py:360",
+    "budget_row_variables": [
+     "es_e_investment",
+     "es_s_investment"
+    ],
+    "master_built_at": "shared_resources_planning.py:349",
+    "master_builder": "shared_energy_storage_data.py:291-391",
+    "active_row_counts": {
+     "energy_storage_maximum_capacity": 9,
+     "energy_storage_power_to_energy_factor": 18,
+     "energy_storage_investment": 1
+    }
+   },
+   "first_stage_check": "shared_resources_planning.py:1851-1886",
+   "oracle_path_overrides": {
+    "harness_budget_override": "p515_g_g1_g4_admm_gates.py:1116",
+    "N_BUDGET_value": 5000000.0,
+    "N_BUDGET_defined_at": "p514_n_instrumented_cstar.py:43"
+   },
+   "production_attribute_scan": {
+    "production_files_scanned": [
+     "admm_anderson_acceleration.py",
+     "admm_parameters.py",
+     "admm_persistent_workers.py",
+     "benders_parameters.py",
+     "branch.py",
+     "centralized_coordination.py",
+     "convex_oracle.py",
+     "definitions.py",
+     "energy_storage.py",
+     "generator.py",
+     "helper_functions.py",
+     "hierarchical_coordination.py",
+     "load.py",
+     "main.py",
+     "model_construction_helpers.py",
+     "network.py",
+     "network_data.py",
+     "network_parameters.py",
+     "node.py",
+     "planning_parameters.py",
+     "shared_energy_storage.py",
+     "shared_energy_storage_data.py",
+     "shared_energy_storage_parameters.py",
+     "shared_ess_price_taker.py",
+     "shared_resources_planning.py",
+     "solver_parameters.py"
+    ],
+    "attribute_accesses": [
+     {
+      "file": "shared_energy_storage_data.py",
+      "line": 360,
+      "attr": "budget",
+      "ctx": "Load",
+      "function": "_build_master_problem"
+     },
+     {
+      "file": "shared_energy_storage_data.py",
+      "line": 311,
+      "attr": "budget",
+      "ctx": "Load",
+      "function": "_build_master_problem"
+     },
+     {
+      "file": "shared_energy_storage_data.py",
+      "line": 338,
+      "attr": "max_capacity",
+      "ctx": "Load",
+      "function": "_build_master_problem"
+     },
+     {
+      "file": "shared_energy_storage_data.py",
+      "line": 344,
+      "attr": "min_energy_to_power_ratio",
+      "ctx": "Load",
+      "function": "_build_master_problem"
+     },
+     {
+      "file": "shared_energy_storage_data.py",
+      "line": 345,
+      "attr": "max_energy_to_power_ratio",
+      "ctx": "Load",
+      "function": "_build_master_problem"
+     },
+     {
+      "file": "shared_energy_storage_parameters.py",
+      "line": 253,
+      "attr": "budget",
+      "ctx": "Store",
+      "function": "_read_parameters_from_file"
+     },
+     {
+      "file": "shared_energy_storage_parameters.py",
+      "line": 254,
+      "attr": "max_capacity",
+      "ctx": "Store",
+      "function": "_read_parameters_from_file"
+     },
+     {
+      "file": "shared_energy_storage_parameters.py",
+      "line": 255,
+      "attr": "min_energy_to_power_ratio",
+      "ctx": "Store",
+      "function": "_read_parameters_from_file"
+     },
+     {
+      "file": "shared_energy_storage_parameters.py",
+      "line": 256,
+      "attr": "max_energy_to_power_ratio",
+      "ctx": "Store",
+      "function": "_read_parameters_from_file"
+     },
+     {
+      "file": "shared_energy_storage_parameters.py",
+      "line": 224,
+      "attr": "budget",
+      "ctx": "Store",
+      "function": "__init__"
+     },
+     {
+      "file": "shared_energy_storage_parameters.py",
+      "line": 225,
+      "attr": "max_capacity",
+      "ctx": "Store",
+      "function": "__init__"
+     },
+     {
+      "file": "shared_energy_storage_parameters.py",
+      "line": 226,
+      "attr": "min_energy_to_power_ratio",
+      "ctx": "Store",
+      "function": "__init__"
+     },
+     {
+      "file": "shared_energy_storage_parameters.py",
+      "line": 227,
+      "attr": "max_energy_to_power_ratio",
+      "ctx": "Store",
+      "function": "__init__"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 1322,
+      "attr": "min_energy_to_power_ratio",
+      "ctx": "Load",
+      "function": "_validate_local_sensitivities_with_finite_differences"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 1894,
+      "attr": "min_energy_to_power_ratio",
+      "ctx": "Load",
+      "function": "_build_positive_bootstrap_candidate"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 1924,
+      "attr": "budget",
+      "ctx": "Load",
+      "function": "_build_positive_bootstrap_candidate"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 1937,
+      "attr": "max_capacity",
+      "ctx": "Load",
+      "function": "_build_positive_bootstrap_candidate"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 1883,
+      "attr": "budget",
+      "ctx": "Load",
+      "function": "_check_candidate_first_stage_feasibility"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 1896,
+      "attr": "min_energy_to_power_ratio",
+      "ctx": "Load",
+      "function": "_build_positive_bootstrap_candidate"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 1898,
+      "attr": "max_energy_to_power_ratio",
+      "ctx": "Load",
+      "function": "_build_positive_bootstrap_candidate"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 1938,
+      "attr": "max_capacity",
+      "ctx": "Load",
+      "function": "_build_positive_bootstrap_candidate"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 1865,
+      "attr": "min_energy_to_power_ratio",
+      "ctx": "Load",
+      "function": "_check_candidate_first_stage_feasibility"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 1880,
+      "attr": "max_capacity",
+      "ctx": "Load",
+      "function": "_check_candidate_first_stage_feasibility"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 1901,
+      "attr": "min_energy_to_power_ratio",
+      "ctx": "Load",
+      "function": "_build_positive_bootstrap_candidate"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 1902,
+      "attr": "max_energy_to_power_ratio",
+      "ctx": "Load",
+      "function": "_build_positive_bootstrap_candidate"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 1867,
+      "attr": "max_energy_to_power_ratio",
+      "ctx": "Load",
+      "function": "_check_candidate_first_stage_feasibility"
+     }
+    ],
+    "reader_functions": [
+     "__init__",
+     "_build_master_problem",
+     "_build_positive_bootstrap_candidate",
+     "_check_candidate_first_stage_feasibility",
+     "_read_parameters_from_file",
+     "_validate_local_sensitivities_with_finite_differences"
+    ],
+    "call_sites_of_reader_functions": [
+     {
+      "file": "admm_parameters.py",
+      "line": 255,
+      "callee": "_read_parameters_from_file",
+      "caller": "read_parameters_from_file"
+     },
+     {
+      "file": "benders_parameters.py",
+      "line": 133,
+      "callee": "_read_parameters_from_file",
+      "caller": "read_parameters_from_file"
+     },
+     {
+      "file": "helper_functions.py",
+      "line": 173,
+      "callee": "__init__",
+      "caller": "__init__"
+     },
+     {
+      "file": "network_data.py",
+      "line": 116,
+      "callee": "read_parameters_from_file",
+      "caller": "read_network_parameters"
+     },
+     {
+      "file": "planning_parameters.py",
+      "line": 20,
+      "callee": "read_parameters_from_file",
+      "caller": "read_parameters_from_file"
+     },
+     {
+      "file": "planning_parameters.py",
+      "line": 21,
+      "callee": "read_parameters_from_file",
+      "caller": "read_parameters_from_file"
+     },
+     {
+      "file": "shared_energy_storage_data.py",
+      "line": 54,
+      "callee": "_build_master_problem",
+      "caller": "build_master_problem"
+     },
+     {
+      "file": "shared_energy_storage_data.py",
+      "line": 157,
+      "callee": "read_parameters_from_file",
+      "caller": "read_parameters_from_file"
+     },
+     {
+      "file": "shared_energy_storage_parameters.py",
+      "line": 246,
+      "callee": "_read_parameters_from_file",
+      "caller": "read_parameters_from_file"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 349,
+      "callee": "build_master_problem",
+      "caller": "_run_planning_problem"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 1956,
+      "callee": "_check_candidate_first_stage_feasibility",
+      "caller": "_build_positive_bootstrap_candidate"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 2065,
+      "callee": "_check_candidate_first_stage_feasibility",
+      "caller": "_complete_missing_sensitivities_with_probe"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 8012,
+      "callee": "read_parameters_from_file",
+      "caller": "_read_planning_problem"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 227,
+      "callee": "read_parameters_from_file",
+      "caller": "read_planning_parameters_from_file"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 2042,
+      "callee": "_build_positive_bootstrap_candidate",
+      "caller": "_complete_missing_sensitivities_with_probe"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 668,
+      "callee": "_validate_local_sensitivities_with_finite_differences",
+      "caller": "_run_planning_problem"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 1503,
+      "callee": "_check_candidate_first_stage_feasibility",
+      "caller": "_validate_local_sensitivities_with_finite_differences"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 592,
+      "callee": "_build_positive_bootstrap_candidate",
+      "caller": "_run_planning_problem"
+     }
+    ]
+   }
+  }
+ }
+}

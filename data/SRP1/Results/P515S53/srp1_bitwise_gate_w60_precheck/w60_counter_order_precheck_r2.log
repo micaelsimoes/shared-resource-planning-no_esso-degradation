@@ -1,0 +1,115 @@
+12:53:17 [W51-gate] P5.15 Addendum 40 ruling 2 W51 -- SRP1 two-cycle bitwise identity: row 18 inactive at the initialisation solve is inert at one scenario, vs committed baseline C* and the committed W48 arm
+12:53:17 [W51-gate] committed W48 arm pinned: data/SRP1/Results/P515S52/srp1_bitwise_gate/arm (manifest sha256 9a5d6b78bfdb4738e83389878eba3236b298a4e5e5b05308a48b44ebe094ba69)
+12:53:18 [W51-gate] W51 presence checks: 21/21 true
+12:53:18 [W51-gate] DECLARED BEFORE THE RUN: 51 solves/cycle, base 153 (cap 2 + initialisation), per-event reconciled; W51 counter: exactly 36 calls of each new function, 0 acting
+12:53:18 [W35-gate] P5.15 Addendum 40 ruling 2 W51 -- SRP1 two-cycle bitwise identity: row 18 inactive at the initialisation solve is inert at one scenario, vs committed baseline C* and the committed W48 arm
+12:53:18 [W35-gate] git HEAD 2167c0d995386e3349f15912058b27910000828d; output root data/SRP1/Results/P515S53/srp1_bitwise_gate
+12:53:18 [W35-gate] preconditions passed; capture-path checklist 47 items, all true; W35 presence checks 57 items, all true
+12:53:18 [W35-gate] DECLARED BEFORE THE RUN: 51 solves/cycle; base 153 (cap 2 + initialization); gate on observed == base + every attempted retry (recovered or not) and GUARD.verify(that) exactly
+12:53:18 [W35-gate] legacy run lock acquired (.p515_g_gate.lock)
+W60_PRECHECK_RESULT {
+ "live_w51_presence_before": {
+  "family_table_present_and_as_declared": true,
+  "inactive_function_present": true,
+  "inactive_returns_where_row18_not_wired": true,
+  "inactive_deactivates_row_before_fixing_pair_at_zero": true,
+  "inactive_never_writes_alpha": true,
+  "activate_function_present": true,
+  "activate_returns_where_row18_not_wired": true,
+  "activate_refuses_unless_initialisation_state": true,
+  "activate_minimal_split_then_unfix_then_activate": true,
+  "activate_never_writes_alpha": true,
+  "activate_checks_defining_row_bodies_after_activation": true,
+  "activation_body_tolerance_as_declared": true,
+  "w51_param_retired_from_module": true,
+  "sequential_builder_deactivates_after_wiring_before_solve": true,
+  "parallel_builder_deactivates_after_wiring_before_solve": true,
+  "prepare_activates_with_the_settlement_weight": true,
+  "run_passes_the_run_alpha_to_the_build": true,
+  "run_prepares_before_scale_and_admm_update": true,
+  "model_construction_helpers_file_unchanged_by_w51_w54": true,
+  "add_scenario_commitment_terms_source_unchanged": true,
+  "uncoordinated_benchmark_source_unchanged": true
+ },
+ "gate_presence_results": [
+  {
+   "n_true": 57,
+   "n": 57,
+   "w51_true": 21,
+   "w51_n": 21,
+   "false_items": [],
+   "srp_functions_are_live_at_check": {
+    "_set_row18_inactive_for_initialisation": true,
+    "_activate_row18_with_settlement": true
+   }
+  }
+ ],
+ "calls_during_preconditions": {
+  "_set_row18_inactive_for_initialisation": 0,
+  "_activate_row18_with_settlement": 0
+ },
+ "at_arm_boundary": {
+  "counter_installed_srp_attrs_are_wrappers": {
+   "_set_row18_inactive_for_initialisation": true,
+   "_activate_row18_with_settlement": true
+  },
+  "counter_originals_are_the_live_functions": {
+   "_set_row18_inactive_for_initialisation": true,
+   "_activate_row18_with_settlement": true
+  },
+  "counter_calls": {
+   "_set_row18_inactive_for_initialisation": 0,
+   "_activate_row18_with_settlement": 0
+  }
+ },
+ "positive_control_calls": {
+  "_set_row18_inactive_for_initialisation": 1,
+  "_activate_row18_with_settlement": 1
+ },
+ "srp_functions_live_at_lock": {
+  "_set_row18_inactive_for_initialisation": true,
+  "_activate_row18_with_settlement": true
+ },
+ "lock_attr_after_main_is_stub_restored_by_gate": true,
+ "outcome": "stopped at the arm boundary (expected)",
+ "srp_functions_live_after_main": {
+  "_set_row18_inactive_for_initialisation": true,
+  "_activate_row18_with_settlement": true
+ },
+ "output_root_exists_after": false,
+ "lock_files_exist_after": [],
+ "blocking_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "w10_bounded_guard_counts": {
+  "permitted_solve": 0,
+  "permitted_exec": 0,
+  "blocked_solve": 0,
+  "blocked_exec": 0
+ },
+ "checks": {
+  "positive_control_counter_detects_one_call_each": true,
+  "live_w51_presence_21_of_21": true,
+  "gate_presence_evaluated_at_least_once": true,
+  "gate_presence_w51_21_of_21_every_evaluation": true,
+  "gate_presence_all_items_true_every_evaluation": true,
+  "gate_presence_read_live_functions": true,
+  "reached_the_arm_boundary": true,
+  "zero_calls_during_preconditions": true,
+  "counter_installed_at_arm_boundary": true,
+  "counter_zero_at_arm_boundary": true,
+  "live_functions_restored_after_main": true,
+  "gate_restored_lock_function": true,
+  "no_output_root_created": true,
+  "no_lock_file": true,
+  "blocking_guard_verified_exactly_0": true,
+  "w10_guard_all_zero": true
+ },
+ "all_pass": true
+}

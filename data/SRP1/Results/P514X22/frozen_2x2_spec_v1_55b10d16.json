@@ -1,0 +1,58 @@
+{
+  "design": "P5.14-X22 — the 2x2 under one formulation: {cold, warm} x {fixed rho 300, adaptive}",
+  "status": "FROZEN — written and hashed before the two new cells run",
+  "authorization": "author, 2026-09-12: run the full 2x2 on one candidate and one formulation. The cold cells already exist from AB1; only the two warm cells are new.",
+
+  "question": "Does adaptation's objective advantage survive warm initialization, or is it specific to the cold regime? And, with all four cells on one formulation, what does an independent oracle actually cost relative to a templated one?",
+
+  "instance": {
+    "rule": "eighth evidence rule — the instance is recorded, not only the settings",
+    "candidate": "the recovered AB1 candidate: srp._build_positive_bootstrap_candidate, verified byte-identical to the candidate P5.12-R recorded verbatim (data/SRP1/Results/P514AB1/p514g_candidate_and_rhofree.json)",
+    "formulation": "C3 ACTIVE, k = 11541.560327111707, for ALL FOUR cells",
+    "note": "the two cold cells were run under C3 in AB1; the two warm cells are run under C3 here. No cell crosses the C3 boundary."
+  },
+
+  "cells": {
+    "cold_fixed": "EXISTS — AB1 control: 50 cycles, capped, no convergence",
+    "cold_adaptive": "EXISTS — AB1 treatment: converged at 32, rho_pf -> 3.4683",
+    "warm_fixed": "NEW — OracleConfig(RESCALED, rho_v 1.5, rho_pf 300, rho_ess 1.0, adaptive False, neutralize_history True)",
+    "warm_adaptive": "NEW — the same with adaptive True"
+  },
+  "cap": "50 cycles for every cell, identical to the cold cells, set by patching num_max_iters; hitting it is reported, and for a warm cell it would itself be a finding",
+
+  "NOT_a_gate": {
+    "statement": "The warm fixed-300 cell is NOT required to reproduce P5.10-B's 6 cycles.",
+    "reason": "P5.10-B is pre-C3. A mismatch is EXPECTED, not a control failure, and gating on it would fail the stage for the wrong reason."
+  },
+
+  "primary_outcome": {
+    "quantity": "net operational recourse at MATCHED CYCLES across all four cells",
+    "why_not_cycle_counts": "cycles-to-convergence is now known to be a criterion artifact across rho settings: the stationarity test moves with rho, so termination is not comparable between a fixed-rho and an adaptive cell. Matched-cycle recourse is the only clean comparison available.",
+    "comparability_rule": "compare the PRE-POLISH ADMM recourse in every cell, since the cold cells have only that. Polished values are reported separately and never mixed with pre-polish ones.",
+    "matched_cycles_to_report": [1, 5, 6, 10, 16, 20, 32, "each cell's terminal"]
+  },
+
+  "predeclared_outcomes": {
+    "advantage_is_general": "warm_adaptive beats warm_fixed at matched cycles by a relative margin of the same order as the cold pair's 40% at cycle 32 (826.8 M vs 1372.7 M)",
+    "advantage_is_cold_specific": "the two warm cells differ by materially less than the cold pair — say under 5% at matched cycles — which would mean adaptation mostly compensates for a bad cold start rather than improving the method",
+    "advantage_reverses": "warm_adaptive is worse than warm_fixed at matched cycles"
+  },
+  "secondary_question_oracle_agreement": {
+    "quantity": "|Q_warm - Q_cold| / Q at each cell's best available recourse, within one formulation",
+    "predeclared_reading": "under 1% would be evidence that the two structurally different oracles agree on Q; over 5% would be evidence that Q is initialization-dependent, which is the tension the S2 cost model identified",
+    "caveat_declared_in_advance": "a cell that has not converged contributes an upper bound on its Q, not a value; the cold_fixed cell is capped and therefore contributes a bound only"
+  },
+
+  "solve_profile": {
+    "mode": "armed and counted, blocking everything outside the declared call sites",
+    "decomposition": "counts are snapshotted after template preparation so that template-prep solves and ADMM solves are separated",
+    "identity_checked": "ADMM-phase solves == 51 x cycles, plus one polish pass of 48 network blocks where a polish occurs; the residual is reported and must be explained",
+    "hard_failure": "ANY blocked solve, or a total above 2000 per cell",
+    "note": "an exact constant cannot be predeclared because the cycle count is itself a measurement; the identity above is the exact-count check in its place"
+  },
+
+  "not_permitted": ["changing any tolerance, criterion or parameter other than the cell's own adaptive flag",
+                    "comparing any value in this stage with a pre-C3 figure",
+                    "reading cycles-to-convergence as a cost comparison across rho settings",
+                    "gating the warm fixed cell on P5.10-B's cycle count"]
+}

@@ -1,0 +1,613 @@
+{
+ "all_hold": true,
+ "code_sha256": {
+  "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "p515_s44_campaign_harness.py": "68a9265afe71d374a3058cee24ad1d614d71c6d10d5c4cb69bfc32cd78637b82",
+  "p515_s53_w101_continuation_checks.py": "8f786a21a70f7363451e1f1261aaad5a0ae8b3075c74fd3785f06a5db953cd6a",
+  "p515_s53_w101_settling_continuation_hooks.py": "05004cf8b475c940ef1d30a225bcad20e257f02c0d34bb5034ee4975d6625f6b",
+  "p515_s53_w105_extension_checks.py": "6b5c464ea0abe02b67f74482c7f1a0e4cc4fa0439ebb870f189c73c21d4999d6",
+  "p515_s53_w105_settling_extension_hooks.py": "1ff61ce96dc25e4ccac3b864c834c54edf2d382525bddd9adce9af71bba84f05",
+  "p515_s53_w98_continuation_checks.py": "25edfd17fae83832b4c3f46812a24018c8905d2b399201814f5fd39321f35172",
+  "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+  "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+  "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+ },
+ "declaration": {
+  "abort_on_replay_divergence": true,
+  "base_cell": "c_star",
+  "cap": 287,
+  "captures": {
+   "boyd_full": true,
+   "ess_schedule_movement": true,
+   "q_decomposition": true
+  },
+  "cell": "c_star_ext",
+  "extension_cycles": 100,
+  "hold_after_cycle": 87,
+  "label": "SETTLING EXTENSION DIAGNOSTIC RUN (W105, spec v40) -- C* replayed bitwise through cycle 187 against W104 (abort on divergence; W104 holds after cycle 87), then exactly 100 more cycles 188-287 under the same holds; the settling rule evaluated report-only (never stops the run); per-block dQ by component, sum |dp_ess| per node and side, and all six Boyd residuals recorded every cycle",
+  "record_all_blocks": true,
+  "replay_reference": {
+   "cycle_record": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/evals/4bf36c151fd10613_c_star/settling_continuation_cycle_record.jsonl",
+   "cycle_record_sha256": "2ea4552bcf24adad79843426e3ea10669b43ad6d29fd59a9b2f10ef90f498b63",
+   "decision": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/evals/4bf36c151fd10613_c_star/settling_decision.json",
+   "decision_sha256": "a51965ffdbd857805356fbdbad8adfb7c92fac77d6fd0904e7d109e8790af60e",
+   "eval_key": "4bf36c151fd106139782939724c6d888585cdb78e0dbff6516d2cea36a42d5a1",
+   "evidence_commit": "82dcebb7",
+   "n_cycles": 187,
+   "per_cycle_record": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/evals/4bf36c151fd10613_c_star/per_cycle_record.jsonl",
+   "per_cycle_record_sha256": "f65c383366ea3e4132f5ba3a3941074689240851ffc2fcf6ed3daaa034f6a890"
+  },
+  "replay_through_cycle": 187,
+  "settling_rule": {
+   "eps0": 45.39068275,
+   "function": "settling_criterion.SettlingRule",
+   "k_excl": 3,
+   "l_mono": 44,
+   "module": "settling_criterion",
+   "p_max": 22,
+   "p_max_function": "settling_criterion.p_max_from_records",
+   "tau": 4539.0682750000005,
+   "w_factor": 1.1,
+   "w_min": 20
+  },
+  "settling_rule_mode": "report_only_non_latching",
+  "w104_mirror_rule": {
+   "cap": 187,
+   "n": 87,
+   "p_max": 22
+  }
+ },
+ "finished_utc": "2026-09-28T09:49:14.454227+00:00",
+ "git_head": "49342e8c96ddcd7dd7b8fcc8f286a1b2c5cace25",
+ "guards": {
+  "w101_checks_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w105_checks": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w98_checks_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  }
+ },
+ "schema": "p515_s53_w105_zero_solve_checks_v1",
+ "sections": {
+  "H": {
+   "holds": true,
+   "result": {
+    "holds": true,
+    "tests": {
+     "H1_aa_hold_real_production": {
+      "aam_restored": true,
+      "acts_after_87": true,
+      "holds": true,
+      "inert_through_87_bitwise": true,
+      "n_accepted_extrapolations_through_87": 86
+     },
+     "H2_tail_hold_real_production": {
+      "acts_after_87": true,
+      "certificate_length_after_baseline": 1000000000,
+      "holds": true,
+      "inert_through_87": true
+     },
+     "H3_rho_hold_real_production": {
+      "acts_after_87": true,
+      "cycles_with_rho_change_through_87": 87,
+      "holds": true,
+      "inert_through_87_bitwise": true,
+      "wrapped_rho_after_87_equals_rho_at_87_bitwise": true
+     },
+     "H4_layering_real_install": {
+      "appender_recorded_held_tail_value_after_87": true,
+      "child_real_checklist_before_run_admm_arm": true,
+      "child_real_order_continuation_settling_extension_idc_s38_appender": true,
+      "files_written_by_install_without_cycles": [],
+      "holds": true,
+      "idc_wraps_the_extension_boyd_wrapper": true,
+      "production_functions_restored_on_exit": true,
+      "summary_errors": [],
+      "summary_phase": "ended"
+     },
+     "H5_certificate_length_writes_only_disable_restore": {
+      "holds": true,
+      "negative_control_extra_write_detected": true,
+      "writes_in_source": [
+       "admm_parameters.minimum_consecutive_converged_cycles = CERTIFICATION_DISABLED_THRESHOLD",
+       "st.params.minimum_consecutive_converged_cycles = st.threshold_original"
+      ]
+     }
+    }
+   },
+   "wall_s": 0.05002880096435547
+  },
+  "K": {
+   "holds": true,
+   "result": {
+    "committed_entries_scanned": 7037,
+    "committed_specs_scanned": 66,
+    "entries_carrying_eval_key": 7016,
+    "entries_new_equals_pre_w105": 7037,
+    "entries_recomputed_differing_from_committed_eval_key_first20_REPORTED": [],
+    "entries_recomputed_equal_committed_eval_key_REPORTED": 7016,
+    "errors": [],
+    "extension_key": {
+     "base_equals_recert": true,
+     "base_key_now": "96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772",
+     "differs_from_recert": true,
+     "differs_from_w104": true,
+     "extension_key": "8864266d3c064ed08783f6eb7c2ef078ee5d0a97793c88f55b17f11a1e1e1238",
+     "formula_holds": true,
+     "recert_eval_key": "96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772"
+    },
+    "extension_key_in_committed_specs": [],
+    "holds": true,
+    "mismatches": [],
+    "n_entries_recomputed_differing_from_committed_eval_key_REPORTED": 0,
+    "pre_w105_harness": {
+     "commit": "ab0bcbc9",
+     "sha256": "3ad624cd74f9a832037d20d2480adb9b03d559aee1c5d9675dc8aeb6c3b9d8a2",
+     "sha256_loaded": "3ad624cd74f9a832037d20d2480adb9b03d559aee1c5d9675dc8aeb6c3b9d8a2"
+    }
+   },
+   "wall_s": 0.28948092460632324
+  },
+  "L": {
+   "holds": true,
+   "result": {
+    "L1_write_only_real_c_star_models": {
+     "capture_errors": [],
+     "components": {
+      "blocks": 51,
+      "constraints": 329697,
+      "objectives": 150,
+      "params": 94935,
+      "vars": 447471
+     },
+     "consensus_vars_equal": true,
+     "dual_vars_equal": true,
+     "errors": [],
+     "holds": true,
+     "load_s": 6.463655948638916,
+     "model_fingerprint_after": "210238db4f5b140dc6794f112957e8afc27501e4d28cae01c1c65ed80880afd3",
+     "model_fingerprint_before": "210238db4f5b140dc6794f112957e8afc27501e4d28cae01c1c65ed80880afd3",
+     "note": "the wrappers return production's own values (compared with an unwrapped call on the same objects); the ESSO fingerprint covers esso_models_s39_D.pkl; solver options include the ESSO's",
+     "persisted_models": {
+      "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/evals/4bf36c151fd10613_c_star/certified_models.pkl": {
+       "manifest_sha256": "140095e19bc7c2ee209217619559a30410f1ef56b8e2ca1c517554dd6480a119",
+       "sha256": "140095e19bc7c2ee209217619559a30410f1ef56b8e2ca1c517554dd6480a119"
+      },
+      "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/evals/4bf36c151fd10613_c_star/esso_models_s39_D.pkl": {
+       "manifest_sha256": "fbda8f739e6c3e5b46ebf48948ec04b870c352daf386609b8d43a1a95951ea19",
+       "sha256": "fbda8f739e6c3e5b46ebf48948ec04b870c352daf386609b8d43a1a95951ea19"
+      }
+     },
+     "planning_fingerprint_equal": true
+    },
+    "L2_q187_from_persisted_models": {
+     "Q187_recomputed_from_persisted_models": 650907167.3283353,
+     "Q187_recorded_w104": 650907167.3283353,
+     "bitwise_equal": true,
+     "difference": 0.0,
+     "holds": true,
+     "note": "report-only: the persisted TSO / DSO / ESSO models are W104's terminal (cycle-187) state"
+    },
+    "L3_q_decomposition_real": {
+     "agents_at_187": {
+      "DSO_5": {
+       "ess_complementarity_penalties": -9.949284100248596,
+       "ess_terms": -9.949284100248596,
+       "ess_usage_penalty": 0.0,
+       "flexibility_cost": 64792816.48723154,
+       "generation_cost": 0.0,
+       "load_curtailment_cost": 0.0,
+       "other": -1.862645149230957e-09,
+       "res_curtailment_penalty": 0.0,
+       "slack_penalties": -4138.554668013995,
+       "value": 64788667.98327943
+      },
+      "DSO_7": {
+       "ess_complementarity_penalties": -9.94928409929134,
+       "ess_terms": -9.94928409929134,
+       "ess_usage_penalty": 0.0,
+       "flexibility_cost": 65806494.80582522,
+       "generation_cost": 0.0,
+       "load_curtailment_cost": 0.0,
+       "other": 5.413312464952469e-09,
+       "res_curtailment_penalty": 0.0,
+       "slack_penalties": -4138.554673110313,
+       "value": 65802346.30186802
+      },
+      "DSO_9": {
+       "ess_complementarity_penalties": -9.949284099203764,
+       "ess_terms": -9.949284099203764,
+       "ess_usage_penalty": 0.0,
+       "flexibility_cost": 76502389.80284634,
+       "generation_cost": 0.0,
+       "load_curtailment_cost": 0.0,
+       "other": 5.238689482212067e-09,
+       "res_curtailment_penalty": 0.0,
+       "slack_penalties": -4138.554671357285,
+       "value": 76498241.2988909
+      },
+      "ESSO": {
+       "ess_complementarity_penalties": 0.0,
+       "ess_terms": 0.0,
+       "ess_usage_penalty": 0.0,
+       "flexibility_cost": 0.0,
+       "generation_cost": 0.0,
+       "load_curtailment_cost": 0.0,
+       "other": 0.0,
+       "res_curtailment_penalty": 0.0,
+       "slack_penalties": 0.0,
+       "value": 0.0
+      },
+      "TSO": {
+       "ess_complementarity_penalties": -29.847815504180634,
+       "ess_terms": -29.847815504180634,
+       "ess_usage_penalty": 0.0,
+       "flexibility_cost": 0.0,
+       "generation_cost": 443818538.49489015,
+       "load_curtailment_cost": 0.0,
+       "other": -2.0489096641540527e-08,
+       "res_curtailment_penalty": 0.0,
+       "slack_penalties": -596.9027775117693,
+       "value": 443817911.74429715
+      }
+     },
+     "blocks": 48,
+     "esso_side_terms_not_in_gross_Q": {
+      "5": {
+       "feasibility_penalty": -0.0049714972108793245,
+       "salvage_value": -1.9986675386710729e-50
+      },
+      "7": {
+       "feasibility_penalty": -0.004971498277343456,
+       "salvage_value": -5.2062645095838104e-37
+      },
+      "9": {
+       "feasibility_penalty": -0.0049714967070939725,
+       "salvage_value": 0.0
+      }
+     },
+     "holds": true,
+     "reconciliation": {
+      "gross": 650907167.3283353,
+      "gross_minus_sum_block_values": -2.384185791015625e-07,
+      "gross_minus_sum_components": -2.384185791015625e-07,
+      "reconciles": true,
+      "sum_block_values": 650907167.3283355,
+      "sum_components": 650907167.3283355,
+      "tolerance": 0.06509071673283354
+     }
+    },
+    "L4_shapes_sizes_overhead": {
+     "boyd_capture_keys": [
+      "all_boyd_pass",
+      "boyd_eps_source",
+      "eps_abs",
+      "eps_rel",
+      "ess",
+      "pf",
+      "v"
+     ],
+     "boyd_channel_fields": [
+      "channel_pass",
+      "dual_pass",
+      "dual_ratio",
+      "dual_ratio_balance",
+      "eps_dual",
+      "eps_pri",
+      "n_entries",
+      "norm_x",
+      "norm_y",
+      "norm_z",
+      "primal_pass",
+      "primal_ratio",
+      "proximal_share",
+      "r",
+      "s",
+      "s_proximal_part",
+      "s_rho_part"
+     ],
+     "bytes_287_cycles_MiB": {
+      "creep": 10.531329154968262,
+      "ess_schedule": 71.05041122436523
+     },
+     "bytes_per_cycle": {
+      "creep_line": 38477,
+      "ess_schedule_line_real_values": 259588,
+      "w101_blocks_line_unchanged": 36101
+     },
+     "ess_blocks": 36,
+     "ess_families": {
+      "charge": [
+       "esso",
+       "tso",
+       "dso"
+      ],
+      "discharge": [
+       "esso",
+       "tso",
+       "dso"
+      ],
+      "p": [
+       "esso",
+       "tso",
+       "dso",
+       "z"
+      ],
+      "q": [
+       "esso",
+       "tso",
+       "dso",
+       "z"
+      ]
+     },
+     "ess_movement_second_call_all_nodes": {
+      "charge_dso": 0.0,
+      "charge_esso": 0.0,
+      "charge_tso": 0.0,
+      "discharge_dso": 0.0,
+      "discharge_esso": 0.0,
+      "discharge_tso": 0.0,
+      "p_dso": 0.0,
+      "p_esso": 0.25,
+      "p_tso": 0.0,
+      "p_z": 0.0,
+      "q_dso": 0.0,
+      "q_esso": 0.0,
+      "q_tso": 0.0,
+      "q_z": 0.0
+     },
+     "floats_per_cycle_ess_schedule": 12096,
+     "holds": true,
+     "moved_one_value_by_0.25_sum_abs_dp_esso_node": 0.25,
+     "new_overhead_s_per_cycle_estimate": 0.017230987548828125,
+     "nodes": [
+      5,
+      7,
+      9
+     ],
+     "overhead_note": "new work per cycle = Boyd + ESS capture, Q decomposition + ESSO terms, and the two new line writes; the recourse + two block functions + W101 block line were already paid in W104 (its per-cycle walls include them)",
+     "overhead_s_per_cycle_measured": [
+      {
+       "boyd_and_ess_capture_only_s": 0.00424504280090332,
+       "boyd_production_plus_capture_s": 0.012764930725097656,
+       "q_decomposition_plus_esso_terms_s": 0.0033669471740722656,
+       "recourse_production_plus_blocks_line_plus_q_s": 0.6336948871612549
+      },
+      {
+       "boyd_and_ess_capture_only_s": 0.004970073699951172,
+       "boyd_production_plus_capture_s": 0.014091968536376953,
+       "q_decomposition_plus_esso_terms_s": 0.0033769607543945312,
+       "recourse_production_plus_blocks_line_plus_q_s": 0.6320071220397949
+      }
+     ],
+     "periods": 24,
+     "work_dir_created_for_fresh_planning": "data/SRP1/Results/P56A/evals/p515s53_w105_writeonly_1790588928",
+     "write_s_per_cycle_creep_plus_ess_lines_fsync": 0.008883953094482422
+    }
+   },
+   "wall_s": 26.291183948516846
+  },
+  "P": {
+   "holds": true,
+   "result": {
+    "checklist": {
+     "a_aa_step_called_with_boyd_metrics": true,
+     "a_anderson_acceleration_on": true,
+     "a_boyd_all_pass_key_in_production": true,
+     "aa_off_literal_is_production": true,
+     "b_source_order_aa_step_lt_recourse_lt_convergence_test": true,
+     "block_functions_callable": true,
+     "c_certificate_length_read_only_by_the_loop_test_the_record_and_the_print": true,
+     "c_certificate_length_written_only_by_disable_restore": true,
+     "c_no_early_stop_in_declaration": true,
+     "capture:loop:boyd_after_esso_update_before_aa": true,
+     "capture:loop:boyd_call_once_per_cycle": true,
+     "capture:loop:boyd_metrics_passed_to_penalties": true,
+     "capture:model_source:network": true,
+     "capture:model_source:shared_energy_storage_data": true,
+     "capture:source:boyd_channel_fields": true,
+     "capture:source:ess_consensus_four_copies": true,
+     "capture:source:ess_copies_written_from_models": true,
+     "capture:source:esso_not_in_gross_Q": true,
+     "capture:source:q_blocks_tso_dso_salvage": true,
+     "capture:source:q_components_classified_total": true,
+     "capture:source:q_gross_is_tso_plus_dso": true,
+     "capture:writer_is_gate_result_io": true,
+     "d_cap_equals_287": true,
+     "e_w104_references_hash_and_hold_exactly_1_187": true,
+     "efc_read_once_per_cycle_after_penalties_before_the_row": true,
+     "f_constants_equal_the_module": true,
+     "f_p_max_function_named": true,
+     "h_lambda_t_capture_path": true,
+     "loop_exit_is_the_convergence_break": true,
+     "signature:_anderson_acceleration_cycle_step": true,
+     "signature:_apply_convergence_depth_tail": true,
+     "signature:_capture_convergence_depth_tail_baseline": true,
+     "signature:_convergence_depth_tail_next_state": true,
+     "signature:_get_admm_efc_per_day_max": true,
+     "signature:_get_operational_recourse_components": true,
+     "signature:_update_admm_penalties": true,
+     "signature:get_admm_boyd_residual_metrics": true,
+     "tail_enabled_for_this_run": true
+    },
+    "harness_refuses_extension_plus_continuation": true,
+    "holds": true,
+    "negative_controls": {
+     "aa_off": "refused: W105 settling-extension preconditions fail (before any solve): ['a_anderson_acceleration_on']",
+     "cap_187": "refused: W105 settling-extension preconditions fail (before any solve): ['d_cap_equals_287']",
+     "tail_off": "refused: W105 settling-extension preconditions fail (before any solve): ['tail_enabled_for_this_run']"
+    },
+    "validator_refuses": {
+     "abort_false": "settling_extension differs from the W105 declaration on ['abort_on_replay_divergence']",
+     "capture_off": "settling_extension differs from the W105 declaration on ['captures']",
+     "early_stop_key": "settling_extension must NOT carry ['early_stop'] (the extension is fixed-length; nothing stops it)",
+     "extra_key": "settling_extension must have exactly ['abort_on_replay_divergence', 'base_cell', 'cap', 'captures', 'cell', 'extension_cycles', 'hold_after_cycle', 'label', 're",
+     "p_max_23": "settling_extension differs from the W105 declaration on ['settling_rule']",
+     "rule_mode_latching": "settling_extension differs from the W105 declaration on ['settling_rule_mode']",
+     "w101_declaration": "settling_extension must have exactly ['abort_on_replay_divergence', 'base_cell', 'cap', 'captures', 'cell', 'extension_cycles', 'hold_after_cycle', 'label', 're",
+     "wrong_N": "settling_extension differs from the W105 declaration on ['hold_after_cycle']",
+     "wrong_cap": "settling_extension differs from the W105 declaration on ['cap']",
+     "wrong_sha": "settling_extension differs from the W105 declaration on ['replay_reference']"
+    }
+   },
+   "wall_s": 0.20919513702392578
+  },
+  "R": {
+   "holds": true,
+   "result": {
+    "holds": true,
+    "tests": {
+     "R1_bitwise_1_187_then_creep_to_287_lapse_at_200": {
+      "aa_calls_after_87_all_forced_true": true,
+      "blocks_lines": 287,
+      "blocks_lines_1_187_equal_w104_except_capture_s": true,
+      "blocks_lines_differing_first5": [],
+      "boyd_capture_equals_recorded_g_rows_1_187": true,
+      "capture_errors": [],
+      "certificate_length_after_exit": 10,
+      "certificate_length_values_seen": [
+       1000000000
+      ],
+      "creep_lines": 287,
+      "cycle_lines_1_187_equal_w104_posthoc": true,
+      "decision_lines": 1,
+      "errors": [],
+      "ess_movement_equals_brute_force_at_2_150_250": true,
+      "ess_movement_first_cycle_unavailable": true,
+      "ess_schedule_lines": 288,
+      "first_divergence": null,
+      "holds_after_87": [
+       "{\"aa\": true, \"rho\": true, \"tail_apply\": true, \"tail_next\": true}"
+      ],
+      "holds_through_87": [
+       "{\"aa\": false, \"rho\": false, \"tail_apply\": false, \"tail_next\": false}"
+      ],
+      "lapse_events": [
+       {
+        "boyd_k": false,
+        "cycle": 200,
+        "k0_before": 78,
+        "q_is_none": false
+       }
+      ],
+      "last_cycle": 287,
+      "lines": 287,
+      "mirror_decision_equals_w104": true,
+      "ok": true,
+      "pen_allow_update_after_87": [
+       false
+      ],
+      "q_decomposition_reconciles_every_cycle": true,
+      "q_max_abs_gross_minus_sum_components_1_187": 7.152557373046875e-07,
+      "q_non_reconciling_cycles": [],
+      "raised": null,
+      "replay_bitwise_through": 187,
+      "report_only_first_would_certify_cycle": null,
+      "report_only_rule_equals_mirror_1_186": true,
+      "stopped_by": "cap",
+      "summary_ok": true,
+      "wall_s": 5.188776969909668
+     },
+     "R2_one_ulp_gross_at_150": {
+      "divergence": {
+       "cycle": 150,
+       "cycle_line_fields_differing": [
+        "gross",
+        "gross_hex",
+        "settling_w104_mirror_vs_settling",
+        "step"
+       ],
+       "fields_differing": [
+        "gross_operational_cost"
+       ],
+       "gross_difference_run_minus_recorded": 1.1920928955078125e-07,
+       "max_relative_difference": 1.8314055127511171e-16
+      },
+      "lines": 150,
+      "ok": true,
+      "raised": "W105 settling-extension hook: REPLAY DIVERGED at cycle 150 (per-cycle fields ['gross_operational_cost'], cycle-line fields ['gross', 'gross_hex', 'settling_w104_mirror_vs_settling', 'step'], gross difference 1.1920928955078125e-07, max relative 1.8314055127511171e-16) -- run ABORTED (W105: no relabelled continuation)"
+     },
+     "R3_one_ulp_pf_primal_ratio_at_120": {
+      "divergence": {
+       "cycle": 120,
+       "cycle_line_fields_differing": [
+        "boyd_pf_primal_ratio",
+        "boyd_ratios",
+        "boyd_ratios_at_aa"
+       ],
+       "fields_differing": [
+        "boyd_pf_primal_ratio"
+       ],
+       "gross_difference_run_minus_recorded": 0.0,
+       "max_relative_difference": 1.1179124493074695e-16
+      },
+      "lines": 120,
+      "ok": true,
+      "raised": "W105 settling-extension hook: REPLAY DIVERGED at cycle 120 (per-cycle fields ['boyd_pf_primal_ratio'], cycle-line fields ['boyd_pf_primal_ratio', 'boyd_ratios', 'boyd_ratios_at_aa'], gross difference 0.0, max relative 1.1179124493074695e-16) -- run ABORTED (W105: no relabelled continuation)"
+     },
+     "R4_cycle_line_only_aa_action_at_60": {
+      "divergence": {
+       "cycle": 60,
+       "cycle_line_fields_differing": [
+        "aa"
+       ],
+       "fields_differing": [],
+       "gross_difference_run_minus_recorded": 0.0,
+       "max_relative_difference": null
+      },
+      "lines": 60,
+      "ok": true,
+      "raised": "W105 settling-extension hook: REPLAY DIVERGED at cycle 60 (per-cycle fields [], cycle-line fields ['aa'], gross difference 0.0, max relative None) -- run ABORTED (W105: no relabelled continuation)"
+     },
+     "R5_report_only_certification_does_not_stop": {
+      "branch": "oscillatory",
+      "first_would_certify": 238,
+      "last_cycle": 287,
+      "n_would_certify_cycles": 50,
+      "ok": true,
+      "status_at_cap": null,
+      "would_certify_first10": [
+       238,
+       239,
+       240,
+       241,
+       242,
+       243,
+       244,
+       245,
+       246,
+       247
+      ]
+     }
+    }
+   },
+   "wall_s": 17.185813188552856
+  }
+ },
+ "started_utc": "2026-09-28T09:48:30.426809+00:00",
+ "task": "W105 (PLANNER_BRIEF_2026-09-13.md Addendum 54)"
+}

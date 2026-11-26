@@ -1,0 +1,197 @@
+{
+ "schema": "p515_s56_step0_gates_comparison_v1_v2",
+ "utc": "2026-11-21T16:38:14Z",
+ "purpose": "Re-run of the S56 step-0 zero-solve gates from committed code only (clean export of HEAD), compared with the first run (v1, which imported uncommitted shared_energy_storage_*.py edits later committed in 32e21bb1).",
+ "prediction": "identical results (the R8 edit touches no quantity read)",
+ "prediction_outcome": "HOLDS",
+ "export": {
+  "head": "fbdc87b3c26f2537bb3d80f29c0143bb7a06a973",
+  "head_py_diff_vs_65e2c56b": [],
+  "method": "git archive HEAD of all root *.py (583), tracked data/SRP1 non-Results inputs (83), and the four tracked Results inputs (P515S56/instances_v1, P515S53/w89_3x3/instance, the W91 3x3 x0 eval f6e9cd53fdbb8ee8_x0, P515S56/interface_consistency)",
+  "export_dir_scratch": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/step0_rerun_20261121T163521Z",
+  "archive_tar_sha256": "00949dc2ef8af70c478d3c7105e8ca358507cf6413b8afba2e072499897a53ed",
+  "untracked_files_added_to_export": {
+   "p515_s56_step0_gates.py": "4d5536e191aa7e57a9577e9d7c62cbade6dc44a96e0685e33d1b5ed659e7bdc8",
+   ".env (local runtime config read by solver_parameters.py; content not recorded)": "2bcd5be0c6709e32c2dd3c6c5f6b7e8ba2be732269939df144ee3c7c3745cab5"
+  },
+  "script_sha256_repo_copy": "4d5536e191aa7e57a9577e9d7c62cbade6dc44a96e0685e33d1b5ed659e7bdc8",
+  "not_a_git_checkout": "the export is not a git repository, so the script's git provenance fields are empty in v2 (head/branch/porcelain empty; diff hash = sha256 of the empty string); sources_sha256 are file hashes and are compared to HEAD blobs below"
+ },
+ "launch": {
+  "cwd": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/step0_rerun_20261121T163521Z",
+  "command": "mkdir <export>/data/SRP1/Results/P515S56/step0_gates && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u /private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/step0_rerun_20261121T163521Z_launcher/module_audit_launcher.py /private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/step0_rerun_20261121T163521Z p515_s56_step0_gates.py /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation <launcher_dir>/module_path_audit.json > .../launch_stdout.log 2> .../launch_stderr.log; then python p515_s56_step0_gates.py --manifest (cwd export)",
+  "launcher_sha256": "8531ff64f2235628956e71a20b3c5c27dee56cc9c8de07ee9c25471ea73145c3",
+  "output_route": "the script hard-codes OUT = <script dir>/data/SRP1/Results/P515S56/step0_gates; its only override (--rehearsal) is documented \"debugging only ... never the evidence run\", so it was not used; the export output was copied bitwise into step0_gates_v2 (164 files, sha256 identical before/after copy) and module_path_audit.json added",
+  "script_exit_code": 0,
+  "launcher_exit_code": 3,
+  "launcher_exit_code_note": "launcher exited 3 because its raw verdict counted its own __main__ (the launcher file) as a module outside export and env; that is the launcher, not a project module -- corrected verdict below"
+ },
+ "module_path_check": {
+  "n_modules_inside_export": 31,
+  "project_root_modules_loaded": 30,
+  "project_root_modules_not_inside_export": [],
+  "modules_resolving_into_repo": {},
+  "modules_outside_export_and_env_excluding_launcher_main": {},
+  "raw_launcher_flag": false,
+  "corrected_all_project_modules_inside_export": true
+ },
+ "gates_v2": {
+  "all_checks_ok": true,
+  "n_checks": 42,
+  "n_pass": 42,
+  "failed_checks": [],
+  "errors": [],
+  "guard": {
+   "label": "P5.15 S56 step 0 gates (zero solves)",
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "pickle_counts": {
+   "load": 0,
+   "loads": 0
+  }
+ },
+ "gates_v1": {
+  "all_checks_ok": true,
+  "n_checks": 42,
+  "failed_checks": []
+ },
+ "step0_gates_json": {
+  "n_leaves_v1": 6945,
+  "n_leaves_v2": 6945,
+  "n_differences": 16,
+  "differences_by_category": {
+   "absolute path (excluded)": 2,
+   "provenance (excluded)": 8,
+   "timestamp (excluded)": 2,
+   "wall-clock timing (excluded)": 4
+  },
+  "substantive_differences": [],
+  "differences": [
+   {
+    "field": "/finished_utc",
+    "v1": "2026-11-21T16:29:11Z",
+    "v2": "2026-11-21T16:36:43Z",
+    "category": "timestamp (excluded)"
+   },
+   {
+    "field": "/item3_h3_derating/instance/sources/cost_file/path",
+    "v1": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/SharedESS/SRP1_ESS.xlsx",
+    "v2": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/step0_rerun_20261121T163521Z/data/SRP1/SharedESS/SRP1_ESS.xlsx",
+    "category": "absolute path (excluded)"
+   },
+   {
+    "field": "/item3_h3_derating/instance/sources/params_file/path",
+    "v1": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "v2": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/step0_rerun_20261121T163521Z/data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "category": "absolute path (excluded)"
+   },
+   {
+    "field": "/provenance_end/branch",
+    "v1": "feature/derivative-free-planning",
+    "v2": "",
+    "category": "provenance (excluded)"
+   },
+   {
+    "field": "/provenance_end/diff_sha256_production_files",
+    "v1": "49d37a1f9eaf604487bac3cccff5426a85cae94cd3fce58567cb8fbea4fe6590",
+    "v2": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "category": "provenance (excluded)"
+   },
+   {
+    "field": "/provenance_end/head",
+    "v1": "1bbfed9bcb0bd254e6e32a56497bc4294723d718",
+    "v2": "",
+    "category": "provenance (excluded)"
+   },
+   {
+    "field": "/provenance_end/porcelain_production_files",
+    "v1": "M shared_energy_storage_data.py\n M shared_energy_storage_parameters.py",
+    "v2": "",
+    "category": "provenance (excluded)"
+   },
+   {
+    "field": "/provenance_start/branch",
+    "v1": "feature/derivative-free-planning",
+    "v2": "",
+    "category": "provenance (excluded)"
+   },
+   {
+    "field": "/provenance_start/diff_sha256_production_files",
+    "v1": "49d37a1f9eaf604487bac3cccff5426a85cae94cd3fce58567cb8fbea4fe6590",
+    "v2": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "category": "provenance (excluded)"
+   },
+   {
+    "field": "/provenance_start/head",
+    "v1": "1bbfed9bcb0bd254e6e32a56497bc4294723d718",
+    "v2": "",
+    "category": "provenance (excluded)"
+   },
+   {
+    "field": "/provenance_start/porcelain_production_files",
+    "v1": "M shared_energy_storage_data.py\n M shared_energy_storage_parameters.py",
+    "v2": "",
+    "category": "provenance (excluded)"
+   },
+   {
+    "field": "/reads/five_block_3x3_w89/wall_s",
+    "v1": 13.747071027755737,
+    "v2": 13.343379020690918,
+    "category": "wall-clock timing (excluded)"
+   },
+   {
+    "field": "/reads/srp1grid_3x3/wall_s",
+    "v1": 13.843480110168457,
+    "v2": 13.786703109741211,
+    "category": "wall-clock timing (excluded)"
+   },
+   {
+    "field": "/reads/srp1grid_3x3_ev/wall_s",
+    "v1": 12.716065168380737,
+    "v2": 12.412516832351685,
+    "category": "wall-clock timing (excluded)"
+   },
+   {
+    "field": "/started_utc",
+    "v1": "2026-11-21T16:28:26Z",
+    "v2": "2026-11-21T16:36:00Z",
+    "category": "timestamp (excluded)"
+   },
+   {
+    "field": "/wall_s",
+    "v1": 44.3060519695282,
+    "v2": 43.36681389808655,
+    "category": "wall-clock timing (excluded)"
+   }
+  ]
+ },
+ "sources_sha256": {
+  "v1_equals_v2": true,
+  "v2_equals_head_blobs": true,
+  "note": "v1 ran with M shared_energy_storage_data.py / M shared_energy_storage_parameters.py; their v1 working-tree hashes equal the HEAD blobs, i.e. the uncommitted edits v1 imported are byte-identical to what 32e21bb1 committed"
+ },
+ "other_files": {
+  "manifest_file_sets_equal": true,
+  "n_files": 163,
+  "n_hash_differences": 159,
+  "non_pdf_hash_differences": [
+   "launch_stdout.log",
+   "predictions.json",
+   "step0_gates.json"
+  ],
+  "pdf_hash_differences": 156,
+  "pdfs_identical_after_removing_CreationDate": 156,
+  "predictions_json_differing_keys": [
+   "git_head",
+   "utc"
+  ],
+  "launch_stdout_differences": "predictions timestamp line; per-item \"done in X s\" timings; the appended [module_audit] line; nothing else",
+  "production_stdout_logs": "the three reads/*/production_stdout.log are bitwise identical"
+ }
+}

@@ -1,0 +1,137 @@
+{
+ "stage": "P5.15 Addendum 20 (s38 preparation worker task) -- s38_A_tau0 two-cycle preflight",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 20",
+  "data/SRP1/Results/P515S38/frozen_s38_pf_pace_spec_v9_7a2b4ab7.json"
+ ],
+ "label": "A",
+ "arm": "s38_A_tau0",
+ "num_cycles": 2,
+ "out_dir": "data/SRP1/Results/P515S38/preflight_A",
+ "solve_profile_identity": {
+  "base_permitted_solves": 153,
+  "n_tier1_recovered": 0,
+  "n_tier2_recovered": 0,
+  "retry_overhead": 0,
+  "expected_permitted_solves": 153,
+  "observed_permitted_solves": 153,
+  "exact": true
+ },
+ "tau_expected": 0.0,
+ "exempt_channels": [
+  "ess",
+  "pf"
+ ],
+ "per_cycle_channel_check": [
+  {
+   "cycle": 1,
+   "v": {
+    "rho_after": 0.011549999999999998,
+    "gamma_after": 0.0,
+    "gamma_expected": 0.0,
+    "gamma_ok": true,
+    "action": "increased",
+    "exempt": false,
+    "label_ok": true
+   },
+   "pf": {
+    "rho_after": 0.1980000000000002,
+    "gamma_after": 0.0,
+    "gamma_expected": 0.0,
+    "gamma_ok": true,
+    "action": "exempt (fixed)",
+    "exempt": true,
+    "label_ok": true
+   },
+   "ess": {
+    "rho_after": 0.010000000000000004,
+    "gamma_after": 0.0,
+    "gamma_expected": 0.0,
+    "gamma_ok": true,
+    "action": "exempt (fixed)",
+    "exempt": true,
+    "label_ok": true
+   }
+  },
+  {
+   "cycle": 2,
+   "v": {
+    "rho_after": 0.01732500000000001,
+    "gamma_after": 0.0,
+    "gamma_expected": 0.0,
+    "gamma_ok": true,
+    "action": "increased",
+    "exempt": false,
+    "label_ok": true
+   },
+   "pf": {
+    "rho_after": 0.1980000000000002,
+    "gamma_after": 0.0,
+    "gamma_expected": 0.0,
+    "gamma_ok": true,
+    "action": "exempt (fixed)",
+    "exempt": true,
+    "label_ok": true
+   },
+   "ess": {
+    "rho_after": 0.010000000000000004,
+    "gamma_after": 0.0,
+    "gamma_expected": 0.0,
+    "gamma_ok": true,
+    "action": "exempt (fixed)",
+    "exempt": true,
+    "label_ok": true
+   }
+  }
+ ],
+ "all_gamma_in_force_correct": true,
+ "all_action_labels_correct": true,
+ "pf_capture_identity_per_cycle": [
+  {
+   "cycle": 1,
+   "identity_holds": true,
+   "rel_err_r": 2.6716801065859524e-16,
+   "rel_err_s": 0.0,
+   "n_entries": 1728
+  },
+  {
+   "cycle": 2,
+   "identity_holds": true,
+   "rel_err_r": 0.0,
+   "rel_err_s": 0.0,
+   "n_entries": 1728
+  }
+ ],
+ "pf_capture_identity_all_hold": true,
+ "pf_entry_stride_path": "data/SRP1/Results/P515S38/preflight_A/pf_entry_stride_s38_A_tau0.jsonl",
+ "capture_paths_populated": {
+  "recourse_jump_sidecar": true,
+  "ess_entry_stride_sidecar": true,
+  "soh_floor_sidecar": true,
+  "pf_entry_stride_sidecar": true,
+  "boyd_terminal": true,
+  "g_baseline": true,
+  "interface_voltage_terminal": true,
+  "interface_settlement_detail": true,
+  "component_levels_terminal": true,
+  "esso_models_pickle": true
+ },
+ "all_capture_paths_populated": true,
+ "evaluator_dry_run_return_code": 0,
+ "network_failures_summary": {
+  "n_blocks": 0,
+  "classes": {
+   "recovered_tier1": 0,
+   "recovered_tier2": 0,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 0
+  },
+  "n_frozen_snapshots": 0,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S38/preflight_A/network_failures_s38_A_tau0.jsonl"
+ },
+ "local_solve_failures": 0,
+ "wall_clock_s": 94.42392301559448
+}

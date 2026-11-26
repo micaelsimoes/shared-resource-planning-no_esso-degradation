@@ -1,0 +1,118 @@
+{
+ "LEAD": {
+  "arm": "s37_rho0p001",
+  "rho_ess": 0.001,
+  "certification_verdict": false,
+  "cycle_count": 150,
+  "efc_trajectory_sampled": [
+   {
+    "cycle": 1,
+    "efc_per_day_max": 0.0002849695748927265
+   },
+   {
+    "cycle": 2,
+    "efc_per_day_max": 0.6979050680612994
+   },
+   {
+    "cycle": 5,
+    "efc_per_day_max": 1.186837294096177
+   },
+   {
+    "cycle": 10,
+    "efc_per_day_max": 1.1644482330520247
+   },
+   {
+    "cycle": 20,
+    "efc_per_day_max": 1.1708421396030693
+   },
+   {
+    "cycle": 30,
+    "efc_per_day_max": 1.1598694887838805
+   },
+   {
+    "cycle": 50,
+    "efc_per_day_max": 1.174795288759976
+   },
+   {
+    "cycle": 75,
+    "efc_per_day_max": 1.1686375991749993
+   },
+   {
+    "cycle": 100,
+    "efc_per_day_max": 1.1637952638726132
+   },
+   {
+    "cycle": 125,
+    "efc_per_day_max": 1.1617755242260348
+   },
+   {
+    "cycle": 150,
+    "efc_per_day_max": 1.16217044881533
+   }
+  ]
+ },
+ "CERTIFICATION": {
+  "criterion_a_boyd_stop_within_150": {
+   "stopped_by": "cap",
+   "stop_run_cycles": null,
+   "cycles": 150,
+   "cap": 150,
+   "required_consecutive_cycles": 3,
+   "pass": false
+  },
+  "criterion_b_no_v_pf_clamp": {
+   "clamp_v_pf_any": false,
+   "clamp_ess_any_reported_only": false,
+   "pass": true
+  },
+  "criterion_c_storage_terminal_ratio_below_0p9": {
+   "storage_terminal_ratio": 0.7442920169346173,
+   "bound": 0.9,
+   "boyd_ess_primal_ratio": 0.7442920169346173,
+   "boyd_ess_dual_ratio": 0.02979308614938359,
+   "pass": true
+  },
+  "criterion_d_cost_within_rule_nine_bar_of_run1": {
+   "arm_cost": 650936208.0100839,
+   "run1_cost": 651039166.0347285,
+   "abs_diff": 102958.02464461327,
+   "arm_terminal_step": 1307.2805327177048,
+   "run1_terminal_step": 256.2581009864807,
+   "bar": 1563.5386337041855,
+   "run1_g_baseline_path": "data/SRP1/Results/P515S35_REF_run/g_baseline.json",
+   "run1_g_baseline_sha256": "8c72a1560dc90b40d9cb653962d64dda9389c77659d7a153eea1839bc3a90124",
+   "valid_note": "valid because both runs are then settled (criterion a already requires the arm itself to have stopped under Boyd)",
+   "pass": false
+  },
+  "CERTIFIED": false
+ },
+ "PREDICTIONS": {
+  "step_size_scaling_vs_run1": {
+   "arm_rms_step_cycles_2_20": 0.07227730709963005,
+   "run1_rms_step_cycles_2_20": 0.005375049739218032,
+   "ratio_arm_over_run1": 13.44681642148767,
+   "predicted_ratio": 11.0,
+   "run1_stride_path": "data/SRP1/Results/P515S35_REF_run/ess_entry_stride_baseline.jsonl"
+  },
+  "efc_1p06_by_cycle_50_0p01_arm_only": null
+ },
+ "cross_arm": {
+  "sibling_arm": "s37_rho0p01",
+  "step_size_scaling_0p001_vs_0p01": {
+   "rms_step_0p001_cycles_2_20": 0.07227730709963005,
+   "rms_step_0p01_cycles_2_20": 0.03502007549582308,
+   "ratio_0p001_over_0p01": 2.0638821040877176,
+   "predicted_ratio": 10.0
+  },
+  "ADOPTION": {
+   "status": "DECIDED",
+   "both_certify": false,
+   "either_certifies": false,
+   "adopted_arm": null,
+   "adopted_rho_ess": null,
+   "verdict": "NEITHER CERTIFIES -- stop for review (Option 1, settlement active at initialization, is the parked fallback)"
+  },
+  "at_least_one_arm_certifies": false
+ }
+}
+[S37 evaluate] wrote /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S37_RHO0P001_run/s37_evaluation.json

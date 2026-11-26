@@ -1,0 +1,248 @@
+{
+ "authority": [
+  "S56_PLAN_v3.md section 7 rows 3-4",
+  "TASKS.md S56 section, commit 9c88d89d (step 3 v3 active)",
+  "P5_15_S56_STEP4_DIAG_REPORT.md decision 1 (a)",
+  "Planner task 2026-11-23, item 1 (step 3 v3)"
+ ],
+ "block": "2025|Summer",
+ "failure_policy": "Failure of any prediction is recorded, never re-run or tuned. A non-Optimal solve is recorded; then C_central is undefined and the step 4 smoke proceeds without it for 2025|Summer (Planner task, item 1). A guard-count mismatch or a harness exception is a harness fault: recorded, and the stage stops for the Planner.",
+ "gates_recorded": {
+  "loaded_point_objective": "pe.value(merged.objective) at the loaded point vs the saved merged-default objective: recorded (bitwise and relative); a failure is recorded, not a stop",
+  "warm_source_hash": "sha256 of the warm source == spec, before reading (refuse otherwise, zero solves)"
+ },
+ "instance_12_block": {
+  "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+  "label": "s56_srp1grid_3x3",
+  "plan": "x = 0 (no storage; combine_networks empties the shared ESS)",
+  "reader": "p515_s44_scale_measurement.read_planning_from_derived_case",
+  "scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+  "scenarios": "3 market x 3 operation, omega_s = p_m * p_o"
+ },
+ "launcher": "p515_s56_step3_v3.py",
+ "not_permitted": [
+  "production edits",
+  "any solve not declared",
+  "overwriting committed artifacts",
+  "concurrent or detached runs",
+  "recovery"
+ ],
+ "objective_convention": "gross: step 3 model.objective (settlement weight 0, no row 18, no pin, no salvage), EUR per representative day; C_central probability-weighted",
+ "output": "data/SRP1/Results/P515S56/step3_v3/run_v1",
+ "outputs": {
+  "central": "central_2025_Summer.json (C_central, parts, the central point interface P/Q/V per scenario and DN)",
+  "manifest": "manifest_sha256.json",
+  "primal": "primal/<tag>.json.gz",
+  "results": "step3_v3_results.json"
+ },
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S56/step4_diag_v1/frozen_step4_diag_spec_v2_ff466289.json",
+  "relation": "step 3 v2 + step 4 diagnostics spec (run_v1: S3-2 singles 12, 22 maxIter); this spec completes S3-2 with two warm single solves",
+  "sha256": "ff4662895b10382d92b710b7862f1684e71eb8f9cb7370d29c3056c4e8defed4"
+ },
+ "predictions": {
+  "S3v3_P1": "both solves Optimal;",
+  "S3v3_P2": "each objective = the merged per-scenario term minus an offset in [0.030, 0.040] EUR;",
+  "S3v3_P3": "P3/P4 hold (1e-6 / 1e-5)."
+ },
+ "predictions_operational": {
+  "S3v3_P1": "per single (12, 22): solution loaded (production solver_result_succeeded), termination 'optimal', IPOPT exit 'Optimal Solution Found.' (step 3 harness `optimal`)",
+  "S3v3_P2": "per single s: offset_s = (v2 run S3-2 merged_default costs.per_scenario[s].objective_per_scenario) - (single s objective); 0.030 <= offset_s <= 0.040",
+  "S3v3_P3": "C_central = sum_s omega_s C_s over the 9 singles of 2025|Summer (the v2 run S3-2 singles 00, 01, 02, 10, 11, 20, 21 + this stage's 12, 22; omega_s = the singles' recorded probability); P3: |S3-2 merged_warm - C_central| / |C_central| <= 1e-6; P4: |S3-2 merged_default - C_central| / |C_central| <= 1e-5; both must hold"
+ },
+ "recovery": "off (step 3 configure; one attempt per solve)",
+ "scenarios": {
+  "12": [
+   1,
+   2
+  ],
+  "22": [
+   2,
+   2
+  ]
+ },
+ "solves": {
+  "also_counted_by": "the step 3 harness guard (its _solve_one)",
+  "derivation": "one Network.run_smopf per single (12, 22) through the step 3 harness _solve_one",
+  "parent": 2,
+  "site": "_solve_declared"
+ },
+ "stage": "P5.15 S56 step 3 v3: 2025|Summer singles 12 and 22 warm from the saved merged-default slice; 2025|Summer C_central and step 3 P3 / P4 (frozen spec v3)",
+ "start": "freshly built merged 2025|Summer model (step 3 build); every free Var set by name from the warm source (the v2 S3-2 merged-default primal values); then per single: sliced (step 3 slice_network), built (step 3 build), every free Var set from the loaded merged model at the same index with that scenario (positions from the declarations, as the v2 S3-1 mapping); no duals; from_warm_start=False",
+ "step3_harness": {
+  "path": "p515_s56_central_ms_x0.py",
+  "pinned_by_predecessor": "e2205575bbe7e95c3d216ad2016ffae79859df93027ae53c4904b01d06480f4f",
+  "reused_functions": [
+   "build",
+   "configure",
+   "slice_network",
+   "capture_solution",
+   "component_positions",
+   "declared_positions",
+   "relaxation_limits",
+   "block_weight",
+   "optimal",
+   "_with_scen",
+   "_strip",
+   "_solve_one (wrapped)",
+   "S.read_planning_from_derived_case",
+   "_Stages"
+  ],
+  "sha256": "e2205575bbe7e95c3d216ad2016ffae79859df93027ae53c4904b01d06480f4f"
+ },
+ "step3_v1_settings_reused": {
+  "objective_alignment": {
+   "set": {
+    "cost_load_curtailment": 300.0,
+    "penalty_gen_curtailment": 0.0,
+    "penalty_shared_ess_usage": 0.0
+   },
+   "source": "the values the ADMM path sets on every TSO and DSO block: shared_resources_planning._prepare_transmission_objectives_for_admm / _prepare_distribution_objectives_for_admm (penalty_shared_ess_usage 0, penalty_gen_curtailment 0, cost_load_curtailment COST_CONSUMPTION_CURTAILMENT = 300); interface_settlement_weight is NOT set (stays 0; see audit)"
+  },
+  "objective_convention": "gross: model.objective with interface_settlement_weight 0, no row 18 (alpha = 0), no voltage pin = generation + flexibility (P and Q down) + load-curtailment cost + slack terms (+ zero-weighted penalties); settlement excluded (none exists in the merged model); no terminal salvage (x = 0, no storage); EUR per representative day, probability-weighted over the 9 scenarios of the block. C_central(block) = sum_s omega_s C_s, C_s = single-scenario model.objective. The block weight in the planning sum (years[y] x days[d] / 1.02^(y - 2025), NetworkData.get_primal_value) is reported beside it, not applied.",
+  "pre_solve_gates": {
+   "applies_to": "both chosen blocks, before the first solve; any failure refuses the run with ZERO solves",
+   "list": [
+    "instance case sha256 == declaration",
+    "combined scenario checksum == declaration (73d0a230...)",
+    "probabilities, energy prices and flexibility prices identical across TN and every DN, every block",
+    "solver_params.verbose is False",
+    "block-choice premise: every TN conventional generator has P_min = 0",
+    "block choice recomputed == spec block_choice.result",
+    "per block: alpha = 0 (no row 18), no voltage pin, settlement weight 0 and value 0, no ADN / shared ESS",
+    "per block: 3 market x 3 operation scenarios",
+    "per block: no coupling -- every active constraint's free Vars carry one scenario label equal to its own index; no scenario-common or unresolvable Var/Constraint component",
+    "per block: slice identity at a seeded random point -- each of the 9 single models equals the merged model restricted to that scenario (constraint bodies, bounds, Var bounds and fixings, per-scenario objective expressions), and merged objective == sum omega single objective",
+    "every imported repo module committed clean; harness and spec committed clean; spec sha256 matches its name tag",
+    "capture checklist asserted before anything is read",
+    "no campaign lock, no other p5*.py python process, output directory absent, single-instance lock"
+   ],
+   "random_point_box": 2.0,
+   "random_point_seed": 20261123,
+   "slice_identity_rel_tol": 1e-12
+  },
+  "reported": {
+   "curtailment_threshold_mw": 0.1,
+   "per_solve": "termination condition, IPOPT exit text, iterations, wall time, peak RSS (sampled IPOPT child at 0.1 s and the exact running max ru_maxrss), objective and parts, max constraint violation, per-scenario interface P/Q/V per DN, curtailment",
+   "relaxations": "per DN: scenario-hours where the merged interface lies outside the dropped DN reference-generator P/Q limits, outside the DN reference-node voltage limits, or |P| above the interface rating R (the TSO's interface_delta box is +-R about its fixed pc in the ADMM path)",
+   "required": [
+    "status",
+    "iterations",
+    "wall_time",
+    "memory",
+    "C_gen_plus_flex",
+    "slack_terms",
+    "objective",
+    "per_scenario_costs",
+    "interface_per_scenario",
+    "curtailment_per_scenario",
+    "ipopt_final_summary",
+    "block_weight",
+    "relaxation_margins",
+    "instance_checksum"
+   ]
+  },
+  "solver": {
+   "attempts_per_solve": 1,
+   "call": "Network.run_smopf(model, params, from_warm_start=False) for every solve, through the harness's _solve_one",
+   "executable": "/usr/local/bin/ipopt (NLP_SOLVER_PATH, refused otherwise)",
+   "inherited_unchanged": "every other TN case-file option (acceptable_tol 1e-4, acceptable_iter 5, bound_push/frac 1e-6, slack_bound_push/frac 1e-6, output_file, file_print_level 6); production pins fixed_variable_treatment and max_iter 500",
+   "option_overrides": {
+    "compl_inf_tol": 1e-06,
+    "linear_solver": "ma97",
+    "tol": 1e-05
+   },
+   "recovery_enabled": false,
+   "recovery_tier2_enabled": false,
+   "source": "S55 central check rulings (spec 0e00f6a8): tol 1e-5, compl_inf_tol 1e-6, MA97, recovery off, one attempt"
+  }
+ },
+ "thresholds": {
+  "P3_rel": 1e-06,
+  "P4_rel": 1e-05,
+  "offset_eur": [
+   0.03,
+   0.04
+  ]
+ },
+ "v2_results": {
+  "merged_default_objective": 185674.1557530493,
+  "merged_default_objective_hex": "0x1.6aa513efb7468p+17",
+  "merged_per_scenario_terms": {
+   "12": 187383.79270576665,
+   "22": 194669.14632169058
+  },
+  "merged_warm_objective": 185674.15575303906,
+  "path": "data/SRP1/Results/P515S56/step4_diag_v1/run_v1/step4_diag_results.json",
+  "sha256": "d4e023beb6bebd8b0d1d9f408ca09f555d5fa1dbc4dcb0b2a34e07e75c947118",
+  "singles": {
+   "00": {
+    "ipopt_exit": "Optimal Solution Found.",
+    "objective": 180441.4639099884,
+    "optimal": true,
+    "probability": 0.1111111111111111
+   },
+   "01": {
+    "ipopt_exit": "Optimal Solution Found.",
+    "objective": 172032.07371201582,
+    "optimal": true,
+    "probability": 0.1111111111111111
+   },
+   "02": {
+    "ipopt_exit": "Optimal Solution Found.",
+    "objective": 177597.43076492494,
+    "optimal": true,
+    "probability": 0.1111111111111111
+   },
+   "10": {
+    "ipopt_exit": "Optimal Solution Found.",
+    "objective": 190449.92076389672,
+    "optimal": true,
+    "probability": 0.1111111111111111
+   },
+   "11": {
+    "ipopt_exit": "Optimal Solution Found.",
+    "objective": 181729.70506115476,
+    "optimal": true,
+    "probability": 0.1111111111111111
+   },
+   "12": {
+    "ipopt_exit": "Maximum Number of Iterations Exceeded.",
+    "objective": null,
+    "optimal": false,
+    "probability": 0.1111111111111111
+   },
+   "20": {
+    "ipopt_exit": "Optimal Solution Found.",
+    "objective": 197925.08733009992,
+    "optimal": true,
+    "probability": 0.1111111111111111
+   },
+   "21": {
+    "ipopt_exit": "Optimal Solution Found.",
+    "objective": 188838.53484111937,
+    "optimal": true,
+    "probability": 0.1111111111111111
+   },
+   "22": {
+    "ipopt_exit": "Maximum Number of Iterations Exceeded.",
+    "objective": null,
+    "optimal": false,
+    "probability": 0.1111111111111111
+   }
+  }
+ },
+ "version": 3,
+ "warm_source": {
+  "path": "data/SRP1/Results/P515S56/step4_diag_v1/run_v1/primal/S3_2__logs__2025_Summer__merged_default.json.gz",
+  "recorded_in_v2_results": {
+   "bytes": 2898369,
+   "n_none": 22032,
+   "n_vars": 343656,
+   "path": "data/SRP1/Results/P515S56/step4_diag_v1/run_v1/primal/S3_2__logs__2025_Summer__merged_default.json.gz",
+   "sha256": "7ea577506d7b74a10b4a5a1cd1015d093a00f457e42838bbc36e6e8f059fab7e"
+  },
+  "sha256": "7ea577506d7b74a10b4a5a1cd1015d093a00f457e42838bbc36e6e8f059fab7e"
+ }
+}

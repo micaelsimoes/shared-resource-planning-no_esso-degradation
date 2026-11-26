@@ -1,0 +1,1770 @@
+{
+ "all_checks_ok": true,
+ "checks": [
+  {
+   "check": "the pre-fix driver (2d46d3c8) is the driver the v2 phase spec froze",
+   "detail": [
+    "18eca5726847b012",
+    "18eca5726847b012"
+   ],
+   "ok": true,
+   "test": "pre"
+  },
+  {
+   "check": "the comparison is not vacuous: the working-tree driver differs from the pre-fix driver",
+   "detail": null,
+   "ok": true,
+   "test": "pre"
+  },
+  {
+   "check": "the mapping capture-path checklist holds, including the three inputs of the extended guard",
+   "detail": {
+    "cost_breakdown_fields": true,
+    "equality_tolerance_anchor": true,
+    "esso_recovery_event_fields": true,
+    "esso_recovery_events_written": true,
+    "investment_in_entry": true,
+    "leak_loss_price_written": true,
+    "network_failures_summary_in_record": true,
+    "pricing_fields": true,
+    "pricing_written_in_child": true,
+    "record_fields": true,
+    "settled_stop_summary_recorded": true,
+    "tail_state_check_recorded": true,
+    "tail_state_file_written": true,
+    "trajectory_fields": true
+   },
+   "ok": true,
+   "test": "E1"
+  },
+  {
+   "check": "launch_003 n9_y2025_p0.25_e0.5: pre-fix guard False and status not_certified (non-vacuous)",
+   "detail": [
+    false,
+    "not_certified"
+   ],
+   "ok": true,
+   "test": "E2"
+  },
+  {
+   "check": "launch_003 n9_y2025_p0.25_e0.5: observed - base - credited = n_esso_recovery_events = 1, every event tier 1 and succeeded",
+   "detail": [
+    1,
+    1
+   ],
+   "ok": true,
+   "test": "E2"
+  },
+  {
+   "check": "launch_003 n9_y2025_p0.25_e0.5: the new guard holds via the extended identity, observed 6481 == expected",
+   "detail": {
+    "base_solves": 6477,
+    "esso_events": [
+     {
+      "cycle": "124",
+      "extra_solves": 1,
+      "node_id": 9,
+      "ok": true,
+      "recovery_succeeded": true,
+      "tier": "tier1",
+      "tier2_attempted": false
+     }
+    ],
+    "esso_recovery_solves": 1,
+    "expected_solves": 6481,
+    "failed": [],
+    "holds": true,
+    "n_blocks": 3,
+    "n_esso_recovery_events": 1,
+    "network_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered_tier1": 3,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "observed": 6481,
+    "retry_solves_credited": 3,
+    "rule": "harness identity (observed == base + network retries credited) holds; or, when it is unsupported because of >= 1 ESSO recovery event: observed == base + retry_solves_credited + sum over ESSO events of (1 + [tier2_attempted]) exactly, every network failure recovered (recovered_tier1 + recovered_tier2 == n_blocks; credited == tier1 + 2 tier2), every ESSO event recovery_succeeded True, events file count == n_esso_recovery_events",
+    "via": "extended_esso_recovery"
+   },
+   "ok": true,
+   "test": "E2"
+  },
+  {
+   "check": "launch_003 n9_y2025_p0.25_e0.5: new status certified",
+   "detail": [
+    "certified",
+    null,
+    null
+   ],
+   "ok": true,
+   "test": "E2"
+  },
+  {
+   "check": "launch_007 n5_y2030_p1_e3.5 + n5_y2035_p0.25_e0.5: pre-fix guard False and status not_settled (non-vacuous)",
+   "detail": [
+    false,
+    "not_settled"
+   ],
+   "ok": true,
+   "test": "E2"
+  },
+  {
+   "check": "launch_007 n5_y2030_p1_e3.5 + n5_y2035_p0.25_e0.5: observed - base - credited = n_esso_recovery_events = 3, every event tier 1 and succeeded",
+   "detail": [
+    3,
+    3
+   ],
+   "ok": true,
+   "test": "E2"
+  },
+  {
+   "check": "launch_007 n5_y2030_p1_e3.5 + n5_y2035_p0.25_e0.5: the new guard holds via the extended identity, observed 15361 == expected",
+   "detail": {
+    "base_solves": 15351,
+    "esso_events": [
+     {
+      "cycle": "083",
+      "extra_solves": 1,
+      "node_id": 5,
+      "ok": true,
+      "recovery_succeeded": true,
+      "tier": "tier1",
+      "tier2_attempted": false
+     },
+     {
+      "cycle": "224",
+      "extra_solves": 1,
+      "node_id": 5,
+      "ok": true,
+      "recovery_succeeded": true,
+      "tier": "tier1",
+      "tier2_attempted": false
+     },
+     {
+      "cycle": "245",
+      "extra_solves": 1,
+      "node_id": 5,
+      "ok": true,
+      "recovery_succeeded": true,
+      "tier": "tier1",
+      "tier2_attempted": false
+     }
+    ],
+    "esso_recovery_solves": 3,
+    "expected_solves": 15361,
+    "failed": [],
+    "holds": true,
+    "n_blocks": 7,
+    "n_esso_recovery_events": 3,
+    "network_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered_tier1": 7,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "observed": 15361,
+    "retry_solves_credited": 7,
+    "rule": "harness identity (observed == base + network retries credited) holds; or, when it is unsupported because of >= 1 ESSO recovery event: observed == base + retry_solves_credited + sum over ESSO events of (1 + [tier2_attempted]) exactly, every network failure recovered (recovered_tier1 + recovered_tier2 == n_blocks; credited == tier1 + 2 tier2), every ESSO event recovery_succeeded True, events file count == n_esso_recovery_events",
+    "via": "extended_esso_recovery"
+   },
+   "ok": true,
+   "test": "E2"
+  },
+  {
+   "check": "launch_007 n5_y2030_p1_e3.5 + n5_y2035_p0.25_e0.5: new status settled",
+   "detail": [
+    "settled",
+    [],
+    {
+     "F": 811884770.1324707,
+     "bar": 1738.6160185337067,
+     "read_at": "would-be certification cycle (stop disabled)",
+     "read_cycle": 131,
+     "status": "certified"
+    }
+   ],
+   "ok": true,
+   "test": "E2"
+  },
+  {
+   "check": "launch_009 n7_y2025_p0.25_e0.5: pre-fix guard False and status not_settled (non-vacuous)",
+   "detail": [
+    false,
+    "not_settled"
+   ],
+   "ok": true,
+   "test": "E2"
+  },
+  {
+   "check": "launch_009 n7_y2025_p0.25_e0.5: observed - base - credited = n_esso_recovery_events = 1, every event tier 1 and succeeded",
+   "detail": [
+    1,
+    1
+   ],
+   "ok": true,
+   "test": "E2"
+  },
+  {
+   "check": "launch_009 n7_y2025_p0.25_e0.5: the new guard holds via the extended identity, observed 15353 == expected",
+   "detail": {
+    "base_solves": 15351,
+    "esso_events": [
+     {
+      "cycle": "167",
+      "extra_solves": 1,
+      "node_id": 7,
+      "ok": true,
+      "recovery_succeeded": true,
+      "tier": "tier1",
+      "tier2_attempted": false
+     }
+    ],
+    "esso_recovery_solves": 1,
+    "expected_solves": 15353,
+    "failed": [],
+    "holds": true,
+    "n_blocks": 1,
+    "n_esso_recovery_events": 1,
+    "network_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered_tier1": 1,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "observed": 15353,
+    "retry_solves_credited": 1,
+    "rule": "harness identity (observed == base + network retries credited) holds; or, when it is unsupported because of >= 1 ESSO recovery event: observed == base + retry_solves_credited + sum over ESSO events of (1 + [tier2_attempted]) exactly, every network failure recovered (recovered_tier1 + recovered_tier2 == n_blocks; credited == tier1 + 2 tier2), every ESSO event recovery_succeeded True, events file count == n_esso_recovery_events",
+    "via": "extended_esso_recovery"
+   },
+   "ok": true,
+   "test": "E2"
+  },
+  {
+   "check": "launch_009 n7_y2025_p0.25_e0.5: new status settled",
+   "detail": [
+    "settled",
+    [],
+    {
+     "F": 812023299.4231855,
+     "bar": 1704.3324270248413,
+     "read_at": "would-be certification cycle (stop disabled)",
+     "read_cycle": 124,
+     "status": "certified"
+    }
+   ],
+   "ok": true,
+   "test": "E2"
+  },
+  {
+   "check": "launch_010 n5_y2025_p0.25_e0.5 + n7_y2025_p0.25_e1: pre-fix guard False and status not_settled (non-vacuous)",
+   "detail": [
+    false,
+    "not_settled"
+   ],
+   "ok": true,
+   "test": "E2"
+  },
+  {
+   "check": "launch_010 n5_y2025_p0.25_e0.5 + n7_y2025_p0.25_e1: observed - base - credited = n_esso_recovery_events = 1, every event tier 1 and succeeded",
+   "detail": [
+    1,
+    1
+   ],
+   "ok": true,
+   "test": "E2"
+  },
+  {
+   "check": "launch_010 n5_y2025_p0.25_e0.5 + n7_y2025_p0.25_e1: the new guard holds via the extended identity, observed 15354 == expected",
+   "detail": {
+    "base_solves": 15351,
+    "esso_events": [
+     {
+      "cycle": "073",
+      "extra_solves": 1,
+      "node_id": 5,
+      "ok": true,
+      "recovery_succeeded": true,
+      "tier": "tier1",
+      "tier2_attempted": false
+     }
+    ],
+    "esso_recovery_solves": 1,
+    "expected_solves": 15354,
+    "failed": [],
+    "holds": true,
+    "n_blocks": 2,
+    "n_esso_recovery_events": 1,
+    "network_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered_tier1": 2,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "observed": 15354,
+    "retry_solves_credited": 2,
+    "rule": "harness identity (observed == base + network retries credited) holds; or, when it is unsupported because of >= 1 ESSO recovery event: observed == base + retry_solves_credited + sum over ESSO events of (1 + [tier2_attempted]) exactly, every network failure recovered (recovered_tier1 + recovered_tier2 == n_blocks; credited == tier1 + 2 tier2), every ESSO event recovery_succeeded True, events file count == n_esso_recovery_events",
+    "via": "extended_esso_recovery"
+   },
+   "ok": true,
+   "test": "E2"
+  },
+  {
+   "check": "launch_010 n5_y2025_p0.25_e0.5 + n7_y2025_p0.25_e1: new status settled",
+   "detail": [
+    "settled",
+    [],
+    {
+     "F": 811999157.1966323,
+     "bar": 1372.2334699630737,
+     "read_at": "would-be certification cycle (stop disabled)",
+     "read_cycle": 125,
+     "status": "certified"
+    }
+   ],
+   "ok": true,
+   "test": "E2"
+  },
+  {
+   "check": "fixture: the launch 7 record holds (3 ESSO events)",
+   "detail": null,
+   "ok": true,
+   "test": "E3"
+  },
+  {
+   "check": "an ESSO event recorded as not succeeded -> the guard fails; settled not_settled, exit not_certified",
+   "detail": [
+    [
+     "ESSO event node 5 cycle 224: not recorded as a succeeded recovery with a consistent tier"
+    ],
+    "not_settled",
+    "not_certified"
+   ],
+   "ok": true,
+   "test": "E3"
+  },
+  {
+   "check": "an ESSO event without recovery_succeeded -> the guard fails; settled not_settled, exit not_certified",
+   "detail": [
+    [
+     "ESSO event node 5 cycle 083: not recorded as a succeeded recovery with a consistent tier"
+    ],
+    "not_settled",
+    "not_certified"
+   ],
+   "ok": true,
+   "test": "E3"
+  },
+  {
+   "check": "observed + 1 (off by one) -> the guard fails; settled not_settled, exit not_certified",
+   "detail": [
+    [
+     "observed 15362 != base 15351 + credited 7 + ESSO recovery solves 3"
+    ],
+    "not_settled",
+    "not_certified"
+   ],
+   "ok": true,
+   "test": "E3"
+  },
+  {
+   "check": "observed - 1 (off by one) -> the guard fails; settled not_settled, exit not_certified",
+   "detail": [
+    [
+     "observed 15360 != base 15351 + credited 7 + ESSO recovery solves 3"
+    ],
+    "not_settled",
+    "not_certified"
+   ],
+   "ok": true,
+   "test": "E3"
+  },
+  {
+   "check": "a tier-2 attempt recorded but not paid for in the count -> the guard fails; settled not_settled, exit not_certified",
+   "detail": [
+    [
+     "observed 15361 != base 15351 + credited 7 + ESSO recovery solves 4"
+    ],
+    "not_settled",
+    "not_certified"
+   ],
+   "ok": true,
+   "test": "E3"
+  },
+  {
+   "check": "the events file absent -> the guard fails; settled not_settled, exit not_certified",
+   "detail": [
+    [
+     "ESSO recovery events file 'esso_recovery_events_s39_D.jsonl' not found",
+     "observed 15361 != base 15351 + credited 7 + ESSO recovery solves None"
+    ],
+    "not_settled",
+    "not_certified"
+   ],
+   "ok": true,
+   "test": "E3"
+  },
+  {
+   "check": "one event dropped from the file -> the guard fails; settled not_settled, exit not_certified",
+   "detail": [
+    [
+     "events file holds 2 events, the summary counts 3",
+     "observed 15361 != base 15351 + credited 7 + ESSO recovery solves 2"
+    ],
+    "not_settled",
+    "not_certified"
+   ],
+   "ok": true,
+   "test": "E3"
+  },
+  {
+   "check": "a network block unrecovered -> the guard fails; settled not_settled, exit not_certified",
+   "detail": [
+    [
+     "a network failure is not recovered (or the classes are incomplete)"
+    ],
+    "not_settled",
+    "not_certified"
+   ],
+   "ok": true,
+   "test": "E3"
+  },
+  {
+   "check": "a network block not attempted -> the guard fails; settled not_settled, exit not_certified",
+   "detail": [
+    [
+     "a network failure is not recovered (or the classes are incomplete)"
+    ],
+    "not_settled",
+    "not_certified"
+   ],
+   "ok": true,
+   "test": "E3"
+  },
+  {
+   "check": "a network block indeterminate -> the guard fails; settled not_settled, exit not_certified",
+   "detail": [
+    [
+     "a network failure is not recovered (or the classes are incomplete)"
+    ],
+    "not_settled",
+    "not_certified"
+   ],
+   "ok": true,
+   "test": "E3"
+  },
+  {
+   "check": "credited != tier1 + 2 tier2 (credited + 1, observed + 1) -> the guard fails; settled not_settled, exit not_certified",
+   "detail": [
+    [
+     "retry_solves_credited != recovered_tier1 + 2 x recovered_tier2"
+    ],
+    "not_settled",
+    "not_certified"
+   ],
+   "ok": true,
+   "test": "E3"
+  },
+  {
+   "check": "reconciliation declared supported -> the guard fails; settled not_settled, exit not_certified",
+   "detail": [
+    [
+     "the harness did not declare the reconciliation unsupported"
+    ],
+    "not_settled",
+    "not_certified"
+   ],
+   "ok": true,
+   "test": "E3"
+  },
+  {
+   "check": "tier record inconsistent (tier2 False, tier \"tier2\") -> the guard fails; settled not_settled, exit not_certified",
+   "detail": [
+    [
+     "ESSO event node 5 cycle 083: not recorded as a succeeded recovery with a consistent tier"
+    ],
+    "not_settled",
+    "not_certified"
+   ],
+   "ok": true,
+   "test": "E3"
+  },
+  {
+   "check": "identity False with no ESSO event (the harness path) -> the guard fails; settled not_settled, exit not_certified",
+   "detail": [
+    [
+     "no ESSO recovery event: the harness identity is the rule, and it does not hold",
+     "observed 15361 != base 15351 + credited 7 + ESSO recovery solves 0"
+    ],
+    "not_settled",
+    "not_certified"
+   ],
+   "ok": true,
+   "test": "E3"
+  },
+  {
+   "check": "an event of another record type -> the guard fails; settled not_settled, exit not_certified",
+   "detail": [
+    [
+     "ESSO event node 5 cycle 083: not recorded as a succeeded recovery with a consistent tier"
+    ],
+    "not_settled",
+    "not_certified"
+   ],
+   "ok": true,
+   "test": "E3"
+  },
+  {
+   "check": "positive control: the tier-2 attempt paid for (observed + 1) -> holds, ESSO solves 4 for 3 events",
+   "detail": [],
+   "ok": true,
+   "test": "E3"
+  },
+  {
+   "check": "pilot + v2 phase: 48 real eval dirs, 75 (record, depth) mappings; every record that passed before passes now with an identical summary (but ['mapping_schema', 'solve_profile_reconciliation'])",
+   "detail": [],
+   "ok": true,
+   "test": "E4"
+  },
+  {
+   "check": "the (record, depth) mappings whose summary changes are exactly the 4 affected records (settled ones at both depths)",
+   "detail": [],
+   "ok": true,
+   "test": "E4"
+  },
+  {
+   "check": "old summaries carry mapping v1, new ones v2",
+   "detail": null,
+   "ok": true,
+   "test": "E4"
+  },
+  {
+   "check": "every evaluation record with a solve_profile under data/SRP1/Results/P515S56 (104): old guard pass -> new pass",
+   "detail": [],
+   "ok": true,
+   "test": "E4"
+  },
+  {
+   "check": "SolveProfileGuard(permitted=()) verify(0) == []",
+   "detail": [],
+   "ok": true,
+   "test": "guards"
+  },
+  {
+   "check": "pickle load/loads 0",
+   "detail": {
+    "load": 0,
+    "loads": 0
+   },
+   "ok": true,
+   "test": "guards"
+  }
+ ],
+ "code_files": {
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+  "p515_g_g1_g4_admm_gates.py": "67401731268cab293f97d1d5a197b933839be516dfe4811f85b2e7002247feaf",
+  "p515_s44_campaign_harness.py": "05a9838c46f19837398af31252bd85c465a3794aa03e9cfc1a7a30c08c462b29",
+  "p515_s56_esso_guard_tests.py": "4a1cdd11603e131f008c522911063905bf1fa75bd3ac1f3365b0a14e674a50a0",
+  "p515_s56_search_driver.py": "3371b9c238e86b9fff2260dad49b06e0205cf0de2fc41805593d8a5e602e44e0",
+  "p515_s56_search_policy.py": "27d9347839f22367e178d76646a1cfdeb0f14acf51ecd34fe15c4d85860507c1",
+  "shared_energy_storage_data.py": "0c3f032e32d3917e56f02ff5e693caf44e462ba94159b0b01d70f4d2a3f9f9df"
+ },
+ "code_files_dirty_vs_head": "",
+ "failed_checks": [],
+ "finished_utc": "2026-11-25T19:17:45.659984+00:00",
+ "git_head": "4030508f1d42bf8651f0361735d86c580863c20f",
+ "guards": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "pickle": {
+   "load": 0,
+   "loads": 0
+  },
+  "verify_0": []
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "pre_fix_driver_sha256": "18eca5726847b0125e6960c31260f0e30c3fc61b5f470c3cca0061f32241dcba",
+ "pre_fix_rev": "2d46d3c8",
+ "python": "3.11.11",
+ "results": {
+  "E1": {
+   "cost_breakdown_fields": true,
+   "equality_tolerance_anchor": true,
+   "esso_recovery_event_fields": true,
+   "esso_recovery_events_written": true,
+   "investment_in_entry": true,
+   "leak_loss_price_written": true,
+   "network_failures_summary_in_record": true,
+   "pricing_fields": true,
+   "pricing_written_in_child": true,
+   "record_fields": true,
+   "settled_stop_summary_recorded": true,
+   "tail_state_check_recorded": true,
+   "tail_state_file_written": true,
+   "trajectory_fields": true
+  },
+  "E2": [
+   {
+    "base": 6477,
+    "classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 3,
+     "recovered_tier1": 3,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "credited": 3,
+    "depth": "exit",
+    "esso_events_file": "esso_recovery_events_s39_D.jsonl",
+    "esso_events_sha256": "687c62f055e97506e3b154d630323d8f4bd55c01556f5a6cf3de33ba97e138bb",
+    "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_003/evals/4193f7f81fbaa8de_n9_y2025_p0_25_e0_5__exit__ev_2x",
+    "label": "n9_y2025_p0.25_e0.5",
+    "launch": "launch_003",
+    "n_esso": 1,
+    "new_status": "certified",
+    "observed": 6481,
+    "old_status": "not_certified",
+    "reconciliation": {
+     "base_solves": 6477,
+     "esso_events": [
+      {
+       "cycle": "124",
+       "extra_solves": 1,
+       "node_id": 9,
+       "ok": true,
+       "recovery_succeeded": true,
+       "tier": "tier1",
+       "tier2_attempted": false
+      }
+     ],
+     "esso_recovery_solves": 1,
+     "expected_solves": 6481,
+     "failed": [],
+     "holds": true,
+     "n_blocks": 3,
+     "n_esso_recovery_events": 1,
+     "network_classes": {
+      "indeterminate": 0,
+      "not_attempted": 0,
+      "recovered_tier1": 3,
+      "recovered_tier2": 0,
+      "unrecovered": 0
+     },
+     "observed": 6481,
+     "retry_solves_credited": 3,
+     "rule": "harness identity (observed == base + network retries credited) holds; or, when it is unsupported because of >= 1 ESSO recovery event: observed == base + retry_solves_credited + sum over ESSO events of (1 + [tier2_attempted]) exactly, every network failure recovered (recovered_tier1 + recovered_tier2 == n_blocks; credited == tier1 + 2 tier2), every ESSO event recovery_succeeded True, events file count == n_esso_recovery_events",
+     "via": "extended_esso_recovery"
+    },
+    "record_sha256": "4969c4e0f7f084047d6608120d7e0b5b8843e260a0349dbda8a74f9fb4908f80"
+   },
+   {
+    "base": 15351,
+    "classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 7,
+     "recovered_tier1": 7,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "credited": 7,
+    "depth": "settled",
+    "esso_events_file": "esso_recovery_events_s39_D.jsonl",
+    "esso_events_sha256": "07f32fe193f7528013f8e4041528c68907872e1f0cc229724c65399bd1626915",
+    "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_007/evals/643d2614a24412b1_n5_y2030_p1_e3_5__n5_y2035_p0_25_e0_5__settled__ev_2x",
+    "label": "n5_y2030_p1_e3.5 + n5_y2035_p0.25_e0.5",
+    "launch": "launch_007",
+    "n_esso": 3,
+    "new_status": "settled",
+    "observed": 15361,
+    "old_status": "not_settled",
+    "reconciliation": {
+     "base_solves": 15351,
+     "esso_events": [
+      {
+       "cycle": "083",
+       "extra_solves": 1,
+       "node_id": 5,
+       "ok": true,
+       "recovery_succeeded": true,
+       "tier": "tier1",
+       "tier2_attempted": false
+      },
+      {
+       "cycle": "224",
+       "extra_solves": 1,
+       "node_id": 5,
+       "ok": true,
+       "recovery_succeeded": true,
+       "tier": "tier1",
+       "tier2_attempted": false
+      },
+      {
+       "cycle": "245",
+       "extra_solves": 1,
+       "node_id": 5,
+       "ok": true,
+       "recovery_succeeded": true,
+       "tier": "tier1",
+       "tier2_attempted": false
+      }
+     ],
+     "esso_recovery_solves": 3,
+     "expected_solves": 15361,
+     "failed": [],
+     "holds": true,
+     "n_blocks": 7,
+     "n_esso_recovery_events": 3,
+     "network_classes": {
+      "indeterminate": 0,
+      "not_attempted": 0,
+      "recovered_tier1": 7,
+      "recovered_tier2": 0,
+      "unrecovered": 0
+     },
+     "observed": 15361,
+     "retry_solves_credited": 7,
+     "rule": "harness identity (observed == base + network retries credited) holds; or, when it is unsupported because of >= 1 ESSO recovery event: observed == base + retry_solves_credited + sum over ESSO events of (1 + [tier2_attempted]) exactly, every network failure recovered (recovered_tier1 + recovered_tier2 == n_blocks; credited == tier1 + 2 tier2), every ESSO event recovery_succeeded True, events file count == n_esso_recovery_events",
+     "via": "extended_esso_recovery"
+    },
+    "record_sha256": "424344fe1b108495fa958a1f5800f7c12664c36b15dd60bb83093c3f2168db90"
+   },
+   {
+    "base": 15351,
+    "classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 1,
+     "recovered_tier1": 1,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "credited": 1,
+    "depth": "settled",
+    "esso_events_file": "esso_recovery_events_s39_D.jsonl",
+    "esso_events_sha256": "52ab5d9ec3afcadcf5580d7a8751f90d967013bee9dbbd8178e632e0a2abc880",
+    "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_009/evals/862c0cdc1636f348_n7_y2025_p0_25_e0_5__settled__ev_2x",
+    "label": "n7_y2025_p0.25_e0.5",
+    "launch": "launch_009",
+    "n_esso": 1,
+    "new_status": "settled",
+    "observed": 15353,
+    "old_status": "not_settled",
+    "reconciliation": {
+     "base_solves": 15351,
+     "esso_events": [
+      {
+       "cycle": "167",
+       "extra_solves": 1,
+       "node_id": 7,
+       "ok": true,
+       "recovery_succeeded": true,
+       "tier": "tier1",
+       "tier2_attempted": false
+      }
+     ],
+     "esso_recovery_solves": 1,
+     "expected_solves": 15353,
+     "failed": [],
+     "holds": true,
+     "n_blocks": 1,
+     "n_esso_recovery_events": 1,
+     "network_classes": {
+      "indeterminate": 0,
+      "not_attempted": 0,
+      "recovered_tier1": 1,
+      "recovered_tier2": 0,
+      "unrecovered": 0
+     },
+     "observed": 15353,
+     "retry_solves_credited": 1,
+     "rule": "harness identity (observed == base + network retries credited) holds; or, when it is unsupported because of >= 1 ESSO recovery event: observed == base + retry_solves_credited + sum over ESSO events of (1 + [tier2_attempted]) exactly, every network failure recovered (recovered_tier1 + recovered_tier2 == n_blocks; credited == tier1 + 2 tier2), every ESSO event recovery_succeeded True, events file count == n_esso_recovery_events",
+     "via": "extended_esso_recovery"
+    },
+    "record_sha256": "5c0773dc90ff13b94258edfed5b716e2f48b03c47f6ff16e7a334b6e4873ce0e"
+   },
+   {
+    "base": 15351,
+    "classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 2,
+     "recovered_tier1": 2,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    },
+    "credited": 2,
+    "depth": "settled",
+    "esso_events_file": "esso_recovery_events_s39_D.jsonl",
+    "esso_events_sha256": "7b88c44ab17bdd57642f10e99d83808b566f27685509934fe51a7226144bfb68",
+    "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_010/evals/a3337e25e72fe9ce_n5_y2025_p0_25_e0_5__n7_y2025_p0_25_e1__settled__ev_2x",
+    "label": "n5_y2025_p0.25_e0.5 + n7_y2025_p0.25_e1",
+    "launch": "launch_010",
+    "n_esso": 1,
+    "new_status": "settled",
+    "observed": 15354,
+    "old_status": "not_settled",
+    "reconciliation": {
+     "base_solves": 15351,
+     "esso_events": [
+      {
+       "cycle": "073",
+       "extra_solves": 1,
+       "node_id": 5,
+       "ok": true,
+       "recovery_succeeded": true,
+       "tier": "tier1",
+       "tier2_attempted": false
+      }
+     ],
+     "esso_recovery_solves": 1,
+     "expected_solves": 15354,
+     "failed": [],
+     "holds": true,
+     "n_blocks": 2,
+     "n_esso_recovery_events": 1,
+     "network_classes": {
+      "indeterminate": 0,
+      "not_attempted": 0,
+      "recovered_tier1": 2,
+      "recovered_tier2": 0,
+      "unrecovered": 0
+     },
+     "observed": 15354,
+     "retry_solves_credited": 2,
+     "rule": "harness identity (observed == base + network retries credited) holds; or, when it is unsupported because of >= 1 ESSO recovery event: observed == base + retry_solves_credited + sum over ESSO events of (1 + [tier2_attempted]) exactly, every network failure recovered (recovered_tier1 + recovered_tier2 == n_blocks; credited == tier1 + 2 tier2), every ESSO event recovery_succeeded True, events file count == n_esso_recovery_events",
+     "via": "extended_esso_recovery"
+    },
+    "record_sha256": "e56a59e74efb0e3714d028c40f7f1e7adeb145a8fbc428e0e66a3198e20c202d"
+   }
+  ],
+  "E3": {
+   "a network block indeterminate": [
+    "a network failure is not recovered (or the classes are incomplete)"
+   ],
+   "a network block not attempted": [
+    "a network failure is not recovered (or the classes are incomplete)"
+   ],
+   "a network block unrecovered": [
+    "a network failure is not recovered (or the classes are incomplete)"
+   ],
+   "a tier-2 attempt recorded but not paid for in the count": [
+    "observed 15361 != base 15351 + credited 7 + ESSO recovery solves 4"
+   ],
+   "an ESSO event recorded as not succeeded": [
+    "ESSO event node 5 cycle 224: not recorded as a succeeded recovery with a consistent tier"
+   ],
+   "an ESSO event without recovery_succeeded": [
+    "ESSO event node 5 cycle 083: not recorded as a succeeded recovery with a consistent tier"
+   ],
+   "an event of another record type": [
+    "ESSO event node 5 cycle 083: not recorded as a succeeded recovery with a consistent tier"
+   ],
+   "credited != tier1 + 2 tier2 (credited + 1, observed + 1)": [
+    "retry_solves_credited != recovered_tier1 + 2 x recovered_tier2"
+   ],
+   "identity False with no ESSO event (the harness path)": [
+    "no ESSO recovery event: the harness identity is the rule, and it does not hold",
+    "observed 15361 != base 15351 + credited 7 + ESSO recovery solves 0"
+   ],
+   "observed + 1 (off by one)": [
+    "observed 15362 != base 15351 + credited 7 + ESSO recovery solves 3"
+   ],
+   "observed - 1 (off by one)": [
+    "observed 15360 != base 15351 + credited 7 + ESSO recovery solves 3"
+   ],
+   "one event dropped from the file": [
+    "events file holds 2 events, the summary counts 3",
+    "observed 15361 != base 15351 + credited 7 + ESSO recovery solves 2"
+   ],
+   "reconciliation declared supported": [
+    "the harness did not declare the reconciliation unsupported"
+   ],
+   "the events file absent": [
+    "ESSO recovery events file 'esso_recovery_events_s39_D.jsonl' not found",
+    "observed 15361 != base 15351 + credited 7 + ESSO recovery solves None"
+   ],
+   "tier record inconsistent (tier2 False, tier \"tier2\")": [
+    "ESSO event node 5 cycle 083: not recorded as a succeeded recovery with a consistent tier"
+   ]
+  },
+  "E4": {
+   "broad_records_scanned": 104,
+   "changed": [
+    [
+     "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_003/evals/4193f7f81fbaa8de_n9_y2025_p0_25_e0_5__exit__ev_2x",
+     "exit"
+    ],
+    [
+     "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_007/evals/643d2614a24412b1_n5_y2030_p1_e3_5__n5_y2035_p0_25_e0_5__settled__ev_2x",
+     "exit"
+    ],
+    [
+     "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_007/evals/643d2614a24412b1_n5_y2030_p1_e3_5__n5_y2035_p0_25_e0_5__settled__ev_2x",
+     "settled"
+    ],
+    [
+     "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_009/evals/862c0cdc1636f348_n7_y2025_p0_25_e0_5__settled__ev_2x",
+     "exit"
+    ],
+    [
+     "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_009/evals/862c0cdc1636f348_n7_y2025_p0_25_e0_5__settled__ev_2x",
+     "settled"
+    ],
+    [
+     "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_010/evals/a3337e25e72fe9ce_n5_y2025_p0_25_e0_5__n7_y2025_p0_25_e1__settled__ev_2x",
+     "exit"
+    ],
+    [
+     "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_010/evals/a3337e25e72fe9ce_n5_y2025_p0_25_e0_5__n7_y2025_p0_25_e1__settled__ev_2x",
+     "settled"
+    ]
+   ],
+   "n_dirs": 48,
+   "rows": [
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/142a02890a1d630f_x0_i1",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/142a02890a1d630f_x0_i1",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/6b05f4c326441274_unit_i2",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/6b05f4c326441274_unit_i2",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/830a6306e0c27969_x0_i2",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/830a6306e0c27969_x0_i2",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/dddc5b8382a39c0a_staged_i1",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/dddc5b8382a39c0a_staged_i1",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/fe40736832cfbdba_unit_i1",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/fe40736832cfbdba_unit_i1",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_002/evals/0f20f46f0a99c162_x0_i3",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_002/evals/0f20f46f0a99c162_x0_i3",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_002/evals/ecac63e76319052f_unit_i3",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_002/evals/ecac63e76319052f_unit_i3",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_001/evals/1bc669ad71d00fa7_n5_y2025_p0_25_e1__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_001/evals/c8a54462dc1e4e94_n5_y2030_p0_25_e1__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_001/evals/d9f3fb6771ba4cc7_n5_y2030_p0_25_e0_5__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_001/evals/ef9bd520b422db22_n5_y2035_p0_25_e1__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_001/evals/f879ec919f4c9364_n5_y2025_p0_25_e0_5__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_002/evals/0b278b5b1840f198_n7_y2030_p0_25_e1__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_002/evals/3e3f94cecc96b7cd_n5_y2035_p0_25_e0_5__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_002/evals/59a7326dc23967e7_n7_y2030_p0_25_e0_5__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_002/evals/bf0b97d2ffcac356_n7_y2025_p0_25_e0_5__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_002/evals/cb15efe692ac1ef6_n7_y2035_p0_25_e1__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_003/evals/4193f7f81fbaa8de_n9_y2025_p0_25_e0_5__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": false,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "not_certified",
+     "summary_equal_but_v2_fields": false
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_003/evals/5d6f131dc773c722_n9_y2030_p0_25_e0_5__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_003/evals/6d50972239b21b3a_n7_y2035_p0_25_e0_5__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_003/evals/e142ceef34b90210_n9_y2025_p0_25_e1__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_003/evals/f78fd5510ad0e994_n9_y2030_p0_25_e1__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_004/evals/0b97aee72e3190fc_n9_y2035_p0_25_e1__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_004/evals/9d6d881a2fb04b92_n9_y2035_p0_25_e0_5__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_005/evals/8ccbf20016f6603f_n5_y2030_p0_5_e2__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_005/evals/8f9526b34d734ecc_n9_y2030_p0_5_e2__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_005/evals/a3ca7f4c7f6ced52_n5_y2030_p1_e4__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_005/evals/cd036b306cf0253f_n9_y2030_p1_e4__exit__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_006/evals/241b04a8d9d43881_n5_y2030_p1_e4__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_006/evals/241b04a8d9d43881_n5_y2030_p1_e4__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_007/evals/4a0d635fbddeea27_n5_y2035_p1_e4__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_007/evals/4a0d635fbddeea27_n5_y2035_p1_e4__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_007/evals/54477e41b8d2c201_n5_y2030_p1_e3_5__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_007/evals/54477e41b8d2c201_n5_y2030_p1_e3_5__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_007/evals/643d2614a24412b1_n5_y2030_p1_e3_5__n5_y2035_p0_25_e0_5__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": false,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "not_settled",
+     "summary_equal_but_v2_fields": false
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_007/evals/643d2614a24412b1_n5_y2030_p1_e3_5__n5_y2035_p0_25_e0_5__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": false,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "not_certified",
+     "summary_equal_but_v2_fields": false
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_007/evals/bda68ee7f6267b4d_n5_y2030_p1_25_e4__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_007/evals/bda68ee7f6267b4d_n5_y2030_p1_25_e4__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_007/evals/f355ea4cf85b4f21_n5_y2030_p0_75_e3__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_007/evals/f355ea4cf85b4f21_n5_y2030_p0_75_e3__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_008/evals/17144f60235804ff_n5_y2030_p1_e3_5__n9_y2030_p0_25_e0_5__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_008/evals/17144f60235804ff_n5_y2030_p1_e3_5__n9_y2030_p0_25_e0_5__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_008/evals/8f0307c30dccab55_n5_y2030_p1_e3_5__n7_y2030_p0_25_e0_5__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_008/evals/8f0307c30dccab55_n5_y2030_p1_e3_5__n7_y2030_p0_25_e0_5__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_008/evals/e77f25087c29b7d3_n5_y2030_p1_e3_5__n9_y2035_p0_25_e0_5__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_008/evals/e77f25087c29b7d3_n5_y2030_p1_e3_5__n9_y2035_p0_25_e0_5__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_008/evals/ef60e750c8bcfb87_n5_y2030_p1_e3_5__n7_y2035_p0_25_e0_5__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_008/evals/ef60e750c8bcfb87_n5_y2030_p1_e3_5__n7_y2035_p0_25_e0_5__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_009/evals/0d2bf8755f51a62d_n7_y2025_p0_5_e1_5__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_009/evals/0d2bf8755f51a62d_n7_y2025_p0_5_e1_5__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_009/evals/24aa7c6964a29600_n7_y2030_p0_25_e1__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_009/evals/24aa7c6964a29600_n7_y2030_p0_25_e1__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_009/evals/2f9843dfb452e8ac_n7_y2025_p0_5_e2__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_009/evals/2f9843dfb452e8ac_n7_y2025_p0_5_e2__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_009/evals/862c0cdc1636f348_n7_y2025_p0_25_e0_5__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": false,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "not_settled",
+     "summary_equal_but_v2_fields": false
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_009/evals/862c0cdc1636f348_n7_y2025_p0_25_e0_5__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": false,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "not_certified",
+     "summary_equal_but_v2_fields": false
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_009/evals/f874bbb36e331f4b_n7_y2025_p0_5_e1__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_009/evals/f874bbb36e331f4b_n7_y2025_p0_5_e1__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_010/evals/12b59566f7f0ae08_n5_y2025_p0_25_e1__n7_y2025_p0_25_e1__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_010/evals/12b59566f7f0ae08_n5_y2025_p0_25_e1__n7_y2025_p0_25_e1__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_010/evals/2cc5da9cfbca6e17_n5_y2030_p0_25_e0_5__n7_y2025_p0_25_e1__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_010/evals/2cc5da9cfbca6e17_n5_y2030_p0_25_e0_5__n7_y2025_p0_25_e1__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_010/evals/a3337e25e72fe9ce_n5_y2025_p0_25_e0_5__n7_y2025_p0_25_e1__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": false,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "not_settled",
+     "summary_equal_but_v2_fields": false
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_010/evals/a3337e25e72fe9ce_n5_y2025_p0_25_e0_5__n7_y2025_p0_25_e1__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": false,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "not_certified",
+     "summary_equal_but_v2_fields": false
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_010/evals/b4c681d8b460f8cd_n5_y2035_p0_25_e0_5__n7_y2025_p0_25_e1__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_010/evals/b4c681d8b460f8cd_n5_y2035_p0_25_e0_5__n7_y2025_p0_25_e1__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "settled",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_010/evals/b78fb4705c303e66_n5_y2030_p0_25_e1__n7_y2025_p0_25_e1__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "settled",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "settled",
+     "summary_equal_but_v2_fields": true
+    },
+    {
+     "depth": "exit",
+     "eval_dir": "data/SRP1/Results/P515S56/phase2x_ev_v2/launches/launch_010/evals/b78fb4705c303e66_n5_y2030_p0_25_e1__n7_y2025_p0_25_e1__settled__ev_2x",
+     "new_guard": true,
+     "new_schema": "p515_s56_oracle_mapping_v2",
+     "new_status": "certified",
+     "old_guard": true,
+     "old_schema": "p515_s56_oracle_mapping_v1",
+     "old_status": "certified",
+     "summary_equal_but_v2_fields": true
+    }
+   ]
+  }
+ },
+ "rule": "harness identity (observed == base + network retries credited) holds; or, when it is unsupported because of >= 1 ESSO recovery event: observed == base + retry_solves_credited + sum over ESSO events of (1 + [tier2_attempted]) exactly, every network failure recovered (recovered_tier1 + recovered_tier2 == n_blocks; credited == tier1 + 2 tier2), every ESSO event recovery_succeeded True, events file count == n_esso_recovery_events",
+ "schema": "p515_s56_esso_guard_tests_v1",
+ "script": "p515_s56_esso_guard_tests.py",
+ "solve_claim": "ZERO SOLVES, guard-verified (SolveProfileGuard(permitted=()) installed before any repository import, verify(0)); pickle blocked (0); records read only",
+ "started_utc": "2026-11-25T19:17:42.018755+00:00",
+ "v2_phase_spec_sha256": "18a224d13f9bc04e3c3177fb678ced009f5f845b77ab895817228b2ad28c1ce8",
+ "wall_s": 3.6410953998565674
+}

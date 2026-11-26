@@ -1,0 +1,1284 @@
+{
+ "stage": "P5.15 Addendum 27 item 1 (W1) -- case-file AA: loader, case file, harness (zero solves)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 27 item 1",
+  "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json"
+ ],
+ "started_utc": "2026-09-19T16:43:21.033796+00:00",
+ "git_head": "0a188005178c5e5729c8bfed4c7c0f9484231414",
+ "git_status_porcelain_relevant": [
+  " M admm_parameters.py",
+  " M data/SRP1/SRP1_params.json",
+  " M p515_s44_campaign_harness.py",
+  "?? p515_s45_case_file_aa_check.py"
+ ],
+ "file_sha256": {
+  "admm_parameters.py": "9aee32481e07ed59f429ed24de500479992b9e4fd4df82f3bba1e1fa6d2ec0de",
+  "data/SRP1/SRP1_params.json": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "p515_s44_campaign_harness.py": "ac13f0e4a96b9e22059eba4519c6f167409e246f77b83f866b63109018024ab8",
+  "p515_s45_case_file_aa_check.py": "455b59dced542e9a2731add84ee5ccc6376ae70ba7f39fb3a9eea2181aff27f2",
+  "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+  "shared_resources_planning.py": "68b0f4d8b272700e67822a09840d3fdf68b7633c06b976a962c9a5da894d7e6d"
+ },
+ "pre_change_commit": "0a188005",
+ "pre_change_admm_parameters_sha256": "b226b47fa436a8405e50ccbdf8055b043534765851017711656970a523361f55",
+ "checks": {
+  "i_srp1_aa_equals_expected": true,
+  "i_srp1_aa_types_exact": true,
+  "i_srp1_case_file_only_change_is_the_aa_key": true,
+  "i_srp1_attribute_names_and_order_identical": true,
+  "i_srp1_every_other_attribute_pickle_identical_to_pre_change": true,
+  "i_srp1_pre_change_aa_was_old_default": true,
+  "ii_pre_change_srp1_under_new_loader_pickle_identical": true,
+  "ii_data/CS1/CS1_params.json_old_default_and_identical": true,
+  "ii_data/CS7/CS7_params.json_old_default_and_identical": true,
+  "ii_data/HR1/HR1_params.json_old_default_and_identical": true,
+  "ii_data/OP1/OP1_params.json_old_default_and_identical": true,
+  "ii_data/OP2/OP2_params.json_old_default_and_identical": true,
+  "iii_refuses_unknown_sub_key": true,
+  "iii_refuses_bad_reject_policy": true,
+  "iii_refuses_enabled_not_bool": true,
+  "iii_refuses_enabled_int": true,
+  "iii_refuses_memory_float": true,
+  "iii_refuses_memory_bool": true,
+  "iii_refuses_memory_zero": true,
+  "iii_refuses_regularization_str": true,
+  "iii_refuses_regularization_negative": true,
+  "iii_refuses_not_a_dict_list": true,
+  "iii_refuses_not_a_dict_null": true,
+  "iii_partial_object_merges_onto_defaults": true,
+  "iv_c_star_canonical_equals_committed_first_candidate": true,
+  "iv_fixture_declaration_recorded_in_spec": true,
+  "iv_fixture_no_overrides_no_post_certification": true,
+  "iv_fixture_effective_aa_recorded": true,
+  "iv_eval_key_differs_from_D_key": true,
+  "iv_eval_key_differs_from_aa_override_key": true,
+  "iv_eval_dir_and_ids_from_eval_key": true,
+  "iv_eval_key_recomputes": true,
+  "iv_declared_with_off_override_distinct": true,
+  "iv_declaration_refuses_unknown_key": true,
+  "iv_declaration_refuses_memory_not_frozen": true,
+  "iv_declaration_refuses_regularization_not_frozen": true,
+  "iv_declaration_refuses_bad_reject_policy": true,
+  "iv_declaration_refuses_enabled_not_bool": true,
+  "iv_declaration_refuses_missing_memory": true,
+  "iv_declaration_refuses_not_a_dict": true,
+  "iv_committed_s44_specs_found": true,
+  "iv_committed_s44_specs_keys_unchanged": true,
+  "iv_no_committed_s44_spec_declares_case_file_aa": true,
+  "v_planning_object_carries_case_file_aa": true,
+  "v_committed_specs_without_declaration_fail_on_aa_off_check": true,
+  "v_aa_dict_untouched_by_failed_hooks": true,
+  "v_bare_undeclared_spec_fails_only_on_aa_off": true,
+  "v_wrong_declaration_fails_on_match_check": true,
+  "v_with_declaration_all_checks_pass": true,
+  "v_with_declaration_has_match_checks_not_off_check": true,
+  "v_with_declaration_no_override_applied": true,
+  "v_with_declaration_effective_aa_recorded": true,
+  "v_aa_dict_unchanged_after_passing_hook": true,
+  "v_consumer_reads_params_admm_anderson_acceleration": true
+ },
+ "failed_checks": [],
+ "errors": {},
+ "sections": {
+  "loader": {
+   "i_srp1_aa_loaded": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "i_srp1_new_vs_pre_change_aa": {
+    "new": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "pre_change": {
+     "enabled": false,
+     "memory": 5,
+     "regularization": 1e-10
+    }
+   },
+   "ii_other_case_files": {
+    "data/CS1/CS1_params.json": {
+     "has_aa_key_in_file": false,
+     "aa_loaded_via_production_loader": {
+      "enabled": false,
+      "memory": 5,
+      "regularization": 1e-10
+     },
+     "aa_is_old_default_no_reject_policy": true,
+     "settings_pickle_identical_to_pre_change_loader": true,
+     "production_loader_settings_pickle_identical": true,
+     "file_sha256": "1273c89772453f89d0dd4a59749b3f964582e1f0b743fb3b3ffbedad0952f248"
+    },
+    "data/CS7/CS7_params.json": {
+     "has_aa_key_in_file": false,
+     "aa_loaded_via_production_loader": {
+      "enabled": false,
+      "memory": 5,
+      "regularization": 1e-10
+     },
+     "aa_is_old_default_no_reject_policy": true,
+     "settings_pickle_identical_to_pre_change_loader": true,
+     "production_loader_settings_pickle_identical": true,
+     "file_sha256": "b7bc4dfff2ba9032e3f447a09eb420610b8bb42c2995b90d07060f3f919cb2d5"
+    },
+    "data/HR1/HR1_params.json": {
+     "has_aa_key_in_file": false,
+     "aa_loaded_via_production_loader": {
+      "enabled": false,
+      "memory": 5,
+      "regularization": 1e-10
+     },
+     "aa_is_old_default_no_reject_policy": true,
+     "settings_pickle_identical_to_pre_change_loader": true,
+     "production_loader_settings_pickle_identical": true,
+     "file_sha256": "2e61760827a9192117e7fe8b6e6f214246c1a26b43f3665f9eb1c6effde15eed"
+    },
+    "data/OP1/OP1_params.json": {
+     "has_aa_key_in_file": false,
+     "aa_loaded_via_production_loader": {
+      "enabled": false,
+      "memory": 5,
+      "regularization": 1e-10
+     },
+     "aa_is_old_default_no_reject_policy": true,
+     "settings_pickle_identical_to_pre_change_loader": true,
+     "production_loader_settings_pickle_identical": true,
+     "file_sha256": "bcf1a57fd24964c4642fe939df39921d4b5040cfd8ac630e9da79a8c31970542"
+    },
+    "data/OP2/OP2_params.json": {
+     "has_aa_key_in_file": false,
+     "aa_loaded_via_production_loader": {
+      "enabled": false,
+      "memory": 5,
+      "regularization": 1e-10
+     },
+     "aa_is_old_default_no_reject_policy": true,
+     "settings_pickle_identical_to_pre_change_loader": true,
+     "production_loader_settings_pickle_identical": true,
+     "file_sha256": "fa08fbebd3fe77a3a36c366df193a8446c6e04a9dae6c551f9b21297f095c9d2"
+    }
+   },
+   "iii_refusals": {
+    "unknown_sub_key": {
+     "value": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory",
+      "foo": 1
+     },
+     "raised": true,
+     "type": "ValueError",
+     "message": "ADMM anderson_acceleration: unsupported keys ['foo']; supported: ['enabled', 'memory', 'regularization', 'reject_policy']."
+    },
+    "bad_reject_policy": {
+     "value": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "bogus"
+     },
+     "raised": true,
+     "type": "ValueError",
+     "message": "ADMM anderson_acceleration.reject_policy must be one of ('clear_memory', 'keep_memory'); got 'bogus'."
+    },
+    "enabled_not_bool": {
+     "value": {
+      "enabled": "true",
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "raised": true,
+     "type": "ValueError",
+     "message": "ADMM anderson_acceleration.enabled must be a bool."
+    },
+    "enabled_int": {
+     "value": {
+      "enabled": 1,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "raised": true,
+     "type": "ValueError",
+     "message": "ADMM anderson_acceleration.enabled must be a bool."
+    },
+    "memory_float": {
+     "value": {
+      "enabled": true,
+      "memory": 5.0,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "raised": true,
+     "type": "ValueError",
+     "message": "ADMM anderson_acceleration.memory must be an int."
+    },
+    "memory_bool": {
+     "value": {
+      "enabled": true,
+      "memory": true,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "raised": true,
+     "type": "ValueError",
+     "message": "ADMM anderson_acceleration.memory must be an int."
+    },
+    "memory_zero": {
+     "value": {
+      "enabled": true,
+      "memory": 0,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "raised": true,
+     "type": "ValueError",
+     "message": "ADMM anderson_acceleration.memory must be at least 1."
+    },
+    "regularization_str": {
+     "value": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": "1e-10",
+      "reject_policy": "keep_memory"
+     },
+     "raised": true,
+     "type": "ValueError",
+     "message": "ADMM anderson_acceleration.regularization must be a float."
+    },
+    "regularization_negative": {
+     "value": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": -1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "raised": true,
+     "type": "ValueError",
+     "message": "ADMM anderson_acceleration.regularization must be non-negative."
+    },
+    "not_a_dict_list": {
+     "value": [
+      true,
+      5
+     ],
+     "raised": true,
+     "type": "ValueError",
+     "message": "ADMM anderson_acceleration must be an object (dict)."
+    },
+    "not_a_dict_null": {
+     "value": null,
+     "raised": true,
+     "type": "ValueError",
+     "message": "ADMM anderson_acceleration must be an object (dict)."
+    }
+   }
+  },
+  "harness_identity": {
+   "iv_fixture_spec": {
+    "sha256_in_tempdir": "798743fe1fa8ac92ebeb9673449a33bdfebc87c3a431090c3244f1043640803d",
+    "file_name": "campaign_spec_s45_case_file_aa_fixture_798743fe.json",
+    "configuration": {
+     "name": "fixture: case-file AA declared, no overrides",
+     "arm_label": "s39_D",
+     "case_file": "data/SRP1/SRP1_params.json",
+     "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+     "case_file_last_commit": "fb3de341b359422dfbfb77e6bbffd7dc83a80bab",
+     "overrides": {},
+     "apply_rho": false,
+     "full_diagnostics_in_rows": true,
+     "note": "zero-solve check fixture; never launched",
+     "case_file_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     }
+    },
+    "entry": {
+     "label": "c_star",
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.96875,
+        3.875
+       ],
+       "7": [
+        0.96875,
+        3.875
+       ],
+       "9": [
+        0.96875,
+        3.875
+       ]
+      }
+     },
+     "key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+     "eval_key": "3e741dac72c9e1bcccc04ce5cc2e29f91cd639c43620d4efa3e36885915263aa",
+     "overrides": {},
+     "post_certification": null,
+     "eval_dir": "3e741dac72c9e1bc_c_star",
+     "working_dir_ids": {
+      "run": "p515s44_s45_case_file_aa_fixture_3e741dac72c9e1bc_run",
+      "precheck": "p515s44_s45_case_file_aa_fixture_3e741dac72c9e1bc_precheck"
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     }
+    },
+    "cap": 500,
+    "required_consecutive_cycles": 10,
+    "concurrency": 1
+   },
+   "iv_keys": {
+    "fixture_eval_key": "3e741dac72c9e1bcccc04ce5cc2e29f91cd639c43620d4efa3e36885915263aa",
+    "D_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+    "aa_override_eval_key": "837fc982565dbba32241ed21a46da14984395006e3dbb4b03d5f72b9b72c50a7",
+    "declared_plus_enabled_false_override_key": "6f65a8bad51461d403457e415b8cb4e1909e27852656e5d43a198bffd1beac9f"
+   },
+   "iv_declaration_refusals": {
+    "unknown_key": {
+     "value": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory",
+      "foo": 1
+     },
+     "raised": true,
+     "type": "ValueError",
+     "message": "case_file_anderson_acceleration: unsupported keys ['foo'] / missing keys []; keys: ['enabled', 'memory', 'regularization', 'reject_policy'] (reject_policy optional)"
+    },
+    "memory_not_frozen": {
+     "value": {
+      "enabled": true,
+      "memory": 4,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "raised": true,
+     "type": "ValueError",
+     "message": "case_file_anderson_acceleration memory/regularization must be the frozen 5/1e-10: {'enabled': True, 'memory': 4, 'regularization': 1e-10, 'reject_policy': 'keep_memory'}"
+    },
+    "regularization_not_frozen": {
+     "value": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-08,
+      "reject_policy": "keep_memory"
+     },
+     "raised": true,
+     "type": "ValueError",
+     "message": "case_file_anderson_acceleration memory/regularization must be the frozen 5/1e-10: {'enabled': True, 'memory': 5, 'regularization': 1e-08, 'reject_policy': 'keep_memory'}"
+    },
+    "bad_reject_policy": {
+     "value": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "bogus"
+     },
+     "raised": true,
+     "type": "ValueError",
+     "message": "case_file_anderson_acceleration.reject_policy must be one of ('clear_memory', 'keep_memory')"
+    },
+    "enabled_not_bool": {
+     "value": {
+      "enabled": 1,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "raised": true,
+     "type": "ValueError",
+     "message": "case_file_anderson_acceleration.enabled must be a bool"
+    },
+    "missing_memory": {
+     "value": {
+      "enabled": true,
+      "regularization": 1e-10
+     },
+     "raised": true,
+     "type": "ValueError",
+     "message": "case_file_anderson_acceleration: unsupported keys [] / missing keys ['memory']; keys: ['enabled', 'memory', 'regularization', 'reject_policy'] (reject_policy optional)"
+    },
+    "not_a_dict": {
+     "value": "on",
+     "raised": true,
+     "type": "ValueError",
+     "message": "case_file_anderson_acceleration must be a dict"
+    }
+   },
+   "iv_committed_s44_specs": {
+    "pathspec": "data/SRP1/Results/P515S44/*campaign_spec_*.json",
+    "n_specs": 22,
+    "n_entries": 45,
+    "per_spec": {
+     "data/SRP1/Results/P515S44/campaign_s44_aa_variant/campaign_spec_s44_aa_variant_f90618e8.json": {
+      "schema": "p515_s44_campaign_spec_v2",
+      "campaign_id": "s44_aa_variant",
+      "declares_case_file_aa": false,
+      "n_candidates": 2,
+      "entries": [
+       {
+        "label": "c_star_aa_keep_memory",
+        "recorded_eval_key16": "837fc982565dbba3",
+        "recomputed_eval_key16": "837fc982565dbba3",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "two_c_star_d",
+        "recorded_eval_key16": "4e53fa5560bbfa10",
+        "recomputed_eval_key16": "4e53fa5560bbfa10",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/campaign_spec_s44_aa_variant_smoke_e3f83174.json": {
+      "schema": "p515_s44_campaign_spec_v2",
+      "campaign_id": "s44_aa_variant_smoke",
+      "declares_case_file_aa": false,
+      "n_candidates": 2,
+      "entries": [
+       {
+        "label": "c_star_aa_keep_memory",
+        "recorded_eval_key16": "837fc982565dbba3",
+        "recomputed_eval_key16": "837fc982565dbba3",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "c_star_d",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/campaign_s44_gate/campaign_spec_s44_gate_4047b4e3.json": {
+      "schema": "p515_s44_campaign_spec_v1",
+      "campaign_id": "s44_gate",
+      "declares_case_file_aa": false,
+      "n_candidates": 3,
+      "entries": [
+       {
+        "label": "c_star",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "paper_plan",
+        "recorded_eval_key16": "d1a02e67107d0bac",
+        "recomputed_eval_key16": "d1a02e67107d0bac",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "node7_empty",
+        "recorded_eval_key16": "e30704e6e4dd3765",
+        "recomputed_eval_key16": "e30704e6e4dd3765",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/campaign_s44_selection_aa/campaign_spec_s44_selection_aa_4135c8d4.json": {
+      "schema": "p515_s44_campaign_spec_v2",
+      "campaign_id": "s44_selection_aa",
+      "declares_case_file_aa": false,
+      "n_candidates": 3,
+      "entries": [
+       {
+        "label": "paper_plan_aa_keep_memory",
+        "recorded_eval_key16": "8e48f3ec8993a283",
+        "recomputed_eval_key16": "8e48f3ec8993a283",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "node7_empty_aa_keep_memory",
+        "recorded_eval_key16": "0796b6dceeb0f95f",
+        "recomputed_eval_key16": "0796b6dceeb0f95f",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "two_c_star_aa_keep_memory",
+        "recorded_eval_key16": "a6ca6c94e033e460",
+        "recomputed_eval_key16": "a6ca6c94e033e460",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/harness_checks/c2_spec_root/campaign_spec_c2_f24bc344.json": {
+      "schema": "p515_s44_campaign_spec_v1",
+      "campaign_id": "c2",
+      "declares_case_file_aa": false,
+      "n_candidates": 2,
+      "entries": [
+       {
+        "label": "a",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "b",
+        "recorded_eval_key16": "d1a02e67107d0bac",
+        "recomputed_eval_key16": "d1a02e67107d0bac",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/harness_checks/c4_fail_campaign/campaign_spec_c4f_92ac6360.json": {
+      "schema": "p515_s44_campaign_spec_v1",
+      "campaign_id": "c4f",
+      "declares_case_file_aa": false,
+      "n_candidates": 1,
+      "entries": [
+       {
+        "label": "fail1",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/harness_checks/c4_foreign_lock_campaign/campaign_spec_c4l_1ce4890b.json": {
+      "schema": "p515_s44_campaign_spec_v1",
+      "campaign_id": "c4l",
+      "declares_case_file_aa": false,
+      "n_candidates": 1,
+      "entries": [
+       {
+        "label": "foreign",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/harness_checks/c4_nonstub_spec_campaign/campaign_spec_c4n_59849c27.json": {
+      "schema": "p515_s44_campaign_spec_v1",
+      "campaign_id": "c4n",
+      "declares_case_file_aa": false,
+      "n_candidates": 1,
+      "entries": [
+       {
+        "label": "nonstub",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/harness_checks/c4_stub_campaign/campaign_spec_c4_cf3b201c.json": {
+      "schema": "p515_s44_campaign_spec_v1",
+      "campaign_id": "c4",
+      "declares_case_file_aa": false,
+      "n_candidates": 4,
+      "entries": [
+       {
+        "label": "s1",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "s2",
+        "recorded_eval_key16": "d1a02e67107d0bac",
+        "recomputed_eval_key16": "d1a02e67107d0bac",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "s3",
+        "recorded_eval_key16": "e30704e6e4dd3765",
+        "recomputed_eval_key16": "e30704e6e4dd3765",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "s4",
+        "recorded_eval_key16": "cc03ce8e9b04c327",
+        "recomputed_eval_key16": "cc03ce8e9b04c327",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/harness_checks_r2/c2_spec_root/campaign_spec_c2_04e91893.json": {
+      "schema": "p515_s44_campaign_spec_v1",
+      "campaign_id": "c2",
+      "declares_case_file_aa": false,
+      "n_candidates": 2,
+      "entries": [
+       {
+        "label": "a",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "b",
+        "recorded_eval_key16": "d1a02e67107d0bac",
+        "recomputed_eval_key16": "d1a02e67107d0bac",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/harness_checks_r2/c4_fail_campaign/campaign_spec_c4f_b96c62d6.json": {
+      "schema": "p515_s44_campaign_spec_v1",
+      "campaign_id": "c4f",
+      "declares_case_file_aa": false,
+      "n_candidates": 1,
+      "entries": [
+       {
+        "label": "fail1",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/harness_checks_r2/c4_foreign_lock_campaign/campaign_spec_c4l_800e7da8.json": {
+      "schema": "p515_s44_campaign_spec_v1",
+      "campaign_id": "c4l",
+      "declares_case_file_aa": false,
+      "n_candidates": 1,
+      "entries": [
+       {
+        "label": "foreign",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/harness_checks_r2/c4_nonstub_spec_campaign/campaign_spec_c4n_34c6cffc.json": {
+      "schema": "p515_s44_campaign_spec_v1",
+      "campaign_id": "c4n",
+      "declares_case_file_aa": false,
+      "n_candidates": 1,
+      "entries": [
+       {
+        "label": "nonstub",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/harness_checks_r2/c4_stub_campaign/campaign_spec_c4_0bca1b39.json": {
+      "schema": "p515_s44_campaign_spec_v1",
+      "campaign_id": "c4",
+      "declares_case_file_aa": false,
+      "n_candidates": 4,
+      "entries": [
+       {
+        "label": "s1",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "s2",
+        "recorded_eval_key16": "d1a02e67107d0bac",
+        "recomputed_eval_key16": "d1a02e67107d0bac",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "s3",
+        "recorded_eval_key16": "e30704e6e4dd3765",
+        "recomputed_eval_key16": "e30704e6e4dd3765",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "s4",
+        "recorded_eval_key16": "cc03ce8e9b04c327",
+        "recomputed_eval_key16": "cc03ce8e9b04c327",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/harness_checks_r3/c2_spec_root/campaign_spec_c2_1ea09b7b.json": {
+      "schema": "p515_s44_campaign_spec_v2",
+      "campaign_id": "c2",
+      "declares_case_file_aa": false,
+      "n_candidates": 2,
+      "entries": [
+       {
+        "label": "a",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "b",
+        "recorded_eval_key16": "d1a02e67107d0bac",
+        "recomputed_eval_key16": "d1a02e67107d0bac",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/harness_checks_r3/c4_fail_campaign/campaign_spec_c4f_0f059fc1.json": {
+      "schema": "p515_s44_campaign_spec_v2",
+      "campaign_id": "c4f",
+      "declares_case_file_aa": false,
+      "n_candidates": 1,
+      "entries": [
+       {
+        "label": "fail1",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/harness_checks_r3/c4_foreign_lock_campaign/campaign_spec_c4l_3029ea43.json": {
+      "schema": "p515_s44_campaign_spec_v2",
+      "campaign_id": "c4l",
+      "declares_case_file_aa": false,
+      "n_candidates": 1,
+      "entries": [
+       {
+        "label": "foreign",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/harness_checks_r3/c4_nonstub_spec_campaign/campaign_spec_c4n_8ca5f6d7.json": {
+      "schema": "p515_s44_campaign_spec_v2",
+      "campaign_id": "c4n",
+      "declares_case_file_aa": false,
+      "n_candidates": 1,
+      "entries": [
+       {
+        "label": "nonstub",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/harness_checks_r3/c4_stub_campaign/campaign_spec_c4_83da5ad0.json": {
+      "schema": "p515_s44_campaign_spec_v2",
+      "campaign_id": "c4",
+      "declares_case_file_aa": false,
+      "n_candidates": 4,
+      "entries": [
+       {
+        "label": "s1",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "s2",
+        "recorded_eval_key16": "d1a02e67107d0bac",
+        "recomputed_eval_key16": "d1a02e67107d0bac",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "s3",
+        "recorded_eval_key16": "e30704e6e4dd3765",
+        "recomputed_eval_key16": "e30704e6e4dd3765",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "s4",
+        "recorded_eval_key16": "cc03ce8e9b04c327",
+        "recomputed_eval_key16": "cc03ce8e9b04c327",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/harness_checks_r3/c8_spec_root/campaign_spec_c8_d6300da7.json": {
+      "schema": "p515_s44_campaign_spec_v2",
+      "campaign_id": "c8",
+      "declares_case_file_aa": false,
+      "n_candidates": 3,
+      "entries": [
+       {
+        "label": "c_star_d",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "c_star_aa_keep",
+        "recorded_eval_key16": "837fc982565dbba3",
+        "recomputed_eval_key16": "837fc982565dbba3",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "two_c_star_d",
+        "recorded_eval_key16": "4e53fa5560bbfa10",
+        "recomputed_eval_key16": "4e53fa5560bbfa10",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/harness_checks_r3/c9_stub_campaign/campaign_spec_c9_276119b8.json": {
+      "schema": "p515_s44_campaign_spec_v2",
+      "campaign_id": "c9",
+      "declares_case_file_aa": false,
+      "n_candidates": 2,
+      "entries": [
+       {
+        "label": "c_star_d",
+        "recorded_eval_key16": "578636daa6d6360d",
+        "recomputed_eval_key16": "578636daa6d6360d",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "c_star_aa_keep",
+        "recorded_eval_key16": "837fc982565dbba3",
+        "recomputed_eval_key16": "837fc982565dbba3",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     },
+     "data/SRP1/Results/P515S44/selection_aa_dry_run/campaign_spec_s44_selection_aa_075e33ef.json": {
+      "schema": "p515_s44_campaign_spec_v2",
+      "campaign_id": "s44_selection_aa",
+      "declares_case_file_aa": false,
+      "n_candidates": 3,
+      "entries": [
+       {
+        "label": "paper_plan_aa_keep_memory",
+        "recorded_eval_key16": "8e48f3ec8993a283",
+        "recomputed_eval_key16": "8e48f3ec8993a283",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "node7_empty_aa_keep_memory",
+        "recorded_eval_key16": "0796b6dceeb0f95f",
+        "recomputed_eval_key16": "0796b6dceeb0f95f",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       },
+       {
+        "label": "two_c_star_aa_keep_memory",
+        "recorded_eval_key16": "a6ca6c94e033e460",
+        "recomputed_eval_key16": "a6ca6c94e033e460",
+        "ok": {
+         "candidate_key": true,
+         "eval_key": true,
+         "eval_dir": true,
+         "working_dir_ids": true
+        }
+       }
+      ]
+     }
+    }
+   }
+  },
+  "hook": {
+   "v_planning_object_aa": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "v_instance": {
+    "year": 2025,
+    "assignment": "per-node",
+    "investment_map": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "v_without_declaration": {
+    "data/SRP1/Results/P515S44/campaign_s44_gate/campaign_spec_s44_gate_4047b4e3.json::c_star": {
+     "overrides": {},
+     "raised": true,
+     "type": "RuntimeError",
+     "message": "S44 campaign child: configuration not as frozen (case file D + cap): ['anderson_acceleration_off_before_overrides']",
+     "names_aa_off_check": true
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_gate/campaign_spec_s44_gate_4047b4e3.json::paper_plan": {
+     "overrides": {},
+     "raised": true,
+     "type": "RuntimeError",
+     "message": "S44 campaign child: configuration not as frozen (case file D + cap): ['anderson_acceleration_off_before_overrides']",
+     "names_aa_off_check": true
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_gate/campaign_spec_s44_gate_4047b4e3.json::node7_empty": {
+     "overrides": {},
+     "raised": true,
+     "type": "RuntimeError",
+     "message": "S44 campaign child: configuration not as frozen (case file D + cap): ['anderson_acceleration_off_before_overrides']",
+     "names_aa_off_check": true
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_aa_variant/campaign_spec_s44_aa_variant_f90618e8.json::c_star_aa_keep_memory": {
+     "overrides": {
+      "anderson_acceleration": {
+       "enabled": true,
+       "reject_policy": "keep_memory"
+      }
+     },
+     "raised": true,
+     "type": "RuntimeError",
+     "message": "S44 campaign child: configuration not as frozen (case file D + cap): ['anderson_acceleration_off_before_overrides']",
+     "names_aa_off_check": true
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_aa_variant/campaign_spec_s44_aa_variant_f90618e8.json::two_c_star_d": {
+     "overrides": {},
+     "raised": true,
+     "type": "RuntimeError",
+     "message": "S44 campaign child: configuration not as frozen (case file D + cap): ['anderson_acceleration_off_before_overrides']",
+     "names_aa_off_check": true
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_selection_aa/campaign_spec_s44_selection_aa_4135c8d4.json::paper_plan_aa_keep_memory": {
+     "overrides": {
+      "anderson_acceleration": {
+       "enabled": true,
+       "reject_policy": "keep_memory"
+      }
+     },
+     "raised": true,
+     "type": "RuntimeError",
+     "message": "S44 campaign child: configuration not as frozen (case file D + cap): ['anderson_acceleration_off_before_overrides']",
+     "names_aa_off_check": true
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_selection_aa/campaign_spec_s44_selection_aa_4135c8d4.json::node7_empty_aa_keep_memory": {
+     "overrides": {
+      "anderson_acceleration": {
+       "enabled": true,
+       "reject_policy": "keep_memory"
+      }
+     },
+     "raised": true,
+     "type": "RuntimeError",
+     "message": "S44 campaign child: configuration not as frozen (case file D + cap): ['anderson_acceleration_off_before_overrides']",
+     "names_aa_off_check": true
+    },
+    "data/SRP1/Results/P515S44/campaign_s44_selection_aa/campaign_spec_s44_selection_aa_4135c8d4.json::two_c_star_aa_keep_memory": {
+     "overrides": {
+      "anderson_acceleration": {
+       "enabled": true,
+       "reject_policy": "keep_memory"
+      }
+     },
+     "raised": true,
+     "type": "RuntimeError",
+     "message": "S44 campaign child: configuration not as frozen (case file D + cap): ['anderson_acceleration_off_before_overrides']",
+     "names_aa_off_check": true
+    }
+   },
+   "v_bare_undeclared_spec": {
+    "raised": true,
+    "type": "RuntimeError",
+    "message": "S44 campaign child: configuration not as frozen (case file D + cap): ['anderson_acceleration_off_before_overrides']"
+   },
+   "v_wrong_declaration": {
+    "raised": true,
+    "type": "RuntimeError",
+    "message": "S44 campaign child: configuration not as frozen (case file D + cap): ['anderson_acceleration_case_file_matches_declaration']"
+   },
+   "v_with_declaration": {
+    "configuration_checks": {
+     "rho_v_matches_D": true,
+     "rho_pf_matches_D": true,
+     "rho_ess_matches_D": true,
+     "tau_is_0": true,
+     "gamma_policy_tied_to_rho": true,
+     "balancing_exempt_until_matches_D": true,
+     "balancing_exempt_channels_empty": true,
+     "freeze_after_unchanged_cycles_is_10": true,
+     "freeze_backstop_cycle_is_200": true,
+     "minimum_consecutive_converged_cycles_matches_spec": true,
+     "shared_ess_initialization_is_standalone": true,
+     "num_max_iters_is_spec_cap": true,
+     "anderson_acceleration_case_file_matches_declaration": true,
+     "anderson_acceleration_case_file_memory_regularization_frozen": true,
+     "persistent_workers_off": true,
+     "parallel_execution_off": true
+    },
+    "overrides_applied": {},
+    "anderson_acceleration_effective": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "rule_eleven_checklist": {
+     "s44_campaign_configuration_checks": {
+      "rho_v_matches_D": true,
+      "rho_pf_matches_D": true,
+      "rho_ess_matches_D": true,
+      "tau_is_0": true,
+      "gamma_policy_tied_to_rho": true,
+      "balancing_exempt_until_matches_D": true,
+      "balancing_exempt_channels_empty": true,
+      "freeze_after_unchanged_cycles_is_10": true,
+      "freeze_backstop_cycle_is_200": true,
+      "minimum_consecutive_converged_cycles_matches_spec": true,
+      "shared_ess_initialization_is_standalone": true,
+      "num_max_iters_is_spec_cap": true,
+      "anderson_acceleration_case_file_matches_declaration": true,
+      "anderson_acceleration_case_file_memory_regularization_frozen": true,
+      "persistent_workers_off": true,
+      "parallel_execution_off": true
+     },
+     "s44_campaign_overrides_applied": {}
+    }
+   },
+   "v_consumer_source_needles": {
+    "admm_parameters = planning_problem.params.admm": true,
+    "aa_enabled = admm_anderson_acceleration.anderson_acceleration_enabled(admm_parameters)": true,
+    "aa_settings = admm_parameters.anderson_acceleration": true,
+    "memory=aa_settings.get('memory', 5)": true,
+    "regularization=aa_settings.get('regularization', 1e-10)": true,
+    "reject_policy=aa_settings.get('reject_policy', admm_anderson_acceleration.DEFAULT_REJECT_POLICY)": true
+   }
+  }
+ },
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "ended_utc": "2026-09-19T16:43:33.161525+00:00",
+ "all_pass": true
+}

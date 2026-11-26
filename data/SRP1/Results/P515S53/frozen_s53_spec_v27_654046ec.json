@@ -1,0 +1,677 @@
+{
+ "schema": "p515_frozen_spec_v27",
+ "version": 27,
+ "stage": "P5.15 Addendum 45 item 1, W78 -- the scaling-pin test: two-cycle SRP1 arms, x = 0 and the smallest node-7 unit, gradient-based vs user-scaling with one obj_scaling_factor in {0.001, 0.002, 0.003, 0.005}",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 45 (ruling (c) + reference re-run; order item 1: pin test)",
+  "Planner task W78",
+  "Planner task W80: rulings Q1 (spec v27 scoped to the two W78 defects), Q2 (zero-solve re-evaluation of the decisive arm, no re-run), Q3 (commit the v26 arm evidence first)"
+ ],
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v26_2a08430c.json",
+  "sha256": "2a08430ccdf5de0ce1853be1d4c2ca7832cf39e1db3c6c068dadf5e58010b587"
+ },
+ "predecessor_not_edited": "v26 stays as frozen. Its formal outcome on the decisive arm, STOP (C0 and C0b FAIL), stays on the record as a failed outcome (commit 0b0f397b); v27 supersedes the CRITERIA, never the data",
+ "harness": {
+  "path": "p515_s53_w78_scaling_pin_test.py",
+  "sha256_at_freeze": "d0a49ebcffd455a435955581f5deba61541c35babe856058b7d6f82126db3b65",
+  "commit_at_freeze": "22be4a7287d45427d1fbf8ca71f292aba626c590"
+ },
+ "instance": {
+  "case_file": "data/SRP1/SRP1.json (3 years x 4 days, 1 TSO + 3 DSOs, 1 x 1 scenario)",
+  "cells": {
+   "x0": {
+    "label": "x = 0 (no storage at nodes 5, 7, 9)",
+    "canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       0.0,
+       0.0
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "committed_canonical_source": {
+     "spec": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_spec_s45_a0_c7_9d08ad2f.json",
+     "label": "x0"
+    }
+   },
+   "n7u": {
+    "label": "the smallest node-7 unit: 0.25 MVA / 1.0 MWh at node 7, investment year 2025 (n7_4h_e1)",
+    "canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       0.25,
+       1.0
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "committed_canonical_source": {
+     "spec": "data/SRP1/Results/P515S47/campaign_s47_recert/campaign_spec_s47_recert_902f93aa.json",
+     "label": "n7_4h_e1"
+    }
+   }
+  }
+ },
+ "configuration": {
+  "machinery": "W10.run_arm(arm, \"on\", ...) as the SRP1 bitwise gate (p515_s50_generalization_gate) runs it: cap 2, arm label s39_D, apply_rho False, full_diagnostics_in_rows True, snapshots on (no assignment = the case-file default), the case-file D oracle with AA keep_memory verified by the campaign hook, the recert ESS-ageing declaration injected and verified",
+  "baseline_arms": "production: no scaling key set -> IPOPT default nlp_scaling_method gradient-based, obj_scaling_factor 1",
+  "pinned_arms": "solver_params.options['nlp_scaling_method'] = 'user-scaling' and ['obj_scaling_factor'] = v on the TSO holder and on each DSO holder, after the committed hook, in the harness only (no case-file edit); retries inherit it",
+  "values": [
+   0.001,
+   0.002,
+   0.003,
+   0.005
+  ],
+  "esso": "NOT pinned: not a network solve; its own D5 objective scaling; options recorded before/after and required unchanged",
+  "production_tolerances_unchanged": "tol, acceptable_tol, acceptable_iter, compl_inf_tol, max_iter and the linear solver are not touched (C0b verifies from every log)",
+  "thread_caps": {
+   "OMP_NUM_THREADS": "1",
+   "MKL_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": "1",
+   "VECLIB_MAXIMUM_THREADS": "1",
+   "NUMEXPR_NUM_THREADS": "1"
+  }
+ },
+ "arms": {
+  "s53w78_x0_grad": {
+   "cell": "x0",
+   "value": null,
+   "eval_ids": {
+    "run": "p515s44_s45_w10_snapoff_s53w78_x0_grad_8435c71859ddde68_run",
+    "precheck": "p515s44_s45_w10_snapoff_s53w78_x0_grad_8435c71859ddde68_precheck"
+   }
+  },
+  "s53w78_x0_us0p001": {
+   "cell": "x0",
+   "value": 0.001,
+   "eval_ids": {
+    "run": "p515s44_s45_w10_snapoff_s53w78_x0_us0p001_8435c71859ddde68_run",
+    "precheck": "p515s44_s45_w10_snapoff_s53w78_x0_us0p001_8435c71859ddde68_precheck"
+   }
+  },
+  "s53w78_x0_us0p002": {
+   "cell": "x0",
+   "value": 0.002,
+   "eval_ids": {
+    "run": "p515s44_s45_w10_snapoff_s53w78_x0_us0p002_8435c71859ddde68_run",
+    "precheck": "p515s44_s45_w10_snapoff_s53w78_x0_us0p002_8435c71859ddde68_precheck"
+   }
+  },
+  "s53w78_x0_us0p003": {
+   "cell": "x0",
+   "value": 0.003,
+   "eval_ids": {
+    "run": "p515s44_s45_w10_snapoff_s53w78_x0_us0p003_8435c71859ddde68_run",
+    "precheck": "p515s44_s45_w10_snapoff_s53w78_x0_us0p003_8435c71859ddde68_precheck"
+   }
+  },
+  "s53w78_x0_us0p005": {
+   "cell": "x0",
+   "value": 0.005,
+   "eval_ids": {
+    "run": "p515s44_s45_w10_snapoff_s53w78_x0_us0p005_8435c71859ddde68_run",
+    "precheck": "p515s44_s45_w10_snapoff_s53w78_x0_us0p005_8435c71859ddde68_precheck"
+   }
+  },
+  "s53w78_n7u_grad": {
+   "cell": "n7u",
+   "value": null,
+   "eval_ids": {
+    "run": "p515s44_s45_w10_snapoff_s53w78_n7u_grad_db77e1549af855bc_run",
+    "precheck": "p515s44_s45_w10_snapoff_s53w78_n7u_grad_db77e1549af855bc_precheck"
+   }
+  },
+  "s53w78_n7u_us0p001": {
+   "cell": "n7u",
+   "value": 0.001,
+   "eval_ids": {
+    "run": "p515s44_s45_w10_snapoff_s53w78_n7u_us0p001_db77e1549af855bc_run",
+    "precheck": "p515s44_s45_w10_snapoff_s53w78_n7u_us0p001_db77e1549af855bc_precheck"
+   }
+  },
+  "s53w78_n7u_us0p002": {
+   "cell": "n7u",
+   "value": 0.002,
+   "eval_ids": {
+    "run": "p515s44_s45_w10_snapoff_s53w78_n7u_us0p002_db77e1549af855bc_run",
+    "precheck": "p515s44_s45_w10_snapoff_s53w78_n7u_us0p002_db77e1549af855bc_precheck"
+   }
+  },
+  "s53w78_n7u_us0p003": {
+   "cell": "n7u",
+   "value": 0.003,
+   "eval_ids": {
+    "run": "p515s44_s45_w10_snapoff_s53w78_n7u_us0p003_db77e1549af855bc_run",
+    "precheck": "p515s44_s45_w10_snapoff_s53w78_n7u_us0p003_db77e1549af855bc_precheck"
+   }
+  },
+  "s53w78_n7u_us0p005": {
+   "cell": "n7u",
+   "value": 0.005,
+   "eval_ids": {
+    "run": "p515s44_s45_w10_snapoff_s53w78_n7u_us0p005_db77e1549af855bc_run",
+    "precheck": "p515s44_s45_w10_snapoff_s53w78_n7u_us0p005_db77e1549af855bc_precheck"
+   }
+  }
+ },
+ "run_order": [
+  "--reevaluate-v27 s53w78_x0_us0p001",
+  "s53w78_x0_grad",
+  "s53w78_x0_us0p002",
+  "s53w78_x0_us0p003",
+  "s53w78_x0_us0p005",
+  "s53w78_n7u_grad",
+  "s53w78_n7u_us0p001",
+  "s53w78_n7u_us0p002",
+  "s53w78_n7u_us0p003",
+  "s53w78_n7u_us0p005",
+  "--analyse"
+ ],
+ "run_order_note": "the decisive arm is NOT re-run (ruling Q2): its v26 run is re-evaluated under v27 with zero solves; only if C0 and C0b then hold do the remaining nine arms run, one per process, then --analyse",
+ "solve_profile_per_arm": {
+  "declared_base": "51 per cycle x (cap 2 + 1 initialisation) = 153 (W10.derive_solves_from_case_file)",
+  "identity": "observed == 153 + sum over network-failure events of [recovery_attempted] + [tier2_attempted] (S44.event_level_solve_reconciliation); GUARD.verify(that) EXACTLY; one arm per process so the process guard counts exactly one arm"
+ },
+ "formulas": {
+  "segment": "one IPOPT solve = the text between consecutive 'List of options:' markers of a network output_file (file_append yes; the options list precedes each solve's banner); exactly one banner per segment",
+  "round": "primary-log segment index: 0 = initialisation solve, 1 = ADMM cycle 1, 2 = ADMM cycle 2",
+  "iterations": "'Number of Iterations....: N' (last occurrence in the segment)",
+  "termination": "'EXIT: <message>' (last occurrence); acceptable = 'Optimal Solution Found.' or 'Solved To Acceptable Level.'; max_iter hit = 'Maximum Number of Iterations Exceeded.'",
+  "final_mu": "last 'Current barrier parameter mu = X' in the segment (the W74 convention)",
+  "inertia_regularisations": "number of iteration-summary lines (the line after each 'iter objective inf_pr ...' header) whose lg(rg) column (delta_w) is not '-'; also reported: the number of 'Perturbation parameters: delta_x=X' lines with X > 0 (per factorization)",
+  "restoration": "restoration iterations = iteration-summary lines whose iteration number carries the 'r' suffix; restoration ENTRIES = transitions from a non-'r' (or the start) to an 'r' line",
+  "final_kkt": "'Overall NLP error' (scaled, unscaled) of the final block after 'Number of Iterations'",
+  "effective_objective_scaling": "'objective scaling factor = %g' (IPOPT StandardScalingBase: obj_scaling_factor x method factor); the gradient-based method factor is the separate line 'Scaling parameter for objective function = %e'",
+  "median": "statistics.median over the family's primary solves (12 blocks x 3 rounds = 36 per family per arm)",
+  "p90": "nearest rank: sorted(x)[ceil(0.9 n) - 1]",
+  "family": "TSO = case9; DSO5 = case33_1; DSO7 = case33_2; DSO9 = case33_3",
+  "network_solves_in_guard": "GUARD.permitted_solve - 9 ESSO solves (3 nodes x 3 rounds); ESSO recovery events make the reconciliation unsupported (fails loudly)",
+  "option_list_parsing": "MERGE-AWARE (v27). IPOPT 3.14.18 OptionsList::PrintList writes each entry with char buffer[256]; Snprintf(buffer, 255, \"%40s = %-20s %6d\\n\", name, value, counter), so at most 254 characters of an entry survive. With a value of n >= 20 characters the entry needs n + 51 characters including its newline: n >= 204 drops the NEWLINE and the next option is printed on the same physical line; n >= 205 also drops the counter digit; n >= 212 also drops the tail of the value. Only 'output_file' (the absolute log path, 198-220 characters across the arms and retry logs of this test) reaches that length; in the decisive arm the DSO path is 204 characters and 'slack_bound_frac' shares its line. Parse: within the options block (up to the IPOPT banner), each physical line is split at every '<name> = ' entry start (name at the line start or after whitespace, regex (?:^|(?<=\\s))([A-Za-z][A-Za-z0-9_.]*) = ); the text up to the next entry start is 'value  counter' when it matches ^(.*?)\\s+(\\d+)\\s*$, else the (possibly truncated) value with times_used None. Recorded per segment: entries, physical lines, merged lines, entries without counter, duplicated entries (an anomaly)",
+  "scaling_events": "the ordered sequence of 'Scaling parameter for objective function = G' (gradient) and 'objective scaling factor = E' (effective) lines of a segment, each on its own line",
+  "x_c_d_scaling_all": "every '(No )?x|c|d scaling provided' line of a segment (restoration phases print them again)"
+ },
+ "criteria": {
+  "C0_decisive_effective_factor": {
+   "applies_to": "pinned arms (value v)",
+   "holds_iff": [
+    "every network solve segment (primary + recovery + tier-2 logs) has options nlp_scaling_method = 'user-scaling' and obj_scaling_factor == v (each times_used >= 1) -- options parsed merge-aware (formulas.option_list_parsing)",
+    "EVERY 'objective scaling factor = S' line in the segment has float(S) == v and S == format(v, 'g'), and AT LEAST ONE such line is present (restoration phases print further lines; they are not counted against anything)",
+    "no 'Scaling parameter for objective function' line in the segment (the gradient-based factor is not computed)",
+    "every 'x/c/d scaling provided' line in the segment reads 'No x scaling provided' / 'No c scaling provided' / 'No d scaling provided', and at least one of each is present",
+    "number of network segments == GUARD network-solve count, every primary block log holds exactly 3 segments, and no parse anomaly (one banner per segment, no option listed twice)"
+   ],
+   "evidence_not_gated": "per segment and in aggregate: the number of objective-scaling-factor lines and the number of restoration entries (and the segments where lines != 1 + entries); the options-list physical/merged line counts and entries whose counter was truncated",
+   "on_failure": "exit 2, STOP: no value is chosen; report to the Planner",
+   "baseline_arms": {
+    "kind": "record (exit status of the arm, not a selection criterion)",
+    "holds_iff": [
+     "no user-scaling line: the options list carries neither 'nlp_scaling_method' nor 'obj_scaling_factor' (merge-aware parse)",
+     "AT LEAST ONE 'Scaling parameter for objective function = G' line in the segment",
+     "every such line is IMMEDIATELY followed (next scaling line of the segment) by an 'objective scaling factor = E' line with |float(E) / float(G) - 1| <= 1e-5 (E is printed %g, 6 significant digits; G %e, 7); further objective-scaling-factor lines (restoration phases, printed without a gradient-based line) are recorded, not counted against anything",
+     "segment count, 3 segments per primary log and no parse anomaly, as for pinned arms"
+    ],
+    "recorded": "x/c/d scaling lines (distinct), the effective and gradient-based factors (distinct)"
+   }
+  },
+  "C0b_tolerances_unchanged": {
+   "applies_to": "every arm",
+   "holds_iff": "for every network segment, the PROTECTED option keys in the IPOPT options list equal the case-file options (+ production defaults max_iter 500 and fixed_variable_treatment make_parameter), with the production retry overrides on recovery segments (recovery_options minus hessian_approximation; tier 2 adds mu_strategy adaptive); keys absent from that expectation are absent from the list"
+  },
+  "C1_convergence": {
+   "applies_to": "each value v, both cells",
+   "holds_iff": [
+    "cycles_run == 2 and local_solve_failures == 0",
+    "zero network events of class 'unrecovered' or 'indeterminate'; zero ESSO recovery events",
+    "zero max_iter hits in any network attempt (primary or retry)",
+    "primary non-acceptable network terminations <= the same cell's baseline count",
+    "GUARD.verify(declared per-event count) == [] (exact)"
+   ],
+   "reported": "per arm and family: optimal / acceptable-level / other exits; retries; restoration entries"
+  },
+  "C2_similar_iterations_between_cells": {
+   "applies_to": "each value v (x0 arm vs n7u arm at the same v)",
+   "holds_iff": "for EVERY family F in {TSO, DSO5, DSO7, DSO9}: (|med_n7u - med_x0| <= 3 or med_n7u / med_x0 in [0.80, 1.25]) AND (|p90_n7u - p90_x0| <= 4 or p90_n7u / p90_x0 in [1/1.35, 1.35]), over the family's 36 primary solves per cell",
+   "justification": "the two cells are different instances (one 0.25 MVA unit at node 7 changes the TSO and DSO7 problems), so identical counts are not expected even under identical scaling; the calibration (spec calibration_zero_solve) shows the untouched DSO5 / DSO9 families within 3 % in median (46.5 / 46.5, 47 / 48) and 8 % at p90 (55 / 51, 59 / 58) across the cells, DSO7 at 1.15 / 1.10 (48 / 55, 62 / 68), while the TSO family differs by 2.25 in median (24 / 54) and 2.96 at p90 (26 / 77) under gradient-based scaling (0.002 vs 0.001). A 25 % median band (35 % at p90, whose nearest-rank value on 36 solves is one of the 4 largest and noisier) with absolute floors of 3 / 4 iterations (integer granularity at medians of 20-60) admits genuine instance differences and excludes the baseline disparity by a wide margin"
+  },
+  "C3_no_conditioning_degradation": {
+   "applies_to": "each value v, each cell c, each family F, against the gradient-based arms",
+   "degradation_if_any": [
+    "restoration entries (total over the family's 36 primary solves) > the same cell's baseline total",
+    "iterations with inertia regularisation (total) > max(1.25 x baseline_c_F, baseline_c_F + 5)",
+    "acceptable-level (non-optimal) terminations > baseline_c_F + max(2, 0.25 x baseline_c_F)",
+    "median iterations > 1.25 x max(baseline median x0_F, baseline median n7u_F), or p90 > 1.35 x max(baseline p90 x0_F, baseline p90 n7u_F) -- the matched level may reach the WORSE baseline cell (that is what matching means for the cell whose factor changes) but not exceed it by more than the C2 bands"
+   ],
+   "not_gated_reported": {
+    "final_mu": "reported per solve and summarised; NOT a degradation criterion: the barrier problem is posed on the scaled objective, so mu at termination scales with the objective factor and differs between arms by construction",
+    "final_kkt_scaled": "reported (scaled and unscaled); NOT a degradation criterion: the scaled error at an optimal exit is <= tol by construction in every arm and its unscaled counterpart scales with 1/df; the gated, scale-free indicators are restoration entries, inertia regularisations, termination class and iteration counts"
+   }
+  },
+  "selection_rule": {
+   "eligible": "values v passing C0, C0b, C1, C2 and C3",
+   "choose": "argmin D(v) = max over F of |ln(med_n7u_F(v) / med_x0_F(v))|; ties (|dD| <= 0.05) broken by the smaller total network iterations over both cells, then by the smaller v",
+   "outcomes": {
+    "STOP": "C0 fails for any pinned arm -- the pin does not pin; no value chosen",
+    "RECOMMEND(v)": "at least one eligible value",
+    "FALLBACK_PURE_C": "C1 or C3 fails for EVERY value (user-scaling degrades conditioning or convergence) -- Addendum 45 fallback: gradient-based retained, sub-resolution caveat, no re-run",
+    "NO_VALUE_MEETS_C2": "some value passes C0, C0b, C1 and C3 but none passes C2 -- conditioning intact, the similarity criterion unmet; reported plainly for the Planner to rule"
+   }
+  }
+ },
+ "calibration_zero_solve": {
+  "note": "committed-run IPOPT logs, production (gradient-based) scaling, first three solves per block. x0 = s45_a0_c7 (spec 9d08ad2f), n7u = s47_a1a_baseline (the ageing baseline). DIFFERENT configurations from this test's baseline arms: used to state predictions only",
+  "runs": {
+   "x0": {
+    "logs_dir": "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs",
+    "n_logs": 48,
+    "logs_sha256": {
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case9_2025_Autumn.log": "3515117ecbeb04deaddeaf1088eff07dd6f47ab57c1fac8f7c8a063576c76d28",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case9_2025_Spring.log": "a9622505e4ab5bc75be790614d3a127ef5462efe98f5ce24cf5f52815f376e05",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case9_2025_Summer.log": "8172362f4172221cb3d6f87f71498c4586715e6f6cd64f6cd6682ee38de90710",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case9_2025_Winter.log": "debb2d703ab851cf812b4acf3426156a01a33b0b134510a913b0b88c0b002375",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case9_2030_Autumn.log": "9de07e2c0b41fd98b929924e724c2b38c974ddab1683e84b71a52385c97bbe06",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case9_2030_Spring.log": "5f8d40ad9d72f5ea6376a895df189e0f942f0726b3b9dd6619e037a9f87e9fd7",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case9_2030_Summer.log": "84e8bb43bd1e762be33f5a168bc2610f8cd6efd42a1f99cadd040c8aa600ea0b",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case9_2030_Winter.log": "f0e89d645c18fd171012a5d569e30a431409a26586eadbb555b04931dc07a706",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case9_2035_Autumn.log": "a7cd7d8c130b258f4066fde441a060002ac89441e2d46610f9d5a4bf27ee19ca",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case9_2035_Spring.log": "1124a87fc9fd3ad04e74987dfd0d0fee405d2c07f79bb2ddffc32d0c106a0676",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case9_2035_Summer.log": "d05d6f8c1605e96353d2c4e22a855b4c026b6284c583d87cf82638a906a6ce41",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case9_2035_Winter.log": "2cbbafb975a4cbeed10de29deb338ff207fb362ffdbe0c93f887f32b5a519f6f",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_1_2025_Autumn.log": "3605af41b9a1a8c365be4839daa663b91f8d7010f8ebebd05a417bc3f3a238ab",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_1_2025_Spring.log": "044e83d4d81bb6b223cb8dc7eeecfd6f6d434cad647686267a99d544ff36b045",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_1_2025_Summer.log": "58805e152bacc20ad0495471e974a0b60cfa7180668c199d364340be4cc124ca",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_1_2025_Winter.log": "121db21b9b084b01a895918e6fd3af0a638d90062af3db8ae5960253860f9551",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_1_2030_Autumn.log": "530ddce22242e1fbd0069e45a3597615125289b008a64a6135af099d29740bb7",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_1_2030_Spring.log": "6e3881375895c8d391ad07588251ff461b4abd83f4bf309e6e368074ac533677",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_1_2030_Summer.log": "93f3ee187878c41c48901f2cd42079c5e6015fd92e972e5394557e76a838b932",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_1_2030_Winter.log": "d4a1af982aa7791379a48d9dda2fe86715587b197a7c484e0e3383d8ebf30460",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_1_2035_Autumn.log": "35ca2bc3708821e8fbd9db7e48032205ad287afe6492d42b4d17a648341caa45",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_1_2035_Spring.log": "f85d3d34929fb62a51d7cba50fbd1ef21d7b4fd393b8d31068dfb45dba58bc97",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_1_2035_Summer.log": "e15b9059aeb16b52aebde9af411230fd54314947c11b6027a6ba01ec87f389c0",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_1_2035_Winter.log": "0ac60fb2bb913a8599a5f487ccab56a83a9055bd855a2976118cad9a0899a726",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_2_2025_Autumn.log": "473808a547dcf77dd3c33278c5910ea350f6e4dc26314865cd588fe138719f78",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_2_2025_Spring.log": "78135fc979f9eb37a83ec491bfc4b324ab3975ec9ab4c9100775b076130d6ec5",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_2_2025_Summer.log": "9b4b92cd4841731b9ea0cb4d3691424075155455c302de2b38a5c62594c4c77f",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_2_2025_Winter.log": "6966c733a48d90a3c78aa278d311ab2d99a0520dcfe9ea6c855a9f1236fe3bf6",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_2_2030_Autumn.log": "6bf061baa2736e7dd212c9c901e7ab29364f16a05b7b2f627b13be71c5729ce2",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_2_2030_Spring.log": "bc4d54f3599b7734c7ad6f1d82a76b745836bd2eda9a9189d79dea04f89b6fbe",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_2_2030_Summer.log": "5d84acc5fff62af3e254dbd2971e39b588b43236fb28304a37f295517009da3f",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_2_2030_Winter.log": "743bffa4b05aa2a3367ce6f680b65d0f72726fc605822efff10b6587c5ad5799",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_2_2035_Autumn.log": "3f1bea730dc33eed1562b584a7a3f3c4917f16047b8530b6646c5dc79964b6cf",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_2_2035_Spring.log": "1b3fef7f0a39e369d7b06b0cd5d0e3c4f8dfc81175913366c31b0a7760403a8a",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_2_2035_Summer.log": "52740d1de13769d1395eecf24c00a617f92b4e2e3a5b60510eff6311cfe97441",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_2_2035_Winter.log": "882205b4cf990bce901dad76408b7daaf9fa209fc5a8e842990567d6d5cd74b9",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_3_2025_Autumn.log": "d8bb3dda86718b1f922477458cbffe31f943062acee9e4ca97ec15569e43a568",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_3_2025_Spring.log": "dcf1e79b3b53a54bc75d2b06c5f918ff0fa6fb79edc248c0967c583bbd3b58bc",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_3_2025_Summer.log": "bad5139049ef2a1a7715175fe788228e580aebde8fd3d797941df354e7246303",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_3_2025_Winter.log": "8458affba0e4fa9b0a22f64ee3958d0e9ef43154aa43a7e1c01c543500ba8648",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_3_2030_Autumn.log": "23d2eb1014b15ff3ee3bcef8f55781fec7e0485e92898fa069d0482aa71eff5d",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_3_2030_Spring.log": "ef02e0a0d1b160c4e0b5095bfed52a3e6119eaa1b275c5dc6d0b259d808c0897",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_3_2030_Summer.log": "f0d7dbcffe418a1307f25d5915d495cdf7fa85cbe4685c585140f9dec2013d2b",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_3_2030_Winter.log": "e17dbecef2b42306693e273c5df959c52af7ed99181ee8466425ee9121a66e4e",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_3_2035_Autumn.log": "6fff6442439913921e0326ce141094e3e2928e42a6098d8b9f3f6349f4107a29",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_3_2035_Spring.log": "9523b48ff7fbe9f1873c5a9e4feaaa3a452caddcfe19b9cc3a9a0aac36a56ffe",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_3_2035_Summer.log": "5cf92196d6533d8e2b58089a2d3acb3bce1968bcfd70679e43f5211a4594b1d9",
+     "data/SRP1/Results/P56A/evals/p515s44_s45_a0_c7_7aa017f09989b56d_run/logs/optim_log_case33_3_2035_Winter.log": "719c1733655a03d01291473b7d208cd746908d6c5a1b8495e7e19988a9eb8b7d"
+    },
+    "anomalies": [],
+    "n_segments": 144,
+    "family_stats": {
+     "TSO": {
+      "iterations_median": 24.0,
+      "iterations_p90": 26,
+      "iterations_max": 27,
+      "iterations_with_inertia_regularisation_total": 117,
+      "restoration_entries_total": 0,
+      "exits": {
+       "Optimal Solution Found.": 36
+      },
+      "objective_scaling_factor_distinct": [
+       "0.002"
+      ],
+      "gradient_based_factor_distinct": [
+       "2.000000e-03"
+      ],
+      "c_scaling_distinct": [
+       "No c scaling provided"
+      ],
+      "d_scaling_distinct": [
+       "d scaling provided"
+      ],
+      "final_mu_median": 9.09090909090909e-08
+     },
+     "DSO5": {
+      "iterations_median": 46.5,
+      "iterations_p90": 55,
+      "iterations_max": 60,
+      "iterations_with_inertia_regularisation_total": 205,
+      "restoration_entries_total": 0,
+      "exits": {
+       "Optimal Solution Found.": 36
+      },
+      "objective_scaling_factor_distinct": [
+       "0.001"
+      ],
+      "gradient_based_factor_distinct": [
+       "1.000000e-03"
+      ],
+      "c_scaling_distinct": [
+       "c scaling provided"
+      ],
+      "d_scaling_distinct": [
+       "d scaling provided"
+      ],
+      "final_mu_median": 9.090909090909092e-09
+     },
+     "DSO7": {
+      "iterations_median": 48.0,
+      "iterations_p90": 62,
+      "iterations_max": 69,
+      "iterations_with_inertia_regularisation_total": 219,
+      "restoration_entries_total": 0,
+      "exits": {
+       "Optimal Solution Found.": 36
+      },
+      "objective_scaling_factor_distinct": [
+       "0.001"
+      ],
+      "gradient_based_factor_distinct": [
+       "1.000000e-03"
+      ],
+      "c_scaling_distinct": [
+       "c scaling provided"
+      ],
+      "d_scaling_distinct": [
+       "d scaling provided"
+      ],
+      "final_mu_median": 9.090909090909092e-09
+     },
+     "DSO9": {
+      "iterations_median": 47.0,
+      "iterations_p90": 59,
+      "iterations_max": 61,
+      "iterations_with_inertia_regularisation_total": 205,
+      "restoration_entries_total": 0,
+      "exits": {
+       "Optimal Solution Found.": 36
+      },
+      "objective_scaling_factor_distinct": [
+       "0.001"
+      ],
+      "gradient_based_factor_distinct": [
+       "1.000000e-03"
+      ],
+      "c_scaling_distinct": [
+       "c scaling provided"
+      ],
+      "d_scaling_distinct": [
+       "d scaling provided"
+      ],
+      "final_mu_median": 9.090909090909092e-09
+     }
+    }
+   },
+   "n7u": {
+    "logs_dir": "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs",
+    "n_logs": 48,
+    "logs_sha256": {
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case9_2025_Autumn.log": "dce9dda47579476b1cd4e503c8249fe8240074af813cb4f1e5db20ef9f339fb2",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case9_2025_Spring.log": "c7583810b466386eee9b0e9166e2b8202dc0d54d41cbf2a59e0dd63c28e2ad7b",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case9_2025_Summer.log": "cb80ea2b0dabd61d3af518915179958f2a7f3620b1a9e34ab6d6845164548104",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case9_2025_Winter.log": "edd53bc92bc003e5b3a401b88180563215468d4ef79baa84cde228572a7f2eee",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case9_2030_Autumn.log": "0dbcb8aa54e8c735164c15ae1f64b314d97032a043142ae38127e60fbd5d5b86",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case9_2030_Spring.log": "3f3192b8fbc663660593df01981b562ad12072c2da7ded1d51d7204b8d4e6e7b",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case9_2030_Summer.log": "6e33445f81cd1a98f7e579e1f030733c9d0f97cb3f85dad52acd4b8bf0a878cf",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case9_2030_Winter.log": "a30a2c00a5248894444b40f9e829c7917410cf5586cc27ced626972267783ae7",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case9_2035_Autumn.log": "0e0fb7b50e8642b94138ef82c83839107945a8da205e4eed5cb12be79906c43b",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case9_2035_Spring.log": "ba609c65d52d8d9947fe46357ba27344f19d6cdf091f60b80d16496cbf09f9ed",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case9_2035_Summer.log": "bd2a26a835ca012d757478fa8b4883c51c6e3cca029a94302e903057b9a87a32",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case9_2035_Winter.log": "9b6100d70d8a6419cdedd3c4d17aa771d55249e515189e28d0954bd562e29adb",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_1_2025_Autumn.log": "c27f9a6ea297fd10743c9a86636cadba65a8418aab93a05c566402b9c9312b58",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_1_2025_Spring.log": "4471c54fdf3866396d5c496798e0d7cce937c1a520be6c359cdad3b62ffd2e42",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_1_2025_Summer.log": "e95a1f64f96736bba3d2b4db0a5c55ecd951dca9855968405162f87ed747e9a5",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_1_2025_Winter.log": "d96e351f5187d2026bc4518179e89b79e3fc9aec38a3722de162a799135dee2f",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_1_2030_Autumn.log": "310a66bf68b7e5f65a28a8877e4745ce5431fd2dd383c43d290f24193924ce05",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_1_2030_Spring.log": "e1f3ecbed40313bd304c9731c14b5cf72be59bcf58b0a0c11787e6a5db645412",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_1_2030_Summer.log": "384ab351629034d8cb2a9a2a4ec44b16b83e15574210782e4c9a13c13c3335b5",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_1_2030_Winter.log": "49e89b839a9b6a4634b78cf0331d3d871a6d1968379edc9af9dfe36bbefd2e89",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_1_2035_Autumn.log": "d74f8d1f120afb362a543886ac87cf11d62c3bb47cea683101ae19a3cdc007b9",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_1_2035_Spring.log": "3f8d09d1e527209578bc5e9e33b16db7d014487a33be276d92c2705c500cf51e",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_1_2035_Summer.log": "7ca72b78a3df5e2c393991f4c18c9e8076826982d720a53da0886f22ce5188fd",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_1_2035_Winter.log": "c7e87381273a20d69871c442c2da4c3b7847a635360927c766337687b9193b92",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_2_2025_Autumn.log": "0b2a7b1694afa5197a9fcc0e7bb96bf198e72c7b0e604ec07dc549e2eb2c56fb",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_2_2025_Spring.log": "710c4f8908f93d8cbf61a2cef0fbb2fb5ef940dacebd8c0e817f3a0d360c1543",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_2_2025_Summer.log": "d6e1c39ca92aa93cfcdf826786fcc67b362e68ea0fba8ee0fa93bb34a7563e2d",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_2_2025_Winter.log": "bd48d557f09d476c066875983bfc5e779829c4391520aa716be7eebb7162ad31",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_2_2030_Autumn.log": "e472239bbe3e68c99c14905a1ba9f88ca7768de436313a785c3f2c462a862f97",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_2_2030_Spring.log": "094c5626b146de07d08518b3e2a08efb54d80181ce5faf49d06a3e27bdd4c5b2",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_2_2030_Summer.log": "d32ab13039b6e7f08818afaba033006ea2ecde7a89976349dca0a9c582ca0f3d",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_2_2030_Winter.log": "e9cb770ca90324c48bc4ab01f6637ce3acae0fa78bc05fbb21cf4e23cbb74fcf",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_2_2035_Autumn.log": "434dce4d07385d73ec7000cd0b3cf87091bd26535863eb867ab6ea49792298b9",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_2_2035_Spring.log": "63e358a805cb0341b6d17f1ebdd574555048802d00e6076eaebb3698eea8f003",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_2_2035_Summer.log": "c8414fc36ef1ef64a99b074bc7cbe466dbd06efdcd063ec8f0a88f27a9fbf086",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_2_2035_Winter.log": "da5f73f19c61bc38a714b172223bebd7e36b97770b0c24d913d66c898fc36fb0",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_3_2025_Autumn.log": "d744d117dac22a96a8bc44f2eea42a370949a519d848dfc07025c80ed3d424b3",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_3_2025_Spring.log": "10fd06c3efb8519dddd0267c15ef6ec91f92c537790ae6939299c7c26ac49e1e",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_3_2025_Summer.log": "839519362de94decea31372928e87a20bb6c4beb47962f23d7c5209df2728033",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_3_2025_Winter.log": "0cd4573812385aa1374a0535f03eab2b3c5b5b06ad8647e9f86009137665a26d",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_3_2030_Autumn.log": "07053004560d05133f45948adf7d03b2685a22c3c0d495363214f6caec053cc7",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_3_2030_Spring.log": "0dcd07b1080ea276886c4cb6515e3ca42c7df6c036600cf98c009ecccebef7a0",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_3_2030_Summer.log": "d9f82fd5022dd4a72abda5ac312cbd420b38dddb96abd881973127aeded3a751",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_3_2030_Winter.log": "d0fb326f764bdcff076ab7f85f00a3405a328c853fe420f0745cdf03ca60057d",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_3_2035_Autumn.log": "7635bace168ae76c06c8c3731b641a2ee4a6926a36aadd14049cd948037bee1f",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_3_2035_Spring.log": "c24bbf22f98cffd9a9f3a5812c40bcc41f523818a0703f954c26277be0b36016",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_3_2035_Summer.log": "20a85c165a176112c0ee02c8f505d003199cececc611fecdcff11e48c72d9c60",
+     "data/SRP1/Results/P56A/evals/p515s44_s47_a1a_baseline_bd504ecf5a288d44_run/logs/optim_log_case33_3_2035_Winter.log": "5975244dafe05108307efa1fea0244396cfa9a3d1ad150cc8cd8aaaa80fa3610"
+    },
+    "anomalies": [],
+    "n_segments": 144,
+    "family_stats": {
+     "TSO": {
+      "iterations_median": 54.0,
+      "iterations_p90": 77,
+      "iterations_max": 84,
+      "iterations_with_inertia_regularisation_total": 750,
+      "restoration_entries_total": 0,
+      "exits": {
+       "Optimal Solution Found.": 36
+      },
+      "objective_scaling_factor_distinct": [
+       "0.001"
+      ],
+      "gradient_based_factor_distinct": [
+       "1.000000e-03"
+      ],
+      "c_scaling_distinct": [
+       "No c scaling provided"
+      ],
+      "d_scaling_distinct": [
+       "d scaling provided"
+      ],
+      "final_mu_median": 4.545454545454545e-08
+     },
+     "DSO5": {
+      "iterations_median": 46.5,
+      "iterations_p90": 51,
+      "iterations_max": 60,
+      "iterations_with_inertia_regularisation_total": 208,
+      "restoration_entries_total": 0,
+      "exits": {
+       "Optimal Solution Found.": 36
+      },
+      "objective_scaling_factor_distinct": [
+       "0.001"
+      ],
+      "gradient_based_factor_distinct": [
+       "1.000000e-03"
+      ],
+      "c_scaling_distinct": [
+       "c scaling provided"
+      ],
+      "d_scaling_distinct": [
+       "d scaling provided"
+      ],
+      "final_mu_median": 9.090909090909092e-09
+     },
+     "DSO7": {
+      "iterations_median": 55.0,
+      "iterations_p90": 68,
+      "iterations_max": 76,
+      "iterations_with_inertia_regularisation_total": 702,
+      "restoration_entries_total": 0,
+      "exits": {
+       "Optimal Solution Found.": 36
+      },
+      "objective_scaling_factor_distinct": [
+       "0.001"
+      ],
+      "gradient_based_factor_distinct": [
+       "1.000000e-03"
+      ],
+      "c_scaling_distinct": [
+       "c scaling provided"
+      ],
+      "d_scaling_distinct": [
+       "d scaling provided"
+      ],
+      "final_mu_median": 9.090909090909092e-09
+     },
+     "DSO9": {
+      "iterations_median": 48.0,
+      "iterations_p90": 58,
+      "iterations_max": 61,
+      "iterations_with_inertia_regularisation_total": 207,
+      "restoration_entries_total": 0,
+      "exits": {
+       "Optimal Solution Found.": 36
+      },
+      "objective_scaling_factor_distinct": [
+       "0.001"
+      ],
+      "gradient_based_factor_distinct": [
+       "1.000000e-03"
+      ],
+      "c_scaling_distinct": [
+       "c scaling provided"
+      ],
+      "d_scaling_distinct": [
+       "d scaling provided"
+      ],
+      "final_mu_median": 9.090909090909092e-09
+     }
+    }
+   }
+  }
+ },
+ "predictions_recorded_before_run": {
+  "P1_decisive": "C0 HOLDS on every pinned arm: the printed factor equals the pin exactly, no gradient-based line, and 'No x/c/d scaling provided' on every network solve (no scaling_factor suffix is declared on any production model)",
+  "P2_baseline_factors": "gradient-based effective factors at SRP1 as calibrated: TSO x0 0.002, TSO n7u 0.001, every DSO 0.001 in both cells; DSOs carry c and d scaling, the TSO d scaling",
+  "P3_baseline_disparity": "baseline TSO median iterations n7u / x0 ~ 2 (calibration 54 / 24) -> C2 FAILS at baseline on TSO; DSO5 / DSO9 within the band; DSO7 inside it (calibration 55 / 48 = 1.15)",
+  "P4_best_value": 0.001,
+  "P4_reason": "0.001 equals the gradient-based factor on 3 of the 4 families in both cells and on the n7u TSO; it changes only the x0 TSO factor (0.002 -> 0.001) and removes constraint scaling",
+  "P5_iterations_monotone_in_v": "median iterations non-decreasing in v on every family (a larger factor is an effectively tighter dual-infeasibility tolerance)",
+  "P6_failure_modes": [
+   "loss of gradient-based constraint scaling (DSO c/d rows, TSO d rows) raises inertia regularisations and iterations -- the Addendum 45 degradation hazard; most likely on DSO7 / TSO in the n7u cell, which already carry 3.2x / 6.4x the regularised iterations of x0 at baseline (calibration DSO7 702 / 219, TSO 750 / 117)",
+   "at 0.003 / 0.005: C3 iteration bands exceeded and acceptable-level terminations or max_iter hits (effectively 3-5x tighter unscaled dual tolerance)",
+   "C2 may fail at EVERY value if the TSO disparity is structural (the unit adds complementarity pairs and regularised iterations) rather than a scaling artefact -- outcome NO_VALUE_MEETS_C2"
+  ],
+  "P7_outcome": "RECOMMEND(0.001), probability ~0.5; NO_VALUE_MEETS_C2 ~0.3; FALLBACK_PURE_C ~0.15; STOP ~0.05",
+  "P8_C2_at_0p001_TSO_ratio": "med_n7u / med_x0 on TSO at 0.001 in [1.0, 1.6]"
+ },
+ "not_permitted": [
+  "no campaign harness, alpha row or 3x3",
+  "no commit to SRP1 case files or production modules",
+  "no committed artifact modified or re-run onto; fresh names throughout"
+ ],
+ "v27_changes": [
+  "C0 restated: EVERY objective-scaling-factor line equals v and at least one is present (was: exactly one line); every x/c/d scaling line reads No ... and at least one of each is present (was: a prediction only); line count and restoration-entry count recorded as evidence, not as a gate",
+  "baseline-arm record restated to match: no user-scaling line, at least one gradient-based line, each gradient-based line immediately followed by an equal effective line (printed precision); restoration-phase effective lines recorded, not counted (was: exactly one line of each, equal as floats)",
+  "options-list parser made merge-aware (formulas.option_list_parsing): IPOPT PrintList Snprintf(buffer, 255) truncation merges the entry after a long output_file onto its physical line",
+  "procedural consequence of ruling Q2 only: run_order (decisive arm re-evaluated, not re-run)",
+  "nothing else: C0b, C1, C2, C3, the selection rule, the outcomes, formulas (except the added keys), configuration, arms, eval ids, the solve profile, calibration and the v26 predictions are carried over verbatim (asserted against the committed v26 at freeze)"
+ ],
+ "v26_decisive_arm_evidence": {
+  "arm": "s53w78_x0_us0p001",
+  "commit": "0b0f397b",
+  "arm_result": {
+   "path": "data/SRP1/Results/P515S53/scaling_pin_w78/arms/s53w78_x0_us0p001/arm_result.json",
+   "sha256": "3a7af70b1f61e31711e48bac219cf3d54bd2a37a5eda236383d27b0b86b3e604"
+  },
+  "manifest": {
+   "path": "data/SRP1/Results/P515S53/scaling_pin_w78/arms/s53w78_x0_us0p001/manifest_sha256.json",
+   "sha256": "bf5fd29c9c4e4c086c2113a6ce22607ddd577360da01a0f513bf1a41834fe43f"
+  },
+  "launch_manifest": {
+   "path": "data/SRP1/Results/P515S53/scaling_pin_w78/launch_logs/s53w78_x0_us0p001_launch_manifest_sha256.json",
+   "sha256": "c8bc838250d8a010010aa3796a230eb2251cbf99da7f2ceba4e7202ef6fa75cd"
+  },
+  "v26_outcome": "STOP: C0 failed on 1 segment (optim_log_case33_2_2030_Winter.log#2 printed two objective scaling factor lines, 0.001 and 0.001, the second in its restoration phase); C0b failed on 108 segments (slack_bound_frac merged onto the output_file line)",
+  "run_level_facts": "guard exact 153/153, blocked 0, pin read back on TSO + 3 DSO holders, 144 network segments == 144 guard network solves, 0 network-failure blocks, ESSO options unchanged",
+  "reevaluation": "zero solves: SolveProfileGuard(permitted=()) armed for the process and verify(0) exactly (and the W10 bounded guard verify(0)); every file of the committed arm manifest re-hashed and equal before parsing; output to a fresh write-once tree data/SRP1/Results/P515S53/scaling_pin_w78/v27_reeval"
+ },
+ "predictions_v27_recorded_before_reevaluation": {
+  "basis": "P9-P12 are derived from the committed v26 arm_result of the decisive arm (per-segment line lists, restoration entries and the 108 C0b failures), not independent tests of the IPOPT behaviour; P13-P15 concern arms not yet run",
+  "P9_reeval_C0": "C0 HOLDS on the decisive arm: 144 segments == 144 guard network solves; 145 objective scaling factor lines, all 0.001; 0 gradient-based lines; every x/c/d line No ...; lines == 1 + restoration entries on all 144 segments (1 restoration entry, DSO7)",
+  "P10_reeval_C0b": "C0b HOLDS on 144/144: the 108 v26 failures are exactly the 3 DSO families x 36 segments whose slack_bound_frac shared the output_file line; the merge-aware parse recovers it; 108 segments carry one merged physical line, 36 (TSO) none; no entry without counter (DSO path 204 characters: newline lost, counter intact)",
+  "P11_reeval_v26_fields_identical": "every non-option per-solve field (iterations, exit, mu, KKT, regularisation, restoration) and the family statistics equal the v26 arm_result exactly",
+  "P12_parser_regimes_remaining_arms": "x0 pinned arms as the decisive arm (DSO 204: merged, counter intact); n7u pinned arms DSO 205: merged AND output_file without counter on 108 segments; baseline arms (TSO/DSO paths 198/201 x0, 199/202 n7u) no merged line; any retry log (207-220): output_file without counter",
+  "P13_remaining_arms_C0_C0b": "C0 (or the baseline record) and C0b hold on all nine remaining arms; guard exact on each",
+  "P14_C2_TSO_at_0p001": "the n7u / x0 TSO median ratio at 0.001 is >= 1.6 (x0 TSO at 0.001 median 24 == its gradient-based calibration median at 0.002, so the factor change did not move x0; the n7u TSO factor is 0.001 in both regimes) -- probability ~0.65; P8 then fails",
+  "P15_outcome_forecast": "NO_VALUE_MEETS_C2 ~0.55; RECOMMEND(v) ~0.25 (most likely 0.001); FALLBACK_PURE_C ~0.15; STOP ~0.05. v26 P7 stands as frozen and is scored as recorded"
+ },
+ "unchanged_from_v26_asserted_at_freeze": {
+  "top_level_keys": [
+   "stage",
+   "instance",
+   "configuration",
+   "arms",
+   "solve_profile_per_arm",
+   "calibration_zero_solve",
+   "predictions_recorded_before_run",
+   "not_permitted"
+  ],
+  "criteria": [
+   "C0b_tolerances_unchanged",
+   "C1_convergence",
+   "C2_similar_iterations_between_cells",
+   "C3_no_conditioning_degradation",
+   "selection_rule"
+  ],
+  "formulas": [
+   "segment",
+   "round",
+   "iterations",
+   "termination",
+   "final_mu",
+   "inertia_regularisations",
+   "restoration",
+   "final_kkt",
+   "effective_objective_scaling",
+   "median",
+   "p90",
+   "family",
+   "network_solves_in_guard"
+  ]
+ },
+ "frozen_utc": "2026-09-25T10:26:04.555623+00:00",
+ "git_head_at_freeze": "22be4a7287d45427d1fbf8ca71f292aba626c590"
+}

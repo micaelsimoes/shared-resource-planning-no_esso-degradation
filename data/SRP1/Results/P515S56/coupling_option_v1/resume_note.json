@@ -1,0 +1,250 @@
+{
+ "commits": {
+  "capture_path_assertion_fix_and_gf_r2_launcher": "21c49cec",
+  "gate_script_and_spec": "967f24d1",
+  "production_change": {
+   "commit": "f86ec267",
+   "equal_to_the_uncommitted_bytes_the_post_and_on_builds_ran_on": true,
+   "files_sha256": {
+    "admm_parameters.py": "8e9e69e58f120270f68139a83737f33662ae2c710982ab2e0d59a3699f46ec13",
+    "model_construction_helpers.py": "51ae3bcf4173b9ae60bda8d1f398288cfae57d9a5f8e5e151ed50737f3927c1a",
+    "p515_s44_campaign_harness.py": "1d4beaadf3f30f29b1ff0699828c1bb20090cfb27014d2541022249997ea12a3",
+    "p515_s53_w118_resettle_hooks.py": "1df97eb48976aa88a96ac8f81a07cce776630cb64bda01a4da30a8ec9f60e81e",
+    "shared_resources_planning.py": "d2dfd915de97e13327cd0d5c0b653710f8138458406920b22930fd9761cab24e"
+   }
+  }
+ },
+ "context": "resume of the S56 step-1 Worker killed by the API spend limit (2026-11-21 ~17:05); uncommitted production edits audited against the frozen spec and S56_SCENARIO_COUPLING_PROPOSAL.md change list; no functional gap found, so NO completion edit was made to the five production files before their commit",
+ "new_runs_this_resume": {
+  "G-d_post": {
+   "launch_head": "8c9fd6ec (f86ec267 + the ESSO cohort key commits, default legacy_h3)",
+   "run": "data/SRP1/Results/P515S56/coupling_option_v1/gd_run_post.json",
+   "verdict": [
+    "data/SRP1/Results/P515S56/coupling_option_v1/verdict_gd_20261123T085049.json"
+   ],
+   "waited_for_clean_tree": "launch held 08:27-08:48 UTC until the ESSO Worker committed"
+  },
+  "G-e": {
+   "contamination": "run on the uncommitted f86ec267 content WITH another Worker's uncommitted edits to shared_energy_storage_parameters.py (ee68b5b6...) and shared_energy_storage_data.py (f6bde5a6...) in the tree (additive cohort key; no def removed); hashes identical before and after the run; recorded in the verdict provenance",
+   "verdict": "data/SRP1/Results/P515S56/coupling_option_v1/verdict_ge_20261123T082626.json"
+  },
+  "G-f_first_attempt": {
+   "kept_as_is": true,
+   "outcome": "child refused by the rule-eleven capture-path assertion before any solve (false negative on the composed boyd_*_part names); exit 1 after 5 s",
+   "root": "data/SRP1/Results/P515S56/coupling_option_v1/campaign_s56cpl_gf_smoke",
+   "verdict": "data/SRP1/Results/P515S56/coupling_option_v1/verdict_gf_20261123T085107.json"
+  },
+  "G-f_not_attempted_again": true,
+  "G-f_second_attempt": {
+   "kept_as_is": true,
+   "launcher": "p515_s56_coupling_gates_gf_r2.py (21c49cec; frozen script unchanged, GF_ROOT only)",
+   "outcome": "FAILED at ADMM cycle 1 (child exit 1 after 736 s; 96 network solves: init 48/48 Optimal; cycle 1: DSO 34 Optimal + 2 Acceptable (DSO5, DSO9), TSO 12/12 Optimal, ESSO solved) inside get_admm_boyd_residual_metrics: the S38 PF entry-capture identity sidecar (p515_g_g1_g4_admm_gates wrapper3, s39_D arm) reconstructs the PF Boyd r/s from the EXPECTATION channel only and raised: reconstructed r=27.59582098706081 vs production 27.78019072685824 (rel 6.6e-3), s=9.487103872871836 vs 9.507527672498906 (rel 2.1e-3) -- production includes the omega-weighted deviation part by design. Second harness defect; not fixed, not re-run (Planner)",
+   "root": "data/SRP1/Results/P515S56/coupling_option_v1/campaign_s56cpl_gf_smoke_r2",
+   "verdict": [
+    "data/SRP1/Results/P515S56/coupling_option_v1/verdict_gf_20261123T090427.json"
+   ]
+  },
+  "compare_builds": "data/SRP1/Results/P515S56/coupling_option_v1/verdict_builds_20261123T082517.json"
+ },
+ "not_committed": {
+  "scratch_nl_dumps_dir": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/s56cpl",
+  "why": "the NL files of every build (gzip, 444 MB) stay in the session scratchpad; each NL hash is inside the committed child JSONs; the gz hashes are in the manifest"
+ },
+ "regenerated": "none (no completion edit; nothing stale)",
+ "reused_not_regenerated": {
+  "builds_on": {
+   "records": [
+    {
+     "build_checks_all": null,
+     "error": null,
+     "five_changed_files_equal_commit_f86ec267": true,
+     "git_head": "1f41070078ec20e63e39053d15d5afab0cab00cc",
+     "git_status_porcelain": " M admm_parameters.py\n M model_construction_helpers.py\n M p515_s44_campaign_harness.py\n M p515_s53_w118_resettle_hooks.py\n M shared_resources_planning.py\n",
+     "path": "data/SRP1/Results/P515S56/coupling_option_v1/builds_on/batch_on_20261121T171609.json",
+     "production_sha256_equal_spec_provenance": false,
+     "sha256": "73209d320f69a434ca34b1215cfd49a1c3ea736a2d99f36ff9f2847ef24fddd0"
+    },
+    {
+     "build_checks_all": true,
+     "error": null,
+     "five_changed_files_equal_commit_f86ec267": true,
+     "git_head": "1f41070078ec20e63e39053d15d5afab0cab00cc",
+     "git_status_porcelain": " M admm_parameters.py\n M model_construction_helpers.py\n M p515_s44_campaign_harness.py\n M p515_s53_w118_resettle_hooks.py\n M shared_resources_planning.py\n",
+     "path": "data/SRP1/Results/P515S56/coupling_option_v1/builds_on/srp1_x0_on.json",
+     "production_sha256_equal_spec_provenance": false,
+     "sha256": "5a04812e3ad0bbd094a4f8674bdaa9eec369d0e6284146876e58be8d4ee4c84f"
+    },
+    {
+     "build_checks_all": true,
+     "error": null,
+     "five_changed_files_equal_commit_f86ec267": true,
+     "git_head": "1f41070078ec20e63e39053d15d5afab0cab00cc",
+     "git_status_porcelain": " M admm_parameters.py\n M model_construction_helpers.py\n M p515_s44_campaign_harness.py\n M p515_s53_w118_resettle_hooks.py\n M shared_resources_planning.py\n",
+     "path": "data/SRP1/Results/P515S56/coupling_option_v1/builds_on/srp1grid_x0_a05_on_pin.json",
+     "production_sha256_equal_spec_provenance": false,
+     "sha256": "832846a92bfd9a781dde1263e1c4173843e072b4e54fb88afc44b3a83376f461"
+    },
+    {
+     "build_checks_all": true,
+     "error": null,
+     "five_changed_files_equal_commit_f86ec267": true,
+     "git_head": "1f41070078ec20e63e39053d15d5afab0cab00cc",
+     "git_status_porcelain": " M admm_parameters.py\n M model_construction_helpers.py\n M p515_s44_campaign_harness.py\n M p515_s53_w118_resettle_hooks.py\n M shared_resources_planning.py\n",
+     "path": "data/SRP1/Results/P515S56/coupling_option_v1/builds_on/srp1grid_x0_a05_on_v1_noq.json",
+     "production_sha256_equal_spec_provenance": false,
+     "sha256": "be2416defcb3c00ee9ae7f95e542456e810f3185e4efb0c5e9d0d7b78e07f90f"
+    }
+   ],
+   "why_valid": "as builds_post (17:10-17:16)"
+  },
+  "builds_post": {
+   "records": [
+    {
+     "build_checks_all": null,
+     "error": null,
+     "five_changed_files_equal_commit_f86ec267": true,
+     "git_head": "1f41070078ec20e63e39053d15d5afab0cab00cc",
+     "git_status_porcelain": " M admm_parameters.py\n M model_construction_helpers.py\n M p515_s44_campaign_harness.py\n M p515_s53_w118_resettle_hooks.py\n M shared_resources_planning.py\n",
+     "path": "data/SRP1/Results/P515S56/coupling_option_v1/builds_post/batch_post_20261121T171022.json",
+     "production_sha256_equal_spec_provenance": false,
+     "sha256": "5c83a957219692f4c280825f73bd05aa405cff44fedc8d051ace387ab2579b85"
+    },
+    {
+     "build_checks_all": true,
+     "error": null,
+     "five_changed_files_equal_commit_f86ec267": true,
+     "git_head": "2b91962a89cc678d77b3feb9576e1b2926dea7ab",
+     "git_status_porcelain": " M admm_parameters.py\n M model_construction_helpers.py\n M p515_s44_campaign_harness.py\n M p515_s53_w118_resettle_hooks.py\n M shared_resources_planning.py\n",
+     "path": "data/SRP1/Results/P515S56/coupling_option_v1/builds_post/fiveblock_x0_a05.json",
+     "production_sha256_equal_spec_provenance": false,
+     "sha256": "62a9e2f45c34de345966062b40ef23d3a6f329abbef9049a3d18c9212cc8de85"
+    },
+    {
+     "build_checks_all": true,
+     "error": null,
+     "five_changed_files_equal_commit_f86ec267": true,
+     "git_head": "0f4d39ea687f95df9eaff7e9e65ec8bf9e8d9394",
+     "git_status_porcelain": " M admm_parameters.py\n M model_construction_helpers.py\n M p515_s44_campaign_harness.py\n M p515_s53_w118_resettle_hooks.py\n M shared_resources_planning.py\n",
+     "path": "data/SRP1/Results/P515S56/coupling_option_v1/builds_post/srp1_unit.json",
+     "production_sha256_equal_spec_provenance": false,
+     "sha256": "2ab0dfe7188473db2f75de157732cf8367bab9b5c5f0bb3110297bebbbbc44f2"
+    },
+    {
+     "build_checks_all": true,
+     "error": null,
+     "five_changed_files_equal_commit_f86ec267": true,
+     "git_head": "9acc085afc5228ec4fb62af4a6a5f5f0241255a7",
+     "git_status_porcelain": " M admm_parameters.py\n M model_construction_helpers.py\n M p515_s44_campaign_harness.py\n M p515_s53_w118_resettle_hooks.py\n M shared_resources_planning.py\n",
+     "path": "data/SRP1/Results/P515S56/coupling_option_v1/builds_post/srp1_x0.json",
+     "production_sha256_equal_spec_provenance": false,
+     "sha256": "2a69d271e312e6f783129fda9a6d7b5c27145c9993f7094356740100fbba5504"
+    },
+    {
+     "build_checks_all": true,
+     "error": null,
+     "five_changed_files_equal_commit_f86ec267": true,
+     "git_head": "1f41070078ec20e63e39053d15d5afab0cab00cc",
+     "git_status_porcelain": " M admm_parameters.py\n M model_construction_helpers.py\n M p515_s44_campaign_harness.py\n M p515_s53_w118_resettle_hooks.py\n M shared_resources_planning.py\n",
+     "path": "data/SRP1/Results/P515S56/coupling_option_v1/builds_post/srp1grid_x0_a0.json",
+     "production_sha256_equal_spec_provenance": false,
+     "sha256": "a77e26b958ceff6faedd2106a134a6204c8958a838067d0509e142f8a29f1621"
+    },
+    {
+     "build_checks_all": true,
+     "error": null,
+     "five_changed_files_equal_commit_f86ec267": true,
+     "git_head": "1f41070078ec20e63e39053d15d5afab0cab00cc",
+     "git_status_porcelain": " M admm_parameters.py\n M model_construction_helpers.py\n M p515_s44_campaign_harness.py\n M p515_s53_w118_resettle_hooks.py\n M shared_resources_planning.py\n",
+     "path": "data/SRP1/Results/P515S56/coupling_option_v1/builds_post/srp1grid_x0_a05.json",
+     "production_sha256_equal_spec_provenance": false,
+     "sha256": "cde4f4c35e1e786ff414f43d969e9f1f66eccc024cdf54892005d041d8d0606a"
+    }
+   ],
+   "why_valid": "produced 17:00-17:10 UTC 2026-11-21 after the last production edit (16:57); every child provenance sha256 of the five changed files == commit f86ec267"
+  },
+  "builds_pre": {
+   "records": [
+    {
+     "build_checks_all": null,
+     "error": null,
+     "five_changed_files_equal_commit_f86ec267": false,
+     "git_head": "542306a64d66db7d6f3baa5b656d763c25682720",
+     "git_status_porcelain": "",
+     "path": "data/SRP1/Results/P515S56/coupling_option_v1/builds_pre/batch_pre_20261121T164609.json",
+     "production_sha256_equal_spec_provenance": true,
+     "sha256": "91376cb7ce880773ef9afeb900cbfc214bef3d0668bf3daa671b7626a26c9229"
+    },
+    {
+     "build_checks_all": true,
+     "error": null,
+     "five_changed_files_equal_commit_f86ec267": false,
+     "git_head": "967f24d108078a80a2442e6c3d2cd2ae6121db15",
+     "git_status_porcelain": "",
+     "path": "data/SRP1/Results/P515S56/coupling_option_v1/builds_pre/fiveblock_x0_a05.json",
+     "production_sha256_equal_spec_provenance": true,
+     "sha256": "e61c00795e1a648a83fd5c2b51aeec6f314e9fef5aaa2f2fa3fa60aae49d35b3"
+    },
+    {
+     "build_checks_all": true,
+     "error": null,
+     "five_changed_files_equal_commit_f86ec267": false,
+     "git_head": "967f24d108078a80a2442e6c3d2cd2ae6121db15",
+     "git_status_porcelain": "",
+     "path": "data/SRP1/Results/P515S56/coupling_option_v1/builds_pre/srp1_unit.json",
+     "production_sha256_equal_spec_provenance": true,
+     "sha256": "581245164cecf94d3358e993d2cf7f6affa687ff03346d26871bc79a8bb6e4b9"
+    },
+    {
+     "build_checks_all": true,
+     "error": null,
+     "five_changed_files_equal_commit_f86ec267": false,
+     "git_head": "967f24d108078a80a2442e6c3d2cd2ae6121db15",
+     "git_status_porcelain": "",
+     "path": "data/SRP1/Results/P515S56/coupling_option_v1/builds_pre/srp1_x0.json",
+     "production_sha256_equal_spec_provenance": true,
+     "sha256": "ea82f02d360b85a56a206c4027f784b5479b874e3149162775004e46e647a644"
+    },
+    {
+     "build_checks_all": true,
+     "error": null,
+     "five_changed_files_equal_commit_f86ec267": false,
+     "git_head": "542306a64d66db7d6f3baa5b656d763c25682720",
+     "git_status_porcelain": "",
+     "path": "data/SRP1/Results/P515S56/coupling_option_v1/builds_pre/srp1grid_x0_a0.json",
+     "production_sha256_equal_spec_provenance": true,
+     "sha256": "5c6ed6a7222eee6f6201a12d53505f4aa943d83dcdc73db990b9b73d1dd515c4"
+    },
+    {
+     "build_checks_all": true,
+     "error": null,
+     "five_changed_files_equal_commit_f86ec267": false,
+     "git_head": "542306a64d66db7d6f3baa5b656d763c25682720",
+     "git_status_porcelain": "",
+     "path": "data/SRP1/Results/P515S56/coupling_option_v1/builds_pre/srp1grid_x0_a05.json",
+     "production_sha256_equal_spec_provenance": true,
+     "sha256": "0894a929001570ba15314685dae6e2e9852003fe44dd81fecdac6fef69234846"
+    }
+   ],
+   "why_valid": "every child provenance: production sha256 == the spec provenance (= 967f24d1 content), git status of the listed files clean; recorded heads 967f24d1 / 542306a6 differ from 967f24d1 only by p515_s56_step0_gates.py (not imported)"
+  },
+  "gd_run_pre.json": {
+   "git_head": "9acc085afc5228ec4fb62af4a6a5f5f0241255a7",
+   "git_status_porcelain": "",
+   "production_sha256_equal_spec_provenance": true,
+   "run_window_utc": "2026-11-21 16:46:32-16:48:12 (first production edit 16:48:28)",
+   "sha256": "a017e36afa730922af01c444e5a472ff884c948e5190fda4ec869bc2ad19486b",
+   "supplementary_reproduction": {
+    "result": "data/SRP1/Results/P515S56/coupling_option_v1/resume_check_gd_pre_vs_cgate_prefix.json",
+    "script": "data/SRP1/Results/P515S56/coupling_option_v1/resume_check_gd_pre_vs_cgate_prefix.py",
+    "summary": "bitwise on the 2-cycle prefix vs the committed concurrency-gate root A run (same eval key ca8927e7): G1 rows 0 differences, 144 solve records 0, 153 IPOPT final blocks 0"
+   }
+  }
+ },
+ "schema": "p515_s56_coupling_resume_note_v1",
+ "spec": {
+  "path": "data/SRP1/Results/P515S56/coupling_option_v1/frozen_coupling_gates_spec_v1_10c98258.json",
+  "sha256": "10c9825862bdb16c3e2d4cb56e67bca02ee30769163ac4ff430b1908d7c5e7a4"
+ },
+ "spec_deviation_recorded": "the frozen order put G-e before the commit and G-d post / G-f after it; held. The frozen G-f root could not be reused (write-once) -> suffixed root _r2 via the launcher; the spec was not edited",
+ "utc": "2026-11-23T09:05:37.014309+00:00"
+}

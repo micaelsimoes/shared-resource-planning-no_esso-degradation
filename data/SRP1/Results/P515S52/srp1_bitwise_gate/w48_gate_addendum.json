@@ -1,0 +1,409 @@
+{
+ "schema": "p515_s52_srp1_bitwise_gate_v1_addendum",
+ "stage": "P5.15 Addendum 36/39 W48 -- SRP1 two-cycle bitwise identity: the W47 harness extension and the two scenario-indexing fixes are inert at one scenario, vs committed baseline C*",
+ "authority": [
+  "Planner task W48 ruling 2",
+  "PLANNER_BRIEF_2026-09-13.md Addenda 36 and 39"
+ ],
+ "timestamp_utc": "2026-09-23T20:34:38.464439+00:00",
+ "git_head_at_run": "fe0319d6011ab546cc81086922b87bd4ef8079d3",
+ "script": "p515_s52_srp1_bitwise_gate.py",
+ "script_sha256": "7bd3009ad4c263159ec84b929c921b5cf4f2d702c71154963754b3a906f28545",
+ "imported_gate_sha256": {
+  "p515_s51_srp1_bitwise_gate.py": "c4adb3b8f98dc2570fcf4e8ccc3c5def0209f874d95b2c5efeae868b33640760",
+  "p515_s50_generalization_gate.py": "5abfe5c2b9a67533942cc77cdfcca523e17c998f42210620f7d852d18968cc43",
+  "p515_s49_memory_fix_gate.py": "c75d26dd313b2bdec74d97854ad9a3f4d2adbf07b1a654dd15cced432ad63bfc",
+  "p515_s45_snapshot_off_two_cycle_gate.py": "f5e103577a7dc0c465144984e28b50ab4b1efc0405c3c23f2ab3afc7f917f4a2"
+ },
+ "w47_module_sha256": {
+  "p515_s44_campaign_harness.py": "abf797989997535e610b614ce051848cfa780b5ead311cbe7dc169345bcedeb5",
+  "p515_g_g1_g4_admm_gates.py": "172260450ba167c13c8776881a01c1b0ee096baa79cb98fa2650f83385ad458b",
+  "shared_resources_planning.py": "e4336a0010355440643acc014a33e03761c41e982863fb56bb07cc5a15a81255"
+ },
+ "declared_substitutions": {
+  "1_identifiers": {
+   "STAGE": "P5.15 Addendum 36/39 W48 -- SRP1 two-cycle bitwise identity: the W47 harness extension and the two scenario-indexing fixes are inert at one scenario, vs committed baseline C*",
+   "SCHEMA": "p515_s52_srp1_bitwise_gate_v1",
+   "ARM": "s52w48gate",
+   "OUT_REL": "data/SRP1/Results/P515S52/srp1_bitwise_gate"
+  },
+  "2_extra_clean_files": [
+   "network.py",
+   "solver_parameters.py",
+   "model_construction_helpers.py",
+   "shared_resources_planning.py",
+   "p56a_oracle.py",
+   "p515_s41_hull_polish.py",
+   "p515_g_g1_g4_admm_gates.py",
+   "p515_s44_scale_measurement.py",
+   "p515_s45_snapshot_off_two_cycle_gate.py",
+   "p515_s49_memory_fix_gate.py",
+   "p515_s44_campaign_harness.py",
+   "shared_energy_storage_data.py",
+   "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "admm_parameters.py",
+   "p515_s31c_evaluate.py",
+   "p515_s51_row18_zero_solve_checks.py",
+   "p515_s51_srp1_bitwise_gate.py",
+   "p515_s52_pilot_checks.py",
+   "p515_s52_srp1_bitwise_gate.py"
+  ],
+  "3_presence": "W39 row 18 checks + w47_code_presence",
+  "4_extra_forbidden": [
+   "p515_s46_",
+   "p515_s47_",
+   "p515_s48_",
+   "p515_s49_",
+   "p515_s50_",
+   "p515_s51_",
+   "p515_s52_"
+  ]
+ },
+ "w47_code_presence_asserted_before_run": {
+  "run_admm_arm_passes_optimization_results_only_to_declaring_hooks": true,
+  "run_admm_arm_passes_primal_evolution_only_to_declaring_hooks": true,
+  "gate_post_run_hook_declares_neither_new_parameter": true,
+  "s31c_flexibility_volumes_probability_weighted": true,
+  "dispersion_shared_ess_read_at_the_na_pair": true,
+  "config_hook_factory_takes_the_premium_argument": true,
+  "config_hook_factory_premium_default_is_none": true,
+  "config_hook_premium_branch_guarded": true,
+  "config_hook_derived_branch_guarded": true,
+  "child_capture_only_when_declared": true,
+  "harness_derived_instance_validator_present": true,
+  "harness_terminal_capture_present": true
+ },
+ "comparison_vs_committed_w39_arm_GATING": {
+  "reference_arm": {
+   "gate_dir": "data/SRP1/Results/P515S51/srp1_bitwise_gate",
+   "arm_dir": "data/SRP1/Results/P515S51/srp1_bitwise_gate/arm",
+   "manifest": "data/SRP1/Results/P515S51/srp1_bitwise_gate/manifest_sha256.json",
+   "manifest_sha256": "c832a64c0b0a0442f8bd0a96150f81b5ddfc3ae14963d05b4582db709c615146",
+   "gate_json": "data/SRP1/Results/P515S51/srp1_bitwise_gate/gate.json",
+   "arm_name": "s51row18gate",
+   "commit": "4ce7447b"
+  },
+  "comparator": "W10.classify (BY IMPORT): CP._diff bitwise, CP.EXCLUDE_KEY_NAMES / EXCLUDE_DOTTED_SUFFIXES, rule_eleven_checklist subtree = provenance, arm-path tokens normalized, recourse-jump tie order reclassified by TC; everything else genuine. CP._diff's 'legacy' = the W39 arm, 'lightweight' = this arm",
+  "token_groups": [
+   [
+    "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S52/srp1_bitwise_gate/arm",
+    "data/SRP1/Results/P515S52/srp1_bitwise_gate/arm",
+    "p515s44_s45_w10_snapoff_s52w48gate_578636daa6d6360d_run",
+    "p515s44_s45_w10_snapoff_s52w48gate_578636daa6d6360d_precheck",
+    "s52w48gate"
+   ],
+   [
+    "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S51/srp1_bitwise_gate/arm",
+    "data/SRP1/Results/P515S51/srp1_bitwise_gate/arm",
+    "p515s44_s45_w10_snapoff_s51row18gate_578636daa6d6360d_run",
+    "p515s44_s45_w10_snapoff_s51row18gate_578636daa6d6360d_precheck",
+    "s51row18gate"
+   ]
+  ],
+  "files_compared": [
+   "g_s39_D.json",
+   "boyd_terminal.json",
+   "component_levels_terminal.json",
+   "interface_settlement_detail_s31c.json",
+   "interface_voltage_terminal.json",
+   "recourse_jump_sidecar_baseline.jsonl",
+   "ess_entry_stride_baseline.jsonl",
+   "soh_floor_sidecar_baseline.jsonl",
+   "pf_entry_stride_s39_D.jsonl",
+   "ess_exempt_until_state_s39_D.jsonl",
+   "aa_per_cycle.jsonl",
+   "per_cycle_record.jsonl"
+  ],
+  "per_file": {
+   "g_s39_D.json": {
+    "n_raw_diffs": 1,
+    "fg_buckets_raw_counts": {
+     "provenance": 1,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 1,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.w10_arm",
+      "legacy": "s51row18gate",
+      "lightweight": "s52w48gate",
+      "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+     }
+    ],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "boyd_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "component_levels_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "interface_settlement_detail_s31c.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "interface_voltage_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "recourse_jump_sidecar_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "ess_entry_stride_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "soh_floor_sidecar_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "pf_entry_stride_s39_D.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "ess_exempt_until_state_s39_D.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "aa_per_cycle.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "per_cycle_record.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   }
+  },
+  "totals": {
+   "provenance": 1,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "all_files_present": true,
+  "zero_genuine_diffs": true,
+  "esso_models_pickle_sha256_informational": {
+   "w39": "55df0630f8b89adcc1d8a0ab54e33d8031bce9167065747f90ad985accefef50",
+   "w48": "4e9876eadd47138498bc2e9e83e316fa338300039dcf35cab8a8c1d20dc237ae",
+   "sha256_equal": false
+  }
+ },
+ "not_covered_by_this_gate": "_child_real's W47 branches (derived-instance install, terminal-phase lock, multi-scenario capture, workbook) are entered only when derived_instance or interface_deviation_premium is declared, and W10.run_arm reproduces the child wiring rather than calling _child_real; _process_scenario_dispersion_results runs only in the workbook writer, which a two-cycle arm does not call. Both rest on the W47 zero-solve checks (ae951d31: C, D, F).",
+ "guard_counts_at_end": {
+  "permitted_solve": 153,
+  "permitted_exec": 153,
+  "blocked_solve": 0,
+  "blocked_exec": 0
+ },
+ "gate_items": {
+  "w39_w35_gate_pass": true,
+  "w47_code_present_in_the_modules_that_ran": true,
+  "vs_committed_w39_arm_all_files_present": true,
+  "vs_committed_w39_arm_zero_genuine_diffs": true
+ },
+ "gate_pass": true
+}

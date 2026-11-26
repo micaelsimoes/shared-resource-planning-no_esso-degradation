@@ -1,0 +1,76 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 16 items 2 and 3"
+ ],
+ "configuration": "identical to run 1 (spec v5): D5 as argmin-identical ESSO AL scaling, sigma fixed 9.363536e7, S_ref 2.5 MVA, gamma = tau*rho, Boyd eps_abs 1e-5 / eps_rel 1e-4, 3 consecutive cycles, initial rho v 0.0077 / pf 0.198 / ess 0.1125, balancing on, freeze after 10 unchanged cycles with backstop 60 - EXCEPT the shared-ESS initialization below and cap 150",
+ "context": "Z2 (P5_15_Z2_FLOOR_SLACK_NOTE.md) shows the floor is slack at C*, so Addendum 16 success-target language (equilibrium at the threshold, floor active) is returned to the author and is not a criterion here",
+ "gate_s35pt": {
+  "cap": 150,
+  "nonconvexity_note": "different history-free starts may legitimately reach different local KKT points; if gate 3 disagrees with run 1, the discriminator is a third arm from a different history-free start (e.g. 0.5*z_LP) - recorded, NOT run automatically",
+  "on_fail": "stop for review with the rho, gamma, residual and EFC trajectories",
+  "pass_iff": [
+   "Boyd stop on all three channels with 3 consecutive converged cycles within 150, no clamp freeze",
+   "terminal system cost within the rule-nine bar of run 1 terminal system cost (bar = sum of the two runs terminal objective steps)",
+   "terminal EFC/day within 2 % of run 1 terminal EFC/day"
+  ],
+  "validity_condition": "the cost and EFC reproduction criteria are well posed ONLY if run 1 itself stopped under Boyd. If run 1 reached its cap, those two criteria are indeterminate (the bar then measures stopping slack, not distance to the limit): the Planner STOPS for review and does not substitute criteria"
+ },
+ "initialization": {
+  "case_file": "admm.shared_ess_initialization: default \"standalone\" when absent (other case studies unchanged); SRP1 sets \"price_taker\"",
+  "dual": "ESS duals initialized to ZERO. Justification: a non-zero consistent value needs the TSO/DSO split of the gradient, which the LP does not provide; any start with sum(lambda) != 0 shifts z by ~14.8 MW per unit at rho 0.1125; zero is exactly stationary when the floor is slack and each network price-taker optimum matches the LP, and satisfies sum(lambda) = 0 automatically",
+  "guards_raise_NotImplementedError_if": [
+   "more than one market or operation scenario in any network, year or day",
+   "more than one active cohort",
+   "prices differ across networks",
+   "a cohort calendar window does not cover all blocks"
+  ],
+  "lp": {
+   "cross_checks": "with efficiency and wear off, reproduce the committed EFC* benchmark cells exactly; with them on, reproduce Z2 (data/SRP1/Results/P515S35/Z2/) within LP tolerance",
+   "formulation": "per node, coupled across (year, day); candidate per-year s and e from shared_energy_storages (not diagnostic constants); maximise sum over (year, day, period) of day-weighted pi*(pdch - pch); power limits; SoC recursion with the production efficiencies; day balance; SoC band as in production; the EXACT linear SoH floor rows sum_{y<=Y} D_y <= -ln(soh_min) + (blocks through Y)*n*ln(phi_cal) with D_y the production throughput expression; capacity wear by a FIXED, declared number K of damped outer iterations over SoH_y with convergence asserted (raise otherwise)",
+   "module": "new production module shared_ess_price_taker.py with no Pyomo imports, function solve_price_taker_schedule(...); wrapper _initialize_shared_ess_from_price_taker(...) in shared_resources_planning.py",
+   "reported": "LP status, objective, per-year harness-definition EFC/day, SoH trajectory, and the LP floor multiplier (the price-taker estimate of the degradation shadow price; expected 0 at C* per Z2)",
+   "solver": "scipy.optimize.linprog (HiGHS); not a Pyomo/IPOPT solve; its own armed counter with the exact count declared in advance"
+  },
+  "not_set": "network primal values (pch, pdch, pnet, expected_shared_ess_p): the SoC warm start is reset every cycle by configure_shared_ess_operational_state, so the lever is z and the proximal centres, not IPOPT primal values",
+  "principle": "initial values only, never fixes; history-free (depends on the candidate and prices only); method-only (the fixed point of the problem is unchanged)",
+  "scope": "applies only when initial_state is None; with the flag on in a continuation, raise",
+  "what_is_set": [
+   "ESS consensus z, current AND prev, active power p = LP pnet in MW (load convention, pch - pdch), written immediately after _initialize_shared_ess_consensus (which otherwise overwrites z)",
+   "reactive q: the existing z_q projected onto the converter circle, q = sign(q)*min(|q|, sqrt(s_avail^2 - p^2)); number of clipped cells reported",
+   "the three agent copies (tso, dso, esso), current and prev, set equal to z",
+   "TSO proximal centres prox_ess_p_prev = z_p/s_base and prox_ess_q_prev = z_q/s_base - MANDATORY (otherwise gamma = tau*rho halves the cycle-1 move toward z)",
+   "ESSO state consistent with the LP (es_soh_per_unit_cumul, es_e_available_per_unit, es_pnet, cohort pch/pdch initial values) before the capacity-publishing step, so the capacities the networks see in cycle 1 match z"
+  ]
+ },
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S35/frozen_s35_reference_spec_v5_995548ab.json",
+  "sha256": "995548ababa1b428e9bc4354a078ffd8322cc54d00f04b9ef7a694e43311c7ba"
+ },
+ "predictions": [
+  "the storage walk is eliminated: EFC starts near its equilibrium and changes <1 % between cycles 1 and 2",
+  "the SoH floor stays slack (Z2: terminal SoH 0.589 vs 0.50) and the floor multiplier is zero",
+  "the Boyd stop comes well inside 150 cycles, since the binding channel in s34 (ESS) no longer has a walk to complete"
+ ],
+ "preflight": {
+  "cycles": 2,
+  "expected_signatures": [
+   "EFC near the LP harness-definition value (about 1.19) at cycle 1, not ~0.0003",
+   "change in EFC from cycle 1 to 2 below 1 %",
+   "small ESS Boyd dual residual; ESS lambdas summing to zero per cell to machine precision; small TSO proximal movement on ESS",
+   "no failures or restorations attributable to the initialization",
+   "PF primal residual may exceed run 1 cycle 1 (interface flows carry storage from the start) - expected",
+   "diagnostics: TSO copy ~ z/2 means the proximal centres were not overridden; EFC ~ 0 means the injection is not wired; ESSO pnet falling away from z means capacities do not match"
+  ],
+  "timing": "only after run 1 has exited - the harness lock forbids concurrent runs"
+ },
+ "stage": "P5.15 Addendum 16 items 2-3 - price-taker initialization and gate s35pt - frozen specification v6",
+ "zero_solve_checks": [
+  "Z1 production LP (efficiency and wear off) reproduces all committed EFC* cells",
+  "Z2p production LP (full) reproduces the committed Z2 values within LP tolerance",
+  "Z3 with the bounded guard allowing exactly the standalone solves and zero ADMM cycles: z, copies and proximal centres equal the LP; ESS duals exactly 0; V/PF duals and all other state hash-identical to a flag-off run",
+  "Z4 flag absent gives a bit-identical pre-loop state",
+  "Z5 sign (charging at low prices), |z| <= s_avail, LP SoC inside the cycle-1 bands",
+  "Z6 scenario and cohort raises fire on synthetic inputs",
+  "Z7 LP call count exact; IPOPT solve count equals the flag-off count"
+ ]
+}

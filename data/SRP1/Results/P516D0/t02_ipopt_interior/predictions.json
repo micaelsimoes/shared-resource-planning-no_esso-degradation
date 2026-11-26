@@ -1,0 +1,48 @@
+{
+ "recorded_at": "2026-10-31T18:05:38+0000",
+ "predictions": {
+  "I1": "the equality block has numerical rank deficiency >= 216",
+  "I2": "IPOPT converges (Optimal) within 500 iterations without restoration from the certified start",
+  "I3": "containment holds: Q_LB <= Q_cert+ + tol",
+  "I4": "the group gap (Q_cert+ - Q_LB) / Q_cert+ is in [1e-4, 1e-2] relative (H2 point estimate 1e-3)",
+  "I5": "the TN rank residual max is ~ 2.45e-2 relative (within a factor 2)"
+ },
+ "operationalisation": {
+  "I1": "held iff the numerical rank deficiency of A_eq (the LP's '=' rows, all columns) is >= 216; the deficiency of A_eq without the bound-fixed columns (the conic zero cone) is reported beside it",
+  "I2": "held iff IPOPT's EXIT line is \"Optimal Solution Found.\" AND the iteration count is <= 500 AND no restoration iteration (an iteration line numbered \"<k>r\") appears in the log",
+  "I3": "held iff Q_LB <= Q_cert+ + 1e-6 |Q_cert+| (Q_LB = IPOPT objective; Q_cert+ from T0.1c objective.json)",
+  "I4": "held iff 1e-4 <= (Q_cert+ - Q_LB) / Q_cert+ <= 1e-2 at an Optimal solve; indeterminate otherwise",
+  "I5": "held iff the TSO max relative rank residual (Wii Wjj - WR^2 - WI^2) / (Wii Wjj) over branch-periods lies in [2.45e-2 / 2, 2.45e-2 * 2] at an Optimal solve; indeterminate otherwise",
+  "gap_label": "the gap is a single-group, single-solver, IPOPT-tolerance value (tol 1e-9 on the scaled NLP error), NOT a certified bound",
+  "active": "a cone / circle is active when its relative slack is <= 1e-6 (rotated: (k u v - sum d x^2) / (k u v); circle: (r - sum d x^2) / r; Lorentz: (e t^2 - sum d x^2) / (e t^2)); a row whose scale (k u v, e t^2 or r) is <= 1e-12 has no relative slack and is reported by its absolute slack (scale - sum d x^2)",
+  "interior": "read from IPOPT's barrier behaviour: an Optimal exit with the final barrier parameter mu -> small (lg(mu) of the last iteration) from IPOPT's strictly interior slack initialisation; no sampling"
+ },
+ "declared_solves": 1,
+ "ipopt_options": {
+  "tol": 1e-09,
+  "max_iter": 3000,
+  "mu_strategy": "adaptive",
+  "print_level": 5,
+  "print_timing_statistics": "yes",
+  "linear_solver": "ma97"
+ },
+ "group": "x0_2025_Spring_C",
+ "thresholds": {
+  "obj_identity_rel": 1e-08,
+  "containment_tol_rel": 1e-06,
+  "active_rel": 1e-06,
+  "small_circle_r": 0.0001,
+  "scale_floor": 1e-12,
+  "I2_max_iter": 500,
+  "I4_range": [
+   0.0001,
+   0.01
+  ],
+  "I5_point_factor": [
+   0.0245,
+   2.0
+  ],
+  "I1_min_deficiency": 216
+ },
+ "note": "recorded by the harness before any input is loaded (task P5.16 D0 / T0.2-ipopt-interior)"
+}

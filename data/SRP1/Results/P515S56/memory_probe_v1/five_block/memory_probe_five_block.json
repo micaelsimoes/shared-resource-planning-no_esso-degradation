@@ -1,0 +1,1665 @@
+{
+ "build": {
+  "build_s": 216.8664960861206,
+  "child_create_time": 1795465014.753733,
+  "definition": "harness child process creation -> creation of the first IPOPT process in the tree (the initialisation solve round starts); includes interpreter start, imports, the derived-instance read, model build, the configuration hook and its read-back probes",
+  "first_ipopt_create_time": 1795465231.620229
+ },
+ "campaign": {
+  "entry": {
+   "canonical": {
+    "nodes": {
+     "5": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2028": [
+       0.5,
+       1.0
+      ],
+      "2031": [
+       0.0,
+       0.0
+      ],
+      "2034": [
+       0.0,
+       0.0
+      ],
+      "2037": [
+       0.0,
+       0.0
+      ]
+     },
+     "7": {
+      "2025": [
+       0.25,
+       1.0
+      ],
+      "2028": [
+       0.0,
+       0.0
+      ],
+      "2031": [
+       0.25,
+       0.5
+      ],
+      "2034": [
+       0.0,
+       0.0
+      ],
+      "2037": [
+       0.0,
+       0.0
+      ]
+     },
+     "9": {
+      "2025": [
+       0.0,
+       0.0
+      ],
+      "2028": [
+       0.0,
+       0.0
+      ],
+      "2031": [
+       0.0,
+       0.0
+      ],
+      "2034": [
+       0.0,
+       0.0
+      ],
+      "2037": [
+       0.25,
+       0.5
+      ]
+     }
+    },
+    "schema": "v2"
+   },
+   "eval_dir": "cff0df6ab3d60b9a_staged_sp",
+   "eval_key": "cff0df6ab3d60b9a693080fc7d32441905a94afc956c0f5ef3b33d1209b89cce",
+   "flex_price_multiplier": 2.0,
+   "interface_coupling": {
+    "per_scenario_interface_coupling": true,
+    "per_scenario_voltage_mode": "per_scenario",
+    "row18_charge_reactive": false
+   },
+   "key": "896988167038226b6b8c1f1f953a5ade2d7d13b8b2e0b96bb6d23cfa7ecd1ed6",
+   "label": "staged_sp",
+   "s56_investment": {
+    "active_cohorts": [
+     [
+      5,
+      2028
+     ],
+     [
+      7,
+      2025
+     ],
+     [
+      7,
+      2031
+     ],
+     [
+      9,
+      2037
+     ]
+    ],
+    "case": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+    "cumulative_energy_mwh": {
+     "5|2025": 0.0,
+     "5|2028": 1.0,
+     "5|2031": 1.0,
+     "5|2034": 1.0,
+     "5|2037": 1.0,
+     "7|2025": 1.0,
+     "7|2028": 1.0,
+     "7|2031": 1.5,
+     "7|2034": 1.5,
+     "7|2037": 1.5,
+     "9|2025": 0.0,
+     "9|2028": 0.0,
+     "9|2031": 0.0,
+     "9|2034": 0.0,
+     "9|2037": 0.5
+    },
+    "investment_cost_definition": "I(x) = sum_n sum_y sum_m (1+d)^-(y-y1) omega_m (c^S_my P_ny + c^E_my E_ny), the master investment_cost expression in its own term order (p516_lattice.GeneralLattice.investment_cost)",
+    "investment_cost_eur": 886775.7761873181,
+    "lattice_instance_sha256": "cda458e5caba30f2537e005fd3c7ea78a5304b32d270640de52a1c71ddbdaffa",
+    "lattice_label": "n5_y2028_p0.5_e1__n7_y2025_p0.25_e1__n7_y2031_p0.25_e0.5__n9_y2037_p0.25_e0.5"
+   }
+  },
+  "root": "data/SRP1/Results/P515S56/memory_probe_v1/five_block/campaign_s56memprobe_v1_five_block",
+  "spec": "data/SRP1/Results/P515S56/memory_probe_v1/five_block/campaign_s56memprobe_v1_five_block/campaign_spec_s56memprobe_v1_five_block_9920cfa0.json",
+  "spec_sha256": "9920cfa013baacf174a839dc4cab35d80e51fe4dcd62f334fef4d9f5ffd57675"
+ },
+ "checks": {
+  "capture_path_asserted_before_any_solve": {
+   "detail": {
+    "cost_breakdown_every_field_has_a_source": true,
+    "cost_breakdown_fields": [
+     "investment_cost_eur",
+     "gross_operational_cost_eur",
+     "terminal_value_credit_eur",
+     "net_operational_recourse_eur",
+     "total_planning_cost_eur",
+     "flexibility_cost_eur",
+     "flexibility_cost_reactive_down_eur",
+     "flex_price_split_readback",
+     "esso_slack_totals",
+     "leak_detector",
+     "per_cohort_throughput",
+     "exit_certificate_e6",
+     "salvage_objective_kappa",
+     "priced_residual_pr"
+    ],
+    "esso_admm_sets_kappa": true,
+    "esso_build_reads_cohort_formulation": true,
+    "esso_build_reads_in_objective": true,
+    "esso_build_reads_slack_penalty": true,
+    "flexibility_cost_prices_p_and_q_down": true,
+    "fn_admm_block_weight": true,
+    "fn_diag_cohort_block_day": true,
+    "fn_diag_cohort_degradation": true,
+    "fn_diag_esso_slacks": true,
+    "fn_esso_ageing_model_settings": true,
+    "fn_esso_update_with_candidate": true,
+    "fn_ev_assertion": true,
+    "fn_expected_market_price": true,
+    "fn_lattice_investment_cost": true,
+    "fn_operational_recourse_components": true,
+    "fn_rebuild_candidate_total_capacities": true,
+    "fn_salvage_credit_expression": true,
+    "loop_syncs_cohort_gross_flow": true,
+    "priced_residual_pr_is_a_coupling_field": true,
+    "production_cohort_default_is_legacy": true,
+    "production_cohort_formulations_equal_mirror": true,
+    "production_default_slack_penalty_is_1e3": true,
+    "production_params_carry_cohort_formulation": true,
+    "production_params_carry_esso_slack_penalty": true,
+    "production_salvage_carries_in_objective": true,
+    "staged_investment_cost_carried_in_entry": true,
+    "uncoordinated_benchmark_not_on_the_harness_path": true,
+    "uncoordinated_benchmark_scan": {
+     "files": [
+      "p515_s44_campaign_harness.py",
+      "p515_g_g1_g4_admm_gates.py",
+      "p56a_oracle.py",
+      "p515_s44_scale_measurement.py",
+      "shared_resources_planning.py",
+      "p514_n_instrumented_cstar.py"
+     ],
+     "importing": [],
+     "note": "uncoordinated_benchmark.py builds network models without _sync_shared_ess_cohort_gross_flow (cohort follow-up report); not used by this harness -- gap logged, not fixed"
+    }
+   },
+   "ok": true
+  },
+  "cost_breakdown_written": {
+   "detail": {
+    "checks": {
+     "flex_split_readback_ok": true,
+     "flex_split_reconciles_with_total_flex_cost": true,
+     "kappa_built_iff_tv_declared": true,
+     "kappa_equals_a_over_sigma_where_built": true,
+     "leak_within_ceiling": false
+    },
+    "status": "written"
+   },
+   "ok": true
+  },
+  "cycles_run_2": {
+   "detail": 2,
+   "ok": true
+  },
+  "declared_solves_equal_case_derivation": {
+   "detail": {
+    "cycles": 2,
+    "formula": "((1 + n_dso) x n_years x n_days + n_esso_nodes) x (cycles + 1)",
+    "n_days": 4,
+    "n_dso": 3,
+    "n_esso_nodes": 3,
+    "n_years": 5,
+    "value": 249,
+    "years": [
+     2025,
+     2028,
+     2031,
+     2034,
+     2037
+    ]
+   },
+   "ok": true
+  },
+  "exit_0": {
+   "detail": {
+    "exit_code_txt": "0",
+    "parent_view_exit_code": 0,
+    "status": "not_certified"
+   },
+   "ok": true
+  },
+  "hook_order": {
+   "detail": [
+    "esso_settings_and_staged_write",
+    "flex_price_multiplier"
+   ],
+   "ok": true
+  },
+  "instance_checksum": {
+   "detail": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+   "ok": true
+  },
+  "launcher_zero_solves": {
+   "detail": {
+    "own": {
+     "counts": {
+      "blocked_exec": 0,
+      "blocked_solve": 0,
+      "permitted_exec": 0,
+      "permitted_solve": 0
+     },
+     "label": "P5.15 S56 memory probe launcher (this process never solves)",
+     "verify_0": []
+    },
+    "p515_s56_ev_harness_tests": {
+     "counts": {
+      "blocked_exec": 0,
+      "blocked_solve": 0,
+      "permitted_exec": 0,
+      "permitted_solve": 0
+     },
+     "label": "P5.15 S56 EV harness tests (this process never solves)",
+     "verify_0": []
+    }
+   },
+   "ok": true
+  },
+  "no_local_solve_failure": {
+   "detail": {
+    "local_solve_failures": 0,
+    "n_esso_recovery_events": 0,
+    "network_failures_classes": {
+     "indeterminate": 0,
+     "not_attempted": 0,
+     "recovered": 0,
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0
+    }
+   },
+   "ok": true
+  },
+  "per_scenario_coupling_active": {
+   "detail": {
+    "checks": {
+     "in_force_equals_declaration": true
+    },
+    "in_force": {
+     "per_scenario_interface_coupling": true,
+     "per_scenario_voltage_mode": "per_scenario",
+     "row18_charge_reactive": false
+    },
+    "per_cycle": [
+     {
+      "cycle": 1,
+      "interface_coupling_aa_forced_off": true,
+      "interface_coupling_active": true,
+      "interface_coupling_voltage_mode": "per_scenario"
+     },
+     {
+      "cycle": 2,
+      "interface_coupling_aa_forced_off": true,
+      "interface_coupling_active": true,
+      "interface_coupling_voltage_mode": "per_scenario"
+     }
+    ]
+   },
+   "ok": true
+  },
+  "readback_cohort_mode": {
+   "detail": {
+    "in_force": "independent_units_all_node_years",
+    "per_node": {
+     "5": [
+      "independent_units_all_node_years",
+      true
+     ],
+     "7": [
+      "independent_units_all_node_years",
+      true
+     ],
+     "9": [
+      "independent_units_all_node_years",
+      true
+     ]
+    }
+   },
+   "ok": true
+  },
+  "readback_flex_x2": {
+   "detail": {
+    "checks": {
+     "dso_energy_prices_unchanged": true,
+     "dso_holder_cost_flex_rebound": true,
+     "every_dso_array_is_a_new_object": true,
+     "every_dso_array_is_m_times_original_bitwise": true,
+     "no_dso_array_shared_with_the_tso": true,
+     "planning_cost_flex_unchanged": true,
+     "readback_every_dso_block_objective": true,
+     "tso_arrays_unchanged": true
+    },
+    "pre_run_n_coefficients": 829440,
+    "terminal_all_match": true,
+    "terminal_n_coefficients": 829440
+   },
+   "ok": true
+  },
+  "readback_kappa_tv": {
+   "detail": {
+    "cost_breakdown_checks": {
+     "flex_split_readback_ok": true,
+     "flex_split_reconciles_with_total_flex_cost": true,
+     "kappa_built_iff_tv_declared": true,
+     "kappa_equals_a_over_sigma_where_built": true,
+     "leak_within_ceiling": false
+    },
+    "in_objective": true,
+    "per_node_tv_ok": {
+     "5": true,
+     "7": true,
+     "9": true
+    }
+   },
+   "ok": true
+  },
+  "readback_slack_penalty_1e4": {
+   "detail": {
+    "in_force": 10000.0,
+    "per_node": {
+     "5": {
+      "slack_es_pnet_down": [
+       10000.0
+      ],
+      "slack_es_pnet_up": [
+       10000.0
+      ],
+      "slack_es_qnet_down": [
+       10000.0
+      ],
+      "slack_es_qnet_up": [
+       10000.0
+      ]
+     },
+     "7": {
+      "slack_es_pnet_down": [
+       10000.0
+      ],
+      "slack_es_pnet_up": [
+       10000.0
+      ],
+      "slack_es_qnet_down": [
+       10000.0
+      ],
+      "slack_es_qnet_up": [
+       10000.0
+      ]
+     },
+     "9": {
+      "slack_es_pnet_down": [
+       10000.0
+      ],
+      "slack_es_pnet_up": [
+       10000.0
+      ],
+      "slack_es_qnet_down": [
+       10000.0
+      ],
+      "slack_es_qnet_up": [
+       10000.0
+      ]
+     }
+    }
+   },
+   "ok": true
+  },
+  "readback_staged_plan": {
+   "detail": {
+    "all_ok": true,
+    "written": {
+     "5": {
+      "2025": {
+       "e": 0.0,
+       "s": 0.0
+      },
+      "2028": {
+       "e": 1.0,
+       "s": 0.5
+      },
+      "2031": {
+       "e": 0.0,
+       "s": 0.0
+      },
+      "2034": {
+       "e": 0.0,
+       "s": 0.0
+      },
+      "2037": {
+       "e": 0.0,
+       "s": 0.0
+      }
+     },
+     "7": {
+      "2025": {
+       "e": 1.0,
+       "s": 0.25
+      },
+      "2028": {
+       "e": 0.0,
+       "s": 0.0
+      },
+      "2031": {
+       "e": 0.5,
+       "s": 0.25
+      },
+      "2034": {
+       "e": 0.0,
+       "s": 0.0
+      },
+      "2037": {
+       "e": 0.0,
+       "s": 0.0
+      }
+     },
+     "9": {
+      "2025": {
+       "e": 0.0,
+       "s": 0.0
+      },
+      "2028": {
+       "e": 0.0,
+       "s": 0.0
+      },
+      "2031": {
+       "e": 0.0,
+       "s": 0.0
+      },
+      "2034": {
+       "e": 0.0,
+       "s": 0.0
+      },
+      "2037": {
+       "e": 0.5,
+       "s": 0.25
+      }
+     }
+    },
+    "written_equals_canonical": true
+   },
+   "ok": true
+  },
+  "solve_count_exact": {
+   "detail": {
+    "base_solves": 249,
+    "declared": 249,
+    "identity_holds": true,
+    "observed": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 249,
+     "permitted_solve": 249
+    },
+    "retry_solves_credited": 0
+   },
+   "ok": true
+  },
+  "staged_key_equals_general_lattice_key": {
+   "detail": {
+    "c5_reasons": [],
+    "case_rel": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+    "entry_candidate_key": "896988167038226b6b8c1f1f953a5ade2d7d13b8b2e0b96bb6d23cfa7ecd1ed6",
+    "equal": true,
+    "key_schema": "v2",
+    "lattice_key": "896988167038226b6b8c1f1f953a5ade2d7d13b8b2e0b96bb6d23cfa7ecd1ed6",
+    "lattice_label": "n5_y2028_p0.5_e1__n7_y2025_p0.25_e1__n7_y2031_p0.25_e0.5__n9_y2037_p0.25_e0.5"
+   },
+   "ok": true
+  },
+  "watchdog_not_triggered": {
+   "detail": null,
+   "ok": true
+  }
+ },
+ "configuration": {
+  "alpha": "interface_deviation_premium not declared: production default alpha 0.0",
+  "cfg": {
+   "arm_label": "s39_D",
+   "case_file_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "convergence_depth_tail": {
+    "compl_inf_tol": 1e-06,
+    "enabled": true
+   },
+   "derived_instance": {
+    "case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+    "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+    "changes_vs_source": [
+     {
+      "from": {
+       "2025": 5,
+       "2030": 5,
+       "2035": 5
+      },
+      "key": "Years",
+      "to": {
+       "2025": 3,
+       "2028": 3,
+       "2031": 3,
+       "2034": 3,
+       "2037": 3
+      }
+     },
+     {
+      "from": 1,
+      "key": "NumMarketScenarios",
+      "to": 3
+     },
+     {
+      "from": 1,
+      "key": "TransmissionNetwork[case9].num_operation_scenarios",
+      "to": 3
+     },
+     {
+      "from": 1,
+      "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+      "to": 3
+     },
+     {
+      "from": 1,
+      "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+      "to": 3
+     },
+     {
+      "from": 1,
+      "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+      "to": 3
+     }
+    ],
+    "instance_label": "s53_3x3",
+    "scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+    "source_case_path": "data/SRP1/SRP1.json",
+    "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+   },
+   "ess_ageing_baseline": {
+    "calendar_life_years": 15,
+    "calendar_retention_per_year": 0.985,
+    "calibration": {
+     "cycles_n": 10000,
+     "eol_retention_r": 0.8,
+     "reference_dod_d": 0.8,
+     "status": "ACTIVE"
+    },
+    "cycle_life_nominal": 10000,
+    "depth_of_discharge_nominal": 0.8,
+    "minimum_soh": 0.7
+   },
+   "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+   "name": "S56 memory probe v1 (five_block): corrected SP, staged mixed-duration plan, V-1 per-scenario coupling, alpha 0, cohort all node-years, TV, slack 1e4, flex x2, cap 2",
+   "overrides": {}
+  },
+  "derived_instance": {
+   "case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+   "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+   "changes_vs_source": [
+    {
+     "from": {
+      "2025": 5,
+      "2030": 5,
+      "2035": 5
+     },
+     "key": "Years",
+     "to": {
+      "2025": 3,
+      "2028": 3,
+      "2031": 3,
+      "2034": 3,
+      "2037": 3
+     }
+    },
+    {
+     "from": 1,
+     "key": "NumMarketScenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "to": 3
+    }
+   ],
+   "instance_label": "s53_3x3",
+   "scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+   "source_case_path": "data/SRP1/SRP1.json",
+   "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+  },
+  "entry_options": {
+   "flex_price_multiplier": 2.0,
+   "interface_coupling": {
+    "per_scenario_interface_coupling": true,
+    "per_scenario_voltage_mode": "per_scenario",
+    "row18_charge_reactive": false
+   },
+   "s56_cohort_formulation": "independent_units_all_node_years",
+   "s56_esso_slack_penalty": 10000.0,
+   "s56_staged_investment": {
+    "5": {
+     "2028": [
+      0.5,
+      1.0
+     ]
+    },
+    "7": {
+     "2025": [
+      0.25,
+      1.0
+     ],
+     "2031": [
+      0.25,
+      0.5
+     ]
+    },
+    "9": {
+     "2037": [
+      0.25,
+      0.5
+     ]
+    }
+   },
+   "s56_terminal_value_in_objective": true
+  },
+  "not_declared": {
+   "s56_ev_profiles": "SP instance (no EV injection)"
+  },
+  "required_consecutive_cycles": 10,
+  "staged_plan": {
+   "5": {
+    "2028": [
+     0.5,
+     1.0
+    ]
+   },
+   "7": {
+    "2025": [
+     0.25,
+     1.0
+    ],
+    "2031": [
+     0.25,
+     0.5
+    ]
+   },
+   "9": {
+    "2037": [
+     0.25,
+     0.5
+    ]
+   }
+  }
+ },
+ "decision": {
+  "peak_tree_rss_gib": 20.969467163085938,
+  "quantity": "peak tree RSS (GiB = 2^30 bytes) against 20.7 GiB",
+  "threshold_gib": 20.7,
+  "within_threshold": false
+ },
+ "declared": {
+  "cap": 2,
+  "concurrency": 1,
+  "decision_threshold_gib": 20.7,
+  "label": "staged_sp",
+  "solves": 249,
+  "watchdog": {
+   "sample_s": 1.0,
+   "swapout_stop_gib": 1.0,
+   "tree_rss_stop_gib": 28.0
+  },
+  "years": [
+   2025,
+   2028,
+   2031,
+   2034,
+   2037
+  ]
+ },
+ "error": null,
+ "eval_dir": "data/SRP1/Results/P515S56/memory_probe_v1/five_block/campaign_s56memprobe_v1_five_block/evals/cff0df6ab3d60b9a_staged_sp",
+ "finished_utc": "2026-11-23T21:05:20.416672+00:00",
+ "grid": "five_block",
+ "guards": {
+  "own": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "label": "P5.15 S56 memory probe launcher (this process never solves)",
+   "verify_0": []
+  },
+  "p515_s56_ev_harness_tests": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "label": "P5.15 S56 EV harness tests (this process never solves)",
+   "verify_0": []
+  }
+ },
+ "launcher_zero_solve_verified": true,
+ "lock_released": true,
+ "memory": {
+  "base_vm_stat": {
+   "anonymous_gib": 6.830810546875,
+   "compressor_occupied_gib": 1.3092041015625,
+   "free_gib": 0.0890960693359375,
+   "free_plus_inactive_gib": 13.83795166015625,
+   "inactive_gib": 13.748855590820312,
+   "page_size": 16384,
+   "pageouts_pages": 59861,
+   "speculative_gib": 0.0172576904296875,
+   "swapins_pages": 4,
+   "swapouts_pages": 16,
+   "t": 1795465014.717107,
+   "utc": "2026-11-23T20:16:54.717085+00:00",
+   "wired_gib": 2.3075714111328125
+  },
+  "errors": [],
+  "first_ipopt": {
+   "create_time": 1795465231.620229,
+   "first_seen_t": 1795465232.55483,
+   "pid": 24702
+  },
+  "harness_child": {
+   "cmdline_head": [
+    "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+    "-u",
+    "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/e2b75b66-5876-478c-8406-61146cba3204/scratchpad/memprobe/export_b0391b80/p515_s44_campaign_harness.py",
+    "--child"
+   ],
+   "create_time": 1795465014.753733,
+   "first_seen_t": 1795465015.7623098,
+   "pid": 23978
+  },
+  "harness_child_lifetime_max_phys_footprint_gib": 24.78940211236477,
+  "max_compressor_occupied_gib": 6.019073486328125,
+  "max_concurrent_ipopt": 1,
+  "max_swapout_delta_bytes": 0,
+  "measure": "tree = this launcher + every descendant (harness child, IPOPT processes); RSS = psutil memory_info().rss; footprint = proc_pid_rusage(RUSAGE_INFO_V4).ri_phys_footprint; sampled every 1.0 s; vm_stat each sample",
+  "min_free_plus_inactive_gib": 11.549728393554688,
+  "n_errors": 0,
+  "n_samples": 2820,
+  "outside_tree_processes_ge_1gib": {
+   "every_n_samples": 30,
+   "max_rss_gib_seen": 0.0,
+   "reads": [
+    {
+     "processes": [],
+     "t": 1795465014.71725
+    },
+    {
+     "processes": [],
+     "t": 1795465045.320582
+    },
+    {
+     "processes": [],
+     "t": 1795465076.055776
+    },
+    {
+     "processes": [],
+     "t": 1795465106.795696
+    },
+    {
+     "processes": [],
+     "t": 1795465137.539076
+    },
+    {
+     "processes": [],
+     "t": 1795465168.262523
+    },
+    {
+     "processes": [],
+     "t": 1795465198.87127
+    },
+    {
+     "processes": [],
+     "t": 1795465229.4739468
+    },
+    {
+     "processes": [],
+     "t": 1795465260.1609118
+    },
+    {
+     "processes": [],
+     "t": 1795465290.928206
+    },
+    {
+     "processes": [],
+     "t": 1795465321.7164512
+    },
+    {
+     "processes": [],
+     "t": 1795465352.473216
+    },
+    {
+     "processes": [],
+     "t": 1795465383.2142148
+    },
+    {
+     "processes": [],
+     "t": 1795465413.936299
+    },
+    {
+     "processes": [],
+     "t": 1795465444.652757
+    },
+    {
+     "processes": [],
+     "t": 1795465475.36384
+    },
+    {
+     "processes": [],
+     "t": 1795465506.0630112
+    },
+    {
+     "processes": [],
+     "t": 1795465536.7654889
+    },
+    {
+     "processes": [],
+     "t": 1795465567.4342022
+    },
+    {
+     "processes": [],
+     "t": 1795465598.15301
+    },
+    {
+     "processes": [],
+     "t": 1795465628.904742
+    },
+    {
+     "processes": [],
+     "t": 1795465659.6784692
+    },
+    {
+     "processes": [],
+     "t": 1795465690.47513
+    },
+    {
+     "processes": [],
+     "t": 1795465721.2524102
+    },
+    {
+     "processes": [],
+     "t": 1795465752.060551
+    },
+    {
+     "processes": [],
+     "t": 1795465782.862862
+    },
+    {
+     "processes": [],
+     "t": 1795465813.654751
+    },
+    {
+     "processes": [],
+     "t": 1795465844.391196
+    },
+    {
+     "processes": [],
+     "t": 1795465875.105886
+    },
+    {
+     "processes": [],
+     "t": 1795465905.871068
+    },
+    {
+     "processes": [],
+     "t": 1795465936.6129549
+    },
+    {
+     "processes": [],
+     "t": 1795465967.3534021
+    },
+    {
+     "processes": [],
+     "t": 1795465998.084824
+    },
+    {
+     "processes": [],
+     "t": 1795466028.800298
+    },
+    {
+     "processes": [],
+     "t": 1795466059.550431
+    },
+    {
+     "processes": [],
+     "t": 1795466090.294824
+    },
+    {
+     "processes": [],
+     "t": 1795466121.037271
+    },
+    {
+     "processes": [],
+     "t": 1795466151.7733738
+    },
+    {
+     "processes": [],
+     "t": 1795466182.5238311
+    },
+    {
+     "processes": [],
+     "t": 1795466213.231627
+    },
+    {
+     "processes": [],
+     "t": 1795466243.94681
+    },
+    {
+     "processes": [],
+     "t": 1795466274.6876302
+    },
+    {
+     "processes": [],
+     "t": 1795466305.401427
+    },
+    {
+     "processes": [],
+     "t": 1795466336.11873
+    },
+    {
+     "processes": [],
+     "t": 1795466366.815458
+    },
+    {
+     "processes": [],
+     "t": 1795466397.509771
+    },
+    {
+     "processes": [],
+     "t": 1795466428.25398
+    },
+    {
+     "processes": [],
+     "t": 1795466458.995786
+    },
+    {
+     "processes": [],
+     "t": 1795466489.700747
+    },
+    {
+     "processes": [],
+     "t": 1795466520.438424
+    },
+    {
+     "processes": [],
+     "t": 1795466551.165641
+    },
+    {
+     "processes": [],
+     "t": 1795466581.875402
+    },
+    {
+     "processes": [],
+     "t": 1795466612.551542
+    },
+    {
+     "processes": [],
+     "t": 1795466643.246917
+    },
+    {
+     "processes": [],
+     "t": 1795466673.93376
+    },
+    {
+     "processes": [],
+     "t": 1795466704.623136
+    },
+    {
+     "processes": [],
+     "t": 1795466735.325533
+    },
+    {
+     "processes": [],
+     "t": 1795466766.049433
+    },
+    {
+     "processes": [],
+     "t": 1795466796.765853
+    },
+    {
+     "processes": [],
+     "t": 1795466827.4660969
+    },
+    {
+     "processes": [],
+     "t": 1795466858.1568918
+    },
+    {
+     "processes": [],
+     "t": 1795466888.838141
+    },
+    {
+     "processes": [],
+     "t": 1795466919.4033878
+    },
+    {
+     "processes": [],
+     "t": 1795466949.98324
+    },
+    {
+     "processes": [],
+     "t": 1795466980.6251352
+    },
+    {
+     "processes": [],
+     "t": 1795467011.265821
+    },
+    {
+     "processes": [],
+     "t": 1795467041.936138
+    },
+    {
+     "processes": [],
+     "t": 1795467072.591903
+    },
+    {
+     "processes": [],
+     "t": 1795467103.277708
+    },
+    {
+     "processes": [],
+     "t": 1795467133.937664
+    },
+    {
+     "processes": [],
+     "t": 1795467164.5892448
+    },
+    {
+     "processes": [],
+     "t": 1795467195.256164
+    },
+    {
+     "processes": [],
+     "t": 1795467225.908362
+    },
+    {
+     "processes": [],
+     "t": 1795467256.570976
+    },
+    {
+     "processes": [],
+     "t": 1795467287.214381
+    },
+    {
+     "processes": [],
+     "t": 1795467317.877552
+    },
+    {
+     "processes": [],
+     "t": 1795467348.5296772
+    },
+    {
+     "processes": [],
+     "t": 1795467379.1806872
+    },
+    {
+     "processes": [],
+     "t": 1795467409.862925
+    },
+    {
+     "processes": [],
+     "t": 1795467440.514941
+    },
+    {
+     "processes": [],
+     "t": 1795467471.162011
+    },
+    {
+     "processes": [],
+     "t": 1795467501.814168
+    },
+    {
+     "processes": [],
+     "t": 1795467532.4797819
+    },
+    {
+     "processes": [],
+     "t": 1795467563.145407
+    },
+    {
+     "processes": [],
+     "t": 1795467593.823194
+    },
+    {
+     "processes": [],
+     "t": 1795467624.479935
+    },
+    {
+     "processes": [],
+     "t": 1795467655.12874
+    },
+    {
+     "processes": [],
+     "t": 1795467685.8015249
+    },
+    {
+     "processes": [],
+     "t": 1795467716.498986
+    },
+    {
+     "processes": [],
+     "t": 1795467747.2154298
+    },
+    {
+     "processes": [],
+     "t": 1795467777.858203
+    },
+    {
+     "processes": [],
+     "t": 1795467808.523253
+    },
+    {
+     "processes": [],
+     "t": 1795467839.1675599
+    },
+    {
+     "processes": [],
+     "t": 1795467869.849151
+    }
+   ]
+  },
+  "peak_single_process": {
+   "footprint": 21717746968,
+   "kind": "harness_child",
+   "lifetime_max_footprint": 23151691272,
+   "name": "python3.11",
+   "pid": 23978,
+   "rss": 22029156352,
+   "rss_gib": 20.516250610351562,
+   "t": 1795466555.284873,
+   "utc": "2026-11-23T20:42:35.297477+00:00"
+  },
+  "peak_tree_footprint": {
+   "free_plus_inactive_gib": 11.691604614257812,
+   "t": 1795467718.572178,
+   "tree_footprint": 26831590640,
+   "tree_footprint_gib": 24.988866075873375,
+   "tree_rss": 19609124864,
+   "utc": "2026-11-23T21:01:58.584185+00:00"
+  },
+  "peak_tree_rss_by_kind_gib": {
+   "harness_child": 20.451461791992188,
+   "ipopt": 0.335601806640625,
+   "launcher": 0.182403564453125,
+   "other": 0.0
+  },
+  "peak_tree_rss_bytes": 22515793920,
+  "peak_tree_rss_gib": 20.969467163085938,
+  "peak_tree_rss_processes": [
+   {
+    "footprint": 211223632,
+    "kind": "launcher",
+    "lifetime_max_footprint": 215549008,
+    "name": "python3.11",
+    "pid": 23952,
+    "rss": 195854336
+   },
+   {
+    "footprint": 21648016664,
+    "kind": "harness_child",
+    "lifetime_max_footprint": 23151691272,
+    "name": "python3.11",
+    "pid": 23978,
+    "rss": 21959589888
+   },
+   {
+    "footprint": 353698584,
+    "kind": "ipopt",
+    "lifetime_max_footprint": 353698584,
+    "name": "ipopt",
+    "pid": 28285,
+    "rss": 360349696
+   }
+  ],
+  "peak_tree_rss_utc": "2026-11-23T20:42:38.360490+00:00",
+  "period_s": 1.0,
+  "thread_alive_after_stop": false,
+  "vm_stat_at_peak": {
+   "anonymous_gib": 23.2208251953125,
+   "compressor_occupied_gib": 2.58135986328125,
+   "free_gib": 0.0607452392578125,
+   "free_plus_inactive_gib": 13.453109741210938,
+   "inactive_gib": 13.392364501953125,
+   "page_size": 16384,
+   "pageouts_pages": 59875,
+   "speculative_gib": 0.005767822265625,
+   "swapins_pages": 4,
+   "swapouts_pages": 16,
+   "t": 1795466558.360517,
+   "utc": "2026-11-23T20:42:38.360490+00:00",
+   "wired_gib": 1.8012542724609375
+  },
+  "watchdog": {
+   "stopped": null,
+   "swapout_stop_gib": 1.0,
+   "tree_rss_stop_gib": 28.0
+  }
+ },
+ "mode": "run",
+ "preconditions": [],
+ "provenance": {
+  "cwd": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/e2b75b66-5876-478c-8406-61146cba3204/scratchpad/memprobe/export_b0391b80",
+  "export": {
+   "export_commit": "b0391b80c3883b3fbb67e4299c87c4422204cee4",
+   "method": "git clone --shared --no-checkout <main checkout> <dest>; git checkout --detach <commit>; p515_s56_memory_probe.py written from `git show <overlay commit>:p515_s56_memory_probe.py` (untracked in the clone)",
+   "overlay_commit": "bdb604e83b390c98df6fbae8f0a362a30970fafd",
+   "utc": "2026-11-23T20:16:46.089022+00:00"
+  },
+  "git_head": "b0391b80c3883b3fbb67e4299c87c4422204cee4",
+  "git_status_tracked": "",
+  "harness_sha256": "226f02ee7185b45676469ae9aa4c98f1f3e5e3e92efe99d6d3baf5e20bc910a1",
+  "here": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/e2b75b66-5876-478c-8406-61146cba3204/scratchpad/memprobe/export_b0391b80",
+  "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "lp_solver_path_env": "/Users/micaelsimoes/coin-or/dist/bin/clp",
+  "nlp_solver_path_env": "/usr/local/bin/ipopt",
+  "script_sha256": "de635f4f6994c90bdd7f9df490124abc7ed46dd53f6483f7658932bec7a5133f"
+ },
+ "provenance_failures": [],
+ "readings": {
+  "cost_breakdown_summary": {
+   "esso_slack_totals": {
+    "p": {
+     "max_abs": -9.999909021290239e-09,
+     "n_nodes_with_pair": 3,
+     "priced_in_esso_objective": -0.28799738181814816,
+     "sum": -2.8799738181814814e-05
+    },
+    "q": {
+     "max_abs": 0.0,
+     "n_nodes_with_pair": 3,
+     "priced_in_esso_objective": -0.19199825454545372,
+     "sum": -1.919982545454537e-05
+    }
+   },
+   "exit_certificate_e6_summary": {
+    "circle_margin_min_mva": 0.01078185788573982,
+    "closure_residual_max_abs_mwh": 0.0,
+    "energy_accounting_residual_max_abs_mwh": 3.122502256758253e-16,
+    "energy_balance_residual_max_mwh": 1.3877787807814457e-16,
+    "inter_cohort_gross_transfer_max_mwh": 0.0158589178381225,
+    "n_block_days": 40,
+    "p_slack_max_abs_mw": -9.999909021290239e-09,
+    "p_slack_sum_mw": -2.8799738181814814e-05,
+    "q_slack_max_abs_mvar": 0.0,
+    "q_slack_sum_mvar": -1.919982545454537e-05,
+    "soc_sources": [
+     "variable"
+    ],
+    "window_margin_min_mwh": -9.269846334980514e-09,
+    "within_cohort_simultaneity_max_mwh": 0.0158591250262032
+   },
+   "flexibility_active_down_eur": {
+    "DSO": 186644582.04735142,
+    "TSO": 0.0
+   },
+   "flexibility_cost_reactive_down_eur": 806161.7857713675,
+   "gross_operational_cost_eur": 1395123637.1678314,
+   "investment_cost_eur": 886775.7761873181,
+   "leak_detector": {
+    "L_weighted_mwh": 11.573887158917259,
+    "ceiling_applies_to": "priced_loss_eur",
+    "ceiling_eur": 25.0,
+    "max_simultaneous_mw": 0.0024304615376021014,
+    "priced_eur": 1230.9232186547467,
+    "priced_loss_eur": 88.21616400359031,
+    "within_ceiling": false
+   },
+   "net_operational_recourse_eur": 1395049226.4987562,
+   "terminal_value_credit_eur": 74410.6690751859,
+   "total_planning_cost_eur": 1395936002.2749436
+  },
+  "cycle_wall_s": [
+   802.2573618888855,
+   555.0987122058868
+  ],
+  "cycles_run": 2,
+  "interface_coupling_applied_in_child": {
+   "before": {
+    "per_scenario_interface_coupling": false,
+    "per_scenario_voltage_mode": "pin",
+    "row18_charge_reactive": true
+   },
+   "checks": {
+    "in_force_equals_declaration": true
+   },
+   "in_force": {
+    "per_scenario_interface_coupling": true,
+    "per_scenario_voltage_mode": "per_scenario",
+    "row18_charge_reactive": false
+   },
+   "interface_coupling": {
+    "per_scenario_interface_coupling": true,
+    "per_scenario_voltage_mode": "per_scenario",
+    "row18_charge_reactive": false
+   },
+   "label": "EVALUATION OPTION \u2014 per-scenario TN-DN interface coupling (S56 F1; not the published formulation)",
+   "production_support": "admm_parameters.ADMMParameters() carries ['per_scenario_interface_coupling', 'per_scenario_voltage_mode', 'row18_charge_reactive']: True"
+  },
+  "peak_rss_record": {
+   "child_python_process_ru_maxrss": 22061203456,
+   "production_state_peak_rss_ru_maxrss": 22061203456,
+   "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)",
+   "solver_subprocesses_max_ru_maxrss": 378667008,
+   "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)"
+  },
+  "rss_bytes_per_cycle_child": [
+   20203585536,
+   16614162432
+  ],
+  "s56_ev_plan_in_force": {
+   "cohort_formulation": "independent_units_all_node_years",
+   "esso_slack_penalty": 10000.0,
+   "salvage_value_enabled": true,
+   "salvage_value_in_objective": true
+  },
+  "solve_profile": {
+   "base_solves": 249,
+   "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+   "expected_solves": 249,
+   "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+   "identity_holds": true,
+   "n_days": 4,
+   "n_dso": 3,
+   "n_esso_nodes": 3,
+   "n_years": 5,
+   "observed": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 249,
+    "permitted_solve": 249
+   },
+   "reconciliation_supported": true,
+   "recovered_only_identity": {
+    "expected": 249,
+    "holds": true,
+    "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+   },
+   "retry_solves_credited": 0,
+   "rounds": 3,
+   "rounds_note": "one initialization round + cycles_run ADMM cycles",
+   "solves_per_cycle": 83
+  },
+  "status": "not_certified",
+  "terminal_gross_operational_cost": 1395123637.1678314,
+  "terminal_net_operational_recourse": 1395049226.4987562,
+  "wall_time_s": {
+   "child_process_s": 2851.401379108429,
+   "run_admm_arm_reported_wall_clock_s": 1899.5869467258453,
+   "run_admm_arm_s": 2833.977068901062
+  }
+ },
+ "schema": "p515_s56_memory_probe_v1",
+ "solves_derivation": {
+  "cycles": 2,
+  "formula": "((1 + n_dso) x n_years x n_days + n_esso_nodes) x (cycles + 1)",
+  "n_days": 4,
+  "n_dso": 3,
+  "n_esso_nodes": 3,
+  "n_years": 5,
+  "value": 249,
+  "years": [
+   2025,
+   2028,
+   2031,
+   2034,
+   2037
+  ]
+ },
+ "staged_key": {
+  "c5_reasons": [],
+  "case_rel": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+  "entry_candidate_key": "896988167038226b6b8c1f1f953a5ade2d7d13b8b2e0b96bb6d23cfa7ecd1ed6",
+  "equal": true,
+  "key_schema": "v2",
+  "lattice_key": "896988167038226b6b8c1f1f953a5ade2d7d13b8b2e0b96bb6d23cfa7ecd1ed6",
+  "lattice_label": "n5_y2028_p0.5_e1__n7_y2025_p0.25_e1__n7_y2031_p0.25_e0.5__n9_y2037_p0.25_e0.5"
+ },
+ "started_utc": "2026-11-23T20:16:52.659487+00:00",
+ "summary": {
+  "all_pass": true,
+  "failed": [],
+  "n_checks": 18,
+  "n_pass": 18
+ },
+ "swapusage_after": "total = 1024.00M  used = 0.25M  free = 1023.75M  (encrypted)",
+ "swapusage_before": "total = 1024.00M  used = 0.25M  free = 1023.75M  (encrypted)",
+ "top_processes_after": [
+  {
+   "cmd_head": "/Users/micaelsimoes/Library/Application Support/Claude/claude-code/2.1.330/4262a1273231/claude.app/Contents/MacOS/claude --output-format stream-json",
+   "name": "claude",
+   "pid": 6549,
+   "rss_gib": 0.35223388671875
+  },
+  {
+   "cmd_head": "/Applications/Claude.app/Contents/Frameworks/Claude Helper (Renderer).app/Contents/MacOS/Claude Helper (Renderer) --type=renderer --user-data-dir=/Users/micaels",
+   "name": "Claude Helper (Renderer)",
+   "pid": 6370,
+   "rss_gib": 0.278717041015625
+  },
+  {
+   "cmd_head": "/Applications/Claude.app/Contents/MacOS/Claude",
+   "name": "Claude",
+   "pid": 6344,
+   "rss_gib": 0.2481842041015625
+  },
+  {
+   "cmd_head": "/System/Library/PrivateFrameworks/MediaAnalysis.framework/Versions/A/mediaanalysisd",
+   "name": "mediaanalysisd",
+   "pid": 782,
+   "rss_gib": 0.0968170166015625
+  },
+  {
+   "cmd_head": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/corespotlightd",
+   "name": "corespotlightd",
+   "pid": 724,
+   "rss_gib": 0.0884552001953125
+  },
+  {
+   "cmd_head": "/Applications/OneDrive.app/Contents/MacOS/OneDrive",
+   "name": "OneDrive",
+   "pid": 84997,
+   "rss_gib": 0.082427978515625
+  },
+  {
+   "cmd_head": "/Applications/OneDrive.app/Contents/OneDrive Sync Service.app/Contents/MacOS/OneDrive Sync Service /silentConfig",
+   "name": "OneDrive Sync Service",
+   "pid": 84998,
+   "rss_gib": 0.08209228515625
+  },
+  {
+   "cmd_head": "/Applications/Claude.app/Contents/Frameworks/Claude Helper (Renderer).app/Contents/MacOS/Claude Helper (Renderer) --type=renderer --user-data-dir=/Users/micaels",
+   "name": "Claude Helper (Renderer)",
+   "pid": 6366,
+   "rss_gib": 0.0782012939453125
+  },
+  {
+   "cmd_head": "/Applications/Claude.app/Contents/Frameworks/Claude Helper (Renderer).app/Contents/MacOS/Claude Helper (Renderer) --type=renderer --user-data-dir=/Users/micaels",
+   "name": "Claude Helper (Renderer)",
+   "pid": 6395,
+   "rss_gib": 0.0689849853515625
+  },
+  {
+   "cmd_head": "/Applications/Claude.app/Contents/Frameworks/Claude Helper.app/Contents/MacOS/Claude Helper --type=gpu-process --gpu-recent-crash-count=0",
+   "name": "Claude Helper",
+   "pid": 6350,
+   "rss_gib": 0.065460205078125
+  },
+  {
+   "cmd_head": "/Applications/Claude.app/Contents/Frameworks/Claude Helper.app/Contents/MacOS/Claude Helper --type=utility --utility-sub-type=network.mojom.NetworkService",
+   "name": "Claude Helper",
+   "pid": 6351,
+   "rss_gib": 0.063446044921875
+  },
+  {
+   "cmd_head": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s56_memory_probe.py",
+   "name": "python3.11",
+   "pid": 23952,
+   "rss_gib": 0.0627899169921875
+  }
+ ],
+ "top_processes_before": [
+  {
+   "cmd_head": "/Applications/Claude.app/Contents/Frameworks/Claude Helper (Renderer).app/Contents/MacOS/Claude Helper (Renderer) --type=renderer --user-data-dir=/Users/micaels",
+   "name": "Claude Helper (Renderer)",
+   "pid": 6370,
+   "rss_gib": 0.888092041015625
+  },
+  {
+   "cmd_head": "/Users/micaelsimoes/Library/Application Support/Claude/claude-code/2.1.330/4262a1273231/claude.app/Contents/MacOS/claude --output-format stream-json",
+   "name": "claude",
+   "pid": 6549,
+   "rss_gib": 0.63128662109375
+  },
+  {
+   "cmd_head": "/Applications/Claude.app/Contents/MacOS/Claude",
+   "name": "Claude",
+   "pid": 6344,
+   "rss_gib": 0.48052978515625
+  },
+  {
+   "cmd_head": "/opt/homebrew/bin/git -c core.quotepath=false",
+   "name": "git",
+   "pid": 23556,
+   "rss_gib": 0.327972412109375
+  },
+  {
+   "cmd_head": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s56_memory_probe.py",
+   "name": "python3.11",
+   "pid": 23952,
+   "rss_gib": 0.25048828125
+  },
+  {
+   "cmd_head": "/System/Library/PrivateFrameworks/MediaAnalysis.framework/Versions/A/mediaanalysisd",
+   "name": "mediaanalysisd",
+   "pid": 782,
+   "rss_gib": 0.1912078857421875
+  },
+  {
+   "cmd_head": "/Library/PrivilegedHelperTools/ChromeRemoteDesktopHost.app/Contents/MacOS/remoting_me2me_host --host-config=/Library/PrivilegedHelperTools/org.chromium.chromoti",
+   "name": "remoting_me2me_host",
+   "pid": 78651,
+   "rss_gib": 0.191162109375
+  },
+  {
+   "cmd_head": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/corespotlightd",
+   "name": "corespotlightd",
+   "pid": 724,
+   "rss_gib": 0.168853759765625
+  },
+  {
+   "cmd_head": "/Applications/Claude.app/Contents/Frameworks/Claude Helper.app/Contents/MacOS/Claude Helper --type=utility --utility-sub-type=node.mojom.NodeService",
+   "name": "Claude Helper",
+   "pid": 6553,
+   "rss_gib": 0.1625823974609375
+  },
+  {
+   "cmd_head": "/Applications/OneDrive.app/Contents/OneDrive Sync Service.app/Contents/MacOS/OneDrive Sync Service /silentConfig",
+   "name": "OneDrive Sync Service",
+   "pid": 84998,
+   "rss_gib": 0.123260498046875
+  },
+  {
+   "cmd_head": "/Applications/OneDrive.app/Contents/MacOS/OneDrive",
+   "name": "OneDrive",
+   "pid": 84997,
+   "rss_gib": 0.121429443359375
+  },
+  {
+   "cmd_head": "/Applications/Claude.app/Contents/Frameworks/Claude Helper.app/Contents/MacOS/Claude Helper --type=utility --utility-sub-type=network.mojom.NetworkService",
+   "name": "Claude Helper",
+   "pid": 6351,
+   "rss_gib": 0.119415283203125
+  }
+ ],
+ "vm_stat_after": {
+  "anonymous_gib": 1.0040283203125,
+  "compressor_occupied_gib": 2.7785797119140625,
+  "free_gib": 20.5885009765625,
+  "free_plus_inactive_gib": 25.47552490234375,
+  "inactive_gib": 4.88702392578125,
+  "page_size": 16384,
+  "pageouts_pages": 59957,
+  "speculative_gib": 0.001251220703125,
+  "swapins_pages": 4,
+  "swapouts_pages": 16,
+  "t": 1795467900.358906,
+  "utc": "2026-11-23T21:05:00.358878+00:00",
+  "wired_gib": 2.1519317626953125
+ },
+ "vm_stat_after_20s": {
+  "anonymous_gib": 1.0046844482421875,
+  "compressor_occupied_gib": 2.7772979736328125,
+  "free_gib": 20.607528686523438,
+  "free_plus_inactive_gib": 25.486221313476562,
+  "inactive_gib": 4.878692626953125,
+  "page_size": 16384,
+  "pageouts_pages": 59957,
+  "speculative_gib": 0.0012054443359375,
+  "swapins_pages": 4,
+  "swapouts_pages": 16,
+  "t": 1795467920.389981,
+  "utc": "2026-11-23T21:05:20.389940+00:00",
+  "wired_gib": 2.13336181640625
+ },
+ "vm_stat_before": {
+  "anonymous_gib": 6.8196868896484375,
+  "compressor_occupied_gib": 1.3092041015625,
+  "free_gib": 0.106781005859375,
+  "free_plus_inactive_gib": 13.84722900390625,
+  "inactive_gib": 13.740447998046875,
+  "page_size": 16384,
+  "pageouts_pages": 59861,
+  "speculative_gib": 0.017242431640625,
+  "swapins_pages": 4,
+  "swapouts_pages": 16,
+  "t": 1795465014.67205,
+  "utc": "2026-11-23T20:16:54.672027+00:00",
+  "wired_gib": 2.3075408935546875
+ },
+ "wall_s": 2907.7571971416473
+}

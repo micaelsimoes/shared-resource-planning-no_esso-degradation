@@ -1,0 +1,384 @@
+{
+ "caption_values": [
+  {
+   "name": "coordinated_band",
+   "source": {
+    "json_path": "tables.benchmark.coordinated_reproducibility_band",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 71926.10724064271,
+   "written": "71.9"
+  },
+  {
+   "name": "passive_band",
+   "source": {
+    "json_path": "tables.benchmark.arms.passive.multimodality_band",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 25804.990407824516,
+   "written": "25.8"
+  },
+  {
+   "name": "price_taker_band",
+   "source": {
+    "json_path": "tables.benchmark.arms.price_taker.multimodality_band",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 0.004241466522216797,
+   "written": "0.0"
+  },
+  {
+   "name": "multiple",
+   "source": {
+    "json_path": "tables.benchmark.multiple",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "x",
+   "value": 1263.749866170176,
+   "written": "1,264"
+  },
+  {
+   "name": "reverse_flow_interface_hours",
+   "source": {
+    "json_path": "tables.benchmark.reverse_flow_interface_hours",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "hours",
+   "value": 4,
+   "written": "4"
+  },
+  {
+   "name": "sweep_passive_blocks",
+   "source": {
+    "json_path": "tables.benchmark.sweep.sweep_passive_cold.n_blocks",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "blocks of 12",
+   "value": 1,
+   "written": "1"
+  },
+  {
+   "name": "sweep_price_taker_blocks",
+   "source": {
+    "json_path": "tables.benchmark.sweep.sweep_price_taker_cold.n_blocks",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "blocks of 12",
+   "value": 8,
+   "written": "8"
+  },
+  {
+   "name": "price_taker_TN_curtailment_TWh",
+   "source": {
+    "json_path": "tables.benchmark.w160_additions.price_taker_best_start_TN_curtailment_TWh_day_weighted",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "TWh",
+   "value": 0.8076498725410403,
+   "written": "0.81"
+  }
+ ],
+ "checks": {
+  "benefit_is_price_taker_minus_coordinated": {
+   "detail": [
+    90896608.39950395,
+    90896608.39950395
+   ],
+   "ok": true
+  },
+  "both_arms_same_number_of_starts": {
+   "detail": {
+    "passive": 3,
+    "price_taker": 3
+   },
+   "ok": true
+  },
+  "price_taker_is_best_arm": {
+   "detail": [
+    744770310.5871649,
+    895049918.4715933
+   ],
+   "ok": true
+  },
+  "sweep_block_total_one_value": {
+   "detail": {
+    "passive": 12,
+    "price_taker": 12
+   },
+   "ok": true
+  },
+  "w130_arm_Q_per_start_equal_T6_bitwise": {
+   "detail": null,
+   "ok": true
+  },
+  "w130_coordinated_total_close_to_T6": {
+   "detail": 2.384185791015625e-07,
+   "ok": true
+  },
+  "w130_in_its_manifest": {
+   "detail": [
+    "data/SRP1/Results/P515S53/w130_benchmark_addendum/w130_benchmark_addendum.json"
+   ],
+   "ok": true
+  },
+  "w130_parts_sum_to_total": {
+   "detail": null,
+   "ok": true
+  },
+  "w130_total_equals_T6_benefit": {
+   "detail": -1.043081283569336e-07,
+   "ok": true
+  }
+ },
+ "computed": [
+  {
+   "formula": "TSO / total (W130 totals.benefit_price_taker)",
+   "inputs": {
+    "W130": {
+     "json_path": "task1.totals.benefit_price_taker",
+     "path": "data/SRP1/Results/P515S53/w130_benchmark_addendum/w130_benchmark_addendum.json",
+     "sha256": "bb71dee7b639f6246a05e4ee024a77c9a5eea167dc63118a53d99d8f70d70d63"
+    }
+   },
+   "name": "share_TSO",
+   "rounding": "% 1 dp",
+   "unit": "fraction",
+   "value": 0.7719384616949152
+  },
+  {
+   "formula": "DSO / total (W130 totals.benefit_price_taker)",
+   "inputs": {
+    "W130": {
+     "json_path": "task1.totals.benefit_price_taker",
+     "path": "data/SRP1/Results/P515S53/w130_benchmark_addendum/w130_benchmark_addendum.json",
+     "sha256": "bb71dee7b639f6246a05e4ee024a77c9a5eea167dc63118a53d99d8f70d70d63"
+    }
+   },
+   "name": "share_DSO",
+   "rounding": "% 1 dp",
+   "unit": "fraction",
+   "value": 0.228061538305085
+  }
+ ],
+ "figure": "fig5_benchmark",
+ "height_mm": 56.0,
+ "layout_choices": [
+  "double column (190 mm): (a) Q of the three arrangements (best start for each NRF arm); (b) the price-taker benefit split by agent (TSO / DSO at nodes 5, 7, 9) from W130",
+  "panel (a) x-limit 1.30 x the largest Q (room for the difference labels; layout)",
+  "panel (a) x-limit 1.30 x the largest Q (room for the difference labels; layout)"
+ ],
+ "objective_convention": "Objective convention: Q = gross operational cost (gross_operational_cost), settlement excluded; value = Q(0) - Q(x); I = investment cost.",
+ "pdf": {
+  "determinism": "generated twice in this run; sha256 equal",
+  "font_file": {
+   "family": "Arial",
+   "path": "/System/Library/Fonts/Supplemental/Arial.ttf",
+   "sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9"
+  },
+  "fonts": {
+   "base_fonts": [
+    "GOFYPY+Arial-BoldMT",
+    "GOFYPY+ArialMT"
+   ],
+   "has_creation_date": false,
+   "has_mod_date": false,
+   "n_FontFile": 0,
+   "n_FontFile2": 2,
+   "n_FontFile3": 0,
+   "type3": 0
+  },
+  "metadata": {
+   "CreationDate": null,
+   "Creator": "p515_s53_w165_step6_figures.py",
+   "ModDate": null,
+   "Producer": "Matplotlib pdf backend"
+  },
+  "sha256": "3a0184db064bfc47eeeb9c31464b927a56ffab4be12a5406e0ea6dc40f511841"
+ },
+ "preview_png": {
+  "dpi": 200,
+  "note": "preview for review, not a deliverable",
+  "sha256": "d1187e27759217a59840078ae7d505d820a84e96aeddef8238eab8854dfe5795"
+ },
+ "values": [
+  {
+   "name": "coordinated_Q",
+   "rounding": "bar at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "tables.benchmark.coordinated_Q",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 653873702.1876609
+  },
+  {
+   "name": "passive_NRF_Q_best",
+   "rounding": "bar at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "tables.benchmark.arms.passive.Q_best",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 895049918.4715933
+  },
+  {
+   "name": "price_taker_NRF_Q_best",
+   "rounding": "bar at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "tables.benchmark.arms.price_taker.Q_best",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 744770310.5871649
+  },
+  {
+   "name": "benefit",
+   "rounding": "annotated k EUR 1 dp",
+   "source": {
+    "json_path": "tables.benchmark.benefit",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 90896608.39950395
+  },
+  {
+   "name": "benefit_relative",
+   "rounding": "annotated % 1 dp",
+   "source": {
+    "json_path": "tables.benchmark.benefit_relative",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "fraction",
+   "value": 0.13901248527871937
+  },
+  {
+   "name": "passive_minus_coordinated",
+   "rounding": "annotated k EUR 1 dp",
+   "source": {
+    "json_path": "tables.benchmark.decomposition.passive_NRF_minus_coordinated_eur",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 241176216.28393233
+  },
+  {
+   "name": "passive_benefit_relative_derived_W160",
+   "note": "DERIVED by W160 from recorded values (T6 label)",
+   "rounding": "annotated % 1 dp",
+   "source": {
+    "json_path": "tables.benchmark.w160_additions.passive_arm_vs_coordinated_derived.benefit_passive_relative",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "fraction",
+   "value": 0.36884220221279834
+  },
+  {
+   "name": "W130.benefit_price_taker.TSO",
+   "rounding": "bar at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "task1.totals.benefit_price_taker.TSO",
+    "path": "data/SRP1/Results/P515S53/w130_benchmark_addendum/w130_benchmark_addendum.json",
+    "sha256": "bb71dee7b639f6246a05e4ee024a77c9a5eea167dc63118a53d99d8f70d70d63"
+   },
+   "unit": "EUR",
+   "value": 70166588.0611981
+  },
+  {
+   "name": "W130.benefit_price_taker.DSO_5",
+   "rounding": "bar at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "task1.totals.benefit_price_taker.DSO_5",
+    "path": "data/SRP1/Results/P515S53/w130_benchmark_addendum/w130_benchmark_addendum.json",
+    "sha256": "bb71dee7b639f6246a05e4ee024a77c9a5eea167dc63118a53d99d8f70d70d63"
+   },
+   "unit": "EUR",
+   "value": 6945483.416168097
+  },
+  {
+   "name": "W130.benefit_price_taker.DSO_7",
+   "rounding": "bar at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "task1.totals.benefit_price_taker.DSO_7",
+    "path": "data/SRP1/Results/P515S53/w130_benchmark_addendum/w130_benchmark_addendum.json",
+    "sha256": "bb71dee7b639f6246a05e4ee024a77c9a5eea167dc63118a53d99d8f70d70d63"
+   },
+   "unit": "EUR",
+   "value": 7605180.53851417
+  },
+  {
+   "name": "W130.benefit_price_taker.DSO_9",
+   "rounding": "bar at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "task1.totals.benefit_price_taker.DSO_9",
+    "path": "data/SRP1/Results/P515S53/w130_benchmark_addendum/w130_benchmark_addendum.json",
+    "sha256": "bb71dee7b639f6246a05e4ee024a77c9a5eea167dc63118a53d99d8f70d70d63"
+   },
+   "unit": "EUR",
+   "value": 6179356.383623487
+  },
+  {
+   "name": "W130.benefit_price_taker.DSO",
+   "rounding": "bar at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "task1.totals.benefit_price_taker.DSO",
+    "path": "data/SRP1/Results/P515S53/w130_benchmark_addendum/w130_benchmark_addendum.json",
+    "sha256": "bb71dee7b639f6246a05e4ee024a77c9a5eea167dc63118a53d99d8f70d70d63"
+   },
+   "unit": "EUR",
+   "value": 20730020.338305756
+  },
+  {
+   "name": "W130.benefit_price_taker.total",
+   "rounding": "bar at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "task1.totals.benefit_price_taker.total",
+    "path": "data/SRP1/Results/P515S53/w130_benchmark_addendum/w130_benchmark_addendum.json",
+    "sha256": "bb71dee7b639f6246a05e4ee024a77c9a5eea167dc63118a53d99d8f70d70d63"
+   },
+   "unit": "EUR",
+   "value": 90896608.39950384
+  },
+  {
+   "name": "n_starts",
+   "rounding": "integer (caption)",
+   "source": {
+    "json_path": "tables.benchmark.w160_additions.arms_in_full.passive.n_starts",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "starts",
+   "value": 3
+  },
+  {
+   "name": "sweep_blocks_total",
+   "rounding": "integer (caption)",
+   "source": {
+    "json_path": "tables.benchmark.w160_additions.arms_in_full.passive.sweep_unconstrained_cold.statement (parsed \"in n of N blocks\")",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "blocks",
+   "value": 12
+  }
+ ],
+ "width": "double",
+ "width_mm": 190.0
+}

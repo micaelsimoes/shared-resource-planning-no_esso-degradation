@@ -1,0 +1,13 @@
+09:43:55 [W53] inputs: 0 failures []; capture-path checklist 26 items, 0 False: []
+09:43:55 [W53] srp1_x0: loading the persisted terminal models
+09:44:37 [W53] srp1_x0: 48 blocks, 364 generator-hours above tol
+09:44:37 [W53] pilot_x0: reading the terminal workbook
+09:44:43 [W53] pilot_unit: reading the terminal workbook
+09:44:49 [W53] srp1_x0: total {'H_V_net_mwh': np.float64(589.962), 'H_V_plus_mwh': np.float64(651.477), 'H_V_tol_mwh': np.float64(499.658), 'H_A_mwh': np.float64(18621417.767), 'C_eur': np.float64(45627.839), 'C_net_eur': np.float64(37807.6), 'C_tol_eur': np.float64(31369.585)}
+09:44:49 [W53] pilot_x0: total {'H_V_net_mwh': 1667.099, 'H_V_plus_mwh': 1724.873, 'H_V_tol_mwh': 1561.044, 'H_A_mwh': 17417966.415, 'C_eur': 64977.105, 'C_net_eur': 57187.194, 'C_tol_eur': 48063.402}
+09:44:49 [W53] pilot_unit: total {'H_V_net_mwh': 1656.321, 'H_V_plus_mwh': 1715.551, 'H_V_tol_mwh': 1555.428, 'H_A_mwh': 17417966.415, 'C_eur': 64645.591, 'C_net_eur': 56684.72, 'C_tol_eur': 48033.355}
+09:44:49 [W53] srp1_unit: {'H_V_net_mwh': 589.789, 'C_eur_upper_bound': 106225.307, 'H_delta_vs_x0_mwh': np.float64(-0.173), 'dC_vs_x0_eur_abs_upper_bound': np.float64(45.758)}
+09:44:49 [W53] decision: NEITHER BRANCH AS WORDED: reachable (TSO-side) curtailment is below resolution everywhere, but DN-side (unreachable) curtailment exceeds the Q bar in at least one instance -- Planner ruling
+09:44:49 [W53] checks: {'inputs_verified_against_committed_manifests': True, 'capture_path_checklist_all_true': True, 'srp1_x0_reconciles_with_component_levels': True, 'srp1_x0_prices_identical_across_dsos': True, 'srp1_x0_prices_match_w25': True, 'srp1_unit_duplicate_record_equal': True, 'pilot_x0_reconciles_with_component_levels': True, 'pilot_unit_reconciles_with_component_levels': True, 'pilot_x0_sg_curt_matches_multiscenario': True, 'pilot_unit_sg_curt_matches_multiscenario': True, 'pilot_prices_non_negative': True, 'pilot_pibar_matches_production_row18_premium': True, 'srp1_prices_non_negative': True, 'penalty_zero_in_every_certified_block': True, 'no_model_construction_call': True, 'solve_profile_guard_verified_0': True}
+09:44:49 [W53] guard {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} verify0_failures=[]; wrote /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S53/curtailment_audit/curtailment_audit.json
+09:44:49 [W53] ALL CHECKS PASS

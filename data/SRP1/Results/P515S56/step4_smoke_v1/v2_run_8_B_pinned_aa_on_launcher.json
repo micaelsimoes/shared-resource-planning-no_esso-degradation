@@ -1,0 +1,150 @@
+{
+ "schema": "p515_s56_step4_smoke_launcher_v1",
+ "run": 8,
+ "instance": "B",
+ "arm": "pinned_aa_on",
+ "utc_start": "2026-11-23T13:45:39.163730+00:00",
+ "spec": {
+  "path": "data/SRP1/Results/P515S56/step4_smoke_v1/frozen_step4_smoke_spec_v2_e36c29bd.json",
+  "sha256": "e36c29bdd7791a4639156d2fa0aa6d5bb28bbf02bc586a416199a057d8859795"
+ },
+ "script": "p515_s56_step4_smoke.py",
+ "script_sha256": "2a9d2981cbeb33bc11356f9cbc1be56bb1b5971b3476248ce775595897257a48",
+ "git_head": "bb8639cdea20a8cd1842d550407247fd76a5badd",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "nlp_solver_path": "/usr/local/bin/ipopt",
+ "refusals": [],
+ "error": null,
+ "capture_path_checklist": {
+  "per_cycle_fields_priced_residual_and_both_q": true,
+  "per_cycle_trajectory_gross": true,
+  "per_cycle_response_wall_and_dso_deviation": true,
+  "s56_capture_fields": true,
+  "s56_capture_per_agent_settlement_parts": true,
+  "s56_capture_assertion_exists": true,
+  "deviation_duals_recorded": true,
+  "record_fields": true,
+  "init_identity_grouping": true,
+  "multiscenario_block_recourse_and_probabilities": true,
+  "interface_anchor_in_s31c_detail": true,
+  "pc_fixed_once_at_tso_creation": true,
+  "voltage_pin_zero_when_absent": true,
+  "s31c_detail_written_with_reporting_detail": true
+ },
+ "campaign": {
+  "root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_B_pinned_aa_on",
+  "spec": {
+   "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_B_pinned_aa_on/campaign_spec_s56s4smoke_v2_b_pinned_aa_on_19a402b0.json",
+   "sha256": "19a402b08572a3155906663e0dc7fc6681da6ae9fb72ddcca58f5e84413229e7"
+  },
+  "entry": {
+   "label": "x0_pinned_aa_on",
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "eval_key": "7138c52526c7ac55a698a278a2a1f288a224062e7a8ebd668e6d0b13f0efa01b",
+   "overrides": {},
+   "post_certification": null,
+   "eval_dir": "7138c52526c7ac55_x0_pinned_aa_on",
+   "working_dir_ids": {
+    "run": "p515s44_s56s4smoke_v2_b_pinned_aa_on_7138c52526c7ac55_run",
+    "precheck": "p515s44_s56s4smoke_v2_b_pinned_aa_on_7138c52526c7ac55_precheck"
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   }
+  }
+ },
+ "init_identity_seeded": [
+  {
+   "from_arm": "V1",
+   "file": "917aa06e2a2e1b55_x0_v1.json",
+   "sha256_src": "49591e6f9524bbeced150a668f375880a91fe33a308f34c722b13a0e489974d7",
+   "sha256_dst": "49591e6f9524bbeced150a668f375880a91fe33a308f34c722b13a0e489974d7"
+  },
+  {
+   "from_arm": "V2",
+   "file": "069f9dfb8b920dfc_x0_v2.json",
+   "sha256_src": "c702096497fad3a48320c6ede72aeb7495064049960e5416499eb5c7088bc5e5",
+   "sha256_dst": "c702096497fad3a48320c6ede72aeb7495064049960e5416499eb5c7088bc5e5"
+  },
+  {
+   "from_arm": "pinned_aa_off",
+   "file": "28ae4f1905fc503f_x0_pinned_aa_off.json",
+   "sha256_src": "57d9b1ef8f9c0d51f9bfcbd6510f050f654c75d9476ad6714ae3c0e8c53a8c85",
+   "sha256_dst": "57d9b1ef8f9c0d51f9bfcbd6510f050f654c75d9476ad6714ae3c0e8c53a8c85"
+  }
+ ],
+ "lock_released": true,
+ "result": {
+  "status": "not_certified",
+  "cycles_run": 3,
+  "exit_code": 0,
+  "wall_s_parent_view": 300.36360597610474,
+  "solve_profile": {
+   "observed": {
+    "permitted_solve": 44,
+    "permitted_exec": 44,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "identity_holds": true,
+   "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+   "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+   "n_dso": 3,
+   "n_years": 2,
+   "n_days": 1,
+   "n_esso_nodes": 3,
+   "solves_per_cycle": 11,
+   "rounds": 4,
+   "rounds_note": "one initialization round + cycles_run ADMM cycles",
+   "base_solves": 44,
+   "retry_solves_credited": 0,
+   "reconciliation_supported": true,
+   "expected_solves": 44,
+   "recovered_only_identity": {
+    "expected": 44,
+    "holds": true,
+    "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+   }
+  },
+  "peak_rss": {
+   "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+   "child_python_process_ru_maxrss": 3643785216,
+   "production_state_peak_rss_ru_maxrss": 3601580032,
+   "solver_subprocesses_max_ru_maxrss": 372375552,
+   "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+  },
+  "eval_dir": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_v2_B_pinned_aa_on/evals/7138c52526c7ac55_x0_pinned_aa_on"
+ },
+ "guard": {
+  "label": "P5.15 S56 step 4 smoke launcher (this process never solves)",
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "wall_s": 301.7491760253906,
+ "utc_end": "2026-11-23T13:50:40.912610+00:00"
+}

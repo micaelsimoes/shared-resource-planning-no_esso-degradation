@@ -1,0 +1,648 @@
+{
+ "schema": "p515_s56_step4_instances_v1_build_child",
+ "input": {
+  "name": "ref12",
+  "derived": {
+   "instance_label": "s56_srp1grid_3x3",
+   "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+   "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+   "scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+   "source_case_path": "data/SRP1/SRP1.json",
+   "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+   "changes_vs_source": [
+    {
+     "key": "NumMarketScenarios",
+     "from": 1,
+     "to": 3
+    },
+    {
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "from": 1,
+     "to": 3
+    },
+    {
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "from": 1,
+     "to": 3
+    },
+    {
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "from": 1,
+     "to": 3
+    },
+    {
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "from": 1,
+     "to": 3
+    }
+   ]
+  },
+  "sigma_prime": null,
+  "nl_blocks": [
+   "TSO|2025|Summer",
+   "DSO5|2025|Summer",
+   "DSO7|2025|Summer",
+   "DSO9|2025|Summer",
+   "TSO|2035|Summer",
+   "DSO5|2035|Summer",
+   "DSO7|2035|Summer",
+   "DSO9|2035|Summer"
+  ],
+  "scratch": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/step4_instances_v2_scratch/ref12"
+ },
+ "started_utc": "2026-11-23T12:06:56.219632+00:00",
+ "provenance": {
+  "git_head": "fc5dc766d7879fdc802022b6a0962bcd163bc8e3",
+  "utc": "2026-11-23T12:06:56.250118+00:00",
+  "sha256": {
+   "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+   "admm_parameters.py": "8e9e69e58f120270f68139a83737f33662ae2c710982ab2e0d59a3699f46ec13",
+   "admm_persistent_workers.py": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+   "data/SRP1/SRP1_params.json": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+   "interface_dual_capture.py": "d98b566f09f4f77867be0a812636c732183399f39803320b6b51587e80dd37fd",
+   "model_construction_helpers.py": "51ae3bcf4173b9ae60bda8d1f398288cfae57d9a5f8e5e151ed50737f3927c1a",
+   "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+   "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+   "network_parameters.py": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92",
+   "p514_n_instrumented_cstar.py": "62df39d41fec0ee48b320f6ade9eb1be4132203dcdbd100b90d1fc545d1d43c2",
+   "p515_g_g1_g4_admm_gates.py": "67401731268cab293f97d1d5a197b933839be516dfe4811f85b2e7002247feaf",
+   "p515_s39_evaluate.py": "2dd5b31f29aadb84dfcaf7b9e112fdda570bf20f78154b19d49914ba3a8a28c4",
+   "p515_s40_clone_capture_preflight.py": "30e33d0a7803c2a958bbf7da617dba277a8fe15888078e37aa451feba09a3652",
+   "p515_s40_cost_decomposition.py": "2fb70a404ca7b41969fc84908e564acc8d1c1fbd68c3e7ffb5dcdd19877222ad",
+   "p515_s40_polish_gap.py": "026a4d80037e9d03fbb8505986ab5a74a0b1eb08fc9c5b4ebf5494dce4556cf4",
+   "p515_s41_hull_polish.py": "e76c5921ecd1057dceb8fa8e097e960247a51d3e09f13d78ae95dec727385d5d",
+   "p515_s42_exact_fix_rerun.py": "de83af2ff01c48861995d70314a6565cf3e4c6ab8c2b32fc748fdc829c9e930a",
+   "p515_s43_aa_flagoff_gate.py": "22ef58b84bdd109d39e2cbf78d2e69e7302ccd0aadae2c90dcb9f6341d9472d3",
+   "p515_s43_aa_run.py": "34fd36a469d92186b6f982a529f9f8c68d6bd9d73157a4f75698c71597073aa8",
+   "p515_s44_campaign_harness.py": "16031daa1e623f1442d5c32723908bddcde1f113afa130e1f9c20ea2a22a8ae9",
+   "p515_s53_w118_resettle_hooks.py": "1df97eb48976aa88a96ac8f81a07cce776630cb64bda01a4da30a8ec9f60e81e",
+   "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+   "shared_energy_storage_data.py": "f6bde5a69edeebd1ea3e0c34adda13cfac0f15dbf8290078ca3eca6a032dba03",
+   "shared_energy_storage_parameters.py": "ee68b5b65ea4f2d07f0e03d397b956d8ad992ee66e9a46e24a5e7b223d961c54",
+   "shared_resources_planning.py": "7213f1bfc15a5ebaf29919f6a227208b94ad147dc31de70ccb6551fb0c8d94d7",
+   "p515_s56_coupling_gates.py": "b46faf10bd2ffa0072061d6c19829bbcd08083c7b9ada9bb3fb38dc7ea61b3fb",
+   "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+   "data/SRP1/SharedESS/SRP1_ESS_Params.json": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+   "data/SRP1/SRP1.json": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+  },
+  "git_status_porcelain": "",
+  "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "nlp_solver_path_env": "/usr/local/bin/ipopt"
+ },
+ "error": null,
+ "acceptance": {
+  "harness_default": {
+   "investment_year": 2025,
+   "accepted": true,
+   "eval_id": "p515s56s4_ref12_harness_default_20261123T120708"
+  }
+ },
+ "derived_installed": {
+  "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "case_sha256_in_child": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+  "scenario_checksum_in_child": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+  "instance_label": "s56_srp1grid_3x3",
+  "checksum_matches_srp1_canonical": false,
+  "planning_dimensions": {
+   "years": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "days": {
+    "Spring": 92,
+    "Summer": 91,
+    "Autumn": 91,
+    "Winter": 91
+   },
+   "num_instants": 24,
+   "random_seed": 2026,
+   "num_market_scenarios": 3,
+   "num_operation_scenarios": {
+    "case9": 3,
+    "case33_1": 3,
+    "case33_2": 3,
+    "case33_3": 3
+   },
+   "active_distribution_network_nodes": [
+    5,
+    7,
+    9
+   ],
+   "scenario_metadata": {
+    "random_seed": 2026,
+    "deterministic_scenarios": true,
+    "market_scenario_checksum": "cd0313b883fb0ca855ff283189b46f57349ff30d2781af5d4edc0ad1940fca28",
+    "operational_scenario_checksum": "e1c36b76d3660ae32f307f47a88d91afc6d3322faa72696ade763c2046736c72",
+    "combined_scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7"
+   }
+  },
+  "expected_block_counts": {
+   "tso_blocks": 12,
+   "dso_blocks": 36,
+   "network_blocks": 48,
+   "esso_models": 3,
+   "solves_per_cycle": 51
+  },
+  "planning_read_dir": "../../../../private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/step4_instances_v2_scratch/ref12/derived/planning_read",
+  "read_wall_s": 11.50577712059021,
+  "reader": "p515_s44_scale_measurement.read_planning_from_derived_case (production SharedResourcesPlanning)"
+ },
+ "investment_year_used": 2025,
+ "admm_in_force": {
+  "per_scenario_interface_coupling": true,
+  "per_scenario_voltage_mode": "per_scenario",
+  "row18_charge_reactive": false,
+  "objective_scale": 93635360.0,
+  "objective_scale_assert_factor": 3.0,
+  "interface_deviation_premium": {
+   "alpha": 0.0,
+   "floor": null,
+   "source": "default"
+  }
+ },
+ "sigma_used": 93635360.0,
+ "stopped_by": "ESSO cycle-1 capture complete",
+ "effective_scale": {
+  "DSO5|2025|Summer": 205792.0,
+  "DSO5|2035|Summer": 250859.29967956108,
+  "DSO7|2025|Summer": 205792.0,
+  "DSO7|2035|Summer": 250859.29967956108,
+  "DSO9|2025|Summer": 205792.0,
+  "DSO9|2035|Summer": 250859.29967956108,
+  "TSO|2025|Summer": 205792.0,
+  "TSO|2035|Summer": 250859.29967956108
+ },
+ "stub_calls": {
+  "DSO5": 2,
+  "DSO7": 2,
+  "DSO9": 2,
+  "TSO": 2,
+  "ESSO": 2
+ },
+ "nl": {
+  "init": {
+   "DSO5|2025|Summer": {
+    "error": null,
+    "stripped_equal": true,
+    "plain": {
+     "sha256": "a59ef99a02b51be3a3f973821be6144dfcb32302cf690d56b4e786903b447488",
+     "bytes": 10543046
+    },
+    "sym_nl": {
+     "sha256": "ed64014b5d804472269e24d7c3b7870f727c02ddf88827dd70a543fa48d00cb0",
+     "bytes": 22583756
+    },
+    "sym_row": {
+     "sha256": "8c862ff69ed8877e775973587474dedf23a4aa513f1bd2bc05c76d15270948a7",
+     "bytes": 2204773
+    },
+    "sym_col": {
+     "sha256": "bd6ced53d2e7044ae37acdcc3b9a48404aca67fee1929f91cd6b93963406e3c1",
+     "bytes": 1777578
+    }
+   },
+   "DSO5|2035|Summer": {
+    "error": null,
+    "stripped_equal": true,
+    "plain": {
+     "sha256": "38d2fc753fce155fbe5359c28f97cbc69d2f11c3f6216337c9990cba65d9e177",
+     "bytes": 10532372
+    },
+    "sym_nl": {
+     "sha256": "14ec944b11f3c0f2bae6f6cbe66120f81cd9719191a99f34e640e0c7abad9f85",
+     "bytes": 22573082
+    },
+    "sym_row": {
+     "sha256": "8c862ff69ed8877e775973587474dedf23a4aa513f1bd2bc05c76d15270948a7",
+     "bytes": 2204773
+    },
+    "sym_col": {
+     "sha256": "bd6ced53d2e7044ae37acdcc3b9a48404aca67fee1929f91cd6b93963406e3c1",
+     "bytes": 1777578
+    }
+   },
+   "DSO7|2025|Summer": {
+    "error": null,
+    "stripped_equal": true,
+    "plain": {
+     "sha256": "56c4509681c5387f74cda017a80de46d9bff651f946a3bb35e00771f0332196d",
+     "bytes": 10565244
+    },
+    "sym_nl": {
+     "sha256": "53d3a74f39900a7ca75a196b3cd2f0fdd99279452a96b81a87558594a21e40be",
+     "bytes": 22629021
+    },
+    "sym_row": {
+     "sha256": "eb13d09324f32b170d0e1a5cab5c212c67bad99073b840436dc34db0f683753c",
+     "bytes": 2210308
+    },
+    "sym_col": {
+     "sha256": "d76abe01b8158142dec317d75422a4934458ad8ffa00828324ee2a124e38a985",
+     "bytes": 1777578
+    }
+   },
+   "DSO7|2035|Summer": {
+    "error": null,
+    "stripped_equal": true,
+    "plain": {
+     "sha256": "26e060929da85b4ab1f0ef764696a709c9cbf04111fe35fec01cbd1fb58257d3",
+     "bytes": 10561200
+    },
+    "sym_nl": {
+     "sha256": "174a792ae2352cb1c53888b5cffab61500cf5b53073116d34167a82018f3cc73",
+     "bytes": 22624977
+    },
+    "sym_row": {
+     "sha256": "eb13d09324f32b170d0e1a5cab5c212c67bad99073b840436dc34db0f683753c",
+     "bytes": 2210308
+    },
+    "sym_col": {
+     "sha256": "d76abe01b8158142dec317d75422a4934458ad8ffa00828324ee2a124e38a985",
+     "bytes": 1777578
+    }
+   },
+   "DSO9|2025|Summer": {
+    "error": null,
+    "stripped_equal": true,
+    "plain": {
+     "sha256": "8dc170cfad551545f0da5736ff0f5ef395545420e5bfbc7a39b1fe5ba5254154",
+     "bytes": 10538312
+    },
+    "sym_nl": {
+     "sha256": "38a04491ecf7b8c0bb2bb2e202bcd2d6194e917ca7cece8559b2178ecfc4cf2c",
+     "bytes": 22579022
+    },
+    "sym_row": {
+     "sha256": "8c862ff69ed8877e775973587474dedf23a4aa513f1bd2bc05c76d15270948a7",
+     "bytes": 2204773
+    },
+    "sym_col": {
+     "sha256": "bd6ced53d2e7044ae37acdcc3b9a48404aca67fee1929f91cd6b93963406e3c1",
+     "bytes": 1777578
+    }
+   },
+   "DSO9|2035|Summer": {
+    "error": null,
+    "stripped_equal": true,
+    "plain": {
+     "sha256": "89f17046ff7e2e067f78af68db6e79107d936af42200bafa2d3d35699cc39071",
+     "bytes": 10533162
+    },
+    "sym_nl": {
+     "sha256": "88fb4d41eb1254099956089d43933fb5bfec3a8f38238d6f7032d3f75002af1c",
+     "bytes": 22573872
+    },
+    "sym_row": {
+     "sha256": "8c862ff69ed8877e775973587474dedf23a4aa513f1bd2bc05c76d15270948a7",
+     "bytes": 2204773
+    },
+    "sym_col": {
+     "sha256": "bd6ced53d2e7044ae37acdcc3b9a48404aca67fee1929f91cd6b93963406e3c1",
+     "bytes": 1777578
+    }
+   },
+   "TSO|2025|Summer": {
+    "error": null,
+    "stripped_equal": true,
+    "plain": {
+     "sha256": "c0ba73310df315cae5675cec3a0b4ddd093c0da7f4d32bba44031964b44993ee",
+     "bytes": 2520312
+    },
+    "sym_nl": {
+     "sha256": "834dd94cfec53b6ece5ba0454126e397dc4b251b3e5c16a913f937727b50a6db",
+     "bytes": 5710200
+    },
+    "sym_row": {
+     "sha256": "d89cae88447b07ad02d95a6cea80c8f9e7b84d76aaa128dc491aeb600bb51024",
+     "bytes": 670303
+    },
+    "sym_col": {
+     "sha256": "4078c2b27eec788610cab2c6b77d3cf33a4cb13d30d4b70d9db9a4ad3e96fd6c",
+     "bytes": 335118
+    }
+   },
+   "TSO|2035|Summer": {
+    "error": null,
+    "stripped_equal": true,
+    "plain": {
+     "sha256": "61e1578e773d61d20f667d8efa23547f679e50cbb331f530f324ee57fa6d0c7e",
+     "bytes": 2515725
+    },
+    "sym_nl": {
+     "sha256": "87bf6057547debbe8b3de4fcc913b0aee0429cf5db0441e4feceab61aa20a123",
+     "bytes": 5705613
+    },
+    "sym_row": {
+     "sha256": "d89cae88447b07ad02d95a6cea80c8f9e7b84d76aaa128dc491aeb600bb51024",
+     "bytes": 670303
+    },
+    "sym_col": {
+     "sha256": "4078c2b27eec788610cab2c6b77d3cf33a4cb13d30d4b70d9db9a4ad3e96fd6c",
+     "bytes": 335118
+    }
+   }
+  },
+  "admm_cycle1": {
+   "DSO5|2025|Summer": {
+    "error": null,
+    "stripped_equal": true,
+    "plain": {
+     "sha256": "c20d1563ee858013fa62d9da0a8170d64383e074a463198d6eab5a689fa24bff",
+     "bytes": 10588026
+    },
+    "sym_nl": {
+     "sha256": "96026dd077fef7f0dfae3eb41030084554749ba46fc7076c52893b45b4a49ed8",
+     "bytes": 22674067
+    },
+    "sym_row": {
+     "sha256": "1faeb1b95f36a65ad254a367199f2539e2147799d35e6af99bd530ba8f7e244f",
+     "bytes": 2204791
+    },
+    "sym_col": {
+     "sha256": "070f297511e47a2c25d51aa8eff26a9b6fd10452dbaf653498333903c47fa396",
+     "bytes": 1777578
+    }
+   },
+   "DSO5|2035|Summer": {
+    "error": null,
+    "stripped_equal": true,
+    "plain": {
+     "sha256": "9d580751dbca2d03fc98d5dd3c0b828fcbdf1e7da1693660736587532d07c44d",
+     "bytes": 10577182
+    },
+    "sym_nl": {
+     "sha256": "438c28cfafb97b4044c119b30079e8f3b09252f74c581e120fb6f893064b32eb",
+     "bytes": 22663223
+    },
+    "sym_row": {
+     "sha256": "1faeb1b95f36a65ad254a367199f2539e2147799d35e6af99bd530ba8f7e244f",
+     "bytes": 2204791
+    },
+    "sym_col": {
+     "sha256": "070f297511e47a2c25d51aa8eff26a9b6fd10452dbaf653498333903c47fa396",
+     "bytes": 1777578
+    }
+   },
+   "DSO7|2025|Summer": {
+    "error": null,
+    "stripped_equal": true,
+    "plain": {
+     "sha256": "0307ba2b3a56b7ffad5b5084676907852318b98b10687daf1ea6f54860fbaedc",
+     "bytes": 10607211
+    },
+    "sym_nl": {
+     "sha256": "eae199475029be1b70f95cf10158636b0e110ee0756d9dd2a4997993fe384a35",
+     "bytes": 22714879
+    },
+    "sym_row": {
+     "sha256": "9d8f934f61ef4f1db6c6b94524a7c1ea6c31131e855464f62ff470cd9d7d8a5e",
+     "bytes": 2210326
+    },
+    "sym_col": {
+     "sha256": "2e8571b2610b866b5fc15092d7b4053f141183c47fd646170b5454dd4a73933a",
+     "bytes": 1777578
+    }
+   },
+   "DSO7|2035|Summer": {
+    "error": null,
+    "stripped_equal": true,
+    "plain": {
+     "sha256": "69705913f5faa287d2ea3ebc024614245636cdb9a0591efa885ae65da41bfaae",
+     "bytes": 10602997
+    },
+    "sym_nl": {
+     "sha256": "181f51994aeb8123624650c314a8bbc7ecddc043f5d6162749ac7efe60f5096b",
+     "bytes": 22710665
+    },
+    "sym_row": {
+     "sha256": "9d8f934f61ef4f1db6c6b94524a7c1ea6c31131e855464f62ff470cd9d7d8a5e",
+     "bytes": 2210326
+    },
+    "sym_col": {
+     "sha256": "2e8571b2610b866b5fc15092d7b4053f141183c47fd646170b5454dd4a73933a",
+     "bytes": 1777578
+    }
+   },
+   "DSO9|2025|Summer": {
+    "error": null,
+    "stripped_equal": true,
+    "plain": {
+     "sha256": "1b110a3b3d48587fa1527748ac4f0819ce9f3b44df601726ff5665feb7570900",
+     "bytes": 10590492
+    },
+    "sym_nl": {
+     "sha256": "09240adc19d58e252881a8d0777ee9541c513a9fc6fa15946bcd016a0a242272",
+     "bytes": 22676533
+    },
+    "sym_row": {
+     "sha256": "1faeb1b95f36a65ad254a367199f2539e2147799d35e6af99bd530ba8f7e244f",
+     "bytes": 2204791
+    },
+    "sym_col": {
+     "sha256": "070f297511e47a2c25d51aa8eff26a9b6fd10452dbaf653498333903c47fa396",
+     "bytes": 1777578
+    }
+   },
+   "DSO9|2035|Summer": {
+    "error": null,
+    "stripped_equal": true,
+    "plain": {
+     "sha256": "c8808cec99fd19602acbb318aca3eba8ac74b048a6a6382cb5367210cb36f435",
+     "bytes": 10585171
+    },
+    "sym_nl": {
+     "sha256": "1d7523ad11c01f5c4a6db482c641eb8068c380693022d22f38ceda4a32323d14",
+     "bytes": 22671212
+    },
+    "sym_row": {
+     "sha256": "1faeb1b95f36a65ad254a367199f2539e2147799d35e6af99bd530ba8f7e244f",
+     "bytes": 2204791
+    },
+    "sym_col": {
+     "sha256": "070f297511e47a2c25d51aa8eff26a9b6fd10452dbaf653498333903c47fa396",
+     "bytes": 1777578
+    }
+   },
+   "TSO|2025|Summer": {
+    "error": null,
+    "stripped_equal": true,
+    "plain": {
+     "sha256": "95c04cb3276a61a4f88a8224046c20e406727a4050f83d6728cd2581b319a5be",
+     "bytes": 2718139
+    },
+    "sym_nl": {
+     "sha256": "e93a1a8522347eed0d89428dceba9593a6ca3664c635f8459e1b42f6cc98c1bc",
+     "bytes": 6120692
+    },
+    "sym_row": {
+     "sha256": "2eca69fd1d9ff23365dfa1ecae8b9956e314d56e83eb45e4357b69e049e2dccb",
+     "bytes": 670321
+    },
+    "sym_col": {
+     "sha256": "2a5280a2c3e8f151951ecf2aa43719ff318e983ba8ddb736963153f99348ec50",
+     "bytes": 366894
+    }
+   },
+   "TSO|2035|Summer": {
+    "error": null,
+    "stripped_equal": true,
+    "plain": {
+     "sha256": "682cf60256eb6284beb6e224f810112b45317c4a9953ad51ecceeaf720f0e305",
+     "bytes": 2713625
+    },
+    "sym_nl": {
+     "sha256": "a6cbeb1c2b60ee5e4e024f9fc9e7e0e1d7cbb9780abb10889021c3307ad14075",
+     "bytes": 6116178
+    },
+    "sym_row": {
+     "sha256": "2eca69fd1d9ff23365dfa1ecae8b9956e314d56e83eb45e4357b69e049e2dccb",
+     "bytes": 670321
+    },
+    "sym_col": {
+     "sha256": "2a5280a2c3e8f151951ecf2aa43719ff318e983ba8ddb736963153f99348ec50",
+     "bytes": 366894
+    }
+   }
+  }
+ },
+ "checks": {
+  "init": {
+   "DSO5|2025|Summer": {
+    "pin_present_iff_not_per_scenario_mode": true,
+    "init_no_deviation_param_yet": true
+   },
+   "DSO5|2035|Summer": {
+    "pin_present_iff_not_per_scenario_mode": true,
+    "init_no_deviation_param_yet": true
+   },
+   "DSO7|2025|Summer": {
+    "pin_present_iff_not_per_scenario_mode": true,
+    "init_no_deviation_param_yet": true
+   },
+   "DSO7|2035|Summer": {
+    "pin_present_iff_not_per_scenario_mode": true,
+    "init_no_deviation_param_yet": true
+   },
+   "DSO9|2025|Summer": {
+    "pin_present_iff_not_per_scenario_mode": true,
+    "init_no_deviation_param_yet": true
+   },
+   "DSO9|2035|Summer": {
+    "pin_present_iff_not_per_scenario_mode": true,
+    "init_no_deviation_param_yet": true
+   },
+   "TSO|2025|Summer": {
+    "init_non_alias_delta_fixed_at_0": true,
+    "init_alias_delta_free_within_rating": true,
+    "init_interface_expression_references_alias_only": true,
+    "init_node_balance_references_alias_only": true,
+    "init_no_deviation_param_yet": true
+   },
+   "TSO|2035|Summer": {
+    "init_non_alias_delta_fixed_at_0": true,
+    "init_alias_delta_free_within_rating": true,
+    "init_interface_expression_references_alias_only": true,
+    "init_node_balance_references_alias_only": true,
+    "init_no_deviation_param_yet": true
+   }
+  },
+  "admm_cycle1": {
+   "DSO5|2025|Summer": {
+    "pin_present_iff_not_per_scenario_mode": true,
+    "admm_req_params_count_is_kinds_x_S_per_block_t": true,
+    "admm_dual_params_count_is_kinds_x_S_per_block_t": true,
+    "admm_objective_references_every_req_and_dual_param": true,
+    "admm_no_v_params_under_pin": true
+   },
+   "DSO5|2035|Summer": {
+    "pin_present_iff_not_per_scenario_mode": true,
+    "admm_req_params_count_is_kinds_x_S_per_block_t": true,
+    "admm_dual_params_count_is_kinds_x_S_per_block_t": true,
+    "admm_objective_references_every_req_and_dual_param": true,
+    "admm_no_v_params_under_pin": true
+   },
+   "DSO7|2025|Summer": {
+    "pin_present_iff_not_per_scenario_mode": true,
+    "admm_req_params_count_is_kinds_x_S_per_block_t": true,
+    "admm_dual_params_count_is_kinds_x_S_per_block_t": true,
+    "admm_objective_references_every_req_and_dual_param": true,
+    "admm_no_v_params_under_pin": true
+   },
+   "DSO7|2035|Summer": {
+    "pin_present_iff_not_per_scenario_mode": true,
+    "admm_req_params_count_is_kinds_x_S_per_block_t": true,
+    "admm_dual_params_count_is_kinds_x_S_per_block_t": true,
+    "admm_objective_references_every_req_and_dual_param": true,
+    "admm_no_v_params_under_pin": true
+   },
+   "DSO9|2025|Summer": {
+    "pin_present_iff_not_per_scenario_mode": true,
+    "admm_req_params_count_is_kinds_x_S_per_block_t": true,
+    "admm_dual_params_count_is_kinds_x_S_per_block_t": true,
+    "admm_objective_references_every_req_and_dual_param": true,
+    "admm_no_v_params_under_pin": true
+   },
+   "DSO9|2035|Summer": {
+    "pin_present_iff_not_per_scenario_mode": true,
+    "admm_req_params_count_is_kinds_x_S_per_block_t": true,
+    "admm_dual_params_count_is_kinds_x_S_per_block_t": true,
+    "admm_objective_references_every_req_and_dual_param": true,
+    "admm_no_v_params_under_pin": true
+   },
+   "TSO|2025|Summer": {
+    "admm_every_delta_free_within_rating": true,
+    "admm_interface_expression_references_own_scenario_delta": true,
+    "admm_node_balance_references_own_scenario_delta": true,
+    "admm_wired_marker": true,
+    "admm_req_params_count_is_kinds_x_S_per_dn_block_t": true,
+    "admm_dual_params_count_is_kinds_x_S_per_dn_block_t": true,
+    "admm_no_v_params_under_pin": true,
+    "admm_pin_present_iff_pin_mode": true,
+    "admm_objective_references_every_req_and_dual_param": true
+   },
+   "TSO|2035|Summer": {
+    "admm_every_delta_free_within_rating": true,
+    "admm_interface_expression_references_own_scenario_delta": true,
+    "admm_node_balance_references_own_scenario_delta": true,
+    "admm_wired_marker": true,
+    "admm_req_params_count_is_kinds_x_S_per_dn_block_t": true,
+    "admm_dual_params_count_is_kinds_x_S_per_dn_block_t": true,
+    "admm_no_v_params_under_pin": true,
+    "admm_pin_present_iff_pin_mode": true,
+    "admm_objective_references_every_req_and_dual_param": true
+   }
+  }
+ },
+ "coupling_active": true,
+ "build_checks": {
+  "stopped_by_esso_cycle1_sentinel": true,
+  "stub_calls_exact": true,
+  "every_network_block_checked_both_stages": true,
+  "nl_blocks_as_declared": true,
+  "no_nl_write_error": true,
+  "labelled_equals_plain_after_stripping": true,
+  "structural_checks_all_true_on_declared_blocks": true,
+  "p58_rescale_applied_on_declared_blocks": true,
+  "scale_replacement_restored": true
+ },
+ "guard": {
+  "verified_zero": true,
+  "failures": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "pickle": {
+   "permitted_paths": null,
+   "load": 0,
+   "loads": 0,
+   "refused_load": 0
+  }
+ },
+ "wall_s": 145.82555270195007,
+ "finished_utc": "2026-11-23T12:09:22.045142+00:00"
+}

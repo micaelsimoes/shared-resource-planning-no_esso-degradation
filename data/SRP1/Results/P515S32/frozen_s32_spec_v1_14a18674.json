@@ -1,0 +1,96 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 9 sections 3.2, 3.3(a)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 13"
+ ],
+ "balancing_rule_3_3a": {
+  "clamp": [
+   0.0001,
+   10000.0
+  ],
+  "decrease": "dual_ratio > (residual_balance_ratio_pf_decrease 3.0 for PF, 5.0 otherwise) * primal_ratio -> rho /= 1.5",
+  "failure_hold": "kept: held after a failed local solve",
+  "freeze_clause": "removed (with minimum_consecutive_converged_cycles = 1 it is moot: the run stops when both ratios are <= 1)",
+  "increase": "primal_ratio > residual_balance_ratio (5.0) * dual_ratio -> rho *= 1.5",
+  "lambda": "unscaled multipliers; rho rescaling leaves lambda and z unchanged",
+  "ratios": "primal_ratio = r_c / eps_pri_c, dual_ratio = s_c / eps_dual_c"
+ },
+ "cap": 150,
+ "gates": {
+  "G_converge": "stopped_by == boyd within 150 cycles",
+  "not_a_pass_criterion": "agreement of system cost with s31c; trajectories differ by initial rho (pf 1.0 vs 300, v 1.0 vs 1.5) and balancing rule, so matched-cycle differences are not attributable to the stopping rule"
+ },
+ "initial_rho": "case file data/SRP1/SRP1_params.json admm.rho (1.0 on every network and channel); the harness MUST NOT apply p514_n_instrumented_cstar.RHO",
+ "instance": {
+  "assignment": "uniform across active nodes 5, 7, 9",
+  "candidate": "C*",
+  "e_mwh": 3.875,
+  "s_mva": 0.96875,
+  "year": 2025
+ },
+ "known_concerns_not_fixed_here": [
+  "ESSO objective not divided by sigma while TSO/DSO are (unit mixing in the ESS multiplier stack) - 3.4 scope",
+  "minimum_consecutive_converged_cycles 1 vs 3 - author question",
+  "proximal term may floor s and drive rho_pf down; flag if proximal share of s > 50 %"
+ ],
+ "predecessor": null,
+ "predictions": {
+  "hypotheses_open": {
+   "H1_freeze": "freeze clause kept rho fixed through the crawl: weak - dead band alone would have acted for PF in only 7 of 73 crawl cycles (increase)",
+   "H2_slow_dual": "rho near balance; crawl is slow multiplier convergence; neither the new stop nor balancing removes it; would show as a Boyd stop with G/Q > 1e-4 or a continued crawl"
+  },
+  "stopping_cycle": "not predicted: ||x||, ||z||, ||y|| were never saved for s31c, so the eps_rel part of the test cannot be re-expressed (Advisor F7)"
+ },
+ "production_defaults_in_force": "ESSO eps 1e-5, tol 1e-10/1e-9, recovery policy with tier 2, row 3-prime settlement and signed interface (2783c223), cold start",
+ "reference_trajectory": {
+  "commit": "8551412b",
+  "extraction": "data/SRP1/Results/P515S32/s31c_rho_residual_extraction.json (commit 9cbfb4d1)",
+  "run": "data/SRP1/Results/P515S31C_run"
+ },
+ "report_per_cycle_channel": [
+  "r",
+  "s",
+  "s_rho_part",
+  "s_proximal_part",
+  "eps_pri",
+  "eps_dual",
+  "norm_x",
+  "norm_z",
+  "norm_y",
+  "primal_ratio",
+  "dual_ratio",
+  "action",
+  "rho_before",
+  "rho_after",
+  "legacy normalized max/mean ratios (for s31c comparison)",
+  "gap_proxy_G_over_Q (diagnostic)",
+  "objective_change_abs",
+  "objective_tolerance",
+  "recourse",
+  "gross_operational_cost"
+ ],
+ "report_terminal": [
+  "cycles",
+  "stopped_by (boyd | cap)",
+  "binding test per channel and ratio to threshold",
+  "rho trajectory per channel",
+  "system cost vs s31c at matched cycles and at terminal point, with terminal steps (bar valid only if both settled; s31c did not)",
+  "network failures by tier",
+  "cancellation residual T_TSO + sum T_DSO",
+  "per-DSO settlement and flexibility volumes",
+  "D rows"
+ ],
+ "stage": "P5.15 Step 3.2 + 3.3(a) gate s32 - frozen specification v1",
+ "stopping_rule": {
+  "definition": "Boyd et al. 2011 section 3.3.1 per channel c in {v, pf, ess}: stop when r_c <= eps_pri_c and s_c <= eps_dual_c for all three channels, all local solves succeeded, for minimum_consecutive_converged_cycles (case file: 1) consecutive cycles",
+  "eps_abs": 1e-05,
+  "eps_dual": "sqrt(n) * eps_abs + eps_rel * ||y||, y in model units (V: lambda/v_base; PF: lambda/s_base; ESS: as stored)",
+  "eps_justification": "eps_rel matches the s31c objective relative tolerance (1e-4) and the ~1e-4 relative accuracy needed for the 0.37 % storage ranking signal; eps_abs 1e-5 RMS normalized is comparable to the relative term for PF and above local-solve feasibility noise. Advisor-derived, not tuned; provisional until sigma is fixed in 3.4.",
+  "eps_pri": "sqrt(p) * eps_abs + eps_rel * max(||x||, ||z||)",
+  "eps_rel": 0.0001,
+  "mapping_ess": "weighted consensus ADMM, a_i = 1/(2*S_i) existing normalization: r = (a_i (x_i - z))_i over TSO, DSO, ESSO; s = (rho_i a_i dz)_i plus TSO proximal block gamma_prox_tso * a_TSO * dx_TSO",
+  "mapping_v_pf": "two-block ADMM: x = DSO interface copy, z = TSO interface copy (TSO solved second), y = lambda_DSO in model units; r = x_DSO - x_TSO; s = sqrt(rho^2 + gamma_prox_tso^2) * (z_TSO^k - z_TSO^(k-1)); entries normalized by v_base (V) and interface rating (PF, P and Q)",
+  "norms": "Euclidean over all normalized entries (nodes x years x days x periods [x p,q] [x agents]); no probability or annualization weights",
+  "objective_change_test": "diagnostic only: |dQ| vs max(1e3, 1e-4 * scale) as in s31c, reported per cycle with its rule-ten ratio; not a stopping criterion"
+ }
+}

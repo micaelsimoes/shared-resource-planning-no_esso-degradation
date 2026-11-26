@@ -1,0 +1,211 @@
+{
+ "STOP_FOR_REVIEW": false,
+ "alias": null,
+ "batch_info": {
+  "max_concurrent_observed": 1,
+  "timeline": [
+   {
+    "event": "start",
+    "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5_N_1x",
+    "pid": 67739,
+    "t": 1794543037.506481
+   },
+   {
+    "event": "end",
+    "exit_code": 0,
+    "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5_N_1x",
+    "pid": 67739,
+    "t": 1794546664.364414
+   }
+  ]
+ },
+ "campaign_spec_path": "data/SRP1/Results/P515S55/e1_screen_1x/campaign_s55_step7_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5__n9_p0_25_e0_5_n_1x/campaign_spec_s55_step7_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5__n9_p0_25_e0_5_n_1x_224fe242.json",
+ "campaign_spec_sha256": "224fe2423f2f16a8677f3eaa646ffdd89b6b040b23a1d4417ab36fc3996f6455",
+ "candidate_key": "f0445c7218cabc408a58f701e6dbba36850b9b5182ae1c88b2191cb5d296dea4",
+ "cell": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5_N_1x",
+ "eval_key": "de3aa8e23ae19f39a600685c5c91686510d578e1c58f12d0ec3bddcca3753979",
+ "exit_code": 0,
+ "git_head_at_run": "0a81c619d5e7c9a39219c399a789e0a2a223bf17",
+ "guards": {
+  "all_zero": true,
+  "model_build_tripwire": {
+   "ConcreteModel.__init__": 0
+  },
+  "pickle": {
+   "blocked": true,
+   "counts": {
+    "load": 0,
+    "loads": 0
+   }
+  },
+  "solve_guards_ok": true,
+  "solve_profile_guards": {
+   "__main__.PARENT_GUARD": {
+    "counts": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 0,
+     "permitted_solve": 0
+    },
+    "verify_0_failures": []
+   },
+   "p515_s47_phase_b_record.PARENT_GUARD": {
+    "counts": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 0,
+     "permitted_solve": 0
+    },
+    "verify_0_failures": []
+   }
+  }
+ },
+ "launch_index_1_based": 15,
+ "memory_preflight_at_run": {
+  "available_gib": 15.952850341796875,
+  "concurrency": 1,
+  "hw_memsize_gib": 32.0,
+  "page_size": 16384,
+  "pages": {
+   "Anonymous pages": 881785,
+   "Pages free": 141354,
+   "Pages inactive": 1095191,
+   "Pages occupied by compressor": 60126,
+   "Pages wired down": 109755
+  },
+  "pass": true,
+  "per_slot_gib": 2.75,
+  "required_gib": 2.75,
+  "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x 2.75 GiB (the S47 launcher rule)",
+  "utc": "2026-11-13T04:10:37.447370+00:00"
+ },
+ "objective_convention": "Q = certified gross_operational_cost, contracted interface settlement EXCLUDED (Addendum 83 ruling 2); salvage reported separately; net = gross - terminal salvage",
+ "outcome": {
+  "cell": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5_N_1x",
+  "eval_key": "de3aa8e23ae19f39a600685c5c91686510d578e1c58f12d0ec3bddcca3753979",
+  "faults": [],
+  "phase": "screen",
+  "record_status": "certified",
+  "screen": {
+   "bar_eur": 8361.99692595005,
+   "certified_cost": 653533669.7108233,
+   "cycles_run": 130,
+   "objective_convention": "Q = certified gross_operational_cost, contracted interface settlement EXCLUDED (Addendum 83 ruling 2); salvage reported separately; net = gross - terminal salvage",
+   "rule_ten": {
+    "boyd_terminal_ratio_max_per_channel": {
+     "ess": 0.24171825937286076,
+     "pf": 0.22136817534856726,
+     "v": 0.09266140590389511
+    },
+    "reported_not_gated": true,
+    "terminal_objective_change_abs": 7762.284386754036,
+    "terminal_objective_tolerance": 65345.63223513038,
+    "terminal_step_over_threshold": 0.11878811362362127
+   },
+   "status": "certified"
+  },
+  "stops": []
+ },
+ "parent_capture_checklist": {
+  "record_capture_paths": {
+   "component_levels_recourse_key_interface_settlement_total": true,
+   "esso_capture_attr_es_avg_ch_dch_per_unit": true,
+   "esso_capture_attr_es_e_rated_per_unit": true,
+   "esso_capture_attr_es_soh_per_unit_cumul": true,
+   "evaluator_fn__certification_from_trajectory": true,
+   "evaluator_fn__first_pass_cycle": true,
+   "evaluator_fn__terminal_ratios": true,
+   "harness_fn__derive_stopped_by_from_trajectory": true,
+   "harness_fn__identify_soh_floor_rows": true,
+   "harness_fn__s35ref_terminal_floor_and_efc": true,
+   "harness_fn_run_admm_arm": true,
+   "harness_fn_s38_pf_capture_hooks": true,
+   "harness_fn_s39_exempt_until_capture_hooks": true,
+   "harness_fn_write_boyd_terminal_s35ref": true,
+   "production_state_has_peak_rss": true,
+   "run_admm_arm_accepts_investment_map": true,
+   "run_admm_arm_post_run_hook_gets_state": true,
+   "trajectory_field_boyd_all_pass": true,
+   "trajectory_field_boyd_ess_channel_pass": true,
+   "trajectory_field_boyd_ess_dual_ratio": true,
+   "trajectory_field_boyd_ess_primal_ratio": true,
+   "trajectory_field_boyd_pf_channel_pass": true,
+   "trajectory_field_boyd_pf_dual_ratio": true,
+   "trajectory_field_boyd_pf_primal_ratio": true,
+   "trajectory_field_boyd_stop": true,
+   "trajectory_field_boyd_v_channel_pass": true,
+   "trajectory_field_boyd_v_dual_ratio": true,
+   "trajectory_field_boyd_v_primal_ratio": true,
+   "trajectory_field_consecutive_converged_cycles": true,
+   "trajectory_field_cycle": true,
+   "trajectory_field_cycle_convergence": true,
+   "trajectory_field_efc_per_day_max": true,
+   "trajectory_field_gross_operational_cost": true,
+   "trajectory_field_local_solves_ok": true,
+   "trajectory_field_objective_change_abs": true,
+   "trajectory_field_objective_change_ratio": true,
+   "trajectory_field_objective_tolerance": true,
+   "trajectory_field_recourse": true,
+   "trajectory_field_rho_ess_action": true,
+   "trajectory_field_rho_ess_after": true,
+   "trajectory_field_rho_freeze_active": true,
+   "trajectory_field_rho_pf_action": true,
+   "trajectory_field_rho_pf_after": true,
+   "trajectory_field_rho_v_action": true,
+   "trajectory_field_rho_v_after": true,
+   "trajectory_field_terminal_salvage_value": true
+  }
+ },
+ "parent_view": {
+  "exit_code": 0,
+  "wait4_ru_maxrss": 2560655360,
+  "wall_s": 3626.8579330444336
+ },
+ "phase": "screen",
+ "pre_launch_assertion": {
+  "base_key": "de3aa8e23ae19f39a600685c5c91686510d578e1c58f12d0ec3bddcca3753979",
+  "campaign_id": "s55_step7_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5__n9_p0_25_e0_5_n_1x",
+  "committed_holder_rule": "E3 / E2: refused if held (key collision); screen: reported, never reused (no cost is carried across code states)",
+  "committed_holders_outside_the_stage_roots": [],
+  "eval_dir_name": "de3aa8e23ae19f39_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5__n9_p0_25_e0_5_n_1x",
+  "eval_key": "de3aa8e23ae19f39a600685c5c91686510d578e1c58f12d0ec3bddcca3753979",
+  "excluded_roots": [
+   "data/SRP1/Results/P515S55/e3_cnrf",
+   "data/SRP1/Results/P515S55/e2_rho",
+   "data/SRP1/Results/P515S55/e1_screen_1x",
+   "data/SRP1/Results/P515S55/e1_2x/cross"
+  ],
+  "holds": true,
+  "parts": {
+   "base_payload_carries_model_variant": true,
+   "frozen_entry_equals_recomputed": true,
+   "harness_base_equals_independent_base": true,
+   "harness_key_equals_independent_payload_key": true,
+   "key_differs_without_model_variant": true,
+   "screen_1x_no_price_in_key": true,
+   "screen_model_as_declared": true,
+   "working_dirs_absent": true
+  },
+  "working_dir_ids": {
+   "precheck": "p515s44_s55_step7_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5__n9_p0_25_e0_5_n_1x_de3aa8e23ae19f39_precheck",
+   "run": "p515s44_s55_step7_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5__n9_p0_25_e0_5_n_1x_de3aa8e23ae19f39_run"
+  }
+ },
+ "retry": false,
+ "solver": {
+  "expected": "/usr/local/bin/ipopt",
+  "ok": true,
+  "resolved": {
+   "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+   "source": "environment"
+  },
+  "sha256": "b316abbe38cd851d9a9a87a6a1a1714a4334304c9539df1976d2f7101360ff05"
+ },
+ "stage": "P5.15 Addendum 86 ruling 1, W183i (b) -- the Step-7 fixed-plan launcher: E3 (C_NRF), E2 stage 1 (rho0 x s), the 1x unit-neighbourhood screen, the cross-evaluations (declared after W186)",
+ "stage_spec": {
+  "name": "frozen_s55_step7_screen_spec_v1_5cbf4a55.json",
+  "sha256": "5cbf4a5555466d9e561cfaaa48c76a0fa2eebbbabde74b606e3e52190d9e4f1f"
+ },
+ "utc": "2026-11-13T05:11:04.388154+00:00",
+ "wall_clock_s": 3629.875457048416
+}

@@ -1,0 +1,43 @@
+19:17:42 OK   [pre] the pre-fix driver (2d46d3c8) is the driver the v2 phase spec froze
+19:17:42 OK   [pre] the comparison is not vacuous: the working-tree driver differs from the pre-fix driver
+19:17:42 OK   [E1] the mapping capture-path checklist holds, including the three inputs of the extended guard
+19:17:42 OK   [E2] launch_003 n9_y2025_p0.25_e0.5: pre-fix guard False and status not_certified (non-vacuous)
+19:17:42 OK   [E2] launch_003 n9_y2025_p0.25_e0.5: observed - base - credited = n_esso_recovery_events = 1, every event tier 1 and succeeded
+19:17:42 OK   [E2] launch_003 n9_y2025_p0.25_e0.5: the new guard holds via the extended identity, observed 6481 == expected
+19:17:42 OK   [E2] launch_003 n9_y2025_p0.25_e0.5: new status certified
+19:17:42 OK   [E2] launch_007 n5_y2030_p1_e3.5 + n5_y2035_p0.25_e0.5: pre-fix guard False and status not_settled (non-vacuous)
+19:17:42 OK   [E2] launch_007 n5_y2030_p1_e3.5 + n5_y2035_p0.25_e0.5: observed - base - credited = n_esso_recovery_events = 3, every event tier 1 and succeeded
+19:17:42 OK   [E2] launch_007 n5_y2030_p1_e3.5 + n5_y2035_p0.25_e0.5: the new guard holds via the extended identity, observed 15361 == expected
+19:17:42 OK   [E2] launch_007 n5_y2030_p1_e3.5 + n5_y2035_p0.25_e0.5: new status settled
+19:17:42 OK   [E2] launch_009 n7_y2025_p0.25_e0.5: pre-fix guard False and status not_settled (non-vacuous)
+19:17:42 OK   [E2] launch_009 n7_y2025_p0.25_e0.5: observed - base - credited = n_esso_recovery_events = 1, every event tier 1 and succeeded
+19:17:42 OK   [E2] launch_009 n7_y2025_p0.25_e0.5: the new guard holds via the extended identity, observed 15353 == expected
+19:17:42 OK   [E2] launch_009 n7_y2025_p0.25_e0.5: new status settled
+19:17:42 OK   [E2] launch_010 n5_y2025_p0.25_e0.5 + n7_y2025_p0.25_e1: pre-fix guard False and status not_settled (non-vacuous)
+19:17:42 OK   [E2] launch_010 n5_y2025_p0.25_e0.5 + n7_y2025_p0.25_e1: observed - base - credited = n_esso_recovery_events = 1, every event tier 1 and succeeded
+19:17:42 OK   [E2] launch_010 n5_y2025_p0.25_e0.5 + n7_y2025_p0.25_e1: the new guard holds via the extended identity, observed 15354 == expected
+19:17:42 OK   [E2] launch_010 n5_y2025_p0.25_e0.5 + n7_y2025_p0.25_e1: new status settled
+19:17:42 OK   [E3] fixture: the launch 7 record holds (3 ESSO events)
+19:17:42 OK   [E3] an ESSO event recorded as not succeeded -> the guard fails; settled not_settled, exit not_certified
+19:17:42 OK   [E3] an ESSO event without recovery_succeeded -> the guard fails; settled not_settled, exit not_certified
+19:17:42 OK   [E3] observed + 1 (off by one) -> the guard fails; settled not_settled, exit not_certified
+19:17:42 OK   [E3] observed - 1 (off by one) -> the guard fails; settled not_settled, exit not_certified
+19:17:42 OK   [E3] a tier-2 attempt recorded but not paid for in the count -> the guard fails; settled not_settled, exit not_certified
+19:17:42 OK   [E3] the events file absent -> the guard fails; settled not_settled, exit not_certified
+19:17:42 OK   [E3] one event dropped from the file -> the guard fails; settled not_settled, exit not_certified
+19:17:42 OK   [E3] a network block unrecovered -> the guard fails; settled not_settled, exit not_certified
+19:17:42 OK   [E3] a network block not attempted -> the guard fails; settled not_settled, exit not_certified
+19:17:42 OK   [E3] a network block indeterminate -> the guard fails; settled not_settled, exit not_certified
+19:17:42 OK   [E3] credited != tier1 + 2 tier2 (credited + 1, observed + 1) -> the guard fails; settled not_settled, exit not_certified
+19:17:42 OK   [E3] reconciliation declared supported -> the guard fails; settled not_settled, exit not_certified
+19:17:42 OK   [E3] tier record inconsistent (tier2 False, tier "tier2") -> the guard fails; settled not_settled, exit not_certified
+19:17:42 OK   [E3] identity False with no ESSO event (the harness path) -> the guard fails; settled not_settled, exit not_certified
+19:17:42 OK   [E3] an event of another record type -> the guard fails; settled not_settled, exit not_certified
+19:17:42 OK   [E3] positive control: the tier-2 attempt paid for (observed + 1) -> holds, ESSO solves 4 for 3 events
+19:17:43 OK   [E4] pilot + v2 phase: 48 real eval dirs, 75 (record, depth) mappings; every record that passed before passes now with an identical summary (but ['mapping_schema', 'solve_profile_reconciliation'])
+19:17:43 OK   [E4] the (record, depth) mappings whose summary changes are exactly the 4 affected records (settled ones at both depths)
+19:17:43 OK   [E4] old summaries carry mapping v1, new ones v2
+19:17:45 OK   [E4] every evaluation record with a solve_profile under data/SRP1/Results/P515S56 (104): old guard pass -> new pass
+19:17:45 OK   [guards] SolveProfileGuard(permitted=()) verify(0) == []
+19:17:45 OK   [guards] pickle load/loads 0
+19:17:45 checks 42/42 ok; wall 4 s; failed []

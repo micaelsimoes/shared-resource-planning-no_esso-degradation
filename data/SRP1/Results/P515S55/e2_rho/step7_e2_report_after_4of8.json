@@ -1,0 +1,499 @@
+{
+ "H2_per_pair": {
+  "1x_rho0.5": true,
+  "1x_rho2.0": true,
+  "2x_rho0.5": null,
+  "2x_rho2.0": null
+ },
+ "H2_rule": "per pair, after it completes, in the order (1x, 0.5), (1x, 2.0), (2x, 0.5), (2x, 2.0): |margin - baseline margin at that price| <= the baseline pair threshold at that price and the verdict (and its sign) unchanged; a failed pair does not stop E2 (Addendum 86 ruling 3 (i))",
+ "I_unit_source": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json (PB lattice closed form, W2 cross-checked)",
+ "baseline": {
+  "1x": {
+   "I_unit": 317957.0085035585,
+   "Q_unit": 653620162.5657823,
+   "Q_x0": 653873702.1876609,
+   "band_unit": 4351.407173395157,
+   "band_x0": 4209.1713362932205,
+   "binding_term": "3 x larger bar",
+   "claims_agree": true,
+   "claims_cross_check": [
+    {
+     "I_agrees": true,
+     "I_other": 317957.0085035586,
+     "claim_id": "B:n7_4h_e1",
+     "d_gross": 64417.38662493229,
+     "form": "F",
+     "margin_agrees_1e-6": true,
+     "margin_from_claim": -64417.38662493229,
+     "threshold": 13054.22152018547,
+     "threshold_agrees": true,
+     "verdict": "determinate"
+    },
+    {
+     "I_agrees": true,
+     "I_other": 317957.0085035586,
+     "claim_id": "CHECK:headline_V_minus_I_settled",
+     "d_gross": -64417.38662493462,
+     "form": "value",
+     "margin_agrees_1e-6": true,
+     "margin_from_claim": -64417.38662493462,
+     "threshold": 13054.22152018547,
+     "threshold_agrees": true,
+     "verdict": "determinate"
+    }
+   ],
+   "margin": -64417.38662493456,
+   "price": "1x",
+   "rows": [
+    1,
+    2
+   ],
+   "sign": -1,
+   "status": [
+    "certified",
+    "certified"
+   ],
+   "threshold": 13054.22152018547,
+   "unit_cell": "ref:bd504ecf",
+   "unit_eval_key": "3f084f2ffaeef2b78c9c6930d7f2134e66b61fbbefecef19a5ce0db8b1e9d153",
+   "verdict": "determinate",
+   "x0_cell": "ref:7aa017f0",
+   "x0_eval_key": "d110bd1a5977df1e811a1b3963afc565de6daa65f76dcc096ead3fdc70b08546"
+  },
+  "2x": {
+   "I_unit": 317957.0085035585,
+   "Q_unit": 810650174.1933696,
+   "Q_x0": 811014416.6642302,
+   "band_unit": 4090.730331659317,
+   "band_x0": 2194.828753232956,
+   "binding_term": "3 x larger bar",
+   "claims_agree": true,
+   "claims_cross_check": [
+    {
+     "I_agrees": true,
+     "I_other": 317957.0085035586,
+     "claim_id": "H:m2:value_minus_I",
+     "d_gross": 46285.46235704189,
+     "form": "value",
+     "margin_agrees_1e-6": true,
+     "margin_from_claim": 46285.46235704189,
+     "threshold": 12272.190994977951,
+     "threshold_agrees": true,
+     "verdict": "determinate"
+    }
+   ],
+   "margin": 46285.46235704195,
+   "price": "2x",
+   "rows": [
+    34,
+    35
+   ],
+   "sign": 1,
+   "status": [
+    "certified",
+    "certified"
+   ],
+   "threshold": 12272.190994977951,
+   "unit_cell": "h_74eda68d",
+   "unit_eval_key": "dca08628128736042fb1d1fa1a933b0b93f6d4cfea9ef8b4279e3c45d5a6139a",
+   "verdict": "determinate",
+   "x0_cell": "h_50dea31c",
+   "x0_eval_key": "354b1bdae2b86bce8638689641c7f32fee4c8c0aa896f1d50e9be6312ebee10d"
+  }
+ },
+ "baseline_source": {
+  "read_by_eval_key": {
+   "1x": {
+    "rows": [
+     1,
+     2
+    ],
+    "unit": "3f084f2ffaeef2b78c9c6930d7f2134e66b61fbbefecef19a5ce0db8b1e9d153",
+    "x0": "d110bd1a5977df1e811a1b3963afc565de6daa65f76dcc096ead3fdc70b08546"
+   },
+   "2x": {
+    "rows": [
+     34,
+     35
+    ],
+    "unit": "dca08628128736042fb1d1fa1a933b0b93f6d4cfea9ef8b4279e3c45d5a6139a",
+    "x0": "354b1bdae2b86bce8638689641c7f32fee4c8c0aa896f1d50e9be6312ebee10d"
+   }
+  },
+  "record": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+  "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+ },
+ "cells": {
+  "e2_unit_1x_rho0p5": {
+   "Q": 653620775.4918147,
+   "band": [
+    653618676.3147082,
+    653622606.1216562
+   ],
+   "band_width": 3929.8069479465485,
+   "eval_key": "a895b40ec0b7ccdb3eff37d17da56fea04ec99934fe8227ae9cddfa26fdea14c",
+   "harness_bar": 252.8469122648239,
+   "k_star_or_end": 177,
+   "outcome_exit_code": 0,
+   "rho_mismatches": [],
+   "rho_read_back_cycle_1": {
+    "cycle": 1,
+    "ess": {
+     "action": "exempt (fixed)",
+     "bitwise": true,
+     "recorded": 0.005000000000000002,
+     "replicated": 0.005000000000000002,
+     "x": 0.005
+    },
+    "pf": {
+     "action": "held",
+     "bitwise": true,
+     "recorded": 0.0990000000000001,
+     "replicated": 0.0990000000000001,
+     "x": 0.099
+    },
+    "v": {
+     "action": "increased",
+     "bitwise": true,
+     "recorded": 0.005774999999999999,
+     "replicated": 0.005774999999999999,
+     "x": 0.005775000000000001
+    }
+   },
+   "rho_read_back_holds": true,
+   "rho_read_back_n_checks": 531,
+   "source": {
+    "results": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_1x_rho0p5/campaign_results.json",
+    "results_sha256": "edc9bd3763ce7e490a09137416fcfc23dda6d055f0033c5dca4e480e9f11cc40",
+    "retry": false
+   },
+   "status": "certified",
+   "stopping_ratio": 0.0038185702751837155,
+   "stops": [],
+   "view": {
+    "Q": 653620775.4918147,
+    "Q_cc": 653620451.6356148,
+    "Q_net": 653620775.4918147,
+    "band": 3929.8069479465485,
+    "bar": 252.8469122648239,
+    "gap": null,
+    "gap_refused": null,
+    "gated": false,
+    "label": null,
+    "salvage": 3.1229180291735513e-52,
+    "slack": null,
+    "status": "certified",
+    "t": -323.85619993241255
+   }
+  },
+  "e2_unit_1x_rho2p0": {
+   "Q": 653620852.7833008,
+   "band": [
+    653618697.8101761,
+    653622504.9599648
+   ],
+   "band_width": 3807.1497886180878,
+   "eval_key": "13145d7ed63e9f2d092a73a4d1317065f0d5e7cac60ba031363eb1aa8acbb0ae",
+   "harness_bar": 125.76377558708191,
+   "k_star_or_end": 194,
+   "outcome_exit_code": 0,
+   "rho_mismatches": [],
+   "rho_read_back_cycle_1": {
+    "cycle": 1,
+    "ess": {
+     "action": "exempt (fixed)",
+     "bitwise": true,
+     "recorded": 0.020000000000000007,
+     "replicated": 0.020000000000000007,
+     "x": 0.02
+    },
+    "pf": {
+     "action": "held",
+     "bitwise": true,
+     "recorded": 0.3960000000000004,
+     "replicated": 0.3960000000000004,
+     "x": 0.396
+    },
+    "v": {
+     "action": "increased",
+     "bitwise": true,
+     "recorded": 0.023099999999999996,
+     "replicated": 0.023099999999999996,
+     "x": 0.023100000000000002
+    }
+   },
+   "rho_read_back_holds": true,
+   "rho_read_back_n_checks": 582,
+   "source": {
+    "results": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_1x_rho2p0/campaign_results.json",
+    "results_sha256": "10bf033424b7c361fac4a8d9e95d4fb365c255c5a89c53c3a36bf1c227b283af",
+    "retry": false
+   },
+   "status": "certified",
+   "stopping_ratio": 0.001623219748144221,
+   "stops": [],
+   "view": {
+    "Q": 653620852.7833008,
+    "Q_cc": 653621056.7522715,
+    "Q_net": 653620852.7833008,
+    "band": 3807.1497886180878,
+    "bar": 125.76377558708191,
+    "gap": null,
+    "gap_refused": null,
+    "gated": false,
+    "label": null,
+    "salvage": 0.0,
+    "slack": null,
+    "status": "certified",
+    "t": 203.96897072478276
+   }
+  },
+  "e2_x0_1x_rho0p5": {
+   "Q": 653874468.0886946,
+   "band": [
+    653872021.9926565,
+    653876348.2437536
+   ],
+   "band_width": 4326.251097083092,
+   "eval_key": "64f3605028f1cf8760c772f891c975d50adfb581714cba798897e8f8fb42cf54",
+   "harness_bar": 324.5909388065338,
+   "k_star_or_end": 177,
+   "outcome_exit_code": 0,
+   "rho_mismatches": [],
+   "rho_read_back_cycle_1": {
+    "cycle": 1,
+    "ess": {
+     "action": "exempt (fixed)",
+     "bitwise": true,
+     "recorded": 0.005000000000000002,
+     "replicated": 0.005000000000000002,
+     "x": 0.005
+    },
+    "pf": {
+     "action": "held",
+     "bitwise": true,
+     "recorded": 0.0990000000000001,
+     "replicated": 0.0990000000000001,
+     "x": 0.099
+    },
+    "v": {
+     "action": "increased",
+     "bitwise": true,
+     "recorded": 0.005774999999999999,
+     "replicated": 0.005774999999999999,
+     "x": 0.005775000000000001
+    }
+   },
+   "rho_read_back_holds": true,
+   "rho_read_back_n_checks": 531,
+   "source": {
+    "results": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_1x_rho0p5/campaign_results.json",
+    "results_sha256": "14f5e819a592f8e65d87fd4da53fd52cf7133544530b328b66b04d27dd515083",
+    "retry": false
+   },
+   "status": "certified",
+   "stopping_ratio": 0.0042328046980841935,
+   "stops": [],
+   "view": {
+    "Q": 653874468.0886946,
+    "Q_cc": 653873947.7142843,
+    "Q_net": 653874468.0886946,
+    "band": 4326.251097083092,
+    "bar": 324.5909388065338,
+    "gap": null,
+    "gap_refused": null,
+    "gated": false,
+    "label": null,
+    "salvage": 0.0,
+    "slack": null,
+    "status": "certified",
+    "t": -520.3744102754246
+   }
+  },
+  "e2_x0_1x_rho2p0": {
+   "Q": 653872972.5164962,
+   "band": [
+    653871035.0995519,
+    653875277.8094256
+   ],
+   "band_width": 4242.7098736763,
+   "eval_key": "f4df38b251a6880890058feedc41d8f5908a4d7c332980cb4dbb82d72d8ca5fd",
+   "harness_bar": 242.1065663099289,
+   "k_star_or_end": 185,
+   "outcome_exit_code": 0,
+   "rho_mismatches": [],
+   "rho_read_back_cycle_1": {
+    "cycle": 1,
+    "ess": {
+     "action": "exempt (fixed)",
+     "bitwise": true,
+     "recorded": 0.020000000000000007,
+     "replicated": 0.020000000000000007,
+     "x": 0.02
+    },
+    "pf": {
+     "action": "held",
+     "bitwise": true,
+     "recorded": 0.3960000000000004,
+     "replicated": 0.3960000000000004,
+     "x": 0.396
+    },
+    "v": {
+     "action": "increased",
+     "bitwise": true,
+     "recorded": 0.023099999999999996,
+     "replicated": 0.023099999999999996,
+     "x": 0.023100000000000002
+    }
+   },
+   "rho_read_back_holds": true,
+   "rho_read_back_n_checks": 555,
+   "source": {
+    "results": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_1x_rho2p0/campaign_results.json",
+    "results_sha256": "80e088a52d3a082a70bf88a4bf39a8151d633157c36fb831d8b95339298f6d83",
+    "retry": false
+   },
+   "status": "certified",
+   "stopping_ratio": 0.0012970355430619051,
+   "stops": [],
+   "view": {
+    "Q": 653872972.5164962,
+    "Q_cc": 653874764.5293224,
+    "Q_net": 653872972.5164962,
+    "band": 4242.7098736763,
+    "bar": 242.1065663099289,
+    "gap": null,
+    "gap_refused": null,
+    "gated": false,
+    "label": null,
+    "salvage": 0.0,
+    "slack": null,
+    "status": "certified",
+    "t": 1792.0128262232188
+   }
+  }
+ },
+ "margin_definition": "margin = Q(x = 0) - Q(unit) - I(unit) within each pair (plan section 4, clarification 3)",
+ "margin_range_over_configurations": {
+  "max": -64264.411623718624,
+  "min": -65837.27530813444,
+  "n": 2
+ },
+ "n_cells_complete": 4,
+ "objective_convention": "Q = certified gross_operational_cost, contracted interface settlement EXCLUDED (Addendum 83 ruling 2); salvage reported separately; net = gross - terminal salvage",
+ "pairs": [
+  {
+   "H2": {
+    "baseline_sign": -1,
+    "baseline_threshold": 13054.22152018547,
+    "baseline_verdict": "determinate",
+    "holds": true,
+    "margin_shift_vs_baseline": 152.97500121593475,
+    "verdict_unchanged": true,
+    "within_baseline_threshold": true
+   },
+   "I_unit": 317957.0085035585,
+   "complete": true,
+   "margin": -64264.411623718624,
+   "margin_Qcc_report_only": -64460.92983401049,
+   "pair": [
+    "e2_x0_1x_rho0p5",
+    "e2_unit_1x_rho0p5"
+   ],
+   "price": "1x",
+   "resolution": {
+    "bands": [
+     4326.251097083092,
+     3929.8069479465485
+    ],
+    "binding_term": "3 x larger bar",
+    "margin_Q": 64264.411623718624,
+    "margin_Qcc": 64460.92983401049,
+    "margin_over_threshold": 4.951508837682269,
+    "rule": "rule v6 (certified pair)",
+    "sign": -1,
+    "threshold": 12978.753291249275,
+    "verdict": "determinate"
+   },
+   "rho0_scale": 0.5,
+   "verdict": "determinate"
+  },
+  {
+   "H2": {
+    "baseline_sign": -1,
+    "baseline_threshold": 13054.22152018547,
+    "baseline_verdict": "determinate",
+    "holds": true,
+    "margin_shift_vs_baseline": -1419.8886831998825,
+    "verdict_unchanged": true,
+    "within_baseline_threshold": true
+   },
+   "I_unit": 317957.0085035585,
+   "complete": true,
+   "margin": -65837.27530813444,
+   "margin_Qcc_report_only": -64249.231452705746,
+   "pair": [
+    "e2_x0_1x_rho2p0",
+    "e2_unit_1x_rho2p0"
+   ],
+   "price": "1x",
+   "resolution": {
+    "bands": [
+     4242.7098736763,
+     3807.1497886180878
+    ],
+    "binding_term": "3 x larger bar",
+    "margin_Q": 65837.27530813444,
+    "margin_Qcc": 64249.231452705746,
+    "margin_over_threshold": 5.1725805179859865,
+    "rule": "rule v6 (certified pair)",
+    "sign": -1,
+    "threshold": 12728.1296210289,
+    "verdict": "determinate"
+   },
+   "rho0_scale": 2.0,
+   "verdict": "determinate"
+  },
+  {
+   "complete": false,
+   "pair": [
+    "e2_x0_2x_rho0p5",
+    "e2_unit_2x_rho0p5"
+   ],
+   "price": "2x",
+   "rho0_scale": 0.5
+  },
+  {
+   "complete": false,
+   "pair": [
+    "e2_x0_2x_rho2p0",
+    "e2_unit_2x_rho2p0"
+   ],
+   "price": "2x",
+   "rho0_scale": 2.0
+  }
+ ],
+ "planted": false,
+ "records_read": {
+  "investment_cost_w2": {
+   "field": "expected_unit_costs_per_case_year.new.<year>.{power_eur_per_mva_discounted, energy_eur_per_mwh_discounted}; candidates.<label>.I_new_eur (cross-check)",
+   "path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+   "sha256": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b"
+  },
+  "step6_tables": {
+   "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+   "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+  }
+ },
+ "rho_read_back_holds_per_cell": {
+  "e2_unit_1x_rho0p5": true,
+  "e2_unit_1x_rho2p0": true,
+  "e2_x0_1x_rho0p5": true,
+  "e2_x0_1x_rho2p0": true
+ },
+ "rho_read_back_rule": "Addendum 86 ruling 2: per E2 cell, per cycle, per channel g in {v, pf, ess}, the recorded rho_g_after equals BITWISE sum([x] * n_g) / n_g in the canonical interpreter; x starts at S39_g x s and is carried across cycles from the recorded actions: increased -> x = min(max(x * 1.5, 1e-4), 1e4); decreased -> x = min(max(x * (1.0 / 1.5), 1e-4), 1e4) (production _scale_admm_penalty: value * factor, factor = 1.0 / decrease_factor); every factor-1 action (held, fixed, exempt (fixed), held after solver failure, held (frozen ...), any of them with \" (exemption lifted)\") keeps x; an unknown action refuses; n_v = n_pf = TSO + DSO blocks, n_ess = TSO + DSO + ESSO models (the record's solve_profile). A cell that does not reproduce bitwise is a harness-fault stop.",
+ "schema": "p515_s55_step7_e2_report_v1",
+ "stage": "P5.15 Addendum 86 ruling 1, W183i (b) -- the Step-7 fixed-plan launcher: E3 (C_NRF), E2 stage 1 (rho0 x s), the 1x unit-neighbourhood screen, the cross-evaluations (declared after W186)",
+ "utc": "2026-10-26T16:37:25.076736+00:00",
+ "verdict_rule": "rule v6: determinate iff both certified and |margin| >= max{3 x the larger band, 2 tau}, tau = settling_criterion_v6.TAU = 4539.0682750000005; otherwise the uncertified form"
+}

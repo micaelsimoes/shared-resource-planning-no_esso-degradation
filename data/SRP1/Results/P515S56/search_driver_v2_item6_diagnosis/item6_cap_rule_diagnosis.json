@@ -1,0 +1,155 @@
+{
+ "guard_verify_0": [],
+ "hypothesis": "Zero-solve diagnosis of the five item 6 failures of the driver gate run search_driver_v2 (from 5d84ccf5).\nReads only the frozen campaign specs the gate wrote under search_driver_v2/item6_settled_key/ and recomputes their eval\nkeys with the harness's own key functions. Hypothesis: every failure is the cap-in-key rule of 8948db26 (S56 EV-plan\nentries' eval keys wrapped LAST as s56_cycle_cap_evaluation_key(., cap)), which the item 6 checks (written at dcea9628,\nbefore that rule) do not account for. Guard armed: SolveProfileGuard(permitted=()), verify(0).",
+ "option_off_identity_checks": {
+  "calibration_key_coupled": {
+   "entry_fields_differing": [
+    "eval_dir",
+    "eval_key",
+    "s56_cycle_cap_keyed",
+    "working_dir_ids"
+   ],
+   "post_eq_cap_wrap_of_pre": [
+    true,
+    true,
+    true
+   ],
+   "post_eq_pre": [
+    false,
+    false,
+    false
+   ],
+   "post_spec": "data/SRP1/Results/P515S56/search_driver_v2/item6_settled_key/post_calibration_key_coupled_017/campaign_spec_g6s_identity_calibration_key_coupled_a5b209d4.json",
+   "pre_spec": "data/SRP1/Results/P515S56/search_driver_v2/item6_settled_key/pre_calibration_key_coupled_016/campaign_spec_g6s_identity_calibration_key_coupled_a65542d4.json",
+   "top_level_fields_differing": [
+    "frozen_utc",
+    "harness"
+   ]
+  },
+  "s56_draw0_staged": {
+   "entry_fields_differing": [
+    "eval_dir",
+    "eval_key",
+    "s56_cycle_cap_keyed",
+    "working_dir_ids"
+   ],
+   "post_eq_cap_wrap_of_pre": [
+    true,
+    true,
+    true
+   ],
+   "post_eq_pre": [
+    false,
+    false,
+    false
+   ],
+   "post_spec": "data/SRP1/Results/P515S56/search_driver_v2/item6_settled_key/post_s56_draw0_staged_015/campaign_spec_g6s_identity_s56_draw0_staged_55a365a1.json",
+   "pre_spec": "data/SRP1/Results/P515S56/search_driver_v2/item6_settled_key/pre_s56_draw0_staged_014/campaign_spec_g6s_identity_s56_draw0_staged_00f2f99c.json",
+   "top_level_fields_differing": [
+    "frozen_utc",
+    "harness"
+   ]
+  },
+  "s56_ev_staged": {
+   "entry_fields_differing": [
+    "eval_dir",
+    "eval_key",
+    "s56_cycle_cap_keyed",
+    "working_dir_ids"
+   ],
+   "post_eq_cap_wrap_of_pre": [
+    true,
+    true,
+    true
+   ],
+   "post_eq_pre": [
+    false,
+    false,
+    false
+   ],
+   "post_spec": "data/SRP1/Results/P515S56/search_driver_v2/item6_settled_key/post_s56_ev_staged_013/campaign_spec_g6s_identity_s56_ev_staged_967840f4.json",
+   "pre_spec": "data/SRP1/Results/P515S56/search_driver_v2/item6_settled_key/pre_s56_ev_staged_012/campaign_spec_g6s_identity_s56_ev_staged_8251d68d.json",
+   "top_level_fields_differing": [
+    "frozen_utc",
+    "harness"
+   ]
+  },
+  "srp1_single_year": {
+   "entry_fields_differing": [],
+   "post_eq_cap_wrap_of_pre": [
+    false,
+    false
+   ],
+   "post_eq_pre": [
+    true,
+    true
+   ],
+   "post_spec": "data/SRP1/Results/P515S56/search_driver_v2/item6_settled_key/post_srp1_single_year_011/campaign_spec_g6s_identity_srp1_single_year_2c4dfeba.json",
+   "pre_spec": "data/SRP1/Results/P515S56/search_driver_v2/item6_settled_key/pre_srp1_single_year_010/campaign_spec_g6s_identity_srp1_single_year_b549f324.json",
+   "top_level_fields_differing": [
+    "frozen_utc",
+    "harness"
+   ]
+  }
+ },
+ "settled_key_checks": {
+  "draw0": {
+   "absent_no_entry_field": true,
+   "allowed_spec": "data/SRP1/Results/P515S56/search_driver_v2/item6_settled_key/allowed_draw0_008/campaign_spec_g6s_008_f183adfa.json",
+   "cap": 500,
+   "per_plan": {
+    "plan_2030": {
+     "candidate_key_unchanged": true,
+     "exit_eq_cap_wrap_of_pre_base": true,
+     "old_check_settled_eq_sk_wrap_of_exit": false,
+     "settled_entry_field_true": true,
+     "settled_eq_cap_wrap_of_sk_wrap_of_pre_base": true
+    },
+    "reference_unit": {
+     "candidate_key_unchanged": true,
+     "exit_eq_cap_wrap_of_pre_base": true,
+     "old_check_settled_eq_sk_wrap_of_exit": false,
+     "settled_entry_field_true": true,
+     "settled_eq_cap_wrap_of_sk_wrap_of_pre_base": true
+    },
+    "x0": {
+     "candidate_key_unchanged": true,
+     "exit_eq_cap_wrap_of_pre_base": true,
+     "old_check_settled_eq_sk_wrap_of_exit": false,
+     "settled_entry_field_true": true,
+     "settled_eq_cap_wrap_of_sk_wrap_of_pre_base": true
+    }
+   },
+   "pre_spec": "data/SRP1/Results/P515S56/search_driver_v2/item6_settled_key/pre_s56_draw0_staged_014/campaign_spec_g6s_identity_s56_draw0_staged_00f2f99c.json"
+  },
+  "ev": {
+   "absent_no_entry_field": true,
+   "allowed_spec": "data/SRP1/Results/P515S56/search_driver_v2/item6_settled_key/allowed_ev_006/campaign_spec_g6s_006_5a5c1974.json",
+   "cap": 500,
+   "per_plan": {
+    "plan_2030": {
+     "candidate_key_unchanged": true,
+     "exit_eq_cap_wrap_of_pre_base": true,
+     "old_check_settled_eq_sk_wrap_of_exit": false,
+     "settled_entry_field_true": true,
+     "settled_eq_cap_wrap_of_sk_wrap_of_pre_base": true
+    },
+    "reference_unit": {
+     "candidate_key_unchanged": true,
+     "exit_eq_cap_wrap_of_pre_base": true,
+     "old_check_settled_eq_sk_wrap_of_exit": false,
+     "settled_entry_field_true": true,
+     "settled_eq_cap_wrap_of_sk_wrap_of_pre_base": true
+    },
+    "x0": {
+     "candidate_key_unchanged": true,
+     "exit_eq_cap_wrap_of_pre_base": true,
+     "old_check_settled_eq_sk_wrap_of_exit": false,
+     "settled_entry_field_true": true,
+     "settled_eq_cap_wrap_of_sk_wrap_of_pre_base": true
+    }
+   },
+   "pre_spec": "data/SRP1/Results/P515S56/search_driver_v2/item6_settled_key/pre_s56_ev_staged_012/campaign_spec_g6s_identity_s56_ev_staged_8251d68d.json"
+  }
+ }
+}

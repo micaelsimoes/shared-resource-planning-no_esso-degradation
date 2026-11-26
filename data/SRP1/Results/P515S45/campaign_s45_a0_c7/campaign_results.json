@@ -1,0 +1,4016 @@
+{
+ "STOP_FOR_REVIEW": false,
+ "non_certified_points": [],
+ "not_launched_points": [],
+ "stop_rule": "spec v15 A0.stop_rule: \"a non-certified point stops the campaign for review\"; execution.barrier: \"non-certified evaluations recorded with cause; in A0 a non-certified point stops the campaign\". Implementation: batch 1 = the first 7 points in spec order at concurrency 7; batch 2 = the 8th, launched only if all 7 of batch 1 are certified (otherwise recorded as not_launched_stop_rule); any point not certified -> STOP_FOR_REVIEW true in campaign_results.json, exit 3.",
+ "launch_plan": "7 + 1 (Planner W6; deviates from spec v15 A0.batch \"one batch, 8 concurrent\" by Planner decision): evaluate(first 7 in spec order) at concurrency 7, then evaluate([8th]) only if all 7 certified",
+ "stage": "P5.15 Addendum 27 Phase A, A0 -- 8 points (7 + 1 at concurrency 7), case-file AA-on keep_memory, campaign harness",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 27 (Phase A, A0)",
+  "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json A0, execution, configuration",
+  "P5_15_S45_REVERIFY_RULING.md (oracle re-verified; consequence 2: bar on the gross cost step, fixed by W5)",
+  "Planner decision W6: Phase A concurrency 7 (A0 as 7 + 1), memory preflight wired + anonymous + compressor"
+ ],
+ "timestamp_utc": "2026-09-19T20:58:30.304601+00:00",
+ "git_head_at_run": "99b81181bf51261eabb2b393d74955b16a43b1c5",
+ "campaign_spec_path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_spec_s45_a0_c7_9d08ad2f.json",
+ "campaign_spec_sha256": "9d08ad2f144b67ea97dae8dc25d91288fc86a77dd52c7f53276a52c5f00f8b34",
+ "objective_convention": "Q(x) = certified_cost = gross_operational_cost (settlement-excluded); F(x) = I(x) + Q(x); terminal_salvage_value reported, excluded from F (Addendum 27 item 3)",
+ "points": {
+  "x0": {
+   "label": "x0",
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "eval_key": "7aa017f09989b56d17a1307d7ae2d9d86582e9666295ee9e25ef560ee32f975b",
+   "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "certification_cycle": 132,
+   "cycles_run": 132,
+   "certified_cost_gross_settlement_excluded": 653859461.2279255,
+   "terminal_gross_operational_cost": 653859461.2279255,
+   "bar": {
+    "value": 9629.97833788395,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+    "n_steps_available": 10
+   },
+   "bar_net_recourse_step_reported": 9629.97833788395,
+   "rule_ten": {
+    "terminal_step_over_threshold_production": 0.003362677294765486,
+    "terminal_objective_change_abs_production_net": 219.8718364238739,
+    "terminal_objective_tolerance": 65385.94612279256,
+    "terminal_gross_step_abs": 219.8718364238739,
+    "terminal_gross_step_over_threshold": 0.003362677294765486,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.08631809621767525,
+     "pf": 0.2372388529646857,
+     "ess": 5.247344330324186e-21
+    },
+    "note": "production ratio = the net-recourse step the stopping test used / its tolerance; the gross version is computed here from the per-cycle record (terminal row vs its predecessor)"
+   },
+   "terminal_salvage_value": 0.0,
+   "I_x_eur": 0.0,
+   "F_eur": 653859461.2279255,
+   "wall_time": {
+    "record": {
+     "child_process_s": 3976.4501168727875,
+     "run_admm_arm_s": 3961.0891289711,
+     "run_admm_arm_reported_wall_clock_s": 3959.9424302577972
+    },
+    "parent_view_s": 3981.694706916809
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2304573440,
+     "production_state_peak_rss_ru_maxrss": 2304573440,
+     "solver_subprocesses_max_ru_maxrss": 54591488,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2304573440
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 18,
+    "accepted": 46,
+    "rejected (safeguard; memory retained)": 58,
+    "off (all channels within Boyd tolerance)": 10
+   },
+   "aa_per_cycle": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/aa_per_cycle.jsonl",
+    "n_rows": 132,
+    "action_counts": {
+     "insufficient memory (m_k=0)": 18,
+     "accepted": 46,
+     "rejected (safeguard; memory retained)": 58,
+     "off (all channels within Boyd tolerance)": 10
+    },
+    "n_accepted": 46,
+    "n_rejected": 58,
+    "rejections_with_memory_retained": [
+     {
+      "cycle": 26,
+      "memory_size_before": 3,
+      "memory_size_after": 4,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 37,
+      "memory_size_before": 3,
+      "memory_size_after": 4,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 39,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 40,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 41,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 42,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 43,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 45,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 47,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 51,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 52,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 54,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 55,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 59,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 60,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 61,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 64,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 66,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 68,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 71,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 72,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 75,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 76,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 78,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 79,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 80,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 81,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 83,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 84,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 86,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 87,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 91,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 92,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 93,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 94,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 95,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 96,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 97,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 99,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 100,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 101,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 102,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 103,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 104,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 105,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 106,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 108,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 109,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 110,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 111,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 112,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 113,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 115,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 116,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 119,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 120,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 121,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     }
+    ],
+    "first_accept_cycle": 4,
+    "first_reject_cycle": 15
+   },
+   "first_pass_cycle_per_channel": {
+    "v": 40,
+    "pf": 123,
+    "ess": 1
+   },
+   "terminal_ratios_per_channel": {
+    "v": {
+     "primal": 0.02659303449774737,
+     "dual": 0.08631809621767525,
+     "max": 0.08631809621767525
+    },
+    "pf": {
+     "primal": 0.2372388529646857,
+     "dual": 0.09076794984980109,
+     "max": 0.2372388529646857
+    },
+    "ess": {
+     "primal": 5.247344330324186e-21,
+     "dual": 4.051593913678815e-21,
+     "max": 5.247344330324186e-21
+    }
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "8663b96213c87dbb69d90790fc4fe771106f2bd838e17d9809f752cdf7a2f01e",
+    "n_rows": 132,
+    "n_rows_equals_cycles_run": true
+   }
+  },
+  "n5_p0.25_e0.5": {
+   "label": "n5_p0.25_e0.5",
+   "candidate_key": "33031c083b68c6556f4c4a0f7683de83fb9995d73b98814e44bac374d5fc803c",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "eval_key": "dd97e3d0dc598843add1fba700e7e0d8841f203b35beac9e95aa2494940aa024",
+   "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/dd97e3d0dc598843_n5_p0_25_e0_5",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "certification_cycle": 134,
+   "cycles_run": 134,
+   "certified_cost_gross_settlement_excluded": 653721243.9831696,
+   "terminal_gross_operational_cost": 653721243.9831696,
+   "bar": {
+    "value": 5749.462867021561,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+    "n_steps_available": 10
+   },
+   "bar_net_recourse_step_reported": 5749.462867021561,
+   "rule_ten": {
+    "terminal_step_over_threshold_production": 0.0017520169762156323,
+    "terminal_objective_change_abs_production_net": 114.53309178352356,
+    "terminal_objective_tolerance": 65372.13585162614,
+    "terminal_gross_step_abs": 114.53309178352356,
+    "terminal_gross_step_over_threshold": 0.0017520169762156323,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.08316400872562095,
+     "pf": 0.23504638367650274,
+     "ess": 0.22498650663571398
+    },
+    "note": "production ratio = the net-recourse step the stopping test used / its tolerance; the gross version is computed here from the per-cycle record (terminal row vs its predecessor)"
+   },
+   "terminal_salvage_value": 0.0,
+   "I_x_eur": 191018.169784262,
+   "F_eur": 653912262.1529539,
+   "wall_time": {
+    "record": {
+     "child_process_s": 4455.47537612915,
+     "run_admm_arm_s": 4440.12063908577,
+     "run_admm_arm_reported_wall_clock_s": 4439.088928937912
+    },
+    "parent_view_s": 4462.578510761261
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2341863424,
+     "production_state_peak_rss_ru_maxrss": 2339946496,
+     "solver_subprocesses_max_ru_maxrss": 55820288,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2346975232
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 8,
+    "accepted": 56,
+    "rejected (safeguard; memory retained)": 60,
+    "off (all channels within Boyd tolerance)": 10
+   },
+   "aa_per_cycle": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/dd97e3d0dc598843_n5_p0_25_e0_5/aa_per_cycle.jsonl",
+    "n_rows": 134,
+    "action_counts": {
+     "insufficient memory (m_k=0)": 8,
+     "accepted": 56,
+     "rejected (safeguard; memory retained)": 60,
+     "off (all channels within Boyd tolerance)": 10
+    },
+    "n_accepted": 56,
+    "n_rejected": 60,
+    "rejections_with_memory_retained": [
+     {
+      "cycle": 16,
+      "memory_size_before": 1,
+      "memory_size_after": 2,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 24,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 26,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 27,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 33,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 36,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 37,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 39,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 40,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 42,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 43,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 45,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 47,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 48,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 50,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 51,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 53,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 55,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 59,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 61,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 62,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 64,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 65,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 67,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 71,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 74,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 77,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 78,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 81,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 83,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 84,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 85,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 87,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 88,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 90,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 91,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 92,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 93,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 94,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 95,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 96,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 97,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 99,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 100,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 101,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 102,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 103,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 104,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 105,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 106,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 107,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 111,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 112,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 113,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 115,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 116,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 117,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 119,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 120,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 121,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     }
+    ],
+    "first_accept_cycle": 4,
+    "first_reject_cycle": 16
+   },
+   "first_pass_cycle_per_channel": {
+    "v": 41,
+    "pf": 125,
+    "ess": 18
+   },
+   "terminal_ratios_per_channel": {
+    "v": {
+     "primal": 0.033752373560152364,
+     "dual": 0.08316400872562095,
+     "max": 0.08316400872562095
+    },
+    "pf": {
+     "primal": 0.23504638367650274,
+     "dual": 0.08526223226328619,
+     "max": 0.23504638367650274
+    },
+    "ess": {
+     "primal": 0.10032231791070978,
+     "dual": 0.22498650663571398,
+     "max": 0.22498650663571398
+    }
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/dd97e3d0dc598843_n5_p0_25_e0_5/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "5309bf86206958fda8dbae32a6323cd6e50534e224fe4a183aefa6d26215aae0",
+    "n_rows": 134,
+    "n_rows_equals_cycles_run": true
+   }
+  },
+  "n5_p0.25_e1.0": {
+   "label": "n5_p0.25_e1.0",
+   "candidate_key": "1821665996ec6edb3492c4e914352e8a47bcc764c8bea1ca82639ab24570ef85",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.25,
+      1.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "eval_key": "b58dfe3fb3e562fd4d2a8a63ef4ef34b490f7d455b2e091c02f34b557e06e455",
+   "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/b58dfe3fb3e562fd_n5_p0_25_e1_0",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "certification_cycle": 128,
+   "cycles_run": 128,
+   "certified_cost_gross_settlement_excluded": 653614718.0344155,
+   "terminal_gross_operational_cost": 653614718.0344155,
+   "bar": {
+    "value": 3815.9751472473145,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+    "n_steps_available": 10
+   },
+   "bar_net_recourse_step_reported": 3815.9751472473145,
+   "rule_ten": {
+    "terminal_step_over_threshold_production": 0.01542449857140726,
+    "terminal_objective_change_abs_production_net": 1008.1679284572601,
+    "terminal_objective_tolerance": 65361.47180344155,
+    "terminal_gross_step_abs": 1008.1679284572601,
+    "terminal_gross_step_over_threshold": 0.01542449857140726,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.09733551513962119,
+     "pf": 0.11260054189511828,
+     "ess": 0.21546391951381164
+    },
+    "note": "production ratio = the net-recourse step the stopping test used / its tolerance; the gross version is computed here from the per-cycle record (terminal row vs its predecessor)"
+   },
+   "terminal_salvage_value": -8.994003924019828e-51,
+   "I_x_eur": 317957.0085035586,
+   "F_eur": 653932675.042919,
+   "wall_time": {
+    "record": {
+     "child_process_s": 4260.875186920166,
+     "run_admm_arm_s": 4245.60315990448,
+     "run_admm_arm_reported_wall_clock_s": 4244.4744708538055
+    },
+    "parent_view_s": 4267.211133003235
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2332753920,
+     "production_state_peak_rss_ru_maxrss": 2332753920,
+     "solver_subprocesses_max_ru_maxrss": 55934976,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2332753920
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 8,
+    "accepted": 52,
+    "rejected (safeguard; memory retained)": 58,
+    "off (all channels within Boyd tolerance)": 10
+   },
+   "aa_per_cycle": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/b58dfe3fb3e562fd_n5_p0_25_e1_0/aa_per_cycle.jsonl",
+    "n_rows": 128,
+    "action_counts": {
+     "insufficient memory (m_k=0)": 8,
+     "accepted": 52,
+     "rejected (safeguard; memory retained)": 58,
+     "off (all channels within Boyd tolerance)": 10
+    },
+    "n_accepted": 52,
+    "n_rejected": 58,
+    "rejections_with_memory_retained": [
+     {
+      "cycle": 22,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 26,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 27,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 29,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 32,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 34,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 35,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 37,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 38,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 40,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 41,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 42,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 44,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 48,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 49,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 50,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 52,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 54,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 56,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 57,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 59,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 60,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 64,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 65,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 66,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 67,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 70,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 74,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 76,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 77,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 78,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 80,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 81,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 83,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 84,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 85,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 89,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 90,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 91,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 92,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 93,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 94,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 95,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 96,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 98,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 99,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 100,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 101,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 102,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 103,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 104,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 105,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 106,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 107,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 109,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 113,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 114,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 115,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     }
+    ],
+    "first_accept_cycle": 4,
+    "first_reject_cycle": 22
+   },
+   "first_pass_cycle_per_channel": {
+    "v": 42,
+    "pf": 117,
+    "ess": 19
+   },
+   "terminal_ratios_per_channel": {
+    "v": {
+     "primal": 0.03118589885874697,
+     "dual": 0.09733551513962119,
+     "max": 0.09733551513962119
+    },
+    "pf": {
+     "primal": 0.11148344619295515,
+     "dual": 0.11260054189511828,
+     "max": 0.11260054189511828
+    },
+    "ess": {
+     "primal": 0.13519076641777217,
+     "dual": 0.21546391951381164,
+     "max": 0.21546391951381164
+    }
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/b58dfe3fb3e562fd_n5_p0_25_e1_0/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "905f46ed37fc760db858e826af5e945ec1d0c885498b4f0b591f8c1e21c4d9cc",
+    "n_rows": 128,
+    "n_rows_equals_cycles_run": true
+   }
+  },
+  "n7_p0.25_e0.5": {
+   "label": "n7_p0.25_e0.5",
+   "candidate_key": "56b9730bfb7b78c75e0af96f2e6a21c169d84b451e23187f1a8736654a48600f",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      0.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "eval_key": "26a3878f77cfba4f9b48c00d9d4f831ab9027181fbf73bc8fa7ded976f457ff9",
+   "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/26a3878f77cfba4f_n7_p0_25_e0_5",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "certification_cycle": 139,
+   "cycles_run": 139,
+   "certified_cost_gross_settlement_excluded": 653736823.9682486,
+   "terminal_gross_operational_cost": 653736823.9682486,
+   "bar": {
+    "value": 8289.580840706825,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+    "n_steps_available": 10
+   },
+   "bar_net_recourse_step_reported": 8289.580840706825,
+   "rule_ten": {
+    "terminal_step_over_threshold_production": 0.019135132167572986,
+    "terminal_objective_change_abs_production_net": 1250.9340529441833,
+    "terminal_objective_tolerance": 65373.682396824865,
+    "terminal_gross_step_abs": 1250.9340529441833,
+    "terminal_gross_step_over_threshold": 0.019135132167572986,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.08280481519494103,
+     "pf": 0.15429753619772868,
+     "ess": 0.12720059443890538
+    },
+    "note": "production ratio = the net-recourse step the stopping test used / its tolerance; the gross version is computed here from the per-cycle record (terminal row vs its predecessor)"
+   },
+   "terminal_salvage_value": 0.0,
+   "I_x_eur": 191018.169784262,
+   "F_eur": 653927842.1380329,
+   "wall_time": {
+    "record": {
+     "child_process_s": 4556.2230489254,
+     "run_admm_arm_s": 4540.934835910797,
+     "run_admm_arm_reported_wall_clock_s": 4539.930450201035
+    },
+    "parent_view_s": 4562.7660620212555
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2323431424,
+     "production_state_peak_rss_ru_maxrss": 2321694720,
+     "solver_subprocesses_max_ru_maxrss": 54607872,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2329067520
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 8,
+    "accepted": 56,
+    "rejected (safeguard; memory retained)": 65,
+    "off (all channels within Boyd tolerance)": 10
+   },
+   "aa_per_cycle": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/26a3878f77cfba4f_n7_p0_25_e0_5/aa_per_cycle.jsonl",
+    "n_rows": 139,
+    "action_counts": {
+     "insufficient memory (m_k=0)": 8,
+     "accepted": 56,
+     "rejected (safeguard; memory retained)": 65,
+     "off (all channels within Boyd tolerance)": 10
+    },
+    "n_accepted": 56,
+    "n_rejected": 65,
+    "rejections_with_memory_retained": [
+     {
+      "cycle": 15,
+      "memory_size_before": 1,
+      "memory_size_after": 2,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 16,
+      "memory_size_before": 2,
+      "memory_size_after": 3,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 24,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 27,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 31,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 35,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 37,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 41,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 42,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 44,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 45,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 47,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 49,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 51,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 54,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 56,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 58,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 59,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 61,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 62,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 63,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 65,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 68,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 69,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 72,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 75,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 77,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 79,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 80,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 81,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 83,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 86,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 87,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 88,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 89,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 90,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 91,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 93,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 94,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 95,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 96,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 97,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 98,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 99,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 100,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 102,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 103,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 104,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 105,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 106,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 107,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 108,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 109,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 110,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 112,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 113,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 115,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 116,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 117,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 118,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 120,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 121,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 122,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 123,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 124,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     }
+    ],
+    "first_accept_cycle": 4,
+    "first_reject_cycle": 15
+   },
+   "first_pass_cycle_per_channel": {
+    "v": 42,
+    "pf": 128,
+    "ess": 20
+   },
+   "terminal_ratios_per_channel": {
+    "v": {
+     "primal": 0.005671787342710288,
+     "dual": 0.08280481519494103,
+     "max": 0.08280481519494103
+    },
+    "pf": {
+     "primal": 0.15429753619772868,
+     "dual": 0.09840347013342056,
+     "max": 0.15429753619772868
+    },
+    "ess": {
+     "primal": 0.12720059443890538,
+     "dual": 0.09640836817379494,
+     "max": 0.12720059443890538
+    }
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/26a3878f77cfba4f_n7_p0_25_e0_5/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "039025d99a778eabfedbf54bec1e272f85c1422879078e53df144697d6e1b02d",
+    "n_rows": 139,
+    "n_rows_equals_cycles_run": true
+   }
+  },
+  "n7_p0.25_e1.0": {
+   "label": "n7_p0.25_e1.0",
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "eval_key": "7eb1ce62c2509f54201191ed7220a7e25f06ca8830cb73e5afe2a14101a76b20",
+   "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7eb1ce62c2509f54_n7_p0_25_e1_0",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "certification_cycle": 125,
+   "cycles_run": 125,
+   "certified_cost_gross_settlement_excluded": 653597653.7234993,
+   "terminal_gross_operational_cost": 653597653.7234993,
+   "bar": {
+    "value": 11340.31878066063,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+    "n_steps_available": 10
+   },
+   "bar_net_recourse_step_reported": 11340.31878066063,
+   "rule_ten": {
+    "terminal_step_over_threshold_production": 0.0184910152248915,
+    "terminal_objective_change_abs_production_net": 1208.568416595459,
+    "terminal_objective_tolerance": 65359.76537234993,
+    "terminal_gross_step_abs": 1208.568416595459,
+    "terminal_gross_step_over_threshold": 0.0184910152248915,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.09963518790775602,
+     "pf": 0.49907334231736056,
+     "ess": 0.11653492670358424
+    },
+    "note": "production ratio = the net-recourse step the stopping test used / its tolerance; the gross version is computed here from the per-cycle record (terminal row vs its predecessor)"
+   },
+   "terminal_salvage_value": -2.9290303535550227e-36,
+   "I_x_eur": 317957.0085035586,
+   "F_eur": 653915610.7320029,
+   "wall_time": {
+    "record": {
+     "child_process_s": 4153.358668088913,
+     "run_admm_arm_s": 4138.1415050029755,
+     "run_admm_arm_reported_wall_clock_s": 4133.612416744232
+    },
+    "parent_view_s": 4162.016063928604
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2340962304,
+     "production_state_peak_rss_ru_maxrss": 2340962304,
+     "solver_subprocesses_max_ru_maxrss": 55263232,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2340962304
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 8,
+    "accepted": 49,
+    "rejected (safeguard; memory retained)": 58,
+    "off (all channels within Boyd tolerance)": 10
+   },
+   "aa_per_cycle": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7eb1ce62c2509f54_n7_p0_25_e1_0/aa_per_cycle.jsonl",
+    "n_rows": 125,
+    "action_counts": {
+     "insufficient memory (m_k=0)": 8,
+     "accepted": 49,
+     "rejected (safeguard; memory retained)": 58,
+     "off (all channels within Boyd tolerance)": 10
+    },
+    "n_accepted": 49,
+    "n_rejected": 58,
+    "rejections_with_memory_retained": [
+     {
+      "cycle": 22,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 26,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 27,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 29,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 33,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 35,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 37,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 39,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 40,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 42,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 43,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 45,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 49,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 50,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 51,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 52,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 53,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 57,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 58,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 60,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 61,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 64,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 66,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 68,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 70,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 72,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 75,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 76,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 78,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 79,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 80,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 81,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 82,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 83,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 85,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 86,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 87,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 88,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 89,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 90,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 92,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 93,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 94,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 95,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 96,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 97,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 98,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 100,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 101,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 102,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 103,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 104,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 105,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 106,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 107,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 108,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 110,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 111,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     }
+    ],
+    "first_accept_cycle": 4,
+    "first_reject_cycle": 22
+   },
+   "first_pass_cycle_per_channel": {
+    "v": 40,
+    "pf": 115,
+    "ess": 20
+   },
+   "terminal_ratios_per_channel": {
+    "v": {
+     "primal": 0.07352851163381782,
+     "dual": 0.09963518790775602,
+     "max": 0.09963518790775602
+    },
+    "pf": {
+     "primal": 0.49907334231736056,
+     "dual": 0.1413611779402505,
+     "max": 0.49907334231736056
+    },
+    "ess": {
+     "primal": 0.11653492670358424,
+     "dual": 0.11165373041706406,
+     "max": 0.11653492670358424
+    }
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7eb1ce62c2509f54_n7_p0_25_e1_0/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "ace6ba2f586759957d7494cdd8286f2d12807b13416940190d0df86cb36bc8bb",
+    "n_rows": 125,
+    "n_rows_equals_cycles_run": true
+   }
+  },
+  "n9_p0.25_e0.5": {
+   "label": "n9_p0.25_e0.5",
+   "candidate_key": "c50a0e021a232e7d80144b31ca5789b11176b8ea2eeaf1dfd1a422f489eb851c",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.25,
+      0.5
+     ]
+    }
+   },
+   "eval_key": "fba341303944b6f2aaa425db3eb6bc0e4d149c37c9a512719ab46c237ae20b40",
+   "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/fba341303944b6f2_n9_p0_25_e0_5",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "certification_cycle": 140,
+   "cycles_run": 140,
+   "certified_cost_gross_settlement_excluded": 653755659.4040782,
+   "terminal_gross_operational_cost": 653755659.4040782,
+   "bar": {
+    "value": 19052.450551986694,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+    "n_steps_available": 10
+   },
+   "bar_net_recourse_step_reported": 19052.450551986694,
+   "rule_ten": {
+    "terminal_step_over_threshold_production": 0.038859773891295225,
+    "terminal_objective_change_abs_production_net": 2540.479710459709,
+    "terminal_objective_tolerance": 65375.565940407825,
+    "terminal_gross_step_abs": 2540.479710459709,
+    "terminal_gross_step_over_threshold": 0.038859773891295225,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.07365899116963412,
+     "pf": 0.2332783640302164,
+     "ess": 0.1967094200114483
+    },
+    "note": "production ratio = the net-recourse step the stopping test used / its tolerance; the gross version is computed here from the per-cycle record (terminal row vs its predecessor)"
+   },
+   "terminal_salvage_value": 0.0,
+   "I_x_eur": 191018.169784262,
+   "F_eur": 653946677.5738626,
+   "wall_time": {
+    "record": {
+     "child_process_s": 4649.686056852341,
+     "run_admm_arm_s": 4634.338003873825,
+     "run_admm_arm_reported_wall_clock_s": 4633.425873756409
+    },
+    "parent_view_s": 4657.953332185745
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2390196224,
+     "production_state_peak_rss_ru_maxrss": 2387148800,
+     "solver_subprocesses_max_ru_maxrss": 55361536,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2395521024
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 9,
+    "accepted": 55,
+    "rejected (safeguard; memory retained)": 65,
+    "off (all channels within Boyd tolerance)": 11
+   },
+   "aa_per_cycle": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/fba341303944b6f2_n9_p0_25_e0_5/aa_per_cycle.jsonl",
+    "n_rows": 140,
+    "action_counts": {
+     "insufficient memory (m_k=0)": 9,
+     "accepted": 55,
+     "rejected (safeguard; memory retained)": 65,
+     "off (all channels within Boyd tolerance)": 11
+    },
+    "n_accepted": 55,
+    "n_rejected": 65,
+    "rejections_with_memory_retained": [
+     {
+      "cycle": 16,
+      "memory_size_before": 1,
+      "memory_size_after": 2,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 24,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 26,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 28,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 34,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 37,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 39,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 40,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 41,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 42,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 44,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 45,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 47,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 51,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 52,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 54,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 56,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 60,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 62,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 63,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 66,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 68,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 69,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 71,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 72,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 76,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 77,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 79,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 80,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 84,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 85,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 88,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 89,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 92,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 93,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 94,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 95,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 96,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 97,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 98,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 99,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 101,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 102,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 103,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 104,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 105,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 106,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 107,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 108,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 111,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 112,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 113,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 114,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 115,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 116,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 117,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 118,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 120,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 121,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 124,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 125,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 126,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 127,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 128,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 129,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     }
+    ],
+    "first_accept_cycle": 4,
+    "first_reject_cycle": 16
+   },
+   "first_pass_cycle_per_channel": {
+    "v": 41,
+    "pf": 122,
+    "ess": 17
+   },
+   "terminal_ratios_per_channel": {
+    "v": {
+     "primal": 0.007439414448798389,
+     "dual": 0.07365899116963412,
+     "max": 0.07365899116963412
+    },
+    "pf": {
+     "primal": 0.2332783640302164,
+     "dual": 0.09822021636017081,
+     "max": 0.2332783640302164
+    },
+    "ess": {
+     "primal": 0.09490039731323459,
+     "dual": 0.1967094200114483,
+     "max": 0.1967094200114483
+    }
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/fba341303944b6f2_n9_p0_25_e0_5/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "a51c86a894f669572e16d6597f065b245722487f2d7c99b6ae6e15ee2c7125b0",
+    "n_rows": 140,
+    "n_rows_equals_cycles_run": true
+   }
+  },
+  "n9_p0.25_e1.0": {
+   "label": "n9_p0.25_e1.0",
+   "candidate_key": "a361ac9321459482d0dc53245f7f1711cb4fe2a541f50350e2f3bad6b7588710",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.25,
+      1.0
+     ]
+    }
+   },
+   "eval_key": "3be858940664d29aa3e5e6957f959b4ad31e891f359ce725c16c8bf32de54d28",
+   "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/3be858940664d29a_n9_p0_25_e1_0",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "certification_cycle": 125,
+   "cycles_run": 125,
+   "certified_cost_gross_settlement_excluded": 653602441.5951662,
+   "terminal_gross_operational_cost": 653602441.5951662,
+   "bar": {
+    "value": 11766.427225589752,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+    "n_steps_available": 10
+   },
+   "bar_net_recourse_step_reported": 11766.427225589752,
+   "rule_ten": {
+    "terminal_step_over_threshold_production": 0.020790867029484676,
+    "terminal_objective_change_abs_production_net": 1358.8989706039429,
+    "terminal_objective_tolerance": 65360.38004941368,
+    "terminal_gross_step_abs": 1358.8989706039429,
+    "terminal_gross_step_over_threshold": 0.020790867029484676,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.10222830378846848,
+     "pf": 0.36434946985859085,
+     "ess": 0.15886367683414174
+    },
+    "note": "production ratio = the net-recourse step the stopping test used / its tolerance; the gross version is computed here from the per-cycle record (terminal row vs its predecessor)"
+   },
+   "terminal_salvage_value": 0.0,
+   "I_x_eur": 317957.0085035586,
+   "F_eur": 653920398.6036698,
+   "wall_time": {
+    "record": {
+     "child_process_s": 4200.260299921036,
+     "run_admm_arm_s": 4184.949406147003,
+     "run_admm_arm_reported_wall_clock_s": 4183.831807136536
+    },
+    "parent_view_s": 4207.0868129730225
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2324529152,
+     "production_state_peak_rss_ru_maxrss": 2324529152,
+     "solver_subprocesses_max_ru_maxrss": 56164352,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2324529152
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 8,
+    "accepted": 54,
+    "rejected (safeguard; memory retained)": 53,
+    "off (all channels within Boyd tolerance)": 10
+   },
+   "aa_per_cycle": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/3be858940664d29a_n9_p0_25_e1_0/aa_per_cycle.jsonl",
+    "n_rows": 125,
+    "action_counts": {
+     "insufficient memory (m_k=0)": 8,
+     "accepted": 54,
+     "rejected (safeguard; memory retained)": 53,
+     "off (all channels within Boyd tolerance)": 10
+    },
+    "n_accepted": 54,
+    "n_rejected": 53,
+    "rejections_with_memory_retained": [
+     {
+      "cycle": 22,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 26,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 27,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 29,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 33,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 35,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 37,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 39,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 41,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 42,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 44,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 45,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 47,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 50,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 51,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 53,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 56,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 57,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 59,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 60,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 64,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 66,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 68,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 69,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 72,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 75,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 76,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 78,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 79,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 80,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 82,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 83,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 86,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 87,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 88,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 91,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 93,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 94,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 95,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 96,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 97,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 98,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 99,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 101,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 102,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 103,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 104,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 105,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 106,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 107,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 108,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 109,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 111,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     }
+    ],
+    "first_accept_cycle": 4,
+    "first_reject_cycle": 22
+   },
+   "first_pass_cycle_per_channel": {
+    "v": 40,
+    "pf": 116,
+    "ess": 19
+   },
+   "terminal_ratios_per_channel": {
+    "v": {
+     "primal": 0.025860826870385357,
+     "dual": 0.10222830378846848,
+     "max": 0.10222830378846848
+    },
+    "pf": {
+     "primal": 0.36434946985859085,
+     "dual": 0.12652296362034335,
+     "max": 0.36434946985859085
+    },
+    "ess": {
+     "primal": 0.1377112197876307,
+     "dual": 0.15886367683414174,
+     "max": 0.15886367683414174
+    }
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/3be858940664d29a_n9_p0_25_e1_0/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "324e70714c7ab2c4e6c8c128a1388007847f10d2cd19a136281c6578e0fe80bd",
+    "n_rows": 125,
+    "n_rows_equals_cycles_run": true
+   }
+  },
+  "lattice_plan_n7_p1.5_e3.0": {
+   "label": "lattice_plan_n7_p1.5_e3.0",
+   "candidate_key": "2cd1de8249cfca8da7573d91c62f9ade6c603ba78a0c53558a1b128c04e62292",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      1.5,
+      3.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "eval_key": "d0963078cb50c989180555a637c25a2cd53e330cab280be81e9687ee35f07bd7",
+   "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/d0963078cb50c989_lattice_plan_n7_p1_5_e3_0",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "certification_cycle": 112,
+   "cycles_run": 112,
+   "certified_cost_gross_settlement_excluded": 653099300.5928335,
+   "terminal_gross_operational_cost": 653099300.5928335,
+   "bar": {
+    "value": 2690.204809784889,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+    "n_steps_available": 10
+   },
+   "bar_net_recourse_step_reported": 2690.204809784889,
+   "rule_ten": {
+    "terminal_step_over_threshold_production": 0.03789392734083575,
+    "terminal_objective_change_abs_production_net": 2474.8591225147247,
+    "terminal_objective_tolerance": 65310.177545195605,
+    "terminal_gross_step_abs": 2474.8591225147247,
+    "terminal_gross_step_over_threshold": 0.03789392734083575,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.195353234605981,
+     "pf": 0.866049642596831,
+     "ess": 0.5150593915574203
+    },
+    "note": "production ratio = the net-recourse step the stopping test used / its tolerance; the gross version is computed here from the per-cycle record (terminal row vs its predecessor)"
+   },
+   "terminal_salvage_value": 0.0,
+   "I_x_eur": 1146109.018705572,
+   "F_eur": 654245409.6115391,
+   "wall_time": {
+    "record": {
+     "child_process_s": 3002.1982522010803,
+     "run_admm_arm_s": 2989.039162874222,
+     "run_admm_arm_reported_wall_clock_s": 2985.5512251853943
+    },
+    "parent_view_s": 3010.290549993515
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2415247360,
+     "production_state_peak_rss_ru_maxrss": 2415247360,
+     "solver_subprocesses_max_ru_maxrss": 53116928,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2415247360
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 6,
+    "accepted": 56,
+    "rejected (safeguard; memory retained)": 36,
+    "off (all channels within Boyd tolerance)": 14
+   },
+   "aa_per_cycle": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/d0963078cb50c989_lattice_plan_n7_p1_5_e3_0/aa_per_cycle.jsonl",
+    "n_rows": 112,
+    "action_counts": {
+     "insufficient memory (m_k=0)": 6,
+     "accepted": 56,
+     "rejected (safeguard; memory retained)": 36,
+     "off (all channels within Boyd tolerance)": 14
+    },
+    "n_accepted": 56,
+    "n_rejected": 36,
+    "rejections_with_memory_retained": [
+     {
+      "cycle": 14,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 19,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 25,
+      "memory_size_before": 1,
+      "memory_size_after": 2,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 27,
+      "memory_size_before": 3,
+      "memory_size_after": 4,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 28,
+      "memory_size_before": 4,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 30,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 34,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 38,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 40,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 42,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 43,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 44,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 46,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 50,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 51,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 52,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 56,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 60,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 61,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 63,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 64,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 66,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 68,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 69,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 70,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 74,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 78,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 80,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 82,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 83,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 85,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 88,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 92,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 97,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 101,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     },
+     {
+      "cycle": 102,
+      "memory_size_before": 5,
+      "memory_size_after": 5,
+      "rho_changed_channels": []
+     }
+    ],
+    "first_accept_cycle": 4,
+    "first_reject_cycle": 14
+   },
+   "first_pass_cycle_per_channel": {
+    "v": 41,
+    "pf": 96,
+    "ess": 59
+   },
+   "terminal_ratios_per_channel": {
+    "v": {
+     "primal": 0.039327080783796875,
+     "dual": 0.195353234605981,
+     "max": 0.195353234605981
+    },
+    "pf": {
+     "primal": 0.866049642596831,
+     "dual": 0.25858382835875776,
+     "max": 0.866049642596831
+    },
+    "ess": {
+     "primal": 0.5150593915574203,
+     "dual": 0.37049197223139185,
+     "max": 0.5150593915574203
+    }
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/d0963078cb50c989_lattice_plan_n7_p1_5_e3_0/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "57d11f152d3dbc40ded0af437cfb68cf2055940cb089ebde25b42694347ec959",
+    "n_rows": 112,
+    "n_rows_equals_cycles_run": true
+   }
+  }
+ },
+ "harness_errors": [],
+ "memory_preflight_at_run": {
+  "utc": "2026-09-19T18:50:41.989214+00:00",
+  "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+  "page_size_bytes": 16384,
+  "vm_stat_pages": {
+   "pages_free": 241241,
+   "pages_active": 634128,
+   "pages_inactive": 897935,
+   "pages_speculative": 31359,
+   "pages_wired_down": 128620,
+   "pages_purgeable": 18117,
+   "file_backed_pages": 1069256,
+   "anonymous_pages": 494166,
+   "pages_stored_in_compressor": 272711,
+   "pages_occupied_by_compressor": 115004
+  },
+  "hw_memsize_bytes": 34359738368,
+  "required_bytes": 20669530112,
+  "required_gib": 19.25,
+  "per_child_budget_gib": 2.75,
+  "concurrency": 7,
+  "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 7 x 2.75 GiB",
+  "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+  "missing_vm_stat_figures": [],
+  "wired_bytes": 2107310080,
+  "anonymous_bytes": 8096415744,
+  "compressor_occupied_bytes": 1884225536,
+  "non_reclaimable_bytes": 12087951360,
+  "non_reclaimable_gib": 11.257781982421875,
+  "available_bytes": 22271787008,
+  "available_gib": 20.742218017578125,
+  "free_plus_inactive_bytes": 18664259584,
+  "free_plus_inactive_gib": 17.3824462890625,
+  "free_plus_inactive_would_pass_same_threshold": false,
+  "pass": true
+ },
+ "pre_run_evidence": {
+  "case_file_aa": {
+   "loaded": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "equals_declaration": true
+  },
+  "pinned_files": {
+   "spec_v15": {
+    "path": "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json",
+    "sha256_pinned": "5feefd7b642fc3d480156ad5e52ed6e1cf9d6698cfd40dbb33389bab6e6229fe",
+    "sha256_on_disk": "5feefd7b642fc3d480156ad5e52ed6e1cf9d6698cfd40dbb33389bab6e6229fe",
+    "match": true
+   },
+   "cost_file": {
+    "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+    "sha256_pinned": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+    "sha256_on_disk": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+    "match": true
+   },
+   "investment_cost_results": {
+    "path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+    "sha256_pinned": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "sha256_on_disk": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "match": true
+   },
+   "predecessor_spec": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0/campaign_spec_s45_a0_25a05347.json",
+    "sha256_pinned": "25a0534754bccf1c902a548084d214ed7cdf9227af6b98c05b5485ac866fc061",
+    "sha256_on_disk": "25a0534754bccf1c902a548084d214ed7cdf9227af6b98c05b5485ac866fc061",
+    "match": true
+   }
+  },
+  "points_vs_spec_v15": {
+   "equal_to_spec_v15_A0_points_in_order": true,
+   "spec_n": 8,
+   "n_points": 8,
+   "n_matches_spec_n": true,
+   "spec_investment_year": 2025,
+   "investment_year_matches": true,
+   "spec_post_certification": "none (hull polish on incumbents only)",
+   "spec_stop_rule": "a non-certified point stops the campaign for review",
+   "spec_batch": "one batch, 8 concurrent"
+  }
+ },
+ "rule_eleven_asserted_before_run": {
+  "status": true,
+  "certification_cycle": true,
+  "certified_cost_gross": true,
+  "bar_gross_step": true,
+  "bar_net_reported": true,
+  "rule_ten": true,
+  "terminal_salvage_value_in_recourse_components": true,
+  "I_x_frozen_in_spec": true,
+  "wall_time": true,
+  "peak_rss": true,
+  "aa_action_counts": true,
+  "per_cycle_trajectory_written": true,
+  "per_cycle_fields": true,
+  "error_records_same_schema": true
+ },
+ "batch_info": [
+  {
+   "batch": 1,
+   "labels": [
+    "x0",
+    "n5_p0.25_e0.5",
+    "n5_p0.25_e1.0",
+    "n7_p0.25_e0.5",
+    "n7_p0.25_e1.0",
+    "n9_p0.25_e0.5",
+    "n9_p0.25_e1.0"
+   ],
+   "launched": true,
+   "max_concurrent_observed": 7,
+   "timeline": [
+    {
+     "event": "start",
+     "label": "x0",
+     "pid": 25396,
+     "t": 1789843842.002618
+    },
+    {
+     "event": "start",
+     "label": "n5_p0.25_e0.5",
+     "pid": 25397,
+     "t": 1789843842.005825
+    },
+    {
+     "event": "start",
+     "label": "n5_p0.25_e1.0",
+     "pid": 25398,
+     "t": 1789843842.009624
+    },
+    {
+     "event": "start",
+     "label": "n7_p0.25_e0.5",
+     "pid": 25399,
+     "t": 1789843842.013288
+    },
+    {
+     "event": "start",
+     "label": "n7_p0.25_e1.0",
+     "pid": 25400,
+     "t": 1789843842.016216
+    },
+    {
+     "event": "start",
+     "label": "n9_p0.25_e0.5",
+     "pid": 25401,
+     "t": 1789843842.019132
+    },
+    {
+     "event": "start",
+     "label": "n9_p0.25_e1.0",
+     "pid": 25402,
+     "t": 1789843842.02218
+    },
+    {
+     "event": "end",
+     "label": "x0",
+     "pid": 25396,
+     "t": 1789847823.697325,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "n7_p0.25_e1.0",
+     "pid": 25400,
+     "t": 1789848004.03228,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "n9_p0.25_e1.0",
+     "pid": 25402,
+     "t": 1789848049.108993,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "n5_p0.25_e1.0",
+     "pid": 25398,
+     "t": 1789848109.220757,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "n5_p0.25_e0.5",
+     "pid": 25397,
+     "t": 1789848304.5843358,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "n7_p0.25_e0.5",
+     "pid": 25399,
+     "t": 1789848404.77935,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "n9_p0.25_e0.5",
+     "pid": 25401,
+     "t": 1789848499.972464,
+     "exit_code": 0
+    }
+   ]
+  },
+  {
+   "batch": 2,
+   "labels": [
+    "lattice_plan_n7_p1.5_e3.0"
+   ],
+   "launched": true,
+   "max_concurrent_observed": 1,
+   "timeline": [
+    {
+     "event": "start",
+     "label": "lattice_plan_n7_p1.5_e3.0",
+     "pid": 76564,
+     "t": 1789848499.986861
+    },
+    {
+     "event": "end",
+     "label": "lattice_plan_n7_p1.5_e3.0",
+     "pid": 76564,
+     "t": 1789851510.277411,
+     "exit_code": 0
+    }
+   ]
+  }
+ ],
+ "parent_solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "wall_clock_s": 7669.622085094452
+}

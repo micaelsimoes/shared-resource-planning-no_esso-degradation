@@ -1,0 +1,4004 @@
+{
+ "stage": "P5.16 D0 / T0.2-clarabel ablation",
+ "rehearsal_stand_in": false,
+ "objective_convention": "gross_operational_cost (settlement-EXCLUDED, salvage NOT subtracted) per group; Q_cert+ = gross with every detector slack at max(slack, 0) (spec section 12 ruling 5); gap = Q_cert+ - Q_LB; variant C (calendar-only)",
+ "conic_form": " (Clarabel: min q'x  s.t.  A x + s = b,  s in K;  P = 0):\n  ZeroCone      : every linear '=' row (a, rhs); every fixed column (LB == UB) as e_k x = LB\n  Nonnegative   : '<' rows (a, rhs); '>' rows (-a, -rhs); finite UB (e_k, UB); finite LB (-e_k, -LB)\n  SecondOrder   : one cone per quadratic row of the LP, three patterns only (anything else is a STOP, row reported):\n    rotated  sum_i d_i x_i^2 - k u v <= 0 (d_i, k > 0; LB(u), LB(v) >= 0):  s = (u + v, u - v, 2 sqrt(d_i / k) x_i)\n             -- the branch cones WijR^2 + WijI^2 <= Wii Wjj and the transformer cones C^2 + D^2 <= U Wjj\n    lorentz  sum_i d_i x_i^2 - e t^2 <= 0 (d_i, e > 0; LB(t) >= 0):  s = (sqrt(e) t, sqrt(d_i) x_i)\n             -- the ESSO converter rows es_pnet^2 + es_qnet^2 <= es_s_rated^2\n    circle   sum_i d_i x_i^2 <= r (d_i > 0, r >= 0):  s = (sqrt(r), sqrt(d_i) x_i)\n             -- generator capability, branch thermal limits, network-copy converter circles (S fixed, possibly 0)\n  In every pattern the quadratic row value q(x) - rhs equals alpha * (|s_bar|^2 - s_0^2) exactly (alpha = k / 4 for\n  rotated, 1 otherwise) -- the identity gated at the certified point before any solve.\n\nDuals. Clarabel's z (z in K* = K) satisfies q + A' z = 0 at an exact optimum; the reported dual residual is\n||q + A' z||_inf in the unscaled data (the conic form of the task's ||A'y + z - c||_inf, bounds being rows here).\nGurobi-convention multipliers (dQ/drhs) for the `p516_d0_t02` post-processing: Pi = -z on '=' and '<' rows, +z on '>'\nrows; RC = z_LB - z_UB - z_fix; QCPi = -z_0 / (2 alpha s_0) on a cone with s_0 > 0 (z = mu (s_0, -s_bar) at\ncomplementarity), 0 where s_0 == 0 (counted; the conic residual stays the authoritative check there).\n\n",
+ "groups": {
+  "x0_2025_Spring_C": {
+   "cell": "x0",
+   "year": 2025,
+   "day": "Spring",
+   "variant": "C",
+   "instance": {
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "certification_cycle": 132,
+    "gross_recorded": 653858731.5686293,
+    "eval_dir": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/5cfe69a615ae3708_x0"
+   },
+   "lp": "data/SRP1/Results/P516D0/t01c/lp/x0/2025_Spring_calendar.lp",
+   "lp_sha256": "b1f6dad0e2fe2a2d2f9c736335db0c812228b7040f1ad2fb7623f7f8986fc229",
+   "name_map_sha256": "3dfcfa33f20fd6dae20adccc4efbd618221fdbc635e07e4de6eb5485447c713e",
+   "lp_size": {
+    "NumVars": 26292,
+    "NumConstrs": 18438,
+    "NumQConstrs": 3933,
+    "NumNZs": 65784,
+    "NumQCNZs": 11322,
+    "NumQNZs": 0
+   },
+   "conic_inventory": {
+    "n_columns": 26292,
+    "n_conic_rows": 67923,
+    "zero_cone_dim": 8658,
+    "nonneg_cone_dim": 47466,
+    "n_soc": 3069,
+    "soc_dims": [
+     3,
+     4
+    ],
+    "soc_patterns": {
+     "rotated": 2592,
+     "lorentz": 0,
+     "circle": 477
+    },
+    "n_lp_eq_rows": 7476,
+    "n_lp_le_rows": 5850,
+    "n_lp_ge_rows": 5112,
+    "n_lp_quadratic_rows": 3933,
+    "n_fixed_columns": 390,
+    "n_finite_ub_not_fixed": 18090,
+    "n_finite_lb_not_fixed": 18414,
+    "dims_consistent": true,
+    "presolve": {
+     "n_columns_pinned": 1434,
+     "n_lorentz_cones": 864,
+     "n_lorentz_cones_replaced": 864,
+     "n_zero_rows_added": 792,
+     "n_components_already_pinned_no_row": 936,
+     "n_replaced_cones_with_no_row": 72,
+     "n_distinct_pinned_heads": 9,
+     "pinned_heads": [
+      "esso_5.es_s_rated[0]",
+      "esso_5.es_s_rated[1]",
+      "esso_5.es_s_rated[2]",
+      "esso_7.es_s_rated[0]",
+      "esso_7.es_s_rated[1]",
+      "esso_7.es_s_rated[2]",
+      "esso_9.es_s_rated[0]",
+      "esso_9.es_s_rated[1]",
+      "esso_9.es_s_rated[2]"
+     ],
+     "n_lorentz_cones_kept": 0,
+     "kept_heads": []
+    }
+   },
+   "read_s": 0.4712047576904297,
+   "build_s": 0.04971504211425781,
+   "gate_i": {
+    "obj_lp_at_certified": 63995186.355657205,
+    "obj_clarabel_at_certified": 63995186.355657205,
+    "obj_t01c_recorded": 63995186.355666935,
+    "rel_vs_lp": 0.0,
+    "rel_vs_t01c": 1.5204984646037933e-13
+   },
+   "gate_ii": {
+    "identity": {
+     "n_linear_and_bound_rows": 55332,
+     "n_cones": 3069,
+     "n_over_tolerance": {
+      "linear_or_bound": 0,
+      "cone": 0,
+      "presolved_cone": 0
+     },
+     "worst_ratio_to_tolerance": {
+      "linear_or_bound": 0.0,
+      "cone": 0.09315267853330063,
+      "presolved_cone": 0.0
+     },
+     "worst_row": {
+      "linear_or_bound": null,
+      "cone": "dso_7.branch_flow_limit_ji[31,0,0,4]",
+      "presolved_cone": null
+     },
+     "max_soc_violation_conic": 6.141345952246431e-06,
+     "presolved": {
+      "n_replaced_cones": 864,
+      "n_zero_rows": 792,
+      "max_abs_zero_row_slack_at_point": 0.0,
+      "max_abs_pinned_head_at_point": 1.3775324423698682e-40,
+      "max_lp_quadratic_violation_of_replaced_rows_at_point": 6.196347728205193e-49,
+      "note": "identity |s_bar|^2 + sum_pinned d x_i^2 - e t^2 == q(x) - rhs per replaced cone; at the point the zero rows are violated by |sqrt(d) x_i| where the LP row is violated by sum d x_i^2 - e t^2 (same set, different violation measure)"
+     }
+    },
+    "classes": {
+     "coupling (T0.1c: residual = recorded inter-copy mismatch)": {
+      "n_rows_violated": 360,
+      "max_violation": 1.9150250603505725e-05,
+      "max_ratio_to_threshold": 0.0,
+      "n_over_threshold": 0,
+      "worst_row": null,
+      "families": {
+       "top.d0_cpl_v_W": [
+        72,
+        1.9150250603505725e-05
+       ],
+       "top.d0_cpl_pf_p": [
+        72,
+        2.6986861094702164e-06
+       ],
+       "top.d0_cpl_pf_q": [
+        72,
+        1.306889239494069e-06
+       ],
+       "top.d0_cpl_ess_p_tso_esso": [
+        72,
+        7.871688337456706e-27
+       ],
+       "top.d0_cpl_ess_p_dso_esso": [
+        72,
+        7.871688337456706e-27
+       ]
+      }
+     },
+     "inequality, IPOPT bound relaxation + mapping delta": {
+      "n_rows_violated": 80,
+      "max_violation": 1.1591970050517375e-08,
+      "max_ratio_to_threshold": 0.8163357954853464,
+      "n_over_threshold": 0,
+      "worst_row": "dso_7.voltage_magnitude_upper_cons[1,0,0,12]",
+      "families": {
+       "tso.voltage_magnitude_upper_cons": [
+        8,
+        9.799748568184441e-09
+       ],
+       "dso.voltage_magnitude_upper_cons": [
+        71,
+        1.1591970050517375e-08
+       ],
+       "dso.d0_tr_U_upper": [
+        1,
+        8.293885134236234e-09
+       ]
+      }
+     },
+     "equality, mapping delta": {
+      "n_rows_violated": 6491,
+      "max_violation": 1.8598123041613235e-11,
+      "max_ratio_to_threshold": 0.008856140040649439,
+      "n_over_threshold": 0,
+      "worst_row": "tso.node_balance_q[0,0,0,23]",
+      "families": {
+       "tso.node_balance_p": [
+        216,
+        3.836808332362819e-12
+       ],
+       "tso.node_balance_q": [
+        215,
+        1.8598123041613235e-11
+       ],
+       "tso.expected_interface_pf_p_def": [
+        29,
+        1.1102230246251565e-16
+       ],
+       "tso.expected_interface_pf_q_def": [
+        16,
+        2.7755575615628914e-17
+       ],
+       "dso.flex_energy_balance_p": [
+        96,
+        2.4528793511460183e-16
+       ],
+       "dso.node_balance_p": [
+        2232,
+        1.9744752707828717e-12
+       ],
+       "dso.node_balance_q": [
+        2232,
+        2.4209956955845158e-12
+       ],
+       "dso.d0_env_rewrite": [
+        576,
+        1.4492450336325347e-12
+       ],
+       "esso.rated_s_capacity_unit": [
+        6,
+        2.2958874039497803e-41
+       ],
+       "esso.rated_s_capacity": [
+        3,
+        1.3775324423698682e-40
+       ],
+       "esso.available_s_capacity_unit": [
+        6,
+        2.2958874039497803e-41
+       ],
+       "esso.energy_storage_operation_agg": [
+        864,
+        7.871688337456706e-25
+       ]
+      }
+     },
+     "bound, IPOPT bound relaxation + mapping delta": {
+      "n_rows_violated": 13147,
+      "max_violation": 9.999150258548106e-09,
+      "max_ratio_to_threshold": 0.8263760544254627,
+      "n_over_threshold": 0,
+      "worst_row": "dso_5.slack_flex_p_balance_up[13,0,0]",
+      "families": {
+       "tso.pg.lb": [
+        30,
+        9.946460489411484e-09
+       ],
+       "tso.slack_v_sqr_down.lb": [
+        120,
+        9.998181818204988e-09
+       ],
+       "tso.slack_v_sqr_up.lb": [
+        120,
+        9.998181818214338e-09
+       ],
+       "dso.flex_p_down.lb": [
+        1076,
+        9.989613006110047e-09
+       ],
+       "dso.flex_q_down.lb": [
+        2304,
+        9.984035659009379e-09
+       ],
+       "dso.slack_v_sqr_down.lb": [
+        2304,
+        9.998181818181848e-09
+       ],
+       "dso.slack_v_sqr_up.lb": [
+        2304,
+        9.998181818181823e-09
+       ],
+       "dso.slack_flex_p_balance_up.lb": [
+        96,
+        9.999150258548106e-09
+       ],
+       "dso.slack_flex_p_balance_down.lb": [
+        96,
+        9.999026287029908e-09
+       ],
+       "dso.flex_p_up.lb": [
+        1440,
+        9.990403098770305e-09
+       ],
+       "dso.flex_q_up.lb": [
+        461,
+        9.786401235241209e-09
+       ],
+       "dso.flex_p_down.ub": [
+        604,
+        9.98092038358156e-09
+       ],
+       "dso.flex_p_up.ub": [
+        817,
+        9.986276730024335e-09
+       ],
+       "dso.flex_q_up.ub": [
+        1375,
+        9.747151736556696e-09
+       ]
+      }
+     },
+     "quadratic, IPOPT bound relaxation + mapping delta": {
+      "n_rows_violated": 2506,
+      "max_violation": 9.999987341912644e-09,
+      "max_ratio_to_threshold": 0.8264452348686527,
+      "n_over_threshold": 0,
+      "worst_row": "dso_5.sg_capability[4,0,0,5]",
+      "families": {
+       "tso.sg_capability": [
+        117,
+        9.999980023950906e-09
+       ],
+       "tso.d0_cone": [
+        101,
+        5.26488574958961e-16
+       ],
+       "dso.sg_capability": [
+        216,
+        9.999987341912644e-09
+       ],
+       "dso.d0_cone": [
+        1177,
+        8.811878567864355e-16
+       ],
+       "dso.d0_tr_cone": [
+        27,
+        9.166692199139709e-16
+       ],
+       "esso.energy_storage_operation_agg": [
+        864,
+        6.196347728205193e-49
+       ],
+       "dso.branch_flow_limit": [
+        4,
+        9.961344310180364e-09
+       ]
+      }
+     }
+    },
+    "n_over_class_threshold": 0
+   },
+   "gross_group": 63995186.355666935,
+   "q_cert_plus_group": 63996389.50486347,
+   "q_cert_plus_correction": 1203.149196535349,
+   "presolve": {
+    "rule": "pinned: fixed at LB = UB = 0, or the only unpinned nonzero column of an = row with rhs exactly 0 (iterated); a Lorentz cone with a pinned head is replaced by zero rows sqrt(d_i) x_i = 0",
+    "n_columns_pinned": 1434,
+    "pinned_by_row_family": {
+     "esso.available_s_capacity_unit": 27,
+     "esso.d0_available_e_eq_calendar": 27,
+     "esso.energy_storage_operation_agg": 792,
+     "esso.rated_e_capacity": 9,
+     "esso.rated_e_capacity_unit": 18,
+     "esso.rated_s_capacity": 9,
+     "esso.rated_s_capacity_unit": 18,
+     "fixed at 0": 390,
+     "top.d0_cpl_ess_p_tso_esso": 72,
+     "top.d0_cpl_ess_q_tso_esso": 72
+    },
+    "n_lorentz_cones": 864,
+    "n_lorentz_cones_replaced": 864,
+    "n_lorentz_cones_kept": 0,
+    "replaced_by_family": {
+     "esso.energy_storage_operation_agg": 864
+    },
+    "n_zero_rows_added": 792,
+    "n_components_already_pinned_no_row": 936,
+    "n_replaced_cones_with_no_row": 72,
+    "n_distinct_pinned_heads": 9,
+    "pinned_heads": [
+     "esso_5.es_s_rated[0]",
+     "esso_5.es_s_rated[1]",
+     "esso_5.es_s_rated[2]",
+     "esso_7.es_s_rated[0]",
+     "esso_7.es_s_rated[1]",
+     "esso_7.es_s_rated[2]",
+     "esso_9.es_s_rated[0]",
+     "esso_9.es_s_rated[1]",
+     "esso_9.es_s_rated[2]"
+    ],
+    "kept_heads": [],
+    "head_chains": [
+     {
+      "column": "esso_5.es_s_rated[0]",
+      "how": "eq row, rhs 0",
+      "round": 1,
+      "row": "esso_5.rated_s_capacity[1]",
+      "inputs": [
+       {
+        "column": "esso_5.es_s_rated_per_unit[0,0]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_5.rated_s_capacity_unit[1]",
+        "inputs": []
+       }
+      ]
+     },
+     {
+      "column": "esso_5.es_s_rated[1]",
+      "how": "eq row, rhs 0",
+      "round": 1,
+      "row": "esso_5.rated_s_capacity[2]",
+      "inputs": [
+       {
+        "column": "esso_5.es_s_rated_per_unit[0,1]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_5.rated_s_capacity_unit[2]",
+        "inputs": []
+       },
+       {
+        "column": "esso_5.es_s_rated_per_unit[1,1]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_5.rated_s_capacity_unit[4]",
+        "inputs": []
+       }
+      ]
+     },
+     {
+      "column": "esso_5.es_s_rated[2]",
+      "how": "eq row, rhs 0",
+      "round": 1,
+      "row": "esso_5.rated_s_capacity[3]",
+      "inputs": [
+       {
+        "column": "esso_5.es_s_rated_per_unit[0,2]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_5.rated_s_capacity_unit[3]",
+        "inputs": []
+       },
+       {
+        "column": "esso_5.es_s_rated_per_unit[1,2]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_5.rated_s_capacity_unit[5]",
+        "inputs": []
+       },
+       {
+        "column": "esso_5.es_s_rated_per_unit[2,2]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_5.rated_s_capacity_unit[6]",
+        "inputs": []
+       }
+      ]
+     },
+     {
+      "column": "esso_7.es_s_rated[0]",
+      "how": "eq row, rhs 0",
+      "round": 1,
+      "row": "esso_7.rated_s_capacity[1]",
+      "inputs": [
+       {
+        "column": "esso_7.es_s_rated_per_unit[0,0]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_7.rated_s_capacity_unit[1]",
+        "inputs": []
+       }
+      ]
+     },
+     {
+      "column": "esso_7.es_s_rated[1]",
+      "how": "eq row, rhs 0",
+      "round": 1,
+      "row": "esso_7.rated_s_capacity[2]",
+      "inputs": [
+       {
+        "column": "esso_7.es_s_rated_per_unit[0,1]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_7.rated_s_capacity_unit[2]",
+        "inputs": []
+       },
+       {
+        "column": "esso_7.es_s_rated_per_unit[1,1]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_7.rated_s_capacity_unit[4]",
+        "inputs": []
+       }
+      ]
+     },
+     {
+      "column": "esso_7.es_s_rated[2]",
+      "how": "eq row, rhs 0",
+      "round": 1,
+      "row": "esso_7.rated_s_capacity[3]",
+      "inputs": [
+       {
+        "column": "esso_7.es_s_rated_per_unit[0,2]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_7.rated_s_capacity_unit[3]",
+        "inputs": []
+       },
+       {
+        "column": "esso_7.es_s_rated_per_unit[1,2]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_7.rated_s_capacity_unit[5]",
+        "inputs": []
+       },
+       {
+        "column": "esso_7.es_s_rated_per_unit[2,2]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_7.rated_s_capacity_unit[6]",
+        "inputs": []
+       }
+      ]
+     },
+     {
+      "column": "esso_9.es_s_rated[0]",
+      "how": "eq row, rhs 0",
+      "round": 1,
+      "row": "esso_9.rated_s_capacity[1]",
+      "inputs": [
+       {
+        "column": "esso_9.es_s_rated_per_unit[0,0]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_9.rated_s_capacity_unit[1]",
+        "inputs": []
+       }
+      ]
+     },
+     {
+      "column": "esso_9.es_s_rated[1]",
+      "how": "eq row, rhs 0",
+      "round": 1,
+      "row": "esso_9.rated_s_capacity[2]",
+      "inputs": [
+       {
+        "column": "esso_9.es_s_rated_per_unit[0,1]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_9.rated_s_capacity_unit[2]",
+        "inputs": []
+       },
+       {
+        "column": "esso_9.es_s_rated_per_unit[1,1]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_9.rated_s_capacity_unit[4]",
+        "inputs": []
+       }
+      ]
+     },
+     {
+      "column": "esso_9.es_s_rated[2]",
+      "how": "eq row, rhs 0",
+      "round": 1,
+      "row": "esso_9.rated_s_capacity[3]",
+      "inputs": [
+       {
+        "column": "esso_9.es_s_rated_per_unit[0,2]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_9.rated_s_capacity_unit[3]",
+        "inputs": []
+       },
+       {
+        "column": "esso_9.es_s_rated_per_unit[1,2]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_9.rated_s_capacity_unit[5]",
+        "inputs": []
+       },
+       {
+        "column": "esso_9.es_s_rated_per_unit[2,2]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_9.rated_s_capacity_unit[6]",
+        "inputs": []
+       }
+      ]
+     }
+    ],
+    "not_altered": {
+     "implied_equality_rows_already_in_the_lp": {
+      "count": 216,
+      "by_family": {
+       "top.d0_cpl_ess_p_dso_esso": 72,
+       "top.d0_cpl_ess_q_dso_esso": 72,
+       "esso.energy_storage_operation_agg": 72
+      },
+      "note": "rhs-0 rows whose every column is pinned by other rows: linearly dependent on them (a rank deficiency of the zero cone present in the LP itself)"
+     },
+     "rotated_cones_with_a_pinned_factor": {
+      "count": 0,
+      "rows": []
+     },
+     "circles_with_r_eq_0": {
+      "count": 0,
+      "rows": []
+     },
+     "small_circles_r_lt_1e-4": {
+      "count": 25,
+      "by_family": {
+       "tso.sg_capability": {
+        "count": 6,
+        "r_min": 1.5830632811195253e-06,
+        "r_max": 4.712460945360397e-06
+       },
+       "dso.sg_capability": {
+        "count": 19,
+        "r_min": 6.578541291275891e-07,
+        "r_max": 9.290243680767041e-05
+       }
+      },
+      "rows": [
+       {
+        "qrow": 72,
+        "row": "tso.sg_capability[6,0,0,5]",
+        "family": "tso.sg_capability",
+        "r": 1.5830632811195253e-06,
+        "radius": 0.0012581984267672271
+       },
+       {
+        "qrow": 86,
+        "row": "tso.sg_capability[6,0,0,19]",
+        "family": "tso.sg_capability",
+        "r": 2.017080463207892e-06,
+        "radius": 0.001420239579510405
+       },
+       {
+        "qrow": 87,
+        "row": "tso.sg_capability[7,0,0,5]",
+        "family": "tso.sg_capability",
+        "r": 4.712460945360397e-06,
+        "radius": 0.002170820339263569
+       },
+       {
+        "qrow": 101,
+        "row": "tso.sg_capability[7,0,0,19]",
+        "family": "tso.sg_capability",
+        "r": 4.687235217663798e-06,
+        "radius": 0.0021650023597363116
+       },
+       {
+        "qrow": 102,
+        "row": "tso.sg_capability[8,0,0,5]",
+        "family": "tso.sg_capability",
+        "r": 2.903329942380251e-06,
+        "radius": 0.0017039160608375787
+       },
+       {
+        "qrow": 116,
+        "row": "tso.sg_capability[8,0,0,19]",
+        "family": "tso.sg_capability",
+        "r": 2.405377696207533e-06,
+        "radius": 0.0015509280112911538
+       },
+       {
+        "qrow": 357,
+        "row": "dso_5.sg_capability[2,0,0,5]",
+        "family": "dso.sg_capability",
+        "r": 2.7392302519576657e-06,
+        "radius": 0.0016550620084932364
+       },
+       {
+        "qrow": 371,
+        "row": "dso_5.sg_capability[2,0,0,19]",
+        "family": "dso.sg_capability",
+        "r": 2.4887004104118435e-06,
+        "radius": 0.0015775615393422355
+       },
+       {
+        "qrow": 372,
+        "row": "dso_5.sg_capability[3,0,0,5]",
+        "family": "dso.sg_capability",
+        "r": 4.846668125493367e-06,
+        "radius": 0.0022015149614511747
+       },
+       {
+        "qrow": 386,
+        "row": "dso_5.sg_capability[3,0,0,19]",
+        "family": "dso.sg_capability",
+        "r": 4.845586767709035e-06,
+        "radius": 0.002201269353738664
+       },
+       {
+        "qrow": 387,
+        "row": "dso_5.sg_capability[4,0,0,5]",
+        "family": "dso.sg_capability",
+        "r": 6.578541291275891e-07,
+        "radius": 0.0008110820729911303
+       },
+       {
+        "qrow": 388,
+        "row": "dso_5.sg_capability[4,0,0,6]",
+        "family": "dso.sg_capability",
+        "r": 6.45773641403592e-05,
+        "radius": 0.00803600423969271
+       },
+       {
+        "qrow": 400,
+        "row": "dso_5.sg_capability[4,0,0,18]",
+        "family": "dso.sg_capability",
+        "r": 8.378561941783645e-05,
+        "radius": 0.009153448498671769
+       },
+       {
+        "qrow": 401,
+        "row": "dso_5.sg_capability[4,0,0,19]",
+        "family": "dso.sg_capability",
+        "r": 7.883110133599953e-07,
+        "radius": 0.0008878688041371852
+       },
+       {
+        "qrow": 1578,
+        "row": "dso_7.sg_capability[3,0,0,5]",
+        "family": "dso.sg_capability",
+        "r": 1.0010938151411283e-06,
+        "radius": 0.001000546758098355
+       },
+       {
+        "qrow": 1579,
+        "row": "dso_7.sg_capability[3,0,0,6]",
+        "family": "dso.sg_capability",
+        "r": 9.290243680767041e-05,
+        "radius": 0.009638591017761383
+       },
+       {
+        "qrow": 1592,
+        "row": "dso_7.sg_capability[3,0,0,19]",
+        "family": "dso.sg_capability",
+        "r": 9.906626799268626e-07,
+        "radius": 0.0009953203905913224
+       },
+       {
+        "qrow": 1593,
+        "row": "dso_7.sg_capability[4,0,0,5]",
+        "family": "dso.sg_capability",
+        "r": 1.3722153942272057e-06,
+        "radius": 0.0011714159783045499
+       },
+       {
+        "qrow": 1607,
+        "row": "dso_7.sg_capability[4,0,0,19]",
+        "family": "dso.sg_capability",
+        "r": 1.3164441865011966e-06,
+        "radius": 0.0011473640165619613
+       },
+       {
+        "qrow": 2760,
+        "row": "dso_9.sg_capability[2,0,0,5]",
+        "family": "dso.sg_capability",
+        "r": 7.931303208255203e-06,
+        "radius": 0.0028162569499701555
+       },
+       {
+        "qrow": 2774,
+        "row": "dso_9.sg_capability[2,0,0,19]",
+        "family": "dso.sg_capability",
+        "r": 9.25552029187278e-06,
+        "radius": 0.00304228866018213
+       },
+       {
+        "qrow": 2775,
+        "row": "dso_9.sg_capability[3,0,0,5]",
+        "family": "dso.sg_capability",
+        "r": 1.0051053209743277e-05,
+        "radius": 0.003170339604796823
+       },
+       {
+        "qrow": 2789,
+        "row": "dso_9.sg_capability[3,0,0,19]",
+        "family": "dso.sg_capability",
+        "r": 1.1060829649315954e-05,
+        "radius": 0.0033257825619417685
+       },
+       {
+        "qrow": 2790,
+        "row": "dso_9.sg_capability[4,0,0,5]",
+        "family": "dso.sg_capability",
+        "r": 1.0313100789467348e-05,
+        "radius": 0.003211401686097108
+       },
+       {
+        "qrow": 2804,
+        "row": "dso_9.sg_capability[4,0,0,19]",
+        "family": "dso.sg_capability",
+        "r": 1.0790240766918394e-05,
+        "radius": 0.003284850189417836
+       }
+      ]
+     }
+    }
+   }
+  },
+  "unit_n7_2025_Spring_C": {
+   "cell": "unit_n7",
+   "year": 2025,
+   "day": "Spring",
+   "variant": "C",
+   "instance": {
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "certification_cycle": 112,
+    "gross_recorded": 653599356.2420883,
+    "eval_dir": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1"
+   },
+   "lp": "data/SRP1/Results/P516D0/t01c/lp/unit_n7/2025_Spring_calendar.lp",
+   "lp_sha256": "3eb15218413298746ba1fdf61cc665a8ab96b82c17eff3a6e88337e1faebbb91",
+   "name_map_sha256": "68f3e554b5657e34e4bbacfc7521a1ebe225709de2b8eb35d59bc05642f82b75",
+   "lp_size": {
+    "NumVars": 27310,
+    "NumConstrs": 19454,
+    "NumQConstrs": 3981,
+    "NumNZs": 69301,
+    "NumQCNZs": 11418,
+    "NumQNZs": 0
+   },
+   "conic_inventory": {
+    "n_columns": 27310,
+    "n_conic_rows": 70606,
+    "zero_cone_dim": 8690,
+    "nonneg_cone_dim": 49109,
+    "n_soc": 3405,
+    "soc_dims": [
+     3,
+     4
+    ],
+    "soc_patterns": {
+     "rotated": 2592,
+     "lorentz": 288,
+     "circle": 525
+    },
+    "n_lp_eq_rows": 7772,
+    "n_lp_le_rows": 6522,
+    "n_lp_ge_rows": 5160,
+    "n_lp_quadratic_rows": 3981,
+    "n_fixed_columns": 390,
+    "n_finite_ub_not_fixed": 18190,
+    "n_finite_lb_not_fixed": 19237,
+    "dims_consistent": true,
+    "presolve": {
+     "n_columns_pinned": 1104,
+     "n_lorentz_cones": 864,
+     "n_lorentz_cones_replaced": 576,
+     "n_zero_rows_added": 528,
+     "n_components_already_pinned_no_row": 624,
+     "n_replaced_cones_with_no_row": 48,
+     "n_distinct_pinned_heads": 6,
+     "pinned_heads": [
+      "esso_5.es_s_rated[0]",
+      "esso_5.es_s_rated[1]",
+      "esso_5.es_s_rated[2]",
+      "esso_9.es_s_rated[0]",
+      "esso_9.es_s_rated[1]",
+      "esso_9.es_s_rated[2]"
+     ],
+     "n_lorentz_cones_kept": 288,
+     "kept_heads": [
+      "esso_7.es_s_rated[0]",
+      "esso_7.es_s_rated[1]",
+      "esso_7.es_s_rated[2]"
+     ]
+    }
+   },
+   "read_s": 0.17212820053100586,
+   "build_s": 0.05092978477478027,
+   "gate_i": {
+    "obj_lp_at_certified": 63954613.59366634,
+    "obj_clarabel_at_certified": 63954613.59366634,
+    "obj_t01c_recorded": 63954613.59367608,
+    "rel_vs_lp": 0.0,
+    "rel_vs_t01c": 1.523793026519044e-13
+   },
+   "gate_ii": {
+    "identity": {
+     "n_linear_and_bound_rows": 57271,
+     "n_cones": 3405,
+     "n_over_tolerance": {
+      "linear_or_bound": 0,
+      "cone": 0,
+      "presolved_cone": 0
+     },
+     "worst_ratio_to_tolerance": {
+      "linear_or_bound": 0.0,
+      "cone": 0.0935345291544721,
+      "presolved_cone": 0.0
+     },
+     "worst_row": {
+      "linear_or_bound": null,
+      "cone": "dso_7.branch_flow_limit_ji[31,0,0,20]",
+      "presolved_cone": null
+     },
+     "max_soc_violation_conic": 6.141345951735338e-06,
+     "presolved": {
+      "n_replaced_cones": 576,
+      "n_zero_rows": 528,
+      "max_abs_zero_row_slack_at_point": 0.0,
+      "max_abs_pinned_head_at_point": 1.3775324423698682e-40,
+      "max_lp_quadratic_violation_of_replaced_rows_at_point": 5.235860293445425e-49,
+      "note": "identity |s_bar|^2 + sum_pinned d x_i^2 - e t^2 == q(x) - rhs per replaced cone; at the point the zero rows are violated by |sqrt(d) x_i| where the LP row is violated by sum d x_i^2 - e t^2 (same set, different violation measure)"
+     }
+    },
+    "classes": {
+     "coupling (T0.1c: residual = recorded inter-copy mismatch)": {
+      "n_rows_violated": 408,
+      "max_violation": 1.9050954821686616e-05,
+      "max_ratio_to_threshold": 0.0,
+      "n_over_threshold": 0,
+      "worst_row": null,
+      "families": {
+       "top.d0_cpl_v_W": [
+        72,
+        1.1712039069688984e-05
+       ],
+       "top.d0_cpl_pf_p": [
+        72,
+        1.9050954821686616e-05
+       ],
+       "top.d0_cpl_pf_q": [
+        72,
+        1.697511130785423e-06
+       ],
+       "top.d0_cpl_ess_p_tso_esso": [
+        72,
+        1.118854871229799e-06
+       ],
+       "top.d0_cpl_ess_p_dso_esso": [
+        72,
+        6.460573971126157e-07
+       ],
+       "top.d0_cpl_ess_q_tso_esso": [
+        24,
+        1.777423441722617e-08
+       ],
+       "top.d0_cpl_ess_q_dso_esso": [
+        24,
+        1.7770438175083375e-08
+       ]
+      }
+     },
+     "inequality, IPOPT bound relaxation + mapping delta": {
+      "n_rows_violated": 80,
+      "max_violation": 1.1591915427544563e-08,
+      "max_ratio_to_threshold": 0.8163319487977025,
+      "n_over_threshold": 0,
+      "worst_row": "dso_7.voltage_magnitude_upper_cons[1,0,0,12]",
+      "families": {
+       "tso.voltage_magnitude_upper_cons": [
+        8,
+        9.809974832464263e-09
+       ],
+       "dso.voltage_magnitude_upper_cons": [
+        71,
+        1.1591915427544563e-08
+       ],
+       "dso.d0_tr_U_upper": [
+        1,
+        8.393230777059557e-09
+       ]
+      }
+     },
+     "equality, mapping delta": {
+      "n_rows_violated": 6647,
+      "max_violation": 5.4466327281677e-12,
+      "max_ratio_to_threshold": 0.002593606758823397,
+      "n_over_threshold": 0,
+      "worst_row": "dso_9.node_balance_q[21,0,0,14]",
+      "families": {
+       "tso.sess_pnet_def": [
+        13,
+        2.0649116426314368e-19
+       ],
+       "tso.sess_pch_hat_link": [
+        24,
+        2.4286128125895683e-19
+       ],
+       "tso.sess_pdch_hat_link": [
+        24,
+        2.6020858722122004e-19
+       ],
+       "tso.node_balance_p": [
+        215,
+        2.0539125955565396e-15
+       ],
+       "tso.node_balance_q": [
+        215,
+        1.2032042029375134e-14
+       ],
+       "tso.expected_interface_pf_p_def": [
+        29,
+        1.1102230246251565e-16
+       ],
+       "tso.expected_interface_pf_q_def": [
+        18,
+        2.7755575615628914e-17
+       ],
+       "tso.expected_shared_ess_p_def": [
+        6,
+        1.2256037868165575e-21
+       ],
+       "dso.flex_energy_balance_p": [
+        96,
+        2.2693509688415305e-16
+       ],
+       "dso.node_balance_p": [
+        2232,
+        4.072905207541666e-12
+       ],
+       "dso.node_balance_q": [
+        2232,
+        5.4466327281677e-12
+       ],
+       "dso.d0_env_rewrite": [
+        576,
+        1.3969734207202877e-13
+       ],
+       "esso.rated_s_capacity_unit": [
+        4,
+        2.2958874039497803e-41
+       ],
+       "esso.rated_s_capacity": [
+        2,
+        1.3775324423698682e-40
+       ],
+       "esso.available_s_capacity_unit": [
+        7,
+        2.2958874039497803e-41
+       ],
+       "esso.energy_storage_operation_agg": [
+        864,
+        1.4849232954361469e-15
+       ],
+       "dso.sess_pnet_def": [
+        14,
+        2.1018044149391847e-19
+       ],
+       "dso.sess_pch_hat_link": [
+        24,
+        1.9081958546467003e-19
+       ],
+       "dso.sess_pdch_hat_link": [
+        24,
+        3.2960730902618495e-19
+       ],
+       "dso.expected_interface_pf_p_def": [
+        11,
+        1.1102230246251565e-16
+       ],
+       "dso.expected_interface_pf_q_def": [
+        11,
+        1.3877787807814457e-17
+       ],
+       "esso.energy_storage_charging_discharging": [
+        3,
+        1.6223949684923482e-15
+       ],
+       "esso.energy_storage_capacity_degradation": [
+        3,
+        1.5483111603573192e-13
+       ]
+      }
+     },
+     "variant-C capacity shift (section 14.1)": {
+      "n_rows_violated": 44,
+      "max_violation": 0.00023413861119744774,
+      "max_ratio_to_threshold": 0.4682772223948955,
+      "n_over_threshold": 0,
+      "worst_row": "tso.sess_soc_final[1,0,0]",
+      "families": {
+       "tso.sess_soc_def": [
+        17,
+        0.00023413861119744687
+       ],
+       "tso.sess_soc_limit_lower": [
+        7,
+        4.6837697743861806e-05
+       ],
+       "tso.sess_soc_final": [
+        1,
+        0.00023413861119744774
+       ],
+       "dso.sess_soc_def": [
+        11,
+        0.00023413861119744774
+       ],
+       "dso.sess_soc_limit_lower": [
+        7,
+        4.683727815608561e-05
+       ],
+       "dso.sess_soc_final": [
+        1,
+        0.00023413861119744774
+       ]
+      }
+     },
+     "bound, IPOPT bound relaxation + mapping delta": {
+      "n_rows_violated": 13589,
+      "max_violation": 9.999191554410052e-09,
+      "max_ratio_to_threshold": 0.8263794673066153,
+      "n_over_threshold": 0,
+      "worst_row": "tso.slack_shared_es_soc_final_up[1,0,0]",
+      "families": {
+       "tso.pg.lb": [
+        30,
+        9.946470367253911e-09
+       ],
+       "tso.slack_v_sqr_down.lb": [
+        120,
+        9.998181818181848e-09
+       ],
+       "tso.slack_v_sqr_up.lb": [
+        120,
+        9.99818181818184e-09
+       ],
+       "tso.slack_shared_es_soc_final_up.lb": [
+        1,
+        9.999191554410052e-09
+       ],
+       "tso.slack_shared_es_soc_final_down.lb": [
+        1,
+        9.998961641351055e-09
+       ],
+       "dso.flex_p_down.lb": [
+        1076,
+        9.989612098560184e-09
+       ],
+       "dso.flex_q_down.lb": [
+        2304,
+        9.984035371055847e-09
+       ],
+       "dso.slack_v_sqr_down.lb": [
+        2304,
+        9.998181818181848e-09
+       ],
+       "dso.slack_v_sqr_up.lb": [
+        2304,
+        9.998181818181823e-09
+       ],
+       "dso.slack_flex_p_balance_up.lb": [
+        96,
+        9.999150252393023e-09
+       ],
+       "dso.slack_flex_p_balance_down.lb": [
+        96,
+        9.999026295176502e-09
+       ],
+       "dso.slack_shared_es_soc_final_up.lb": [
+        1,
+        9.99909492593356e-09
+       ],
+       "dso.slack_shared_es_soc_final_down.lb": [
+        1,
+        9.999086856437956e-09
+       ],
+       "dso.flex_p_up.lb": [
+        1440,
+        9.990403317688888e-09
+       ],
+       "dso.flex_q_up.lb": [
+        461,
+        9.78637208684763e-09
+       ],
+       "esso.es_pch_per_unit.lb": [
+        214,
+        9.994183114762441e-09
+       ],
+       "esso.es_pdch_per_unit.lb": [
+        223,
+        9.99418337930974e-09
+       ],
+       "dso.flex_p_down.ub": [
+        605,
+        9.980921249208574e-09
+       ],
+       "dso.flex_p_up.ub": [
+        817,
+        9.986275146221801e-09
+       ],
+       "dso.flex_q_up.ub": [
+        1375,
+        9.74713493005083e-09
+       ]
+      }
+     },
+     "quadratic, IPOPT bound relaxation + mapping delta": {
+      "n_rows_violated": 2295,
+      "max_violation": 9.999987341077266e-09,
+      "max_ratio_to_threshold": 0.8264452347996132,
+      "n_over_threshold": 0,
+      "worst_row": "dso_5.sg_capability[4,0,0,5]",
+      "families": {
+       "tso.sg_capability": [
+        117,
+        9.99998001836196e-09
+       ],
+       "tso.sess_converter_capability": [
+        3,
+        5.596677964915472e-09
+       ],
+       "tso.d0_cone": [
+        105,
+        6.961662149529424e-16
+       ],
+       "dso.sg_capability": [
+        216,
+        9.999987341077266e-09
+       ],
+       "dso.d0_cone": [
+        1191,
+        8.402465192808989e-16
+       ],
+       "dso.d0_tr_cone": [
+        38,
+        6.44062253752015e-16
+       ],
+       "esso.energy_storage_operation_agg": [
+        618,
+        9.998180607877932e-09
+       ],
+       "dso.sess_converter_capability": [
+        3,
+        3.2329166224803634e-09
+       ],
+       "dso.branch_flow_limit": [
+        4,
+        9.961338694880473e-09
+       ]
+      }
+     }
+    },
+    "n_over_class_threshold": 0
+   },
+   "gross_group": 63954613.593676075,
+   "q_cert_plus_group": 63955818.58270402,
+   "q_cert_plus_correction": 1204.9890279471874,
+   "presolve": {
+    "rule": "pinned: fixed at LB = UB = 0, or the only unpinned nonzero column of an = row with rhs exactly 0 (iterated); a Lorentz cone with a pinned head is replaced by zero rows sqrt(d_i) x_i = 0",
+    "n_columns_pinned": 1104,
+    "pinned_by_row_family": {
+     "esso.available_s_capacity_unit": 24,
+     "esso.d0_available_e_eq_calendar": 24,
+     "esso.energy_storage_operation_agg": 528,
+     "esso.rated_e_capacity": 6,
+     "esso.rated_e_capacity_unit": 15,
+     "esso.rated_s_capacity": 6,
+     "esso.rated_s_capacity_unit": 15,
+     "fixed at 0": 390,
+     "top.d0_cpl_ess_p_tso_esso": 48,
+     "top.d0_cpl_ess_q_tso_esso": 48
+    },
+    "n_lorentz_cones": 864,
+    "n_lorentz_cones_replaced": 576,
+    "n_lorentz_cones_kept": 288,
+    "replaced_by_family": {
+     "esso.energy_storage_operation_agg": 576
+    },
+    "n_zero_rows_added": 528,
+    "n_components_already_pinned_no_row": 624,
+    "n_replaced_cones_with_no_row": 48,
+    "n_distinct_pinned_heads": 6,
+    "pinned_heads": [
+     "esso_5.es_s_rated[0]",
+     "esso_5.es_s_rated[1]",
+     "esso_5.es_s_rated[2]",
+     "esso_9.es_s_rated[0]",
+     "esso_9.es_s_rated[1]",
+     "esso_9.es_s_rated[2]"
+    ],
+    "kept_heads": [
+     "esso_7.es_s_rated[0]",
+     "esso_7.es_s_rated[1]",
+     "esso_7.es_s_rated[2]"
+    ],
+    "head_chains": [
+     {
+      "column": "esso_5.es_s_rated[0]",
+      "how": "eq row, rhs 0",
+      "round": 1,
+      "row": "esso_5.rated_s_capacity[1]",
+      "inputs": [
+       {
+        "column": "esso_5.es_s_rated_per_unit[0,0]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_5.rated_s_capacity_unit[1]",
+        "inputs": []
+       }
+      ]
+     },
+     {
+      "column": "esso_5.es_s_rated[1]",
+      "how": "eq row, rhs 0",
+      "round": 1,
+      "row": "esso_5.rated_s_capacity[2]",
+      "inputs": [
+       {
+        "column": "esso_5.es_s_rated_per_unit[0,1]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_5.rated_s_capacity_unit[2]",
+        "inputs": []
+       },
+       {
+        "column": "esso_5.es_s_rated_per_unit[1,1]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_5.rated_s_capacity_unit[4]",
+        "inputs": []
+       }
+      ]
+     },
+     {
+      "column": "esso_5.es_s_rated[2]",
+      "how": "eq row, rhs 0",
+      "round": 1,
+      "row": "esso_5.rated_s_capacity[3]",
+      "inputs": [
+       {
+        "column": "esso_5.es_s_rated_per_unit[0,2]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_5.rated_s_capacity_unit[3]",
+        "inputs": []
+       },
+       {
+        "column": "esso_5.es_s_rated_per_unit[1,2]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_5.rated_s_capacity_unit[5]",
+        "inputs": []
+       },
+       {
+        "column": "esso_5.es_s_rated_per_unit[2,2]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_5.rated_s_capacity_unit[6]",
+        "inputs": []
+       }
+      ]
+     },
+     {
+      "column": "esso_9.es_s_rated[0]",
+      "how": "eq row, rhs 0",
+      "round": 1,
+      "row": "esso_9.rated_s_capacity[1]",
+      "inputs": [
+       {
+        "column": "esso_9.es_s_rated_per_unit[0,0]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_9.rated_s_capacity_unit[1]",
+        "inputs": []
+       }
+      ]
+     },
+     {
+      "column": "esso_9.es_s_rated[1]",
+      "how": "eq row, rhs 0",
+      "round": 1,
+      "row": "esso_9.rated_s_capacity[2]",
+      "inputs": [
+       {
+        "column": "esso_9.es_s_rated_per_unit[0,1]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_9.rated_s_capacity_unit[2]",
+        "inputs": []
+       },
+       {
+        "column": "esso_9.es_s_rated_per_unit[1,1]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_9.rated_s_capacity_unit[4]",
+        "inputs": []
+       }
+      ]
+     },
+     {
+      "column": "esso_9.es_s_rated[2]",
+      "how": "eq row, rhs 0",
+      "round": 1,
+      "row": "esso_9.rated_s_capacity[3]",
+      "inputs": [
+       {
+        "column": "esso_9.es_s_rated_per_unit[0,2]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_9.rated_s_capacity_unit[3]",
+        "inputs": []
+       },
+       {
+        "column": "esso_9.es_s_rated_per_unit[1,2]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_9.rated_s_capacity_unit[5]",
+        "inputs": []
+       },
+       {
+        "column": "esso_9.es_s_rated_per_unit[2,2]",
+        "how": "eq row, rhs 0",
+        "round": 1,
+        "row": "esso_9.rated_s_capacity_unit[6]",
+        "inputs": []
+       }
+      ]
+     }
+    ],
+    "not_altered": {
+     "implied_equality_rows_already_in_the_lp": {
+      "count": 144,
+      "by_family": {
+       "top.d0_cpl_ess_p_dso_esso": 48,
+       "top.d0_cpl_ess_q_dso_esso": 48,
+       "esso.energy_storage_operation_agg": 48
+      },
+      "note": "rhs-0 rows whose every column is pinned by other rows: linearly dependent on them (a rank deficiency of the zero cone present in the LP itself)"
+     },
+     "rotated_cones_with_a_pinned_factor": {
+      "count": 0,
+      "rows": []
+     },
+     "circles_with_r_eq_0": {
+      "count": 0,
+      "rows": []
+     },
+     "small_circles_r_lt_1e-4": {
+      "count": 73,
+      "by_family": {
+       "tso.sg_capability": {
+        "count": 6,
+        "r_min": 1.5830632811195253e-06,
+        "r_max": 4.712460945360397e-06
+       },
+       "tso.sess_converter_capability": {
+        "count": 24,
+        "r_min": 6.25e-06,
+        "r_max": 6.25e-06
+       },
+       "dso.sg_capability": {
+        "count": 19,
+        "r_min": 6.578541291275891e-07,
+        "r_max": 9.290243680767041e-05
+       },
+       "dso.sess_converter_capability": {
+        "count": 24,
+        "r_min": 6.25e-06,
+        "r_max": 6.25e-06
+       }
+      },
+      "rows": [
+       {
+        "qrow": 72,
+        "row": "tso.sg_capability[6,0,0,5]",
+        "family": "tso.sg_capability",
+        "r": 1.5830632811195253e-06,
+        "radius": 0.0012581984267672271
+       },
+       {
+        "qrow": 86,
+        "row": "tso.sg_capability[6,0,0,19]",
+        "family": "tso.sg_capability",
+        "r": 2.017080463207892e-06,
+        "radius": 0.001420239579510405
+       },
+       {
+        "qrow": 87,
+        "row": "tso.sg_capability[7,0,0,5]",
+        "family": "tso.sg_capability",
+        "r": 4.712460945360397e-06,
+        "radius": 0.002170820339263569
+       },
+       {
+        "qrow": 101,
+        "row": "tso.sg_capability[7,0,0,19]",
+        "family": "tso.sg_capability",
+        "r": 4.687235217663798e-06,
+        "radius": 0.0021650023597363116
+       },
+       {
+        "qrow": 102,
+        "row": "tso.sg_capability[8,0,0,5]",
+        "family": "tso.sg_capability",
+        "r": 2.903329942380251e-06,
+        "radius": 0.0017039160608375787
+       },
+       {
+        "qrow": 116,
+        "row": "tso.sg_capability[8,0,0,19]",
+        "family": "tso.sg_capability",
+        "r": 2.405377696207533e-06,
+        "radius": 0.0015509280112911538
+       },
+       {
+        "qrow": 117,
+        "row": "tso.sess_converter_capability[1,0,0,0]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 118,
+        "row": "tso.sess_converter_capability[1,0,0,1]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 119,
+        "row": "tso.sess_converter_capability[1,0,0,2]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 120,
+        "row": "tso.sess_converter_capability[1,0,0,3]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 121,
+        "row": "tso.sess_converter_capability[1,0,0,4]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 122,
+        "row": "tso.sess_converter_capability[1,0,0,5]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 123,
+        "row": "tso.sess_converter_capability[1,0,0,6]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 124,
+        "row": "tso.sess_converter_capability[1,0,0,7]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 125,
+        "row": "tso.sess_converter_capability[1,0,0,8]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 126,
+        "row": "tso.sess_converter_capability[1,0,0,9]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 127,
+        "row": "tso.sess_converter_capability[1,0,0,10]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 128,
+        "row": "tso.sess_converter_capability[1,0,0,11]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 129,
+        "row": "tso.sess_converter_capability[1,0,0,12]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 130,
+        "row": "tso.sess_converter_capability[1,0,0,13]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 131,
+        "row": "tso.sess_converter_capability[1,0,0,14]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 132,
+        "row": "tso.sess_converter_capability[1,0,0,15]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 133,
+        "row": "tso.sess_converter_capability[1,0,0,16]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 134,
+        "row": "tso.sess_converter_capability[1,0,0,17]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 135,
+        "row": "tso.sess_converter_capability[1,0,0,18]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 136,
+        "row": "tso.sess_converter_capability[1,0,0,19]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 137,
+        "row": "tso.sess_converter_capability[1,0,0,20]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 138,
+        "row": "tso.sess_converter_capability[1,0,0,21]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 139,
+        "row": "tso.sess_converter_capability[1,0,0,22]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 140,
+        "row": "tso.sess_converter_capability[1,0,0,23]",
+        "family": "tso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 381,
+        "row": "dso_5.sg_capability[2,0,0,5]",
+        "family": "dso.sg_capability",
+        "r": 2.7392302519576657e-06,
+        "radius": 0.0016550620084932364
+       },
+       {
+        "qrow": 395,
+        "row": "dso_5.sg_capability[2,0,0,19]",
+        "family": "dso.sg_capability",
+        "r": 2.4887004104118435e-06,
+        "radius": 0.0015775615393422355
+       },
+       {
+        "qrow": 396,
+        "row": "dso_5.sg_capability[3,0,0,5]",
+        "family": "dso.sg_capability",
+        "r": 4.846668125493367e-06,
+        "radius": 0.0022015149614511747
+       },
+       {
+        "qrow": 410,
+        "row": "dso_5.sg_capability[3,0,0,19]",
+        "family": "dso.sg_capability",
+        "r": 4.845586767709035e-06,
+        "radius": 0.002201269353738664
+       },
+       {
+        "qrow": 411,
+        "row": "dso_5.sg_capability[4,0,0,5]",
+        "family": "dso.sg_capability",
+        "r": 6.578541291275891e-07,
+        "radius": 0.0008110820729911303
+       },
+       {
+        "qrow": 412,
+        "row": "dso_5.sg_capability[4,0,0,6]",
+        "family": "dso.sg_capability",
+        "r": 6.45773641403592e-05,
+        "radius": 0.00803600423969271
+       },
+       {
+        "qrow": 424,
+        "row": "dso_5.sg_capability[4,0,0,18]",
+        "family": "dso.sg_capability",
+        "r": 8.378561941783645e-05,
+        "radius": 0.009153448498671769
+       },
+       {
+        "qrow": 425,
+        "row": "dso_5.sg_capability[4,0,0,19]",
+        "family": "dso.sg_capability",
+        "r": 7.883110133599953e-07,
+        "radius": 0.0008878688041371852
+       },
+       {
+        "qrow": 1602,
+        "row": "dso_7.sg_capability[3,0,0,5]",
+        "family": "dso.sg_capability",
+        "r": 1.0010938151411283e-06,
+        "radius": 0.001000546758098355
+       },
+       {
+        "qrow": 1603,
+        "row": "dso_7.sg_capability[3,0,0,6]",
+        "family": "dso.sg_capability",
+        "r": 9.290243680767041e-05,
+        "radius": 0.009638591017761383
+       },
+       {
+        "qrow": 1616,
+        "row": "dso_7.sg_capability[3,0,0,19]",
+        "family": "dso.sg_capability",
+        "r": 9.906626799268626e-07,
+        "radius": 0.0009953203905913224
+       },
+       {
+        "qrow": 1617,
+        "row": "dso_7.sg_capability[4,0,0,5]",
+        "family": "dso.sg_capability",
+        "r": 1.3722153942272057e-06,
+        "radius": 0.0011714159783045499
+       },
+       {
+        "qrow": 1631,
+        "row": "dso_7.sg_capability[4,0,0,19]",
+        "family": "dso.sg_capability",
+        "r": 1.3164441865011966e-06,
+        "radius": 0.0011473640165619613
+       },
+       {
+        "qrow": 1632,
+        "row": "dso_7.sess_converter_capability[0,0,0,0]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1633,
+        "row": "dso_7.sess_converter_capability[0,0,0,1]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1634,
+        "row": "dso_7.sess_converter_capability[0,0,0,2]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1635,
+        "row": "dso_7.sess_converter_capability[0,0,0,3]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1636,
+        "row": "dso_7.sess_converter_capability[0,0,0,4]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1637,
+        "row": "dso_7.sess_converter_capability[0,0,0,5]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1638,
+        "row": "dso_7.sess_converter_capability[0,0,0,6]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1639,
+        "row": "dso_7.sess_converter_capability[0,0,0,7]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1640,
+        "row": "dso_7.sess_converter_capability[0,0,0,8]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1641,
+        "row": "dso_7.sess_converter_capability[0,0,0,9]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1642,
+        "row": "dso_7.sess_converter_capability[0,0,0,10]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1643,
+        "row": "dso_7.sess_converter_capability[0,0,0,11]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1644,
+        "row": "dso_7.sess_converter_capability[0,0,0,12]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1645,
+        "row": "dso_7.sess_converter_capability[0,0,0,13]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1646,
+        "row": "dso_7.sess_converter_capability[0,0,0,14]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1647,
+        "row": "dso_7.sess_converter_capability[0,0,0,15]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1648,
+        "row": "dso_7.sess_converter_capability[0,0,0,16]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1649,
+        "row": "dso_7.sess_converter_capability[0,0,0,17]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1650,
+        "row": "dso_7.sess_converter_capability[0,0,0,18]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1651,
+        "row": "dso_7.sess_converter_capability[0,0,0,19]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1652,
+        "row": "dso_7.sess_converter_capability[0,0,0,20]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1653,
+        "row": "dso_7.sess_converter_capability[0,0,0,21]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1654,
+        "row": "dso_7.sess_converter_capability[0,0,0,22]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 1655,
+        "row": "dso_7.sess_converter_capability[0,0,0,23]",
+        "family": "dso.sess_converter_capability",
+        "r": 6.25e-06,
+        "radius": 0.0025
+       },
+       {
+        "qrow": 2808,
+        "row": "dso_9.sg_capability[2,0,0,5]",
+        "family": "dso.sg_capability",
+        "r": 7.931303208255203e-06,
+        "radius": 0.0028162569499701555
+       },
+       {
+        "qrow": 2822,
+        "row": "dso_9.sg_capability[2,0,0,19]",
+        "family": "dso.sg_capability",
+        "r": 9.25552029187278e-06,
+        "radius": 0.00304228866018213
+       },
+       {
+        "qrow": 2823,
+        "row": "dso_9.sg_capability[3,0,0,5]",
+        "family": "dso.sg_capability",
+        "r": 1.0051053209743277e-05,
+        "radius": 0.003170339604796823
+       },
+       {
+        "qrow": 2837,
+        "row": "dso_9.sg_capability[3,0,0,19]",
+        "family": "dso.sg_capability",
+        "r": 1.1060829649315954e-05,
+        "radius": 0.0033257825619417685
+       },
+       {
+        "qrow": 2838,
+        "row": "dso_9.sg_capability[4,0,0,5]",
+        "family": "dso.sg_capability",
+        "r": 1.0313100789467348e-05,
+        "radius": 0.003211401686097108
+       },
+       {
+        "qrow": 2852,
+        "row": "dso_9.sg_capability[4,0,0,19]",
+        "family": "dso.sg_capability",
+        "r": 1.0790240766918394e-05,
+        "radius": 0.003284850189417836
+       }
+      ]
+     }
+    }
+   }
+  }
+ },
+ "readings": {
+  "P7_pairs": {
+   "it200": {
+    "available": true,
+    "both_converged": false,
+    "statuses": [
+     "MaxIterations",
+     "MaxIterations"
+    ],
+    "Q_LB_x0": 16801117.06398163,
+    "Q_LB_unit": 46748435.359020054,
+    "Q_LB_unit_minus_x0": 29947318.295038424,
+    "tol": 0.8314277641475201,
+    "held": false,
+    "delta_Q_cert_plus_x0_minus_unit": 40570.922159448266,
+    "note": "not both converged: no P7 gate (a reading between iterates is no bound)"
+   },
+   "it5000": {
+    "available": true,
+    "both_converged": false,
+    "statuses": [
+     "NumericalError",
+     "InsufficientProgress"
+    ],
+    "Q_LB_x0": 45936105.166471764,
+    "Q_LB_unit": 54434551.15504019,
+    "Q_LB_unit_minus_x0": 8498445.988568425,
+    "tol": 0.0021503865718841553,
+    "held": false,
+    "delta_Q_cert_plus_x0_minus_unit": 40570.922159448266,
+    "note": "not both converged: no P7 gate (a reading between iterates is no bound)"
+   }
+  },
+  "projection_108": {
+   "mean_read_plus_build_s": 0.3719888925552368,
+   "mean_solve_s_per_iteration": 0.010111238291005246,
+   "projected_72_reads_builds_s": 26.78320026397705,
+   "peak_rss_bytes": 614907904,
+   "first_converged_solve_per_group": {},
+   "note": "solver-side only; excludes T0.2 post-processing (Lagrangian margin, rank, capacity sensitivity, block unpickling) and the 24 IPOPT cross-checks; the fixed-mode and freeze solves are assumed to cost one group solve each; two groups of 72 measured",
+   "basis": "NOT converged on both groups: 108 x the mean it5000 wall (a floor at the cap)",
+   "mean_setup_plus_solve_s": 13.357746005058289,
+   "projected_108_solves_s": 1442.6365685462952,
+   "projected_total_s": 1469.4197688102722
+  }
+ },
+ "predictions": {
+  "B1": {
+   "per_solve": {
+    "x0_2025_Spring_C.presolve.it200": {
+     "status": "MaxIterations",
+     "iterations": 200
+    },
+    "x0_2025_Spring_C.presolve.it5000": {
+     "status": "NumericalError",
+     "iterations": 1436
+    },
+    "unit_n7_2025_Spring_C.presolve.it200": {
+     "status": "MaxIterations",
+     "iterations": 200
+    },
+    "unit_n7_2025_Spring_C.presolve.it5000": {
+     "status": "InsufficientProgress",
+     "iterations": 1235
+    }
+   },
+   "verdict": "FAILED",
+   "prediction": "with the presolve, both groups converge (status Solved) within 200 iterations"
+  },
+  "B2": {
+   "groups_failed_at_200": [
+    "x0_2025_Spring_C",
+    "unit_n7_2025_Spring_C"
+   ],
+   "it5000_statuses": {
+    "x0_2025_Spring_C.presolve.it5000": "NumericalError",
+    "unit_n7_2025_Spring_C.presolve.it5000": "InsufficientProgress"
+   },
+   "verdict": "FAILED",
+   "prediction": "if B1 fails, 5,000 iterations suffice (status Solved) on the group(s) that failed at 200"
+  },
+  "B3": {
+   "verdict": "INDETERMINATE (no converged x = 0 solve)",
+   "prediction": "the converged x = 0 Q_LB lies within 1e-2 relative of Q_cert+ and containment holds"
+  },
+  "B4": {
+   "verdict": "INDETERMINATE (no converged pair)",
+   "prediction": "P7: Q_LB(unit) <= Q_LB(x0) holds between converged values"
+  },
+  "B5": {
+   "verdict": "INDETERMINATE (no converged point)",
+   "prediction": "the Gurobi-convention stationarity residual <= 1e-6 relative at a converged point"
+  }
+ },
+ "gates": {
+  "rows": [
+   {
+    "gate": "conic inventory: dimensions consistent with the LP (0 = consistent)",
+    "scope": "x0_2025_Spring_C",
+    "achieved": 0.0,
+    "threshold": 0.0,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "(i) model identity: Clarabel objective vs LP objective at the certified point (rel)",
+    "scope": "x0_2025_Spring_C",
+    "achieved": 0.0,
+    "threshold": 1e-12,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "(i) model identity: Clarabel objective at the certified point vs T0.1c recorded (rel)",
+    "scope": "x0_2025_Spring_C",
+    "achieved": 1.5204984646037933e-13,
+    "threshold": 1e-12,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "(ii) identity: rows whose Clarabel-model violation differs from the LP form beyond fp (linear_or_bound)",
+    "scope": "x0_2025_Spring_C",
+    "achieved": 0.0,
+    "threshold": 0.0,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "(ii) identity: rows whose Clarabel-model violation differs from the LP form beyond fp (cone)",
+    "scope": "x0_2025_Spring_C",
+    "achieved": 0.0,
+    "threshold": 0.0,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "(ii) identity: rows whose Clarabel-model violation differs from the LP form beyond fp (presolved_cone)",
+    "scope": "x0_2025_Spring_C",
+    "achieved": 0.0,
+    "threshold": 0.0,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "(ii) violated rows outside their stated class threshold (count)",
+    "scope": "x0_2025_Spring_C",
+    "achieved": 0.0,
+    "threshold": 0.0,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "conic inventory: dimensions consistent with the LP (0 = consistent)",
+    "scope": "unit_n7_2025_Spring_C",
+    "achieved": 0.0,
+    "threshold": 0.0,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "(i) model identity: Clarabel objective vs LP objective at the certified point (rel)",
+    "scope": "unit_n7_2025_Spring_C",
+    "achieved": 0.0,
+    "threshold": 1e-12,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "(i) model identity: Clarabel objective at the certified point vs T0.1c recorded (rel)",
+    "scope": "unit_n7_2025_Spring_C",
+    "achieved": 1.523793026519044e-13,
+    "threshold": 1e-12,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "(ii) identity: rows whose Clarabel-model violation differs from the LP form beyond fp (linear_or_bound)",
+    "scope": "unit_n7_2025_Spring_C",
+    "achieved": 0.0,
+    "threshold": 0.0,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "(ii) identity: rows whose Clarabel-model violation differs from the LP form beyond fp (cone)",
+    "scope": "unit_n7_2025_Spring_C",
+    "achieved": 0.0,
+    "threshold": 0.0,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "(ii) identity: rows whose Clarabel-model violation differs from the LP form beyond fp (presolved_cone)",
+    "scope": "unit_n7_2025_Spring_C",
+    "achieved": 0.0,
+    "threshold": 0.0,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "(ii) violated rows outside their stated class threshold (count)",
+    "scope": "unit_n7_2025_Spring_C",
+    "achieved": 0.0,
+    "threshold": 0.0,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "(iii) G-D0-4 containment: Q_LB - Q_cert+ - solver gap (<= 0)",
+    "scope": "x0_2025_Spring_C.presolve.it200",
+    "achieved": -47195272.58800037,
+    "threshold": 0.0,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "(iii) G-D0-4 containment: Q_LB - Q_cert+ - solver gap (<= 0)",
+    "scope": "x0_2025_Spring_C.presolve.it5000",
+    "achieved": -18060284.340110995,
+    "threshold": 0.0,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "(iii) G-D0-4 containment: Q_LB - Q_cert+ - solver gap (<= 0)",
+    "scope": "unit_n7_2025_Spring_C.presolve.it200",
+    "achieved": -17207383.907993205,
+    "threshold": 0.0,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "(iii) G-D0-4 containment: Q_LB - Q_cert+ - solver gap (<= 0)",
+    "scope": "unit_n7_2025_Spring_C.presolve.it5000",
+    "achieved": -9521267.428094931,
+    "threshold": 0.0,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "G-D0-6 leaf guard exact (failures: Clarabel, Pyomo 0, Gurobi 0)",
+    "scope": "process",
+    "achieved": 0.0,
+    "threshold": 0.0,
+    "pass": true,
+    "note": null
+   },
+   {
+    "gate": "containment: write-opens in the repository outside OUT_DIR (count)",
+    "scope": "process",
+    "achieved": 0.0,
+    "threshold": 0.0,
+    "pass": true,
+    "note": null
+   }
+  ],
+  "all_pass": true,
+  "failed": [],
+  "stops": [],
+  "stop_triggered": false
+ },
+ "guard": {
+  "leaf": [
+   [
+    "p516_d0_clarabel.py",
+    "_leaf_solve"
+   ]
+  ],
+  "declared_solves": 4,
+  "expected_at_verify": 4,
+  "counted_events": {
+   "clarabel": {
+    "permitted_entry": 4,
+    "permitted_solve": 4,
+    "blocked_solve": 0
+   },
+   "pyomo": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "gurobi": {
+    "permitted_entry": 0,
+    "permitted_optimize": 0,
+    "blocked_optimize": 0
+   }
+  },
+  "verify_failures": {
+   "clarabel": [],
+   "pyomo": [],
+   "gurobi": []
+  },
+  "process_launch_events": [],
+  "leaf_static_check": {
+   "names": [
+    "DefaultSettings",
+    "DefaultSolver",
+    "_STATE",
+    "asarray",
+    "dir",
+    "float",
+    "get_info",
+    "get_print_buffer",
+    "int",
+    "items",
+    "iterations",
+    "note_entry",
+    "np",
+    "obj_val",
+    "obj_val_dual",
+    "print_to_buffer",
+    "r_dual",
+    "r_prim",
+    "s",
+    "setattr",
+    "solve",
+    "solve_time",
+    "status",
+    "str",
+    "time",
+    "x",
+    "z"
+   ],
+   "project_modules_referenced": []
+  }
+ },
+ "containment": {
+  "write_opens_in_repo_outside_out_dir": []
+ },
+ "thresholds": {
+  "identity_obj_rel": 1e-12,
+  "ipopt_bound_relax": 1e-08,
+  "t01c_mapping_delta": 2.1e-09,
+  "capacity_shift_C": 0.0005,
+  "B5_stationarity_rel": 1e-06,
+  "small_circle_r": 0.0001,
+  "converged_statuses_for_the_containment_stop": [
+   "Solved",
+   "AlmostSolved"
+  ]
+ },
+ "provenance": {
+  "git_head": "bad8cb84ff5764c7e9ca8a57b7019bd78117c423",
+  "git_branch": "feature/derivative-free-planning",
+  "tracked_status_before": "M manuscript_review/W177B_CHANGE_LOG.md\n M p516_d0_clarabel.py",
+  "platform": "macOS-27.0-arm64-arm-64bit",
+  "parent_interpreter": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "started": "2026-10-31T17:44:19+0000",
+  "rehearsal": false,
+  "preflight": {
+   "ok": true,
+   "clarabel": "0.11.1",
+   "gurobipy": "13.0.1"
+  },
+  "child_HOME": "/var/folders/1_/ncv6jx9x7nlfjkv26hp5gfqc0000gn/T/p516_clarabel_home_iq1fgy0w",
+  "child_HOME_note": "HOME is an empty temporary directory in the child (restricted gurobipy licence, read only)",
+  "interpreter": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "python": "3.11.11 | packaged by conda-forge | (main, Dec  5 2024, 08:47:03) [Clang 18.1.8 ]",
+  "numpy": "2.4.2",
+  "scipy": "1.17.0",
+  "pyomo": "6.9.5",
+  "clarabel": "0.11.1",
+  "clarabel_buildinfo": "printed to run.log by clarabel.buildinfo() (returns None): None",
+  "gurobipy_reader": "13.0.1",
+  "HOME_in_child": "/var/folders/1_/ncv6jx9x7nlfjkv26hp5gfqc0000gn/T/p516_clarabel_home_iq1fgy0w",
+  "project_modules_loaded": {
+   "__main__": {
+    "file": "p516_d0_clarabel.py",
+    "sha256": "b0e991c703f531a681ddbf39b2be1f0985ab464584f439254660de613d2a57ca"
+   },
+   "branch": {
+    "file": "branch.py",
+    "sha256": "f85525f4984ef6e29263b527652abdd1d173558410f06a1bc812f5d65d6adb79"
+   },
+   "definitions": {
+    "file": "definitions.py",
+    "sha256": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af"
+   },
+   "energy_storage": {
+    "file": "energy_storage.py",
+    "sha256": "a3a06c5d037ba000514e2e1a1138b2acd9c54c1ee728641cd5a2ec1f965aec11"
+   },
+   "gate_result_io": {
+    "file": "gate_result_io.py",
+    "sha256": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d"
+   },
+   "generator": {
+    "file": "generator.py",
+    "sha256": "4727ff02f7847690cd7a9723d997f88e80f98174b21511881123a038868cb72b"
+   },
+   "helper_functions": {
+    "file": "helper_functions.py",
+    "sha256": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2"
+   },
+   "hierarchical_coordination": {
+    "file": "hierarchical_coordination.py",
+    "sha256": "7bf34f4ac88e472f23c82dace21065b9ad867fddf8cb2dde7d2de810c05797c4"
+   },
+   "load": {
+    "file": "load.py",
+    "sha256": "ac603d6d9e9489cd67f3372cf46b0e365ae604440722c6209d2bf1d749fa7a69"
+   },
+   "model_construction_helpers": {
+    "file": "model_construction_helpers.py",
+    "sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "network": {
+    "file": "network.py",
+    "sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4"
+   },
+   "network_parameters": {
+    "file": "network_parameters.py",
+    "sha256": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92"
+   },
+   "node": {
+    "file": "node.py",
+    "sha256": "d5f11f15b732469203a3f7cf8268e95353ae1a9d94ff3f2315d6ec5e2de86725"
+   },
+   "p513_solve_profile_guard": {
+    "file": "p513_solve_profile_guard.py",
+    "sha256": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab"
+   },
+   "p516_d0_t01b": {
+    "file": "p516_d0_t01b.py",
+    "sha256": "9d122f75b92a548e6fc2535f92dcbb7a01277b90270a3fe86532725c809d7dc2"
+   },
+   "p516_d0_t02": {
+    "file": "p516_d0_t02.py",
+    "sha256": "25fff859302b0df0a8735330e00b7b884432f1a08d93c9b155c92c9682f81855"
+   },
+   "shared_energy_storage": {
+    "file": "shared_energy_storage.py",
+    "sha256": "d45c72d0db9a3743f3c26765f124ba7fbec44733ecb0d2d28b83b7e6a451f088"
+   },
+   "solver_parameters": {
+    "file": "solver_parameters.py",
+    "sha256": "2801ef16853d7e63752d646c4c8a789a17a6731959060112c48f9457074c8b65"
+   }
+  },
+  "harness_sha256": "b0e991c703f531a681ddbf39b2be1f0985ab464584f439254660de613d2a57ca",
+  "spec_sha256": "40ee5f345a6960af9c5416860b7147f680a1b06e806655326430bee3f1cc8db1",
+  "inputs": {
+   "t01c/manifest": {
+    "path": "data/SRP1/Results/P516D0/t01c/manifest_sha256.json",
+    "expected": "d29551285683ede902b71188ba6973f33e15d53018f8a77da6e5fd833514afb5",
+    "actual": "d29551285683ede902b71188ba6973f33e15d53018f8a77da6e5fd833514afb5",
+    "match": true
+   },
+   "t01b/manifest": {
+    "path": "data/SRP1/Results/P516D0/t01b/manifest_sha256.json",
+    "expected": "4e5bbd45234598094593a8daca807a576590eee52f492f5281b63cf621876562",
+    "actual": "4e5bbd45234598094593a8daca807a576590eee52f492f5281b63cf621876562",
+    "match": true
+   },
+   "t01c/lp/index.json": {
+    "path": "data/SRP1/Results/P516D0/t01c/lp/index.json",
+    "expected": "aaa30d187bc4d890b428561b31f73c554aa29d81ea37cfffdf2f8f0a9a80d876",
+    "actual": "aaa30d187bc4d890b428561b31f73c554aa29d81ea37cfffdf2f8f0a9a80d876",
+    "match": true
+   },
+   "t01c/objective.json": {
+    "path": "data/SRP1/Results/P516D0/t01c/objective.json",
+    "expected": "a00b4854ab703c835d12e37d30283cce43e8880b61a56dbd95a2d04692d86ebb",
+    "actual": "a00b4854ab703c835d12e37d30283cce43e8880b61a56dbd95a2d04692d86ebb",
+    "match": true
+   },
+   "t01c/capacity.json": {
+    "path": "data/SRP1/Results/P516D0/t01c/capacity.json",
+    "expected": "6b3e568a0786a18194070cb6efa7f15a4926efe6320ce349270acc8b4c347a31",
+    "actual": "6b3e568a0786a18194070cb6efa7f15a4926efe6320ce349270acc8b4c347a31",
+    "match": true
+   },
+   "t01c/inventory.json": {
+    "path": "data/SRP1/Results/P516D0/t01c/inventory.json",
+    "expected": "edd26d8fcdf841a1f9e60efe72b42208545387022f30828daa7c710451ad8b09",
+    "actual": "edd26d8fcdf841a1f9e60efe72b42208545387022f30828daa7c710451ad8b09",
+    "match": true
+   },
+   "t01c/lp/x0/2025_Spring_calendar.lp": {
+    "path": "data/SRP1/Results/P516D0/t01c/lp/x0/2025_Spring_calendar.lp",
+    "expected": "b1f6dad0e2fe2a2d2f9c736335db0c812228b7040f1ad2fb7623f7f8986fc229",
+    "actual": "b1f6dad0e2fe2a2d2f9c736335db0c812228b7040f1ad2fb7623f7f8986fc229",
+    "match": true
+   },
+   "t01c/lp/x0/2025_Spring_calendar.name_map.json": {
+    "path": "data/SRP1/Results/P516D0/t01c/lp/x0/2025_Spring_calendar.name_map.json",
+    "expected": "3dfcfa33f20fd6dae20adccc4efbd618221fdbc635e07e4de6eb5485447c713e",
+    "actual": "3dfcfa33f20fd6dae20adccc4efbd618221fdbc635e07e4de6eb5485447c713e",
+    "match": true
+   },
+   "t01b/captures/x0/blocks_2025_Spring.pkl": {
+    "path": "data/SRP1/Results/P516D0/t01b/captures/x0/blocks_2025_Spring.pkl",
+    "expected": "adc86e919de6a2590469ea80583e6d6d325ca09fb24e6dc85f09b53443f68459",
+    "actual": "adc86e919de6a2590469ea80583e6d6d325ca09fb24e6dc85f09b53443f68459",
+    "match": true
+   },
+   "t01b/captures/x0/vectors_2025_Spring.json": {
+    "path": "data/SRP1/Results/P516D0/t01b/captures/x0/vectors_2025_Spring.json",
+    "expected": "b0c1465e6be124a2f1d5d053b8c6ac18fa8625f4e72a09f0a54115716251dc57",
+    "actual": "b0c1465e6be124a2f1d5d053b8c6ac18fa8625f4e72a09f0a54115716251dc57",
+    "match": true
+   },
+   "t01b/captures/x0/vectors_esso.json": {
+    "path": "data/SRP1/Results/P516D0/t01b/captures/x0/vectors_esso.json",
+    "expected": "0222f3e24e81895e55326c42dd8965e0b4a7d8e5dae0ea10da77b96ab1fb3cec",
+    "actual": "0222f3e24e81895e55326c42dd8965e0b4a7d8e5dae0ea10da77b96ab1fb3cec",
+    "match": true
+   },
+   "t01c/lp/unit_n7/2025_Spring_calendar.lp": {
+    "path": "data/SRP1/Results/P516D0/t01c/lp/unit_n7/2025_Spring_calendar.lp",
+    "expected": "3eb15218413298746ba1fdf61cc665a8ab96b82c17eff3a6e88337e1faebbb91",
+    "actual": "3eb15218413298746ba1fdf61cc665a8ab96b82c17eff3a6e88337e1faebbb91",
+    "match": true
+   },
+   "t01c/lp/unit_n7/2025_Spring_calendar.name_map.json": {
+    "path": "data/SRP1/Results/P516D0/t01c/lp/unit_n7/2025_Spring_calendar.name_map.json",
+    "expected": "68f3e554b5657e34e4bbacfc7521a1ebe225709de2b8eb35d59bc05642f82b75",
+    "actual": "68f3e554b5657e34e4bbacfc7521a1ebe225709de2b8eb35d59bc05642f82b75",
+    "match": true
+   },
+   "t01b/captures/unit_n7/blocks_2025_Spring.pkl": {
+    "path": "data/SRP1/Results/P516D0/t01b/captures/unit_n7/blocks_2025_Spring.pkl",
+    "expected": "2ded511c2c489e30a2f4f3ace6b481febc3065b8db114c5e6fb0ea7aabb2d7ed",
+    "actual": "2ded511c2c489e30a2f4f3ace6b481febc3065b8db114c5e6fb0ea7aabb2d7ed",
+    "match": true
+   },
+   "t01b/captures/unit_n7/vectors_2025_Spring.json": {
+    "path": "data/SRP1/Results/P516D0/t01b/captures/unit_n7/vectors_2025_Spring.json",
+    "expected": "39b9320949dda7fbdfc15ddc04ad609a83635bb2693f7ab179d13bf1c8ceb2d6",
+    "actual": "39b9320949dda7fbdfc15ddc04ad609a83635bb2693f7ab179d13bf1c8ceb2d6",
+    "match": true
+   },
+   "t01b/captures/unit_n7/vectors_esso.json": {
+    "path": "data/SRP1/Results/P516D0/t01b/captures/unit_n7/vectors_esso.json",
+    "expected": "1444a7cec1afa69ff787efac9e88ccdb8cf8f215bccdc6e937c638785c69bd2d",
+    "actual": "1444a7cec1afa69ff787efac9e88ccdb8cf8f215bccdc6e937c638785c69bd2d",
+    "match": true
+   },
+   "x0/evaluation_record.json": {
+    "path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/5cfe69a615ae3708_x0/evaluation_record.json",
+    "expected": "75979b1c62d5322eeff6b3c61018e011a5d016cea25033a0439fa9aa2122624a",
+    "actual": "75979b1c62d5322eeff6b3c61018e011a5d016cea25033a0439fa9aa2122624a",
+    "match": true
+   },
+   "unit_n7/evaluation_record.json": {
+    "path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1/evaluation_record.json",
+    "expected": "d2b8d3e0e7b410f57fe5d9133fd7082768554cce9c0f185e3f6828608fad138e",
+    "actual": "d2b8d3e0e7b410f57fe5d9133fd7082768554cce9c0f185e3f6828608fad138e",
+    "match": true
+   }
+  },
+  "rehearsal_stand_in": false,
+  "wall_s": 34.31064796447754
+ },
+ "solve_plan": [
+  {
+   "label": "x0_2025_Spring_C.presolve.it200",
+   "group": "x0_2025_Spring_C",
+   "max_iter": 200,
+   "presolve": true
+  },
+  {
+   "label": "x0_2025_Spring_C.presolve.it5000",
+   "group": "x0_2025_Spring_C",
+   "max_iter": 5000,
+   "presolve": true
+  },
+  {
+   "label": "unit_n7_2025_Spring_C.presolve.it200",
+   "group": "unit_n7_2025_Spring_C",
+   "max_iter": 200,
+   "presolve": true
+  },
+  {
+   "label": "unit_n7_2025_Spring_C.presolve.it5000",
+   "group": "unit_n7_2025_Spring_C",
+   "max_iter": 5000,
+   "presolve": true
+  }
+ ],
+ "solves": {
+  "x0_2025_Spring_C.presolve.it200": {
+   "group": "x0_2025_Spring_C",
+   "max_iter": 200,
+   "presolve": true,
+   "instance": {
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "certification_cycle": 132,
+    "gross_recorded": 653858731.5686293,
+    "eval_dir": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/5cfe69a615ae3708_x0"
+   },
+   "gross_group": 63995186.355666935,
+   "q_cert_plus_group": 63996389.50486347,
+   "solve": {
+    "status": "MaxIterations",
+    "obj_val": 16801117.06398163,
+    "obj_val_dual": 16801116.916863102,
+    "iterations": 200,
+    "setup_s": 0.021931886672973633,
+    "solve_wall_s": 1.9953179359436035,
+    "solve_time_reported": 2.0089845,
+    "r_prim": 0.009731490429775736,
+    "r_dual": 5.272841754391362e-12,
+    "info": {
+     "cost_dual": 16801116.916863102,
+     "cost_primal": 16801117.06398163,
+     "gap_abs": 0.14711852744221687,
+     "gap_rel": 8.756473047012462e-09,
+     "iterations": 200,
+     "ktratio": 1.087979039679004,
+     "linsolver": "LinearSolverInfo {\n    name: \"qdldl\",\n    threads: 1,\n    direct: true,\n    nnzA: 231174,\n    nnzL: 242333,\n}",
+     "mu": 0.16885421783632948,
+     "res_dual": 5.272841754391362e-12,
+     "res_dual_inf": 0.7017446792981304,
+     "res_primal": 0.009731490429775736,
+     "res_primal_inf": 0.05869777031247489,
+     "sigma": 0.7708138756594455,
+     "solve_time": 2.0089845,
+     "status": "MaxIterations",
+     "step_length": 0.12490088795909089
+    },
+    "settings_in_force": {
+     "chordal_decomposition_compact": true,
+     "chordal_decomposition_complete_dual": true,
+     "chordal_decomposition_enable": true,
+     "chordal_decomposition_merge_method": "clique_graph",
+     "direct_kkt_solver": true,
+     "direct_solve_method": "auto",
+     "dynamic_regularization_delta": 2e-07,
+     "dynamic_regularization_enable": true,
+     "dynamic_regularization_eps": 1e-13,
+     "equilibrate_enable": true,
+     "equilibrate_max_iter": 10,
+     "equilibrate_max_scaling": 10000.0,
+     "equilibrate_min_scaling": 0.0001,
+     "input_sparse_dropzeros": false,
+     "iterative_refinement_abstol": 1e-12,
+     "iterative_refinement_enable": true,
+     "iterative_refinement_max_iter": 10,
+     "iterative_refinement_reltol": 1e-13,
+     "iterative_refinement_stop_ratio": 5.0,
+     "linesearch_backtrack_step": 0.8,
+     "max_iter": 200,
+     "max_step_fraction": 0.99,
+     "max_threads": 0,
+     "min_switch_step_length": 0.1,
+     "min_terminate_step_length": 0.0001,
+     "pardiso_iparm": [
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648
+     ],
+     "pardiso_verbose": false,
+     "presolve_enable": true,
+     "reduced_tol_feas": 0.0001,
+     "reduced_tol_gap_abs": 5e-05,
+     "reduced_tol_gap_rel": 5e-05,
+     "reduced_tol_infeas_abs": 5e-12,
+     "reduced_tol_infeas_rel": 5e-05,
+     "reduced_tol_ktratio": 0.0001,
+     "static_regularization_constant": 1e-08,
+     "static_regularization_enable": true,
+     "static_regularization_proportional": 4.930380657631324e-32,
+     "time_limit": Infinity,
+     "tol_feas": 1e-08,
+     "tol_gap_abs": 1e-08,
+     "tol_gap_rel": 1e-08,
+     "tol_infeas_abs": 1e-08,
+     "tol_infeas_rel": 1e-08,
+     "tol_ktratio": 1e-06,
+     "verbose": true
+    },
+    "STAND_IN": false,
+    "log": "data/SRP1/Results/P516D0/t02_clarabel_ablation/logs/x0_2025_Spring_C.presolve.it200.clarabel.log",
+    "vectors": "data/SRP1/Results/P516D0/t02_clarabel_ablation/vectors/x0_2025_Spring_C.presolve.it200.npz",
+    "wall_s": 2.017249822616577,
+    "rss_before": {
+     "self_max_rss_bytes": 614907904
+    },
+    "rss_after": {
+     "self_max_rss_bytes": 614907904
+    },
+    "clarabel_overrides": {
+     "verbose": true,
+     "max_iter": 200
+    }
+   },
+   "Q_LB": 16801117.06398163,
+   "solver_gap_abs": 0.14711852744221687,
+   "solver_gap_rel": 8.756473047012462e-09,
+   "gap_vs_q_cert_plus_eur": 47195272.44088184,
+   "gap_vs_q_cert_plus_keur": 47195.27244088184,
+   "gap_vs_q_cert_plus_rel": 0.737467735383653,
+   "gap_vs_gross_eur": 47194069.291685306,
+   "converged": false,
+   "containment_stop_applies": false,
+   "returned_point_lp_violation": {
+    "linear_eq": {
+     "max": 0.02851449616706615,
+     "worst_row": "dso_9.d0_env_rewrite[46]",
+     "n_rows_over_1e-8": 5422,
+     "top_families": {
+      "dso.d0_env_rewrite": 0.02851449616706615,
+      "dso.node_balance_p": 0.015969491650026223,
+      "tso.node_balance_p": 0.0035695901855982916,
+      "dso.node_balance_q": 0.002366101238621135,
+      "top.d0_cpl_pf_p": 0.00020591919017076687,
+      "dso.flex_energy_balance_p": 0.00017889843027733246,
+      "tso.node_balance_q": 8.082268483235178e-06,
+      "top.d0_cpl_pf_q": 2.0325747387556214e-06
+     }
+    },
+    "linear_ineq": {
+     "max": 0.0,
+     "worst_row": null,
+     "n_rows_over_1e-8": 0,
+     "top_families": {}
+    },
+    "quadratic": {
+     "max": 0.0008948078493281202,
+     "worst_row": "dso_9.d0_tr_cone[31,0,0,21]",
+     "n_rows_over_1e-8": 1884
+    },
+    "bound": {
+     "max": 0.0002104154049289324,
+     "worst_column": "dso_9.pg[4,0,0,21]",
+     "n_columns_over_1e-8": 2715
+    },
+    "max_over_all": 0.02851449616706615
+   },
+   "small_circle_activity": {
+    "tso.sg_capability": {
+     "count": 6,
+     "radius_min": 0.0012581984267672271,
+     "radius_max": 0.002170820339263569,
+     "max_used_share": 0.9999892383970691,
+     "min_slack": 1.414812662090472e-08,
+     "n_active_used_share_ge_0.999": 4,
+     "max_norm_z": 54942539.65612683,
+     "max_z0": 43226079.39417155
+    },
+    "dso.sg_capability": {
+     "count": 19,
+     "radius_min": 0.0008110820729911303,
+     "radius_max": 0.009638591017761383,
+     "max_used_share": 0.9999902667763154,
+     "min_slack": 1.193433288727665e-08,
+     "n_active_used_share_ge_0.999": 13,
+     "max_norm_z": 65683739.94538449,
+     "max_z0": 54910128.04261637
+    }
+   },
+   "duals": {
+    "dual_residual_inf": 0.010143756866455078,
+    "q_inf": 46000000.0,
+    "dual_residual_rel_to_q_inf": 2.2051645361858866e-10,
+    "dual_residual_argmax_column": 12684,
+    "primal_residual_inf": 0.44682090597264,
+    "zero_cone_slack_inf": 0.0,
+    "nonneg_min_z": 0.067563627415251,
+    "nonneg_min_s": 1.1986988984672098e-08,
+    "soc_max_z_violation": 0.0,
+    "soc_max_s_violation": 0.0,
+    "complementarity_s_dot_z": 78164.17489803677,
+    "complementarity_max_abs": 4099884673.457543,
+    "objective_primal_clarabel": 16801117.06398163,
+    "objective_dual_clarabel": 16801116.916863102,
+    "gap_abs_clarabel": 0.14711852744221687,
+    "gap_rel_clarabel_definition": 8.756473047012462e-09,
+    "objective_primal_recomputed": 16801117.063981764,
+    "objective_dual_recomputed_minus_bz": 16801116.916872703,
+    "gap_abs_recomputed": 0.14710906147956848,
+    "definition": "rd = q + A'z (Clarabel: P x + q + A'z = 0 at optimality, P = 0); rp = A x + s - b; z in K* = K: nonneg z >= 0, SOC z0 >= |z_bar|; dual objective -b'z (+ const); gap_rel as Clarabel: |p - d| / max(1, min(|p|, |d|))",
+    "gurobi_convention": {
+     "mapped_stationarity_residual_inf": 572626113893.2352,
+     "n_cones_with_s0_le_0": 0,
+     "max_norm_z_on_those_cones": 0.0,
+     "convention": "Pi = -z on = and < rows, +z on > rows; RC = z_LB - z_UB - z_fix; QCPi = -z0 / (2 alpha s0) for s0 > 0, else 0",
+     "c_inf": 46000000.0,
+     "mapped_stationarity_residual_rel_to_c_inf": 12448.393780287723,
+     "presolve_rows_max_abs_z": 0.0,
+     "n_columns_touched_by_presolve_rows": 792,
+     "folded_stationarity_residual_inf": 572626113893.2352,
+     "folded_stationarity_residual_rel_to_c_inf": 12448.393780287723,
+     "untouched_columns_stationarity_residual_inf": 572626113893.2352,
+     "untouched_columns_stationarity_residual_rel_to_c_inf": 12448.393780287723,
+     "argmax_strict": "dso_5.pg[4,0,0,5]",
+     "argmax_folded": "dso_5.pg[4,0,0,5]",
+     "presolve_convention": "strict: the presolve-row multipliers are not mapped (the replaced quadratic row has a zero gradient at its apex, so no QCPi carries them); folded: RC[x_i] += sqrt(d_i) z_i (an implicit fixing x_i = 0); untouched: the strict residual on the columns no presolve row touches"
+    }
+   },
+   "t02_lagrangian_g": {
+    "available": true,
+    "L_conv": -3969232208.4003797,
+    "g_tight": -Infinity,
+    "q_lb": 16801117.06398163,
+    "n_unbounded_vars_with_nonzero_gradient": 5711,
+    "max_abs_gradient_on_unbounded_vars": 76265788.58723477,
+    "n_wrong_sign_linear_multipliers_projected": 0,
+    "n_wrong_sign_quadratic_multipliers_projected": 0,
+    "quadratic_row_classes": {
+     "psd": 477,
+     "hyperbolic": 3456,
+     "nonconvex": 0
+    },
+    "recomputed_rc_vs_solver_rc": {
+     "max_abs_recomputed_minus_solver_rc": 572626113893.2352,
+     "max_abs_solver_rc": 76265788.58725029
+    },
+    "g_spec": -Infinity,
+    "max_abs_stationarity_residual": 572626113893.2352,
+    "sum_margin_finite_part": 4467562563.295705,
+    "g_tight_check": {
+     "g_le_QLB": true,
+     "QLB_le_g_plus_1e-6": false,
+     "held": false,
+     "Q_LB_minus_g": null
+    },
+    "g_spec_check": {
+     "g_le_QLB": true,
+     "QLB_le_g_plus_1e-6": false,
+     "held": false,
+     "Q_LB_minus_g": null
+    }
+   },
+   "t02_rank_and_cycles_summary": {
+    "TSO": {
+     "n_branch_periods": 216,
+     "max_rel_rank_residual": 0.02321632174985364,
+     "min_rel_rank_residual": -2.273292305418651e-05,
+     "n_cycles": 1,
+     "max_cycle_angle_residual_rad": 0.005983594484925359
+    },
+    "DSO5": {
+     "n_branch_periods": 768,
+     "max_rel_rank_residual": 0.5000990231562945,
+     "min_rel_rank_residual": -6.208118991431293e-05,
+     "oltc": {
+      "n": 24,
+      "max_transformer_cone_rel_residual": 7.344402346187302e-06,
+      "u_over_wii_range": [
+       1.0227278008687553,
+       1.3656608919064297
+      ]
+     }
+    },
+    "DSO7": {
+     "n_branch_periods": 768,
+     "max_rel_rank_residual": 0.5000974965573471,
+     "min_rel_rank_residual": -6.116250638515287e-05,
+     "oltc": {
+      "n": 24,
+      "max_transformer_cone_rel_residual": 0.0001466095224228036,
+      "u_over_wii_range": [
+       1.0183053013105505,
+       1.3663696442315652
+      ]
+     }
+    },
+    "DSO9": {
+     "n_branch_periods": 768,
+     "max_rel_rank_residual": 0.500093634340926,
+     "min_rel_rank_residual": -6.262809985808798e-05,
+     "oltc": {
+      "n": 24,
+      "max_transformer_cone_rel_residual": 1.4422479219166148e-06,
+      "u_over_wii_range": [
+       0.9836494692643751,
+       1.3620999600009762
+      ]
+     }
+    }
+   }
+  },
+  "x0_2025_Spring_C.presolve.it5000": {
+   "group": "x0_2025_Spring_C",
+   "max_iter": 5000,
+   "presolve": true,
+   "instance": {
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "certification_cycle": 132,
+    "gross_recorded": 653858731.5686293,
+    "eval_dir": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/5cfe69a615ae3708_x0"
+   },
+   "gross_group": 63995186.355666935,
+   "q_cert_plus_group": 63996389.50486347,
+   "solve": {
+    "status": "NumericalError",
+    "obj_val": 45936105.166471764,
+    "obj_val_dual": 45936105.16819105,
+    "iterations": 1436,
+    "setup_s": 0.02113509178161621,
+    "solve_wall_s": 14.371515989303589,
+    "solve_time_reported": 14.380501923,
+    "r_prim": 0.0017417588200475188,
+    "r_dual": 1.8956516518794347e-14,
+    "info": {
+     "cost_dual": 45936105.16819105,
+     "cost_primal": 45936105.166471764,
+     "gap_abs": 0.0017192885279655457,
+     "gap_rel": 3.7427825492276054e-11,
+     "iterations": 1436,
+     "ktratio": 0.0017117702168160374,
+     "linsolver": "LinearSolverInfo {\n    name: \"qdldl\",\n    threads: 1,\n    direct: true,\n    nnzA: 231174,\n    nnzL: 242333,\n}",
+     "mu": 0.0002178750376922694,
+     "res_dual": 1.8956516518794347e-14,
+     "res_dual_inf": 0.70227530132616,
+     "res_primal": 0.0017417588200475188,
+     "res_primal_inf": 0.07742679909492092,
+     "sigma": 0.9589162209805255,
+     "solve_time": 14.380501923,
+     "status": "NumericalError",
+     "step_length": 0.00021180541188921107
+    },
+    "settings_in_force": {
+     "chordal_decomposition_compact": true,
+     "chordal_decomposition_complete_dual": true,
+     "chordal_decomposition_enable": true,
+     "chordal_decomposition_merge_method": "clique_graph",
+     "direct_kkt_solver": true,
+     "direct_solve_method": "auto",
+     "dynamic_regularization_delta": 2e-07,
+     "dynamic_regularization_enable": true,
+     "dynamic_regularization_eps": 1e-13,
+     "equilibrate_enable": true,
+     "equilibrate_max_iter": 10,
+     "equilibrate_max_scaling": 10000.0,
+     "equilibrate_min_scaling": 0.0001,
+     "input_sparse_dropzeros": false,
+     "iterative_refinement_abstol": 1e-12,
+     "iterative_refinement_enable": true,
+     "iterative_refinement_max_iter": 10,
+     "iterative_refinement_reltol": 1e-13,
+     "iterative_refinement_stop_ratio": 5.0,
+     "linesearch_backtrack_step": 0.8,
+     "max_iter": 5000,
+     "max_step_fraction": 0.99,
+     "max_threads": 0,
+     "min_switch_step_length": 0.1,
+     "min_terminate_step_length": 0.0001,
+     "pardiso_iparm": [
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648
+     ],
+     "pardiso_verbose": false,
+     "presolve_enable": true,
+     "reduced_tol_feas": 0.0001,
+     "reduced_tol_gap_abs": 5e-05,
+     "reduced_tol_gap_rel": 5e-05,
+     "reduced_tol_infeas_abs": 5e-12,
+     "reduced_tol_infeas_rel": 5e-05,
+     "reduced_tol_ktratio": 0.0001,
+     "static_regularization_constant": 1e-08,
+     "static_regularization_enable": true,
+     "static_regularization_proportional": 4.930380657631324e-32,
+     "time_limit": Infinity,
+     "tol_feas": 1e-08,
+     "tol_gap_abs": 1e-08,
+     "tol_gap_rel": 1e-08,
+     "tol_infeas_abs": 1e-08,
+     "tol_infeas_rel": 1e-08,
+     "tol_ktratio": 1e-06,
+     "verbose": true
+    },
+    "STAND_IN": false,
+    "log": "data/SRP1/Results/P516D0/t02_clarabel_ablation/logs/x0_2025_Spring_C.presolve.it5000.clarabel.log",
+    "vectors": "data/SRP1/Results/P516D0/t02_clarabel_ablation/vectors/x0_2025_Spring_C.presolve.it5000.npz",
+    "wall_s": 14.392651081085205,
+    "rss_before": {
+     "self_max_rss_bytes": 614907904
+    },
+    "rss_after": {
+     "self_max_rss_bytes": 614907904
+    },
+    "clarabel_overrides": {
+     "verbose": true,
+     "max_iter": 5000
+    }
+   },
+   "Q_LB": 45936105.166471764,
+   "solver_gap_abs": 0.0017192885279655457,
+   "solver_gap_rel": 3.7427825492276054e-11,
+   "gap_vs_q_cert_plus_eur": 18060284.338391706,
+   "gap_vs_q_cert_plus_keur": 18060.284338391706,
+   "gap_vs_q_cert_plus_rel": 0.28220786325796077,
+   "gap_vs_gross_eur": 18059081.18919517,
+   "converged": false,
+   "containment_stop_applies": false,
+   "returned_point_lp_violation": {
+    "linear_eq": {
+     "max": 0.00868180437832844,
+     "worst_row": "dso_9.d0_env_rewrite[47]",
+     "n_rows_over_1e-8": 5265,
+     "top_families": {
+      "dso.d0_env_rewrite": 0.00868180437832844,
+      "dso.node_balance_p": 0.0048741848143227535,
+      "tso.node_balance_p": 0.0010875932431718216,
+      "dso.node_balance_q": 0.0005883824016234614,
+      "top.d0_cpl_pf_p": 6.272644164240226e-05,
+      "dso.flex_energy_balance_p": 4.4091305725440686e-05,
+      "tso.node_balance_q": 2.7036371966632222e-05,
+      "top.d0_cpl_pf_q": 6.799185840566935e-06
+     }
+    },
+    "linear_ineq": {
+     "max": 1.122132812270138e-05,
+     "worst_row": "dso_5.voltage_magnitude_upper_cons[1,0,0,9]",
+     "n_rows_over_1e-8": 26,
+     "top_families": {
+      "dso.voltage_magnitude_upper_cons": 1.122132812270138e-05,
+      "dso.d0_tr_U_upper": 4.3249096903785755e-07
+     }
+    },
+    "quadratic": {
+     "max": 0.000272122538849186,
+     "worst_row": "dso_9.d0_tr_cone[31,0,0,22]",
+     "n_rows_over_1e-8": 2457
+    },
+    "bound": {
+     "max": 6.442387893069693e-05,
+     "worst_column": "dso_9.pg[4,0,0,22]",
+     "n_columns_over_1e-8": 3072
+    },
+    "max_over_all": 0.00868180437832844
+   },
+   "small_circle_activity": {
+    "tso.sg_capability": {
+     "count": 6,
+     "radius_min": 0.0012581984267672271,
+     "radius_max": 0.002170820339263569,
+     "max_used_share": 0.9999999794668466,
+     "min_slack": 2.335664908009738e-11,
+     "n_active_used_share_ge_0.999": 6,
+     "max_norm_z": 51702604.02095933,
+     "max_z0": 36559262.35600894
+    },
+    "dso.sg_capability": {
+     "count": 19,
+     "radius_min": 0.0008110820729911303,
+     "radius_max": 0.009638591017761383,
+     "max_used_share": 0.9999999792679449,
+     "min_slack": 1.9362302017787714e-11,
+     "n_active_used_share_ge_0.999": 17,
+     "max_norm_z": 62399645.50865083,
+     "max_z0": 47487042.55641879
+    }
+   },
+   "duals": {
+    "dual_residual_inf": 0.00025709596957312897,
+    "q_inf": 46000000.0,
+    "dual_residual_rel_to_q_inf": 5.589042816807152e-12,
+    "dual_residual_argmax_column": 21664,
+    "primal_residual_inf": 0.06365428186335989,
+    "zero_cone_slack_inf": 0.0,
+    "nonneg_min_z": 0.0001067837483221473,
+    "nonneg_min_s": 1.9387418985420244e-11,
+    "soc_max_z_violation": 0.0,
+    "soc_max_s_violation": 0.0,
+    "complementarity_s_dot_z": 117.6615361601985,
+    "complementarity_max_abs": 2874827784.3302917,
+    "objective_primal_clarabel": 45936105.166471764,
+    "objective_dual_clarabel": 45936105.16819105,
+    "gap_abs_clarabel": 0.0017192885279655457,
+    "gap_rel_clarabel_definition": 3.7427825492276054e-11,
+    "objective_primal_recomputed": 45936105.166471854,
+    "objective_dual_recomputed_minus_bz": 45936105.16816146,
+    "gap_abs_recomputed": 0.0016896054148674011,
+    "definition": "rd = q + A'z (Clarabel: P x + q + A'z = 0 at optimality, P = 0); rp = A x + s - b; z in K* = K: nonneg z >= 0, SOC z0 >= |z_bar|; dual objective -b'z (+ const); gap_rel as Clarabel: |p - d| / max(1, min(|p|, |d|))",
+    "gurobi_convention": {
+     "mapped_stationarity_residual_inf": 139702964718562.39,
+     "n_cones_with_s0_le_0": 0,
+     "max_norm_z_on_those_cones": 0.0,
+     "convention": "Pi = -z on = and < rows, +z on > rows; RC = z_LB - z_UB - z_fix; QCPi = -z0 / (2 alpha s0) for s0 > 0, else 0",
+     "c_inf": 46000000.0,
+     "mapped_stationarity_residual_rel_to_c_inf": 3037020.9721426605,
+     "presolve_rows_max_abs_z": 0.0,
+     "n_columns_touched_by_presolve_rows": 792,
+     "folded_stationarity_residual_inf": 139702964718562.39,
+     "folded_stationarity_residual_rel_to_c_inf": 3037020.9721426605,
+     "untouched_columns_stationarity_residual_inf": 139702964718562.39,
+     "untouched_columns_stationarity_residual_rel_to_c_inf": 3037020.9721426605,
+     "argmax_strict": "dso_5.pg[4,0,0,5]",
+     "argmax_folded": "dso_5.pg[4,0,0,5]",
+     "presolve_convention": "strict: the presolve-row multipliers are not mapped (the replaced quadratic row has a zero gradient at its apex, so no QCPi carries them); folded: RC[x_i] += sqrt(d_i) z_i (an implicit fixing x_i = 0); untouched: the strict residual on the columns no presolve row touches"
+    }
+   },
+   "t02_lagrangian_g": {
+    "available": true,
+    "L_conv": -283261210253.5372,
+    "g_tight": -Infinity,
+    "q_lb": 45936105.166471764,
+    "n_unbounded_vars_with_nonzero_gradient": 5714,
+    "max_abs_gradient_on_unbounded_vars": 82375027.16512941,
+    "n_wrong_sign_linear_multipliers_projected": 0,
+    "n_wrong_sign_quadratic_multipliers_projected": 0,
+    "quadratic_row_classes": {
+     "psd": 477,
+     "hyperbolic": 3456,
+     "nonconvex": 0
+    },
+    "recomputed_rc_vs_solver_rc": {
+     "max_abs_recomputed_minus_solver_rc": 139702964718562.39,
+     "max_abs_solver_rc": 82375027.16512941
+    },
+    "g_spec": -Infinity,
+    "max_abs_stationarity_residual": 139702964718562.39,
+    "sum_margin_finite_part": 219408602585.8816,
+    "g_tight_check": {
+     "g_le_QLB": true,
+     "QLB_le_g_plus_1e-6": false,
+     "held": false,
+     "Q_LB_minus_g": null
+    },
+    "g_spec_check": {
+     "g_le_QLB": true,
+     "QLB_le_g_plus_1e-6": false,
+     "held": false,
+     "Q_LB_minus_g": null
+    }
+   },
+   "t02_rank_and_cycles_summary": {
+    "TSO": {
+     "n_branch_periods": 216,
+     "max_rel_rank_residual": 0.024149081502432296,
+     "min_rel_rank_residual": -6.948638297877518e-06,
+     "n_cycles": 1,
+     "max_cycle_angle_residual_rad": 0.008838770084827363
+    },
+    "DSO5": {
+     "n_branch_periods": 768,
+     "max_rel_rank_residual": 0.5000074415620565,
+     "min_rel_rank_residual": -1.8580500561611998e-05,
+     "oltc": {
+      "n": 24,
+      "max_transformer_cone_rel_residual": -7.715147497221424e-08,
+      "u_over_wii_range": [
+       1.0167867802958575,
+       1.3688993086618308
+      ]
+     }
+    },
+    "DSO7": {
+     "n_branch_periods": 768,
+     "max_rel_rank_residual": 0.5000073075395408,
+     "min_rel_rank_residual": -1.839361960351689e-05,
+     "oltc": {
+      "n": 24,
+      "max_transformer_cone_rel_residual": 7.636248857705443e-06,
+      "u_over_wii_range": [
+       1.0131809307873478,
+       1.3688996309902903
+      ]
+     }
+    },
+    "DSO9": {
+     "n_branch_periods": 768,
+     "max_rel_rank_residual": 0.5000071362708145,
+     "min_rel_rank_residual": -1.8735974621787415e-05,
+     "oltc": {
+      "n": 24,
+      "max_transformer_cone_rel_residual": -3.840307257057421e-08,
+      "u_over_wii_range": [
+       0.994481329316554,
+       1.3689004905904134
+      ]
+     }
+    }
+   }
+  },
+  "unit_n7_2025_Spring_C.presolve.it200": {
+   "group": "unit_n7_2025_Spring_C",
+   "max_iter": 200,
+   "presolve": true,
+   "instance": {
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "certification_cycle": 112,
+    "gross_recorded": 653599356.2420883,
+    "eval_dir": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1"
+   },
+   "gross_group": 63954613.593676075,
+   "q_cert_plus_group": 63955818.58270402,
+   "solve": {
+    "status": "MaxIterations",
+    "obj_val": 46748435.359020054,
+    "obj_val_dual": 46748436.04332929,
+    "iterations": 200,
+    "setup_s": 0.02328205108642578,
+    "solve_wall_s": 2.10017991065979,
+    "solve_time_reported": 2.115037416,
+    "r_prim": 0.0013709869941854363,
+    "r_dual": 3.001687515741281e-13,
+    "info": {
+     "cost_dual": 46748436.04332929,
+     "cost_primal": 46748435.359020054,
+     "gap_abs": 0.6843092367053032,
+     "gap_rel": 1.4638120644037053e-08,
+     "iterations": 200,
+     "ktratio": 0.7259291029482287,
+     "linsolver": "LinearSolverInfo {\n    name: \"qdldl\",\n    threads: 1,\n    direct: true,\n    nnzA: 241019,\n    nnzL: 260304,\n}",
+     "mu": 0.55041425359586,
+     "res_dual": 3.001687515741281e-13,
+     "res_dual_inf": 0.7020539056597218,
+     "res_primal": 0.0013709869941854363,
+     "res_primal_inf": 0.0991058399752328,
+     "sigma": 0.3117564923934361,
+     "solve_time": 2.115037416,
+     "status": "MaxIterations",
+     "step_length": 0.32318711594618893
+    },
+    "settings_in_force": {
+     "chordal_decomposition_compact": true,
+     "chordal_decomposition_complete_dual": true,
+     "chordal_decomposition_enable": true,
+     "chordal_decomposition_merge_method": "clique_graph",
+     "direct_kkt_solver": true,
+     "direct_solve_method": "auto",
+     "dynamic_regularization_delta": 2e-07,
+     "dynamic_regularization_enable": true,
+     "dynamic_regularization_eps": 1e-13,
+     "equilibrate_enable": true,
+     "equilibrate_max_iter": 10,
+     "equilibrate_max_scaling": 10000.0,
+     "equilibrate_min_scaling": 0.0001,
+     "input_sparse_dropzeros": false,
+     "iterative_refinement_abstol": 1e-12,
+     "iterative_refinement_enable": true,
+     "iterative_refinement_max_iter": 10,
+     "iterative_refinement_reltol": 1e-13,
+     "iterative_refinement_stop_ratio": 5.0,
+     "linesearch_backtrack_step": 0.8,
+     "max_iter": 200,
+     "max_step_fraction": 0.99,
+     "max_threads": 0,
+     "min_switch_step_length": 0.1,
+     "min_terminate_step_length": 0.0001,
+     "pardiso_iparm": [
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648
+     ],
+     "pardiso_verbose": false,
+     "presolve_enable": true,
+     "reduced_tol_feas": 0.0001,
+     "reduced_tol_gap_abs": 5e-05,
+     "reduced_tol_gap_rel": 5e-05,
+     "reduced_tol_infeas_abs": 5e-12,
+     "reduced_tol_infeas_rel": 5e-05,
+     "reduced_tol_ktratio": 0.0001,
+     "static_regularization_constant": 1e-08,
+     "static_regularization_enable": true,
+     "static_regularization_proportional": 4.930380657631324e-32,
+     "time_limit": Infinity,
+     "tol_feas": 1e-08,
+     "tol_gap_abs": 1e-08,
+     "tol_gap_rel": 1e-08,
+     "tol_infeas_abs": 1e-08,
+     "tol_infeas_rel": 1e-08,
+     "tol_ktratio": 1e-06,
+     "verbose": true
+    },
+    "STAND_IN": false,
+    "log": "data/SRP1/Results/P516D0/t02_clarabel_ablation/logs/unit_n7_2025_Spring_C.presolve.it200.clarabel.log",
+    "vectors": "data/SRP1/Results/P516D0/t02_clarabel_ablation/vectors/unit_n7_2025_Spring_C.presolve.it200.npz",
+    "wall_s": 2.123461961746216,
+    "rss_before": {
+     "self_max_rss_bytes": 614907904
+    },
+    "rss_after": {
+     "self_max_rss_bytes": 614907904
+    },
+    "clarabel_overrides": {
+     "verbose": true,
+     "max_iter": 200
+    }
+   },
+   "Q_LB": 46748435.359020054,
+   "solver_gap_abs": 0.6843092367053032,
+   "solver_gap_rel": 1.4638120644037053e-08,
+   "gap_vs_q_cert_plus_eur": 17207383.22368397,
+   "gap_vs_q_cert_plus_keur": 17207.38322368397,
+   "gap_vs_q_cert_plus_rel": 0.2690510981644674,
+   "gap_vs_gross_eur": 17206178.23465602,
+   "converged": false,
+   "containment_stop_applies": false,
+   "returned_point_lp_violation": {
+    "linear_eq": {
+     "max": 0.05054643156177385,
+     "worst_row": "dso_9.d0_env_rewrite[37]",
+     "n_rows_over_1e-8": 5999,
+     "top_families": {
+      "dso.d0_env_rewrite": 0.05054643156177385,
+      "dso.node_balance_p": 0.03043447246206616,
+      "dso.node_balance_q": 0.006491112403703159,
+      "tso.node_balance_p": 0.0030402031246679,
+      "tso.sess_soc_def": 0.002171087378490381,
+      "dso.sess_soc_def": 0.002159696462598323,
+      "tso.sess_pch_hat_link": 0.001409520167287086,
+      "dso.sess_pch_hat_link": 0.0014034307216591962
+     }
+    },
+    "linear_ineq": {
+     "max": 0.000423007527558927,
+     "worst_row": "dso_7.sess_soc_limit_lower[0,0,0,3]",
+     "n_rows_over_1e-8": 23,
+     "top_families": {
+      "dso.sess_soc_limit_lower": 0.000423007527558927,
+      "tso.sess_soc_limit_lower": 0.0004161466347166623
+     }
+    },
+    "quadratic": {
+     "max": 0.0007645891982385979,
+     "worst_row": "dso_9.d0_tr_cone[31,0,0,5]",
+     "n_rows_over_1e-8": 1552
+    },
+    "bound": {
+     "max": 0.0004834197173782865,
+     "worst_column": "dso_9.flex_p_down[0,0,0,12]",
+     "n_columns_over_1e-8": 5014
+    },
+    "max_over_all": 0.05054643156177385
+   },
+   "small_circle_activity": {
+    "tso.sg_capability": {
+     "count": 6,
+     "radius_min": 0.0012581984267672271,
+     "radius_max": 0.002170820339263569,
+     "max_used_share": 0.999977584592355,
+     "min_slack": 2.2923804399643463e-08,
+     "n_active_used_share_ge_0.999": 6,
+     "max_norm_z": 22557591.198391158,
+     "max_z0": 15950811.808179995
+    },
+    "tso.sess_converter_capability": {
+     "count": 24,
+     "radius_min": 0.0025,
+     "radius_max": 0.0025,
+     "max_used_share": 0.8446344704681151,
+     "min_slack": 0.00038828940086693426,
+     "n_active_used_share_ge_0.999": 0,
+     "max_norm_z": 4210.133888943226,
+     "max_z0": 3061.11057356194
+    },
+    "dso.sg_capability": {
+     "count": 19,
+     "radius_min": 0.0008110820729911303,
+     "radius_max": 0.009638591017761383,
+     "max_used_share": 0.9999772986978039,
+     "min_slack": 1.8397870334293208e-08,
+     "n_active_used_share_ge_0.999": 19,
+     "max_norm_z": 28125902.06741197,
+     "max_z0": 19888274.47152955
+    },
+    "dso.sess_converter_capability": {
+     "count": 24,
+     "radius_min": 0.0025,
+     "radius_max": 0.0025,
+     "max_used_share": 0.8435957421736829,
+     "min_slack": 0.0003908821463297048,
+     "n_active_used_share_ge_0.999": 0,
+     "max_norm_z": 1193.595378543723,
+     "max_z0": 927.8379702652503
+    }
+   },
+   "duals": {
+    "dual_residual_inf": 0.0003502368927001953,
+    "q_inf": 46000000.0,
+    "dual_residual_rel_to_q_inf": 7.613845493482507e-12,
+    "dual_residual_argmax_column": 23423,
+    "primal_residual_inf": 0.07027371114004644,
+    "zero_cone_slack_inf": 0.0,
+    "nonneg_min_z": 0.04515017681994348,
+    "nonneg_min_s": 7.753227046958602e-10,
+    "soc_max_z_violation": 0.0,
+    "soc_max_s_violation": 0.0,
+    "complementarity_s_dot_z": 62531.121971285,
+    "complementarity_max_abs": 2600666823.1149664,
+    "objective_primal_clarabel": 46748435.359020054,
+    "objective_dual_clarabel": 46748436.04332929,
+    "gap_abs_clarabel": 0.6843092367053032,
+    "gap_rel_clarabel_definition": 1.4638120644037053e-08,
+    "objective_primal_recomputed": 46748435.35902013,
+    "objective_dual_recomputed_minus_bz": 46748436.043330066,
+    "gap_abs_recomputed": 0.6843099370598793,
+    "definition": "rd = q + A'z (Clarabel: P x + q + A'z = 0 at optimality, P = 0); rp = A x + s - b; z in K* = K: nonneg z >= 0, SOC z0 >= |z_bar|; dual objective -b'z (+ const); gap_rel as Clarabel: |p - d| / max(1, min(|p|, |d|))",
+    "gurobi_convention": {
+     "mapped_stationarity_residual_inf": 8083730.1422284935,
+     "n_cones_with_s0_le_0": 0,
+     "max_norm_z_on_those_cones": 0.0,
+     "convention": "Pi = -z on = and < rows, +z on > rows; RC = z_LB - z_UB - z_fix; QCPi = -z0 / (2 alpha s0) for s0 > 0, else 0",
+     "c_inf": 46000000.0,
+     "mapped_stationarity_residual_rel_to_c_inf": 0.175733263961489,
+     "presolve_rows_max_abs_z": 0.0,
+     "n_columns_touched_by_presolve_rows": 528,
+     "folded_stationarity_residual_inf": 8083730.1422284935,
+     "folded_stationarity_residual_rel_to_c_inf": 0.175733263961489,
+     "untouched_columns_stationarity_residual_inf": 8083730.1422284935,
+     "untouched_columns_stationarity_residual_rel_to_c_inf": 0.175733263961489,
+     "argmax_strict": "dso_7.pg[3,0,0,19]",
+     "argmax_folded": "dso_7.pg[3,0,0,19]",
+     "presolve_convention": "strict: the presolve-row multipliers are not mapped (the replaced quadratic row has a zero gradient at its apex, so no QCPi carries them); folded: RC[x_i] += sqrt(d_i) z_i (an implicit fixing x_i = 0); untouched: the strict residual on the columns no presolve row touches"
+    }
+   },
+   "t02_lagrangian_g": {
+    "available": true,
+    "L_conv": 53598626.77092122,
+    "g_tight": -Infinity,
+    "q_lb": 46748435.359020054,
+    "n_unbounded_vars_with_nonzero_gradient": 6228,
+    "max_abs_gradient_on_unbounded_vars": 481050598.39116514,
+    "n_wrong_sign_linear_multipliers_projected": 0,
+    "n_wrong_sign_quadratic_multipliers_projected": 0,
+    "quadratic_row_classes": {
+     "psd": 525,
+     "hyperbolic": 3456,
+     "nonconvex": 0
+    },
+    "recomputed_rc_vs_solver_rc": {
+     "max_abs_recomputed_minus_solver_rc": 8083730.142228492,
+     "max_abs_solver_rc": 481050598.39116585
+    },
+    "g_spec": -Infinity,
+    "max_abs_stationarity_residual": 8083730.142228492,
+    "sum_margin_finite_part": 321856.03229930735,
+    "g_tight_check": {
+     "g_le_QLB": true,
+     "QLB_le_g_plus_1e-6": false,
+     "held": false,
+     "Q_LB_minus_g": null
+    },
+    "g_spec_check": {
+     "g_le_QLB": true,
+     "QLB_le_g_plus_1e-6": false,
+     "held": false,
+     "Q_LB_minus_g": null
+    }
+   },
+   "t02_rank_and_cycles_summary": {
+    "TSO": {
+     "n_branch_periods": 216,
+     "max_rel_rank_residual": 0.023996638421821887,
+     "min_rel_rank_residual": -1.9335796363444996e-05,
+     "n_cycles": 1,
+     "max_cycle_angle_residual_rad": 0.021649031185645207
+    },
+    "DSO5": {
+     "n_branch_periods": 768,
+     "max_rel_rank_residual": 0.5003123135209546,
+     "min_rel_rank_residual": -5.305526174419381e-05,
+     "oltc": {
+      "n": 24,
+      "max_transformer_cone_rel_residual": 0.0001506061069847318,
+      "u_over_wii_range": [
+       1.0204755427881924,
+       1.366646373236469
+      ]
+     }
+    },
+    "DSO7": {
+     "n_branch_periods": 768,
+     "max_rel_rank_residual": 0.5003341328039502,
+     "min_rel_rank_residual": -5.198616689653741e-05,
+     "oltc": {
+      "n": 24,
+      "max_transformer_cone_rel_residual": 0.0007418771215792258,
+      "u_over_wii_range": [
+       1.0101281366315606,
+       1.3680130028435427
+      ]
+     }
+    },
+    "DSO9": {
+     "n_branch_periods": 768,
+     "max_rel_rank_residual": 0.500307543715305,
+     "min_rel_rank_residual": -5.368750526938599e-05,
+     "oltc": {
+      "n": 24,
+      "max_transformer_cone_rel_residual": 0.0010950201705306527,
+      "u_over_wii_range": [
+       0.9959747839580666,
+       1.3589638333500185
+      ]
+     }
+    }
+   }
+  },
+  "unit_n7_2025_Spring_C.presolve.it5000": {
+   "group": "unit_n7_2025_Spring_C",
+   "max_iter": 5000,
+   "presolve": true,
+   "instance": {
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "certification_cycle": 112,
+    "gross_recorded": 653599356.2420883,
+    "eval_dir": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1"
+   },
+   "gross_group": 63954613.593676075,
+   "q_cert_plus_group": 63955818.58270402,
+   "solve": {
+    "status": "InsufficientProgress",
+    "obj_val": 54434551.15504019,
+    "obj_val_dual": 54434551.15547129,
+    "iterations": 1235,
+    "setup_s": 0.022927045822143555,
+    "solve_wall_s": 12.299913883209229,
+    "solve_time_reported": 12.311058411,
+    "r_prim": 0.00011039947044942975,
+    "r_dual": 4.433331033983787e-13,
+    "info": {
+     "cost_dual": 54434551.15547129,
+     "cost_primal": 54434551.15504019,
+     "gap_abs": 0.0004310980439186096,
+     "gap_rel": 7.919566429247456e-12,
+     "iterations": 1235,
+     "ktratio": 0.00041361619492545393,
+     "linsolver": "LinearSolverInfo {\n    name: \"qdldl\",\n    threads: 1,\n    direct: true,\n    nnzA: 241019,\n    nnzL: 260304,\n}",
+     "mu": 0.00028433381509811075,
+     "res_dual": 4.433331033983787e-13,
+     "res_dual_inf": 0.7006924790498696,
+     "res_primal": 0.00011039947044942975,
+     "res_primal_inf": 0.09927595409381675,
+     "sigma": 0.9929640439371707,
+     "solve_time": 12.311058411,
+     "status": "InsufficientProgress",
+     "step_length": 0.0
+    },
+    "settings_in_force": {
+     "chordal_decomposition_compact": true,
+     "chordal_decomposition_complete_dual": true,
+     "chordal_decomposition_enable": true,
+     "chordal_decomposition_merge_method": "clique_graph",
+     "direct_kkt_solver": true,
+     "direct_solve_method": "auto",
+     "dynamic_regularization_delta": 2e-07,
+     "dynamic_regularization_enable": true,
+     "dynamic_regularization_eps": 1e-13,
+     "equilibrate_enable": true,
+     "equilibrate_max_iter": 10,
+     "equilibrate_max_scaling": 10000.0,
+     "equilibrate_min_scaling": 0.0001,
+     "input_sparse_dropzeros": false,
+     "iterative_refinement_abstol": 1e-12,
+     "iterative_refinement_enable": true,
+     "iterative_refinement_max_iter": 10,
+     "iterative_refinement_reltol": 1e-13,
+     "iterative_refinement_stop_ratio": 5.0,
+     "linesearch_backtrack_step": 0.8,
+     "max_iter": 5000,
+     "max_step_fraction": 0.99,
+     "max_threads": 0,
+     "min_switch_step_length": 0.1,
+     "min_terminate_step_length": 0.0001,
+     "pardiso_iparm": [
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648,
+      -2147483648
+     ],
+     "pardiso_verbose": false,
+     "presolve_enable": true,
+     "reduced_tol_feas": 0.0001,
+     "reduced_tol_gap_abs": 5e-05,
+     "reduced_tol_gap_rel": 5e-05,
+     "reduced_tol_infeas_abs": 5e-12,
+     "reduced_tol_infeas_rel": 5e-05,
+     "reduced_tol_ktratio": 0.0001,
+     "static_regularization_constant": 1e-08,
+     "static_regularization_enable": true,
+     "static_regularization_proportional": 4.930380657631324e-32,
+     "time_limit": Infinity,
+     "tol_feas": 1e-08,
+     "tol_gap_abs": 1e-08,
+     "tol_gap_rel": 1e-08,
+     "tol_infeas_abs": 1e-08,
+     "tol_infeas_rel": 1e-08,
+     "tol_ktratio": 1e-06,
+     "verbose": true
+    },
+    "STAND_IN": false,
+    "log": "data/SRP1/Results/P516D0/t02_clarabel_ablation/logs/unit_n7_2025_Spring_C.presolve.it5000.clarabel.log",
+    "vectors": "data/SRP1/Results/P516D0/t02_clarabel_ablation/vectors/unit_n7_2025_Spring_C.presolve.it5000.npz",
+    "wall_s": 12.322840929031372,
+    "rss_before": {
+     "self_max_rss_bytes": 614907904
+    },
+    "rss_after": {
+     "self_max_rss_bytes": 614907904
+    },
+    "clarabel_overrides": {
+     "verbose": true,
+     "max_iter": 5000
+    }
+   },
+   "Q_LB": 54434551.15504019,
+   "solver_gap_abs": 0.0004310980439186096,
+   "solver_gap_rel": 7.919566429247456e-12,
+   "gap_vs_q_cert_plus_eur": 9521267.427663833,
+   "gap_vs_q_cert_plus_keur": 9521.267427663834,
+   "gap_vs_q_cert_plus_rel": 0.1488725754538107,
+   "gap_vs_gross_eur": 9520062.438635886,
+   "converged": false,
+   "containment_stop_applies": false,
+   "returned_point_lp_violation": {
+    "linear_eq": {
+     "max": 0.007906339624957699,
+     "worst_row": "dso_9.d0_env_rewrite[47]",
+     "n_rows_over_1e-8": 5452,
+     "top_families": {
+      "dso.d0_env_rewrite": 0.007906339624957699,
+      "dso.node_balance_p": 0.004453606711744929,
+      "dso.sess_soc_def": 0.0021382982827702697,
+      "tso.sess_soc_def": 0.002051461428509072,
+      "dso.sess_pdch_hat_link": 0.0010396721565831667,
+      "top.d0_cpl_ess_p_dso_esso": 0.0010207654745008725,
+      "dso.sess_pnet_def": 0.0010207653330125252,
+      "dso.sess_pch_hat_link": 0.0010050450703202054
+     }
+    },
+    "linear_ineq": {
+     "max": 0.00020173269031243182,
+     "worst_row": "tso.sess_soc_limit_upper[1,0,0,18]",
+     "n_rows_over_1e-8": 41,
+     "top_families": {
+      "tso.sess_soc_limit_upper": 0.00020173269031243182,
+      "dso.sess_soc_limit_upper": 9.537538144485137e-05,
+      "dso.sess_active_sum_limit": 3.46275325759462e-05,
+      "tso.sess_active_sum_limit": 3.316720358890026e-05,
+      "dso.voltage_magnitude_upper_cons": 9.793864353735415e-06,
+      "dso.d0_tr_U_upper": 1.8241161918730597e-06
+     }
+    },
+    "quadratic": {
+     "max": 0.0002500179257632225,
+     "worst_row": "dso_9.d0_tr_cone[31,0,0,22]",
+     "n_rows_over_1e-8": 2711
+    },
+    "bound": {
+     "max": 5.909393801847195e-05,
+     "worst_column": "dso_9.pg[4,0,0,22]",
+     "n_columns_over_1e-8": 3630
+    },
+    "max_over_all": 0.007906339624957699
+   },
+   "small_circle_activity": {
+    "tso.sg_capability": {
+     "count": 6,
+     "radius_min": 0.0012581984267672271,
+     "radius_max": 0.002170820339263569,
+     "max_used_share": 0.9999999764587745,
+     "min_slack": 2.552394569570876e-11,
+     "n_active_used_share_ge_0.999": 6,
+     "max_norm_z": 11410356.001028031,
+     "max_z0": 8068340.212859323
+    },
+    "tso.sess_converter_capability": {
+     "count": 24,
+     "radius_min": 0.0025,
+     "radius_max": 0.0025,
+     "max_used_share": 0.9999996089789726,
+     "min_slack": 9.789287783168454e-10,
+     "n_active_used_share_ge_0.999": 7,
+     "max_norm_z": 12149.830078779412,
+     "max_z0": 8591.268653147927
+    },
+    "dso.sg_capability": {
+     "count": 19,
+     "radius_min": 0.0008110820729911303,
+     "radius_max": 0.009638591017761383,
+     "max_used_share": 0.9999999864113963,
+     "min_slack": 1.564794225184657e-11,
+     "n_active_used_share_ge_0.999": 19,
+     "max_norm_z": 18653654.0868082,
+     "max_z0": 13190125.467029683
+    },
+    "dso.sess_converter_capability": {
+     "count": 24,
+     "radius_min": 0.0025,
+     "radius_max": 0.0025,
+     "max_used_share": 0.9999955222427961,
+     "min_slack": 1.118119178451435e-08,
+     "n_active_used_share_ge_0.999": 7,
+     "max_norm_z": 25713.53384456231,
+     "max_z0": 18182.255572992373
+    }
+   },
+   "duals": {
+    "dual_residual_inf": 0.006013317673932761,
+    "q_inf": 46000000.0,
+    "dual_residual_rel_to_q_inf": 1.3072429725940785e-10,
+    "dual_residual_argmax_column": 12042,
+    "primal_residual_inf": 0.007906339624957699,
+    "zero_cone_slack_inf": 0.0,
+    "nonneg_min_z": 2.580706157066921e-05,
+    "nonneg_min_s": 4.898047126518594e-13,
+    "soc_max_z_violation": 0.0,
+    "soc_max_s_violation": 0.0,
+    "complementarity_s_dot_z": 26.328853310073544,
+    "complementarity_max_abs": 2985988489.450652,
+    "objective_primal_clarabel": 54434551.15504019,
+    "objective_dual_clarabel": 54434551.15547129,
+    "gap_abs_clarabel": 0.0004310980439186096,
+    "gap_rel_clarabel_definition": 7.919566429247456e-12,
+    "objective_primal_recomputed": 54434551.155040644,
+    "objective_dual_recomputed_minus_bz": 54434551.15544329,
+    "gap_abs_recomputed": 0.0004026442766189575,
+    "definition": "rd = q + A'z (Clarabel: P x + q + A'z = 0 at optimality, P = 0); rp = A x + s - b; z in K* = K: nonneg z >= 0, SOC z0 >= |z_bar|; dual objective -b'z (+ const); gap_rel as Clarabel: |p - d| / max(1, min(|p|, |d|))",
+    "gurobi_convention": {
+     "mapped_stationarity_residual_inf": 4865737.8538270835,
+     "n_cones_with_s0_le_0": 0,
+     "max_norm_z_on_those_cones": 0.0,
+     "convention": "Pi = -z on = and < rows, +z on > rows; RC = z_LB - z_UB - z_fix; QCPi = -z0 / (2 alpha s0) for s0 > 0, else 0",
+     "c_inf": 46000000.0,
+     "mapped_stationarity_residual_rel_to_c_inf": 0.10577690986580617,
+     "presolve_rows_max_abs_z": 0.0,
+     "n_columns_touched_by_presolve_rows": 528,
+     "folded_stationarity_residual_inf": 4865737.8538270835,
+     "folded_stationarity_residual_rel_to_c_inf": 0.10577690986580617,
+     "untouched_columns_stationarity_residual_inf": 4865737.8538270835,
+     "untouched_columns_stationarity_residual_rel_to_c_inf": 0.10577690986580617,
+     "argmax_strict": "dso_7.pg[3,0,0,19]",
+     "argmax_folded": "dso_7.pg[3,0,0,19]",
+     "presolve_convention": "strict: the presolve-row multipliers are not mapped (the replaced quadratic row has a zero gradient at its apex, so no QCPi carries them); folded: RC[x_i] += sqrt(d_i) z_i (an implicit fixing x_i = 0); untouched: the strict residual on the columns no presolve row touches"
+    }
+   },
+   "t02_lagrangian_g": {
+    "available": true,
+    "L_conv": 59721609.22356837,
+    "g_tight": -Infinity,
+    "q_lb": 54434551.15504019,
+    "n_unbounded_vars_with_nonzero_gradient": 6205,
+    "max_abs_gradient_on_unbounded_vars": 434300376.2311044,
+    "n_wrong_sign_linear_multipliers_projected": 0,
+    "n_wrong_sign_quadratic_multipliers_projected": 0,
+    "quadratic_row_classes": {
+     "psd": 525,
+     "hyperbolic": 3456,
+     "nonconvex": 0
+    },
+    "recomputed_rc_vs_solver_rc": {
+     "max_abs_recomputed_minus_solver_rc": 4865737.853827085,
+     "max_abs_solver_rc": 434300376.23110443
+    },
+    "g_spec": -Infinity,
+    "max_abs_stationarity_residual": 4865737.853827085,
+    "sum_margin_finite_part": 148259.11250968164,
+    "g_tight_check": {
+     "g_le_QLB": true,
+     "QLB_le_g_plus_1e-6": false,
+     "held": false,
+     "Q_LB_minus_g": null
+    },
+    "g_spec_check": {
+     "g_le_QLB": true,
+     "QLB_le_g_plus_1e-6": false,
+     "held": false,
+     "Q_LB_minus_g": null
+    }
+   },
+   "t02_rank_and_cycles_summary": {
+    "TSO": {
+     "n_branch_periods": 216,
+     "max_rel_rank_residual": 0.024161073800111628,
+     "min_rel_rank_residual": -6.306697651319882e-06,
+     "n_cycles": 1,
+     "max_cycle_angle_residual_rad": 0.008616718086102093
+    },
+    "DSO5": {
+     "n_branch_periods": 768,
+     "max_rel_rank_residual": 0.5000000268018308,
+     "min_rel_rank_residual": -1.7107627300998107e-05,
+     "oltc": {
+      "n": 24,
+      "max_transformer_cone_rel_residual": -1.5491865573345685e-07,
+      "u_over_wii_range": [
+       1.0092034356382216,
+       1.368899782018552
+      ]
+     }
+    },
+    "DSO7": {
+     "n_branch_periods": 768,
+     "max_rel_rank_residual": 0.5000000275068419,
+     "min_rel_rank_residual": -1.6958389655380203e-05,
+     "oltc": {
+      "n": 24,
+      "max_transformer_cone_rel_residual": 1.8916243005851617e-05,
+      "u_over_wii_range": [
+       1.0086389595946124,
+       1.3688999003080413
+      ]
+     }
+    },
+    "DSO9": {
+     "n_branch_periods": 768,
+     "max_rel_rank_residual": 0.5000000262785502,
+     "min_rel_rank_residual": -1.736823449638146e-05,
+     "oltc": {
+      "n": 24,
+      "max_transformer_cone_rel_residual": -1.112326715023367e-07,
+      "u_over_wii_range": [
+       0.9801821337073914,
+       1.3689020737815811
+      ]
+     }
+    }
+   }
+  }
+ }
+}

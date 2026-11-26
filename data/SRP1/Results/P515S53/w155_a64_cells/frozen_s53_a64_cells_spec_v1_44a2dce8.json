@@ -1,0 +1,2032 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 64 (run the m = 1.75 cell; the soh_min 0.50 row: variant key in new files, Advisor design check, bitwise gate against the settled C2_calfade unit through 172, frozen spec)",
+  "Planner task W155 (the Advisor's design check H1-H3; section M; the predictions)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 61 (criterion v6; the determinacy floor)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 62"
+ ],
+ "cell_order": [
+  "g070_neutrality",
+  "h_x0_m175",
+  "h_unit_m175",
+  "e_soh050"
+ ],
+ "cells": {
+  "e_soh050": {
+   "arm": "C2_calfade",
+   "campaign_id": "s53_w155_a64_r2_e_soh050",
+   "campaign_root": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_e_soh050",
+   "campaign_spec": {
+    "eval_dir": "3f01b9eaaab13c82_e_soh050",
+    "eval_key": "3f01b9eaaab13c82bc9333e05b9e56cf9bf91b0c28c8aec28ced991d4ab35540",
+    "git_head": "c0dac2279e391a7012bd79b57e38ae5bc6338be1",
+    "harness_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21",
+    "path": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_e_soh050/campaign_spec_s53_w155_a64_r2_e_soh050_28c9478d.json",
+    "sha256": "28c9478dd079c0d35e6ff172c06770b05a0968e37078776c0441eae492e3d332"
+   },
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "candidate_source_provenance_only": {
+    "eval_key": "98e2857016a16d1c09aea36acb06929baed718ffc7c01ca53de1e24d4f3e9cfd",
+    "label": "n7_4h_e1_C2_calfade",
+    "root": "data/SRP1/Results/P515S46/campaign_s46_ageing",
+    "spec": "campaign_spec_s46_ageing_6544c17e.json"
+   },
+   "cap_rule": {
+    "after_first_k0": 109,
+    "ceiling": 300,
+    "formula": "min(k0_run + 109, ceiling) (k0_run: the first residual pass under the version-2 definition)",
+    "kind": "dynamic"
+   },
+   "claim_group": 3,
+   "configuration": {
+    "arm_label": "s39_D",
+    "case_file_anderson_acceleration": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "convergence_depth_tail": {
+     "compl_inf_tol": 1e-06,
+     "enabled": true
+    },
+    "ess_ageing_baseline": {
+     "calendar_life_years": 15,
+     "calendar_retention_per_year": 0.985,
+     "calibration": {
+      "cycles_n": 10000,
+      "eol_retention_r": 0.8,
+      "reference_dod_d": 0.8,
+      "status": "ACTIVE"
+     },
+     "cycle_life_nominal": 10000,
+     "depth_of_discharge_nominal": 0.8,
+     "minimum_soh": 0.7
+    },
+    "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+    "name": "W155 SRP1 ADDENDUM 64 CELLS -- the current production configuration: the case file (AA keep_memory declared), the ESS ageing baseline BASELINE (C2 + phi_cal 0.985 + soh_min 0.70) declared (minimum SoH 0.70 = the file, NOT overridden in the spec), the convergence-depth tight tail DECLARED ENABLED (compl_inf_tol 1e-6), post-certification: persist the certified TSO/DSO models only",
+    "note": "the entry adds settling_resettle (W155 schema; keyed); model_variant = the C2_calfade arm (keyed through the base key); minimum_soh 0.5 keyed in the declaration and applied after the variant by production's apply_to; cap 300 (the rule stops at min(k0_run + 109, 300)); persist_certified_models; concurrency 1",
+    "overrides": {}
+   },
+   "declaration": {
+    "N_old": null,
+    "abort_on_replay_divergence": false,
+    "arm": "C2_calfade",
+    "cap_rule": {
+     "after_first_k0": 109,
+     "ceiling": 300,
+     "formula": "min(k0_run + 109, ceiling) (k0_run: the first residual pass under the version-2 definition)",
+     "kind": "dynamic"
+    },
+    "captures": {
+     "ageing_trajectory_terminal": true,
+     "attempt_tier_and_final_metrics": true,
+     "boyd_full": true,
+     "ess_schedule_movement": true,
+     "exit_clean_by_block": true,
+     "ipopt_exit_by_block": true,
+     "q_decomposition": true,
+     "soh_floor_plumbing": true,
+     "soh_floor_sidecar": true,
+     "t_sum": true
+    },
+    "cell": "e_soh050",
+    "claim_group": 3,
+    "expected_blocks": {
+     "dso": 36,
+     "esso": 3,
+     "tso": 12
+    },
+    "first_residual_pass_expected": null,
+    "flex_price_multiplier_expected": null,
+    "floor_row_lower_expected": 0.5,
+    "gate": "none_first_evaluation",
+    "holds_after": "the run first residual pass k0_run (version-2 definition): AA off, tight tail on, rho frozen for every later cycle",
+    "item": "E",
+    "kind": "soh",
+    "label": "SRP1 ADDENDUM 64 CELLS (W155, frozen_s53_a64_cells_spec) -- current production configuration (C2 ageing file with minimum SoH 0.70, tight tail); the m = 1.75 flexibility-ladder pair (keyed multiplier) and the minimum-SoH row (keyed minimum_soh in this declaration, applied after the standard C2_calfade model variant through production's apply_to; the shared floor-row dict carried to the declared value); ungated first evaluations; the certifying regime held after the run's first residual pass (AA off, tight tail on, rho frozen); settling rule v6 until it certifies or the cap; W105 captures, t_sum, the IPOPT exit, attempt tier and final metrics of every block, the SoH-floor sidecar",
+    "minimum_soh": 0.5,
+    "model_variant": {
+     "ageing_enabled": true,
+     "available_energy_soh_point": "end",
+     "calendar_retention_per_year": 0.985,
+     "eol_retention_r": 0.8
+    },
+    "original_lapses_after_k0": null,
+    "record_all_blocks": true,
+    "replay_reference": null,
+    "schema": "p515_s53_w155_a64_settling_resettle_v1",
+    "settling_rule": {
+     "class": "settling_criterion_v6.SettlingRuleV6",
+     "clean": {
+      "factor": 10.0,
+      "metric_table": {
+       "complementarity": {
+        "column": "unscaled",
+        "ipopt_meaning": "max-norm of the unscaled complementarity; termination requires <= compl_inf_tol",
+        "log_line": "Complementarity",
+        "option": "compl_inf_tol"
+       },
+       "constraint_violation": {
+        "column": "unscaled",
+        "ipopt_meaning": "max-norm of the unscaled constraint violation; termination requires <= constr_viol_tol",
+        "log_line": "Constraint violation",
+        "option": "constr_viol_tol"
+       },
+       "dual_infeasibility": {
+        "column": "unscaled",
+        "ipopt_meaning": "max-norm of the unscaled dual infeasibility; termination requires <= dual_inf_tol",
+        "log_line": "Dual infeasibility",
+        "option": "dual_inf_tol"
+       },
+       "overall_nlp_error": {
+        "column": "scaled",
+        "ipopt_meaning": "the (scaled) NLP error; successful termination requires it <= tol",
+        "log_line": "Overall NLP error",
+        "option": "tol"
+       }
+      },
+      "rule": "Optimal on any attempt tier, or Acceptable on the primary attempt with every metric <= factor x tolerance",
+      "tolerances": {
+       "esso": {
+        "compl_inf_tol": 0.0001,
+        "constr_viol_tol": 0.0001,
+        "dual_inf_tol": 1.0,
+        "tol": 1e-10
+       },
+       "network": {
+        "compl_inf_tol": 1e-06,
+        "constr_viol_tol": 0.0001,
+        "dual_inf_tol": 1.0,
+        "tol": 1e-05
+       }
+      }
+     },
+     "drift_window": 25,
+     "eps0": 45.39068275,
+     "gap_bound": 2269.5341375000003,
+     "k_excl": 3,
+     "l_mono": 60,
+     "module": "settling_criterion_v6",
+     "n_and_dynamic_cap_keyed_on": "the first residual pass under the version-2 definition",
+     "p_max": 30,
+     "reading": "gamma",
+     "reset_on_non_clean": false,
+     "retry_tier": null,
+     "sub_test_reads": "enumerated in settling_criterion_v6.SUB_TEST_READS; out-of-window reads recorded",
+     "swing_floor": {
+      "F": 453.9068275000001,
+      "carried_by": "data/SRP1/Results/P515S53/w142_resettle_v6/floor_replay/w142_floor_replay.json",
+      "carries": [
+       "A_growth_test_floor",
+       "B_turning_point_floor"
+      ],
+      "formula": "TAU / 10 (Addendum 61 ruling 1)",
+      "growth_test_floor_A": 453.9068275000001,
+      "turning_point_floor_B": 453.9068275000001
+     },
+     "tau": 4539.0682750000005,
+     "version": 6,
+     "veto": "a branch verdict is vetoed at k while a NON-CLEAN cycle lies in its certifying window: oscillatory [k - W + 1, k], monotone [k - L + 1, k]; state unchanged",
+     "veto_reason": "certification_vetoed_non_clean",
+     "w_factor": 1.1,
+     "w_min": 20,
+     "window": "a"
+    }
+   },
+   "expected_wall_time": {
+    "basis": "W152 e_c2_calfade (data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2_calfade/evals/bbd82994a7ddff94_e_c2_calfade): 172 cycles",
+    "expected_cycles": 172,
+    "expected_h": 1.312666154967414,
+    "s_per_cycle_estimate": 25.12825581395348,
+    "worst_case_h": 2.2061152505746486,
+    "worst_cycles": 300
+   },
+   "flex_price_multiplier": null,
+   "floor_row_lower_expected": 0.5,
+   "gated": false,
+   "investment_year": 2025,
+   "item": "E",
+   "keys": {
+    "base_key_current_configuration": "7735c22872cd538e7454fb4fc893aea6acd20b8abcb5145fa4342feecbbb6422",
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "resettle_key": "3f01b9eaaab13c82bc9333e05b9e56cf9bf91b0c28c8aec28ced991d4ab35540"
+   },
+   "kind": "soh",
+   "launch_command": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w155_a64_campaign.py --run --cell e_soh050 --spec-sha256 28c9478dd079c0d35e6ff172c06770b05a0968e37078776c0441eae492e3d332 > data/SRP1/Results/P515S53/w155_a64_cells/run_e_soh050_launch.log 2>&1",
+   "launch_index_1_based": 4,
+   "minimum_soh": 0.5,
+   "model_variant": {
+    "ageing_enabled": true,
+    "available_energy_soh_point": "end",
+    "calendar_retention_per_year": 0.985,
+    "eol_retention_r": 0.8
+   },
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.25,
+     1.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   },
+   "preconditions_only_command": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w155_a64_campaign.py --run --cell e_soh050 --spec-sha256 28c9478dd079c0d35e6ff172c06770b05a0968e37078776c0441eae492e3d332 --preconditions-only > data/SRP1/Results/P515S53/w155_a64_cells/run_e_soh050_preconditions_only.log 2>&1",
+   "role": "the C2_calfade unit at minimum_soh 0.50 (value against the x0 Q181 d110bd1a; Delta value against the settled 0.70 unit 3f084f2f)",
+   "spec_cap": 300
+  },
+  "g070_neutrality": {
+   "arm": "C2_calfade",
+   "campaign_id": "s53_w155_a64_r2_g070_neutrality",
+   "campaign_root": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_g070_neutrality",
+   "campaign_spec": {
+    "eval_dir": "5007232b1c3eaf03_g070_neutrality",
+    "eval_key": "5007232b1c3eaf03a5e6d673f1b491ef64eada5a431fef84f3d40655efe5170d",
+    "git_head": "c0dac2279e391a7012bd79b57e38ae5bc6338be1",
+    "harness_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21",
+    "path": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_g070_neutrality/campaign_spec_s53_w155_a64_r2_g070_neutrality_a5d02f7f.json",
+    "sha256": "a5d02f7ffa4756c5ff67bd7316c2ad7a3b6cbd95009e45bc96cafd50a5b53ac5"
+   },
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "candidate_source_provenance_only": {
+    "eval_key": "98e2857016a16d1c09aea36acb06929baed718ffc7c01ca53de1e24d4f3e9cfd",
+    "label": "n7_4h_e1_C2_calfade",
+    "root": "data/SRP1/Results/P515S46/campaign_s46_ageing",
+    "spec": "campaign_spec_s46_ageing_6544c17e.json"
+   },
+   "cap_rule": {
+    "after_first_k0": 109,
+    "ceiling": 300,
+    "formula": "min(k0_run + 109, ceiling) (k0_run: the first residual pass under the version-2 definition)",
+    "kind": "dynamic"
+   },
+   "claim_group": 3,
+   "configuration": {
+    "arm_label": "s39_D",
+    "case_file_anderson_acceleration": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "convergence_depth_tail": {
+     "compl_inf_tol": 1e-06,
+     "enabled": true
+    },
+    "ess_ageing_baseline": {
+     "calendar_life_years": 15,
+     "calendar_retention_per_year": 0.985,
+     "calibration": {
+      "cycles_n": 10000,
+      "eol_retention_r": 0.8,
+      "reference_dod_d": 0.8,
+      "status": "ACTIVE"
+     },
+     "cycle_life_nominal": 10000,
+     "depth_of_discharge_nominal": 0.8,
+     "minimum_soh": 0.7
+    },
+    "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+    "name": "W155 SRP1 ADDENDUM 64 CELLS -- the current production configuration: the case file (AA keep_memory declared), the ESS ageing baseline BASELINE (C2 + phi_cal 0.985 + soh_min 0.70) declared (minimum SoH 0.70 = the file, NOT overridden in the spec), the convergence-depth tight tail DECLARED ENABLED (compl_inf_tol 1e-6), post-certification: persist the certified TSO/DSO models only",
+    "note": "the entry adds settling_resettle (W155 schema; keyed); model_variant = the C2_calfade arm (keyed through the base key); minimum_soh 0.7 keyed in the declaration and applied after the variant by production's apply_to; cap 300 (the rule stops at min(k0_run + 109, 300)); persist_certified_models; concurrency 1",
+    "overrides": {}
+   },
+   "declaration": {
+    "N_old": null,
+    "abort_on_replay_divergence": false,
+    "arm": "C2_calfade",
+    "cap_rule": {
+     "after_first_k0": 109,
+     "ceiling": 300,
+     "formula": "min(k0_run + 109, ceiling) (k0_run: the first residual pass under the version-2 definition)",
+     "kind": "dynamic"
+    },
+    "captures": {
+     "ageing_trajectory_terminal": true,
+     "attempt_tier_and_final_metrics": true,
+     "boyd_full": true,
+     "ess_schedule_movement": true,
+     "exit_clean_by_block": true,
+     "ipopt_exit_by_block": true,
+     "q_decomposition": true,
+     "soh_floor_plumbing": true,
+     "soh_floor_sidecar": true,
+     "t_sum": true
+    },
+    "cell": "g070_neutrality",
+    "claim_group": 3,
+    "expected_blocks": {
+     "dso": 36,
+     "esso": 3,
+     "tso": 12
+    },
+    "first_residual_pass_expected": null,
+    "flex_price_multiplier_expected": null,
+    "floor_row_lower_expected": 0.7,
+    "gate": "post_run_bitwise_vs_3f084f2f_through_172",
+    "holds_after": "the run first residual pass k0_run (version-2 definition): AA off, tight tail on, rho frozen for every later cycle",
+    "item": "E",
+    "kind": "soh",
+    "label": "SRP1 ADDENDUM 64 CELLS (W155, frozen_s53_a64_cells_spec) -- current production configuration (C2 ageing file with minimum SoH 0.70, tight tail); the m = 1.75 flexibility-ladder pair (keyed multiplier) and the minimum-SoH row (keyed minimum_soh in this declaration, applied after the standard C2_calfade model variant through production's apply_to; the shared floor-row dict carried to the declared value); ungated first evaluations; the certifying regime held after the run's first residual pass (AA off, tight tail on, rho frozen); settling rule v6 until it certifies or the cap; W105 captures, t_sum, the IPOPT exit, attempt tier and final metrics of every block, the SoH-floor sidecar",
+    "minimum_soh": 0.7,
+    "model_variant": {
+     "ageing_enabled": true,
+     "available_energy_soh_point": "end",
+     "calendar_retention_per_year": 0.985,
+     "eol_retention_r": 0.8
+    },
+    "original_lapses_after_k0": null,
+    "record_all_blocks": true,
+    "replay_reference": null,
+    "schema": "p515_s53_w155_a64_settling_resettle_v1",
+    "settling_rule": {
+     "class": "settling_criterion_v6.SettlingRuleV6",
+     "clean": {
+      "factor": 10.0,
+      "metric_table": {
+       "complementarity": {
+        "column": "unscaled",
+        "ipopt_meaning": "max-norm of the unscaled complementarity; termination requires <= compl_inf_tol",
+        "log_line": "Complementarity",
+        "option": "compl_inf_tol"
+       },
+       "constraint_violation": {
+        "column": "unscaled",
+        "ipopt_meaning": "max-norm of the unscaled constraint violation; termination requires <= constr_viol_tol",
+        "log_line": "Constraint violation",
+        "option": "constr_viol_tol"
+       },
+       "dual_infeasibility": {
+        "column": "unscaled",
+        "ipopt_meaning": "max-norm of the unscaled dual infeasibility; termination requires <= dual_inf_tol",
+        "log_line": "Dual infeasibility",
+        "option": "dual_inf_tol"
+       },
+       "overall_nlp_error": {
+        "column": "scaled",
+        "ipopt_meaning": "the (scaled) NLP error; successful termination requires it <= tol",
+        "log_line": "Overall NLP error",
+        "option": "tol"
+       }
+      },
+      "rule": "Optimal on any attempt tier, or Acceptable on the primary attempt with every metric <= factor x tolerance",
+      "tolerances": {
+       "esso": {
+        "compl_inf_tol": 0.0001,
+        "constr_viol_tol": 0.0001,
+        "dual_inf_tol": 1.0,
+        "tol": 1e-10
+       },
+       "network": {
+        "compl_inf_tol": 1e-06,
+        "constr_viol_tol": 0.0001,
+        "dual_inf_tol": 1.0,
+        "tol": 1e-05
+       }
+      }
+     },
+     "drift_window": 25,
+     "eps0": 45.39068275,
+     "gap_bound": 2269.5341375000003,
+     "k_excl": 3,
+     "l_mono": 60,
+     "module": "settling_criterion_v6",
+     "n_and_dynamic_cap_keyed_on": "the first residual pass under the version-2 definition",
+     "p_max": 30,
+     "reading": "gamma",
+     "reset_on_non_clean": false,
+     "retry_tier": null,
+     "sub_test_reads": "enumerated in settling_criterion_v6.SUB_TEST_READS; out-of-window reads recorded",
+     "swing_floor": {
+      "F": 453.9068275000001,
+      "carried_by": "data/SRP1/Results/P515S53/w142_resettle_v6/floor_replay/w142_floor_replay.json",
+      "carries": [
+       "A_growth_test_floor",
+       "B_turning_point_floor"
+      ],
+      "formula": "TAU / 10 (Addendum 61 ruling 1)",
+      "growth_test_floor_A": 453.9068275000001,
+      "turning_point_floor_B": 453.9068275000001
+     },
+     "tau": 4539.0682750000005,
+     "version": 6,
+     "veto": "a branch verdict is vetoed at k while a NON-CLEAN cycle lies in its certifying window: oscillatory [k - W + 1, k], monotone [k - L + 1, k]; state unchanged",
+     "veto_reason": "certification_vetoed_non_clean",
+     "w_factor": 1.1,
+     "w_min": 20,
+     "window": "a"
+    }
+   },
+   "expected_wall_time": {
+    "basis": "W152 e_c2_calfade (data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2_calfade/evals/bbd82994a7ddff94_e_c2_calfade): 172 cycles",
+    "expected_cycles": 172,
+    "expected_h": 1.312666154967414,
+    "s_per_cycle_estimate": 25.12825581395348,
+    "worst_case_h": 2.2061152505746486,
+    "worst_cycles": 300
+   },
+   "flex_price_multiplier": null,
+   "floor_row_lower_expected": 0.7,
+   "gated": false,
+   "investment_year": 2025,
+   "item": "E",
+   "keys": {
+    "base_key_current_configuration": "7735c22872cd538e7454fb4fc893aea6acd20b8abcb5145fa4342feecbbb6422",
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "resettle_key": "5007232b1c3eaf03a5e6d673f1b491ef64eada5a431fef84f3d40655efe5170d"
+   },
+   "kind": "soh",
+   "launch_command": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w155_a64_campaign.py --run --cell g070_neutrality --spec-sha256 a5d02f7ffa4756c5ff67bd7316c2ad7a3b6cbd95009e45bc96cafd50a5b53ac5 > data/SRP1/Results/P515S53/w155_a64_cells/run_g070_neutrality_launch.log 2>&1",
+   "launch_index_1_based": 1,
+   "minimum_soh": 0.7,
+   "model_variant": {
+    "ageing_enabled": true,
+    "available_energy_soh_point": "end",
+    "calendar_retention_per_year": 0.985,
+    "eol_retention_r": 0.8
+   },
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.25,
+     1.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   },
+   "preconditions_only_command": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w155_a64_campaign.py --run --cell g070_neutrality --spec-sha256 a5d02f7ffa4756c5ff67bd7316c2ad7a3b6cbd95009e45bc96cafd50a5b53ac5 --preconditions-only > data/SRP1/Results/P515S53/w155_a64_cells/run_g070_neutrality_preconditions_only.log 2>&1",
+   "role": "NEUTRALITY GATE of the router patch and the SoH wrappers: the C2_calfade unit through the new SoH path at the identity value 0.70; must reproduce 3f084f2f bitwise through 172. At the identity value it CANNOT prove that 0.50 takes effect.",
+   "spec_cap": 300
+  },
+  "h_unit_m175": {
+   "arm": null,
+   "campaign_id": "s53_w155_a64_r2_h_unit_m175",
+   "campaign_root": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_h_unit_m175",
+   "campaign_spec": {
+    "eval_dir": "dc3ab9329c395890_h_unit_m175",
+    "eval_key": "dc3ab9329c3958904ad88d83cd284908101b62f1c4655a8140d22022a8bb0434",
+    "git_head": "c0dac2279e391a7012bd79b57e38ae5bc6338be1",
+    "harness_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21",
+    "path": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_h_unit_m175/campaign_spec_s53_w155_a64_r2_h_unit_m175_eb85d0f4.json",
+    "sha256": "eb85d0f4c16ed917e91a155da686ae49c809ccc88dfbd729a7603bb7dfc4dad6"
+   },
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "candidate_source_provenance_only": {
+    "eval_key": "f9eae48ff6133f6ca988cb14f511e1578fecd8f8c264675f705d3fdda7defbda",
+    "label": "n7_4h_e1_m1p5",
+    "root": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder",
+    "spec": "campaign_spec_s49_flex_ladder_2203f6c1.json"
+   },
+   "cap_rule": {
+    "after_first_k0": 109,
+    "ceiling": 300,
+    "formula": "min(k0_run + 109, ceiling) (k0_run: the first residual pass under the version-2 definition)",
+    "kind": "dynamic"
+   },
+   "claim_group": 2,
+   "configuration": {
+    "arm_label": "s39_D",
+    "case_file_anderson_acceleration": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "convergence_depth_tail": {
+     "compl_inf_tol": 1e-06,
+     "enabled": true
+    },
+    "ess_ageing_baseline": {
+     "calendar_life_years": 15,
+     "calendar_retention_per_year": 0.985,
+     "calibration": {
+      "cycles_n": 10000,
+      "eol_retention_r": 0.8,
+      "reference_dod_d": 0.8,
+      "status": "ACTIVE"
+     },
+     "cycle_life_nominal": 10000,
+     "depth_of_discharge_nominal": 0.8,
+     "minimum_soh": 0.7
+    },
+    "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+    "name": "W155 SRP1 ADDENDUM 64 CELLS -- the current production configuration: the case file (AA keep_memory declared), the ESS ageing baseline BASELINE (C2 + phi_cal 0.985 + soh_min 0.70) declared (minimum SoH 0.70 = the file, NOT overridden in the spec), the convergence-depth tight tail DECLARED ENABLED (compl_inf_tol 1e-6), post-certification: persist the certified TSO/DSO models only",
+    "note": "the entry adds settling_resettle (W155 schema; keyed); flexibility price x 1.75 (keyed through the base key); cap 300 (the rule stops at min(k0_run + 109, 300)); persist_certified_models; concurrency 1",
+    "overrides": {}
+   },
+   "declaration": {
+    "N_old": null,
+    "abort_on_replay_divergence": false,
+    "arm": null,
+    "cap_rule": {
+     "after_first_k0": 109,
+     "ceiling": 300,
+     "formula": "min(k0_run + 109, ceiling) (k0_run: the first residual pass under the version-2 definition)",
+     "kind": "dynamic"
+    },
+    "captures": {
+     "ageing_trajectory_terminal": true,
+     "attempt_tier_and_final_metrics": true,
+     "boyd_full": true,
+     "ess_schedule_movement": true,
+     "exit_clean_by_block": true,
+     "ipopt_exit_by_block": true,
+     "q_decomposition": true,
+     "soh_floor_plumbing": false,
+     "soh_floor_sidecar": true,
+     "t_sum": true
+    },
+    "cell": "h_unit_m175",
+    "claim_group": 2,
+    "expected_blocks": {
+     "dso": 36,
+     "esso": 3,
+     "tso": 12
+    },
+    "first_residual_pass_expected": null,
+    "flex_price_multiplier_expected": 1.75,
+    "floor_row_lower_expected": 0.7,
+    "gate": "none_first_evaluation",
+    "holds_after": "the run first residual pass k0_run (version-2 definition): AA off, tight tail on, rho frozen for every later cycle",
+    "item": "H",
+    "kind": "flex",
+    "label": "SRP1 ADDENDUM 64 CELLS (W155, frozen_s53_a64_cells_spec) -- current production configuration (C2 ageing file with minimum SoH 0.70, tight tail); the m = 1.75 flexibility-ladder pair (keyed multiplier) and the minimum-SoH row (keyed minimum_soh in this declaration, applied after the standard C2_calfade model variant through production's apply_to; the shared floor-row dict carried to the declared value); ungated first evaluations; the certifying regime held after the run's first residual pass (AA off, tight tail on, rho frozen); settling rule v6 until it certifies or the cap; W105 captures, t_sum, the IPOPT exit, attempt tier and final metrics of every block, the SoH-floor sidecar",
+    "model_variant": null,
+    "original_lapses_after_k0": null,
+    "record_all_blocks": true,
+    "replay_reference": null,
+    "schema": "p515_s53_w155_a64_settling_resettle_v1",
+    "settling_rule": {
+     "class": "settling_criterion_v6.SettlingRuleV6",
+     "clean": {
+      "factor": 10.0,
+      "metric_table": {
+       "complementarity": {
+        "column": "unscaled",
+        "ipopt_meaning": "max-norm of the unscaled complementarity; termination requires <= compl_inf_tol",
+        "log_line": "Complementarity",
+        "option": "compl_inf_tol"
+       },
+       "constraint_violation": {
+        "column": "unscaled",
+        "ipopt_meaning": "max-norm of the unscaled constraint violation; termination requires <= constr_viol_tol",
+        "log_line": "Constraint violation",
+        "option": "constr_viol_tol"
+       },
+       "dual_infeasibility": {
+        "column": "unscaled",
+        "ipopt_meaning": "max-norm of the unscaled dual infeasibility; termination requires <= dual_inf_tol",
+        "log_line": "Dual infeasibility",
+        "option": "dual_inf_tol"
+       },
+       "overall_nlp_error": {
+        "column": "scaled",
+        "ipopt_meaning": "the (scaled) NLP error; successful termination requires it <= tol",
+        "log_line": "Overall NLP error",
+        "option": "tol"
+       }
+      },
+      "rule": "Optimal on any attempt tier, or Acceptable on the primary attempt with every metric <= factor x tolerance",
+      "tolerances": {
+       "esso": {
+        "compl_inf_tol": 0.0001,
+        "constr_viol_tol": 0.0001,
+        "dual_inf_tol": 1.0,
+        "tol": 1e-10
+       },
+       "network": {
+        "compl_inf_tol": 1e-06,
+        "constr_viol_tol": 0.0001,
+        "dual_inf_tol": 1.0,
+        "tol": 1e-05
+       }
+      }
+     },
+     "drift_window": 25,
+     "eps0": 45.39068275,
+     "gap_bound": 2269.5341375000003,
+     "k_excl": 3,
+     "l_mono": 60,
+     "module": "settling_criterion_v6",
+     "n_and_dynamic_cap_keyed_on": "the first residual pass under the version-2 definition",
+     "p_max": 30,
+     "reading": "gamma",
+     "reset_on_non_clean": false,
+     "retry_tier": null,
+     "sub_test_reads": "enumerated in settling_criterion_v6.SUB_TEST_READS; out-of-window reads recorded",
+     "swing_floor": {
+      "F": 453.9068275000001,
+      "carried_by": "data/SRP1/Results/P515S53/w142_resettle_v6/floor_replay/w142_floor_replay.json",
+      "carries": [
+       "A_growth_test_floor",
+       "B_turning_point_floor"
+      ],
+      "formula": "TAU / 10 (Addendum 61 ruling 1)",
+      "growth_test_floor_A": 453.9068275000001,
+      "turning_point_floor_B": 453.9068275000001
+     },
+     "tau": 4539.0682750000005,
+     "version": 6,
+     "veto": "a branch verdict is vetoed at k while a NON-CLEAN cycle lies in its certifying window: oscillatory [k - W + 1, k], monotone [k - L + 1, k]; state unchanged",
+     "veto_reason": "certification_vetoed_non_clean",
+     "w_factor": 1.1,
+     "w_min": 20,
+     "window": "a"
+    }
+   },
+   "expected_wall_time": {
+    "basis": "v6 unit at m 1.5 (h_f9eae48f) and m 2 (h_74eda68d), the slower",
+    "expected_cycles": 185,
+    "expected_h": 1.398490267224001,
+    "s_per_cycle_estimate": 25.03257731958763,
+    "worst_case_h": 2.198142042710828,
+    "worst_cycles": 300
+   },
+   "flex_price_multiplier": 1.75,
+   "floor_row_lower_expected": 0.7,
+   "gated": false,
+   "investment_year": 2025,
+   "item": "H",
+   "keys": {
+    "base_key_current_configuration": "a466da3c036465eaa94cc4590969097888fce969438816c30933c758289bf105",
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "resettle_key": "dc3ab9329c3958904ad88d83cd284908101b62f1c4655a8140d22022a8bb0434"
+   },
+   "kind": "flex",
+   "launch_command": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w155_a64_campaign.py --run --cell h_unit_m175 --spec-sha256 eb85d0f4c16ed917e91a155da686ae49c809ccc88dfbd729a7603bb7dfc4dad6 > data/SRP1/Results/P515S53/w155_a64_cells/run_h_unit_m175_launch.log 2>&1",
+   "launch_index_1_based": 3,
+   "minimum_soh": null,
+   "model_variant": null,
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.25,
+     1.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   },
+   "preconditions_only_command": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w155_a64_campaign.py --run --cell h_unit_m175 --spec-sha256 eb85d0f4c16ed917e91a155da686ae49c809ccc88dfbd729a7603bb7dfc4dad6 --preconditions-only > data/SRP1/Results/P515S53/w155_a64_cells/run_h_unit_m175_preconditions_only.log 2>&1",
+   "role": "the node-7 unit at m = 1.75 (value - I against h_x0_m175)",
+   "spec_cap": 300
+  },
+  "h_x0_m175": {
+   "arm": null,
+   "campaign_id": "s53_w155_a64_r2_h_x0_m175",
+   "campaign_root": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_h_x0_m175",
+   "campaign_spec": {
+    "eval_dir": "b9f9be3528a64a93_h_x0_m175",
+    "eval_key": "b9f9be3528a64a93e597740902d38217ce9da8c9c0ab724f679a23e30bbfb83c",
+    "git_head": "c0dac2279e391a7012bd79b57e38ae5bc6338be1",
+    "harness_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21",
+    "path": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_h_x0_m175/campaign_spec_s53_w155_a64_r2_h_x0_m175_c4852b1b.json",
+    "sha256": "c4852b1b6787c91b589d9d35ce032c5bc1da89f5266f5ea1b176e600a5c3222b"
+   },
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "candidate_source_provenance_only": {
+    "eval_key": "aa8a76d71ae49f134831ae5bf40579285249b228f21ec66556eb43b04f4dd1a1",
+    "label": "x0_m1p5",
+    "root": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder",
+    "spec": "campaign_spec_s49_flex_ladder_2203f6c1.json"
+   },
+   "cap_rule": {
+    "after_first_k0": 109,
+    "ceiling": 300,
+    "formula": "min(k0_run + 109, ceiling) (k0_run: the first residual pass under the version-2 definition)",
+    "kind": "dynamic"
+   },
+   "claim_group": 2,
+   "configuration": {
+    "arm_label": "s39_D",
+    "case_file_anderson_acceleration": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "convergence_depth_tail": {
+     "compl_inf_tol": 1e-06,
+     "enabled": true
+    },
+    "ess_ageing_baseline": {
+     "calendar_life_years": 15,
+     "calendar_retention_per_year": 0.985,
+     "calibration": {
+      "cycles_n": 10000,
+      "eol_retention_r": 0.8,
+      "reference_dod_d": 0.8,
+      "status": "ACTIVE"
+     },
+     "cycle_life_nominal": 10000,
+     "depth_of_discharge_nominal": 0.8,
+     "minimum_soh": 0.7
+    },
+    "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+    "name": "W155 SRP1 ADDENDUM 64 CELLS -- the current production configuration: the case file (AA keep_memory declared), the ESS ageing baseline BASELINE (C2 + phi_cal 0.985 + soh_min 0.70) declared (minimum SoH 0.70 = the file, NOT overridden in the spec), the convergence-depth tight tail DECLARED ENABLED (compl_inf_tol 1e-6), post-certification: persist the certified TSO/DSO models only",
+    "note": "the entry adds settling_resettle (W155 schema; keyed); flexibility price x 1.75 (keyed through the base key); cap 300 (the rule stops at min(k0_run + 109, 300)); persist_certified_models; concurrency 1",
+    "overrides": {}
+   },
+   "declaration": {
+    "N_old": null,
+    "abort_on_replay_divergence": false,
+    "arm": null,
+    "cap_rule": {
+     "after_first_k0": 109,
+     "ceiling": 300,
+     "formula": "min(k0_run + 109, ceiling) (k0_run: the first residual pass under the version-2 definition)",
+     "kind": "dynamic"
+    },
+    "captures": {
+     "ageing_trajectory_terminal": true,
+     "attempt_tier_and_final_metrics": true,
+     "boyd_full": true,
+     "ess_schedule_movement": true,
+     "exit_clean_by_block": true,
+     "ipopt_exit_by_block": true,
+     "q_decomposition": true,
+     "soh_floor_plumbing": false,
+     "soh_floor_sidecar": true,
+     "t_sum": true
+    },
+    "cell": "h_x0_m175",
+    "claim_group": 2,
+    "expected_blocks": {
+     "dso": 36,
+     "esso": 3,
+     "tso": 12
+    },
+    "first_residual_pass_expected": null,
+    "flex_price_multiplier_expected": 1.75,
+    "floor_row_lower_expected": 0.7,
+    "gate": "none_first_evaluation",
+    "holds_after": "the run first residual pass k0_run (version-2 definition): AA off, tight tail on, rho frozen for every later cycle",
+    "item": "H",
+    "kind": "flex",
+    "label": "SRP1 ADDENDUM 64 CELLS (W155, frozen_s53_a64_cells_spec) -- current production configuration (C2 ageing file with minimum SoH 0.70, tight tail); the m = 1.75 flexibility-ladder pair (keyed multiplier) and the minimum-SoH row (keyed minimum_soh in this declaration, applied after the standard C2_calfade model variant through production's apply_to; the shared floor-row dict carried to the declared value); ungated first evaluations; the certifying regime held after the run's first residual pass (AA off, tight tail on, rho frozen); settling rule v6 until it certifies or the cap; W105 captures, t_sum, the IPOPT exit, attempt tier and final metrics of every block, the SoH-floor sidecar",
+    "model_variant": null,
+    "original_lapses_after_k0": null,
+    "record_all_blocks": true,
+    "replay_reference": null,
+    "schema": "p515_s53_w155_a64_settling_resettle_v1",
+    "settling_rule": {
+     "class": "settling_criterion_v6.SettlingRuleV6",
+     "clean": {
+      "factor": 10.0,
+      "metric_table": {
+       "complementarity": {
+        "column": "unscaled",
+        "ipopt_meaning": "max-norm of the unscaled complementarity; termination requires <= compl_inf_tol",
+        "log_line": "Complementarity",
+        "option": "compl_inf_tol"
+       },
+       "constraint_violation": {
+        "column": "unscaled",
+        "ipopt_meaning": "max-norm of the unscaled constraint violation; termination requires <= constr_viol_tol",
+        "log_line": "Constraint violation",
+        "option": "constr_viol_tol"
+       },
+       "dual_infeasibility": {
+        "column": "unscaled",
+        "ipopt_meaning": "max-norm of the unscaled dual infeasibility; termination requires <= dual_inf_tol",
+        "log_line": "Dual infeasibility",
+        "option": "dual_inf_tol"
+       },
+       "overall_nlp_error": {
+        "column": "scaled",
+        "ipopt_meaning": "the (scaled) NLP error; successful termination requires it <= tol",
+        "log_line": "Overall NLP error",
+        "option": "tol"
+       }
+      },
+      "rule": "Optimal on any attempt tier, or Acceptable on the primary attempt with every metric <= factor x tolerance",
+      "tolerances": {
+       "esso": {
+        "compl_inf_tol": 0.0001,
+        "constr_viol_tol": 0.0001,
+        "dual_inf_tol": 1.0,
+        "tol": 1e-10
+       },
+       "network": {
+        "compl_inf_tol": 1e-06,
+        "constr_viol_tol": 0.0001,
+        "dual_inf_tol": 1.0,
+        "tol": 1e-05
+       }
+      }
+     },
+     "drift_window": 25,
+     "eps0": 45.39068275,
+     "gap_bound": 2269.5341375000003,
+     "k_excl": 3,
+     "l_mono": 60,
+     "module": "settling_criterion_v6",
+     "n_and_dynamic_cap_keyed_on": "the first residual pass under the version-2 definition",
+     "p_max": 30,
+     "reading": "gamma",
+     "reset_on_non_clean": false,
+     "retry_tier": null,
+     "sub_test_reads": "enumerated in settling_criterion_v6.SUB_TEST_READS; out-of-window reads recorded",
+     "swing_floor": {
+      "F": 453.9068275000001,
+      "carried_by": "data/SRP1/Results/P515S53/w142_resettle_v6/floor_replay/w142_floor_replay.json",
+      "carries": [
+       "A_growth_test_floor",
+       "B_turning_point_floor"
+      ],
+      "formula": "TAU / 10 (Addendum 61 ruling 1)",
+      "growth_test_floor_A": 453.9068275000001,
+      "turning_point_floor_B": 453.9068275000001
+     },
+     "tau": 4539.0682750000005,
+     "version": 6,
+     "veto": "a branch verdict is vetoed at k while a NON-CLEAN cycle lies in its certifying window: oscillatory [k - W + 1, k], monotone [k - L + 1, k]; state unchanged",
+     "veto_reason": "certification_vetoed_non_clean",
+     "w_factor": 1.1,
+     "w_min": 20,
+     "window": "a"
+    }
+   },
+   "expected_wall_time": {
+    "basis": "v6 x0 at m 1.5 (h_aa8a76d7) and m 2 (h_50dea31c), the slower",
+    "expected_cycles": 185,
+    "expected_h": 1.282729462883173,
+    "s_per_cycle_estimate": 22.77993464052287,
+    "worst_case_h": 2.0104218194554315,
+    "worst_cycles": 300
+   },
+   "flex_price_multiplier": 1.75,
+   "floor_row_lower_expected": 0.7,
+   "gated": false,
+   "investment_year": 2025,
+   "item": "H",
+   "keys": {
+    "base_key_current_configuration": "94e308dd2b901c73226834ae325d3fbd5154dd2c5f7522d59cef378af67c296a",
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "resettle_key": "b9f9be3528a64a93e597740902d38217ce9da8c9c0ab724f679a23e30bbfb83c"
+   },
+   "kind": "flex",
+   "launch_command": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w155_a64_campaign.py --run --cell h_x0_m175 --spec-sha256 c4852b1b6787c91b589d9d35ce032c5bc1da89f5266f5ea1b176e600a5c3222b > data/SRP1/Results/P515S53/w155_a64_cells/run_h_x0_m175_launch.log 2>&1",
+   "launch_index_1_based": 2,
+   "minimum_soh": null,
+   "model_variant": null,
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.0,
+     0.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   },
+   "preconditions_only_command": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w155_a64_campaign.py --run --cell h_x0_m175 --spec-sha256 c4852b1b6787c91b589d9d35ce032c5bc1da89f5266f5ea1b176e600a5c3222b --preconditions-only > data/SRP1/Results/P515S53/w155_a64_cells/run_h_x0_m175_preconditions_only.log 2>&1",
+   "role": "Q(0) at m = 1.75 (Q(0) depends on m: apply_flex_price_multiplier, harness ~2676-2728)",
+   "spec_cap": 300
+  }
+ },
+ "configuration": {
+  "checked_field_by_field": "validate_campaign_spec at --freeze-cells, --freeze-spec and --run",
+  "concurrency": 1,
+  "current_production": "case file (AA keep_memory declared) + ESS ageing baseline C2 declared (minimum SoH 0.70 = the file, NOT overridden in the spec) + tight tail {enabled True, compl_inf_tol 1e-6} declared",
+  "h_cells": "+ flex_price_multiplier 1.75 (keyed through the base key; label at spec and entry)",
+  "persistence": "persist_certified_models True, hull_polish False, no reference",
+  "soh_cells": "+ model_variant C2_calfade (the standard 4-key variant) + minimum_soh in the keyed settling_resettle declaration"
+ },
+ "definitions": {
+  "claims": {
+   "E:soh050:delta_value_vs_070": {
+    "I_other": 0.0,
+    "I_ref": 0.0,
+    "claim_type": "sign",
+    "form": "value",
+    "net_of_salvage": false,
+    "other": "e_soh050",
+    "ref": "bd504ecf",
+    "statement": "minimum SoH row: Delta value = value(0.50) - value(0.70) = Q(3f084f2f, 0.70, k* 172) - Q(e_soh050); x = 0 is unaffected by soh_min (Q(0) = the settled x0 Q181 d110bd1a on both sides)"
+   },
+   "E:soh050:delta_value_vs_g070_REPORT_BESIDE": {
+    "I_other": 0.0,
+    "I_ref": 0.0,
+    "claim_type": "sign",
+    "form": "value",
+    "net_of_salvage": false,
+    "other": "e_soh050",
+    "ref": "g070_neutrality",
+    "statement": "Delta value against the neutrality cell (identical to 3f084f2f through 172 by its gate)"
+   },
+   "E:soh050:value_minus_I": {
+    "I_other": 317957.0085035586,
+    "I_ref": 0.0,
+    "claim_type": "threshold",
+    "form": "value",
+    "net_of_salvage": false,
+    "other": "e_soh050",
+    "ref": "7aa017f0",
+    "statement": "the C2_calfade unit at minimum_soh 0.50: sign of value - I"
+   },
+   "H:m1.75:value_minus_I": {
+    "I_other": 317957.0085035586,
+    "I_ref": 0.0,
+    "claim_type": "threshold",
+    "form": "value",
+    "net_of_salvage": false,
+    "other": "h_unit_m175",
+    "ref": "h_x0_m175",
+    "statement": "flexibility ladder m = 1.75: sign of value - I (node 7, 0.25 MVA / 1 MWh), value = Q(0)_m1.75 - Q(unit)_m1.75"
+   },
+   "scorer": "p515_s53_w142_determinacy.score_claim_v6 (W132 score_claim, Addendum 61 floor), views by p515_s53_w132_resettle_v3_campaign.view_from_report / reference_views"
+  },
+  "determinacy": {
+   "formula": "settling_criterion_v6.determinate_certified",
+   "movement_statement": "cells continued past certification moved at most 0.9 tau",
+   "rule": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+   "two_tau": 9078.136550000001
+  },
+  "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (primary; Addendum 58 Ruling 3); Q_net = net_operational_recourse = Q - terminal salvage credit, reported BESIDE gross on every G row and on any claim stated net; t_sum = the priced interface-consensus gap sum w * pi * (p_DSO - p_TSO) (EUR); Q_cc = Q + t_sum, a FIRST-ORDER consensus-consistent DIAGNOSTIC",
+  "per_cell": {
+   "AE_EFC": "p515_s46_ageing_mechanism.pv over the per-block SoH_used / EFC/day of node 7 cohort 2025 (record)",
+   "Q_net": "net_operational_recourse of the end cycle (per_cycle_record recourse)",
+   "band": "[min, max] Q over the certifying window (uncertified: over the last L = 60 cycles)",
+   "end_cycle": "k* (certified) or the cap (uncertified); every per-cell value below is read at the end cycle",
+   "first_k0_alpha": "the first k0 of the reading-alpha rule",
+   "first_k0_v2": "the run's first residual pass under the version-2 definition (holds and dynamic cap keyed on it)",
+   "floor_year": "W.floor_year_reading at the end cycle (k* or the cap): the first block year whose node-7 floor row (cohort 2025) is active in soh_floor_sidecar_baseline.jsonl (active = |SoH - soh_min| <= 1e-6); None when no floor row is active",
+   "gamma_report_only": "reading gamma's decision (report-only)",
+   "k_star": "the cycle the settling rule v3 (reading alpha) certified; None when uncertified at its cap",
+   "kind": "soh (the C2_calfade unit at a keyed minimum_soh) | flex (m = 1.75, keyed multiplier)",
+   "non_optimal_cycles": "cycles whose all_optimal_k is False (every block's final exit; ESSO included)",
+   "pf_primal_slope_last_50": "OLS slope of boyd_pf_primal_ratio on the cycle over the last 50 cycles ending at the end cycle (per_cycle_record; report-only)",
+   "s": "gated cells: s = Q(end) - Q_N_old (Q_N_old = the ORIGINAL record's last cycle); ungated: undefined",
+   "terminal_step_to_threshold": "|dQ_last| / EPS0; range / tau at k* (certified); production's rule ten (objective_change_abs / objective_tolerance) of the last row (CLAUDE.md)"
+  },
+  "uncertified_form": {
+   "determinacy_rule": "a difference involving an uncertified cell is DETERMINATE iff its margin exceeds BAR = 3 x max(|gap_u|, |slack_u|) over the uncertified cell(s) u of the difference in BOTH gross and Q_cc terms (Addendum 58 Ruling 1; as W130 applied it: 3 x max(9,234.42, 1,461.49) = 27,703.27); margin_Qcc = |d_Qcc| if sign(d_Qcc) == sign(d_Q), else -|d_Qcc|; an ungated uncertified cell has no slack -> INDETERMINATE (slack undefined)",
+   "frozen_v2_form": "band [min, max] over the last L = 60 cycles; drift rate = mean dQ over the last 25; dQ_cc rate = mean (dQ + dt_sum) over the same cycles; t_sum and Q_cc at the cap; reasons",
+   "gap_refused_carries": "the label; the pf-primal slope over the last 50 cycles; t_by_node at the cap; the drift rate; the dQ_cc rate; gap = |t_sum at the cap|; slack = |s| (gated)",
+   "gap_refused_cell": "a cell uncertified at its cap with at least one gap-clause refusal (decision gap_refusals non-empty) -- Addendum 58 Ruling 1, generalised",
+   "gap_refused_label": "objective settled; interface-consensus gap unresolved (degenerate dual)"
+  }
+ },
+ "dry_run_command": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w155_a64_campaign.py --run --cell e_soh050 --spec-sha256 28c9478dd079c0d35e6ff172c06770b05a0968e37078776c0441eae492e3d332 --preconditions-only > data/SRP1/Results/P515S53/w155_a64_cells/run_e_soh050_preconditions_only.log 2>&1",
+ "dry_run_scope": "--preconditions-only: every --run precondition (the launch order REPORTED, not enforced), then the ZERO-SOLVE child-path probe: the harness-routed hooks installed (the nine wrappers and the SoH plumbing), the harness's floor-row precheck dict, G.s38_pf_capture_hooks entered with it, the planning object as run_admm_arm builds it, the harness's OWN configuration hook with the FROZEN campaign spec (past the floor-row identity check ~3003), the fail-fast; guard at 0, pickle blocked; no lock, no child, no campaign-root write",
+ "expected_wall_time": {
+  "basis": "Per cell. s = the mean per-cycle wall of the measured run of the same candidate under the same configuration at\n    concurrency 1: the SoH cells -> the W152 e_c2_calfade run (the C2_calfade unit, bbd82994); h_x0_m175 -> the v6 x0\n    runs at m 1.5 and 2 (h_aa8a76d7, h_50dea31c), the slower of the two; h_unit_m175 -> the v6 unit runs at m 1.5 and 2\n    (h_f9eae48f, h_74eda68d), the slower. Expected cycles: the SoH cells 172 (e_c2_calfade's k*), the H cells the upper\n    end of the predicted k* range (185). Worst = the CEILING 300 (no k0_run can raise the cap above it). Plus the measured\n    overhead of the e_c2_calfade campaign (campaign wall - sum of iteration walls) and 300 s for the inline checks and\n    the parent's preconditions. A cell whose worst case exceeds 4 h refuses the freeze.",
+  "h_cell_bases_s_per_cycle": {
+   "h_50dea31c": 22.433904109589044,
+   "h_74eda68d": 24.986333333333334,
+   "h_aa8a76d7": 22.77993464052287,
+   "h_f9eae48f": 25.03257731958763
+  },
+  "overhead_s_per_cell": 403.53815788269185,
+  "per_cell": {
+   "e_soh050": {
+    "basis": "W152 e_c2_calfade (data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2_calfade/evals/bbd82994a7ddff94_e_c2_calfade): 172 cycles",
+    "expected_cycles": 172,
+    "expected_h": 1.312666154967414,
+    "s_per_cycle_estimate": 25.12825581395348,
+    "worst_case_h": 2.2061152505746486,
+    "worst_cycles": 300
+   },
+   "g070_neutrality": {
+    "basis": "W152 e_c2_calfade (data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2_calfade/evals/bbd82994a7ddff94_e_c2_calfade): 172 cycles",
+    "expected_cycles": 172,
+    "expected_h": 1.312666154967414,
+    "s_per_cycle_estimate": 25.12825581395348,
+    "worst_case_h": 2.2061152505746486,
+    "worst_cycles": 300
+   },
+   "h_unit_m175": {
+    "basis": "v6 unit at m 1.5 (h_f9eae48f) and m 2 (h_74eda68d), the slower",
+    "expected_cycles": 185,
+    "expected_h": 1.398490267224001,
+    "s_per_cycle_estimate": 25.03257731958763,
+    "worst_case_h": 2.198142042710828,
+    "worst_cycles": 300
+   },
+   "h_x0_m175": {
+    "basis": "v6 x0 at m 1.5 (h_aa8a76d7) and m 2 (h_50dea31c), the slower",
+    "expected_cycles": 185,
+    "expected_h": 1.282729462883173,
+    "s_per_cycle_estimate": 22.77993464052287,
+    "worst_case_h": 2.0104218194554315,
+    "worst_cycles": 300
+   }
+  },
+  "single_run_over_4h": {},
+  "total_expected_h": 5.306552040042002,
+  "total_worst_case_h": 8.620794363315557
+ },
+ "frozen_utc": "2026-10-05T09:09:29.783926+00:00",
+ "gates": {
+  "G10": "G10 (H cells): the multiplier recorded is 1.75, applied and read back pre-run (probe DSO blocks) and from the run's\n    own DSO models (post-run), all_match both.",
+  "G28": "G28 (g070_neutrality only): bitwise against 3f084f2f through 172 (the e_c2_calfade G28 precedent).",
+  "G29s": "THE POST-RUN SoH GATE of a SoH cell: every sidecar line (one per cycle, 1..cycles_run) has every entry's soh_min\n    == the declared value exactly, 6 rows per node; the configuration hook recorded\n    `floor_rows_identical_to_baseline_probe` True (the identity check passed BY EQUALITY on the updated dict); the\n    plumbing summary (when given) records exactly one apply, one dict captured, one fail-fast check, no error. Returns\n    (ok, detail). Pure.",
+  "G30": "G30 (e_soh050 only): the trajectory must NOT stay bitwise identical to 3f084f2f past cycle 5 (else the key did not\n    reach the model: STOP). Reported beside: the first differing cycle and |Q_run - Q_ref| for cycles 1..5 against\n    tau/10 (the prediction: diverges at cycle 1, by more than tau/10 by cycle 5).",
+  "G9s": "THE READBACK GATE of a SoH cell (the G9 replacement at the declared floor). Holds iff:\n      (a) the record's variant and label are the declaration's (the C2_calfade arm);\n      (b) pre-run (probe models) and terminal (clones of the run's own ESSO models) variant readbacks: all_match,\n          every node present, every node's per-check dict all True, k / phi / SoH point / D-row form equal the closed\n          forms of the declared variant with the file's own (N, D) (k, phi to rtol 1e-12);\n      (c) every node's read-back floor-row lower bound == the DECLARED minimum_soh EXACTLY, pre-run and terminal (a 0.70\n          floor on a 0.50 declaration -- or the reverse -- is refused);\n      (d) the FILE is not edited: the child's file-vs-declaration checks all True, the file hashed in the child == the\n          pin, the loaded minimum_soh == the spec's declared 0.70;\n      (e) the variant took effect (`apply_model_variant` checks all True) and the minimum_soh apply took effect\n          (`minimum_soh_applied`: declared == the declaration's, its checks all True, every ESS soh_min after == the\n          declared value).\n    Returns (ok, detail). Pure.",
+  "evaluator_self_tests": {
+   "G28_G30_evaluators_on_the_committed_unit": {
+    "g28_planted_ulp_at_151": {
+     "cycle": 151,
+     "difference_run_minus_reference": -1.1920928955078125e-07,
+     "reference": 653622069.1548189,
+     "run": 653622069.1548188
+    },
+    "g28_unit_vs_itself": true,
+    "g30_diverge_at_1": true,
+    "g30_first_difference_at_7_is_STOP": true,
+    "g30_unit_vs_itself_STOP": true,
+    "ok": true
+   },
+   "scorer_synthetic": {
+    "A": {
+     "STOP_negative_value_minus_I": false,
+     "both_certified": true,
+     "fallback_sentence": "pays at m = 2; at m = 1.5 and 1.75 within resolution; crossing in (1.5, 2)",
+     "fallback_sentence_applies": false,
+     "k0": {
+      "range": [
+       100,
+       125
+      ],
+      "unit": null,
+      "x0": null
+     },
+     "k_star": {
+      "range": [
+       130,
+       185
+      ],
+      "unit": null,
+      "x0": null
+     },
+     "sign_positive_as_predicted": true,
+     "threshold": 12000.0,
+     "threshold_within_predicted_range": false,
+     "unit_certified": true,
+     "value": 332957.0085035586,
+     "value_minus_I": 15000.0,
+     "value_minus_I_Qcc": 15000.0,
+     "verdict": "determinate",
+     "within_predicted_range": true,
+     "x0_certified": true
+    },
+    "B_delta": 12000.0,
+    "B_threshold": 13054.22152018547,
+    "negative_STOP": [
+     "A: value - I negative at m = 1.75",
+     "B: Delta value negative"
+    ],
+    "ok": true
+   }
+  },
+  "non_stopping": [
+   "G6_v37_optimal_and_four_metrics",
+   "G28_g070_bitwise_vs_3f084f2f_through_172",
+   "G30_e_soh050_diverges_from_3f084f2f_by_cycle_5"
+  ],
+  "prediction_gates_exit_3": [
+   "G28_g070_bitwise_vs_3f084f2f_through_172",
+   "G30_e_soh050_diverges_from_3f084f2f_by_cycle_5"
+  ],
+  "scope": {
+   "G10_flex_price_readback": "the H cells only",
+   "G19_replay": "SKIPPED for every cell (ungated first evaluations)",
+   "G23_overlap_recorded": "every cell: none (asserted empty)",
+   "G26_floor_sidecar_end_cycle": "every cell (node 7, cohort 2025)",
+   "G27_ageing_trajectory_terminal": "the SoH cells (the record carries it; the H unit reports it beside)",
+   "G28_g070_bitwise_vs_3f084f2f_through_172": "g070_neutrality only; failure = STOP (exit 3)",
+   "G29s_soh_sidecar_and_identity_by_equality": "the SoH cells only (M.soh_sidecar_gate)",
+   "G30_e_soh050_diverges_from_3f084f2f_by_cycle_5": "e_soh050 only; bitwise identical past cycle 5 = STOP (exit 3)",
+   "G6_v37_optimal_and_four_metrics": "every cell; REPORTED, does NOT stop the campaign (Planner ruling at W128)",
+   "G8_persistence_on_production_certificate": "every cell (Addendum 59 rule, as the v6 campaigns)",
+   "G9_ess_ageing_readback": "the H cells only (no model variant: the harness reads the ESS ageing baseline back)",
+   "G9s_soh_readback_at_the_declared_floor": "the SoH cells only (M.soh_readback_gate)",
+   "all_other_gates": "every cell"
+  }
+ },
+ "git_head": "3f9d3a680ccf527e2e4fea76863f2624f01d4601",
+ "harness_change": "p515_s44_campaign_harness.py: the W155 branch (three lines after the v6 branch, before the W118 fallback): a W155 declaration dispatches to p515_s53_w155_a64_hooks; every existing branch identical (checks D)",
+ "holds_after_first_residual_pass": {
+  "AA": "off",
+  "rho": "frozen",
+  "same_as": "W101 / W118 / W132 / W139 / W142",
+  "tail": "on"
+ },
+ "inputs_in_force_now": {
+  "case_file": {
+   "path": "data/SRP1/SRP1_params.json",
+   "sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b"
+  },
+  "configuration_now": {
+   "case_file_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "convergence_depth_tail": {
+    "compl_inf_tol": 1e-06,
+    "enabled": true
+   },
+   "ess_ageing_baseline": {
+    "calendar_life_years": 15,
+    "calendar_retention_per_year": 0.985,
+    "calibration": {
+     "cycles_n": 10000,
+     "eol_retention_r": 0.8,
+     "reference_dod_d": 0.8,
+     "status": "ACTIVE"
+    },
+    "cycle_life_nominal": 10000,
+    "depth_of_discharge_nominal": 0.8,
+    "minimum_soh": 0.7
+   },
+   "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+   "ess_params_file": {
+    "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+   }
+  },
+  "ess_params_file": {
+   "minimum_soh": 0.7,
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  }
+ },
+ "labelling_and_identity": {
+  "evaluation_key": "sha256({base_evaluation_key (carries model_variant for the SoH cells, flex_price_multiplier 1.75 for the H cells), settling_resettle (the W155 declaration; minimum_soh inside it for the SoH cells)}); no key formula change; every other key byte-identical to the pre-W155 harness (checks K)",
+  "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+  "label": "SRP1 ADDENDUM 64 CELLS (W155, frozen_s53_a64_cells_spec) -- current production configuration (C2 ageing file with minimum SoH 0.70, tight tail); the m = 1.75 flexibility-ladder pair (keyed multiplier) and the minimum-SoH row (keyed minimum_soh in this declaration, applied after the standard C2_calfade model variant through production's apply_to; the shared floor-row dict carried to the declared value); ungated first evaluations; the certifying regime held after the run's first residual pass (AA off, tight tail on, rho frozen); settling rule v6 until it certifies or the cap; W105 captures, t_sum, the IPOPT exit, attempt tier and final metrics of every block, the SoH-floor sidecar",
+  "model_variant_label": "MODEL VARIANT \u2014 not the baseline"
+ },
+ "launch_commands": {
+  "e_soh050": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w155_a64_campaign.py --run --cell e_soh050 --spec-sha256 28c9478dd079c0d35e6ff172c06770b05a0968e37078776c0441eae492e3d332 > data/SRP1/Results/P515S53/w155_a64_cells/run_e_soh050_launch.log 2>&1",
+  "g070_neutrality": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w155_a64_campaign.py --run --cell g070_neutrality --spec-sha256 a5d02f7ffa4756c5ff67bd7316c2ad7a3b6cbd95009e45bc96cafd50a5b53ac5 > data/SRP1/Results/P515S53/w155_a64_cells/run_g070_neutrality_launch.log 2>&1",
+  "h_unit_m175": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w155_a64_campaign.py --run --cell h_unit_m175 --spec-sha256 eb85d0f4c16ed917e91a155da686ae49c809ccc88dfbd729a7603bb7dfc4dad6 > data/SRP1/Results/P515S53/w155_a64_cells/run_h_unit_m175_launch.log 2>&1",
+  "h_x0_m175": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w155_a64_campaign.py --run --cell h_x0_m175 --spec-sha256 c4852b1b6787c91b589d9d35ce032c5bc1da89f5266f5ea1b176e600a5c3222b > data/SRP1/Results/P515S53/w155_a64_cells/run_h_x0_m175_launch.log 2>&1"
+ },
+ "launch_order": {
+  "enforced": "--run refuses a cell until every earlier cell has committed results, and every cell after g070_neutrality until its G28 holds (the neutrality gate)",
+  "one_cell_per_call": true,
+  "order": [
+   "g070_neutrality",
+   "h_x0_m175",
+   "h_unit_m175",
+   "e_soh050"
+  ]
+ },
+ "memory_preflight": {
+  "measured_at_freeze_non_gating": {
+   "available_bytes": 23102390272,
+   "available_gib": 21.515777587890625,
+   "budget_derivation": {
+    "budget": "3.5 GiB per child = the measured persist peak (3.23 GiB) + 0.27 GiB margin",
+    "s47_recert_c_star_child_peak_no_persist_bytes": 2577645568,
+    "s47_recert_unit_child_peak_no_persist_bytes": 2574581760,
+    "source": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/{evaluation_record,post_certification}.json and data/SRP1/Results/P515S47/campaign_s47_recert/evals/*/evaluation_record.json peak_rss",
+    "x0_capture_child_peak_with_persist_bytes": 3470491648,
+    "x0_capture_production_peak_before_persist_bytes": 2395537408
+   },
+   "concurrency": 1,
+   "free_plus_inactive_gib": 14.997390747070312,
+   "hw_memsize_bytes": 34359738368,
+   "missing_vm_stat_figures": [],
+   "non_reclaimable_gib": 10.484222412109375,
+   "page_size_bytes": 16384,
+   "pass": true,
+   "per_child_budget_gib": 3.5,
+   "required_bytes": 3758096384,
+   "required_gib": 3.5,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 3.5 GiB",
+   "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+   "utc": "2026-10-05T09:09:29.694021+00:00",
+   "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+   "vm_stat_pages": {
+    "anonymous_pages": 448184,
+    "pages_free": 26620,
+    "pages_inactive": 956249,
+    "pages_occupied_by_compressor": 108740,
+    "pages_wired_down": 130170
+   }
+  },
+  "rule": "W86 rule at concurrency 1"
+ },
+ "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (primary; Addendum 58 Ruling 3); Q_net = net_operational_recourse = Q - terminal salvage credit, reported BESIDE gross on every G row and on any claim stated net; t_sum = the priced interface-consensus gap sum w * pi * (p_DSO - p_TSO) (EUR); Q_cc = Q + t_sum, a FIRST-ORDER consensus-consistent DIAGNOSTIC",
+ "pins": {
+  "campaign_specs": {
+   "e_soh050": {
+    "path": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_e_soh050/campaign_spec_s53_w155_a64_r2_e_soh050_28c9478d.json",
+    "sha256": "28c9478dd079c0d35e6ff172c06770b05a0968e37078776c0441eae492e3d332"
+   },
+   "g070_neutrality": {
+    "path": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_g070_neutrality/campaign_spec_s53_w155_a64_r2_g070_neutrality_a5d02f7f.json",
+    "sha256": "a5d02f7ffa4756c5ff67bd7316c2ad7a3b6cbd95009e45bc96cafd50a5b53ac5"
+   },
+   "h_unit_m175": {
+    "path": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_h_unit_m175/campaign_spec_s53_w155_a64_r2_h_unit_m175_eb85d0f4.json",
+    "sha256": "eb85d0f4c16ed917e91a155da686ae49c809ccc88dfbd729a7603bb7dfc4dad6"
+   },
+   "h_x0_m175": {
+    "path": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_h_x0_m175/campaign_spec_s53_w155_a64_r2_h_x0_m175_c4852b1b.json",
+    "sha256": "c4852b1b6787c91b589d9d35ce032c5bc1da89f5266f5ea1b176e600a5c3222b"
+   }
+  },
+  "code_sha256": {
+   "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+   "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+   "helper_functions.py": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+   "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+   "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+   "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+   "p515_gate_result_bool_typing_test.py": "dbd6f92b772a5816ab929cef66e7132aaec0adc96c6ac55bc6ec0bf651652e76",
+   "p515_s40_polish_gap.py": "026a4d80037e9d03fbb8505986ab5a74a0b1eb08fc9c5b4ebf5494dce4556cf4",
+   "p515_s44_campaign_harness.py": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21",
+   "p515_s46_ageing_mechanism.py": "c2d4b1c56097a563d5230f4a1eece78abc6dbeb91b5e63aaeca2a53f823a4dd5",
+   "p515_s46_variant_checks.py": "cb1bfc63dc088a210ced2e7fb8c613176f93e8f6fd1a6b90c1294b821caf35ed",
+   "p515_s53_w101_continuation_checks.py": "8f786a21a70f7363451e1f1261aaad5a0ae8b3075c74fd3785f06a5db953cd6a",
+   "p515_s53_w101_settling_continuation_hooks.py": "05004cf8b475c940ef1d30a225bcad20e257f02c0d34bb5034ee4975d6625f6b",
+   "p515_s53_w101_srp1_continuation_campaign.py": "1ad7a7c8127681b93f1a2191f48cc6bf4f0dec846026163c567782693038ed64",
+   "p515_s53_w105_extension_checks.py": "af14bbad4ae03c1a43dd6a982b6876369002b2c48244837d6b3094ab98397e12",
+   "p515_s53_w105_settling_extension_hooks.py": "1ff61ce96dc25e4ccac3b864c834c54edf2d382525bddd9adce9af71bba84f05",
+   "p515_s53_w112_consensus_gap.py": "67a524c6a1bdd101cfa075d45306241a7c734258327463e02e44a495c6aa382a",
+   "p515_s53_w118_resettle_campaign.py": "f2cfe9723b7f869df7097a76c9ae0dff834191be92fa7bf11a044bab488bdcfe",
+   "p515_s53_w118_resettle_checks.py": "e160e4c14026d38e5deab753651c4d98e700fe9e8f2036e2d2e321e082b34347",
+   "p515_s53_w118_resettle_hooks.py": "081066cbb4e651517c9dedbb6a51a96d85305fa4710c50d7e9dc67fdc3f06dd7",
+   "p515_s53_w131_prefreeze_diagnostics.py": "e1e7f6f12c50054cde2c6f11d860ad30c6277ce0b4b645fdfe8d6c8df46f4f54",
+   "p515_s53_w132_resettle_v3_campaign.py": "995edabb9f70fcaceebcd135536bf2700bcca7b35a7018a42480aec3df271b07",
+   "p515_s53_w132_resettle_v3_checks.py": "7d5378345907c458cf258e4a2515d778a0f960d5c42ebbd52bc9572869130126",
+   "p515_s53_w132_resettle_v3_hooks.py": "f0749183b990b5be8afbed26b89da75b7a7e8df45ca46fcef15165ba94b6f9fe",
+   "p515_s53_w135_resettle_ext_campaign.py": "c2bf1c5ec220e1b6e651d287bfe3571991865c2e2068fbe410bfefcec2772a81",
+   "p515_s53_w135_resettle_ext_checks.py": "c0133029c6bc2e4f7a19da98214ef1bce424a1ce9bd4ad79b5bfd09320f7ac79",
+   "p515_s53_w135_resettle_ext_hooks.py": "a31ec720d10831ab74a965189b6e3bf04fea8b5c0cc2e654d7bd1a9f0dd8cf29",
+   "p515_s53_w137_recurring_acceptable.py": "c284ec842c956b47f1dcf2d3be109e448c94333c87a39c1c8618b19573f0fa37",
+   "p515_s53_w137_resettle_v4_campaign.py": "a20b5ead3ab1043bd69b1747447a9a3e23471673f358e2c3459d2c8567b513d1",
+   "p515_s53_w137_resettle_v4_checks.py": "b84067e66ef38617fad3f33824aa3724df11488ace866eb2857f1c3470ccd56a",
+   "p515_s53_w137_resettle_v4_hooks.py": "dd53352897020a51f250e82c5ac90728ce940c507c1baead4d7a96c7e9a42dfc",
+   "p515_s53_w139_resettle_ext_v5_campaign.py": "ac87cea7a6ea194a9526bf593e7fd807f1efa39a7bc0f1a7d577d37d92d2c221",
+   "p515_s53_w139_resettle_ext_v5_checks.py": "bdfcb189f177ed88b6396f6671d7d9c5b5a34b0ce31abe6a65f63bd13fa49425",
+   "p515_s53_w139_resettle_ext_v5_hooks.py": "eb70e0d0565802dc83c0e7b5ab17b8f315d2dbc38a3396f929a22ad4f1005c1e",
+   "p515_s53_w139_resettle_v5_campaign.py": "0e0f86e40a00834f02838a68da39267c9c0e2bfcd45fe0cf7d606366ed7edbb1",
+   "p515_s53_w139_resettle_v5_checks.py": "cf68dbf72796ad8376f07e7ee39003a0e33f38b7d3eac69035d03a10c8e87229",
+   "p515_s53_w139_resettle_v5_hooks.py": "a46ad444930f66489e456cc2f9388ed97fbbf7465b808f7cbf63087761021576",
+   "p515_s53_w139_v5_from_records.py": "b7d9cb180d9bf1f5362074e5ed01cb09922079597206b93bf8a367cb126c9a3d",
+   "p515_s53_w141_swing_variants.py": "16b0b31b352a605b10fa16fa8c2aa102a996b7293e65ae1bbfb4159d120f65c0",
+   "p515_s53_w142_determinacy.py": "c8b4a54565c9c59fe24451d56b8afd0ce56c15c0b0183146a1a989a0516c360f",
+   "p515_s53_w142_floor_replay.py": "7434f0cbadaf53e42a72edbe5270ce64269947506c019c7a4b7b406c78064c8b",
+   "p515_s53_w142_resettle_ext_v6_campaign.py": "0a3232069d232b85815ea88b03478b52c54ff3be9b8b4b014f039addd94caa28",
+   "p515_s53_w142_resettle_ext_v6_checks.py": "c42248b2f9d72fd6867aa12ae9a4dc293524d007a8ce27c6d650c2cbf1dea2b2",
+   "p515_s53_w142_resettle_ext_v6_hooks.py": "a0fe14d3c7f532d113af1eff9354502430b14f73374cee22009c7c185eb5d963",
+   "p515_s53_w142_resettle_v6_campaign.py": "d7c236b61c151c2a2cf6a924711b275cf7a413c4c5e28ebb0d8a592f1f573110",
+   "p515_s53_w142_resettle_v6_checks.py": "cc44a50c3fb3b963b6ddeadf53856d73565f42672b488923ab82321c69e781f2",
+   "p515_s53_w142_resettle_v6_hooks.py": "19631fb246a4fe81d7a20b3915e38b362a174656ab7403416325057c0925b38e",
+   "p515_s53_w142_v6_from_records.py": "0a439cef99e362fcb2387e5974b3780530738db6d049ef26b0163f16ec61bee0",
+   "p515_s53_w155_a64_campaign.py": "5210029065c22142cfc833a156bfb0f08a09c525c8080cb2012e925d5bdc0d6a",
+   "p515_s53_w155_a64_checks.py": "275ba5918810281cc77f2703c414b4fc325dce72f191e58b4c2a805dca40e0b4",
+   "p515_s53_w155_a64_hooks.py": "c46f94c84fb10547e69b6ed1ff8d1f3075526f8cab093699be04638d89129685",
+   "p515_s53_w86_tail_recert_campaign.py": "812333ff36603c123c3e5909b0777de2c17af6971cebb396e854af5f186a55b2",
+   "p515_s53_w89_g6_final_attempt_reeval.py": "d1d543bf3c38098921765b6c18b9b9b64600932985211364f150b8b24595565e",
+   "p515_s53_w98_continuation_campaign.py": "c27230a95a693d20c53bfeebb5505765a2f37877383a21cf2c136096fbe7c3ee",
+   "p515_s53_w98_continuation_checks.py": "25edfd17fae83832b4c3f46812a24018c8905d2b399201814f5fd39321f35172",
+   "p515_s53_w98_continuation_hooks.py": "eb0ef724daacb2d5107c12db2d32ef4cb4546ff634c6e4957be897e2c0582fb4",
+   "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+   "settling_criterion_v2.py": "3db13b0eb7a093f49a7ff014a3c46a5aa013b86da5e5d78c3a19daba476af59e",
+   "settling_criterion_v3.py": "0d78b9228381b9d4af3492c7712f9892d2f012d00e5023407962ff3619b5e965",
+   "settling_criterion_v4.py": "077561ceefa704a0c5512d45d17865609c6775e5ad18332a990ce3f1bb747775",
+   "settling_criterion_v5.py": "5ea29fb303c5f9ac1e6c2fcb869b7c6d044d2d8738298dee67093d70086a976f",
+   "settling_criterion_v6.py": "53f477118d51f5fd843190c0da920f1647618ef41f6a1973988653b10eb66e2d",
+   "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+   "shared_energy_storage_parameters.py": "5fe0c4fb876a9c2f1e506e982f2a120c320a3fd4198b870f877d9a310cd390bb",
+   "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  "ess_params_file": {
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "harness": {
+   "post_w155_branch_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21",
+   "pre_w155": {
+    "commit": "7914860f222b921106d3da7b7fed0666914a937b",
+    "sha256": "ca46892ba1fb75913962c508f4a230ce5356ebcbbd1ef4b43031c8242ee98e8d"
+   },
+   "w155_branch_lines": [
+    "    import p515_s53_w155_a64_hooks as W155C",
+    "    if W155C.is_w155_declaration(value):",
+    "        return W155C"
+   ]
+  },
+  "production_sha256": {
+   "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+   "admm_parameters.py": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+   "admm_persistent_workers.py": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+   "data/SRP1/SRP1_params.json": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+   "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+   "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+   "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+   "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+   "p514_n_instrumented_cstar.py": "62df39d41fec0ee48b320f6ade9eb1be4132203dcdbd100b90d1fc545d1d43c2",
+   "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+   "p515_s39_evaluate.py": "2dd5b31f29aadb84dfcaf7b9e112fdda570bf20f78154b19d49914ba3a8a28c4",
+   "p515_s40_clone_capture_preflight.py": "30e33d0a7803c2a958bbf7da617dba277a8fe15888078e37aa451feba09a3652",
+   "p515_s40_cost_decomposition.py": "2fb70a404ca7b41969fc84908e564acc8d1c1fbd68c3e7ffb5dcdd19877222ad",
+   "p515_s40_polish_gap.py": "026a4d80037e9d03fbb8505986ab5a74a0b1eb08fc9c5b4ebf5494dce4556cf4",
+   "p515_s41_hull_polish.py": "e76c5921ecd1057dceb8fa8e097e960247a51d3e09f13d78ae95dec727385d5d",
+   "p515_s42_exact_fix_rerun.py": "de83af2ff01c48861995d70314a6565cf3e4c6ab8c2b32fc748fdc829c9e930a",
+   "p515_s43_aa_flagoff_gate.py": "22ef58b84bdd109d39e2cbf78d2e69e7302ccd0aadae2c90dcb9f6341d9472d3",
+   "p515_s43_aa_run.py": "34fd36a469d92186b6f982a529f9f8c68d6bd9d73157a4f75698c71597073aa8",
+   "p515_s44_campaign_harness.py": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21",
+   "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+   "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+   "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  "references_inputs_sha256": {
+   "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/interface_settlement_detail_s31c.json": "81a94f88f3542ac64e983741a66124e839dd825bebf905b8639261f12f297ad0",
+   "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/per_cycle_record.jsonl": "fd8aad17f8a8a40e1ca73a2af2d5edeeee83e2d3265f2bdad8c38c68fb41b324",
+   "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/settling_decision.json": "566904472876b800e65f79c47eea7da3f7b1a8d8addf409374322126220d6ec9",
+   "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/interface_settlement_detail_s31c.json": "ec59332e8eb3bfce8a7586f52c965078ac3641bf87888c499ac9275981e44403",
+   "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/per_cycle_record.jsonl": "bf38d5a54938e597c6508c6a64c9f8ee6a84aac14f897a556b939fc409d840dc",
+   "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/settling_decision.json": "6c559f2fc39a79dcd54e9339541fb09b599f87689c26a489a8e7e77b17e80be6",
+   "data/SRP1/Results/P515S53/w118_resettle/w118_resettle_summary.json": "34df1c15e27f37951d7e09c8bb43c91f75dc1d6a8bfa9faef196432964c56aa5"
+  },
+  "solver": {
+   "expected": "/usr/local/bin/ipopt",
+   "ok": true,
+   "recert_x0_child_path": "/usr/local/bin/ipopt",
+   "resolved": {
+    "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+    "source": "environment"
+   },
+   "sha256": "b316abbe38cd851d9a9a87a6a1a1714a4334304c9539df1976d2f7101360ff05"
+  },
+  "unit_reference_3f084f2f": {
+   "eval_dir": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1",
+   "per_cycle_record_sha256": "fd8aad17f8a8a40e1ca73a2af2d5edeeee83e2d3265f2bdad8c38c68fb41b324"
+  },
+  "zero_solve_checks_output": {
+   "manifest": "data/SRP1/Results/P515S53/w155_a64_cells/zero_solve_checks/w155_zero_solve_checks_r2_manifest_sha256.json",
+   "path": "data/SRP1/Results/P515S53/w155_a64_cells/zero_solve_checks/w155_zero_solve_checks_r2.json",
+   "sha256": "51609a944950175a938175f7dff390ca0b220af2e81505c731c772d90a0b06a0"
+  }
+ },
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/frozen_s53_resettle_ext_spec_v3_84775dc4.json",
+  "series": "frozen_s53_resettle_ext_spec",
+  "sha256": "84775dc41428ba6a6b504c86de728f3d2b44d19354c977c18d3b33f197c76ee6",
+  "status": "the W142 extension v6 stage spec: its 7 cells ran (W152) and its files and specs are unchanged; this spec is the first of a new series for the Addendum 64 cells (the v6 rule, the v6 state and the extension readers reused by import)",
+  "version": 3
+ },
+ "predictions_recorded_before_any_run": {
+  "A_m175": {
+   "P_determinate_range": [
+    0.35,
+    0.45
+   ],
+   "STOP": "a NEGATIVE value - I at m = 1.75 is a STOP (it contradicts envelope monotonicity)",
+   "determinate_only_if_both_certify": true,
+   "fallback_sentence_if_within_resolution_or_unit_uncertified": "pays at m = 2; at m = 1.5 and 1.75 within resolution; crossing in (1.5, 2)",
+   "k0_range": [
+    100,
+    125
+   ],
+   "k_star_range": [
+    130,
+    185
+   ],
+   "source": "Planner task W155 (adopting the Advisor's ranges)",
+   "threshold_eur_range": [
+    12400.0,
+    13200.0
+   ],
+   "unit_certifies": {
+    "P_range": [
+     0.55,
+     0.6
+    ]
+   },
+   "value_minus_I": {
+    "point_eur": 15000.0,
+    "range_eur": [
+     8000.0,
+     22000.0
+    ],
+    "sign": "positive"
+   },
+   "x0_certifies": {
+    "P": 0.9
+   }
+  },
+  "B_soh050": {
+   "STOP": [
+    "a NEGATIVE Delta value is a STOP",
+    "if the trajectory stays bitwise identical to 3f084f2f past cycle 5, STOP: the key did not reach the model (gate G30, exit 3)"
+   ],
+   "delta_value": {
+    "definition": "value(0.50) - value(0.70)",
+    "point_eur": 12000.0,
+    "range_eur": [
+     4000.0,
+     22000.0
+    ],
+    "sign": "positive"
+   },
+   "efc_per_day": {
+    "2025": {
+     "range": [
+      1.1,
+      1.3
+     ]
+    },
+    "2030": {
+     "range": [
+      1.0,
+      1.2
+     ]
+    },
+    "2035": {
+     "point": 0.88,
+     "range": [
+      0.8,
+      1.0
+     ]
+    }
+   },
+   "floor_never_binds": {
+    "floor_duals_abs_below": 1e-06,
+    "soh_end_2035_range": [
+     0.64,
+     0.7
+    ]
+   },
+   "more_likely_within_resolution_than_not": true,
+   "source": "Planner task W155 (adopting the Advisor's ranges)",
+   "threshold_eur": 13054.0,
+   "threshold_formula": "max(3 x 4,351.4, 2 tau) = 13,054 (4,351.4 = the 3f084f2f band)",
+   "trajectory": "diverges from 3f084f2f at cycle 1, and by more than tau/10 by cycle 5"
+  },
+  "gate_g070": {
+   "STOP": "a failure is a STOP (exit 3)",
+   "scope_note": "g070_neutrality is the NEUTRALITY GATE of the router patch and the new wrappers; at the identity value 0.70 it CANNOT prove that 0.50 takes effect -- e_soh050's G9s (read-back floor 0.5), G29s (sidecar at 0.5, identity by equality) and G30 (divergence from 3f084f2f by cycle 5) do",
+   "statement": "g070_neutrality reproduces 3f084f2f bitwise through 172 (gate G28)"
+  }
+ },
+ "production_since": {
+  "head": "3f9d3a680ccf527e2e4fea76863f2624f01d4601",
+  "ok": true,
+  "uncommitted_files_this_run_uses": [],
+  "uncommitted_tracked_py": []
+ },
+ "references": {
+  "5ca4f86c": {
+   "Q": 809794028.6601353,
+   "Q_cc": 809784794.2357131,
+   "Q_net": 809754985.4478167,
+   "band": 398.1944086551666,
+   "gap": 9234.424422092314,
+   "gap_refused": true,
+   "gated": true,
+   "k_cap": 281,
+   "label": "objective settled; interface-consensus gap unresolved (degenerate dual)",
+   "name": "F2 incumbent (W118 r2 f2_incumbent, uncertified at 281, gap clause)",
+   "salvage": 39043.21231857333,
+   "slack": 1461.4875311851501,
+   "status": "uncertified",
+   "t": -9234.424422092314
+  },
+  "7aa017f0": {
+   "Q": 653873702.1876609,
+   "Q_cc": 653873844.7159548,
+   "Q_net": 653873702.1876609,
+   "band": 4209.1713362932205,
+   "gap": null,
+   "gated": true,
+   "k_star": 181,
+   "name": "x0 settled (W101 d110bd1a, certified at 181)",
+   "salvage": 0.0,
+   "slack": null,
+   "status": "certified",
+   "t": 142.52829384803772
+  },
+  "bd504ecf": {
+   "Q": 653620162.5657823,
+   "Q_cc": 653620825.5628884,
+   "Q_net": 653620162.5657823,
+   "band": 4351.407173395157,
+   "gap": null,
+   "gated": true,
+   "k_star": 172,
+   "name": "unit settled (W101 3f084f2f, certified at 172)",
+   "salvage": 0.0,
+   "slack": null,
+   "status": "certified",
+   "t": 662.9971060752869
+  },
+  "e28de4ac": {
+   "Q": 809787921.0212257,
+   "Q_cc": 809778620.895037,
+   "Q_net": 809749577.5123798,
+   "band": 1219.023425579071,
+   "gap": 9300.126188592561,
+   "gap_refused": true,
+   "gated": true,
+   "k_cap": 261,
+   "label": "objective settled; interface-consensus gap unresolved (degenerate dual)",
+   "name": "F2 challenger (W118 r2 f2_challenger, uncertified at 261, gap clause)",
+   "salvage": 38343.50884592057,
+   "slack": 997.838485956192,
+   "status": "uncertified",
+   "t": -9300.126188592561
+  }
+ },
+ "replay_gate": {
+  "applies_to": [],
+  "skipped_for": [
+   "g070_neutrality",
+   "h_x0_m175",
+   "h_unit_m175",
+   "e_soh050"
+  ]
+ },
+ "schema": "p515_s53_a64_cells_spec_v1",
+ "series": "frozen_s53_a64_cells_spec",
+ "soh_floor_plumbing": {
+  "H1_apply": "Set the LOADED ageing parameters' soh_min (`sed.params.ageing.soh_min`) to `minimum_soh` and re-run production's\n    `EnergyStorageAgeingParameters.apply_to` on every SharedEnergyStorage -- never `ess.soh_min` directly. Verified:\n    every ESS carries the declared soh_min, every other ageing constant (cl_eff = k and phi_cal included) is\n    repr-identical, and the two ageing-model switches are unchanged. Raises on any failure. Returns the record.",
+  "H2_floor_dict": "Set every row's `soh_min` of the shared floor-row dict IN PLACE (the reference the harness passed to both the\n    configuration hook's identity check and the floor sidecar). Returns {node: [[y_inv, y, before, after]]}.",
+  "design": "Advisor H1-H3 (Planner task W155)",
+  "fail_fast": "THE ARMED FAIL-FAST (raises): the apply ran exactly once, the floor dict was captured (exactly one) and every\n        row carries the declared value, every ESS of `planning` (when given) and its loaded ageing parameters carry\n        it.",
+  "install": "Install H1 (apply wrapper on every loaded harness copy), H2 (floor-dict capture on G.s38_pf_capture_hooks) and the\n    fail-fast (G.esso_capture_hooks) for the duration; restore every attribute on exit, even on error. Yields the\n    SohFloorPlumbing state.",
+  "neutrality_scope": "g070_neutrality is the NEUTRALITY GATE of the router patch and the new wrappers; at the identity value 0.70 it CANNOT prove that 0.50 takes effect -- e_soh050's G9s (read-back floor 0.5), G29s (sidecar at 0.5, identity by equality) and G30 (divergence from 3f084f2f by cycle 5) do",
+  "source_facts": "The production facts the SoH plumbing relies on, read from source BEFORE any solve: the harness's configuration\n    hook calls `apply_model_variant(sed, model_variant)` by module-global name, then builds probes and compares the\n    floor rows with `expected_floor_rows`; the child passes ONE dict to both s38_pf_capture_hooks and the hook; the\n    floor sidecar reads soh_min from that dict; run_admm_arm enters esso_capture_hooks after the configuration hook and\n    before run_operational_planning; production's apply_to writes soh_min from the ageing parameters; the floor row is\n    built from `shared_energy_storage.soh_min`."
+ },
+ "solve_profile_declared": {
+  "child": "RECONCILED PER EVENT (G5): 51 x (cycles_run + 1) + every retry attempted",
+  "parent": "never solves: every launcher guard permitted=(), verify(0)"
+ },
+ "stage_text": "P5.15 Addendum 64, W155 -- four cells: the m = 1.75 flexibility-ladder pair (x = 0 and the node-7 unit, multiplier keyed) and the minimum-SoH row (the C2_calfade unit at minimum_soh 0.50, keyed in the declaration and applied through production's apply_to after the standard variant, the shared floor-row dict carried to 0.50; and its neutrality cell at 0.70, gated bitwise against 3f084f2f through 172); ungated first evaluations; the certifying regime held after the run's first residual pass (AA off, tight tail on, rho frozen); settling rule v6 until it certifies or the cap; W105 captures, t_sum, Q_cc, the IPOPT exit, final attempt tier and final metrics of every block, the SoH-floor sidecar, the terminal ageing trajectory",
+ "stop_rule": {
+  "as_v6": "the v6 declaration settling_rule (V6.settling_rule_declaration()), unchanged",
+  "caps": "min(k0_run + 109, 300) (dynamic), every cell",
+  "class": "settling_criterion_v6.SettlingRuleV6",
+  "clean_rule": {
+   "factor": 10.0,
+   "metric_table": {
+    "complementarity": {
+     "column": "unscaled",
+     "ipopt_meaning": "max-norm of the unscaled complementarity; termination requires <= compl_inf_tol",
+     "log_line": "Complementarity",
+     "option": "compl_inf_tol"
+    },
+    "constraint_violation": {
+     "column": "unscaled",
+     "ipopt_meaning": "max-norm of the unscaled constraint violation; termination requires <= constr_viol_tol",
+     "log_line": "Constraint violation",
+     "option": "constr_viol_tol"
+    },
+    "dual_infeasibility": {
+     "column": "unscaled",
+     "ipopt_meaning": "max-norm of the unscaled dual infeasibility; termination requires <= dual_inf_tol",
+     "log_line": "Dual infeasibility",
+     "option": "dual_inf_tol"
+    },
+    "overall_nlp_error": {
+     "column": "scaled",
+     "ipopt_meaning": "the (scaled) NLP error; successful termination requires it <= tol",
+     "log_line": "Overall NLP error",
+     "option": "tol"
+    }
+   },
+   "optimal_any_tier": "an Optimal final exit is clean on ANY attempt tier (a recovery that ends Optimal was Optimal under v4; v5 is strictly more permissive on the veto and identical otherwise, Addendum 60)",
+   "reasons": {
+    "acceptable_beyond_factor": "NON-CLEAN: \"Solved To Acceptable Level\" with a metric beyond 10x its tolerance",
+    "acceptable_metrics_unavailable": "NON-CLEAN: \"Solved To Acceptable Level\" whose metrics or tier could not be read",
+    "acceptable_not_primary": "NON-CLEAN: \"Solved To Acceptable Level\" on a recovery tier",
+    "acceptable_primary_within_factor": "clean: \"Solved To Acceptable Level\" on the primary attempt, every metric <= 10x",
+    "no_exit": "NON-CLEAN: no result / no exit message",
+    "optimal": "clean: \"Optimal Solution Found\" (any attempt tier)",
+    "other_exit": "NON-CLEAN: an exit that is neither Optimal nor Acceptable"
+   },
+   "tolerance_sources": {
+    "esso": {
+     "compl_inf_tol": "NOT passed: IPOPT 3.14 default 1e-4 (the convergence-depth tail touches only the TSO / DSO holders, never the ESSO: \"The ESSO is not a network solve and is never touched\")",
+     "constr_viol_tol": "NOT passed: IPOPT 3.14 default 1e-4",
+     "dual_inf_tol": "NOT passed (ESS params options / recovery_options / ESSO_TOL_OVERRIDES): IPOPT 3.14 default 1",
+     "tol": "passed: shared_energy_storage_data.ESSO_TOL_OVERRIDES tol = 1e-10 (applied to every ESSO subproblem solve, primary and recovery, after the case file's tol 1e-06)"
+    },
+    "ipopt_defaults": {
+     "binary": "/usr/local/bin/ipopt (Ipopt 3.14.18, as every log banner states)",
+     "source": "IPOPT 3.14 options documentation (coin-or.github.io/Ipopt/OPTIONS.html): tol 1e-8, dual_inf_tol 1, constr_viol_tol 1e-4, compl_inf_tol 1e-4"
+    },
+    "network": {
+     "compl_inf_tol": "passed by the convergence-depth tail: 1e-6 on every TSO / DSO solve while the tail is on (shared_resources_planning._apply_convergence_depth_tail; the spec configuration convergence_depth_tail {enabled: True, compl_inf_tol: 1e-6}; the holds keep it on after the run's first residual pass). The comparison uses the TAIL value on every cycle (a cycle run at the production value -- 1e-4 default for the DSOs, 5e-4 in case9 -- is compared against the tighter tail value, the conservative side)",
+     "constr_viol_tol": "NOT passed (absent likewise): IPOPT 3.14 default 1e-4",
+     "dual_inf_tol": "NOT passed (absent from every network case file options and recovery_options, from the retry overrides and from the tail): IPOPT 3.14 default 1",
+     "tol": "passed: every TSO / DSO case file solver.options tol = 1e-05 (data/SRP1/case9/case9_params.json, case33_1/2/3_params.json); network._create_smopf_solver merges solver_params.options, then the retry option_overrides (which do not carry tol)"
+    }
+   },
+   "tolerances": {
+    "esso": {
+     "compl_inf_tol": 0.0001,
+     "constr_viol_tol": 0.0001,
+     "dual_inf_tol": 1.0,
+     "tol": 1e-10
+    },
+    "network": {
+     "compl_inf_tol": 1e-06,
+     "constr_viol_tol": 0.0001,
+     "dual_inf_tol": 1.0,
+     "tol": 1e-05
+    }
+   }
+  },
+  "constants": {
+   "BOYD_K": {
+    "formula": "Addendum 59 reading (gamma), unchanged in v5",
+    "value": "boyd_k (version 2: all_boyd_pass AND local_solves_ok); no non-clean reset"
+   },
+   "CAP": {
+    "formula": "as version 3; CAP_AFTER_K0 = 109; CAP_CEILING per cell (spec)",
+    "value": "fixed N_old + 100 (gated) | min(first k0 + 109, CAP_CEILING) (ungated)"
+   },
+   "CAP_CEILING": {
+    "formula": "as version 3",
+    "value": "per cell (the spec cell table)"
+   },
+   "CARRIES": {
+    "formula": {
+     "outcome": "(A)+(B) changes no committed certificate relative to (A) alone and v5 on the 18 committed re-settle records (14 of them carry a committed certificate; on each, status, k*, window and branch are equal under v5, (A) and (A)+(B)) -> v6 carries both (Addendum 61 rule, applied mechanically); the one record that changes, d_c52e1670 (uncertified under v5), carries no committed certificate: (A) alone certifies it at 139, (A)+(B) at 150",
+     "replay": "data/SRP1/Results/P515S53/w142_resettle_v6/floor_replay/w142_floor_replay.json",
+     "script": "p515_s53_w142_floor_replay.py"
+    },
+    "value": [
+     "A_growth_test_floor",
+     "B_turning_point_floor"
+    ]
+   },
+   "CLEAN_FACTOR": {
+    "formula": "Addendum 60: within 10x the tight-tail tolerances",
+    "value": 10.0
+   },
+   "CLEAN_RULE": {
+    "formula": "Addendum 60 option 2",
+    "value": "clean iff exit class optimal (any tier), or exit class acceptable AND attempt primary AND every metric m: value_m <= CLEAN_FACTOR * tolerance_m"
+   },
+   "DELTA_R": {
+    "formula": "Addendum 53 Ruling 1: dR = 0.07",
+    "value": 0.07
+   },
+   "DETERMINACY_FLOOR": {
+    "formula": "report stage (scorer): certified-cell difference determinate iff |margin| >= max(3 x max(band_r, band_o), 2 TAU) (Addendum 61 ruling 2)",
+    "value": {
+     "bar_factor": 3.0,
+     "tau_multiple": 2.0,
+     "two_tau": 9078.136550000001
+    }
+   },
+   "DRIFT_WINDOW": {
+    "formula": "mean dQ over the last 25 cycles (uncertified form)",
+    "value": 25
+   },
+   "EPS0": {
+    "formula": "EPS0 = TAU / 100 (a step that cannot accumulate TAU within the cap)",
+    "value": 45.39068275
+   },
+   "GAP_BOUND": {
+    "formula": "GAP_BOUND = TAU / 2 (Addendum 57 Decision 2: |t_sum| <= tau/2)",
+    "value": 2269.5341375000003
+   },
+   "GROWTH_TEST_FLOOR": {
+    "formula": "(A) = F: swings < F excluded from the \"not growing\" comparison",
+    "value": 453.9068275000001
+   },
+   "K_EXCL": {
+    "formula": "K_EXCL = 3",
+    "value": 3
+   },
+   "L_MONO": {
+    "formula": "L_MONO = 2 * P_MAX (Addendum 57 Decision 2: L = 60)",
+    "value": 60
+   },
+   "METRIC_TABLE": {
+    "formula": "IPOPT 3.14 termination test (scaled NLP error; unscaled dual inf., constraint violation, complementarity)",
+    "value": {
+     "complementarity": {
+      "column": "unscaled",
+      "ipopt_meaning": "max-norm of the unscaled complementarity; termination requires <= compl_inf_tol",
+      "log_line": "Complementarity",
+      "option": "compl_inf_tol"
+     },
+     "constraint_violation": {
+      "column": "unscaled",
+      "ipopt_meaning": "max-norm of the unscaled constraint violation; termination requires <= constr_viol_tol",
+      "log_line": "Constraint violation",
+      "option": "constr_viol_tol"
+     },
+     "dual_infeasibility": {
+      "column": "unscaled",
+      "ipopt_meaning": "max-norm of the unscaled dual infeasibility; termination requires <= dual_inf_tol",
+      "log_line": "Dual infeasibility",
+      "option": "dual_inf_tol"
+     },
+     "overall_nlp_error": {
+      "column": "scaled",
+      "ipopt_meaning": "the (scaled) NLP error; successful termination requires it <= tol",
+      "log_line": "Overall NLP error",
+      "option": "tol"
+     }
+    }
+   },
+   "MONOTONE_LAST_STEP_CLAUSE": {
+    "formula": "Addendum 57 Decision 2: |last step| x L <= tau",
+    "value": "abs(dQ_k) * L_MONO <= TAU"
+   },
+   "P_MAX": {
+    "formula": "instance-measured spec constant (W118: the post-certification periods of the settled SRP1 references, P_hat = 29 (x0, W102) and 30 (unit, W103))",
+    "value": 30
+   },
+   "R_REF": {
+    "formula": "V_SRP1 = R_ref = 259,375.33 (tight-tail SRP1 value, Addendum 48)",
+    "value": 259375.33
+   },
+   "SWING_FLOOR": {
+    "formula": "F = TAU / 10 (Addendum 61 ruling 1: swing noise floor tau/10)",
+    "value": 453.9068275000001
+   },
+   "TAU": {
+    "formula": "TAU = DELTA_R * R_REF / 4 = 0.07 * 259375.33 / 4",
+    "value": 4539.0682750000005
+   },
+   "TOLERANCES": {
+    "formula": {
+     "esso": {
+      "compl_inf_tol": "NOT passed: IPOPT 3.14 default 1e-4 (the convergence-depth tail touches only the TSO / DSO holders, never the ESSO: \"The ESSO is not a network solve and is never touched\")",
+      "constr_viol_tol": "NOT passed: IPOPT 3.14 default 1e-4",
+      "dual_inf_tol": "NOT passed (ESS params options / recovery_options / ESSO_TOL_OVERRIDES): IPOPT 3.14 default 1",
+      "tol": "passed: shared_energy_storage_data.ESSO_TOL_OVERRIDES tol = 1e-10 (applied to every ESSO subproblem solve, primary and recovery, after the case file's tol 1e-06)"
+     },
+     "ipopt_defaults": {
+      "binary": "/usr/local/bin/ipopt (Ipopt 3.14.18, as every log banner states)",
+      "source": "IPOPT 3.14 options documentation (coin-or.github.io/Ipopt/OPTIONS.html): tol 1e-8, dual_inf_tol 1, constr_viol_tol 1e-4, compl_inf_tol 1e-4"
+     },
+     "network": {
+      "compl_inf_tol": "passed by the convergence-depth tail: 1e-6 on every TSO / DSO solve while the tail is on (shared_resources_planning._apply_convergence_depth_tail; the spec configuration convergence_depth_tail {enabled: True, compl_inf_tol: 1e-6}; the holds keep it on after the run's first residual pass). The comparison uses the TAIL value on every cycle (a cycle run at the production value -- 1e-4 default for the DSOs, 5e-4 in case9 -- is compared against the tighter tail value, the conservative side)",
+      "constr_viol_tol": "NOT passed (absent likewise): IPOPT 3.14 default 1e-4",
+      "dual_inf_tol": "NOT passed (absent from every network case file options and recovery_options, from the retry overrides and from the tail): IPOPT 3.14 default 1",
+      "tol": "passed: every TSO / DSO case file solver.options tol = 1e-05 (data/SRP1/case9/case9_params.json, case33_1/2/3_params.json); network._create_smopf_solver merges solver_params.options, then the retry option_overrides (which do not carry tol)"
+     }
+    },
+    "value": {
+     "esso": {
+      "compl_inf_tol": 0.0001,
+      "constr_viol_tol": 0.0001,
+      "dual_inf_tol": 1.0,
+      "tol": 1e-10
+     },
+     "network": {
+      "compl_inf_tol": 1e-06,
+      "constr_viol_tol": 0.0001,
+      "dual_inf_tol": 1.0,
+      "tol": 1e-05
+     }
+    }
+   },
+   "TURNING_POINT_FLOOR": {
+    "formula": "(B) = F: a sign change closing a swing < F registers no turning point (carried: W142 replay, Addendum 61 rule)",
+    "value": 453.9068275000001
+   },
+   "VERSION": {
+    "formula": "settling_criterion_v6 (versions 1-5 in settling_criterion.py, _v2.py .. _v5.py, all unchanged)",
+    "value": 6
+   },
+   "VETO_REASON": {
+    "formula": "certification refused at that cycle only; state unchanged",
+    "value": "certification_vetoed_non_clean"
+   },
+   "VETO_WINDOW": {
+    "formula": "Addendum 59 Supplement, reading (a) (unchanged in v5)",
+    "value": "oscillatory [k - W + 1, k]; monotone [k - L_MONO + 1, k]"
+   },
+   "W_FACTOR": {
+    "formula": "W_FACTOR = 1.1",
+    "value": 1.1
+   },
+   "W_MIN": {
+    "formula": "W_MIN = 20",
+    "value": 20
+   }
+  },
+  "gap_clause": "tau / 2 (the v6 rule)",
+  "module": "settling_criterion_v6",
+  "readings": {
+   "all_clean_definition": "all_clean_k: the final accepted attempt of every block of cycle k (12 TSO, 36 DSO, 3 ESSO) is clean (classify_block_exit): Optimal on any tier, or Acceptable on the primary attempt with all four IPOPT metrics <= 10x their tolerances (METRIC_TABLE, TOLERANCES); a block with no result or no exit message is not clean",
+   "boyd_lapse": "a Boyd lapse (or a failed local solve) resets k0 strictly: T, A and the sign state are cleared",
+   "cap_ceiling_per_cell": "the cap ceiling is a per-cell spec value (as version 3), not a code constant",
+   "clean_factor": "CLEAN_FACTOR = 10 (Addendum 60: one order of magnitude, not tuned to 2.51)",
+   "clean_optimal_any_tier": "an Optimal final exit is clean on ANY attempt tier (a recovery that ends Optimal was Optimal under v4; v5 is strictly more permissive on the veto and identical otherwise, Addendum 60)",
+   "determinacy_floor_report_stage": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger band width, 2 TAU); the uncertified form unchanged; a scorer rule, never read by the stop rule",
+   "floor_comparison": "a swing equal to the floor is kept (growth test) and registers (turning points): strict <",
+   "gamma_decision": "Addendum 59: reading (gamma) -- no reset of the count on a non-Optimal cycle; only a Boyd lapse (or a failed cycle) resets k0 and the sign state",
+   "gap_clause": "|t_sum_k| <= TAU / 2 checked at the cycle a branch would certify; a failure is recorded and the rule continues; t_sum None fails",
+   "gap_clause_after_veto": "the gap clause is evaluated only on a verdict that survives the veto (unchanged clause)",
+   "growth_test_floor_A": "Addendum 61 ruling 1 (A): in the \"swings not growing\" comparison a swing A[i] < TAU / 10 is excluded; the swings >= TAU / 10, in order, must be non-increasing over every consecutive pair of that sequence (the chain reading: an excluded swing does not break the comparison across it; Worker reading, the other reading -- only original consecutive pairs both >= F -- gives the same decisions on every committed record, W142 A_pairs); turning points still registered, P_hat and W still use them",
+   "metrics_of_the_final_iterate": "the four numbers IPOPT prints in the final summary of the final accepted attempt (the scaled Overall NLP error; the unscaled Dual infeasibility, Constraint violation, Complementarity); Variable bound violation is recorded, not compared",
+   "monotone_amended": "Addendum 57 Decision 2: steps decreasing over the window AND |last step| x L <= TAU, L = 2 x P_MAX = 60; \"steps decreasing\" = version 1's half-window-means clause or its stationary sub-case; no sign change in the window (version 1)",
+   "monotone_branch": "half-window means of |dQ| over [lo .. k] (second half strictly below the first), plus the stationary sub-case max |dQ| < EPS0",
+   "monotone_range_kept": "the window range <= TAU clause of version 1 is KEPT beside |dQ_k| L <= TAU: the stricter reading (both must hold)",
+   "n_and_cap": "N and the dynamic cap: version 2's first residual pass (Q_k not None and boyd_k), which with no non-Optimal reset is the version-2 first pass (as version 3 keyed them)",
+   "n_is_first_k0": "N := the run's first residual pass k0; decisions from k0 + K_EXCL; no \"no decision before N_old\" (Addendum 57 / Planner task W118)",
+   "no_retry_tier": "no retry tier (the solve path is unchanged; Addendum 59)",
+   "oscillatory_veto_then_monotone": "an oscillatory verdict vetoed -> the monotone conjunction re-evaluated from version 2's own b_parts (W131's construction; version 3's gamma shadow), then vetoed on its own window if it holds",
+   "p_max": "P_MAX is a spec constant computed from the SRP1 reference records (turning_points, cycles 1..N)",
+   "sub_test_reads_enumerated_not_asserted": "Planner task W137: as implemented, the oscillatory branch reads outside the last W cycles (all-pairs swings since k0; P_hat from T[-1] and T[-3]; the turning points located over the steps since k0 + K_EXCL); the monotone branch reads Q_(lo-1) and the sign of the last non-zero step before lo. Enumerated in SUB_TEST_READS and recorded per certification (out_of_window_reads); the algorithm is not changed",
+   "swings": "successive half-swings compared over ALL consecutive pairs of A since k0, with <= (A[i+1] <= A[i])",
+   "tail_tolerance_on_every_cycle": "the comparison uses the tail tolerances (network compl_inf_tol 1e-6) on every cycle, including a cycle run at the production tolerance (conservative side)",
+   "three_turning_points": "\"successive swings not growing\" needs two half-swings, so certification effectively requires three turning points -- stricter than the ruling's \"at least two sign changes\"; the literal two-sign-change reading is computed report-only and never decides",
+   "turning_point_floor_B": "Addendum 61 ruling 1 (B), carried by the Addendum 61 rule on the W142 replay: a sign change whose closing swing is < TAU / 10 registers no turning point -- W141 V3 semantics (un-register T[-1] and carry it as the running extreme of the resumed leg; the rejected reversal is no sign change for the monotone branch)",
+   "uncertified_form": "band over the last L_MONO cycles; drift = mean dQ over the last 25; dQ_cc rate = mean (dQ + dt_sum) over the last 25; t_sum and Q_cc at the cap; reasons",
+   "window": "W = max(W_MIN, ceil(W_FACTOR * P_hat)) = max(20, ceil(1.1 P_hat)), per option 1(a)",
+   "window_reading_a": "Addendum 59 Supplement (unchanged in v5): the certifying window is the last W cycles the certification test reads at k -- oscillatory [k - W + 1, k], monotone [k - L + 1, k]; every cycle of it must be all-CLEAN on all 51 blocks, otherwise certification is refused at that cycle only (certification_vetoed_non_clean) and the state is unchanged"
+  },
+  "swing_floor": {
+   "F": 453.9068275000001,
+   "carries": [
+    "A_growth_test_floor",
+    "B_turning_point_floor"
+   ],
+   "evidence": {
+    "outcome": "(A)+(B) changes no committed certificate relative to (A) alone and v5 on the 18 committed re-settle records (14 of them carry a committed certificate; on each, status, k*, window and branch are equal under v5, (A) and (A)+(B)) -> v6 carries both (Addendum 61 rule, applied mechanically); the one record that changes, d_c52e1670 (uncertified under v5), carries no committed certificate: (A) alone certifies it at 139, (A)+(B) at 150",
+    "replay": "data/SRP1/Results/P515S53/w142_resettle_v6/floor_replay/w142_floor_replay.json",
+    "script": "p515_s53_w142_floor_replay.py"
+   },
+   "readings": {
+    "floor_comparison": "a swing equal to the floor is kept (growth test) and registers (turning points): strict <",
+    "growth_test_floor_A": "Addendum 61 ruling 1 (A): in the \"swings not growing\" comparison a swing A[i] < TAU / 10 is excluded; the swings >= TAU / 10, in order, must be non-increasing over every consecutive pair of that sequence (the chain reading: an excluded swing does not break the comparison across it; Worker reading, the other reading -- only original consecutive pairs both >= F -- gives the same decisions on every committed record, W142 A_pairs); turning points still registered, P_hat and W still use them",
+    "turning_point_floor_B": "Addendum 61 ruling 1 (B), carried by the Addendum 61 rule on the W142 replay: a sign change whose closing swing is < TAU / 10 registers no turning point -- W141 V3 semantics (un-register T[-1] and carry it as the running extreme of the resumed leg; the rejected reversal is no sign change for the monotone branch)"
+   }
+  },
+  "version": 6
+ },
+ "summarize_commands": {
+  "e_soh050": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w155_a64_campaign.py --summarize --after-cell e_soh050 > data/SRP1/Results/P515S53/w155_a64_cells/summarize_after_e_soh050_launch.log 2>&1",
+  "h_unit_m175": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w155_a64_campaign.py --summarize --after-cell h_unit_m175 > data/SRP1/Results/P515S53/w155_a64_cells/summarize_after_h_unit_m175_launch.log 2>&1"
+ },
+ "superseded_r1_before_this_freeze": {
+  "campaign_specs": {
+   "e_soh050": {
+    "path": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_e_soh050/campaign_spec_s53_w155_a64_e_soh050_140c6bba.json",
+    "sha256": "140c6bba6bd490dbab69b037a462589ae717aca77718f7172b7abb9629c24808"
+   },
+   "g070_neutrality": {
+    "path": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_g070_neutrality/campaign_spec_s53_w155_a64_g070_neutrality_444dad64.json",
+    "sha256": "444dad647adb73fe688a8ca1fb8eadbcc5f503c440b1c15fce6dc5d6520ffa8e"
+   },
+   "h_unit_m175": {
+    "path": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_h_unit_m175/campaign_spec_s53_w155_a64_h_unit_m175_fbd0a9a0.json",
+    "sha256": "fbd0a9a04a60a551ca218c11cc0f7e65b30d959794169334bcd7f4fb09553061"
+   },
+   "h_x0_m175": {
+    "path": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_h_x0_m175/campaign_spec_s53_w155_a64_h_x0_m175_001b3991.json",
+    "sha256": "001b399183cbc0828199009c5e2449aa35d7e981126c59d0765b7cc10eccf0af"
+   }
+  },
+  "checks_output": {
+   "commit": "985c1558",
+   "path": "data/SRP1/Results/P515S53/w155_a64_cells/zero_solve_checks/w155_zero_solve_checks.json",
+   "sha256": "aa153f50a1b55dadf971a7f0f6fc63f200aab6b9107403761546c2d384b23e2b"
+  },
+  "commits": {
+   "campaign_specs": "39859d1b",
+   "checks_output": "985c1558"
+  },
+  "reason": "r1 checks section K defect: once the r1 campaign specs were committed, key_regression_every_entry_equal failed in the inline re-run at --freeze-spec (W155-SPEC PRECONDITION FAILED, freeze_spec_launch.log); the checks were fixed (own W155 entries compared by the formula inside the own root) and everything downstream re-frozen under r2 names; nothing was overwritten or deleted",
+  "status": "superseded, never run; never to be launched (this launcher only knows the r2 campaign ids)"
+ },
+ "version": 1,
+ "walls": {
+  "limit_h_per_run": 4.0,
+  "single_run_over_4h": {},
+  "total_expected_h": 5.306552040042002,
+  "total_worst_case_h": 8.620794363315557
+ },
+ "zero_solve_checks": {
+  "committed_output": {
+   "all_hold": true,
+   "all_hold_including_typing_test": true,
+   "code_sha256_at_check": {
+    "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+    "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+    "helper_functions.py": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+    "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+    "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+    "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+    "p515_gate_result_bool_typing_test.py": "dbd6f92b772a5816ab929cef66e7132aaec0adc96c6ac55bc6ec0bf651652e76",
+    "p515_s40_polish_gap.py": "026a4d80037e9d03fbb8505986ab5a74a0b1eb08fc9c5b4ebf5494dce4556cf4",
+    "p515_s44_campaign_harness.py": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21",
+    "p515_s46_variant_checks.py": "cb1bfc63dc088a210ced2e7fb8c613176f93e8f6fd1a6b90c1294b821caf35ed",
+    "p515_s53_w101_continuation_checks.py": "8f786a21a70f7363451e1f1261aaad5a0ae8b3075c74fd3785f06a5db953cd6a",
+    "p515_s53_w101_settling_continuation_hooks.py": "05004cf8b475c940ef1d30a225bcad20e257f02c0d34bb5034ee4975d6625f6b",
+    "p515_s53_w105_extension_checks.py": "af14bbad4ae03c1a43dd6a982b6876369002b2c48244837d6b3094ab98397e12",
+    "p515_s53_w105_settling_extension_hooks.py": "1ff61ce96dc25e4ccac3b864c834c54edf2d382525bddd9adce9af71bba84f05",
+    "p515_s53_w112_consensus_gap.py": "67a524c6a1bdd101cfa075d45306241a7c734258327463e02e44a495c6aa382a",
+    "p515_s53_w118_resettle_checks.py": "e160e4c14026d38e5deab753651c4d98e700fe9e8f2036e2d2e321e082b34347",
+    "p515_s53_w118_resettle_hooks.py": "081066cbb4e651517c9dedbb6a51a96d85305fa4710c50d7e9dc67fdc3f06dd7",
+    "p515_s53_w131_prefreeze_diagnostics.py": "e1e7f6f12c50054cde2c6f11d860ad30c6277ce0b4b645fdfe8d6c8df46f4f54",
+    "p515_s53_w132_resettle_v3_campaign.py": "995edabb9f70fcaceebcd135536bf2700bcca7b35a7018a42480aec3df271b07",
+    "p515_s53_w132_resettle_v3_checks.py": "7d5378345907c458cf258e4a2515d778a0f960d5c42ebbd52bc9572869130126",
+    "p515_s53_w132_resettle_v3_hooks.py": "f0749183b990b5be8afbed26b89da75b7a7e8df45ca46fcef15165ba94b6f9fe",
+    "p515_s53_w135_resettle_ext_checks.py": "c0133029c6bc2e4f7a19da98214ef1bce424a1ce9bd4ad79b5bfd09320f7ac79",
+    "p515_s53_w135_resettle_ext_hooks.py": "a31ec720d10831ab74a965189b6e3bf04fea8b5c0cc2e654d7bd1a9f0dd8cf29",
+    "p515_s53_w137_recurring_acceptable.py": "c284ec842c956b47f1dcf2d3be109e448c94333c87a39c1c8618b19573f0fa37",
+    "p515_s53_w137_resettle_v4_checks.py": "b84067e66ef38617fad3f33824aa3724df11488ace866eb2857f1c3470ccd56a",
+    "p515_s53_w137_resettle_v4_hooks.py": "dd53352897020a51f250e82c5ac90728ce940c507c1baead4d7a96c7e9a42dfc",
+    "p515_s53_w139_resettle_ext_v5_checks.py": "bdfcb189f177ed88b6396f6671d7d9c5b5a34b0ce31abe6a65f63bd13fa49425",
+    "p515_s53_w139_resettle_ext_v5_hooks.py": "eb70e0d0565802dc83c0e7b5ab17b8f315d2dbc38a3396f929a22ad4f1005c1e",
+    "p515_s53_w139_resettle_v5_checks.py": "cf68dbf72796ad8376f07e7ee39003a0e33f38b7d3eac69035d03a10c8e87229",
+    "p515_s53_w139_resettle_v5_hooks.py": "a46ad444930f66489e456cc2f9388ed97fbbf7465b808f7cbf63087761021576",
+    "p515_s53_w139_v5_from_records.py": "b7d9cb180d9bf1f5362074e5ed01cb09922079597206b93bf8a367cb126c9a3d",
+    "p515_s53_w141_swing_variants.py": "16b0b31b352a605b10fa16fa8c2aa102a996b7293e65ae1bbfb4159d120f65c0",
+    "p515_s53_w142_determinacy.py": "c8b4a54565c9c59fe24451d56b8afd0ce56c15c0b0183146a1a989a0516c360f",
+    "p515_s53_w142_floor_replay.py": "7434f0cbadaf53e42a72edbe5270ce64269947506c019c7a4b7b406c78064c8b",
+    "p515_s53_w142_resettle_ext_v6_checks.py": "c42248b2f9d72fd6867aa12ae9a4dc293524d007a8ce27c6d650c2cbf1dea2b2",
+    "p515_s53_w142_resettle_ext_v6_hooks.py": "a0fe14d3c7f532d113af1eff9354502430b14f73374cee22009c7c185eb5d963",
+    "p515_s53_w142_resettle_v6_checks.py": "cc44a50c3fb3b963b6ddeadf53856d73565f42672b488923ab82321c69e781f2",
+    "p515_s53_w142_resettle_v6_hooks.py": "19631fb246a4fe81d7a20b3915e38b362a174656ab7403416325057c0925b38e",
+    "p515_s53_w142_v6_from_records.py": "0a439cef99e362fcb2387e5974b3780530738db6d049ef26b0163f16ec61bee0",
+    "p515_s53_w155_a64_checks.py": "275ba5918810281cc77f2703c414b4fc325dce72f191e58b4c2a805dca40e0b4",
+    "p515_s53_w155_a64_hooks.py": "c46f94c84fb10547e69b6ed1ff8d1f3075526f8cab093699be04638d89129685",
+    "p515_s53_w98_continuation_checks.py": "25edfd17fae83832b4c3f46812a24018c8905d2b399201814f5fd39321f35172",
+    "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+    "settling_criterion_v2.py": "3db13b0eb7a093f49a7ff014a3c46a5aa013b86da5e5d78c3a19daba476af59e",
+    "settling_criterion_v3.py": "0d78b9228381b9d4af3492c7712f9892d2f012d00e5023407962ff3619b5e965",
+    "settling_criterion_v4.py": "077561ceefa704a0c5512d45d17865609c6775e5ad18332a990ce3f1bb747775",
+    "settling_criterion_v5.py": "5ea29fb303c5f9ac1e6c2fcb869b7c6d044d2d8738298dee67093d70086a976f",
+    "settling_criterion_v6.py": "53f477118d51f5fd843190c0da920f1647618ef41f6a1973988653b10eb66e2d",
+    "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+    "shared_energy_storage_parameters.py": "5fe0c4fb876a9c2f1e506e982f2a120c320a3fd4198b870f877d9a310cd390bb",
+    "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+   },
+   "committed_clean": true,
+   "guards_verify_0_failures": {
+    "s46_variant_checks_imported": [],
+    "w101_checks_imported": [],
+    "w105_checks_imported": [],
+    "w112_imported": [],
+    "w118_checks": [],
+    "w131_imported": [],
+    "w132_checks": [],
+    "w135_checks": [],
+    "w137_checks": [],
+    "w137_ra_imported": [],
+    "w139_checks": [],
+    "w139_v5_from_records": [],
+    "w141_swing_variants": [],
+    "w142_checks": [],
+    "w142_ext_checks": [],
+    "w155_checks": [],
+    "w98_checks_imported": []
+   },
+   "manifest": "data/SRP1/Results/P515S53/w155_a64_cells/zero_solve_checks/w155_zero_solve_checks_r2_manifest_sha256.json",
+   "path": "data/SRP1/Results/P515S53/w155_a64_cells/zero_solve_checks/w155_zero_solve_checks_r2.json",
+   "pickle_guard": {
+    "load": 0,
+    "loads": 0
+   },
+   "section_M_holds": true,
+   "sha256": "51609a944950175a938175f7dff390ca0b220af2e81505c731c772d90a0b06a0"
+  },
+  "inline_rerun_at_freeze": {
+   "all_hold": true,
+   "not_rerun_inline": [
+    "M (builds models; in the committed output)",
+    "W (typing)"
+   ],
+   "per_section": {
+    "D": true,
+    "H": true,
+    "K": true,
+    "O": true,
+    "P": true,
+    "S": true,
+    "V": true
+   }
+  },
+  "script": "p515_s53_w155_a64_checks.py"
+ }
+}

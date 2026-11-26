@@ -1,0 +1,250 @@
+{
+ "schema": "p515_s51_2x2_limit_gate_v1",
+ "stage": "P5.15 Addendum 38 W39 gate 2 -- 2x2 two-cycle alpha -> large limit check (row 18 recovers the pin: dispersion -> 0)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addenda 37, 38",
+  "data/SRP1/Results/P515S51/frozen_s51_spec_v21_13cb828c.json gates[1]"
+ ],
+ "label": "alpha_sweep_r1",
+ "instance": "s51_2x2_limit",
+ "instance_definition": {
+  "description": "the current SRP1 case file unchanged (3 years x 4 days x 1 x 1 scenario)",
+  "years": {
+   "2025": 5
+  },
+  "num_market_scenarios": 2,
+  "num_operation_scenarios": 2
+ },
+ "derived_case": {
+  "path": "data/SRP1/Results/P515S51/2x2_limit_gate/alpha_sweep_r1/case/SRP1__s51_2x2.json",
+  "sha256": "fe054c22ff4c9e0195d0260b63986d4b697b60e3b3f8900b8329ed81d52c3688",
+  "source": "data/SRP1/SRP1.json",
+  "source_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+  "changes_vs_source": [
+   {
+    "key": "Years",
+    "from": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "to": {
+     "2025": 5
+    }
+   },
+   {
+    "key": "NumMarketScenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   }
+  ]
+ },
+ "argv": [
+  "p515_s51_2x2_limit_gate.py",
+  "--label",
+  "alpha_sweep_r1",
+  "--alphas",
+  "0",
+  "0.25",
+  "0.5",
+  "1",
+  "2",
+  "5",
+  "1000"
+ ],
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "script": "p515_s51_2x2_limit_gate.py",
+ "script_sha256": "98096c5eecd2692c630f00b62e03ee8b0961cfbfe6144e9575df4822c6087a05",
+ "git_head": "4483fdab4195b74744af505aeda5d35493518390",
+ "git_tracked_changes": [
+  "M PLANNER_BRIEF_2026-09-13.md"
+ ],
+ "nlp_solver_path_env": "/usr/local/bin/ipopt",
+ "cycles": 2,
+ "arms": [
+  "alpha_0.0",
+  "alpha_0.25",
+  "alpha_0.5",
+  "alpha_1.0",
+  "alpha_2.0",
+  "alpha_5.0",
+  "alpha_1000.0"
+ ],
+ "alpha_by_arm": {
+  "alpha_0.0": 0.0,
+  "alpha_0.25": 0.25,
+  "alpha_0.5": 0.5,
+  "alpha_1.0": 1.0,
+  "alpha_2.0": 2.0,
+  "alpha_5.0": 5.0,
+  "alpha_1000.0": 1000.0
+ },
+ "alpha_list_source": "command line --alphas (P5.15 Addendum 39 follow-up, W44 coordinated alpha sweep; ascending)",
+ "sweep_mode": true,
+ "thresholds_declared_before_the_run": {
+  "dispersion_zero_tol_mw": 0.01,
+  "dispersion_collapse_ratio": 0.1,
+  "hour_dev_tol_mwh": 0.01,
+  "volume_tol_mwh": 0.01,
+  "avail_equal_tol_mw": 1e-09
+ },
+ "guard_permitted": [
+  [
+   "network.py",
+   "_run_smopf_solver_attempt"
+  ],
+  [
+   "shared_energy_storage_data.py",
+   "_run_solver_attempt"
+  ]
+ ],
+ "snapshots": "off",
+ "started_utc": "2026-09-23T18:07:23.090920+00:00",
+ "pid": 773,
+ "scenario_checksum": "9d6335848b80ee9bb484ffd0c82fc70362b0ee02d79c5d351c15da1e25b0c857",
+ "planning_dimensions": {
+  "years": {
+   "2025": 5
+  },
+  "days": {
+   "Spring": 92,
+   "Summer": 91,
+   "Autumn": 91,
+   "Winter": 91
+  },
+  "num_instants": 24,
+  "random_seed": 2026,
+  "num_market_scenarios": 2,
+  "num_operation_scenarios": {
+   "case9": 2,
+   "case33_1": 2,
+   "case33_2": 2,
+   "case33_3": 2
+  },
+  "active_distribution_network_nodes": [
+   5,
+   7,
+   9
+  ],
+  "scenario_metadata": {
+   "random_seed": 2026,
+   "deterministic_scenarios": true,
+   "market_scenario_checksum": "5547b2180f2b659136d65ac7034622dea040579366f114af0bcdea5fb385b44c",
+   "operational_scenario_checksum": "3b8cd257a930348f3a525d8c2c41540cddcef264fde39a3fa08695c6f80fe426",
+   "combined_scenario_checksum": "9d6335848b80ee9bb484ffd0c82fc70362b0ee02d79c5d351c15da1e25b0c857"
+  }
+ },
+ "expected_block_counts": {
+  "tso_blocks": 4,
+  "dso_blocks": 12,
+  "network_blocks": 16,
+  "esso_models": 3,
+  "solves_per_cycle": 19
+ },
+ "provenance": {
+  "timestamp_utc": "2026-09-23T18:07:34.231361+00:00",
+  "git_head": "4483fdab4195b74744af505aeda5d35493518390",
+  "sys_executable": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "exists": true,
+   "version": "3.14.18",
+   "asl": "20241111",
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)",
+   "path_ipopt_not_used": {
+    "path": "/usr/local/bin/ipopt",
+    "version": "3.14.18",
+    "shadows_canonical": false
+   }
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-14",
+   "available": true,
+   "licence_id": "2807206",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "9d6335848b80ee9bb484ffd0c82fc70362b0ee02d79c5d351c15da1e25b0c857",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": false,
+  "canonical_ipopt_path": "/usr/local/bin/ipopt",
+  "canonical_ipopt_version": "3.14.18",
+  "canonical_ipopt_asl": "20241111",
+  "canonical_hsl_linear_solver": "ma97",
+  "gate_failures": [
+   {
+    "identity": "scenario checksum",
+    "observed": "9d6335848b80ee9bb484ffd0c82fc70362b0ee02d79c5d351c15da1e25b0c857",
+    "canonical": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358"
+   }
+  ],
+  "checksum_expected_to_differ": true,
+  "gate_passes_for_this_instance": true
+ },
+ "declared_solve_profile": {
+  "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+  "n_years": 1,
+  "n_days": 4,
+  "n_year_day_blocks": 4,
+  "n_dso": 3,
+  "n_networks": 4,
+  "network_solves_per_cycle": 16,
+  "n_esso_nodes": 3,
+  "esso_solves_per_cycle": 3,
+  "solves_per_cycle": 19,
+  "cap": 2,
+  "rounds": 3,
+  "rounds_note": "one initialization round + cap ADMM cycles",
+  "declared_base_solves": 57,
+  "identity": "observed == base + 1 * recovered_tier1 + 2 * recovered_tier2 (recovery counts from the run's own network_failures_summary)",
+  "identity_gated_on": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted] (every retry actually attempted, recovered or NOT); unsupported when an ESSO recovery event or an 'indeterminate' network event exists, or the event file does not hold summary.n_blocks events",
+  "identity_recovered_only_reported_beside_it": "observed == base + 1 * recovered_tier1 + 2 * recovered_tier2 -- the PRE-W35 rule, kept as a reported quantity only; it undercounts when a block stays unrecovered (78a9b230: 168 observed vs 166 declared, one unrecovered DSO block that had attempted two retries)",
+  "n_arms": 7,
+  "declared_total_strict": 399
+ },
+ "capture_path_checklist_asserted_before_run": {
+  "dispersion_metric_callable": true,
+  "per_block_dispersion_callable": true,
+  "row18_wiring_callable": true,
+  "recourse_components_callable": true,
+  "voltage_mismatch_callable": true,
+  "alpha_is_threaded_by_run_operational_planning": true,
+  "dispersion_dict_has_the_required_fields": true,
+  "mechanism_record_callable": true,
+  "gen_curtailment_definitional_value_callable": true,
+  "expected_market_price_callable": true,
+  "settlement_split_callable": true,
+  "dso_duals_set_on_the_model_before_each_dso_solve": true,
+  "dso_al_objective_carries_dual_rho_rating_scale": true
+ }
+}

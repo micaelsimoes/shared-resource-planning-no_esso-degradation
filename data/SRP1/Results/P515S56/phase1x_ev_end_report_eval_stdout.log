@@ -1,0 +1,62 @@
+21:51:37 p515_s56_phase1x_report_eval.py: zero solves; guard armed; pickle blocked
+21:51:37 OK   [A] spec sha256 = feb487b7...
+21:51:37 OK   [A] no code drift against the spec code_sha256 (driver, policy, neighbourhood, lattice, harness, gate_result_io): the checkout is byte-identical to the frozen code
+21:51:37 OK   [A] no cache source declared (D2: no record carries over)
+21:51:37 OK   [A] predecessors verified (none: no continuation, no un-launched predecessor)
+21:51:37 OK   [A] phase cache empty
+21:51:40 OK   [A] chain replays: 7 launches, every record / manifest / action / state re-derived
+21:51:40 OK   [A] one more phase_step terminates phase_complete
+21:51:40 OK   [A] the replayed terminal state equals phase_results.json state (canonical JSON)
+21:51:40 OK   [A] phase_results manifest holds the results hash
+21:51:40 OK   [A] phase_results.json names this spec
+21:51:40 OK   [A] 26 records (x0 exit, 18 screen, 4 ladder at exit; 3 settled)
+21:51:40 OK   [B] 26 evaluations launched by the phase (every one served by the replay)
+21:51:40 OK   [B] ESSO events file rows == record n_esso_recovery_events on every evaluation
+21:51:40 OK   [B] every exit run stopped at its read cycle (cycles_run == read_cycle)
+21:51:40 OK   [C] launch 1: wall in phase_results == launch record wall
+21:51:40 OK   [C] launch 2: wall in phase_results == launch record wall
+21:51:40 OK   [C] launch 3: wall in phase_results == launch record wall
+21:51:40 OK   [C] launch 4: wall in phase_results == launch record wall
+21:51:40 OK   [C] launch 5: wall in phase_results == launch record wall
+21:51:40 OK   [C] launch 6: wall in phase_results == launch record wall
+21:51:40 OK   [C] launch 7: wall in phase_results == launch record wall
+21:51:40 OK   [C] interrupted launches 0 (interrupted hours 0)
+21:51:40 OK   [C] sum of launch walls == cumulative_h
+21:51:40 OK   [D] table x0 = x0 exit run (F, bar bitwise)
+21:51:40 OK   [D] 22 rows (18 screen + 4 ladder)
+21:51:40 OK   [D] e recomputed = max(e_EV, bar_x + bar_x0) equals the recorded e on every row
+21:51:40 OK   [D] P.classify_exit recomputed equals the recorded class and dF_exit on every row
+21:51:40 OK   [D] every worse row has margin_to_worse >= 0; every unresolved row lies strictly between the boundaries
+21:51:40 OK   [E] x0: settled summary exit_view == independent re-read map_record(files, exit) (bitwise)
+21:51:40 OK   [E] x0: exit run (read_cycle, F, bar) == settled exit_view, bitwise (the Q7 reading)
+21:51:40 OK   [E] n7_y2025_p0.25_e1: settled summary exit_view == independent re-read map_record(files, exit) (bitwise)
+21:51:40 OK   [E] n7_y2025_p0.25_e1: exit run (read_cycle, F, bar) == settled exit_view, bitwise (the Q7 reading)
+21:51:40 OK   [E] pilot_staged: settled summary exit_view == independent re-read map_record(files, exit) (bitwise)
+21:51:40 OK   [E] x0: recourse identity gross - TV == net on every settled-run cycle
+21:51:40 OK   [E] x0: settled run F(k) == exit run F(k) bitwise for every exit-run cycle
+21:51:40 OK   [E] n7_y2025_p0.25_e1: recourse identity gross - TV == net on every settled-run cycle
+21:51:40 OK   [E] n7_y2025_p0.25_e1: settled run F(k) == exit run F(k) bitwise for every exit-run cycle
+21:51:40 OK   [E] pilot_staged: recourse identity gross - TV == net on every settled-run cycle
+21:51:40 OK   [F] final incumbent = x0; 0 moves
+21:51:40 OK   [F] N(x0) = the 18 screen plans (zero-solve neighbourhood module)
+21:51:40 OK   [F] terminal poll 18 of 18 classified, all from cache
+21:51:40 OK   [G] 7 campaign specs, 14 launch records/manifests
+21:51:46 OK   [G] keys carried by the 1x campaign specs are a subset of those of its launch records
+21:51:46 OK   [G] the 1x domain keys the campaign specs carry == the 26 evaluation keys
+21:51:47 OK   [G] simulated 1x confirmation freeze declaring phase1x_ev_v1 as a cache root: 0 collisions
+21:51:47 OK   [G] without the root declared, the launch records alone already collide (tracking the campaign specs adds no new blocking condition)
+21:51:47 OK   [H] predictions file sha256 = de8313a4...
+21:51:47 OK   [H] Q1 input recomputes from the table rows
+21:51:47 OK   [H] Q2 inputs recompute (harness_error summaries, local-solve failures)
+21:51:47 OK   [H] Q5 input recomputes (max child RSS over the 26 evaluations)
+21:51:47 OK   [H] Q8: sha256 of phase2x_ev_v3/phase_results.json == the sha256 the predictions file names
+21:51:47 OK   [H] Q8: the 2x values copied into the predictions file == the v3 results rows (bitwise)
+21:51:47 OK   [H] Q8: 1x dF_exit from the table rows == prediction_inputs.Q8.screen_dF_exit
+21:51:47 OK   [H] Q9 inputs recompute (n settled summaries, n above ceiling, without leak)
+21:51:47 OK   [I] committed 2x evaluation sha256 = 4427e142...
+21:51:47 OK   [J] memory probe SRP1-grid SP: 2 cycle walls read (cycle 1, cycle 2)
+21:51:47 OK   [B] every ESSO recovery event recovered at tier 1 (vacuous if none)
+21:51:47 OK   [B] all 3 settled runs: settled, gates pass, every settled check true
+21:51:47 OK   [B] every guard exact on all 26 evaluations
+21:51:47 OK   [A] no code drift at the end of the evaluation
+21:51:47 wrote data/SRP1/Results/P515S56/phase1x_ev_end_report_eval/report_eval.json (8dcee42963dff8d7c253d646fc14e245bc6e4bc34252b8f9c58de8286179b829); checks 60/60; guard verify(0) [] []; pickle {'load': 0, 'loads': 0} {'load': 0, 'loads': 0}

@@ -1,0 +1,2329 @@
+{
+ "schema": "p515_s56_dependence_permutations_v1",
+ "grid": "five_block_3x3",
+ "instance_label": "s53_3x3_comonotone",
+ "statistic": "ND[s] = sum_{loads l not ADN} sum_t pd_l[s,t] * baseMVA * dt - sum_{generators g, gen_type in definitions.GEN_CURTAILLABLE_TYPES} sum_t pg_g[s,t] * baseMVA * dt, in MWh, dt = 24 h / num_instants; per network block (network, year, day); ADN loads = the TSO loads production zeroes after the checksum point (network.adn_load_exists / get_adn_load_idx for every DSO node); evaluation: float(np.sum(A[s])) * baseMVA * dt per array, accumulated in Python floats, loads by index then generators by index",
+ "tie_rule": "perm = sorted(range(n), key=lambda s: (ND[s], s)): ascending ND, exact ties -> lower original index first; new index k takes original index perm[k]; new_A = old_A[perm, :] for every operation array of the block (market arrays never permuted)",
+ "blocks": {
+  "DSO5|2025|Autumn": {
+   "permutation_new_index_takes_original": [
+    2,
+    1,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    961.5674077825333,
+    866.3156322094039,
+    823.9293488500485
+   ],
+   "net_demand_MWh_new_order": [
+    823.9293488500485,
+    866.3156322094039,
+    961.5674077825333
+   ],
+   "load_MWh_original_order": [
+    1459.474558823272,
+    1436.649624894,
+    1444.4404176391024
+   ],
+   "res_MWh_original_order": [
+    497.9071510407387,
+    570.3339926845961,
+    620.5110687890539
+   ],
+   "ties": []
+  },
+  "DSO5|2025|Spring": {
+   "permutation_new_index_takes_original": [
+    1,
+    2,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    984.8385077103248,
+    928.0788949075276,
+    977.8936403862974
+   ],
+   "net_demand_MWh_new_order": [
+    928.0788949075276,
+    977.8936403862974,
+    984.8385077103248
+   ],
+   "load_MWh_original_order": [
+    1464.654347519847,
+    1464.8720879954558,
+    1454.8496869121016
+   ],
+   "res_MWh_original_order": [
+    479.8158398095222,
+    536.7931930879282,
+    476.9560465258041
+   ],
+   "ties": []
+  },
+  "DSO5|2025|Summer": {
+   "permutation_new_index_takes_original": [
+    2,
+    1,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    973.4951899368888,
+    964.8491828778043,
+    917.5108163786551
+   ],
+   "net_demand_MWh_new_order": [
+    917.5108163786551,
+    964.8491828778043,
+    973.4951899368888
+   ],
+   "load_MWh_original_order": [
+    1529.9478639379836,
+    1514.2095653436427,
+    1523.6708681932002
+   ],
+   "res_MWh_original_order": [
+    556.4526740010948,
+    549.3603824658384,
+    606.1600518145451
+   ],
+   "ties": []
+  },
+  "DSO5|2025|Winter": {
+   "permutation_new_index_takes_original": [
+    1,
+    2,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    935.3649685153687,
+    879.9213895689101,
+    905.763273496182
+   ],
+   "net_demand_MWh_new_order": [
+    879.9213895689101,
+    905.763273496182,
+    935.3649685153687
+   ],
+   "load_MWh_original_order": [
+    1498.8056137786934,
+    1453.58597895,
+    1491.3441024356796
+   ],
+   "res_MWh_original_order": [
+    563.4406452633248,
+    573.66458938109,
+    585.5808289394976
+   ],
+   "ties": []
+  },
+  "DSO5|2028|Autumn": {
+   "permutation_new_index_takes_original": [
+    2,
+    0,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    1036.7543500069767,
+    1173.1643315597396,
+    939.6697973978421
+   ],
+   "net_demand_MWh_new_order": [
+    939.6697973978421,
+    1036.7543500069767,
+    1173.1643315597396
+   ],
+   "load_MWh_original_order": [
+    1519.7882416259263,
+    1489.9174734278472,
+    1491.828310868688
+   ],
+   "res_MWh_original_order": [
+    483.03389161894967,
+    316.75314186810766,
+    552.158513470846
+   ],
+   "ties": []
+  },
+  "DSO5|2028|Spring": {
+   "permutation_new_index_takes_original": [
+    2,
+    1,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    1060.0430167497807,
+    1046.1917475856392,
+    1018.4186167887069
+   ],
+   "net_demand_MWh_new_order": [
+    1018.4186167887069,
+    1046.1917475856392,
+    1060.0430167497807
+   ],
+   "load_MWh_original_order": [
+    1519.9913044591335,
+    1540.4226441429187,
+    1549.082452684319
+   ],
+   "res_MWh_original_order": [
+    459.9482877093528,
+    494.2308965572795,
+    530.663835895612
+   ],
+   "ties": []
+  },
+  "DSO5|2028|Summer": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    1017.0380358024113,
+    974.2092613656367,
+    1046.5635592615126
+   ],
+   "net_demand_MWh_new_order": [
+    974.2092613656367,
+    1017.0380358024113,
+    1046.5635592615126
+   ],
+   "load_MWh_original_order": [
+    1602.088931689363,
+    1597.0586247852575,
+    1601.2669512342604
+   ],
+   "res_MWh_original_order": [
+    585.0508958869518,
+    622.8493634196208,
+    554.7033919727477
+   ],
+   "ties": []
+  },
+  "DSO5|2028|Winter": {
+   "permutation_new_index_takes_original": [
+    2,
+    1,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    1101.6307579858396,
+    1049.9095954470713,
+    959.5723204464485
+   ],
+   "net_demand_MWh_new_order": [
+    959.5723204464485,
+    1049.9095954470713,
+    1101.6307579858396
+   ],
+   "load_MWh_original_order": [
+    1570.2512180592869,
+    1576.287967118499,
+    1555.8053675290444
+   ],
+   "res_MWh_original_order": [
+    468.62046007344725,
+    526.3783716714275,
+    596.2330470825958
+   ],
+   "ties": []
+  },
+  "DSO5|2031|Autumn": {
+   "permutation_new_index_takes_original": [
+    0,
+    2,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    829.6351587371612,
+    920.4352169857563,
+    916.1341390664553
+   ],
+   "net_demand_MWh_new_order": [
+    829.6351587371612,
+    916.1341390664553,
+    920.4352169857563
+   ],
+   "load_MWh_original_order": [
+    1577.1401172947644,
+    1582.509718716313,
+    1561.6699327515394
+   ],
+   "res_MWh_original_order": [
+    747.5049585576032,
+    662.0745017305568,
+    645.5357936850841
+   ],
+   "ties": []
+  },
+  "DSO5|2031|Spring": {
+   "permutation_new_index_takes_original": [
+    0,
+    2,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    918.1611716328575,
+    968.6947671162864,
+    961.2758357920661
+   ],
+   "net_demand_MWh_new_order": [
+    918.1611716328575,
+    961.2758357920661,
+    968.6947671162864
+   ],
+   "load_MWh_original_order": [
+    1599.8248891743106,
+    1603.1733716230701,
+    1584.1451053392354
+   ],
+   "res_MWh_original_order": [
+    681.663717541453,
+    634.4786045067838,
+    622.8692695471693
+   ],
+   "ties": []
+  },
+  "DSO5|2031|Summer": {
+   "permutation_new_index_takes_original": [
+    0,
+    1,
+    2
+   ],
+   "identity": true,
+   "net_demand_MWh_original_order": [
+    845.661024750696,
+    950.7863222582815,
+    980.7178898004072
+   ],
+   "net_demand_MWh_new_order": [
+    845.661024750696,
+    950.7863222582815,
+    980.7178898004072
+   ],
+   "load_MWh_original_order": [
+    1667.4055456653577,
+    1690.5569001099918,
+    1649.347040800266
+   ],
+   "res_MWh_original_order": [
+    821.7445209146617,
+    739.7705778517103,
+    668.6291509998589
+   ],
+   "ties": []
+  },
+  "DSO5|2031|Winter": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    936.8662122564353,
+    878.7591189760852,
+    1003.0634308914232
+   ],
+   "net_demand_MWh_new_order": [
+    878.7591189760852,
+    936.8662122564353,
+    1003.0634308914232
+   ],
+   "load_MWh_original_order": [
+    1636.7223355529425,
+    1609.2187368392626,
+    1610.0571965540219
+   ],
+   "res_MWh_original_order": [
+    699.8561232965071,
+    730.4596178631774,
+    606.9937656625987
+   ],
+   "ties": []
+  },
+  "DSO5|2034|Autumn": {
+   "permutation_new_index_takes_original": [
+    0,
+    1,
+    2
+   ],
+   "identity": true,
+   "net_demand_MWh_original_order": [
+    986.8666129848757,
+    996.5553948817578,
+    1000.683429908425
+   ],
+   "net_demand_MWh_new_order": [
+    986.8666129848757,
+    996.5553948817578,
+    1000.683429908425
+   ],
+   "load_MWh_original_order": [
+    1639.9412418177133,
+    1657.6082223382841,
+    1645.615098807288
+   ],
+   "res_MWh_original_order": [
+    653.0746288328376,
+    661.0528274565263,
+    644.931668898863
+   ],
+   "ties": []
+  },
+  "DSO5|2034|Spring": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    1005.9214058933173,
+    993.1432171169195,
+    1008.079045033641
+   ],
+   "net_demand_MWh_new_order": [
+    993.1432171169195,
+    1005.9214058933173,
+    1008.079045033641
+   ],
+   "load_MWh_original_order": [
+    1676.3993456589928,
+    1662.5608991288407,
+    1670.8457053380266
+   ],
+   "res_MWh_original_order": [
+    670.4779397656755,
+    669.4176820119212,
+    662.7666603043856
+   ],
+   "ties": []
+  },
+  "DSO5|2034|Summer": {
+   "permutation_new_index_takes_original": [
+    2,
+    1,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    1031.72794314963,
+    978.1648889483661,
+    912.844572674454
+   ],
+   "net_demand_MWh_new_order": [
+    912.844572674454,
+    978.1648889483661,
+    1031.72794314963
+   ],
+   "load_MWh_original_order": [
+    1755.7665074004137,
+    1751.859262227533,
+    1737.504342183705
+   ],
+   "res_MWh_original_order": [
+    724.0385642507838,
+    773.6943732791669,
+    824.659769509251
+   ],
+   "ties": []
+  },
+  "DSO5|2034|Winter": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    1046.5310653360189,
+    1019.4718211166369,
+    1100.279755437445
+   ],
+   "net_demand_MWh_new_order": [
+    1019.4718211166369,
+    1046.5310653360189,
+    1100.279755437445
+   ],
+   "load_MWh_original_order": [
+    1692.7540305241296,
+    1693.7041140415868,
+    1705.5231909660579
+   ],
+   "res_MWh_original_order": [
+    646.2229651881106,
+    674.2322929249499,
+    605.243435528613
+   ],
+   "ties": []
+  },
+  "DSO5|2037|Autumn": {
+   "permutation_new_index_takes_original": [
+    0,
+    2,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    962.839712217733,
+    1161.623815847326,
+    1080.2214512219157
+   ],
+   "net_demand_MWh_new_order": [
+    962.839712217733,
+    1080.2214512219157,
+    1161.623815847326
+   ],
+   "load_MWh_original_order": [
+    1723.2656630902165,
+    1703.040713414565,
+    1713.2466155478166
+   ],
+   "res_MWh_original_order": [
+    760.4259508724836,
+    541.4168975672392,
+    633.025164325901
+   ],
+   "ties": []
+  },
+  "DSO5|2037|Spring": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    908.5110132646362,
+    871.5918482529819,
+    912.9094392858573
+   ],
+   "net_demand_MWh_new_order": [
+    871.5918482529819,
+    908.5110132646362,
+    912.9094392858573
+   ],
+   "load_MWh_original_order": [
+    1749.3722274500615,
+    1750.025412291004,
+    1740.034290096264
+   ],
+   "res_MWh_original_order": [
+    840.8612141854253,
+    878.433564038022,
+    827.1248508104067
+   ],
+   "ties": []
+  },
+  "DSO5|2037|Summer": {
+   "permutation_new_index_takes_original": [
+    2,
+    1,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    803.2753532308252,
+    796.4917374177151,
+    778.3079243000136
+   ],
+   "net_demand_MWh_new_order": [
+    778.3079243000136,
+    796.4917374177151,
+    803.2753532308252
+   ],
+   "load_MWh_original_order": [
+    1849.316731689796,
+    1818.1589684548924,
+    1835.1362452682188
+   ],
+   "res_MWh_original_order": [
+    1046.0413784589707,
+    1021.6672310371773,
+    1056.8283209682052
+   ],
+   "ties": []
+  },
+  "DSO5|2037|Winter": {
+   "permutation_new_index_takes_original": [
+    1,
+    2,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    1094.2612187686464,
+    994.8768721778197,
+    1002.5653034667383
+   ],
+   "net_demand_MWh_new_order": [
+    994.8768721778197,
+    1002.5653034667383,
+    1094.2612187686464
+   ],
+   "load_MWh_original_order": [
+    1765.0598989350563,
+    1776.409785482944,
+    1768.1206077265201
+   ],
+   "res_MWh_original_order": [
+    670.7986801664099,
+    781.5329133051243,
+    765.5553042597818
+   ],
+   "ties": []
+  },
+  "DSO7|2025|Autumn": {
+   "permutation_new_index_takes_original": [
+    0,
+    1,
+    2
+   ],
+   "identity": true,
+   "net_demand_MWh_original_order": [
+    528.5605131883821,
+    599.9314699516664,
+    703.6749487618043
+   ],
+   "net_demand_MWh_new_order": [
+    528.5605131883821,
+    599.9314699516664,
+    703.6749487618043
+   ],
+   "load_MWh_original_order": [
+    1505.4993709199118,
+    1502.2331229517565,
+    1502.4026607391927
+   ],
+   "res_MWh_original_order": [
+    976.9388577315298,
+    902.3016530000901,
+    798.7277119773884
+   ],
+   "ties": []
+  },
+  "DSO7|2025|Spring": {
+   "permutation_new_index_takes_original": [
+    1,
+    2,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    924.6272499349866,
+    889.7708298562172,
+    897.6930074389209
+   ],
+   "net_demand_MWh_new_order": [
+    889.7708298562172,
+    897.6930074389209,
+    924.6272499349866
+   ],
+   "load_MWh_original_order": [
+    1541.3560393211806,
+    1538.0127592760746,
+    1534.0289327125083
+   ],
+   "res_MWh_original_order": [
+    616.728789386194,
+    648.2419294198573,
+    636.3359252735875
+   ],
+   "ties": []
+  },
+  "DSO7|2025|Summer": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    952.4550314329583,
+    867.5788310989892,
+    996.3025527812122
+   ],
+   "net_demand_MWh_new_order": [
+    867.5788310989892,
+    952.4550314329583,
+    996.3025527812122
+   ],
+   "load_MWh_original_order": [
+    1580.2708626957603,
+    1578.0416796201685,
+    1576.9093825148705
+   ],
+   "res_MWh_original_order": [
+    627.815831262802,
+    710.4628485211792,
+    580.6068297336583
+   ],
+   "ties": []
+  },
+  "DSO7|2025|Winter": {
+   "permutation_new_index_takes_original": [
+    1,
+    2,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    694.3127865744775,
+    597.8537100569949,
+    609.9831970580078
+   ],
+   "net_demand_MWh_new_order": [
+    597.8537100569949,
+    609.9831970580078,
+    694.3127865744775
+   ],
+   "load_MWh_original_order": [
+    1563.7251248240793,
+    1556.7413919882263,
+    1565.2371401362016
+   ],
+   "res_MWh_original_order": [
+    869.4123382496018,
+    958.8876819312313,
+    955.2539430781937
+   ],
+   "ties": []
+  },
+  "DSO7|2028|Autumn": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    634.7564096839883,
+    615.3904685587338,
+    648.9632340379902
+   ],
+   "net_demand_MWh_new_order": [
+    615.3904685587338,
+    634.7564096839883,
+    648.9632340379902
+   ],
+   "load_MWh_original_order": [
+    1582.903188470746,
+    1557.8858816736658,
+    1578.2476089257184
+   ],
+   "res_MWh_original_order": [
+    948.1467787867577,
+    942.495413114932,
+    929.2843748877282
+   ],
+   "ties": []
+  },
+  "DSO7|2028|Spring": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    974.4518571098787,
+    970.3770339522091,
+    1002.970725614159
+   ],
+   "net_demand_MWh_new_order": [
+    970.3770339522091,
+    974.4518571098787,
+    1002.970725614159
+   ],
+   "load_MWh_original_order": [
+    1605.7731976896962,
+    1607.9862878466952,
+    1600.6090298937518
+   ],
+   "res_MWh_original_order": [
+    631.3213405798175,
+    637.6092538944861,
+    597.6383042795927
+   ],
+   "ties": []
+  },
+  "DSO7|2028|Summer": {
+   "permutation_new_index_takes_original": [
+    2,
+    1,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    1124.714107273583,
+    1086.5242161537208,
+    1008.9427636290972
+   ],
+   "net_demand_MWh_new_order": [
+    1008.9427636290972,
+    1086.5242161537208,
+    1124.714107273583
+   ],
+   "load_MWh_original_order": [
+    1657.1405594915884,
+    1657.564687227096,
+    1655.9292238176492
+   ],
+   "res_MWh_original_order": [
+    532.4264522180054,
+    571.0404710733752,
+    646.9864601885521
+   ],
+   "ties": []
+  },
+  "DSO7|2028|Winter": {
+   "permutation_new_index_takes_original": [
+    0,
+    1,
+    2
+   ],
+   "identity": true,
+   "net_demand_MWh_original_order": [
+    543.5049726364025,
+    640.0466274499494,
+    660.4184402040995
+   ],
+   "net_demand_MWh_new_order": [
+    543.5049726364025,
+    640.0466274499494,
+    660.4184402040995
+   ],
+   "load_MWh_original_order": [
+    1611.6937032417832,
+    1623.7856637796876,
+    1647.0089921928272
+   ],
+   "res_MWh_original_order": [
+    1068.1887306053807,
+    983.7390363297383,
+    986.5905519887277
+   ],
+   "ties": []
+  },
+  "DSO7|2031|Autumn": {
+   "permutation_new_index_takes_original": [
+    0,
+    2,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    411.8085318084038,
+    731.5041256889083,
+    685.5268139329156
+   ],
+   "net_demand_MWh_new_order": [
+    411.8085318084038,
+    685.5268139329156,
+    731.5041256889083
+   ],
+   "load_MWh_original_order": [
+    1646.6707428963457,
+    1650.3159876659147,
+    1653.3049035275228
+   ],
+   "res_MWh_original_order": [
+    1234.862211087942,
+    918.8118619770064,
+    967.7780895946072
+   ],
+   "ties": []
+  },
+  "DSO7|2031|Spring": {
+   "permutation_new_index_takes_original": [
+    0,
+    2,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    906.789061341297,
+    931.0294779871939,
+    906.9938001214473
+   ],
+   "net_demand_MWh_new_order": [
+    906.789061341297,
+    906.9938001214473,
+    931.0294779871939
+   ],
+   "load_MWh_original_order": [
+    1673.7917642520517,
+    1669.4248363053352,
+    1667.167059952365
+   ],
+   "res_MWh_original_order": [
+    767.0027029107547,
+    738.3953583181413,
+    760.1732598309177
+   ],
+   "ties": []
+  },
+  "DSO7|2031|Summer": {
+   "permutation_new_index_takes_original": [
+    2,
+    0,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    966.1396091540295,
+    1041.4972920680152,
+    961.7620762728423
+   ],
+   "net_demand_MWh_new_order": [
+    961.7620762728423,
+    966.1396091540295,
+    1041.4972920680152
+   ],
+   "load_MWh_original_order": [
+    1736.8815732046771,
+    1730.4194887900496,
+    1707.7069112917795
+   ],
+   "res_MWh_original_order": [
+    770.7419640506477,
+    688.9221967220343,
+    745.9448350189373
+   ],
+   "ties": []
+  },
+  "DSO7|2031|Winter": {
+   "permutation_new_index_takes_original": [
+    2,
+    0,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    622.930615889187,
+    754.7920536455591,
+    575.3375587630549
+   ],
+   "net_demand_MWh_new_order": [
+    575.3375587630549,
+    622.930615889187,
+    754.7920536455591
+   ],
+   "load_MWh_original_order": [
+    1731.4184723080073,
+    1709.5496994996704,
+    1700.4348270365458
+   ],
+   "res_MWh_original_order": [
+    1108.4878564188202,
+    954.7576458541113,
+    1125.097268273491
+   ],
+   "ties": []
+  },
+  "DSO7|2034|Autumn": {
+   "permutation_new_index_takes_original": [
+    2,
+    0,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    714.2072058065199,
+    776.2259922337572,
+    552.5249873377657
+   ],
+   "net_demand_MWh_new_order": [
+    552.5249873377657,
+    714.2072058065199,
+    776.2259922337572
+   ],
+   "load_MWh_original_order": [
+    1711.1716990527004,
+    1706.1166260480843,
+    1716.1104873036081
+   ],
+   "res_MWh_original_order": [
+    996.9644932461805,
+    929.8906338143271,
+    1163.5854999658425
+   ],
+   "ties": []
+  },
+  "DSO7|2034|Spring": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    1004.9132860878054,
+    988.1407102823896,
+    1022.6518476997657
+   ],
+   "net_demand_MWh_new_order": [
+    988.1407102823896,
+    1004.9132860878054,
+    1022.6518476997657
+   ],
+   "load_MWh_original_order": [
+    1755.8310721413418,
+    1757.6186321206778,
+    1738.5676477832328
+   ],
+   "res_MWh_original_order": [
+    750.9177860535364,
+    769.4779218382882,
+    715.9158000834672
+   ],
+   "ties": []
+  },
+  "DSO7|2034|Summer": {
+   "permutation_new_index_takes_original": [
+    2,
+    0,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    1065.1978842219037,
+    1071.3691794721317,
+    1041.5032827693362
+   ],
+   "net_demand_MWh_new_order": [
+    1041.5032827693362,
+    1065.1978842219037,
+    1071.3691794721317
+   ],
+   "load_MWh_original_order": [
+    1814.7883624371052,
+    1821.13814824607,
+    1809.6070448939552
+   ],
+   "res_MWh_original_order": [
+    749.5904782152014,
+    749.7689687739384,
+    768.1037621246189
+   ],
+   "ties": []
+  },
+  "DSO7|2034|Winter": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    616.386007282953,
+    539.3265922276314,
+    833.825853756987
+   ],
+   "net_demand_MWh_new_order": [
+    539.3265922276314,
+    616.386007282953,
+    833.825853756987
+   ],
+   "load_MWh_original_order": [
+    1767.651525191976,
+    1767.0186973597636,
+    1792.0374625319753
+   ],
+   "res_MWh_original_order": [
+    1151.265517909023,
+    1227.6921051321322,
+    958.2116087749882
+   ],
+   "ties": []
+  },
+  "DSO7|2037|Autumn": {
+   "permutation_new_index_takes_original": [
+    1,
+    2,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    753.8255390616321,
+    660.5855729444381,
+    676.3683066968708
+   ],
+   "net_demand_MWh_new_order": [
+    660.5855729444381,
+    676.3683066968708,
+    753.8255390616321
+   ],
+   "load_MWh_original_order": [
+    1795.5299082960405,
+    1807.4202529343663,
+    1792.6500087958148
+   ],
+   "res_MWh_original_order": [
+    1041.7043692344084,
+    1146.8346799899282,
+    1116.281702098944
+   ],
+   "ties": []
+  },
+  "DSO7|2037|Spring": {
+   "permutation_new_index_takes_original": [
+    2,
+    1,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    1007.6588275053153,
+    955.1016189647773,
+    949.5631514543902
+   ],
+   "net_demand_MWh_new_order": [
+    949.5631514543902,
+    955.1016189647773,
+    1007.6588275053153
+   ],
+   "load_MWh_original_order": [
+    1833.483118125169,
+    1834.1074948911848,
+    1822.310704145954
+   ],
+   "res_MWh_original_order": [
+    825.8242906198537,
+    879.0058759264075,
+    872.7475526915639
+   ],
+   "ties": []
+  },
+  "DSO7|2037|Summer": {
+   "permutation_new_index_takes_original": [
+    0,
+    2,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    928.2484465367372,
+    939.5268981147246,
+    931.8747273983165
+   ],
+   "net_demand_MWh_new_order": [
+    928.2484465367372,
+    931.8747273983165,
+    939.5268981147246
+   ],
+   "load_MWh_original_order": [
+    1888.9923356136046,
+    1895.616853989918,
+    1888.0442517774109
+   ],
+   "res_MWh_original_order": [
+    960.7438890768674,
+    956.0899558751933,
+    956.1695243790944
+   ],
+   "ties": []
+  },
+  "DSO7|2037|Winter": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    670.4429124984872,
+    669.7575880618488,
+    849.1287321567445
+   ],
+   "net_demand_MWh_new_order": [
+    669.7575880618488,
+    670.4429124984872,
+    849.1287321567445
+   ],
+   "load_MWh_original_order": [
+    1853.8676908141908,
+    1861.2522065621567,
+    1882.5881602217873
+   ],
+   "res_MWh_original_order": [
+    1183.4247783157036,
+    1191.494618500308,
+    1033.4594280650429
+   ],
+   "ties": []
+  },
+  "DSO9|2025|Autumn": {
+   "permutation_new_index_takes_original": [
+    2,
+    0,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    1057.5061168575462,
+    1102.1262616601252,
+    1016.6291427055233
+   ],
+   "net_demand_MWh_new_order": [
+    1016.6291427055233,
+    1057.5061168575462,
+    1102.1262616601252
+   ],
+   "load_MWh_original_order": [
+    1478.6931589401288,
+    1475.9869163353967,
+    1489.5133536083272
+   ],
+   "res_MWh_original_order": [
+    421.1870420825825,
+    373.86065467527135,
+    472.88421090280383
+   ],
+   "ties": []
+  },
+  "DSO9|2025|Spring": {
+   "permutation_new_index_takes_original": [
+    2,
+    0,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    845.8920785474893,
+    873.3886783822913,
+    837.0846270222037
+   ],
+   "net_demand_MWh_new_order": [
+    837.0846270222037,
+    845.8920785474893,
+    873.3886783822913
+   ],
+   "load_MWh_original_order": [
+    1508.9062731439087,
+    1508.8168067089575,
+    1505.31681739738
+   ],
+   "res_MWh_original_order": [
+    663.0141945964194,
+    635.4281283266662,
+    668.2321903751763
+   ],
+   "ties": []
+  },
+  "DSO9|2025|Summer": {
+   "permutation_new_index_takes_original": [
+    1,
+    2,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    723.9161504850656,
+    675.5620272709679,
+    695.9606629560802
+   ],
+   "net_demand_MWh_new_order": [
+    675.5620272709679,
+    695.9606629560802,
+    723.9161504850656
+   ],
+   "load_MWh_original_order": [
+    1572.9446238299736,
+    1564.6671510170897,
+    1561.7072727180318
+   ],
+   "res_MWh_original_order": [
+    849.028473344908,
+    889.1051237461219,
+    865.7466097619516
+   ],
+   "ties": []
+  },
+  "DSO9|2025|Winter": {
+   "permutation_new_index_takes_original": [
+    2,
+    1,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    1138.2434891710432,
+    1120.4867989322906,
+    1078.876775663452
+   ],
+   "net_demand_MWh_new_order": [
+    1078.876775663452,
+    1120.4867989322906,
+    1138.2434891710432
+   ],
+   "load_MWh_original_order": [
+    1520.088175177062,
+    1533.9311577729618,
+    1534.645256217833
+   ],
+   "res_MWh_original_order": [
+    381.84468600601895,
+    413.44435884067104,
+    455.768480554381
+   ],
+   "ties": []
+  },
+  "DSO9|2028|Autumn": {
+   "permutation_new_index_takes_original": [
+    0,
+    1,
+    2
+   ],
+   "identity": true,
+   "net_demand_MWh_original_order": [
+    1143.9666146235663,
+    1146.4755617316632,
+    1156.4162772665536
+   ],
+   "net_demand_MWh_new_order": [
+    1143.9666146235663,
+    1146.4755617316632,
+    1156.4162772665536
+   ],
+   "load_MWh_original_order": [
+    1549.8858328747901,
+    1563.962950124691,
+    1554.801279127522
+   ],
+   "res_MWh_original_order": [
+    405.9192182512239,
+    417.4873883930276,
+    398.3850018609685
+   ],
+   "ties": []
+  },
+  "DSO9|2028|Spring": {
+   "permutation_new_index_takes_original": [
+    2,
+    0,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    917.045644110628,
+    927.3581597546658,
+    916.4328624562175
+   ],
+   "net_demand_MWh_new_order": [
+    916.4328624562175,
+    917.045644110628,
+    927.3581597546658
+   ],
+   "load_MWh_original_order": [
+    1586.88362610322,
+    1578.5886582300416,
+    1577.8535632472624
+   ],
+   "res_MWh_original_order": [
+    669.837981992592,
+    651.2304984753757,
+    661.4207007910449
+   ],
+   "ties": []
+  },
+  "DSO9|2028|Summer": {
+   "permutation_new_index_takes_original": [
+    1,
+    2,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    804.9195138795175,
+    748.6419666381263,
+    780.0633914469454
+   ],
+   "net_demand_MWh_new_order": [
+    748.6419666381263,
+    780.0633914469454,
+    804.9195138795175
+   ],
+   "load_MWh_original_order": [
+    1651.2454923298442,
+    1636.9670000518895,
+    1649.2064744035154
+   ],
+   "res_MWh_original_order": [
+    846.3259784503267,
+    888.3250334137632,
+    869.14308295657
+   ],
+   "ties": []
+  },
+  "DSO9|2028|Winter": {
+   "permutation_new_index_takes_original": [
+    2,
+    1,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    1276.1640272888326,
+    1169.786402973615,
+    1166.5037628525015
+   ],
+   "net_demand_MWh_new_order": [
+    1166.5037628525015,
+    1169.786402973615,
+    1276.1640272888326
+   ],
+   "load_MWh_original_order": [
+    1629.2170002414414,
+    1608.6302829888668,
+    1605.2717630769214
+   ],
+   "res_MWh_original_order": [
+    353.05297295260885,
+    438.8438800152519,
+    438.76800022441995
+   ],
+   "ties": []
+  },
+  "DSO9|2031|Autumn": {
+   "permutation_new_index_takes_original": [
+    0,
+    2,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    800.1496745121259,
+    936.9826622162265,
+    931.432818361839
+   ],
+   "net_demand_MWh_new_order": [
+    800.1496745121259,
+    931.432818361839,
+    936.9826622162265
+   ],
+   "load_MWh_original_order": [
+    1616.5818677464788,
+    1638.4704106723557,
+    1634.6397109498455
+   ],
+   "res_MWh_original_order": [
+    816.4321932343529,
+    701.4877484561292,
+    703.2068925880064
+   ],
+   "ties": []
+  },
+  "DSO9|2031|Spring": {
+   "permutation_new_index_takes_original": [
+    2,
+    0,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    835.918892383872,
+    851.3212773579633,
+    794.2925987087481
+   ],
+   "net_demand_MWh_new_order": [
+    794.2925987087481,
+    835.918892383872,
+    851.3212773579633
+   ],
+   "load_MWh_original_order": [
+    1662.6180444771805,
+    1653.074655281807,
+    1645.6367184234452
+   ],
+   "res_MWh_original_order": [
+    826.6991520933085,
+    801.7533779238438,
+    851.3441197146972
+   ],
+   "ties": []
+  },
+  "DSO9|2031|Summer": {
+   "permutation_new_index_takes_original": [
+    0,
+    1,
+    2
+   ],
+   "identity": true,
+   "net_demand_MWh_original_order": [
+    656.3481321787117,
+    720.139744678341,
+    799.7760715786841
+   ],
+   "net_demand_MWh_new_order": [
+    656.3481321787117,
+    720.139744678341,
+    799.7760715786841
+   ],
+   "load_MWh_original_order": [
+    1706.178319563217,
+    1712.1491448601507,
+    1721.5776919062723
+   ],
+   "res_MWh_original_order": [
+    1049.8301873845053,
+    992.0094001818097,
+    921.8016203275882
+   ],
+   "ties": []
+  },
+  "DSO9|2031|Winter": {
+   "permutation_new_index_takes_original": [
+    0,
+    2,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    871.298960423409,
+    1009.5146168232484,
+    931.3956227140851
+   ],
+   "net_demand_MWh_new_order": [
+    871.298960423409,
+    931.3956227140851,
+    1009.5146168232484
+   ],
+   "load_MWh_original_order": [
+    1695.1081168524963,
+    1669.0195202189511,
+    1669.9335037754536
+   ],
+   "res_MWh_original_order": [
+    823.8091564290874,
+    659.5049033957027,
+    738.5378810613685
+   ],
+   "ties": []
+  },
+  "DSO9|2034|Autumn": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    942.6796643406283,
+    869.5978362610562,
+    1049.6744151921812
+   ],
+   "net_demand_MWh_new_order": [
+    869.5978362610562,
+    942.6796643406283,
+    1049.6744151921812
+   ],
+   "load_MWh_original_order": [
+    1700.8034211128117,
+    1681.5727842829629,
+    1691.6671368999932
+   ],
+   "res_MWh_original_order": [
+    758.1237567721835,
+    811.9749480219067,
+    641.9927217078119
+   ],
+   "ties": []
+  },
+  "DSO9|2034|Spring": {
+   "permutation_new_index_takes_original": [
+    2,
+    1,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    884.763320744283,
+    863.0942714591611,
+    821.6775583947331
+   ],
+   "net_demand_MWh_new_order": [
+    821.6775583947331,
+    863.0942714591611,
+    884.763320744283
+   ],
+   "load_MWh_original_order": [
+    1721.5748418759651,
+    1722.1092158171216,
+    1715.4102807274119
+   ],
+   "res_MWh_original_order": [
+    836.8115211316822,
+    859.0149443579605,
+    893.7327223326788
+   ],
+   "ties": []
+  },
+  "DSO9|2034|Summer": {
+   "permutation_new_index_takes_original": [
+    2,
+    0,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    772.8800945479725,
+    791.3010413056784,
+    754.7321254756869
+   ],
+   "net_demand_MWh_new_order": [
+    754.7321254756869,
+    772.8800945479725,
+    791.3010413056784
+   ],
+   "load_MWh_original_order": [
+    1814.2204474156138,
+    1790.4791492119423,
+    1787.1590456035485
+   ],
+   "res_MWh_original_order": [
+    1041.3403528676413,
+    999.1781079062639,
+    1032.4269201278616
+   ],
+   "ties": []
+  },
+  "DSO9|2034|Winter": {
+   "permutation_new_index_takes_original": [
+    2,
+    1,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    997.8512060390783,
+    968.0802616705444,
+    952.0021679401428
+   ],
+   "net_demand_MWh_new_order": [
+    952.0021679401428,
+    968.0802616705444,
+    997.8512060390783
+   ],
+   "load_MWh_original_order": [
+    1750.5722570637313,
+    1755.8668430408275,
+    1753.6415498798751
+   ],
+   "res_MWh_original_order": [
+    752.721051024653,
+    787.7865813702831,
+    801.6393819397323
+   ],
+   "ties": []
+  },
+  "DSO9|2037|Autumn": {
+   "permutation_new_index_takes_original": [
+    0,
+    1,
+    2
+   ],
+   "identity": true,
+   "net_demand_MWh_original_order": [
+    978.3253991746247,
+    983.3071693982827,
+    1075.9387088469164
+   ],
+   "net_demand_MWh_new_order": [
+    978.3253991746247,
+    983.3071693982827,
+    1075.9387088469164
+   ],
+   "load_MWh_original_order": [
+    1780.538032769491,
+    1781.8240267905069,
+    1782.6603211182935
+   ],
+   "res_MWh_original_order": [
+    802.2126335948664,
+    798.5168573922242,
+    706.7216122713771
+   ],
+   "ties": []
+  },
+  "DSO9|2037|Spring": {
+   "permutation_new_index_takes_original": [
+    0,
+    2,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    795.3397052647938,
+    833.2265086117845,
+    798.5739057733383
+   ],
+   "net_demand_MWh_new_order": [
+    795.3397052647938,
+    798.5739057733383,
+    833.2265086117845
+   ],
+   "load_MWh_original_order": [
+    1805.7255615159181,
+    1803.913833991974,
+    1810.8201553835743
+   ],
+   "res_MWh_original_order": [
+    1010.3858562511243,
+    970.6873253801893,
+    1012.246249610236
+   ],
+   "ties": []
+  },
+  "DSO9|2037|Summer": {
+   "permutation_new_index_takes_original": [
+    0,
+    2,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    587.8250614600172,
+    639.3868753909189,
+    593.8126292773766
+   ],
+   "net_demand_MWh_new_order": [
+    587.8250614600172,
+    593.8126292773766,
+    639.3868753909189
+   ],
+   "load_MWh_original_order": [
+    1863.4480750357543,
+    1866.2561728595117,
+    1857.7173211154018
+   ],
+   "res_MWh_original_order": [
+    1275.623013575737,
+    1226.8692974685928,
+    1263.9046918380252
+   ],
+   "ties": []
+  },
+  "DSO9|2037|Winter": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    1078.6567541649483,
+    1022.7132709088221,
+    1129.8821591558685
+   ],
+   "net_demand_MWh_new_order": [
+    1022.7132709088221,
+    1078.6567541649483,
+    1129.8821591558685
+   ],
+   "load_MWh_original_order": [
+    1836.8616480776247,
+    1828.9305905412589,
+    1839.7949555855378
+   ],
+   "res_MWh_original_order": [
+    758.2048939126764,
+    806.2173196324368,
+    709.9127964296694
+   ],
+   "ties": []
+  },
+  "TSO|2025|Autumn": {
+   "permutation_new_index_takes_original": [
+    1,
+    2,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -1059.882017453246,
+    -1151.1442728468794,
+    -1116.9887766101892
+   ],
+   "net_demand_MWh_new_order": [
+    -1151.1442728468794,
+    -1116.9887766101892,
+    -1059.882017453246
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    1059.882017453246,
+    1151.1442728468794,
+    1116.9887766101892
+   ],
+   "ties": []
+  },
+  "TSO|2025|Spring": {
+   "permutation_new_index_takes_original": [
+    1,
+    2,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -785.7026600396637,
+    -829.5469442597188,
+    -828.385642630339
+   ],
+   "net_demand_MWh_new_order": [
+    -829.5469442597188,
+    -828.385642630339,
+    -785.7026600396637
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    785.7026600396637,
+    829.5469442597188,
+    828.385642630339
+   ],
+   "ties": []
+  },
+  "TSO|2025|Summer": {
+   "permutation_new_index_takes_original": [
+    0,
+    2,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -904.9979738523917,
+    -855.1685855227595,
+    -895.1408719662171
+   ],
+   "net_demand_MWh_new_order": [
+    -904.9979738523917,
+    -895.1408719662171,
+    -855.1685855227595
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    904.9979738523917,
+    855.1685855227595,
+    895.1408719662171
+   ],
+   "ties": []
+  },
+  "TSO|2025|Winter": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -1083.6272383746996,
+    -1096.0690035140071,
+    -1022.6939626574186
+   ],
+   "net_demand_MWh_new_order": [
+    -1096.0690035140071,
+    -1083.6272383746996,
+    -1022.6939626574186
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    1083.6272383746996,
+    1096.0690035140071,
+    1022.6939626574186
+   ],
+   "ties": []
+  },
+  "TSO|2028|Autumn": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -1080.0407547466043,
+    -1084.0093747979502,
+    -996.5819650815681
+   ],
+   "net_demand_MWh_new_order": [
+    -1084.0093747979502,
+    -1080.0407547466043,
+    -996.5819650815681
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    1080.0407547466043,
+    1084.0093747979502,
+    996.5819650815681
+   ],
+   "ties": []
+  },
+  "TSO|2028|Spring": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -810.0666436838976,
+    -856.8399630669481,
+    -761.5724306820848
+   ],
+   "net_demand_MWh_new_order": [
+    -856.8399630669481,
+    -810.0666436838976,
+    -761.5724306820848
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    810.0666436838976,
+    856.8399630669481,
+    761.5724306820848
+   ],
+   "ties": []
+  },
+  "TSO|2028|Summer": {
+   "permutation_new_index_takes_original": [
+    2,
+    1,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -878.8990979580316,
+    -915.1838599034363,
+    -1023.6934775427899
+   ],
+   "net_demand_MWh_new_order": [
+    -1023.6934775427899,
+    -915.1838599034363,
+    -878.8990979580316
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    878.8990979580316,
+    915.1838599034363,
+    1023.6934775427899
+   ],
+   "ties": []
+  },
+  "TSO|2028|Winter": {
+   "permutation_new_index_takes_original": [
+    0,
+    2,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -1089.0567807540142,
+    -960.107872926459,
+    -1052.7663608147368
+   ],
+   "net_demand_MWh_new_order": [
+    -1089.0567807540142,
+    -1052.7663608147368,
+    -960.107872926459
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    1089.0567807540142,
+    960.107872926459,
+    1052.7663608147368
+   ],
+   "ties": []
+  },
+  "TSO|2031|Autumn": {
+   "permutation_new_index_takes_original": [
+    2,
+    1,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -1548.862573924757,
+    -1568.989275499021,
+    -1603.973815057683
+   ],
+   "net_demand_MWh_new_order": [
+    -1603.973815057683,
+    -1568.989275499021,
+    -1548.862573924757
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    1548.862573924757,
+    1568.989275499021,
+    1603.973815057683
+   ],
+   "ties": []
+  },
+  "TSO|2031|Spring": {
+   "permutation_new_index_takes_original": [
+    2,
+    0,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -1285.8865401334701,
+    -1276.6211379240951,
+    -1288.3330777587403
+   ],
+   "net_demand_MWh_new_order": [
+    -1288.3330777587403,
+    -1285.8865401334701,
+    -1276.6211379240951
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    1285.8865401334701,
+    1276.6211379240951,
+    1288.3330777587403
+   ],
+   "ties": []
+  },
+  "TSO|2031|Summer": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -1383.8807237382855,
+    -1404.4448447064913,
+    -1259.603786083909
+   ],
+   "net_demand_MWh_new_order": [
+    -1404.4448447064913,
+    -1383.8807237382855,
+    -1259.603786083909
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    1383.8807237382855,
+    1404.4448447064913,
+    1259.603786083909
+   ],
+   "ties": []
+  },
+  "TSO|2031|Winter": {
+   "permutation_new_index_takes_original": [
+    0,
+    2,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -1796.6630399710943,
+    -1606.7833369961375,
+    -1661.2039121307334
+   ],
+   "net_demand_MWh_new_order": [
+    -1796.6630399710943,
+    -1661.2039121307334,
+    -1606.7833369961375
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    1796.6630399710943,
+    1606.7833369961375,
+    1661.2039121307334
+   ],
+   "ties": []
+  },
+  "TSO|2034|Autumn": {
+   "permutation_new_index_takes_original": [
+    0,
+    1,
+    2
+   ],
+   "identity": true,
+   "net_demand_MWh_original_order": [
+    -1838.041860602194,
+    -1681.2946355525378,
+    -1622.8813653106863
+   ],
+   "net_demand_MWh_new_order": [
+    -1838.041860602194,
+    -1681.2946355525378,
+    -1622.8813653106863
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    1838.041860602194,
+    1681.2946355525378,
+    1622.8813653106863
+   ],
+   "ties": []
+  },
+  "TSO|2034|Spring": {
+   "permutation_new_index_takes_original": [
+    2,
+    1,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -1252.6992616146247,
+    -1254.4947767135482,
+    -1261.3785603752847
+   ],
+   "net_demand_MWh_new_order": [
+    -1261.3785603752847,
+    -1254.4947767135482,
+    -1252.6992616146247
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    1252.6992616146247,
+    1254.4947767135482,
+    1261.3785603752847
+   ],
+   "ties": []
+  },
+  "TSO|2034|Summer": {
+   "permutation_new_index_takes_original": [
+    2,
+    1,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -1253.506601329392,
+    -1254.5488272737691,
+    -1422.3382024945008
+   ],
+   "net_demand_MWh_new_order": [
+    -1422.3382024945008,
+    -1254.5488272737691,
+    -1253.506601329392
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    1253.506601329392,
+    1254.5488272737691,
+    1422.3382024945008
+   ],
+   "ties": []
+  },
+  "TSO|2034|Winter": {
+   "permutation_new_index_takes_original": [
+    2,
+    1,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -1652.164606069726,
+    -1737.878888410882,
+    -1738.5977086067505
+   ],
+   "net_demand_MWh_new_order": [
+    -1738.5977086067505,
+    -1737.878888410882,
+    -1652.164606069726
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    1652.164606069726,
+    1737.878888410882,
+    1738.5977086067505
+   ],
+   "ties": []
+  },
+  "TSO|2037|Autumn": {
+   "permutation_new_index_takes_original": [
+    1,
+    2,
+    0
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -1667.6264687044477,
+    -2148.213767003354,
+    -1732.251820138535
+   ],
+   "net_demand_MWh_new_order": [
+    -2148.213767003354,
+    -1732.251820138535,
+    -1667.6264687044477
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    1667.6264687044477,
+    2148.213767003354,
+    1732.251820138535
+   ],
+   "ties": []
+  },
+  "TSO|2037|Spring": {
+   "permutation_new_index_takes_original": [
+    1,
+    0,
+    2
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -1518.5986396408928,
+    -1547.9119541024722,
+    -1516.7257310725681
+   ],
+   "net_demand_MWh_new_order": [
+    -1547.9119541024722,
+    -1518.5986396408928,
+    -1516.7257310725681
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    1518.5986396408928,
+    1547.9119541024722,
+    1516.7257310725681
+   ],
+   "ties": []
+  },
+  "TSO|2037|Summer": {
+   "permutation_new_index_takes_original": [
+    2,
+    0,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -1652.1748925202942,
+    -1541.6567575860572,
+    -1685.8622376436158
+   ],
+   "net_demand_MWh_new_order": [
+    -1685.8622376436158,
+    -1652.1748925202942,
+    -1541.6567575860572
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    1652.1748925202942,
+    1541.6567575860572,
+    1685.8622376436158
+   ],
+   "ties": []
+  },
+  "TSO|2037|Winter": {
+   "permutation_new_index_takes_original": [
+    0,
+    2,
+    1
+   ],
+   "identity": false,
+   "net_demand_MWh_original_order": [
+    -2002.0648465665315,
+    -1825.632699566224,
+    -1983.7579861714307
+   ],
+   "net_demand_MWh_new_order": [
+    -2002.0648465665315,
+    -1983.7579861714307,
+    -1825.632699566224
+   ],
+   "load_MWh_original_order": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "res_MWh_original_order": [
+    2002.0648465665315,
+    1825.632699566224,
+    1983.7579861714307
+   ],
+   "ties": []
+  }
+ }
+}

@@ -1,0 +1,195 @@
+{
+ "schema": "p515_s53_row18_structural_spec_v3",
+ "stage": "P5.15 Addendum 40 ruling 2, Planner task W57 -- v3 re-freeze after the r5 zero-solve checks (B vacuous, C2 +1): C2 corrected, check B made non-vacuous on an EMULATED loaded solution, a bounded production body check at activation, the .nl probe widened to every 2 x 2 DSO block (r2), bitwise-gate presence checks extended (written, not run)",
+ "authority": [
+  "Planner task W57 (2026-09-24): rulings on W56 Q1 (re-freeze as v3 with the corrected C2 delta; v2 not edited; the v2 C2 failure stays on the record) and Q2 (option (a): emulate a loaded solution); authorised items 1-4",
+  "Planner task W56 (2026-09-24)",
+  "Planner task W54 (2026-09-24)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 40 ruling 2"
+ ],
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S53/row18_structural/frozen_s53_row18_structural_spec_v2_5123e67b.json",
+  "sha256": "5123e67bd9643ff2037977def18ce3e12aaa1cd7de6d7ead4a2bae4f9ba7675f",
+  "relation": "v3 supersedes v2. v2 is left unmodified on disk and in git (committed at 6b28aadb). v2 governed the zero-solve checks r5 (committed at 7ccc2cf6); its predictions and their outcomes are recorded below, including the two that failed. v3 does not erase them.",
+  "supersession_note": "data/SRP1/Results/P515S53/row18_structural/SUPERSEDED_v2.md"
+ },
+ "lineage": {
+  "v1": {
+   "path": "data/SRP1/Results/P515S53/row18_structural/frozen_s53_row18_structural_spec_v1_05934ab0.json",
+   "sha256": "05934ab0803a6744a5f22106865baafa27eb46f76d4240adbbc53244aac7be04",
+   "governed": ".nl probe r1 (bf36d414)"
+  },
+  "v2": {
+   "path": "data/SRP1/Results/P515S53/row18_structural/frozen_s53_row18_structural_spec_v2_5123e67b.json",
+   "sha256": "5123e67bd9643ff2037977def18ce3e12aaa1cd7de6d7ead4a2bae4f9ba7675f",
+   "governed": "zero-solve checks r5 (7ccc2cf6)"
+  }
+ },
+ "amends": {
+  "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v23_39a07fd8.json",
+  "sha256": "39a07fd85bd02aaee0f4042d9a7b201cf4df9027191ff70d7939b124061f685c",
+  "key": "ruling2_init_fix",
+  "what_is_amended": "unchanged from v2: the MECHANISM only (structural inactivation); v23 is not modified"
+ },
+ "mechanism": {
+  "initialisation": "unchanged from v2 (shared_resources_planning._set_row18_inactive_for_initialisation)",
+  "activation": "unchanged from v2 (shared_resources_planning._activate_row18_with_settlement: refuse unless every index is in the initialisation state; per index minimal split up = max(e, 0), down = max(-e, 0), unfix, then activate) PLUS the W57 body check below",
+  "W57_body_check": {
+   "what": "after the activation loop, each defining row (row18_dev_p_def, row18_dev_q_def, every index) has its body evaluated ONCE by Pyomo from the model: residual = value(body) - value(upper); raise RuntimeError if not abs(residual) <= _ROW18_ACTIVATION_BODY_TOL (the \"not <=\" form also raises on NaN)",
+   "tolerance": {
+    "name": "_ROW18_ACTIVATION_BODY_TOL",
+    "value": 1e-09,
+    "unit": "per unit, absolute",
+    "basis": "after the minimal split the body is zero up to floating-point rounding of order eps * |flow| (~1e-14 at |flow| ~ 100 pu); any family-table/flow mismatch leaves a residual of the order of the flows"
+   },
+   "purpose": "catch a family-table/flow mismatch at runtime on every instance, including 3x3 and paper scale, where no harness runs",
+   "cost": "O(indices) = 2 n T body evaluations, once per activation (once per DSO block per ADMM start)",
+   "scope": "no other production line changes; a no-op where row 18 is not wired (returns before it), so SRP1 is untouched"
+  }
+ },
+ "v2_predictions_evaluated": {
+  "run": "p515_s53_init_fix_zero_solve_checks.py --label r5 at git HEAD 6b28aadb (clean tracked tree), frozen spec v2 5123e67b; SolveProfileGuard(permitted=()) (script) and the imported W39 module guard both verified at exactly 0 solves",
+  "evidence": {
+   "data/SRP1/Results/P515S53/init_fix_zero_solve_checks/r5/init_fix_zero_solve_checks.json": "0c910e67388bdf76bc78162374df39244f354aee909238b8591afd3c6793f249",
+   "data/SRP1/Results/P515S53/init_fix_zero_solve_checks/r5/manifest_sha256.json": "453c60acb68b3888d91656026603879521f4164d6c642f961caf75b3bb17cf14",
+   "data/SRP1/Results/P515S53/init_fix_zero_solve_checks_r5_launch.log": "bce829b66d5362929f96f60b3302d9796cf3e6d2f4d0e8e7897c9992b9914cf1",
+   "p515_s53_init_fix_zero_solve_checks.py (at 6b28aadb)": "1d6b2e5efac3cb744b886efae33d9cd5bf2cfd2124037985e47cfd8cfeebddd7",
+   "committed_at": "7ccc2cf6"
+  },
+  "outcomes": {
+   "A": "PASS -- 12 DSO blocks, 2304 row indices in the initialisation state",
+   "A2": "PASS -- but its activation phase was as vacuous as B (e == 0 at all 768 indices); A2 carried no non-vacuity requirement under v2",
+   "B": "FAILED -- every per-index activation assertion held, but the declared non-vacuity requirement failed: e = value(flow) - value(expectation) == 0.0 at all 2304 indices (stubbed solves load no solution; expected_interface_pf_* initialise at 0.0 and the reference-generator flow evaluates to 0 at build values), so the minimal-split assertion tested nothing",
+   "C": "PASS",
+   "C2": "FAILED -- every predicted delta held EXCEPT n_expression_data: observed +1 at initialisation and after activation on all 12 blocks; v2 predicted +0",
+   "D": "PASS",
+   "E": "PASS",
+   "F": "PASS"
+  },
+  "these_outcomes_stand": "the two failures stay on the record as failed predictions; v3 explains them below and re-declares, it does not overwrite"
+ },
+ "ruling_Q1_C2": {
+  "ruling": "Planner W57: re-freeze as v3 with the corrected delta",
+  "explanation": "row18_deviation_charge is a SCALAR pe.Expression built by add_scenario_commitment_terms, so a wired block has exactly one more Expression data object than the alpha = 0 block, in both phases (activation adds no Expression). v2 predicted +0: a spec error, not a code defect.",
+  "corrected_prediction": "C2: n_expression_data +1 at initialisation AND after activation (every other C2 delta unchanged from v2)",
+  "W51_r4_note": "W51 r4 (cc1ca8f8, init_fix_zero_solve_checks/r4, json sha256 3253fd88...) would have had the same +1 -- row18_deviation_charge is in r4 C2 components_extra_at_alpha_run -- and never showed it, because r4 C2 compared only var_delta and active_row_delta (n_var_data and n_constraint_data_active). This is an inference from r4 structure; r4 did not record the alpha = 0 Expression count, so it cannot be re-read from r4."
+ },
+ "ruling_Q2_B_vacuity": {
+  "ruling": "Planner W57: option (a) -- emulate a loaded solution (zero solves)",
+  "reason_recorded": "the minimal-split path has never been exercised with e != 0, and the SRP1 bitwise gate runs at ONE scenario, where row 18 is not wired, so the gate does not reach this code at all. Deferring to a solve-bearing test would mean the alpha row is read off results produced by an unexercised warm-start path.",
+  "nature": "EMULATED solution, NOT a solve. The emulated point is not feasible; it only makes e non-zero."
+ },
+ "zero_solve_checks_r6": {
+  "script": "p515_s53_init_fix_zero_solve_checks.py (schema p515_s53_init_fix_zero_solve_checks_v3)",
+  "label": "r6 (r4 W51 committed, r5 W56 committed, r1-r3 W51 abandoned and left in place -- none reused)",
+  "guard": "SolveProfileGuard(permitted=()) installed before any production import and verified at exactly 0; the imported W39 checks module guard verified at exactly 0 too",
+  "unchanged_from_v2": "A, C, D, E, F and every per-index assertion of v2 (initialisation and activation), except where amended below",
+  "emulated_loaded_solution": {
+   "applies_to": "B (every 2 x 2 DSO block of the A run, block ordinal b = 0..11 in node/year/day order) and A2 (its one node, b = 0..3), immediately BEFORE _prepare_distribution_objectives_for_admm",
+   "function": "emulate_loaded_solution(block, network, ordinal) in the script",
+   "formula": {
+    "indices": "f = 0 for P (row18_dev_p_def), 1 for Q (row18_dev_q_def); k = position of the index in the defining row own iteration order, 0..N-1, N = n T",
+    "target_e": "sign * (EMU_MAG_BASE + EMU_MAG_STEP * ((2 b + f) N + k)), sign = -1 iff (k + f + b) % EMU_NEG_EVERY == 0, else +1",
+    "expectation": "expected_interface_pf_{p,q}[t] = a_f + c_f * t_ordinal + d_f * b, (a_f, c_f, d_f) = EMU_EXPECTATION[f]",
+    "flow": "the reference generator's pg (P) / qg (Q) [network.get_reference_gen_idx(), s_m, s_o, t] is shifted so value(pg_adn|qg_adn) - value(expectation) == target; the achieved e is read back from the model per index and must equal the target within TOL_EMULATION_ABS (a wrong Var or coefficient fails here)",
+    "not_done": "bounds are not respected, no other Var is touched, nothing is solved"
+   }
+  },
+  "declared_constants": {
+   "EMU_MAG_BASE": 0.01,
+   "EMU_MAG_STEP": 0.0001,
+   "EMU_NEG_EVERY": 3,
+   "EMU_EXPECTATION": [
+    [
+     0.2,
+     0.003,
+     0.0005
+    ],
+    [
+     -0.07,
+     -0.002,
+     -0.0003
+    ]
+   ],
+   "TOL_EMULATION_ABS": 1e-12,
+   "TOL_BODY_ABS": 1e-12,
+   "MIN_SIGN_SHARE": 0.25,
+   "MIN_MAG_GAP": 5e-05,
+   "PRODUCTION_BODY_TOL_DECLARED": 1e-09
+  },
+  "asserted_per_index_after_activation_B_and_A2": [
+   "row active; pair unfixed; no index with a fixed pair and an active row (unchanged)",
+   "up == max(e, 0) and down == max(-e, 0) EXACTLY, e recomputed by the harness from the block own flow/expectation values via its own family table (unchanged)",
+   "|value(body) - value(upper)| <= TOL_BODY_ABS for the defining row, the body evaluated by Pyomo FROM THE MODEL, not from the recomputed e -- this cross-validates the family table against the actual rows (v2 required == 0.0 exactly; amended to a declared tolerance per the W57 task; whether it is exactly 0.0 is recorded, not predicted)"
+  ],
+  "non_vacuity": {
+   "applies_to": "B and (new in v3) A2; the check FAILS if any item is not met",
+   "items": [
+    "in every (block, family): share of indices with e > 0 >= MIN_SIGN_SHARE, share with e < 0 >= MIN_SIGN_SHARE, and no index with e == 0",
+    "in every block: all 2N |e| values (both families) pairwise distinct, minimum gap between sorted values >= MIN_MAG_GAP",
+    "over the run: all |e| values distinct, minimum gap >= MIN_MAG_GAP",
+    "the emulation achieved every target within TOL_EMULATION_ABS"
+   ]
+  },
+  "negative_control_production_body_check": {
+   "where": "A2, after its activation assertions are recorded, on its first (year, day) block",
+   "what": "reset the block with production's own _set_row18_inactive_for_initialisation; replace shared_resources_planning._ROW18_DEVIATION_FAMILIES for ONE call by a table whose flow and expectation names are swapped between the P and Q families; call _activate_row18_with_settlement; restore the table in finally",
+   "prediction": "production raises RuntimeError from the W57 body check (message contains 'defining-row body'); the table is restored"
+  },
+  "predictions_recorded_before_run": {
+   "all_checks": "A, A2, B, C, C2, D, E, F all PASS; all_checks_pass true; both guards verified at exactly 0 solves",
+   "B_sign_counts": "per (block, family) 64 e > 0, 32 e < 0, 0 e == 0 (N = 96); totals over 12 blocks x 2 families: 1536 / 768 / 0",
+   "A2_sign_counts": "per (block, family) 64 / 32 / 0; totals over 4 blocks x 2 families: 512 / 256 / 0",
+   "B_magnitude_range": "|e| in [0.0100, 0.2403] per unit (global ordinal 0..2303), all 2304 distinct, gap 1e-4 by construction",
+   "A2_magnitude_range": "|e| in [0.0100, 0.0867] per unit (global ordinal 0..767)",
+   "body_residuals": "<= 1e-12 at every index of every block (B: 2304, A2: 768); exact zero not predicted",
+   "production_body_check": "does not raise on the correct table in B or A2 (prepare completes); raises on the swapped table (negative control)",
+   "C": "unchanged from v2 (names identical; n_constraint_data_active +2nT, n_var_data_unfixed +4nT, everything else +0 across phases)",
+   "C2": "as v2 EXCEPT n_expression_data +1 in both phases (ruling_Q1_C2)",
+   "B_unit_steps": "unchanged from v2 (24 steps, charge rel tol 1e-12, objective rel tol 1e-9), now evaluated at the emulated point"
+  },
+  "instances": "unchanged from v2: 2 x 2 = derive_case(srp1, {years {2025: 5}, 2 market, 2 operation}); 1 x 1 = derive_case(srp1, {})"
+ },
+ "nl_probe_r2": {
+  "script": "p515_s53_row18_structural_nl_probe.py (schema p515_s53_row18_structural_nl_probe_v2; the r1 version, sha256 a15cfaef..., is in git at d573e145)",
+  "label": "r2 (r1 is cited in a Planner report and is never re-run onto; the output directory is write-once)",
+  "guard": "SolveProfileGuard(permitted=()) armed for the whole run, verified at exactly 0",
+  "instance": "derive_case(srp1, {years {2025: 5}, 2 market, 2 operation}); n = 4, T = 24 on every block",
+  "blocks_declared": [
+   "DSO:5:2025:Spring",
+   "DSO:5:2025:Summer",
+   "DSO:5:2025:Autumn",
+   "DSO:5:2025:Winter",
+   "DSO:7:2025:Spring",
+   "DSO:7:2025:Summer",
+   "DSO:7:2025:Autumn",
+   "DSO:7:2025:Winter",
+   "DSO:9:2025:Spring",
+   "DSO:9:2025:Summer",
+   "DSO:9:2025:Autumn",
+   "DSO:9:2025:Winter"
+  ],
+  "why_these": "W57: r1 showed P1 on ONE block (DSO:5:2025:Spring). The task requires at least one additional node and one additional day; r2 takes EVERY DSO block of the 2 x 2 instance (3 nodes x 4 days), the declared list asserted against the instance before any build",
+  "arms": {
+   "A": "alpha = 0 build (row 18 not constructed)",
+   "A_repeat": "determinism control, second alpha = 0 build",
+   "B": "alpha = 0.5, production structural initialisation",
+   "C": "alpha = 0.5, W51's Param-only function from git 7a98b25e",
+   "D": "NEGATIVE CONTROL, alpha = 0.5, deviation pairs fixed at 0 with rows ACTIVE (probe-local)"
+  },
+  "writer": "block.write(path, format='nl', io_options={'symbolic_solver_labels': off|on}) -- production's writer path (v2 presolve_finding)",
+  "predictions_per_block": {
+   "P0": "sha256(A) == sha256(A_repeat), both label settings, .row/.col identical",
+   "P1": "sha256(A) == sha256(B) EXACTLY, both label settings, .row/.col identical -- on EVERY declared block; if false on ANY block: STOP and report (Planner W57)",
+   "P2": "C - A = +4nT = +384 columns and +2nT = +192 rows; extra .col names exactly row18_dev_{p,q}_{up,down} (96 each), extra .row names exactly row18_dev_{p,q}_def (96 each), nothing missing",
+   "P3": "D has the SAME column count as A with an identical .col file, and +2nT = +192 rows, the extra .row names exactly row18_dev_{p,q}_def (96 each), nothing missing -- v2's restated P3, recorded here BEFORE r2, so at r2 it is a genuine prediction (on the r1 block it is a re-observation)",
+   "P4": "block DSO:5:2025:Spring only: A and B reproduce r1 exactly -- labels off nl a65a93ff3c49f0e1...; labels on nl 8379c362fb5e261d..., .row 59af856a5034545b..., .col a12d53c2cd24bcb6... (full hashes in the script, R1_HASHES) -- the build path is unchanged since r1 (W57 touches activation only)"
+  }
+ },
+ "srp1_bitwise_gate": {
+  "script": "p515_s53_srp1_bitwise_gate.py",
+  "W57_update": "w51_code_presence: the 19 W56 checks unchanged (all still true on the live module after the body check); ADDED activate_checks_defining_row_bodies_after_activation (ordered: row[index].activate() -> body residual -> tolerance test -> error message) and activation_body_tolerance_as_declared (_ROW18_ACTIVATION_BODY_TOL == 1e-9). Nothing else changed.",
+  "status": "WRITTEN, NOT RUN (Planner W57: the F2 campaign is live in the main checkout)"
+ },
+ "not_permitted": "no solves of any kind; no edits to model_construction_helpers.py, the uncoordinated benchmark or any TSO path; p515_s51_row18_zero_solve_checks.py and p515_s51_single_block_ab.py unmodified; no campaign harness run; the SRP1 bitwise gate is NOT run"
+}

@@ -1,0 +1,480 @@
+{
+ "R_eur": 10000.0,
+ "admm_configuration": {
+  "alpha": 0.0,
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "candidate": "x0 {5: (0, 0), 7: (0, 0), 9: (0, 0)}",
+  "cap": 300,
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "convergence_depth_tail": {
+   "compl_inf_tol": 1e-06,
+   "enabled": true
+  },
+  "coupling": {
+   "per_scenario_interface_coupling": true,
+   "per_scenario_voltage_mode": "per_scenario",
+   "row18_charge_reactive": false
+  },
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ess_params_file": {
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "investment_year": 2025,
+  "p58_rescale": "p58_rescale.patched_admm_objectives around the run (as G.run_admm_arm applies it)",
+  "premium": null,
+  "required_consecutive_cycles": 10,
+  "sigma_fixed_expected": 93635360.0,
+  "source": "p515_s56_coupling_gates.py literals (AST) + p515_s44_campaign_harness._config_hook_factory (the G-f / step 4 build configuration)",
+  "thread_caps_in_child_env": {
+   "MKL_NUM_THREADS": "1",
+   "NUMEXPR_NUM_THREADS": "1",
+   "OMP_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": "1",
+   "VECLIB_MAXIMUM_THREADS": "1"
+  }
+ },
+ "allowance_definition": "(R/4) w_b / sum_12 w (12-block weights), EUR of total discounted planning cost",
+ "authority": [
+  "S56_PLAN_v3.md section 7 rows 3-4",
+  "TASKS.md S56 section (Planner rulings recorded at fc5dc766)",
+  "S56_STEP4_DESIGN.md decision 8 (D-1, D-2, D-3)",
+  "Planner task 2026-11-23: step 3 completion and the step 4 pre-run diagnostics under ONE frozen spec; rulings 1 (reproduction solves, every solve saves its primal values), 2 (instance B), 3 (2025|Summer in the comparator)"
+ ],
+ "blocks": {
+  "2025|Summer": {
+   "allowance_eur": 228.6388788256071,
+   "instance": "B",
+   "roles": [
+    "S3-2",
+    "D-3"
+   ],
+   "w_b": 455.0
+  },
+  "2025|Winter": {
+   "allowance_eur": 228.6388788256071,
+   "instance": "A",
+   "roles": [
+    "S3-R",
+    "S3-1",
+    "D-3",
+    "D-1",
+    "D-2"
+   ],
+   "w_b": 455.0
+  },
+  "2035|Summer": {
+   "allowance_eur": 187.5635155299484,
+   "instance": "B",
+   "roles": [
+    "S3-R",
+    "D-3",
+    "D-1",
+    "D-2"
+   ],
+   "w_b": 373.2584764431956
+  }
+ },
+ "capture": {
+  "every_solve": [
+   "status",
+   "termination",
+   "IPOPT exit",
+   "iterations",
+   "mu_final",
+   "floor status",
+   "compl_inf_tol in force",
+   "wall",
+   "RSS",
+   "objective",
+   "primal values file + sha256"
+  ],
+  "run": [
+   "guard counts per process and site",
+   "pickle 0/0",
+   "RSS per process",
+   "wall",
+   "stdout and stderr of every process"
+  ]
+ },
+ "d1": {
+  "active_bound_definition": "free Var with finite bound and |value - bound| <= tol (model units); active inequality row with |body - bound| <= tol",
+  "active_bound_tol": 1e-06,
+  "central_solution": "the block's single-scenario solutions (C_central = sum_s omega_s C_s): interface P_mw / Q_mvar / V_pu per scenario and DN (step 3 interface capture)",
+  "depths": {
+   "production": "compl_inf_tol of each holder as captured by production _capture_convergence_depth_tail_baseline (TSO case file 5e-4; DSO not set -> IPOPT default)",
+   "tail": "admm.convergence_depth_tail[compl_inf_tol] (declared 1e-6), via _apply_convergence_depth_tail(active=True), restored after"
+  },
+  "fix": {
+   "DSO": "pg/qg[reference generator, s, t] fixed at P_s / s_base + shared-ESS term (0 at x0, checked); vmag[reference node, s, t] fixed at V_s",
+   "TSO": "interface_delta_p/q[dn, s, t] fixed at P_s / s_base - pc[adn load, s, t] (pc fixed by production at the DSO initial expectation); vmag[ADN bus, s, t] fixed at V_s"
+  },
+  "offset": "sum over the TSO and 3 DSO blocks of production _get_operational_recourse_block_components (w_b x (get_primal_value - settlement total - pin)) - w_b x C_central; EUR of total discounted cost",
+  "order": "DSO5, DSO7, DSO9, TSO at production depth; then the same at tail depth"
+ },
+ "d2": {
+  "component": "s56_d2_hard_pin (added in this diagnostic only; no production change)",
+  "objective": "model.objective (gross, as step 3)",
+  "pin_rows": "vmag_sqr[TN_<dn>, s_m, s_o, t] == vmag_sqr[TN_<dn>, 0, 0, t] for every (s_m, s_o) != (0, 0), DN 5, 7, 9, every hour (8 x 24 x 3 = 576 rows)"
+ },
+ "d3": {
+  "bound_tol_note": "a value is OUTSIDE its box when it exceeds the bound by more than 1e-8 x max(1, |bound|): IPOPT's default bound_relax_factor (not overridden in the step 3 options), under which the central solutions were computed; the strict count is reported beside it. Chosen after a zero-solve draft trial (scratch, before freezing) showed strict margins of -1.9e-10 pu on run_v1's 2035|Summer singles (V at the 1.1 pu limit)",
+  "bound_tol_rel": 1e-08,
+  "code_read": [
+   "shared_resources_planning.create_transmission_network_model (ADN-bus voltage slacks fixed 0; ADN load pc/qc bounds removed and fixed at the DSO initial expectation; ADN flexibility legs fixed 0; alias interface_delta freed within +-rating)",
+   "model_construction_helpers.interface_pf_p/q_transmission_def (pc/qc_curt fixed at EQUALITY_TOLERANCE under l_curt)",
+   "shared_resources_planning._wire_per_scenario_interface_coupling (every interface_delta copy freed within +-rating at the alias value; deviation Params and terms, no bound)",
+   "shared_resources_planning.create_distribution_networks_models_sequential (expected interface Vars, expected_interface_vmag NonNegativeReals)",
+   "shared_resources_planning.update_transmission_model_to_admm / update_distribution_models_to_admm (Params and objective terms)",
+   "centralized_coordination.combine_networks (the merge drops the DN reference generators -- their P/Q limits exist only in the DSO models -- and the DN reference node -- its V limits and slack exist only in the DSO models)",
+   "model_construction_helpers.vmag_bounds / vmag_sqr_bounds / voltage_magnitude_*_cons_rule"
+  ],
+  "interface_boxes": "per block, DN, scenario, hour: TSO P and Q box [pc + lb(delta), pc + ub(delta)] x s_base; TSO V box = vmag bounds n sqrt(vmag_sqr bounds) n ([v_min, v_max] when the voltage slacks at the ADN bus are fixed at 0); DSO P / Q = reference-generator pg / qg bounds x s_base; DSO V = vmag / vmag_sqr bounds at the reference node n ([v_min, v_max] when its voltage slacks are fixed or absent)",
+  "programmatic": "per ADMM-prepared block (after the initialisation round): every Var data object compared by name with a plain build of the same network (NetworkData.build_model + update_model_with_candidate_solution with the run candidate): (lb, ub, fixed, fixed value); Var and Constraint components present only in the ADMM block; constraint rows whose active state differs"
+ },
+ "failure_policy": "Failure of any prediction is recorded, never re-run or tuned (D-1 failures are explicitly NOT a stop; an infeasible local problem is reported, it points to H4). A reproduction-gate failure is recorded and the reproduced solution is used anyway. A guard-count mismatch or a harness exception is a harness fault: recorded, and the run stops for the Planner.",
+ "instance_12_block": {
+  "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+  "label": "s56_srp1grid_3x3",
+  "plan": "x = 0 (no storage; combine_networks empties the shared ESS)",
+  "reader": "p515_s44_scale_measurement.read_planning_from_derived_case",
+  "scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+  "scenarios": "3 market x 3 operation, omega_s = p_m * p_o"
+ },
+ "instances": {
+  "A": {
+   "blocks": [
+    "2025|Winter"
+   ],
+   "d1_block": "2025|Winter",
+   "derived_instance": {
+    "case_path": "data/SRP1/Results/P515S56/step4_instances_v1/SRP1__s56_step4_2025_Winter.json",
+    "case_sha256": "92e6283bdb1dafcb328ec951095ebf2173d314754e7f946c0c2210694ca7537e",
+    "changes_vs_source": [
+     {
+      "from": {
+       "2025": 5,
+       "2030": 5,
+       "2035": 5
+      },
+      "key": "Years",
+      "to": {
+       "2025": 5
+      }
+     },
+     {
+      "from": {
+       "Autumn": 91,
+       "Spring": 92,
+       "Summer": 91,
+       "Winter": 91
+      },
+      "key": "Days",
+      "to": {
+       "Winter": 91
+      }
+     }
+    ],
+    "instance_label": "s56_step4_2025_Winter",
+    "scenario_checksum": "58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e",
+    "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+    "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+   },
+   "record": {
+    "path": "data/SRP1/Results/P515S56/step4_instances_v1/step4_instances.json",
+    "sha256": "2d95b73d30b4572abb0459efa0b817866142473038c0d50db20c2dd16d95d425"
+   }
+  },
+  "B": {
+   "blocks": [
+    "2025|Summer",
+    "2035|Summer"
+   ],
+   "d1_block": "2035|Summer",
+   "derived_instance": {
+    "case_path": "data/SRP1/Results/P515S56/step4_instances_v2/SRP1__s56_step4_2025_2035_Summer.json",
+    "case_sha256": "b1cd5440e70fb8cde8694b12f9e897037dcb072c4551fe97753e3785a1b6a00c",
+    "changes_vs_source": [
+     {
+      "from": {
+       "2025": 5,
+       "2030": 5,
+       "2035": 5
+      },
+      "key": "Years",
+      "to": {
+       "2025": 5,
+       "2035": 5
+      }
+     },
+     {
+      "from": {
+       "Autumn": 91,
+       "Spring": 92,
+       "Summer": 91,
+       "Winter": 91
+      },
+      "key": "Days",
+      "to": {
+       "Summer": 91
+      }
+     }
+    ],
+    "instance_label": "s56_step4_2025_2035_Summer",
+    "scenario_checksum": "ade7456c3d110e4cbc9aec7f701feb431854bd03ec1dc8f37601fc164721ed1a",
+    "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+    "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+   },
+   "gates_G1_G5": {
+    "2025|Summer": {
+     "G1_data_bitwise": true,
+     "G2_weight_ratio": 1.0,
+     "G3_sigma_proxy_verdict": "not available zero-solve (the block has no step 3 run_v1 solve); settled only by the initialisation round",
+     "G4_accepted": true,
+     "G4_default_investment_year_accepted": true,
+     "G5_effective_scales_equal": true,
+     "G5_nl_identical_up_to_scale": true,
+     "allowance_eur": 228.6388788256071
+    },
+    "2035|Summer": {
+     "G1_data_bitwise": true,
+     "G2_weight_ratio": 1.0,
+     "G3_sigma_proxy_verdict": "indeterminate zero-solve (the proxies straddle a window bound); settled only by the initialisation round",
+     "G4_accepted": true,
+     "G4_default_investment_year_accepted": true,
+     "G5_effective_scales_equal": true,
+     "G5_nl_identical_up_to_scale": true,
+     "allowance_eur": 187.5635155299484
+    }
+   },
+   "record": {
+    "path": "data/SRP1/Results/P515S56/step4_instances_v2/step4_instance_b.json",
+    "sha256": "94e3c5ab6489c611207782ae40f4efe38f8f3383f87512c0db47bf4768b6a70d"
+   }
+  },
+  "retired": {
+   "note": "2035-only instance: failed G1 (growth from years[0]); kept, not used",
+   "path": "data/SRP1/Results/P515S56/step4_instances_v1/SRP1__s56_step4_2035_Summer.json"
+  }
+ },
+ "launcher": "p515_s56_step4_diag.py",
+ "not_permitted": [
+  "production edits",
+  "formulation changes",
+  "any solve not declared",
+  "overwriting committed artifacts",
+  "concurrent or detached runs",
+  "any ADMM cycle",
+  "step 4 smoke"
+ ],
+ "objective_convention": "C values gross (step 3: model.objective, settlement weight 0, no row 18, no pin, no salvage, EUR/representative day); D-1 values in EUR of total discounted cost, settlement excluded in full, pin excluded, salvage separate; Delta_pin and D-1 offsets also stated weighted (w_b) against the allowance",
+ "output": "data/SRP1/Results/P515S56/step4_diag_v1/run_v1",
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S56/step3_central_v1/frozen_step3_central_spec_v1_4017dc70.json",
+  "relation": "step 3 spec v1 (run_v1); this spec adds the reproduction, the single-02 solve, the 2025|Summer comparator and the step 4 diagnostics",
+  "sha256": "4017dc70fba8a4d6bbfbb9b2441f00f88515cd8d564f690d8a86d09cd1e8a23e"
+ },
+ "predictions": {
+  "D1a": "D-1: production-depth |offset| >= allowance (H2).",
+  "D1b": "D-1: tail-depth |offset| <= allowance / 3.",
+  "D2": "D-2: Delta_pin >= -0.04 EUR/day (reported weighted against the allowance).",
+  "D3_boxes": "D-3: every value is inside its box (each block's C_central interface values against every ADMM-only bound). The minimum margin per block is reported.",
+  "D3_sigma": "D-3: the sigma assert passes on both instances (for B this settles G3).",
+  "P2v2": "S3-1: the 2025|Winter single-02 solve is Optimal.",
+  "P3v2": "S3-1: objective = merged scenario-02 term (171,052.349 EUR) minus an offset in [0.030, 0.040] EUR.",
+  "S3R_gate": "Reproduction (ruling 1): each reproduced merged objective is bitwise equal to run_v1 (175,188.7137093924 and 153,017.2487446982), and every per-scenario interface P, Q and V equals the run_v1 value. If either gate fails, it is recorded and the reproduced solution is used anyway, with the difference stated.",
+  "S3_2": "S3-2 (2025|Summer comparator, 11 solves): all Optimal; P3 and P4 as in run_v1 (relative 1e-6 for the warm-started merged, 1e-5 for the default-start merged, against sum_s omega_s C_s)."
+ },
+ "predictions_operational": {
+  "D1a": "|offset_production| >= allowance_b, per block (2025|Winter 228.64, 2035|Summer 187.56 EUR)",
+  "D1b": "|offset_tail| <= allowance_b / 3, per block",
+  "D2": "Delta_pin = C_hardpin - C_central >= -0.04 EUR per representative day, per block",
+  "D3_boxes": "per block, per (side, kind, DN, scenario, hour): margin = min(value - lower, upper - value); a value is outside when -margin > 1e-8 x max(1, |bound|) (d3.bound_tol_rel, IPOPT default bound_relax_factor); held iff no value outside on any of the 3 blocks; the strict count (any negative margin) is reported beside it",
+  "D3_sigma": "the initialisation round reaches the sentinel (no exception) and the recorded ratio sigma_computed / sigma_fixed lies in [1/f, f] (f = objective_scale_assert_factor as read), on A and on B",
+  "P2v2": "solution loaded (solver_result_succeeded), termination 'optimal', IPOPT exit 'Optimal Solution Found.'",
+  "P3v2": "offset = 171052.34899059896 (run_v1 merged_default per_scenario[02].objective_per_scenario) - single 02 objective; 0.030 <= offset <= 0.040",
+  "S3R_gate": "per block: float(reproduced merged_default objective) == run_v1 merged_default objective (==, not a tolerance); for every scenario key, DN and kind in (P_mw, Q_mvar, V_pu) the 24-value list equals run_v1 merged_default.interface element-wise (==). Recorded: float.hex of both, max |diff| per kind",
+  "S3_2": "11/11 optimal (P2 operational definition of spec v1); |warm - sum| / |sum| <= 1e-6; |default - sum| / |sum| <= 1e-5"
+ },
+ "recovery": {
+  "D-1": "off (TSO and DSO holders, set after the initialisation round)",
+  "D-3 init round": "production setting (unchanged)",
+  "S3-R, S3-1, S3-2, D-2": "off (step 3 configure)"
+ },
+ "run_v1_results": {
+  "merged_02_term_2025_Winter": 171052.34899059896,
+  "merged_default_objective": {
+   "2025|Winter": 175188.7137093924,
+   "2035|Summer": 153017.2487446982
+  },
+  "merged_default_objective_hex": {
+   "2025|Winter": "0x1.562a5b5ad451ap+17",
+   "2035|Summer": "0x1.2adc9fd6ddc3fp+17"
+  },
+  "path": "data/SRP1/Results/P515S56/step3_central_v1/run_v1/central_ms_x0_results.json",
+  "sha256": "724b764385b323d51251fca5a5c40ccc6f4b204ea8188b4ec952125544467c9f"
+ },
+ "solves": {
+  "child_A": {
+   "D-1": 8,
+   "D-3 init": 7,
+   "sites": {
+    "_d1_solve": 8,
+    "_init_round": 7
+   },
+   "total": 15
+  },
+  "child_B": {
+   "D-1": 8,
+   "D-3 init": 11,
+   "sites": {
+    "_d1_solve": 8,
+    "_init_round": 11
+   },
+   "total": 19
+  },
+  "derivation_from_code": "init round: create_distribution_networks_models_sequential -> NetworkData.optimize: one Network.run_smopf per (year, day) per DSO (3 DSOs); create_transmission_network_model -> one run_smopf per block; create_shared_energy_storage_model -> SharedEnergyStorageData.optimize: one _optimize per active node (5, 7, 9); shared_ess_initialization standalone (no price-taker solve); A: 1 block -> 3 + 1 + 3 = 7; B: 2 blocks -> 6 + 2 + 3 = 11. A production recovery attempt (enabled in the init round, as in production) would raise the count: the guard then fails loudly. D-1: 4 models x 2 depths, recovery off. Parent: one run_smopf each through the step 3 harness _solve_one.",
+  "parent": {
+   "D-2": 2,
+   "S3-1": 1,
+   "S3-2": 11,
+   "S3-R": 2,
+   "also_counted_by": "the step 3 harness guard (its _solve_one), 16",
+   "site": "_solve_declared",
+   "total": 16
+  },
+  "total": 50
+ },
+ "stage": "P5.15 S56 step 3 completion (v2: reproduction, single 02, 2025|Summer comparator) and step 4 pre-run diagnostics D-1, D-2, D-3 (frozen spec v2)",
+ "starts": {
+  "D-1": "the ADMM-prepared models as the initialisation round left them (init solution + its multipliers), interface copies fixed; production depth with from_warm_start=True; tail depth warm-started (from_warm_start=True) from the production-depth solve",
+  "D-2": "freshly built merged model + hard-pin rows; every free Var from the S3-R saved primal file (by name); no duals; from_warm_start=False",
+  "S3-1": "single-scenario model sliced (step 3 slice_network) to (0, 2); every free Var set from the reproduced merged model at the same index with scenario (0, 2) (scenario positions read from the declarations); no duals; from_warm_start=False",
+  "S3-2": "run_v1 design via step 3 phase_b: merged default; singles 00..22 default; merged warm from singles",
+  "S3-R": "freshly built merged model (run_v1 build), production initialisers, from_warm_start=False"
+ },
+ "step3_harness": {
+  "path": "p515_s56_central_ms_x0.py",
+  "pinned_by_v1_spec": "e2205575bbe7e95c3d216ad2016ffae79859df93027ae53c4904b01d06480f4f",
+  "reused_functions": [
+   "build",
+   "configure",
+   "slice_network",
+   "capture_solution",
+   "costs",
+   "interface",
+   "max_violation",
+   "warm_map",
+   "component_positions",
+   "declared_positions",
+   "coupling_check",
+   "slice_identity_gate",
+   "random_point",
+   "relaxation_limits",
+   "block_weight",
+   "optimal",
+   "phase_b",
+   "_solve_one (wrapped)"
+  ],
+  "sha256": "e2205575bbe7e95c3d216ad2016ffae79859df93027ae53c4904b01d06480f4f"
+ },
+ "step3_v1_settings_reused": {
+  "objective_alignment": {
+   "set": {
+    "cost_load_curtailment": 300.0,
+    "penalty_gen_curtailment": 0.0,
+    "penalty_shared_ess_usage": 0.0
+   },
+   "source": "the values the ADMM path sets on every TSO and DSO block: shared_resources_planning._prepare_transmission_objectives_for_admm / _prepare_distribution_objectives_for_admm (penalty_shared_ess_usage 0, penalty_gen_curtailment 0, cost_load_curtailment COST_CONSUMPTION_CURTAILMENT = 300); interface_settlement_weight is NOT set (stays 0; see audit)"
+  },
+  "objective_convention": "gross: model.objective with interface_settlement_weight 0, no row 18 (alpha = 0), no voltage pin = generation + flexibility (P and Q down) + load-curtailment cost + slack terms (+ zero-weighted penalties); settlement excluded (none exists in the merged model); no terminal salvage (x = 0, no storage); EUR per representative day, probability-weighted over the 9 scenarios of the block. C_central(block) = sum_s omega_s C_s, C_s = single-scenario model.objective. The block weight in the planning sum (years[y] x days[d] / 1.02^(y - 2025), NetworkData.get_primal_value) is reported beside it, not applied.",
+  "pre_solve_gates": {
+   "applies_to": "both chosen blocks, before the first solve; any failure refuses the run with ZERO solves",
+   "list": [
+    "instance case sha256 == declaration",
+    "combined scenario checksum == declaration (73d0a230...)",
+    "probabilities, energy prices and flexibility prices identical across TN and every DN, every block",
+    "solver_params.verbose is False",
+    "block-choice premise: every TN conventional generator has P_min = 0",
+    "block choice recomputed == spec block_choice.result",
+    "per block: alpha = 0 (no row 18), no voltage pin, settlement weight 0 and value 0, no ADN / shared ESS",
+    "per block: 3 market x 3 operation scenarios",
+    "per block: no coupling -- every active constraint's free Vars carry one scenario label equal to its own index; no scenario-common or unresolvable Var/Constraint component",
+    "per block: slice identity at a seeded random point -- each of the 9 single models equals the merged model restricted to that scenario (constraint bodies, bounds, Var bounds and fixings, per-scenario objective expressions), and merged objective == sum omega single objective",
+    "every imported repo module committed clean; harness and spec committed clean; spec sha256 matches its name tag",
+    "capture checklist asserted before anything is read",
+    "no campaign lock, no other p5*.py python process, output directory absent, single-instance lock"
+   ],
+   "random_point_box": 2.0,
+   "random_point_seed": 20261123,
+   "slice_identity_rel_tol": 1e-12
+  },
+  "reported": {
+   "curtailment_threshold_mw": 0.1,
+   "per_solve": "termination condition, IPOPT exit text, iterations, wall time, peak RSS (sampled IPOPT child at 0.1 s and the exact running max ru_maxrss), objective and parts, max constraint violation, per-scenario interface P/Q/V per DN, curtailment",
+   "relaxations": "per DN: scenario-hours where the merged interface lies outside the dropped DN reference-generator P/Q limits, outside the DN reference-node voltage limits, or |P| above the interface rating R (the TSO's interface_delta box is +-R about its fixed pc in the ADMM path)",
+   "required": [
+    "status",
+    "iterations",
+    "wall_time",
+    "memory",
+    "C_gen_plus_flex",
+    "slack_terms",
+    "objective",
+    "per_scenario_costs",
+    "interface_per_scenario",
+    "curtailment_per_scenario",
+    "ipopt_final_summary",
+    "block_weight",
+    "relaxation_margins",
+    "instance_checksum"
+   ]
+  },
+  "solver": {
+   "attempts_per_solve": 1,
+   "call": "Network.run_smopf(model, params, from_warm_start=False) for every solve, through the harness's _solve_one",
+   "executable": "/usr/local/bin/ipopt (NLP_SOLVER_PATH, refused otherwise)",
+   "inherited_unchanged": "every other TN case-file option (acceptable_tol 1e-4, acceptable_iter 5, bound_push/frac 1e-6, slack_bound_push/frac 1e-6, output_file, file_print_level 6); production pins fixed_variable_treatment and max_iter 500",
+   "option_overrides": {
+    "compl_inf_tol": 1e-06,
+    "linear_solver": "ma97",
+    "tol": 1e-05
+   },
+   "recovery_enabled": false,
+   "recovery_tier2_enabled": false,
+   "source": "S55 central check rulings (spec 0e00f6a8): tol 1e-5, compl_inf_tol 1e-6, MA97, recovery off, one attempt"
+  }
+ },
+ "sum_12_w": 4975.0943752117555,
+ "thresholds": {
+  "D1b_fraction": 0.3333333333333333,
+  "D2_min_eur_per_day": -0.04,
+  "P3_rel": 1e-06,
+  "P3v2_offset_eur": [
+   0.03,
+   0.04
+  ],
+  "P4_rel": 1e-05
+ },
+ "version": 2
+}

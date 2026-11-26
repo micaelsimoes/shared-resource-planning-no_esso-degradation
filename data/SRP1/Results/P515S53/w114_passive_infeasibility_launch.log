@@ -1,0 +1,29 @@
+16:40:33 [W114 +    1.4s] W114 passive infeasibility diagnostic (declared solves {'dso_passive_cold_2035_summer': 3, 'tso_arm_block_reproduction': 3, 'elastic': 4}); output /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S53/w114_passive_infeasibility
+16:40:45 [W93 +    13.3s] unpickling data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/certified_models.pkl (sha256 verified 99ab1070)
+[INFO] 			 - Running SMOPF, Network case33_1, 2035, Summer...
+16:41:00 [W93 +    28.3s] solve    1                w114:passive:cold:dso DSO|5|2035|Summer        ok iter 30 attempts 1 0.3s
+[INFO] 			 - Running SMOPF, Network case33_2, 2035, Summer...
+16:41:00 [W93 +    28.6s] solve    2                w114:passive:cold:dso DSO|7|2035|Summer        ok iter 28 attempts 1 0.3s
+[INFO] 			 - Running SMOPF, Network case33_3, 2035, Summer...
+16:41:00 [W93 +    28.9s] solve    3                w114:passive:cold:dso DSO|9|2035|Summer        ok iter 28 attempts 1 0.3s
+[INFO] 			 - Running SMOPF, Network case9, 2035, Summer...
+[WARNING] Network primary solve did not converge for case9, year=2035, day=Summer: status=warning, termination=infeasible, message=Ipopt 3.14.18\x3a Converged to a locally infeasible point. Problem may be infeasible. | warm_start=False
+[WARNING] IPOPT primary solve log for case9, year=2035, day=Summer: /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s53w114_passive_infeasibility/logs/optim_log_case9_2035_Summer.log
+[INFO] Retrying network solve once for case9, year=2035, day=Summer, cold start, with acceptable_iter=1, acceptable_tol=0.0001, warm_start_init_point=no.
+[WARNING] Network recovery solve did not converge for case9, year=2035, day=Summer: status=warning, termination=infeasible, message=Ipopt 3.14.18\x3a Converged to a locally infeasible point. Problem may be infeasible. | warm_start=False
+[WARNING] IPOPT recovery solve log for case9, year=2035, day=Summer: /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s53w114_passive_infeasibility/logs/optim_log_case9_2035_Summer_recovery.log
+[INFO] Retrying network solve (tier 2: cold, mu_strategy=adaptive) for case9, year=2035, day=Summer, with acceptable_iter=1, acceptable_tol=0.0001, mu_strategy=adaptive, warm_start_init_point=no.
+[WARNING] Network tier-2 recovery solve did not converge for case9, year=2035, day=Summer: status=warning, termination=infeasible, message=Ipopt 3.14.18\x3a Converged to a locally infeasible point. Problem may be infeasible. | warm_start=False
+[WARNING] IPOPT tier-2 recovery solve log for case9, year=2035, day=Summer: /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s53w114_passive_infeasibility/logs/optim_log_case9_2035_Summer_recovery_tier2.log
+16:41:01 [W93 +    30.2s] solve    4                w114:passive:cold:tso TSO|-|2035|Summer        FAILED iter 80 attempts 3 0.7s
+16:41:01 [W114 +   30.3s] TSO reproduction: True
+16:41:02 [W114 +   30.8s] E1_physical_elastic_schedule_hard: optimal loaded True slack total 0.632747 nonzero {'bus_P_balance': 54, 'bus_Q_balance': 0, 'voltage_magnitude_rows': 0, 'branch_thermal': 0, 'generator_S_capability_and_pf': 0, 'voltage_product_sign': 0, 'generator_P_limits': 18, 'generator_Q_limits': 0, 'voltage_magnitude_bounds': 0}
+16:41:02 [W114 +   31.1s] E2_interface_PQ_elastic_physics_hard: optimal loaded True slack total 0.632405 nonzero {'interface_P_schedule': 18, 'interface_Q_schedule': 0}
+16:41:02 [W114 +   31.3s] E3_interface_P_elastic_Q_hard: optimal loaded True slack total 0.632393 nonzero {'interface_P_schedule': 18}
+WARNING: Loading a SolverResults object with a warning status into
+model.name="case9";
+    - termination condition: infeasible
+    - message from solver: Ipopt 3.14.18\x3a Converged to a locally infeasible
+      point. Problem may be infeasible.
+16:41:03 [W114 +   32.4s] E4_interface_Q_elastic_P_hard: infeasible loaded True slack total 31.4024 nonzero {'interface_Q_schedule': 72}
+16:41:03 [W114 +   32.4s] wrote /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S53/w114_passive_infeasibility/w114_passive_infeasibility.json; guard {'permitted_solve': 10, 'permitted_exec': 10, 'blocked_solve': 0, 'blocked_exec': 0}

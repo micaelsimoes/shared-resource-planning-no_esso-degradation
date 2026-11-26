@@ -1,0 +1,57 @@
+{
+  "stage": "P5.12-X comparator reconstruction + sensitivity",
+  "frozen_utc": "2026-09-12",
+  "authorship": "Planner-executed (Worker unavailable: external API spend limit)",
+  "fixtures": {
+    "DSO_case33_2_node7_2025_Autumn_cycle7": {
+      "status": "PROCEED",
+      "preserved_model": "data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+      "preserved_model_sha256_prefix": "d2342ba26224302e",
+      "metadata": {"agent":"DSO","node_id":7,"network_name":"case33_2","year":2025,"day":"Autumn","cycle":7,"from_warm_start":true,"captured_outcome":"status=ok, termination=optimal"},
+      "historical_baseline_log": "data/SRP1/Results/P512R/evals/cold/logs/optim_log_case33_2_2025_Autumn.log",
+      "historical_slice": {"solve_index_1based": 8, "start_line": 69446, "end_line": 77136, "n_lines": 7691},
+      "historical_baseline_warm_start_bound_push": 1e-05,
+      "historical_iterations": 91,
+      "historical_objective_unscaled": 354.15536755956111,
+      "historical_dual_infeasibility_unscaled": 0.0068387010849183865,
+      "historical_constraint_violation_unscaled": 8.2228265363415431e-08,
+      "historical_complementarity_unscaled": 1.0719213780888988e-05,
+      "historical_obj_fn_evaluations": 104,
+      "historical_hessian_evaluations": 91,
+      "ladder": {"BASELINE": 1e-05, "LOW": 1e-06, "HIGH": 0.0001},
+      "ladder_note": "historical baseline equals the mandated 1e-5; mandated ladder applies without per-fixture tuning"
+    },
+    "TSO_case9_2025_Summer_cycle7": {
+      "status": "NOT RUN — INSTRUCTION CONFLICT, REFERRED TO USER",
+      "preserved_model": "data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+      "historical_baseline_log": "data/SRP1/Results/P512R/evals/cold/logs/optim_log_case9_2025_Summer.log",
+      "historical_slice": {"solve_index_1based": 8, "start_line": 28780, "end_line": 31897},
+      "historical_baseline_warm_start_bound_push": 1e-06,
+      "historical_iterations": 37,
+      "historical_objective_unscaled": 337946.00264311919,
+      "conflict": "The stage mandates BASELINE VERIFICATION at warm_start_bound_push=1e-5 AND that all other settings match the historical baseline. For case9 the historical value is 1e-6 (inherited from case9 bound_push=1e-6). Running 1e-5 would be a 10x perturbation, not a baseline, and the reconstruction gate would fail by construction. Running 1e-6 as LOW would duplicate the baseline and 1e-4 would be a 100x perturbation. No silent substitution made.",
+      "proposed_resolution_for_user": "apply the same +/-10x modelling-invariant ladder around this fixture's own historical baseline: BASELINE 1e-6, LOW 1e-7, HIGH 1e-5"
+    }
+  },
+  "reconstruction": {
+    "authoritative_numerical_state": "the preserved pre-solve model (variables, parameters, bounds, objective, constraints, all suffixes, primal start, dual state, bound multipliers)",
+    "reconstructed_context_only": "network object and NetworkParameters, obtained from p56a_oracle.fresh_planning (deterministic read of the canonical data files; load_baseline enforces the canonical scenario checksum)",
+    "reconstruction_boundary": "network/params supply solver options, network identity (name/year/day/is_transmission) and the log path only; no numerical value of the preserved model may be altered",
+    "acceptance_before_solve": [
+      "network identity matches metadata (name, year, day, agent)",
+      "reconstructed solver options reproduce the historical option echo exactly except output_file",
+      "preserved model reloads with a stable semantic digest",
+      "from_warm_start taken from metadata (true)"
+    ]
+  },
+  "baseline_acceptance_rule_frozen_before_solving": {
+    "method": "full-trace comparison against the historical cycle-7 slice",
+    "normalize_only": ["output_file path", "Total seconds in IPOPT", "fresh-file vs appended-file leading blank line"],
+    "require_exact": ["option echo (modulo output_file)", "iteration-0 row", "complete iteration table", "iteration count", "termination line", "final unscaled objective/dual infeasibility/constraint violation/complementarity/variable bound violation", "evaluation counts"],
+    "on_failure": "classify RECONSTRUCTION GATE FAILED; do not run LOW or HIGH; no retry"
+  },
+  "materiality_thresholds": "reused verbatim from data/SRP1/Results/P512W/frozen_sampling_plan.json (objective 1e-6 / 1e-3 relative; primal scaled 1e-6 / 1e-3; branch requires BOTH >1e-3; path-only |d_iters|/base > 0.5 or restoration/safeguard appearance)",
+  "execution_order": ["DSO/BASELINE", "DSO/LOW", "DSO/HIGH"],
+  "planned_new_solves": 3,
+  "isolation": "one fresh Python process per solve; model reloaded independently from the frozen pickle each time"
+}

@@ -1,0 +1,11 @@
+{
+ "stage": "P5.15 Step 3.4 (+3.3(b) folded in) worker task -- zero-solve check evidence manifest",
+ "entries": {
+  "zero_solve_checks.json": {
+   "sha256": "2dc449a62cadca82f6f71deebe4d0854a26a76324a2405b5a51aa4a9c34213f9",
+   "bytes": 10234,
+   "committed": true
+  }
+ },
+ "note": "p515_s34_zero_solve_checks.py builds every synthetic/probe ADMM-ready state in memory only (via p515_s32_zero_solve_checks._build_admm_ready_state/_reset_rho/_dummy_residual_metrics, p515_s32v2_zero_solve_checks._fake_boyd_metrics_v2/_load_module_at_commit, and this script own _build_esso_only/_build_tso_dso_only helpers) and never pickles a snapshot to disk -- there is no companion .pkl fixture in this directory to hash-record."
+}

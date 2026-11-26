@@ -1,0 +1,1943 @@
+{
+ "stage": "P5.15 S55 centralised single-day check, step 1 (feasibility; build only)",
+ "utc": "2026-11-16T18:33:44.127710+00:00",
+ "merge_s_all_blocks": 0.009768208023160696,
+ "read_and_merge_peak_rss_mb": 346.703125,
+ "days": {
+  "Spring": {
+   "merged": {
+    "vars": 38184,
+    "vars_free": 37992,
+    "constraints": 24207,
+    "label": "merged 2025 Spring",
+    "build_s": 0.6274147080257535,
+    "peak_rss_mb_after": 371.390625
+   },
+   "tso": {
+    "vars": 3546,
+    "vars_free": 3390,
+    "constraints": 3018,
+    "label": "TSO 2025 Spring",
+    "build_s": 0.09768262505531311,
+    "peak_rss_mb_after": 375.25
+   },
+   "dso": {
+    "5": {
+     "vars": 10762,
+     "vars_free": 10698,
+     "constraints": 7656,
+     "label": "DSO 5 2025 Spring",
+     "build_s": 0.10195399960502982,
+     "peak_rss_mb_after": 385.9375
+    },
+    "7": {
+     "vars": 10762,
+     "vars_free": 10698,
+     "constraints": 7683,
+     "label": "DSO 7 2025 Spring",
+     "build_s": 0.1720312498509884,
+     "peak_rss_mb_after": 396.828125
+    },
+    "9": {
+     "vars": 10762,
+     "vars_free": 10698,
+     "constraints": 7656,
+     "label": "DSO 9 2025 Spring",
+     "build_s": 0.1915297913365066,
+     "peak_rss_mb_after": 405.78125
+    }
+   },
+   "sum_tso_dso_vars": 35832,
+   "sum_tso_dso_constraints": 26013,
+   "constraint_components_in_tso_or_dso_not_in_merged": [],
+   "constraint_components_in_merged_only": [],
+   "rows_tso_plus_dso_vs_merged_where_different": {
+    "node_balance_p": [
+     2592,
+     2520
+    ],
+    "node_balance_q": [
+     2592,
+     2520
+    ],
+    "sess_active_sum_limit": [
+     144,
+     0
+    ],
+    "sess_comp": [
+     144,
+     0
+    ],
+    "sess_converter_capability": [
+     144,
+     0
+    ],
+    "sess_pch_hat_link": [
+     144,
+     0
+    ],
+    "sess_pdch_hat_link": [
+     144,
+     0
+    ],
+    "sess_pnet_def": [
+     144,
+     0
+    ],
+    "sess_soc_def": [
+     144,
+     0
+    ],
+    "sess_soc_final": [
+     6,
+     0
+    ],
+    "sess_soc_limit_lower": [
+     144,
+     0
+    ],
+    "sess_soc_limit_upper": [
+     144,
+     0
+    ],
+    "voltage_mag_def": [
+     144,
+     0
+    ],
+    "voltage_mag_sqr_def": [
+     2592,
+     2520
+    ],
+    "voltage_magnitude_lower_cons": [
+     2592,
+     2520
+    ],
+    "voltage_magnitude_upper_cons": [
+     2592,
+     2520
+    ]
+   },
+   "vars_tso_plus_dso_vs_merged_where_different": {
+    "e": [
+     2592,
+     2520
+    ],
+    "f": [
+     2592,
+     2520
+    ],
+    "flex_p_down": [
+     2376,
+     2304
+    ],
+    "flex_p_up": [
+     2376,
+     2304
+    ],
+    "flex_q_down": [
+     2376,
+     2304
+    ],
+    "flex_q_up": [
+     2376,
+     2304
+    ],
+    "interface_delta_p": [
+     72,
+     0
+    ],
+    "interface_delta_q": [
+     72,
+     0
+    ],
+    "pc": [
+     72,
+     2304
+    ],
+    "pg": [
+     576,
+     504
+    ],
+    "qc": [
+     72,
+     2304
+    ],
+    "qg": [
+     576,
+     504
+    ],
+    "shared_es_pch": [
+     144,
+     0
+    ],
+    "shared_es_pch_hat": [
+     144,
+     0
+    ],
+    "shared_es_pdch": [
+     144,
+     0
+    ],
+    "shared_es_pdch_hat": [
+     144,
+     0
+    ],
+    "shared_es_pnet": [
+     144,
+     0
+    ],
+    "shared_es_qnet": [
+     144,
+     0
+    ],
+    "shared_es_soc": [
+     144,
+     0
+    ],
+    "slack_flex_p_balance_down": [
+     99,
+     96
+    ],
+    "slack_flex_p_balance_up": [
+     99,
+     96
+    ],
+    "slack_flex_q_balance_down": [
+     99,
+     96
+    ],
+    "slack_flex_q_balance_up": [
+     99,
+     96
+    ],
+    "slack_shared_es_soc_final_down": [
+     6,
+     0
+    ],
+    "slack_shared_es_soc_final_up": [
+     6,
+     0
+    ],
+    "slack_v_sqr_down": [
+     2592,
+     2520
+    ],
+    "slack_v_sqr_up": [
+     2592,
+     2520
+    ],
+    "vmag": [
+     144,
+     0
+    ],
+    "vmag_sqr": [
+     2592,
+     2520
+    ]
+   },
+   "merged_nodes": 105,
+   "merged_branches": 105,
+   "merged_generators": 21,
+   "merged_loads": 96,
+   "merged_objective_components_nonzero_capable": [
+    "interface_settlement",
+    "total_ess_complementarity_penalties",
+    "total_ess_utilization_cost_penalty",
+    "total_flex_cost",
+    "total_gen_cost",
+    "total_gen_curt_penalty",
+    "total_load_curt_cost",
+    "total_slack_penalties"
+   ]
+  },
+  "Summer": {
+   "merged": {
+    "vars": 38184,
+    "vars_free": 37992,
+    "constraints": 24207,
+    "label": "merged 2025 Summer",
+    "build_s": 0.5384081667289138,
+    "peak_rss_mb_after": 421.09375
+   },
+   "tso": {
+    "vars": 3546,
+    "vars_free": 3390,
+    "constraints": 3018,
+    "label": "TSO 2025 Summer",
+    "build_s": 0.03672762494534254,
+    "peak_rss_mb_after": 425.703125
+   },
+   "dso": {
+    "5": {
+     "vars": 10762,
+     "vars_free": 10698,
+     "constraints": 7656,
+     "label": "DSO 5 2025 Summer",
+     "build_s": 0.22186637483537197,
+     "peak_rss_mb_after": 429.765625
+    },
+    "7": {
+     "vars": 10762,
+     "vars_free": 10698,
+     "constraints": 7683,
+     "label": "DSO 7 2025 Summer",
+     "build_s": 0.18830120796337724,
+     "peak_rss_mb_after": 429.765625
+    },
+    "9": {
+     "vars": 10762,
+     "vars_free": 10698,
+     "constraints": 7656,
+     "label": "DSO 9 2025 Summer",
+     "build_s": 0.10329891601577401,
+     "peak_rss_mb_after": 429.765625
+    }
+   },
+   "sum_tso_dso_vars": 35832,
+   "sum_tso_dso_constraints": 26013,
+   "constraint_components_in_tso_or_dso_not_in_merged": [],
+   "constraint_components_in_merged_only": [],
+   "rows_tso_plus_dso_vs_merged_where_different": {
+    "node_balance_p": [
+     2592,
+     2520
+    ],
+    "node_balance_q": [
+     2592,
+     2520
+    ],
+    "sess_active_sum_limit": [
+     144,
+     0
+    ],
+    "sess_comp": [
+     144,
+     0
+    ],
+    "sess_converter_capability": [
+     144,
+     0
+    ],
+    "sess_pch_hat_link": [
+     144,
+     0
+    ],
+    "sess_pdch_hat_link": [
+     144,
+     0
+    ],
+    "sess_pnet_def": [
+     144,
+     0
+    ],
+    "sess_soc_def": [
+     144,
+     0
+    ],
+    "sess_soc_final": [
+     6,
+     0
+    ],
+    "sess_soc_limit_lower": [
+     144,
+     0
+    ],
+    "sess_soc_limit_upper": [
+     144,
+     0
+    ],
+    "voltage_mag_def": [
+     144,
+     0
+    ],
+    "voltage_mag_sqr_def": [
+     2592,
+     2520
+    ],
+    "voltage_magnitude_lower_cons": [
+     2592,
+     2520
+    ],
+    "voltage_magnitude_upper_cons": [
+     2592,
+     2520
+    ]
+   },
+   "vars_tso_plus_dso_vs_merged_where_different": {
+    "e": [
+     2592,
+     2520
+    ],
+    "f": [
+     2592,
+     2520
+    ],
+    "flex_p_down": [
+     2376,
+     2304
+    ],
+    "flex_p_up": [
+     2376,
+     2304
+    ],
+    "flex_q_down": [
+     2376,
+     2304
+    ],
+    "flex_q_up": [
+     2376,
+     2304
+    ],
+    "interface_delta_p": [
+     72,
+     0
+    ],
+    "interface_delta_q": [
+     72,
+     0
+    ],
+    "pc": [
+     72,
+     2304
+    ],
+    "pg": [
+     576,
+     504
+    ],
+    "qc": [
+     72,
+     2304
+    ],
+    "qg": [
+     576,
+     504
+    ],
+    "shared_es_pch": [
+     144,
+     0
+    ],
+    "shared_es_pch_hat": [
+     144,
+     0
+    ],
+    "shared_es_pdch": [
+     144,
+     0
+    ],
+    "shared_es_pdch_hat": [
+     144,
+     0
+    ],
+    "shared_es_pnet": [
+     144,
+     0
+    ],
+    "shared_es_qnet": [
+     144,
+     0
+    ],
+    "shared_es_soc": [
+     144,
+     0
+    ],
+    "slack_flex_p_balance_down": [
+     99,
+     96
+    ],
+    "slack_flex_p_balance_up": [
+     99,
+     96
+    ],
+    "slack_flex_q_balance_down": [
+     99,
+     96
+    ],
+    "slack_flex_q_balance_up": [
+     99,
+     96
+    ],
+    "slack_shared_es_soc_final_down": [
+     6,
+     0
+    ],
+    "slack_shared_es_soc_final_up": [
+     6,
+     0
+    ],
+    "slack_v_sqr_down": [
+     2592,
+     2520
+    ],
+    "slack_v_sqr_up": [
+     2592,
+     2520
+    ],
+    "vmag": [
+     144,
+     0
+    ],
+    "vmag_sqr": [
+     2592,
+     2520
+    ]
+   },
+   "merged_nodes": 105,
+   "merged_branches": 105,
+   "merged_generators": 21,
+   "merged_loads": 96,
+   "merged_objective_components_nonzero_capable": [
+    "interface_settlement",
+    "total_ess_complementarity_penalties",
+    "total_ess_utilization_cost_penalty",
+    "total_flex_cost",
+    "total_gen_cost",
+    "total_gen_curt_penalty",
+    "total_load_curt_cost",
+    "total_slack_penalties"
+   ]
+  },
+  "Autumn": {
+   "merged": {
+    "vars": 38184,
+    "vars_free": 37992,
+    "constraints": 24075,
+    "label": "merged 2025 Autumn",
+    "build_s": 0.651986709330231,
+    "peak_rss_mb_after": 429.765625
+   },
+   "tso": {
+    "vars": 3546,
+    "vars_free": 3390,
+    "constraints": 2982,
+    "label": "TSO 2025 Autumn",
+    "build_s": 0.03711004229262471,
+    "peak_rss_mb_after": 430.15625
+   },
+   "dso": {
+    "5": {
+     "vars": 10762,
+     "vars_free": 10698,
+     "constraints": 7620,
+     "label": "DSO 5 2025 Autumn",
+     "build_s": 0.10032854229211807,
+     "peak_rss_mb_after": 441.578125
+    },
+    "7": {
+     "vars": 10762,
+     "vars_free": 10698,
+     "constraints": 7659,
+     "label": "DSO 7 2025 Autumn",
+     "build_s": 0.2425154997035861,
+     "peak_rss_mb_after": 446.859375
+    },
+    "9": {
+     "vars": 10762,
+     "vars_free": 10698,
+     "constraints": 7620,
+     "label": "DSO 9 2025 Autumn",
+     "build_s": 0.19731341628357768,
+     "peak_rss_mb_after": 446.859375
+    }
+   },
+   "sum_tso_dso_vars": 35832,
+   "sum_tso_dso_constraints": 25881,
+   "constraint_components_in_tso_or_dso_not_in_merged": [],
+   "constraint_components_in_merged_only": [],
+   "rows_tso_plus_dso_vs_merged_where_different": {
+    "node_balance_p": [
+     2592,
+     2520
+    ],
+    "node_balance_q": [
+     2592,
+     2520
+    ],
+    "sess_active_sum_limit": [
+     144,
+     0
+    ],
+    "sess_comp": [
+     144,
+     0
+    ],
+    "sess_converter_capability": [
+     144,
+     0
+    ],
+    "sess_pch_hat_link": [
+     144,
+     0
+    ],
+    "sess_pdch_hat_link": [
+     144,
+     0
+    ],
+    "sess_pnet_def": [
+     144,
+     0
+    ],
+    "sess_soc_def": [
+     144,
+     0
+    ],
+    "sess_soc_final": [
+     6,
+     0
+    ],
+    "sess_soc_limit_lower": [
+     144,
+     0
+    ],
+    "sess_soc_limit_upper": [
+     144,
+     0
+    ],
+    "voltage_mag_def": [
+     144,
+     0
+    ],
+    "voltage_mag_sqr_def": [
+     2592,
+     2520
+    ],
+    "voltage_magnitude_lower_cons": [
+     2592,
+     2520
+    ],
+    "voltage_magnitude_upper_cons": [
+     2592,
+     2520
+    ]
+   },
+   "vars_tso_plus_dso_vs_merged_where_different": {
+    "e": [
+     2592,
+     2520
+    ],
+    "f": [
+     2592,
+     2520
+    ],
+    "flex_p_down": [
+     2376,
+     2304
+    ],
+    "flex_p_up": [
+     2376,
+     2304
+    ],
+    "flex_q_down": [
+     2376,
+     2304
+    ],
+    "flex_q_up": [
+     2376,
+     2304
+    ],
+    "interface_delta_p": [
+     72,
+     0
+    ],
+    "interface_delta_q": [
+     72,
+     0
+    ],
+    "pc": [
+     72,
+     2304
+    ],
+    "pg": [
+     576,
+     504
+    ],
+    "qc": [
+     72,
+     2304
+    ],
+    "qg": [
+     576,
+     504
+    ],
+    "shared_es_pch": [
+     144,
+     0
+    ],
+    "shared_es_pch_hat": [
+     144,
+     0
+    ],
+    "shared_es_pdch": [
+     144,
+     0
+    ],
+    "shared_es_pdch_hat": [
+     144,
+     0
+    ],
+    "shared_es_pnet": [
+     144,
+     0
+    ],
+    "shared_es_qnet": [
+     144,
+     0
+    ],
+    "shared_es_soc": [
+     144,
+     0
+    ],
+    "slack_flex_p_balance_down": [
+     99,
+     96
+    ],
+    "slack_flex_p_balance_up": [
+     99,
+     96
+    ],
+    "slack_flex_q_balance_down": [
+     99,
+     96
+    ],
+    "slack_flex_q_balance_up": [
+     99,
+     96
+    ],
+    "slack_shared_es_soc_final_down": [
+     6,
+     0
+    ],
+    "slack_shared_es_soc_final_up": [
+     6,
+     0
+    ],
+    "slack_v_sqr_down": [
+     2592,
+     2520
+    ],
+    "slack_v_sqr_up": [
+     2592,
+     2520
+    ],
+    "vmag": [
+     144,
+     0
+    ],
+    "vmag_sqr": [
+     2592,
+     2520
+    ]
+   },
+   "merged_nodes": 105,
+   "merged_branches": 105,
+   "merged_generators": 21,
+   "merged_loads": 96,
+   "merged_objective_components_nonzero_capable": [
+    "interface_settlement",
+    "total_ess_complementarity_penalties",
+    "total_ess_utilization_cost_penalty",
+    "total_flex_cost",
+    "total_gen_cost",
+    "total_gen_curt_penalty",
+    "total_load_curt_cost",
+    "total_slack_penalties"
+   ]
+  },
+  "Winter": {
+   "merged": {
+    "vars": 38184,
+    "vars_free": 37992,
+    "constraints": 24075,
+    "label": "merged 2025 Winter",
+    "build_s": 0.5550795840099454,
+    "peak_rss_mb_after": 446.859375
+   },
+   "tso": {
+    "vars": 3546,
+    "vars_free": 3390,
+    "constraints": 2982,
+    "label": "TSO 2025 Winter",
+    "build_s": 0.03760183276608586,
+    "peak_rss_mb_after": 446.859375
+   },
+   "dso": {
+    "5": {
+     "vars": 10762,
+     "vars_free": 10698,
+     "constraints": 7620,
+     "label": "DSO 5 2025 Winter",
+     "build_s": 0.23668424971401691,
+     "peak_rss_mb_after": 446.859375
+    },
+    "7": {
+     "vars": 10762,
+     "vars_free": 10698,
+     "constraints": 7659,
+     "label": "DSO 7 2025 Winter",
+     "build_s": 0.10151516599580646,
+     "peak_rss_mb_after": 446.859375
+    },
+    "9": {
+     "vars": 10762,
+     "vars_free": 10698,
+     "constraints": 7620,
+     "label": "DSO 9 2025 Winter",
+     "build_s": 0.20719879074022174,
+     "peak_rss_mb_after": 446.859375
+    }
+   },
+   "sum_tso_dso_vars": 35832,
+   "sum_tso_dso_constraints": 25881,
+   "constraint_components_in_tso_or_dso_not_in_merged": [],
+   "constraint_components_in_merged_only": [],
+   "rows_tso_plus_dso_vs_merged_where_different": {
+    "node_balance_p": [
+     2592,
+     2520
+    ],
+    "node_balance_q": [
+     2592,
+     2520
+    ],
+    "sess_active_sum_limit": [
+     144,
+     0
+    ],
+    "sess_comp": [
+     144,
+     0
+    ],
+    "sess_converter_capability": [
+     144,
+     0
+    ],
+    "sess_pch_hat_link": [
+     144,
+     0
+    ],
+    "sess_pdch_hat_link": [
+     144,
+     0
+    ],
+    "sess_pnet_def": [
+     144,
+     0
+    ],
+    "sess_soc_def": [
+     144,
+     0
+    ],
+    "sess_soc_final": [
+     6,
+     0
+    ],
+    "sess_soc_limit_lower": [
+     144,
+     0
+    ],
+    "sess_soc_limit_upper": [
+     144,
+     0
+    ],
+    "voltage_mag_def": [
+     144,
+     0
+    ],
+    "voltage_mag_sqr_def": [
+     2592,
+     2520
+    ],
+    "voltage_magnitude_lower_cons": [
+     2592,
+     2520
+    ],
+    "voltage_magnitude_upper_cons": [
+     2592,
+     2520
+    ]
+   },
+   "vars_tso_plus_dso_vs_merged_where_different": {
+    "e": [
+     2592,
+     2520
+    ],
+    "f": [
+     2592,
+     2520
+    ],
+    "flex_p_down": [
+     2376,
+     2304
+    ],
+    "flex_p_up": [
+     2376,
+     2304
+    ],
+    "flex_q_down": [
+     2376,
+     2304
+    ],
+    "flex_q_up": [
+     2376,
+     2304
+    ],
+    "interface_delta_p": [
+     72,
+     0
+    ],
+    "interface_delta_q": [
+     72,
+     0
+    ],
+    "pc": [
+     72,
+     2304
+    ],
+    "pg": [
+     576,
+     504
+    ],
+    "qc": [
+     72,
+     2304
+    ],
+    "qg": [
+     576,
+     504
+    ],
+    "shared_es_pch": [
+     144,
+     0
+    ],
+    "shared_es_pch_hat": [
+     144,
+     0
+    ],
+    "shared_es_pdch": [
+     144,
+     0
+    ],
+    "shared_es_pdch_hat": [
+     144,
+     0
+    ],
+    "shared_es_pnet": [
+     144,
+     0
+    ],
+    "shared_es_qnet": [
+     144,
+     0
+    ],
+    "shared_es_soc": [
+     144,
+     0
+    ],
+    "slack_flex_p_balance_down": [
+     99,
+     96
+    ],
+    "slack_flex_p_balance_up": [
+     99,
+     96
+    ],
+    "slack_flex_q_balance_down": [
+     99,
+     96
+    ],
+    "slack_flex_q_balance_up": [
+     99,
+     96
+    ],
+    "slack_shared_es_soc_final_down": [
+     6,
+     0
+    ],
+    "slack_shared_es_soc_final_up": [
+     6,
+     0
+    ],
+    "slack_v_sqr_down": [
+     2592,
+     2520
+    ],
+    "slack_v_sqr_up": [
+     2592,
+     2520
+    ],
+    "vmag": [
+     144,
+     0
+    ],
+    "vmag_sqr": [
+     2592,
+     2520
+    ]
+   },
+   "merged_nodes": 105,
+   "merged_branches": 105,
+   "merged_generators": 21,
+   "merged_loads": 96,
+   "merged_objective_components_nonzero_capable": [
+    "interface_settlement",
+    "total_ess_complementarity_penalties",
+    "total_ess_utilization_cost_penalty",
+    "total_flex_cost",
+    "total_gen_cost",
+    "total_gen_curt_penalty",
+    "total_load_curt_cost",
+    "total_slack_penalties"
+   ]
+  }
+ },
+ "params_tn_vs_dn": {
+  "5": {
+   "solver_params.options": [
+    "{'tol': 1e-05, 'acceptable_tol': 0.0001, 'acceptable_iter': 5, 'linear_solver': 'ma97', 'compl_inf_tol': 0.0005, 'bound_",
+    "{'tol': 1e-05, 'acceptable_tol': 0.0001, 'acceptable_iter': 5, 'linear_solver': 'ma97', 'bound_push': 1e-05, 'bound_frac"
+   ],
+   "solver_params.recovery_options": [
+    "{'acceptable_tol': 0.0001, 'acceptable_iter': 1}",
+    "None"
+   ]
+  },
+  "7": {
+   "solver_params.options": [
+    "{'tol': 1e-05, 'acceptable_tol': 0.0001, 'acceptable_iter': 5, 'linear_solver': 'ma97', 'compl_inf_tol': 0.0005, 'bound_",
+    "{'tol': 1e-05, 'acceptable_tol': 0.0001, 'acceptable_iter': 5, 'linear_solver': 'ma97', 'bound_push': 1e-05, 'bound_frac"
+   ],
+   "solver_params.recovery_options": [
+    "{'acceptable_tol': 0.0001, 'acceptable_iter': 1}",
+    "{}"
+   ]
+  },
+  "9": {
+   "solver_params.options": [
+    "{'tol': 1e-05, 'acceptable_tol': 0.0001, 'acceptable_iter': 5, 'linear_solver': 'ma97', 'compl_inf_tol': 0.0005, 'bound_",
+    "{'tol': 1e-05, 'acceptable_tol': 0.0001, 'acceptable_iter': 5, 'linear_solver': 'ma97', 'bound_push': 1e-05, 'bound_frac"
+   ],
+   "solver_params.recovery_options": [
+    "{'acceptable_tol': 0.0001, 'acceptable_iter': 1}",
+    "{}"
+   ]
+  }
+ },
+ "prices": {
+  "Spring": {
+   "tn": {
+    "cost_energy_p": [
+     [
+      116.6741563028345,
+      117.72769218863633,
+      120.19845744897576,
+      119.22860902435463,
+      124.72952816104966,
+      128.03663614649625,
+      134.8799247808026,
+      115.96857921951926,
+      77.83624431368597,
+      38.123663843804934,
+      33.608660885680955,
+      30.838312307723616,
+      15.689403206252234,
+      12.702646780769136,
+      3.2589652668910762,
+      6.985251712125617,
+      13.601224711837649,
+      41.51769184732111,
+      80.21280042116278,
+      113.9651653572442,
+      142.53569675079214,
+      134.53195913830874,
+      125.49672518746387,
+      158.08689556133885
+     ]
+    ],
+    "cost_flex": [
+     [
+      50.387905127438465,
+      48.65359133086557,
+      46.72559591861644,
+      43.060250738740194,
+      45.282609269431376,
+      47.57717684335567,
+      53.22349887442124,
+      48.246631926239175,
+      36.86053437713862,
+      31.85411914133111,
+      28.714134054080947,
+      26.89141928054934,
+      25.17986357266501,
+      23.773915213933044,
+      21.277557180050266,
+      22.52860069631732,
+      23.988446813264254,
+      29.1398648377484,
+      37.91058362644221,
+      47.147343358829865,
+      55.33405622692387,
+      49.86962068414622,
+      50.2138448675198,
+      47.08031355487596
+     ]
+    ],
+    "prob_market": [
+     1.0
+    ]
+   },
+   "5": {
+    "cost_energy_p_equal_tn": true,
+    "cost_flex_equal_tn": true,
+    "baseMVA": 100.0,
+    "tn_baseMVA": 100.0,
+    "max_abs_cost_flex_diff": 0.0
+   },
+   "7": {
+    "cost_energy_p_equal_tn": true,
+    "cost_flex_equal_tn": true,
+    "baseMVA": 100.0,
+    "tn_baseMVA": 100.0,
+    "max_abs_cost_flex_diff": 0.0
+   },
+   "9": {
+    "cost_energy_p_equal_tn": true,
+    "cost_flex_equal_tn": true,
+    "baseMVA": 100.0,
+    "tn_baseMVA": 100.0,
+    "max_abs_cost_flex_diff": 0.0
+   }
+  },
+  "Summer": {
+   "tn": {
+    "cost_energy_p": [
+     [
+      121.74287276332464,
+      115.32886788799718,
+      112.00342991401446,
+      108.17294045880145,
+      111.28348464173462,
+      105.1551409954758,
+      109.57559794692766,
+      104.5472472304923,
+      79.15592927859231,
+      62.119846687817166,
+      57.76247392536227,
+      48.215049170836885,
+      38.424589573272584,
+      36.41228701489688,
+      33.63971087294918,
+      37.88721781582405,
+      51.35847584956535,
+      80.27603961812194,
+      106.45642056661225,
+      123.07440809088446,
+      144.2626415559513,
+      131.71640251884176,
+      130.1211567572963,
+      125.89553071647589
+     ]
+    ],
+    "cost_flex": [
+     [
+      49.17568066575419,
+      50.16029495683979,
+      47.93024725672766,
+      44.66301122239913,
+      45.831791098871385,
+      46.03284583501982,
+      50.003931502942486,
+      53.961514103193196,
+      50.44828555328529,
+      45.78911445878577,
+      39.1221023335275,
+      36.994516646840204,
+      37.46751591726923,
+      36.82115187669457,
+      33.377755902602296,
+      36.68637707010694,
+      41.24484269614679,
+      48.75443204890988,
+      53.74510679762383,
+      61.716859899658594,
+      58.95279776995153,
+      58.00923393423022,
+      52.06487162746869,
+      51.48900323929059
+     ]
+    ],
+    "prob_market": [
+     1.0
+    ]
+   },
+   "5": {
+    "cost_energy_p_equal_tn": true,
+    "cost_flex_equal_tn": true,
+    "baseMVA": 100.0,
+    "tn_baseMVA": 100.0,
+    "max_abs_cost_flex_diff": 0.0
+   },
+   "7": {
+    "cost_energy_p_equal_tn": true,
+    "cost_flex_equal_tn": true,
+    "baseMVA": 100.0,
+    "tn_baseMVA": 100.0,
+    "max_abs_cost_flex_diff": 0.0
+   },
+   "9": {
+    "cost_energy_p_equal_tn": true,
+    "cost_flex_equal_tn": true,
+    "baseMVA": 100.0,
+    "tn_baseMVA": 100.0,
+    "max_abs_cost_flex_diff": 0.0
+   }
+  },
+  "Autumn": {
+   "tn": {
+    "cost_energy_p": [
+     [
+      95.55431057471607,
+      93.18084783640107,
+      92.14002418701001,
+      84.81557569560239,
+      87.24578403322691,
+      90.12445289047265,
+      102.1153437560564,
+      114.61430739991985,
+      106.70823614436681,
+      110.71365374036111,
+      93.18821526799111,
+      83.75767012687857,
+      80.5488384104911,
+      80.68186183488376,
+      86.01972898629111,
+      104.37244864915272,
+      113.63648766663488,
+      128.91485584443214,
+      161.80042086881863,
+      149.48148826112856,
+      111.14134173937182,
+      109.29163298630553,
+      114.64658697350838,
+      108.86599817620075
+     ]
+    ],
+    "cost_flex": [
+     [
+      49.63697380384428,
+      50.025626511243445,
+      47.431677828564524,
+      46.148259480758696,
+      44.03248064322951,
+      44.13546448324996,
+      50.320832558068986,
+      56.99410356922245,
+      60.65408168005125,
+      57.17931189526381,
+      52.100121754466485,
+      45.71668372902448,
+      49.144709343947575,
+      46.91061809156841,
+      46.10530639125782,
+      49.93120071786118,
+      56.97456170740788,
+      63.639812819586865,
+      76.06444315847455,
+      76.38114733935285,
+      70.19449486780165,
+      61.97916741175868,
+      57.524993336869414,
+      54.99209967257155
+     ]
+    ],
+    "prob_market": [
+     1.0
+    ]
+   },
+   "5": {
+    "cost_energy_p_equal_tn": true,
+    "cost_flex_equal_tn": true,
+    "baseMVA": 100.0,
+    "tn_baseMVA": 100.0,
+    "max_abs_cost_flex_diff": 0.0
+   },
+   "7": {
+    "cost_energy_p_equal_tn": true,
+    "cost_flex_equal_tn": true,
+    "baseMVA": 100.0,
+    "tn_baseMVA": 100.0,
+    "max_abs_cost_flex_diff": 0.0
+   },
+   "9": {
+    "cost_energy_p_equal_tn": true,
+    "cost_flex_equal_tn": true,
+    "baseMVA": 100.0,
+    "tn_baseMVA": 100.0,
+    "max_abs_cost_flex_diff": 0.0
+   }
+  },
+  "Winter": {
+   "tn": {
+    "cost_energy_p": [
+     [
+      97.73315729186665,
+      91.68951173342124,
+      86.8481101860464,
+      84.78616509037643,
+      84.1287791281758,
+      85.5685196105134,
+      91.66792812391392,
+      108.67001880403274,
+      124.24538255992334,
+      119.83858069901969,
+      103.96607274798963,
+      92.04593158873284,
+      89.56756562944251,
+      87.38870127829533,
+      88.02522700287633,
+      89.73970575705343,
+      102.46203129151371,
+      125.02645316997688,
+      133.2831014434276,
+      141.0096736584578,
+      127.11803812529799,
+      115.91226793021733,
+      106.37516503291006,
+      97.68618559438974
+     ]
+    ],
+    "cost_flex": [
+     [
+      36.14252978286299,
+      34.95375062335762,
+      34.55337582646039,
+      34.81460120962257,
+      34.1177490893825,
+      34.8607320638934,
+      37.375039998826196,
+      38.67820063361696,
+      35.76572547231954,
+      32.195131467865124,
+      27.98787746054062,
+      26.17830471890746,
+      23.256770791052812,
+      22.956938545192614,
+      21.43247498710086,
+      22.273133691562514,
+      25.583704621588737,
+      30.085575381898163,
+      37.217491931949425,
+      42.40972656762173,
+      44.13541069009076,
+      38.36275875034545,
+      38.837935132977314,
+      38.51874251746752
+     ]
+    ],
+    "prob_market": [
+     1.0
+    ]
+   },
+   "5": {
+    "cost_energy_p_equal_tn": true,
+    "cost_flex_equal_tn": true,
+    "baseMVA": 100.0,
+    "tn_baseMVA": 100.0,
+    "max_abs_cost_flex_diff": 0.0
+   },
+   "7": {
+    "cost_energy_p_equal_tn": true,
+    "cost_flex_equal_tn": true,
+    "baseMVA": 100.0,
+    "tn_baseMVA": 100.0,
+    "max_abs_cost_flex_diff": 0.0
+   },
+   "9": {
+    "cost_energy_p_equal_tn": true,
+    "cost_flex_equal_tn": true,
+    "baseMVA": 100.0,
+    "tn_baseMVA": 100.0,
+    "max_abs_cost_flex_diff": 0.0
+   }
+  }
+ },
+ "dn_generators_kept": {
+  "5": {
+   "Spring": [
+    {
+     "gen_id": 2,
+     "type": 2,
+     "controllable": false,
+     "pmax": 0.4,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 3,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.15,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 4,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.2,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 5,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.08,
+     "pmin": 0.0
+    }
+   ],
+   "Summer": [
+    {
+     "gen_id": 2,
+     "type": 2,
+     "controllable": false,
+     "pmax": 0.4,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 3,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.15,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 4,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.2,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 5,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.08,
+     "pmin": 0.0
+    }
+   ],
+   "Autumn": [
+    {
+     "gen_id": 2,
+     "type": 2,
+     "controllable": false,
+     "pmax": 0.4,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 3,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.15,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 4,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.2,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 5,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.08,
+     "pmin": 0.0
+    }
+   ],
+   "Winter": [
+    {
+     "gen_id": 2,
+     "type": 2,
+     "controllable": false,
+     "pmax": 0.4,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 3,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.15,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 4,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.2,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 5,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.08,
+     "pmin": 0.0
+    }
+   ]
+  },
+  "7": {
+   "Spring": [
+    {
+     "gen_id": 2,
+     "type": 2,
+     "controllable": false,
+     "pmax": 0.4,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 3,
+     "type": 2,
+     "controllable": false,
+     "pmax": 0.4,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 4,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.1,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 5,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.1,
+     "pmin": 0.0
+    }
+   ],
+   "Summer": [
+    {
+     "gen_id": 2,
+     "type": 2,
+     "controllable": false,
+     "pmax": 0.4,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 3,
+     "type": 2,
+     "controllable": false,
+     "pmax": 0.4,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 4,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.1,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 5,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.1,
+     "pmin": 0.0
+    }
+   ],
+   "Autumn": [
+    {
+     "gen_id": 2,
+     "type": 2,
+     "controllable": false,
+     "pmax": 0.4,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 3,
+     "type": 2,
+     "controllable": false,
+     "pmax": 0.4,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 4,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.1,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 5,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.1,
+     "pmin": 0.0
+    }
+   ],
+   "Winter": [
+    {
+     "gen_id": 2,
+     "type": 2,
+     "controllable": false,
+     "pmax": 0.4,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 3,
+     "type": 2,
+     "controllable": false,
+     "pmax": 0.4,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 4,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.1,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 5,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.1,
+     "pmin": 0.0
+    }
+   ]
+  },
+  "9": {
+   "Spring": [
+    {
+     "gen_id": 2,
+     "type": 2,
+     "controllable": false,
+     "pmax": 0.2,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 3,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.3,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 4,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.3,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 5,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.3,
+     "pmin": 0.0
+    }
+   ],
+   "Summer": [
+    {
+     "gen_id": 2,
+     "type": 2,
+     "controllable": false,
+     "pmax": 0.2,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 3,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.3,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 4,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.3,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 5,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.3,
+     "pmin": 0.0
+    }
+   ],
+   "Autumn": [
+    {
+     "gen_id": 2,
+     "type": 2,
+     "controllable": false,
+     "pmax": 0.2,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 3,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.3,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 4,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.3,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 5,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.3,
+     "pmin": 0.0
+    }
+   ],
+   "Winter": [
+    {
+     "gen_id": 2,
+     "type": 2,
+     "controllable": false,
+     "pmax": 0.2,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 3,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.3,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 4,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.3,
+     "pmin": 0.0
+    },
+    {
+     "gen_id": 5,
+     "type": 3,
+     "controllable": false,
+     "pmax": 0.3,
+     "pmin": 0.0
+    }
+   ]
+  }
+ },
+ "voltage_limits_interface": {
+  "5": {
+   "Spring": {
+    "dn_ref_node": [
+     0.9,
+     1.1
+    ],
+    "tn_interface_node": [
+     0.9,
+     1.1
+    ]
+   },
+   "Summer": {
+    "dn_ref_node": [
+     0.9,
+     1.1
+    ],
+    "tn_interface_node": [
+     0.9,
+     1.1
+    ]
+   },
+   "Autumn": {
+    "dn_ref_node": [
+     0.9,
+     1.1
+    ],
+    "tn_interface_node": [
+     0.9,
+     1.1
+    ]
+   },
+   "Winter": {
+    "dn_ref_node": [
+     0.9,
+     1.1
+    ],
+    "tn_interface_node": [
+     0.9,
+     1.1
+    ]
+   }
+  },
+  "7": {
+   "Spring": {
+    "dn_ref_node": [
+     0.9,
+     1.1
+    ],
+    "tn_interface_node": [
+     0.9,
+     1.1
+    ]
+   },
+   "Summer": {
+    "dn_ref_node": [
+     0.9,
+     1.1
+    ],
+    "tn_interface_node": [
+     0.9,
+     1.1
+    ]
+   },
+   "Autumn": {
+    "dn_ref_node": [
+     0.9,
+     1.1
+    ],
+    "tn_interface_node": [
+     0.9,
+     1.1
+    ]
+   },
+   "Winter": {
+    "dn_ref_node": [
+     0.9,
+     1.1
+    ],
+    "tn_interface_node": [
+     0.9,
+     1.1
+    ]
+   }
+  },
+  "9": {
+   "Spring": {
+    "dn_ref_node": [
+     0.9,
+     1.1
+    ],
+    "tn_interface_node": [
+     0.9,
+     1.1
+    ]
+   },
+   "Summer": {
+    "dn_ref_node": [
+     0.9,
+     1.1
+    ],
+    "tn_interface_node": [
+     0.9,
+     1.1
+    ]
+   },
+   "Autumn": {
+    "dn_ref_node": [
+     0.9,
+     1.1
+    ],
+    "tn_interface_node": [
+     0.9,
+     1.1
+    ]
+   },
+   "Winter": {
+    "dn_ref_node": [
+     0.9,
+     1.1
+    ],
+    "tn_interface_node": [
+     0.9,
+     1.1
+    ]
+   }
+  }
+ },
+ "demand_band": {
+  "Spring": {
+   "equality_tolerance_pu": 1e-05,
+   "n_loads_merged": 96,
+   "mw_per_load_hour": 0.001,
+   "bound_eur_at_energy_price": 192.6177494942469,
+   "bound_eur_at_max_energy_or_flex_price": 198.8107951068889
+  },
+  "Summer": {
+   "equality_tolerance_pu": 1e-05,
+   "n_loads_merged": 96,
+   "mw_per_load_hour": 0.001,
+   "bound_eur_at_energy_price": 208.76042513779862,
+   "bound_eur_at_max_energy_or_flex_price": 208.7996761645312
+  },
+  "Autumn": {
+   "equality_tolerance_pu": 1e-05,
+   "n_loads_merged": 96,
+   "mw_per_load_hour": 0.001,
+   "bound_eur_at_energy_price": 240.34177075682138,
+   "bound_eur_at_max_energy_or_flex_price": 240.34177075682138
+  },
+  "Winter": {
+   "equality_tolerance_pu": 1e-05,
+   "n_loads_merged": 96,
+   "mw_per_load_hour": 0.001,
+   "bound_eur_at_energy_price": 237.57909825387557,
+   "bound_eur_at_max_energy_or_flex_price": 237.57909825387557
+  }
+ },
+ "comparator": {
+  "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/component_levels_terminal.json",
+  "sha256": "033c1e7eac919969c0cdfbfbb8969484b49b2e83b09a36cd171e7c3068a3a3d1",
+  "cell": "ref:7aa017f0 (x = 0, W101 d110bd1a, k* 181)",
+  "days_2025_unweighted_eur": {
+   "Spring": {
+    "generation_cost": 72838.07651532548,
+    "flexibility_cost_internal": 66284.32904420681,
+    "detector_penalty_total": -2.6155417315864984,
+    "other_q_parts": 0.0,
+    "gen_plus_flex": 139122.4055595323,
+    "q_day_unweighted": 139119.7900178007
+   },
+   "Summer": {
+    "generation_cost": 123520.82216036785,
+    "flexibility_cost_internal": 56923.34542799057,
+    "detector_penalty_total": -2.6155417392018587,
+    "other_q_parts": 0.0,
+    "gen_plus_flex": 180444.16758835842,
+    "q_day_unweighted": 180441.5520466192
+   },
+   "Autumn": {
+    "generation_cost": 162466.91904564033,
+    "flexibility_cost_internal": 6841.617827803744,
+    "detector_penalty_total": -2.6155416855453235,
+    "other_q_parts": 0.0,
+    "gen_plus_flex": 169308.53687344407,
+    "q_day_unweighted": 169305.92133175852
+   },
+   "Winter": {
+    "generation_cost": 167511.8339371214,
+    "flexibility_cost_internal": 15132.446091191381,
+    "detector_penalty_total": -2.6155416659227457,
+    "other_q_parts": 0.0,
+    "gen_plus_flex": 182644.2800283128,
+    "q_day_unweighted": 182641.66448664686
+   }
+  }
+ },
+ "total_wall_s": 16.750512041151524,
+ "peak_rss_mb": 446.859375,
+ "guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "pickle": {
+  "load": 0,
+  "loads": 0
+ },
+ "guards_ok": true
+}

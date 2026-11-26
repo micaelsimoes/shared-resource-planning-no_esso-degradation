@@ -1,0 +1,112 @@
+{
+ "shared_energy_storage_data.py:_build_subproblem": {
+  "off_path_ast_equal_incl_signature": true,
+  "off_path_body_ast_equal": true,
+  "args_old": [
+   "shared_ess_data",
+   "node_id"
+  ],
+  "args_new": [
+   "shared_ess_data",
+   "node_id"
+  ]
+ },
+ "shared_energy_storage_data.py:_get_esso_complementarity_diagnostics": {
+  "off_path_ast_equal_incl_signature": true,
+  "off_path_body_ast_equal": true,
+  "args_old": [
+   "model",
+   "node_id",
+   "log_path"
+  ],
+  "args_new": [
+   "model",
+   "node_id",
+   "log_path"
+  ]
+ },
+ "shared_energy_storage_data.py:SharedEnergyStorageData.read_parameters_from_file": {
+  "off_path_ast_equal_incl_signature": true,
+  "off_path_body_ast_equal": true,
+  "args_old": [
+   "self"
+  ],
+  "args_new": [
+   "self"
+  ]
+ },
+ "shared_resources_planning.py:update_shared_energy_storage_model_to_admm": {
+  "off_path_ast_equal_incl_signature": false,
+  "off_path_body_ast_equal": true,
+  "args_old": [
+   "planning_problem",
+   "models",
+   "params",
+   "al_scale_esso"
+  ],
+  "args_new": [
+   "planning_problem",
+   "models",
+   "params",
+   "al_scale_esso",
+   "objective_scale"
+  ]
+ },
+ "shared_resources_planning.py:_get_operational_recourse_components": {
+  "off_path_ast_equal_incl_signature": true,
+  "off_path_body_ast_equal": true,
+  "args_old": [
+   "planning_problem",
+   "models"
+  ],
+  "args_new": [
+   "planning_problem",
+   "models"
+  ]
+ },
+ "shared_energy_storage_parameters.py:_read_parameters_from_file": {
+  "off_path_ast_equal_incl_signature": true,
+  "off_path_body_ast_equal": true,
+  "args_old": [
+   "planning_parameters",
+   "filename"
+  ],
+  "args_new": [
+   "planning_parameters",
+   "filename"
+  ]
+ },
+ "shared_energy_storage_parameters.py:SalvageValueParameters.read_parameters": {
+  "off_path_ast_equal_incl_signature": false,
+  "off_path_body_ast_equal": false,
+  "args_old": [
+   "self",
+   "params_data"
+  ],
+  "args_new": [
+   "self",
+   "params_data"
+  ]
+ },
+ "_run_operational_planning:calls_to_update_esso": {
+  "old": [
+   "update_shared_energy_storage_model_to_admm(planning_problem, esso_model, admm_parameters, al_scale_esso=al_scale_esso)"
+  ],
+  "new": [
+   "update_shared_energy_storage_model_to_admm(planning_problem, esso_model, admm_parameters, al_scale_esso=al_scale_esso, objective_scale=objective_scale)"
+  ]
+ },
+ "_run_operational_planning:ast_equal_after_dropping_objective_scale_kwarg": true,
+ "shared_energy_storage_parameters.py:SalvageValueParameters.__init__": {
+  "old_statements_preserved_in_order": true,
+  "added_statements": [
+   "self.in_objective = False"
+  ]
+ },
+ "shared_energy_storage_parameters.py:SharedEnergyStorageParameters.__init__": {
+  "old_statements_preserved_in_order": true,
+  "added_statements": [
+   "self.available_energy_soh_point = None"
+  ]
+ }
+}

@@ -1,0 +1,176 @@
+[INFO] Scenario random seed: 2026
+[INFO] Reading MARKET DATA from file(s)...
+[INFO] 	 - Generating market scenarios...
+[INFO] 	 - Plotting market scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading TRANSMISSION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Scenario checksum: 73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7
+[INFO] Reading SHARED ESS DATA from file(s)...
+[INFO] Reading PLANNING PARAMETERS from file...
+[INFO] Running OPERATIONAL PLANNING (DISTRIBUTED)...
+[INFO]	 - Initializing...
+[INFO] 		 - Distribution Network node 5...
+[INFO] 		 - Distribution Network node 7...
+[INFO] 		 - Distribution Network node 9...
+[INFO] 		 - Transmission Network...
+[S44-CHILD] activation read-back all_ok=True (failing []); initialisation gross 66605905801.9655 (0x1.f040aef13ee56p+35) compared with 1 record(s), all_equal=True
+[ADMM OF SCALE] Fixed sigma in force sigma_fixed=9.363536e+07 | sigma_computed=9.363536e+07 | ratio=1.000000e+00 | assert_factor=3.000
+[ADMM ESSO AL SCALE] mode=sigma_over_median_block_weight | sigma=9.363536e+07 | median_block_weight=4.121075e+02 | al_scale_esso=2.272110e+05
+[INFO] Per-scenario interface coupling WIRED: 9 scenarios, channels ['p', 'q', 'v'], voltage mode 'per_scenario', row 18 Q charge False; TSO proximal on deviations True.
+[WARNING] ********************************************************************************
+[WARNING] Per-scenario interface coupling is ACTIVE: Anderson acceleration is FORCED OFF for this run
+[WARNING] (the AA iterate does not carry the deviation channel). The case-file AA setting is ignored.
+[WARNING] ********************************************************************************
+[INFO] 	 - ADMM Iteration 1
+[INFO] 		 - Updating distribution networks:
+[INFO] 		 - Updating transmission network...
+[TSO PROX] cycle=1 | updated_blocks=12 | held_failed_blocks=0 | V max=8.952713 | PF max=17.905426 | ESS max=199.974000
+[TSO PROX][V MAX] node=9, year=2025, day=Spring, period=12 | dV=3088.686034 kV | normalized=8.952713
+[TSO PROX][PF MAX] node=7, year=2030, day=Spring, period=23, type=Q | delta=1790.542628 MVAr | normalized=17.905426
+[TSO PROX][ESS MAX] node=5, year=2025, day=Summer, period=12, type=P | delta=999.870000 MW | normalized=199.974000
+[INFO] 		 - Updating SharedESS...
+[DIAG][V MAX] node=7, year=2025, day=Summer, period=3 | TSO=43.897668 kV, DSO=3275.175224 kV, diff=3231.277556 kV, base=345.000000 kV, normalized=9.366022, rho(TSO/DSO)=0.007700/0.007700
+[DIAG][PF MAX] node=7, year=2025, day=Spring, period=23, type=Q | TSO=-751.928744 MVAr, DSO=984.114048 MVAr, diff=1736.042792 MVAr, rating=100.000000 MVA, normalized=17.360428, rho(TSO/DSO)=0.198000/0.198000
+[DIAG][ESS MAX] agent=DSO, node=5, year=2025, day=Autumn, period=10, type=Q | x=-990.856027 MVAr, z=-25.522487 MVAr, diff=965.333541 MVAr, norm_rating=2.500000 MVA, normalized=193.066708, rho=0.010000, rho(TSO/DSO/ESSO)=0.010000/0.010000/0.010000
+[DIAG][ESS COMP] TSO | Sch=577.080380 MVA, Sdch=456.667408 MVA, net=120.412972 MVA, product=2.635338e+05 MVA^2, simultaneous=456.667408 MVA, base=100.000000 MVA
+[DIAG][ESS COMP] DSO | Sch=474.065578 MVA, Sdch=545.039032 MVA, net=-70.973454 MVA, product=2.583842e+05 MVA^2, simultaneous=474.065578 MVA, base=100.000000 MVA
+[DIAG][ESS COMP] ESSO | Sch=0.000000 MVA, Sdch=0.000000 MVA, net=0.000000 MVA, product=0.000000e+00 MVA^2, simultaneous=0.000000 MVA
+[INFO]		 - interface Vmag max primal residual failed. 9.366022 > 0.010000
+[INFO]		 - interface Vmag mean primal residual failed. 2.853976 > 0.001000
+[INFO]		 - interface PF max primal residual failed. 17.360428 > 0.010000
+[INFO]		 - interface PF mean primal residual failed. 5.024801 > 0.001000
+[INFO]		 - shared ESS max primal residual failed. 193.066708 > 0.100000
+[INFO]		 - shared ESS mean primal residual failed. 63.159267 > 0.010000
+[INFO]		 - interface Vmag mean dual residual failed. 0.014863 > 0.010000
+[INFO]		 - interface PF mean dual residual failed. 0.569914 > 0.010000
+[INFO]		 - shared ESS mean dual residual failed. 0.440925 > 0.010000
+[INFO]		 - Recourse stationarity requires one previous successful cycle.
+[ADMM RHO] V | primal max ratio=936.602 | primal mean ratio=2853.976 | primal selected=2853.976 | dual mean ratio=1.486 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=1.570533e+02 | s=8.769564e-01 | eps_pri=2.302598e-02 | eps_dual=4.916669e-04 | primal_ratio=6.820700e+03 | dual_ratio=1.783639e+03 | dual_ratio_balance=1.783639e+03 | rho_before=7.700000e-03 | rho_after=7.700000e-03 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=1736.043 | primal mean ratio=5024.801 | primal selected=5024.801 | dual mean ratio=56.991 | increase threshold=5.0 | decrease threshold=3.0 | action=increased
+[ADMM RHO BOYD] PF | r=5.402048e+02 | s=5.514111e+01 | eps_pri=3.614431e-02 | eps_dual=1.893656e-02 | primal_ratio=1.494578e+04 | dual_ratio=2.911886e+03 | dual_ratio_balance=2.911886e+03 | rho_before=1.980000e-01 | rho_after=2.970000e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[ADMM RHO] ESS | primal max ratio=1930.667 | primal mean ratio=6315.927 | primal selected=6315.927 | dual mean ratio=44.092 | increase threshold=5.0 | decrease threshold=5.0 | action=exempt (fixed)
+[ADMM RHO BOYD] ESS | r=5.531542e+03 | s=3.870299e+01 | eps_pri=6.758287e-01 | eps_dual=6.251542e-03 | primal_ratio=8.184828e+03 | dual_ratio=6.190952e+03 | dual_ratio_balance=6.190952e+03 | rho_before=1.000000e-02 | rho_after=1.000000e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=exempt (fixed)
+[INFO]		 - ADMM cycle 1 | Primal (V max/mean | PF max/mean | ESS max/mean) = 9.366022/2.853976 | 17.360428/5.024801 | 193.066708/63.159267 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.068936/0.014863 | 3.545274/0.569914 | 1.267774/0.440925 | Recourse change = N/A (tol. N/A) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/increased/exempt (fixed)
+[INFO] 	 - Iteration 1: 36.29 s
+[INFO] 	 - ADMM Iteration 2
+[INFO] 		 - Updating distribution networks:
+[INFO] 		 - Updating transmission network...
+[TSO PROX] cycle=2 | updated_blocks=12 | held_failed_blocks=0 | V max=8.952713 | PF max=17.905426 | ESS max=358.108526
+[TSO PROX][V MAX] node=5, year=2025, day=Spring, period=20 | dV=3088.686034 kV | normalized=8.952713
+[TSO PROX][PF MAX] node=7, year=2025, day=Summer, period=6, type=Q | delta=1790.542628 MVAr | normalized=17.905426
+[TSO PROX][ESS MAX] node=9, year=2025, day=Autumn, period=11, type=Q | delta=1790.542628 MVAr | normalized=358.108526
+[INFO] 		 - Updating SharedESS...
+[DIAG][V MAX] node=7, year=2025, day=Spring, period=17 | TSO=203.918538 kV, DSO=3435.196094 kV, diff=3231.277556 kV, base=345.000000 kV, normalized=9.366022, rho(TSO/DSO)=0.007700/0.007700
+[DIAG][PF MAX] node=7, year=2025, day=Spring, period=4, type=Q | TSO=-798.784604 MVAr, DSO=937.258188 MVAr, diff=1736.042792 MVAr, rating=100.000000 MVA, normalized=17.360428, rho(TSO/DSO)=0.297000/0.297000
+[DIAG][ESS MAX] agent=TSO, node=5, year=2025, day=Spring, period=17, type=Q | x=995.408014 MVAr, z=30.084153 MVAr, diff=965.323861 MVAr, norm_rating=2.500000 MVA, normalized=193.064772, rho=0.010000, rho(TSO/DSO/ESSO)=0.010000/0.010000/0.010000
+[DIAG][ESS COMP] TSO | Sch=509.849137 MVA, Sdch=500.547276 MVA, net=9.301861 MVA, product=2.552036e+05 MVA^2, simultaneous=500.547276 MVA, base=100.000000 MVA
+[DIAG][ESS COMP] DSO | Sch=517.945446 MVA, Sdch=588.918900 MVA, net=-70.973454 MVA, product=3.050279e+05 MVA^2, simultaneous=517.945446 MVA, base=100.000000 MVA
+[DIAG][ESS COMP] ESSO | Sch=0.000000 MVA, Sdch=0.000000 MVA, net=0.000000 MVA, product=0.000000e+00 MVA^2, simultaneous=0.000000 MVA
+[INFO]		 - interface Vmag max primal residual failed. 9.366022 > 0.010000
+[INFO]		 - interface Vmag mean primal residual failed. 2.791551 > 0.001000
+[INFO]		 - interface PF max primal residual failed. 17.360428 > 0.010000
+[INFO]		 - interface PF mean primal residual failed. 5.052546 > 0.001000
+[INFO]		 - shared ESS max primal residual failed. 193.064772 > 0.100000
+[INFO]		 - shared ESS mean primal residual failed. 63.046201 > 0.010000
+[INFO]		 - interface Vmag mean dual residual failed. 0.014299 > 0.010000
+[INFO]		 - interface PF mean dual residual failed. 0.806636 > 0.010000
+[INFO]		 - shared ESS mean dual residual failed. 0.431097 > 0.010000
+[RECOURSE JUMP] cycle=2 | abs_change=1.594007e+08 | tol=8.616343e+06 | signed_change=-1.594007e+08
+[RECOURSE JUMP] Reconciliation | previous=8.616343e+10 | current=8.600403e+10 | block_delta=-1.594007e+08 | mismatch=-1.525879e-05
+[RECOURSE JUMP] Aggregate signed changes:
+  DSO node=5 | delta=-7.342089e+07
+  DSO node=7 | delta=-5.304712e+07
+  TSO | delta=-1.369197e+07
+  DSO node=9 | delta=-1.209682e+07
+  SALVAGE | delta=-7.143887e+06
+[RECOURSE JUMP] Largest 10 block changes:
+  DSO node=5 year=2035 day=Spring | previous=1.990504e+09 | current=1.980485e+09 | delta=-1.001903e+07 | abs_delta=1.001903e+07
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-6.494501e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-1.920140e+05 | ess_comp=-3.625575e+05
+    [SLACK COMPONENTS] voltage=-2.055874e+05 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+1.357335e+04 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-1.920140e+05 | objective_slack_delta=-1.920140e+05 | mismatch=-9.704381e-07
+    [RECOURSE COMPONENT CHECK] classified_delta=-6.195166e+05 | block_delta=-1.001903e+07 | mismatch=+9.399515e+06
+  DSO node=5 year=2030 day=Spring | previous=2.136774e+09 | current=2.146546e+09 | delta=+9.772085e+06 | abs_delta=9.772085e+06
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-1.631233e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+6.154867e+05 | ess_comp=+1.782447e+05
+    [SLACK COMPONENTS] voltage=+5.542077e+05 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+6.127899e+04 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+6.154867e+05 | objective_slack_delta=+6.154867e+05 | mismatch=+9.145588e-07
+    [RECOURSE COMPONENT CHECK] classified_delta=+7.774191e+05 | block_delta=+9.772085e+06 | mismatch=-8.994666e+06
+  DSO node=7 year=2030 day=Summer | previous=2.179842e+09 | current=2.170528e+09 | delta=-9.313795e+06 | abs_delta=9.313795e+06
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-2.684718e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-1.257135e+06 | ess_comp=-1.731317e+05
+    [SLACK COMPONENTS] voltage=-1.226168e+06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-3.096654e+04 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-1.257135e+06 | objective_slack_delta=-1.257135e+06 | mismatch=+2.197921e-07
+    [RECOURSE COMPONENT CHECK] classified_delta=-1.457113e+06 | block_delta=-9.313795e+06 | mismatch=+7.856682e+06
+  DSO node=7 year=2030 day=Winter | previous=2.179913e+09 | current=2.170727e+09 | delta=-9.186096e+06 | abs_delta=9.186096e+06
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-1.755405e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-1.257135e+06 | ess_comp=-1.731317e+05
+    [SLACK COMPONENTS] voltage=-1.226168e+06 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-3.096654e+04 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-1.257135e+06 | objective_slack_delta=-1.257135e+06 | mismatch=+2.197921e-07
+    [RECOURSE COMPONENT CHECK] classified_delta=-1.447820e+06 | block_delta=-9.186096e+06 | mismatch=+7.738276e+06
+  DSO node=5 year=2030 day=Winter | previous=2.175663e+09 | current=2.167038e+09 | delta=-8.625146e+06 | abs_delta=8.625146e+06
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-4.294726e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-6.561445e+05 | ess_comp=-1.674427e+05
+    [SLACK COMPONENTS] voltage=-6.251779e+05 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-3.096654e+04 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-6.561445e+05 | objective_slack_delta=-6.561445e+05 | mismatch=-2.551824e-07
+    [RECOURSE COMPONENT CHECK] classified_delta=-8.665344e+05 | block_delta=-8.625146e+06 | mismatch=+7.758612e+06
+  DSO node=5 year=2035 day=Winter | previous=2.077492e+09 | current=2.069045e+09 | delta=-8.447233e+06 | abs_delta=8.447233e+06
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+3.583595e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+2.780720e+04 | ess_comp=-3.707796e+05
+    [SLACK COMPONENTS] voltage=+5.585454e+04 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-2.804735e+04 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+2.780720e+04 | objective_slack_delta=+2.780720e+04 | mismatch=+1.860783e-06
+    [RECOURSE COMPONENT CHECK] classified_delta=-3.071364e+05 | block_delta=-8.447233e+06 | mismatch=+8.140096e+06
+  DSO node=7 year=2030 day=Autumn | previous=2.178896e+09 | current=2.170587e+09 | delta=-8.308984e+06 | abs_delta=8.308984e+06
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=+1.679871e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-6.847631e+05 | ess_comp=-1.721064e+05
+    [SLACK COMPONENTS] voltage=-6.537965e+05 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-3.096654e+04 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-6.847631e+05 | objective_slack_delta=-6.847631e+05 | mismatch=+1.654029e-06
+    [RECOURSE COMPONENT CHECK] classified_delta=-8.400707e+05 | block_delta=-8.308984e+06 | mismatch=+7.468914e+06
+  TSO node=None year=2030 day=Spring | previous=6.730536e+08 | current=6.812320e+08 | delta=+8.178386e+06 | abs_delta=8.178386e+06
+    [RECOURSE JUMP][TSO PROX] year=2030 day=Spring | V max=8.952713 | PF max=17.905426 | ESS max=358.108526
+    [RECOURSE COMPONENTS] gen=+7.682327e+06 | flex=+0.000000e+00 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=+7.845753e+04 | ess_comp=+4.176019e+05
+    [SLACK COMPONENTS] voltage=+7.845753e+04 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=+0.000000e+00 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=+7.845753e+04 | objective_slack_delta=+7.845753e+04 | mismatch=+1.788139e-07
+    [RECOURSE COMPONENT CHECK] classified_delta=+8.178386e+06 | block_delta=+8.178386e+06 | mismatch=-1.443550e-07
+  DSO node=5 year=2030 day=Autumn | previous=2.174559e+09 | current=2.166424e+09 | delta=-8.134730e+06 | abs_delta=8.134730e+06
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-6.986118e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-5.989073e+05 | ess_comp=-1.664173e+05
+    [SLACK COMPONENTS] voltage=-5.679408e+05 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-3.096654e+04 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-5.989073e+05 | objective_slack_delta=-5.989073e+05 | mismatch=+2.216548e-07
+    [RECOURSE COMPONENT CHECK] classified_delta=-8.351858e+05 | block_delta=-8.134730e+06 | mismatch=+7.299544e+06
+  DSO node=5 year=2030 day=Summer | previous=2.174439e+09 | current=2.166459e+09 | delta=-7.979327e+06 | abs_delta=7.979327e+06
+    [RECOURSE COMPONENTS] gen=+0.000000e+00 | flex=-5.495398e+04 | load_curt=+0.000000e+00 | res_curt=+0.000000e+00 | ess_usage=+0.000000e+00 | slacks=-6.561445e+05 | ess_comp=-1.674427e+05
+    [SLACK COMPONENTS] voltage=-6.251779e+05 | node_P=+0.000000e+00 | node_Q=+0.000000e+00 | branch_ij=+0.000000e+00 | branch_ji=+0.000000e+00 | flex_P=-3.096654e+04 | flex_Q=+0.000000e+00
+    [SLACK COMPONENT CHECK] classified_delta=-6.561445e+05 | objective_slack_delta=-6.561445e+05 | mismatch=-2.551824e-07
+    [RECOURSE COMPONENT CHECK] classified_delta=-8.785411e+05 | block_delta=-7.979327e+06 | mismatch=+7.100786e+06
+[INFO]		 - Recourse stationarity failed. 159400695.392166 > 8616343.140601
+[ADMM RHO] V | primal max ratio=936.602 | primal mean ratio=2791.551 | primal selected=2791.551 | dual mean ratio=1.430 | increase threshold=5.0 | decrease threshold=5.0 | action=held
+[ADMM RHO BOYD] V | r=1.535844e+02 | s=9.387345e-01 | eps_pri=2.337333e-02 | eps_dual=5.395888e-04 | primal_ratio=6.570926e+03 | dual_ratio=1.739722e+03 | dual_ratio_balance=1.739722e+03 | rho_before=7.700000e-03 | rho_after=7.700000e-03 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=held
+[ADMM RHO] PF | primal max ratio=1736.043 | primal mean ratio=5052.546 | primal selected=5052.546 | dual mean ratio=80.664 | increase threshold=5.0 | decrease threshold=3.0 | action=increased
+[ADMM RHO BOYD] PF | r=4.930453e+02 | s=8.122987e+01 | eps_pri=3.526096e-02 | eps_dual=2.978024e-02 | primal_ratio=1.398275e+04 | dual_ratio=2.727643e+03 | dual_ratio_balance=2.727643e+03 | rho_before=2.970000e-01 | rho_after=4.455000e-01 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=increased
+[ADMM RHO] ESS | primal max ratio=1930.648 | primal mean ratio=6304.620 | primal selected=6304.620 | dual mean ratio=43.110 | increase threshold=5.0 | decrease threshold=5.0 | action=exempt (fixed)
+[ADMM RHO BOYD] ESS | r=5.504377e+03 | s=4.069630e+01 | eps_pri=6.777407e-01 | eps_dual=1.029519e-02 | primal_ratio=8.121657e+03 | dual_ratio=3.952942e+03 | dual_ratio_balance=3.952942e+03 | rho_before=1.000000e-02 | rho_after=1.000000e-02 | gamma_before=0.000000e+00 | gamma_after=0.000000e+00 | action=exempt (fixed)
+[INFO]		 - ADMM cycle 2 | Primal (V max/mean | PF max/mean | ESS max/mean) = 9.366022/2.791551 | 17.360428/5.052546 | 193.064772/63.046201 | Dual (V max/mean | PF max/mean | ESS max/mean) = 0.068936/0.014299 | 5.317912/0.806636 | 2.399327/0.431097 | Recourse change = 159400695.392166 (tol. 8616343.140601) | Stable cycles = 0/10 | Penalty actions (V/PF/ESS) = held/increased/exempt (fixed)
+[INFO] 	 - Iteration 2: 25.58 s
+[WARNING] 	 - ADMM did NOT converge in 2 iterations!
+[INFO] 	 - Execution time: 155.96 s
+[probe post/srp1grid_x0_a05_on_v1_noq] error=None run_error=None cycles=2 guard_zero=True -> /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/coupling_option_v1/step1_completion_probe_r5/probe_post_srp1grid_x0_a05_on_v1_noq.json

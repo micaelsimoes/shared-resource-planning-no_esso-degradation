@@ -1,0 +1,157 @@
+{
+ "all_checks_pass": true,
+ "audit_A_cross_check": {
+  "audit_A_file": "data/SRP1/Results/P515S56/input_audit_A/instance/SRP1__s56_3x3_ev_profiles.json",
+  "audit_A_sha256": "23570acbe90a6d8ee15f86572a7744d091efeba2be9bdbfb177145d92f1f3255",
+  "n_audit_A_arrays": 12880,
+  "n_bitwise_equal": 8920,
+  "n_common": 8920,
+  "n_new_arrays": 8920,
+  "n_only_in_audit_A": 3960,
+  "only_in_audit_A": [
+   "DSO5|2025|Autumn|load|0|flex_q_down",
+   "DSO5|2025|Autumn|load|0|flex_q_up",
+   "DSO5|2025|Autumn|load|10|flex_q_down",
+   "DSO5|2025|Autumn|load|10|flex_q_up",
+   "DSO5|2025|Autumn|load|11|flex_q_down",
+   "DSO5|2025|Autumn|load|11|flex_q_up",
+   "DSO5|2025|Autumn|load|12|flex_q_down",
+   "DSO5|2025|Autumn|load|12|flex_q_up",
+   "DSO5|2025|Autumn|load|13|flex_q_down",
+   "DSO5|2025|Autumn|load|13|flex_q_up",
+   "DSO5|2025|Autumn|load|14|flex_q_down",
+   "DSO5|2025|Autumn|load|14|flex_q_up",
+   "DSO5|2025|Autumn|load|15|flex_q_down",
+   "DSO5|2025|Autumn|load|15|flex_q_up",
+   "DSO5|2025|Autumn|load|16|flex_q_down",
+   "DSO5|2025|Autumn|load|16|flex_q_up",
+   "DSO5|2025|Autumn|load|17|flex_q_down",
+   "DSO5|2025|Autumn|load|17|flex_q_up",
+   "DSO5|2025|Autumn|load|18|flex_q_down",
+   "DSO5|2025|Autumn|load|18|flex_q_up"
+  ]
+ },
+ "case_path": "data/SRP1/Results/P515S56/ev_harness_v1/five_block_ev/SRP1__s56_five_block_3x3_ev.json",
+ "case_sha256": "61199eb09a78abac8684fbb5bf983a205e0bac0ce5457b727019905949f07164",
+ "derived_instance_declaration": {
+  "case_path": "data/SRP1/Results/P515S56/ev_harness_v1/five_block_ev/SRP1__s56_five_block_3x3_ev.json",
+  "case_sha256": "61199eb09a78abac8684fbb5bf983a205e0bac0ce5457b727019905949f07164",
+  "changes_vs_source": [
+   {
+    "from": 3,
+    "key": "NumMarketScenarios",
+    "to": 1
+   },
+   {
+    "from": 3,
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "to": 1
+   },
+   {
+    "from": 3,
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "to": 1
+   },
+   {
+    "from": 3,
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "to": 1
+   },
+   {
+    "from": 3,
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "to": 1
+   },
+   {
+    "from": "production synthesis at one scenario (= draw 0)",
+    "key": "scenario arrays (all but A5)",
+    "to": "probability-weighted means of s53_3x3, injected at shared_resources_planning._compute_scenario_metadata from data/SRP1/Results/P515S56/ev_harness_v1/five_block_ev/SRP1__s56_five_block_3x3_ev_profiles.json (sha256 8449163988f80ba7358df41dc9e86a8123dafee99eea918b4157d37dca151954)"
+   }
+  ],
+  "instance_label": "s56_five_block_3x3_ev",
+  "scenario_checksum": "d0d3a6000bff0841d1f9c234d517e99b5972d4e7fef55ddb316cb85a40885557",
+  "source_case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+  "source_case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871"
+ },
+ "facts": {
+  "days": {
+   "Autumn": 91,
+   "Spring": 92,
+   "Summer": 91,
+   "Winter": 91
+  },
+  "declared_solves_per_cycle": 83,
+  "expected_block_counts": {
+   "dso_blocks": 60,
+   "esso_models": 3,
+   "network_blocks": 80,
+   "solves_per_cycle": 83,
+   "tso_blocks": 20
+  },
+  "years": {
+   "2025": 3,
+   "2028": 3,
+   "2031": 3,
+   "2034": 3,
+   "2037": 3
+  }
+ },
+ "failed_checks": [],
+ "instance_label": "s56_five_block_3x3_ev",
+ "loading_route": "p515_s44_campaign_harness.install_derived_instance(derived, eval_dir, ev_profiles=p515_s56_ev_injection.load_profiles(profiles_path, profiles_sha256)) -- entry key s56_ev_profiles",
+ "profiles_path": "data/SRP1/Results/P515S56/ev_harness_v1/five_block_ev/SRP1__s56_five_block_3x3_ev_profiles.json",
+ "profiles_sha256": "8449163988f80ba7358df41dc9e86a8123dafee99eea918b4157d37dca151954",
+ "scenario_checksum": "d0d3a6000bff0841d1f9c234d517e99b5972d4e7fef55ddb316cb85a40885557",
+ "schema": "p515_s56_ev_harness_tests_v1_five_block_ev_instance",
+ "source_instance": {
+  "case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+  "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+  "changes_vs_source": [
+   {
+    "from": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "key": "Years",
+    "to": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    }
+   },
+   {
+    "from": 1,
+    "key": "NumMarketScenarios",
+    "to": 3
+   },
+   {
+    "from": 1,
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "to": 3
+   },
+   {
+    "from": 1,
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "to": 3
+   },
+   {
+    "from": 1,
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "to": 3
+   },
+   {
+    "from": 1,
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "to": 3
+   }
+  ],
+  "instance_label": "s53_3x3",
+  "scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+  "source_case_path": "data/SRP1/SRP1.json",
+  "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+ },
+ "utc": "2026-11-23T19:35:07.963856+00:00"
+}

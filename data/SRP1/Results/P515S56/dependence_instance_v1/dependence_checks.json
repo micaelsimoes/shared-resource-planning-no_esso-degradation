@@ -1,0 +1,2439 @@
+{
+ "schema": "p515_s56_dependence_checks_v1",
+ "script": "p515_s56_build_dependence_instance.py",
+ "script_sha256": "3334d54edaf1dcbffae7673dcc98e67645c8a38ce2bd5ba1bbfa96770e9c2da0",
+ "module_sha256": "aaf2dd34b085914477ef0ebe400690bd0c35db1146e0e8019bab233360a617ee",
+ "started_utc": "2026-11-21T16:57:53.633481+00:00",
+ "finished_utc": "2026-11-21T16:59:13.710364+00:00",
+ "wall_s": 80.07690787315369,
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "provenance_start": {
+  "provenance_repo": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation",
+  "code_dir": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/dep_export_v1_20261121T165726Z",
+  "git_head": "9acc085afc5228ec4fb62af4a6a5f5f0241255a7",
+  "tracked_status_porcelain": " M admm_parameters.py\n M model_construction_helpers.py\n M p515_s44_campaign_harness.py\n M p515_s53_w118_resettle_hooks.py\n M shared_resources_planning.py\n",
+  "utc": "2026-11-21T16:57:53.716801+00:00"
+ },
+ "provenance_end": {
+  "provenance_repo": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation",
+  "code_dir": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/c6e62c21-d979-41e7-aaa2-cc14f8c287b2/scratchpad/dep_export_v1_20261121T165726Z",
+  "git_head": "9acc085afc5228ec4fb62af4a6a5f5f0241255a7",
+  "tracked_status_porcelain": " M admm_parameters.py\n M model_construction_helpers.py\n M p515_s44_campaign_harness.py\n M p515_s53_w118_resettle_hooks.py\n M shared_resources_planning.py\n",
+  "utc": "2026-11-21T16:59:13.707954+00:00"
+ },
+ "solve_claim": "ZERO SOLVES, guard-verified (SolveProfileGuard(permitted=()) armed for the whole run, verify(0))",
+ "definition": {
+  "statistic": "ND[s] = sum_{loads l not ADN} sum_t pd_l[s,t] * baseMVA * dt - sum_{generators g, gen_type in definitions.GEN_CURTAILLABLE_TYPES} sum_t pg_g[s,t] * baseMVA * dt, in MWh, dt = 24 h / num_instants; per network block (network, year, day); ADN loads = the TSO loads production zeroes after the checksum point (network.adn_load_exists / get_adn_load_idx for every DSO node); evaluation: float(np.sum(A[s])) * baseMVA * dt per array, accumulated in Python floats, loads by index then generators by index",
+  "tie_rule": "perm = sorted(range(n), key=lambda s: (ND[s], s)): ascending ND, exact ties -> lower original index first; new index k takes original index perm[k]; new_A = old_A[perm, :] for every operation array of the block (market arrays never permuted)",
+  "array_sha": "sha256 over b\"<f8\" + repr(shape).encode(\"ascii\") + np.ascontiguousarray(A, dtype=\"<f8\").tobytes() (the array as float64, C order)"
+ },
+ "instances": {
+  "srp1grid_3x3": {
+   "label": "s56_srp1grid_3x3_comonotone",
+   "base_case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+   "base_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+   "scenario_checksum": "1d54ddc99f6f1a8109cf60e8c775ab88ed84e15c54475d583f163e6625d21bb7",
+   "profiles": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/dependence_instance_v1/srp1grid_3x3/SRP1__s56_srp1grid_3x3_comonotone_profiles.json",
+   "profiles_sha256": "ae2b8e9f4ccd0f5f46cbbce244392b3262d746a9b54122893db6296a0214600f"
+  },
+  "five_block_3x3": {
+   "label": "s53_3x3_comonotone",
+   "base_case": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+   "base_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+   "scenario_checksum": "8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a",
+   "profiles": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/dependence_instance_v1/five_block_3x3/SRP1__s53_3x3_comonotone_profiles.json",
+   "profiles_sha256": "4743e37160ed8a50d77a7c6de1c2a9d3827001639a079913f6b2bde9cd23e422"
+  }
+ },
+ "per_grid": {
+  "srp1grid_3x3": {
+   "reads": {
+    "base": {
+     "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+     "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+     "wall_s": 12.616901159286499,
+     "read_dir": "srp1grid_3x3/reads/base",
+     "scenario_metadata": {
+      "random_seed": 2026,
+      "deterministic_scenarios": true,
+      "market_scenario_checksum": "cd0313b883fb0ca855ff283189b46f57349ff30d2781af5d4edc0ad1940fca28",
+      "operational_scenario_checksum": "e1c36b76d3660ae32f307f47a88d91afc6d3322faa72696ade763c2046736c72",
+      "combined_scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7"
+     },
+     "hook_apply_counts": []
+    },
+    "dependence": {
+     "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+     "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+     "wall_s": 11.82336711883545,
+     "read_dir": "srp1grid_3x3/reads/dependence",
+     "scenario_metadata": {
+      "random_seed": 2026,
+      "deterministic_scenarios": true,
+      "market_scenario_checksum": "cd0313b883fb0ca855ff283189b46f57349ff30d2781af5d4edc0ad1940fca28",
+      "operational_scenario_checksum": "4e79a01b38b5e627752c59817e9a0ba003ca06c2639947ee918e806373225298",
+      "combined_scenario_checksum": "1d54ddc99f6f1a8109cf60e8c775ab88ed84e15c54475d583f163e6625d21bb7"
+     },
+     "hook_apply_counts": [
+      {
+       "n_operation_arrays_permuted": 7704,
+       "n_arrays_changed": 4536,
+       "n_market_arrays_checked_untouched": 24,
+       "n_blocks_non_identity": 43
+      }
+     ]
+    },
+    "dependence_reread": {
+     "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+     "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+     "wall_s": 12.475465059280396,
+     "read_dir": "srp1grid_3x3/reads/dependence_reread",
+     "scenario_metadata": {
+      "random_seed": 2026,
+      "deterministic_scenarios": true,
+      "market_scenario_checksum": "cd0313b883fb0ca855ff283189b46f57349ff30d2781af5d4edc0ad1940fca28",
+      "operational_scenario_checksum": "4e79a01b38b5e627752c59817e9a0ba003ca06c2639947ee918e806373225298",
+      "combined_scenario_checksum": "1d54ddc99f6f1a8109cf60e8c775ab88ed84e15c54475d583f163e6625d21bb7"
+     },
+     "hook_apply_counts": [
+      {
+       "n_operation_arrays_permuted": 7704,
+       "n_arrays_changed": 4536,
+       "n_market_arrays_checked_untouched": 24,
+       "n_blocks_non_identity": 43
+      }
+     ]
+    }
+   },
+   "coverage": {
+    "uncovered_n_by_T_arrays": [],
+    "other_arrays_with_first_dim_n": {}
+   },
+   "post_read_changed_keys": [
+    "TSO|2025|Spring|load|0|pd",
+    "TSO|2025|Spring|load|0|qd",
+    "TSO|2025|Spring|load|1|pd",
+    "TSO|2025|Spring|load|1|qd",
+    "TSO|2025|Spring|load|2|pd",
+    "TSO|2025|Spring|load|2|qd",
+    "TSO|2025|Summer|load|0|pd",
+    "TSO|2025|Summer|load|0|qd",
+    "TSO|2025|Summer|load|1|pd",
+    "TSO|2025|Summer|load|1|qd",
+    "TSO|2025|Summer|load|2|pd",
+    "TSO|2025|Summer|load|2|qd",
+    "TSO|2025|Autumn|load|0|pd",
+    "TSO|2025|Autumn|load|0|qd",
+    "TSO|2025|Autumn|load|1|pd",
+    "TSO|2025|Autumn|load|1|qd",
+    "TSO|2025|Autumn|load|2|pd",
+    "TSO|2025|Autumn|load|2|qd",
+    "TSO|2025|Winter|load|0|pd",
+    "TSO|2025|Winter|load|0|qd",
+    "TSO|2025|Winter|load|1|pd",
+    "TSO|2025|Winter|load|1|qd",
+    "TSO|2025|Winter|load|2|pd",
+    "TSO|2025|Winter|load|2|qd",
+    "TSO|2030|Spring|load|0|pd",
+    "TSO|2030|Spring|load|0|qd",
+    "TSO|2030|Spring|load|1|pd",
+    "TSO|2030|Spring|load|1|qd",
+    "TSO|2030|Spring|load|2|pd",
+    "TSO|2030|Spring|load|2|qd",
+    "TSO|2030|Summer|load|0|pd",
+    "TSO|2030|Summer|load|0|qd",
+    "TSO|2030|Summer|load|1|pd",
+    "TSO|2030|Summer|load|1|qd",
+    "TSO|2030|Summer|load|2|pd",
+    "TSO|2030|Summer|load|2|qd",
+    "TSO|2030|Autumn|load|0|pd",
+    "TSO|2030|Autumn|load|0|qd",
+    "TSO|2030|Autumn|load|1|pd",
+    "TSO|2030|Autumn|load|1|qd",
+    "TSO|2030|Autumn|load|2|pd",
+    "TSO|2030|Autumn|load|2|qd",
+    "TSO|2030|Winter|load|0|pd",
+    "TSO|2030|Winter|load|0|qd",
+    "TSO|2030|Winter|load|1|pd",
+    "TSO|2030|Winter|load|1|qd",
+    "TSO|2030|Winter|load|2|pd",
+    "TSO|2030|Winter|load|2|qd",
+    "TSO|2035|Spring|load|0|pd",
+    "TSO|2035|Spring|load|0|qd",
+    "TSO|2035|Spring|load|1|pd",
+    "TSO|2035|Spring|load|1|qd",
+    "TSO|2035|Spring|load|2|pd",
+    "TSO|2035|Spring|load|2|qd",
+    "TSO|2035|Summer|load|0|pd",
+    "TSO|2035|Summer|load|0|qd",
+    "TSO|2035|Summer|load|1|pd",
+    "TSO|2035|Summer|load|1|qd",
+    "TSO|2035|Summer|load|2|pd",
+    "TSO|2035|Summer|load|2|qd",
+    "TSO|2035|Autumn|load|0|pd",
+    "TSO|2035|Autumn|load|0|qd",
+    "TSO|2035|Autumn|load|1|pd",
+    "TSO|2035|Autumn|load|1|qd",
+    "TSO|2035|Autumn|load|2|pd",
+    "TSO|2035|Autumn|load|2|qd",
+    "TSO|2035|Winter|load|0|pd",
+    "TSO|2035|Winter|load|0|qd",
+    "TSO|2035|Winter|load|1|pd",
+    "TSO|2035|Winter|load|1|qd",
+    "TSO|2035|Winter|load|2|pd",
+    "TSO|2035|Winter|load|2|qd"
+   ],
+   "ev_means": {
+    "definition": {
+     "market": "Abar[year][day][t] = sum_{s_m} pi_m[year][s_m] * A[year][day][s_m, t], A in {cost_energy_p (EUR/MWh), cost_flex (EUR/MWh)}, pi_m = planning.prob_market_scenarios[year] (production _read_market_data_from_file: [1/NumMarketScenarios] * NumMarketScenarios)",
+     "operation": "Abar[net][year][day][device][t] = sum_{s_o} pi_o[s_o] * A[s_o, t], A in {load.pd, load.qd, load.flexibility.active_power.upward, .downward, load.flexibility.reactive_power.upward, .downward, generator.pg, generator.qg} (p.u. on the network baseMVA, as stored), pi_o = network.prob_operation_scenarios (production _read_network_data: [1/num_oper_scenarios] * n)",
+     "joint_equivalence": "equal to the joint mean over the 9 (s_m, s_o) pairs with weight pi_m * pi_o (production _scenario_probability) because each array depends on one dimension only and the other dimension's weights sum to 1; checked numerically",
+     "evaluation": "numpy float64, np.sum(w[:, None] * A, axis=0), w the production probability vector",
+     "capture_point": "arrays as stored at the entry of shared_resources_planning._compute_scenario_metadata (the production scenario-checksum point: TSO and DSOs read, ADN loads not yet zeroed, shared ESS not yet added); the post-read arrays are compared separately",
+     "what_it_is_not": "no re-derivation of power factor / Q-P ratio, no capacity clipping, no abs() of flexibility bounds (production applies abs() at model build), no re-sampling"
+    },
+    "n_arrays": 7728,
+    "n_bitwise_equal": 4282,
+    "n_differ": 3446,
+    "differ_first": [
+     "TSO|2025|Spring|load|0|pd",
+     "TSO|2025|Spring|load|0|qd",
+     "TSO|2025|Spring|load|0|flex_p_up",
+     "TSO|2025|Spring|load|0|flex_p_down",
+     "TSO|2025|Spring|load|1|pd",
+     "TSO|2025|Spring|load|1|qd",
+     "TSO|2025|Spring|load|1|flex_p_up",
+     "TSO|2025|Spring|load|1|flex_p_down",
+     "TSO|2025|Spring|load|2|pd",
+     "TSO|2025|Spring|load|2|qd",
+     "TSO|2025|Spring|load|2|flex_p_up",
+     "TSO|2025|Spring|load|2|flex_p_down",
+     "TSO|2025|Spring|gen|3|2|pg",
+     "TSO|2025|Spring|gen|4|2|pg",
+     "TSO|2025|Spring|gen|5|2|pg",
+     "TSO|2025|Spring|gen|6|3|pg",
+     "TSO|2025|Spring|gen|7|3|pg",
+     "TSO|2025|Spring|gen|8|3|pg",
+     "TSO|2025|Summer|load|0|pd",
+     "TSO|2025|Summer|load|0|qd"
+    ],
+    "differ_by_family": {
+     "TSO.load.pd": 27,
+     "TSO.load.qd": 27,
+     "TSO.load.flex_p_up": 27,
+     "TSO.load.flex_p_down": 27,
+     "TSO.gen2.pg": 27,
+     "TSO.gen3.pg": 26,
+     "DSO.load.pd": 795,
+     "DSO.load.qd": 797,
+     "DSO.load.flex_p_up": 799,
+     "DSO.load.flex_p_down": 797,
+     "DSO.gen2.pg": 33,
+     "DSO.gen3.pg": 64
+    },
+    "max_ulp": 16.0,
+    "max_abs_diff_pu_or_eur": 2.220446049250313e-16,
+    "reorder_reproduces_dependence_mean_bitwise": true,
+    "fsum_mean_bitwise_identical": true,
+    "explanation": "the mean is AA.compute_means: np.sum(w[:, None] * A, axis=0) with w = [1/3] * 3. The products w[s] * A[s, t] are the same multiset after the permutation; np.sum along axis 0 adds the rows in index order ((r0 + r1) + r2), so a permutation changes only the ORDER of two floating additions, which can move the rounded result by a few ulp. Verified two ways: (i) recomputing the BASE mean with its rows taken in the permuted order reproduces the dependence mean bit for bit; (ii) an order-independent, exactly-rounded mean (math.fsum of the products per hour) is bitwise identical for the base and the dependence arrays. Size: two orders of a 3-term recursive sum differ by at most ~2 ulp of sum_s |w_s A[s, t]| (the textbook bound, 2 * gamma_2 * sum |x|); the difference in ulp of the RESULT is larger only where the terms have mixed signs and cancel (mean near zero)",
+    "n_elements_differing": 18025,
+    "histogram_ulp_of_result": {
+     "1.0": 17412,
+     "2.0": 610,
+     "4.0": 1,
+     "8.0": 1,
+     "16.0": 1
+    },
+    "max_ulp_of_abs_sum": 2.0,
+    "bound_ulp_of_abs_sum": 4.0,
+    "n_elements_differing_with_mixed_sign_terms": 23,
+    "stored_ev_profiles_comparison": {
+     "path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+     "sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729",
+     "source_scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+     "n_compared": 5352,
+     "n_stored_eq_base_mean_bitwise": 5352,
+     "n_stored_eq_dependence_mean_bitwise": 1906,
+     "max_ulp_stored_vs_dependence_mean": 16.0
+    }
+   },
+   "object_walks": {
+    "declared_exclusions": {
+     "n_leaves_compared": 41170,
+     "n_diffs": 0,
+     "uncompared_types": {},
+     "excluded_attribute_hits": {
+      "SharedResourcesPlanning.cost_energy_p": 1,
+      "SharedResourcesPlanning.cost_flex": 1,
+      "SharedResourcesPlanning.diagrams_dir": 1,
+      "SharedResourcesPlanning.filename": 1,
+      "SharedResourcesPlanning.logs_dir": 1,
+      "SharedResourcesPlanning.num_market_scenarios": 1,
+      "SharedResourcesPlanning.prob_market_scenarios": 1,
+      "SharedResourcesPlanning.results_dir": 1,
+      "SharedResourcesPlanning.scenario_metadata": 1,
+      "NetworkData.cost_energy_p": 4,
+      "NetworkData.cost_flex": 4,
+      "NetworkData.diagrams_dir": 4,
+      "NetworkData.logs_dir": 4,
+      "NetworkData.num_oper_scenarios": 4,
+      "NetworkData.results_dir": 4,
+      "Network.cost_energy_p": 48,
+      "Network.cost_flex": 48,
+      "Network.diagrams_dir": 48,
+      "Network.logs_dir": 48,
+      "Network.num_oper_scenarios": 48,
+      "Network.prob_market_scenarios": 48,
+      "Network.prob_operation_scenarios": 48,
+      "Network.results_dir": 48,
+      "Load.pd": 1188,
+      "Load.qd": 1188,
+      "LoadFlexibilityDirection.downward": 2376,
+      "LoadFlexibilityDirection.upward": 2376,
+      "Generator.pg": 288,
+      "Generator.qg": 288,
+      "SharedEnergyStorageData.cost_energy_p": 1,
+      "SharedEnergyStorageData.logs_dir": 1,
+      "SharedEnergyStorageData.results_dir": 1
+     }
+    },
+    "bookkeeping_exclusions": {
+     "exclusions": {
+      "SharedResourcesPlanning": [
+       "diagrams_dir",
+       "logs_dir",
+       "results_dir",
+       "scenario_metadata"
+      ],
+      "NetworkData": [
+       "diagrams_dir",
+       "logs_dir",
+       "results_dir"
+      ],
+      "Network": [
+       "diagrams_dir",
+       "logs_dir",
+       "results_dir"
+      ],
+      "SharedEnergyStorageData": [
+       "logs_dir",
+       "results_dir"
+      ]
+     },
+     "n_leaves_compared": 49105,
+     "n_diffs": 4476,
+     "n_expected": 4476,
+     "diff_fields": {
+      "pg": 192,
+      "pd": 1056,
+      "flex_p_down": 1086,
+      "qd": 1056,
+      "flex_p_up": 1086
+     },
+     "excluded_attribute_hits": {
+      "SharedResourcesPlanning.diagrams_dir": 1,
+      "SharedResourcesPlanning.logs_dir": 1,
+      "SharedResourcesPlanning.results_dir": 1,
+      "SharedResourcesPlanning.scenario_metadata": 1,
+      "NetworkData.diagrams_dir": 4,
+      "NetworkData.logs_dir": 4,
+      "NetworkData.results_dir": 4,
+      "Network.diagrams_dir": 48,
+      "Network.logs_dir": 48,
+      "Network.results_dir": 48,
+      "SharedEnergyStorageData.logs_dir": 1,
+      "SharedEnergyStorageData.results_dir": 1
+     }
+    }
+   },
+   "assertion_tests": {
+    "checksum_point": {
+     "point": "checksum",
+     "profiles_sha256": "ae2b8e9f4ccd0f5f46cbbce244392b3262d746a9b54122893db6296a0214600f",
+     "n_operation_arrays": 7704,
+     "n_market_arrays": 24,
+     "n_mismatches": 0,
+     "mismatches_first": [],
+     "n_differ_from_base": 4536,
+     "expected_n_differ_from_base": 4536,
+     "n_still_base": 0,
+     "n_market_bad": 0,
+     "n_alias_bad": 0,
+     "n_blocks_non_monotone": 0,
+     "n_blocks_non_identity_now": 0,
+     "combined_scenario_checksum": null,
+     "expected_scenario_checksum": null,
+     "failures": [],
+     "ok": true
+    },
+    "dependence_post_read": {
+     "raised": false,
+     "summary": {
+      "point": "post_read",
+      "profiles_sha256": "ae2b8e9f4ccd0f5f46cbbce244392b3262d746a9b54122893db6296a0214600f",
+      "n_operation_arrays": 7704,
+      "n_market_arrays": 24,
+      "n_mismatches": 0,
+      "mismatches_first": [],
+      "n_differ_from_base": 4476,
+      "expected_n_differ_from_base": 4476,
+      "n_still_base": 0,
+      "n_market_bad": 0,
+      "n_alias_bad": 0,
+      "n_blocks_non_monotone": 0,
+      "n_blocks_non_identity_now": 0,
+      "combined_scenario_checksum": "1d54ddc99f6f1a8109cf60e8c775ab88ed84e15c54475d583f163e6625d21bb7",
+      "expected_scenario_checksum": "1d54ddc99f6f1a8109cf60e8c775ab88ed84e15c54475d583f163e6625d21bb7",
+      "failures": [],
+      "ok": true
+     }
+    },
+    "base_read_index_paired": {
+     "raised": true,
+     "error": "dependence-instance assertion FAILED: 4476 of 7704 operation arrays differ from the stored permuted arrays (first {'key': 'TSO|2025|Spring|load|0|flex_p_up', 'what': 'sha256 != stored permuted', 'equals_base': True}; 4476 of them carry the BASE bytes) | index-paired check: 0 operation arrays differ from the base instance (expected 4476 > 0); 4476 arrays the permutation changes still carry their base bytes (first ['TSO|2025|Spring|load|0|flex_p_up', 'TSO|2025|Spring|load|0|flex_p_down', 'TSO|2025|Spring|load|1|flex_p_up']) | statistic not non-decreasing in 43 blocks / comonotone permutation not the identity in 43 blocks (first ['TSO|2025|Spring', 'TSO|2025|Summer', 'TSO|2025|Autumn'])",
+     "summary": {
+      "point": "post_read",
+      "profiles_sha256": "ae2b8e9f4ccd0f5f46cbbce244392b3262d746a9b54122893db6296a0214600f",
+      "n_operation_arrays": 7704,
+      "n_market_arrays": 24,
+      "n_mismatches": 4476,
+      "mismatches_first": [
+       {
+        "key": "TSO|2025|Spring|load|0|flex_p_up",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|load|0|flex_p_down",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|load|1|flex_p_up",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|load|1|flex_p_down",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|load|2|flex_p_up",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|load|2|flex_p_down",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|gen|3|2|pg",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|gen|4|2|pg",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|gen|5|2|pg",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|gen|6|3|pg",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|gen|7|3|pg",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|gen|8|3|pg",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Summer|load|0|flex_p_up",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Summer|load|0|flex_p_down",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Summer|load|1|flex_p_up",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Summer|load|1|flex_p_down",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Summer|load|2|flex_p_up",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Summer|load|2|flex_p_down",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Summer|gen|3|2|pg",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Summer|gen|4|2|pg",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       }
+      ],
+      "n_differ_from_base": 0,
+      "expected_n_differ_from_base": 4476,
+      "n_still_base": 4476,
+      "n_market_bad": 0,
+      "n_alias_bad": 0,
+      "n_blocks_non_monotone": 43,
+      "n_blocks_non_identity_now": 43,
+      "combined_scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+      "expected_scenario_checksum": null,
+      "failures": [
+       "4476 of 7704 operation arrays differ from the stored permuted arrays (first {'key': 'TSO|2025|Spring|load|0|flex_p_up', 'what': 'sha256 != stored permuted', 'equals_base': True}; 4476 of them carry the BASE bytes)",
+       "index-paired check: 0 operation arrays differ from the base instance (expected 4476 > 0); 4476 arrays the permutation changes still carry their base bytes (first ['TSO|2025|Spring|load|0|flex_p_up', 'TSO|2025|Spring|load|0|flex_p_down', 'TSO|2025|Spring|load|1|flex_p_up'])",
+       "statistic not non-decreasing in 43 blocks / comonotone permutation not the identity in 43 blocks (first ['TSO|2025|Spring', 'TSO|2025|Summer', 'TSO|2025|Autumn'])"
+      ],
+      "ok": false
+     }
+    },
+    "dependence_read_with_base_checksum": {
+     "raised": true,
+     "error": "dependence-instance assertion FAILED: combined scenario checksum 1d54ddc99f6f1a8109cf60e8c775ab88ed84e15c54475d583f163e6625d21bb7 != expected 73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7 | the expected checksum is the BASE (index-paired) instance's",
+     "summary": {
+      "point": "post_read",
+      "profiles_sha256": "ae2b8e9f4ccd0f5f46cbbce244392b3262d746a9b54122893db6296a0214600f",
+      "n_operation_arrays": 7704,
+      "n_market_arrays": 24,
+      "n_mismatches": 0,
+      "mismatches_first": [],
+      "n_differ_from_base": 4476,
+      "expected_n_differ_from_base": 4476,
+      "n_still_base": 0,
+      "n_market_bad": 0,
+      "n_alias_bad": 0,
+      "n_blocks_non_monotone": 0,
+      "n_blocks_non_identity_now": 0,
+      "combined_scenario_checksum": "1d54ddc99f6f1a8109cf60e8c775ab88ed84e15c54475d583f163e6625d21bb7",
+      "expected_scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+      "failures": [
+       "combined scenario checksum 1d54ddc99f6f1a8109cf60e8c775ab88ed84e15c54475d583f163e6625d21bb7 != expected 73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+       "the expected checksum is the BASE (index-paired) instance's"
+      ],
+      "ok": false
+     }
+    },
+    "dependence_reread_post_read": {
+     "raised": false,
+     "summary": {
+      "point": "post_read",
+      "profiles_sha256": "ae2b8e9f4ccd0f5f46cbbce244392b3262d746a9b54122893db6296a0214600f",
+      "n_operation_arrays": 7704,
+      "n_market_arrays": 24,
+      "n_mismatches": 0,
+      "mismatches_first": [],
+      "n_differ_from_base": 4476,
+      "expected_n_differ_from_base": 4476,
+      "n_still_base": 0,
+      "n_market_bad": 0,
+      "n_alias_bad": 0,
+      "n_blocks_non_monotone": 0,
+      "n_blocks_non_identity_now": 0,
+      "combined_scenario_checksum": "1d54ddc99f6f1a8109cf60e8c775ab88ed84e15c54475d583f163e6625d21bb7",
+      "expected_scenario_checksum": "1d54ddc99f6f1a8109cf60e8c775ab88ed84e15c54475d583f163e6625d21bb7",
+      "failures": [],
+      "ok": true
+     }
+    }
+   },
+   "blocks_changed": {
+    "per_network_non_identity": {
+     "TSO": 10,
+     "DSO5": 11,
+     "DSO7": 11,
+     "DSO9": 11
+    },
+    "per_network_blocks": {
+     "TSO": 12,
+     "DSO5": 12,
+     "DSO7": 12,
+     "DSO9": 12
+    },
+    "total_non_identity": 43,
+    "total_blocks": 48
+   },
+   "ties": {},
+   "n_ties": 0,
+   "alternative_tso_statistic": {
+    "definition": "as STATISTIC but the TSO ADN loads included at their pre-zeroing sampled pd",
+    "n_blocks_whose_permutation_would_differ": 8,
+    "blocks": [
+     "TSO|2025|Autumn",
+     "TSO|2025|Summer",
+     "TSO|2025|Winter",
+     "TSO|2030|Autumn",
+     "TSO|2030|Summer",
+     "TSO|2030|Winter",
+     "TSO|2035|Autumn",
+     "TSO|2035|Spring"
+    ],
+    "note": "reporting only; the declared statistic excludes the ADN loads (the model never sees them)"
+   },
+   "n_operation_arrays": 7704,
+   "n_market_arrays": 24,
+   "n_arrays_changed": {
+    "checksum": 4536,
+    "post_read": 4476
+   },
+   "statistic_monotone": {
+    "n_blocks": 48,
+    "n_non_decreasing": 48,
+    "n_strictly_increasing": 48
+   }
+  },
+  "five_block_3x3": {
+   "reads": {
+    "base": {
+     "case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+     "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+     "wall_s": 12.838560104370117,
+     "read_dir": "five_block_3x3/reads/base",
+     "scenario_metadata": {
+      "random_seed": 2026,
+      "deterministic_scenarios": true,
+      "market_scenario_checksum": "bf2869084ed4bf59f6b1b5bd875e7ef5b2a6e7c764f7a160ebb3bdb2684d7904",
+      "operational_scenario_checksum": "4497bf25605b718972fc96cd6bb723eb6cbd9045e793f8b96a420e0fafb001c2",
+      "combined_scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193"
+     },
+     "hook_apply_counts": []
+    },
+    "dependence": {
+     "case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+     "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+     "wall_s": 12.811597108840942,
+     "read_dir": "five_block_3x3/reads/dependence",
+     "scenario_metadata": {
+      "random_seed": 2026,
+      "deterministic_scenarios": true,
+      "market_scenario_checksum": "bf2869084ed4bf59f6b1b5bd875e7ef5b2a6e7c764f7a160ebb3bdb2684d7904",
+      "operational_scenario_checksum": "6e4669a04666d02c6a539113fe65402f2807dbc1fcfbfb672505e656900621b8",
+      "combined_scenario_checksum": "8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a"
+     },
+     "hook_apply_counts": [
+      {
+       "n_operation_arrays_permuted": 12840,
+       "n_arrays_changed": 7338,
+       "n_market_arrays_checked_untouched": 40,
+       "n_blocks_non_identity": 72
+      }
+     ]
+    },
+    "dependence_reread": {
+     "case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+     "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+     "wall_s": 13.685917139053345,
+     "read_dir": "five_block_3x3/reads/dependence_reread",
+     "scenario_metadata": {
+      "random_seed": 2026,
+      "deterministic_scenarios": true,
+      "market_scenario_checksum": "bf2869084ed4bf59f6b1b5bd875e7ef5b2a6e7c764f7a160ebb3bdb2684d7904",
+      "operational_scenario_checksum": "6e4669a04666d02c6a539113fe65402f2807dbc1fcfbfb672505e656900621b8",
+      "combined_scenario_checksum": "8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a"
+     },
+     "hook_apply_counts": [
+      {
+       "n_operation_arrays_permuted": 12840,
+       "n_arrays_changed": 7338,
+       "n_market_arrays_checked_untouched": 40,
+       "n_blocks_non_identity": 72
+      }
+     ]
+    }
+   },
+   "coverage": {
+    "uncovered_n_by_T_arrays": [],
+    "other_arrays_with_first_dim_n": {}
+   },
+   "post_read_changed_keys": [
+    "TSO|2025|Spring|load|0|pd",
+    "TSO|2025|Spring|load|0|qd",
+    "TSO|2025|Spring|load|1|pd",
+    "TSO|2025|Spring|load|1|qd",
+    "TSO|2025|Spring|load|2|pd",
+    "TSO|2025|Spring|load|2|qd",
+    "TSO|2025|Summer|load|0|pd",
+    "TSO|2025|Summer|load|0|qd",
+    "TSO|2025|Summer|load|1|pd",
+    "TSO|2025|Summer|load|1|qd",
+    "TSO|2025|Summer|load|2|pd",
+    "TSO|2025|Summer|load|2|qd",
+    "TSO|2025|Autumn|load|0|pd",
+    "TSO|2025|Autumn|load|0|qd",
+    "TSO|2025|Autumn|load|1|pd",
+    "TSO|2025|Autumn|load|1|qd",
+    "TSO|2025|Autumn|load|2|pd",
+    "TSO|2025|Autumn|load|2|qd",
+    "TSO|2025|Winter|load|0|pd",
+    "TSO|2025|Winter|load|0|qd",
+    "TSO|2025|Winter|load|1|pd",
+    "TSO|2025|Winter|load|1|qd",
+    "TSO|2025|Winter|load|2|pd",
+    "TSO|2025|Winter|load|2|qd",
+    "TSO|2028|Spring|load|0|pd",
+    "TSO|2028|Spring|load|0|qd",
+    "TSO|2028|Spring|load|1|pd",
+    "TSO|2028|Spring|load|1|qd",
+    "TSO|2028|Spring|load|2|pd",
+    "TSO|2028|Spring|load|2|qd",
+    "TSO|2028|Summer|load|0|pd",
+    "TSO|2028|Summer|load|0|qd",
+    "TSO|2028|Summer|load|1|pd",
+    "TSO|2028|Summer|load|1|qd",
+    "TSO|2028|Summer|load|2|pd",
+    "TSO|2028|Summer|load|2|qd",
+    "TSO|2028|Autumn|load|0|pd",
+    "TSO|2028|Autumn|load|0|qd",
+    "TSO|2028|Autumn|load|1|pd",
+    "TSO|2028|Autumn|load|1|qd",
+    "TSO|2028|Autumn|load|2|pd",
+    "TSO|2028|Autumn|load|2|qd",
+    "TSO|2028|Winter|load|0|pd",
+    "TSO|2028|Winter|load|0|qd",
+    "TSO|2028|Winter|load|1|pd",
+    "TSO|2028|Winter|load|1|qd",
+    "TSO|2028|Winter|load|2|pd",
+    "TSO|2028|Winter|load|2|qd",
+    "TSO|2031|Spring|load|0|pd",
+    "TSO|2031|Spring|load|0|qd",
+    "TSO|2031|Spring|load|1|pd",
+    "TSO|2031|Spring|load|1|qd",
+    "TSO|2031|Spring|load|2|pd",
+    "TSO|2031|Spring|load|2|qd",
+    "TSO|2031|Summer|load|0|pd",
+    "TSO|2031|Summer|load|0|qd",
+    "TSO|2031|Summer|load|1|pd",
+    "TSO|2031|Summer|load|1|qd",
+    "TSO|2031|Summer|load|2|pd",
+    "TSO|2031|Summer|load|2|qd",
+    "TSO|2031|Autumn|load|0|pd",
+    "TSO|2031|Autumn|load|0|qd",
+    "TSO|2031|Autumn|load|1|pd",
+    "TSO|2031|Autumn|load|1|qd",
+    "TSO|2031|Autumn|load|2|pd",
+    "TSO|2031|Autumn|load|2|qd",
+    "TSO|2031|Winter|load|0|pd",
+    "TSO|2031|Winter|load|0|qd",
+    "TSO|2031|Winter|load|1|pd",
+    "TSO|2031|Winter|load|1|qd",
+    "TSO|2031|Winter|load|2|pd",
+    "TSO|2031|Winter|load|2|qd",
+    "TSO|2034|Spring|load|0|pd",
+    "TSO|2034|Spring|load|0|qd",
+    "TSO|2034|Spring|load|1|pd",
+    "TSO|2034|Spring|load|1|qd",
+    "TSO|2034|Spring|load|2|pd",
+    "TSO|2034|Spring|load|2|qd",
+    "TSO|2034|Summer|load|0|pd",
+    "TSO|2034|Summer|load|0|qd",
+    "TSO|2034|Summer|load|1|pd",
+    "TSO|2034|Summer|load|1|qd",
+    "TSO|2034|Summer|load|2|pd",
+    "TSO|2034|Summer|load|2|qd",
+    "TSO|2034|Autumn|load|0|pd",
+    "TSO|2034|Autumn|load|0|qd",
+    "TSO|2034|Autumn|load|1|pd",
+    "TSO|2034|Autumn|load|1|qd",
+    "TSO|2034|Autumn|load|2|pd",
+    "TSO|2034|Autumn|load|2|qd",
+    "TSO|2034|Winter|load|0|pd",
+    "TSO|2034|Winter|load|0|qd",
+    "TSO|2034|Winter|load|1|pd",
+    "TSO|2034|Winter|load|1|qd",
+    "TSO|2034|Winter|load|2|pd",
+    "TSO|2034|Winter|load|2|qd",
+    "TSO|2037|Spring|load|0|pd",
+    "TSO|2037|Spring|load|0|qd",
+    "TSO|2037|Spring|load|1|pd",
+    "TSO|2037|Spring|load|1|qd",
+    "TSO|2037|Spring|load|2|pd",
+    "TSO|2037|Spring|load|2|qd",
+    "TSO|2037|Summer|load|0|pd",
+    "TSO|2037|Summer|load|0|qd",
+    "TSO|2037|Summer|load|1|pd",
+    "TSO|2037|Summer|load|1|qd",
+    "TSO|2037|Summer|load|2|pd",
+    "TSO|2037|Summer|load|2|qd",
+    "TSO|2037|Autumn|load|0|pd",
+    "TSO|2037|Autumn|load|0|qd",
+    "TSO|2037|Autumn|load|1|pd",
+    "TSO|2037|Autumn|load|1|qd",
+    "TSO|2037|Autumn|load|2|pd",
+    "TSO|2037|Autumn|load|2|qd",
+    "TSO|2037|Winter|load|0|pd",
+    "TSO|2037|Winter|load|0|qd",
+    "TSO|2037|Winter|load|1|pd",
+    "TSO|2037|Winter|load|1|qd",
+    "TSO|2037|Winter|load|2|pd",
+    "TSO|2037|Winter|load|2|qd"
+   ],
+   "ev_means": {
+    "definition": {
+     "market": "Abar[year][day][t] = sum_{s_m} pi_m[year][s_m] * A[year][day][s_m, t], A in {cost_energy_p (EUR/MWh), cost_flex (EUR/MWh)}, pi_m = planning.prob_market_scenarios[year] (production _read_market_data_from_file: [1/NumMarketScenarios] * NumMarketScenarios)",
+     "operation": "Abar[net][year][day][device][t] = sum_{s_o} pi_o[s_o] * A[s_o, t], A in {load.pd, load.qd, load.flexibility.active_power.upward, .downward, load.flexibility.reactive_power.upward, .downward, generator.pg, generator.qg} (p.u. on the network baseMVA, as stored), pi_o = network.prob_operation_scenarios (production _read_network_data: [1/num_oper_scenarios] * n)",
+     "joint_equivalence": "equal to the joint mean over the 9 (s_m, s_o) pairs with weight pi_m * pi_o (production _scenario_probability) because each array depends on one dimension only and the other dimension's weights sum to 1; checked numerically",
+     "evaluation": "numpy float64, np.sum(w[:, None] * A, axis=0), w the production probability vector",
+     "capture_point": "arrays as stored at the entry of shared_resources_planning._compute_scenario_metadata (the production scenario-checksum point: TSO and DSOs read, ADN loads not yet zeroed, shared ESS not yet added); the post-read arrays are compared separately",
+     "what_it_is_not": "no re-derivation of power factor / Q-P ratio, no capacity clipping, no abs() of flexibility bounds (production applies abs() at model build), no re-sampling"
+    },
+    "n_arrays": 12880,
+    "n_bitwise_equal": 7372,
+    "n_differ": 5508,
+    "differ_first": [
+     "TSO|2025|Spring|load|0|pd",
+     "TSO|2025|Spring|load|0|qd",
+     "TSO|2025|Spring|load|0|flex_p_up",
+     "TSO|2025|Spring|load|0|flex_p_down",
+     "TSO|2025|Spring|load|1|pd",
+     "TSO|2025|Spring|load|1|qd",
+     "TSO|2025|Spring|load|1|flex_p_up",
+     "TSO|2025|Spring|load|1|flex_p_down",
+     "TSO|2025|Spring|load|2|pd",
+     "TSO|2025|Spring|load|2|qd",
+     "TSO|2025|Spring|load|2|flex_p_up",
+     "TSO|2025|Spring|load|2|flex_p_down",
+     "TSO|2025|Spring|gen|3|2|pg",
+     "TSO|2025|Spring|gen|4|2|pg",
+     "TSO|2025|Spring|gen|5|2|pg",
+     "TSO|2025|Spring|gen|6|3|pg",
+     "TSO|2025|Spring|gen|7|3|pg",
+     "TSO|2025|Spring|gen|8|3|pg",
+     "TSO|2025|Summer|load|0|pd",
+     "TSO|2025|Summer|load|0|qd"
+    ],
+    "differ_by_family": {
+     "TSO.load.pd": 42,
+     "TSO.load.qd": 42,
+     "TSO.load.flex_p_up": 42,
+     "TSO.load.flex_p_down": 42,
+     "TSO.gen2.pg": 42,
+     "TSO.gen3.pg": 39,
+     "DSO.load.pd": 1273,
+     "DSO.load.qd": 1275,
+     "DSO.load.flex_p_up": 1278,
+     "DSO.load.flex_p_down": 1275,
+     "DSO.gen2.pg": 52,
+     "DSO.gen3.pg": 106
+    },
+    "max_ulp": 8.0,
+    "max_abs_diff_pu_or_eur": 2.220446049250313e-16,
+    "reorder_reproduces_dependence_mean_bitwise": true,
+    "fsum_mean_bitwise_identical": true,
+    "explanation": "the mean is AA.compute_means: np.sum(w[:, None] * A, axis=0) with w = [1/3] * 3. The products w[s] * A[s, t] are the same multiset after the permutation; np.sum along axis 0 adds the rows in index order ((r0 + r1) + r2), so a permutation changes only the ORDER of two floating additions, which can move the rounded result by a few ulp. Verified two ways: (i) recomputing the BASE mean with its rows taken in the permuted order reproduces the dependence mean bit for bit; (ii) an order-independent, exactly-rounded mean (math.fsum of the products per hour) is bitwise identical for the base and the dependence arrays. Size: two orders of a 3-term recursive sum differ by at most ~2 ulp of sum_s |w_s A[s, t]| (the textbook bound, 2 * gamma_2 * sum |x|); the difference in ulp of the RESULT is larger only where the terms have mixed signs and cancel (mean near zero)",
+    "n_elements_differing": 28679,
+    "histogram_ulp_of_result": {
+     "1.0": 27730,
+     "2.0": 947,
+     "8.0": 2
+    },
+    "max_ulp_of_abs_sum": 2.0,
+    "bound_ulp_of_abs_sum": 4.0,
+    "n_elements_differing_with_mixed_sign_terms": 33,
+    "stored_ev_profiles_comparison": {
+     "path": "data/SRP1/Results/P515S56/input_audit_A/instance/SRP1__s56_3x3_ev_profiles.json",
+     "sha256": "23570acbe90a6d8ee15f86572a7744d091efeba2be9bdbfb177145d92f1f3255",
+     "source_scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+     "n_compared": 12880,
+     "n_stored_eq_base_mean_bitwise": 12880,
+     "n_stored_eq_dependence_mean_bitwise": 7372,
+     "max_ulp_stored_vs_dependence_mean": 8.0
+    }
+   },
+   "object_walks": {
+    "declared_exclusions": {
+     "n_leaves_compared": 68366,
+     "n_diffs": 0,
+     "uncompared_types": {},
+     "excluded_attribute_hits": {
+      "SharedResourcesPlanning.cost_energy_p": 1,
+      "SharedResourcesPlanning.cost_flex": 1,
+      "SharedResourcesPlanning.diagrams_dir": 1,
+      "SharedResourcesPlanning.filename": 1,
+      "SharedResourcesPlanning.logs_dir": 1,
+      "SharedResourcesPlanning.num_market_scenarios": 1,
+      "SharedResourcesPlanning.prob_market_scenarios": 1,
+      "SharedResourcesPlanning.results_dir": 1,
+      "SharedResourcesPlanning.scenario_metadata": 1,
+      "NetworkData.cost_energy_p": 4,
+      "NetworkData.cost_flex": 4,
+      "NetworkData.diagrams_dir": 4,
+      "NetworkData.logs_dir": 4,
+      "NetworkData.num_oper_scenarios": 4,
+      "NetworkData.results_dir": 4,
+      "Network.cost_energy_p": 80,
+      "Network.cost_flex": 80,
+      "Network.diagrams_dir": 80,
+      "Network.logs_dir": 80,
+      "Network.num_oper_scenarios": 80,
+      "Network.prob_market_scenarios": 80,
+      "Network.prob_operation_scenarios": 80,
+      "Network.results_dir": 80,
+      "Load.pd": 1980,
+      "Load.qd": 1980,
+      "LoadFlexibilityDirection.downward": 3960,
+      "LoadFlexibilityDirection.upward": 3960,
+      "Generator.pg": 480,
+      "Generator.qg": 480,
+      "SharedEnergyStorageData.cost_energy_p": 1,
+      "SharedEnergyStorageData.logs_dir": 1,
+      "SharedEnergyStorageData.results_dir": 1
+     }
+    },
+    "bookkeeping_exclusions": {
+     "exclusions": {
+      "SharedResourcesPlanning": [
+       "diagrams_dir",
+       "logs_dir",
+       "results_dir",
+       "scenario_metadata"
+      ],
+      "NetworkData": [
+       "diagrams_dir",
+       "logs_dir",
+       "results_dir"
+      ],
+      "Network": [
+       "diagrams_dir",
+       "logs_dir",
+       "results_dir"
+      ],
+      "SharedEnergyStorageData": [
+       "logs_dir",
+       "results_dir"
+      ]
+     },
+     "n_leaves_compared": 81587,
+     "n_diffs": 7224,
+     "n_expected": 7224,
+     "diff_fields": {
+      "pg": 326,
+      "flex_p_down": 1753,
+      "flex_p_up": 1753,
+      "qd": 1696,
+      "pd": 1696
+     },
+     "excluded_attribute_hits": {
+      "SharedResourcesPlanning.diagrams_dir": 1,
+      "SharedResourcesPlanning.logs_dir": 1,
+      "SharedResourcesPlanning.results_dir": 1,
+      "SharedResourcesPlanning.scenario_metadata": 1,
+      "NetworkData.diagrams_dir": 4,
+      "NetworkData.logs_dir": 4,
+      "NetworkData.results_dir": 4,
+      "Network.diagrams_dir": 80,
+      "Network.logs_dir": 80,
+      "Network.results_dir": 80,
+      "SharedEnergyStorageData.logs_dir": 1,
+      "SharedEnergyStorageData.results_dir": 1
+     }
+    }
+   },
+   "assertion_tests": {
+    "checksum_point": {
+     "point": "checksum",
+     "profiles_sha256": "4743e37160ed8a50d77a7c6de1c2a9d3827001639a079913f6b2bde9cd23e422",
+     "n_operation_arrays": 12840,
+     "n_market_arrays": 40,
+     "n_mismatches": 0,
+     "mismatches_first": [],
+     "n_differ_from_base": 7338,
+     "expected_n_differ_from_base": 7338,
+     "n_still_base": 0,
+     "n_market_bad": 0,
+     "n_alias_bad": 0,
+     "n_blocks_non_monotone": 0,
+     "n_blocks_non_identity_now": 0,
+     "combined_scenario_checksum": null,
+     "expected_scenario_checksum": null,
+     "failures": [],
+     "ok": true
+    },
+    "dependence_post_read": {
+     "raised": false,
+     "summary": {
+      "point": "post_read",
+      "profiles_sha256": "4743e37160ed8a50d77a7c6de1c2a9d3827001639a079913f6b2bde9cd23e422",
+      "n_operation_arrays": 12840,
+      "n_market_arrays": 40,
+      "n_mismatches": 0,
+      "mismatches_first": [],
+      "n_differ_from_base": 7224,
+      "expected_n_differ_from_base": 7224,
+      "n_still_base": 0,
+      "n_market_bad": 0,
+      "n_alias_bad": 0,
+      "n_blocks_non_monotone": 0,
+      "n_blocks_non_identity_now": 0,
+      "combined_scenario_checksum": "8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a",
+      "expected_scenario_checksum": "8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a",
+      "failures": [],
+      "ok": true
+     }
+    },
+    "base_read_index_paired": {
+     "raised": true,
+     "error": "dependence-instance assertion FAILED: 7224 of 12840 operation arrays differ from the stored permuted arrays (first {'key': 'TSO|2025|Spring|load|0|flex_p_up', 'what': 'sha256 != stored permuted', 'equals_base': True}; 7224 of them carry the BASE bytes) | index-paired check: 0 operation arrays differ from the base instance (expected 7224 > 0); 7224 arrays the permutation changes still carry their base bytes (first ['TSO|2025|Spring|load|0|flex_p_up', 'TSO|2025|Spring|load|0|flex_p_down', 'TSO|2025|Spring|load|1|flex_p_up']) | statistic not non-decreasing in 72 blocks / comonotone permutation not the identity in 72 blocks (first ['TSO|2025|Spring', 'TSO|2025|Summer', 'TSO|2025|Autumn'])",
+     "summary": {
+      "point": "post_read",
+      "profiles_sha256": "4743e37160ed8a50d77a7c6de1c2a9d3827001639a079913f6b2bde9cd23e422",
+      "n_operation_arrays": 12840,
+      "n_market_arrays": 40,
+      "n_mismatches": 7224,
+      "mismatches_first": [
+       {
+        "key": "TSO|2025|Spring|load|0|flex_p_up",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|load|0|flex_p_down",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|load|1|flex_p_up",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|load|1|flex_p_down",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|load|2|flex_p_up",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|load|2|flex_p_down",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|gen|3|2|pg",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|gen|4|2|pg",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|gen|5|2|pg",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|gen|6|3|pg",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|gen|7|3|pg",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Spring|gen|8|3|pg",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Summer|load|0|flex_p_up",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Summer|load|0|flex_p_down",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Summer|load|1|flex_p_up",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Summer|load|1|flex_p_down",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Summer|load|2|flex_p_up",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Summer|load|2|flex_p_down",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Summer|gen|3|2|pg",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       },
+       {
+        "key": "TSO|2025|Summer|gen|4|2|pg",
+        "what": "sha256 != stored permuted",
+        "equals_base": true
+       }
+      ],
+      "n_differ_from_base": 0,
+      "expected_n_differ_from_base": 7224,
+      "n_still_base": 7224,
+      "n_market_bad": 0,
+      "n_alias_bad": 0,
+      "n_blocks_non_monotone": 72,
+      "n_blocks_non_identity_now": 72,
+      "combined_scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+      "expected_scenario_checksum": null,
+      "failures": [
+       "7224 of 12840 operation arrays differ from the stored permuted arrays (first {'key': 'TSO|2025|Spring|load|0|flex_p_up', 'what': 'sha256 != stored permuted', 'equals_base': True}; 7224 of them carry the BASE bytes)",
+       "index-paired check: 0 operation arrays differ from the base instance (expected 7224 > 0); 7224 arrays the permutation changes still carry their base bytes (first ['TSO|2025|Spring|load|0|flex_p_up', 'TSO|2025|Spring|load|0|flex_p_down', 'TSO|2025|Spring|load|1|flex_p_up'])",
+       "statistic not non-decreasing in 72 blocks / comonotone permutation not the identity in 72 blocks (first ['TSO|2025|Spring', 'TSO|2025|Summer', 'TSO|2025|Autumn'])"
+      ],
+      "ok": false
+     }
+    },
+    "dependence_read_with_base_checksum": {
+     "raised": true,
+     "error": "dependence-instance assertion FAILED: combined scenario checksum 8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a != expected 0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193 | the expected checksum is the BASE (index-paired) instance's",
+     "summary": {
+      "point": "post_read",
+      "profiles_sha256": "4743e37160ed8a50d77a7c6de1c2a9d3827001639a079913f6b2bde9cd23e422",
+      "n_operation_arrays": 12840,
+      "n_market_arrays": 40,
+      "n_mismatches": 0,
+      "mismatches_first": [],
+      "n_differ_from_base": 7224,
+      "expected_n_differ_from_base": 7224,
+      "n_still_base": 0,
+      "n_market_bad": 0,
+      "n_alias_bad": 0,
+      "n_blocks_non_monotone": 0,
+      "n_blocks_non_identity_now": 0,
+      "combined_scenario_checksum": "8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a",
+      "expected_scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+      "failures": [
+       "combined scenario checksum 8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a != expected 0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+       "the expected checksum is the BASE (index-paired) instance's"
+      ],
+      "ok": false
+     }
+    },
+    "dependence_reread_post_read": {
+     "raised": false,
+     "summary": {
+      "point": "post_read",
+      "profiles_sha256": "4743e37160ed8a50d77a7c6de1c2a9d3827001639a079913f6b2bde9cd23e422",
+      "n_operation_arrays": 12840,
+      "n_market_arrays": 40,
+      "n_mismatches": 0,
+      "mismatches_first": [],
+      "n_differ_from_base": 7224,
+      "expected_n_differ_from_base": 7224,
+      "n_still_base": 0,
+      "n_market_bad": 0,
+      "n_alias_bad": 0,
+      "n_blocks_non_monotone": 0,
+      "n_blocks_non_identity_now": 0,
+      "combined_scenario_checksum": "8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a",
+      "expected_scenario_checksum": "8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a",
+      "failures": [],
+      "ok": true
+     }
+    }
+   },
+   "blocks_changed": {
+    "per_network_non_identity": {
+     "TSO": 19,
+     "DSO5": 18,
+     "DSO7": 18,
+     "DSO9": 17
+    },
+    "per_network_blocks": {
+     "TSO": 20,
+     "DSO5": 20,
+     "DSO7": 20,
+     "DSO9": 20
+    },
+    "total_non_identity": 72,
+    "total_blocks": 80
+   },
+   "ties": {},
+   "n_ties": 0,
+   "alternative_tso_statistic": {
+    "definition": "as STATISTIC but the TSO ADN loads included at their pre-zeroing sampled pd",
+    "n_blocks_whose_permutation_would_differ": 17,
+    "blocks": [
+     "TSO|2025|Autumn",
+     "TSO|2025|Summer",
+     "TSO|2025|Winter",
+     "TSO|2028|Autumn",
+     "TSO|2028|Summer",
+     "TSO|2028|Winter",
+     "TSO|2031|Autumn",
+     "TSO|2031|Spring",
+     "TSO|2031|Summer",
+     "TSO|2034|Autumn",
+     "TSO|2034|Spring",
+     "TSO|2034|Summer",
+     "TSO|2034|Winter",
+     "TSO|2037|Autumn",
+     "TSO|2037|Spring",
+     "TSO|2037|Summer",
+     "TSO|2037|Winter"
+    ],
+    "note": "reporting only; the declared statistic excludes the ADN loads (the model never sees them)"
+   },
+   "n_operation_arrays": 12840,
+   "n_market_arrays": 40,
+   "n_arrays_changed": {
+    "checksum": 7338,
+    "post_read": 7224
+   },
+   "statistic_monotone": {
+    "n_blocks": 80,
+    "n_non_decreasing": 80,
+    "n_strictly_increasing": 80
+   }
+  }
+ },
+ "inputs": {
+  "data/SRP1/SRP1.json": {
+   "path": "data/SRP1/SRP1.json",
+   "sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/SRP1_params.json": {
+   "path": "data/SRP1/SRP1_params.json",
+   "sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/MarketData/SRP1_market_data.xlsx": {
+   "path": "data/SRP1/MarketData/SRP1_market_data.xlsx",
+   "sha256": "f8da8b9a97dbe066f67af5a5f873a9a48ab4666af15020027251840e78a94578",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/SharedESS/SRP1_ESS.xlsx": {
+   "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+   "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/SharedESS/SRP1_ESS_Params.json": {
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/case9/case9_operational_data.xlsx": {
+   "path": "data/SRP1/case9/case9_operational_data.xlsx",
+   "sha256": "5eab94aa6eb6e661554db947cc2e3ff7d761350de569f8a1f36c6c13d418d6bb",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/case9/case9_params.json": {
+   "path": "data/SRP1/case9/case9_params.json",
+   "sha256": "f3eff0502c606a9076af19969ec3705c2e6204fa4d9172a218345e986dbbf4ab",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/case33_1/case33_1_operational_data.xlsx": {
+   "path": "data/SRP1/case33_1/case33_1_operational_data.xlsx",
+   "sha256": "e4ddc6d95cfd6237bb486e2ffca9c42e0efbd30a8b211eca5357502619dccc43",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/case33_1/case33_1_params.json": {
+   "path": "data/SRP1/case33_1/case33_1_params.json",
+   "sha256": "8e9e5a536fd1ef2bca5694274a68795d1099884ef23f2134e7db7d3a58c80b8e",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/case33_2/case33_2_operational_data.xlsx": {
+   "path": "data/SRP1/case33_2/case33_2_operational_data.xlsx",
+   "sha256": "44c8893a331899b1668f5af37228eaaf3bbd7e05fa13500f9b78345a15fcd720",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/case33_2/case33_2_params.json": {
+   "path": "data/SRP1/case33_2/case33_2_params.json",
+   "sha256": "31b5fedf87b96724dc5676566fd87f1c21dc02ecfb8d2bd9fdf280a9b7be35ff",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/case33_3/case33_3_operational_data.xlsx": {
+   "path": "data/SRP1/case33_3/case33_3_operational_data.xlsx",
+   "sha256": "866bcfc7afb24ee9a06277e550acc5a2d73549e81877cc7fc1480f7e5ecd8f45",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/case33_3/case33_3_params.json": {
+   "path": "data/SRP1/case33_3/case33_3_params.json",
+   "sha256": "a19bd5b9d18a26deff44dc62a351f2e6c193012c3f7075d12cade4f230760c49",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json": {
+   "path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+   "sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/Results/P515S56/instances_v1/instance_record.json": {
+   "path": "data/SRP1/Results/P515S56/instances_v1/instance_record.json",
+   "sha256": "dc4f1844a66e503f6a9bbf5e0774266596eca8a5b672ee8b2070909ba470e837",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json": {
+   "path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+   "sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json": {
+   "path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+   "sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/Results/P515S53/w89_3x3/instance/instance_record.json": {
+   "path": "data/SRP1/Results/P515S53/w89_3x3/instance/instance_record.json",
+   "sha256": "a47dc358edc1a69279ddd1965a587efc2906eb6c770d336cb9c8f34227f910ea",
+   "tracked_at_head": true,
+   "equals_head": true
+  },
+  "data/SRP1/Results/P515S56/input_audit_A/instance/SRP1__s56_3x3_ev_profiles.json": {
+   "path": "data/SRP1/Results/P515S56/input_audit_A/instance/SRP1__s56_3x3_ev_profiles.json",
+   "sha256": "23570acbe90a6d8ee15f86572a7744d091efeba2be9bdbfb177145d92f1f3255",
+   "tracked_at_head": true,
+   "equals_head": true
+  }
+ },
+ "module_path_audit": {
+  "modules": {
+   "__main__": {
+    "path": "p515_s56_build_dependence_instance.py",
+    "sha256": "3334d54edaf1dcbffae7673dcc98e67645c8a38ce2bd5ba1bbfa96770e9c2da0",
+    "tracked_at_head": false,
+    "equals_head": null
+   },
+   "__mp_main__": {
+    "path": "p515_s56_build_dependence_instance.py",
+    "sha256": "3334d54edaf1dcbffae7673dcc98e67645c8a38ce2bd5ba1bbfa96770e9c2da0",
+    "tracked_at_head": false,
+    "equals_head": null
+   },
+   "admm_anderson_acceleration": {
+    "path": "admm_anderson_acceleration.py",
+    "sha256": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "admm_parameters": {
+    "path": "admm_parameters.py",
+    "sha256": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "admm_persistent_workers": {
+    "path": "admm_persistent_workers.py",
+    "sha256": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "benders_parameters": {
+    "path": "benders_parameters.py",
+    "sha256": "f74521a4aa4df1bd877b97887c207db98cb7a3b28d541840a41d21fd3c0c7cf7",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "branch": {
+    "path": "branch.py",
+    "sha256": "f85525f4984ef6e29263b527652abdd1d173558410f06a1bc812f5d65d6adb79",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "centralized_coordination": {
+    "path": "centralized_coordination.py",
+    "sha256": "04d2b549ff6f15decae30514606dbef2cb504c687fcc37ffc0fab75867c6eba9",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "definitions": {
+    "path": "definitions.py",
+    "sha256": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "energy_storage": {
+    "path": "energy_storage.py",
+    "sha256": "a3a06c5d037ba000514e2e1a1138b2acd9c54c1ee728641cd5a2ec1f965aec11",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "gate_result_io": {
+    "path": "gate_result_io.py",
+    "sha256": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "generator": {
+    "path": "generator.py",
+    "sha256": "4727ff02f7847690cd7a9723d997f88e80f98174b21511881123a038868cb72b",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "helper_functions": {
+    "path": "helper_functions.py",
+    "sha256": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "hierarchical_coordination": {
+    "path": "hierarchical_coordination.py",
+    "sha256": "7bf34f4ac88e472f23c82dace21065b9ad867fddf8cb2dde7d2de810c05797c4",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "load": {
+    "path": "load.py",
+    "sha256": "ac603d6d9e9489cd67f3372cf46b0e365ae604440722c6209d2bf1d749fa7a69",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "model_construction_helpers": {
+    "path": "model_construction_helpers.py",
+    "sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "network": {
+    "path": "network.py",
+    "sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "network_data": {
+    "path": "network_data.py",
+    "sha256": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "network_parameters": {
+    "path": "network_parameters.py",
+    "sha256": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "node": {
+    "path": "node.py",
+    "sha256": "d5f11f15b732469203a3f7cf8268e95353ae1a9d94ff3f2315d6ec5e2de86725",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "p513_solve_profile_guard": {
+    "path": "p513_solve_profile_guard.py",
+    "sha256": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "p515_s44_scale_measurement": {
+    "path": "p515_s44_scale_measurement.py",
+    "sha256": "284abb4d12811886f5ee1c28809db34ccc8425ba4bb9eb726abafd9c764a0a3e",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "p515_s56_dependence_instance": {
+    "path": "p515_s56_dependence_instance.py",
+    "sha256": "aaf2dd34b085914477ef0ebe400690bd0c35db1146e0e8019bab233360a617ee",
+    "tracked_at_head": false,
+    "equals_head": null
+   },
+   "p515_s56_ev_injection": {
+    "path": "p515_s56_ev_injection.py",
+    "sha256": "98ae3072e8f3a23fcbf912742ba40a47b77ec71a2f0870f752b1cb99f4425f5a",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "p515_s56_expected_profiles": {
+    "path": "p515_s56_expected_profiles.py",
+    "sha256": "e8eadde537eeb5ef2887202c3e227627b794206835a89ee07af1bcc581ea6f9a",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "planning_parameters": {
+    "path": "planning_parameters.py",
+    "sha256": "40297471cba1b0281899e7835f272f7a5df4f5e353b6d97838e5a4554c93adf9",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "shared_energy_storage": {
+    "path": "shared_energy_storage.py",
+    "sha256": "d45c72d0db9a3743f3c26765f124ba7fbec44733ecb0d2d28b83b7e6a451f088",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "shared_energy_storage_data": {
+    "path": "shared_energy_storage_data.py",
+    "sha256": "07a399d8d1b0525456ffbb0b7ded0f4957b532440ec156f0b4087dd65f1ffb12",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "shared_energy_storage_parameters": {
+    "path": "shared_energy_storage_parameters.py",
+    "sha256": "dab5d1ee2607af8e49346b5d3132f6ae0102d3172b4e95c0449f946da90c5c71",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "shared_ess_price_taker": {
+    "path": "shared_ess_price_taker.py",
+    "sha256": "9a55c951530c7223ffc436a0ae86339707f1d12ec96ca03bd23f77442ffc8b9c",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "shared_resources_planning": {
+    "path": "shared_resources_planning.py",
+    "sha256": "c9336a61a713ef6890fbffcda845395d757e26c41ae2422e82dd88bb881c33e8",
+    "tracked_at_head": true,
+    "equals_head": true
+   },
+   "solver_parameters": {
+    "path": "solver_parameters.py",
+    "sha256": "2801ef16853d7e63752d646c4c8a789a17a6731959060112c48f9457074c8b65",
+    "tracked_at_head": true,
+    "equals_head": true
+   }
+  },
+  "tracked_modules_not_equal_head": {},
+  "untracked_modules": {
+   "__main__": "p515_s56_build_dependence_instance.py",
+   "__mp_main__": "p515_s56_build_dependence_instance.py",
+   "p515_s56_dependence_instance": "p515_s56_dependence_instance.py"
+  },
+  "modules_loaded_from_provenance_repo_outside_code_dir": {}
+ },
+ "checks": [
+  {
+   "check": "every tracked data input == its committed (HEAD) bytes",
+   "ok": true,
+   "expected": {},
+   "observed": {}
+  },
+  {
+   "check": "[srp1grid_3x3] base case sha256 == its instance record",
+   "ok": true,
+   "expected": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+   "observed": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+  },
+  {
+   "check": "[srp1grid_3x3] pinned base checksum starts with the Planner-given prefix",
+   "ok": true,
+   "expected": "73d0a230",
+   "observed": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7"
+  },
+  {
+   "check": "[srp1grid_3x3] base read: combined scenario checksum == pinned",
+   "ok": true,
+   "expected": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+   "observed": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7"
+  },
+  {
+   "check": "[srp1grid_3x3] derive() operation keys == audit A enumeration (operation keys, in order)",
+   "ok": true,
+   "expected": 7704,
+   "observed": 7704
+  },
+  {
+   "check": "[srp1grid_3x3] no two operation keys share an ndarray (in-place permutation is safe)",
+   "ok": true,
+   "expected": true,
+   "observed": true
+  },
+  {
+   "check": "[srp1grid_3x3] derive() on the post-read object == at the checksum point (permutations; statistic bitwise)",
+   "ok": true,
+   "expected": true,
+   "observed": {
+    "permutations": true,
+    "statistic": true
+   }
+  },
+  {
+   "check": "[srp1grid_3x3] base read: arrays production changes after the checksum point == TSO ADN loads pd / qd (zeroed)",
+   "ok": true,
+   "expected": "TSO|...|load|<adn>|pd/qd -> 0",
+   "observed": [
+    "TSO|2025|Spring|load|0|pd",
+    "TSO|2025|Spring|load|0|qd",
+    "TSO|2025|Spring|load|1|pd",
+    "TSO|2025|Spring|load|1|qd",
+    "TSO|2025|Spring|load|2|pd",
+    "TSO|2025|Spring|load|2|qd",
+    "TSO|2025|Summer|load|0|pd",
+    "TSO|2025|Summer|load|0|qd"
+   ]
+  },
+  {
+   "check": "[srp1grid_3x3] statistic ADN-load exclusion == the loads production zeroes (every TSO block)",
+   "ok": true,
+   "expected": true,
+   "observed": true
+  },
+  {
+   "check": "[srp1grid_3x3] coverage: no (3 x 24) array reachable from the planning object outside the enumerated scenario arrays",
+   "ok": true,
+   "expected": [],
+   "observed": []
+  },
+  {
+   "check": "[srp1grid_3x3] profiles file round trip (permutations, statistic bitwise, keys)",
+   "ok": true,
+   "expected": true,
+   "observed": true
+  },
+  {
+   "check": "[srp1grid_3x3] hook: applied once, every operation array permuted, market arrays untouched",
+   "ok": true,
+   "expected": [
+    {
+     "n_operation_arrays_permuted": 7704,
+     "n_arrays_changed": 4536,
+     "n_market_arrays_checked_untouched": 24,
+     "n_blocks_non_identity": 43
+    }
+   ],
+   "observed": [
+    {
+     "n_operation_arrays_permuted": 7704,
+     "n_arrays_changed": 4536,
+     "n_market_arrays_checked_untouched": 24,
+     "n_blocks_non_identity": 43
+    }
+   ]
+  },
+  {
+   "check": "[srp1grid_3x3] dependence checksum != base checksum",
+   "ok": true,
+   "expected": "!= 73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+   "observed": "1d54ddc99f6f1a8109cf60e8c775ab88ed84e15c54475d583f163e6625d21bb7"
+  },
+  {
+   "check": "[srp1grid_3x3] in-child assertion PASSES at the checksum point",
+   "ok": true,
+   "expected": "ok",
+   "observed": []
+  },
+  {
+   "check": "[srp1grid_3x3] checksum point: every operation array == base[perm, :] bitwise",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[srp1grid_3x3] checksum point: every market array == base bitwise (not permuted)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[srp1grid_3x3] checksum point: key list == base key list",
+   "ok": true,
+   "expected": 7728,
+   "observed": 7728
+  },
+  {
+   "check": "[srp1grid_3x3] after the read: every operation array == base[perm, :] bitwise",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[srp1grid_3x3] after the read: every market array == base bitwise (not permuted)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[srp1grid_3x3] after the read: key list == base key list",
+   "ok": true,
+   "expected": 7728,
+   "observed": 7728
+  },
+  {
+   "check": "[srp1grid_3x3] number of operation arrays whose bytes change == profiles n_arrays_changed[checksum]",
+   "ok": true,
+   "expected": 4536,
+   "observed": 4536
+  },
+  {
+   "check": "[srp1grid_3x3] every network block's own market arrays (cost_energy_p / cost_flex) == base bitwise",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[srp1grid_3x3] multiset of complete per-scenario block profiles (all of a block's operation arrays, row s) unchanged in every network block, bitwise, both points",
+   "ok": true,
+   "expected": {
+    "blocks": 48,
+    "bad": 0
+   },
+   "observed": {
+    "checksum": [],
+    "post_read": []
+   }
+  },
+  {
+   "check": "[srp1grid_3x3] multiset of rows of every operation array unchanged, bitwise, both points",
+   "ok": true,
+   "expected": 0,
+   "observed": 0
+  },
+  {
+   "check": "[srp1grid_3x3] within-block coherence: scenario j of the re-paired block == scenario perm[j] of the base block for EVERY array of the block (the daily profile moves as a unit)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[srp1grid_3x3] probabilities unchanged: operation and market [1/3]*3 on every block (== base), planning market [1/3]*3 every year, _scenario_probability == 1/9 for every pair",
+   "ok": true,
+   "expected": {
+    "blocks_bad": 0,
+    "pairs_bad": 0
+   },
+   "observed": {
+    "blocks_bad": [],
+    "pairs_bad": [],
+    "n_pairs": 432,
+    "market_same": true
+   }
+  },
+  {
+   "check": "[srp1grid_3x3] EV means (audit A compute_means) unchanged: bitwise, or differing only by summation order (reorder-reproduced bitwise, fsum-identical, |diff| <= 4 ulp of sum_s |w_s A[s,t]|)",
+   "ok": true,
+   "expected": {
+    "bitwise": 7728,
+    "else": "reorder-reproduced, fsum-identical, <= 4 ulp of sum |terms|"
+   },
+   "observed": {
+    "n_bitwise": 4282,
+    "n_arrays": 7728,
+    "n_differ": 3446,
+    "max_ulp_of_result": 16.0,
+    "max_ulp_of_abs_sum": 2.0,
+    "max_abs": 2.220446049250313e-16,
+    "reorder_not_reproducing": 0,
+    "fsum_differ": 0,
+    "over_bound": 0
+   }
+  },
+  {
+   "check": "[srp1grid_3x3] EV: base mean recomputed with the rows in the permuted order == dependence mean, bitwise (every operation array)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[srp1grid_3x3] EV: exactly-rounded mean (math.fsum per hour) bitwise identical, base vs dependence (every operation array)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[srp1grid_3x3] stored EV profiles file was derived from this base instance (source checksum == base checksum)",
+   "ok": true,
+   "expected": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+   "observed": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7"
+  },
+  {
+   "check": "[srp1grid_3x3] stored EV profiles == base means bitwise (every stored key)",
+   "ok": true,
+   "expected": 5352,
+   "observed": 5352
+  },
+  {
+   "check": "[srp1grid_3x3] statistic non-decreasing in the new index in every network block (recomputed after the read)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[srp1grid_3x3] recomputed statistic == base statistic taken in permuted order (bitwise, every block)",
+   "ok": true,
+   "expected": true,
+   "observed": true
+  },
+  {
+   "check": "[srp1grid_3x3] derive() on the re-paired instance is the identity in every block",
+   "ok": true,
+   "expected": true,
+   "observed": null
+  },
+  {
+   "check": "[srp1grid_3x3] object walk vs base, audit A declared exclusions (scenario fields): 0 differences",
+   "ok": true,
+   "expected": 0,
+   "observed": {
+    "n_diffs": 0,
+    "diffs_first": [],
+    "uncompared_types": {}
+   }
+  },
+  {
+   "check": "[srp1grid_3x3] object walk vs base, bookkeeping exclusions only: the differences are EXACTLY the operation arrays the permutation changes (nothing else)",
+   "ok": true,
+   "expected": {
+    "n": 4476
+   },
+   "observed": {
+    "n_diffs": 4476,
+    "unparsed_first": [],
+    "missing": [],
+    "extra": [],
+    "uncompared": {}
+   }
+  },
+  {
+   "check": "[srp1grid_3x3] in-child assertion PASSES on the dependence read (post_read, with its checksum)",
+   "ok": true,
+   "expected": "pass",
+   "observed": null
+  },
+  {
+   "check": "[srp1grid_3x3] in-child assertion RAISES on the base (index-paired) read, with 0 arrays differing from the base",
+   "ok": true,
+   "expected": "raise; n_differ 0",
+   "observed": {
+    "raised": true,
+    "n_differ_from_base": 0,
+    "n_mismatches": 4476
+   }
+  },
+  {
+   "check": "[srp1grid_3x3] in-child assertion RAISES on the dependence read when the expected checksum is the base one",
+   "ok": true,
+   "expected": "raise",
+   "observed": true
+  },
+  {
+   "check": "[srp1grid_3x3] second read with the hook: same checksum, assertion passes",
+   "ok": true,
+   "expected": "1d54ddc99f6f1a8109cf60e8c775ab88ed84e15c54475d583f163e6625d21bb7",
+   "observed": {
+    "checksum": "1d54ddc99f6f1a8109cf60e8c775ab88ed84e15c54475d583f163e6625d21bb7",
+    "raised": false
+   }
+  },
+  {
+   "check": "[srp1grid_3x3] ties in the statistic (exact equality within a block): count recorded; tie rule declared",
+   "ok": true,
+   "expected": "recorded",
+   "observed": 0
+  },
+  {
+   "check": "[srp1grid_3x3] alternative TSO statistic: only TSO blocks can differ",
+   "ok": true,
+   "expected": "TSO only",
+   "observed": [
+    "TSO|2025|Autumn",
+    "TSO|2025|Summer",
+    "TSO|2025|Winter",
+    "TSO|2030|Autumn",
+    "TSO|2030|Summer"
+   ]
+  },
+  {
+   "check": "[srp1grid_3x3] system net-demand range (all networks) under comonotone pairing >= index pairing in every block (sum of maxima / minima)",
+   "ok": true,
+   "expected": 0,
+   "observed": {
+    "n_blocks_wider": 12,
+    "n_blocks_equal": 0,
+    "n_blocks_narrower": 0,
+    "ratio_mean": 45.738449914980514,
+    "ratio_min": 1.563111880602916,
+    "ratio_max": 513.6550226030635
+   }
+  },
+  {
+   "check": "[srp1grid_3x3] comonotone pairing: Spearman == 1 for every network pair in every block (no ties)",
+   "ok": true,
+   "expected": 1.0,
+   "observed": true
+  },
+  {
+   "check": "[five_block_3x3] base case sha256 == its instance record",
+   "ok": true,
+   "expected": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+   "observed": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871"
+  },
+  {
+   "check": "[five_block_3x3] pinned base checksum starts with the Planner-given prefix",
+   "ok": true,
+   "expected": "0248a5c8",
+   "observed": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193"
+  },
+  {
+   "check": "[five_block_3x3] base read: combined scenario checksum == pinned",
+   "ok": true,
+   "expected": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+   "observed": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193"
+  },
+  {
+   "check": "[five_block_3x3] derive() operation keys == audit A enumeration (operation keys, in order)",
+   "ok": true,
+   "expected": 12840,
+   "observed": 12840
+  },
+  {
+   "check": "[five_block_3x3] no two operation keys share an ndarray (in-place permutation is safe)",
+   "ok": true,
+   "expected": true,
+   "observed": true
+  },
+  {
+   "check": "[five_block_3x3] derive() on the post-read object == at the checksum point (permutations; statistic bitwise)",
+   "ok": true,
+   "expected": true,
+   "observed": {
+    "permutations": true,
+    "statistic": true
+   }
+  },
+  {
+   "check": "[five_block_3x3] base read: arrays production changes after the checksum point == TSO ADN loads pd / qd (zeroed)",
+   "ok": true,
+   "expected": "TSO|...|load|<adn>|pd/qd -> 0",
+   "observed": [
+    "TSO|2025|Spring|load|0|pd",
+    "TSO|2025|Spring|load|0|qd",
+    "TSO|2025|Spring|load|1|pd",
+    "TSO|2025|Spring|load|1|qd",
+    "TSO|2025|Spring|load|2|pd",
+    "TSO|2025|Spring|load|2|qd",
+    "TSO|2025|Summer|load|0|pd",
+    "TSO|2025|Summer|load|0|qd"
+   ]
+  },
+  {
+   "check": "[five_block_3x3] statistic ADN-load exclusion == the loads production zeroes (every TSO block)",
+   "ok": true,
+   "expected": true,
+   "observed": true
+  },
+  {
+   "check": "[five_block_3x3] coverage: no (3 x 24) array reachable from the planning object outside the enumerated scenario arrays",
+   "ok": true,
+   "expected": [],
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] profiles file round trip (permutations, statistic bitwise, keys)",
+   "ok": true,
+   "expected": true,
+   "observed": true
+  },
+  {
+   "check": "[five_block_3x3] hook: applied once, every operation array permuted, market arrays untouched",
+   "ok": true,
+   "expected": [
+    {
+     "n_operation_arrays_permuted": 12840,
+     "n_arrays_changed": 7338,
+     "n_market_arrays_checked_untouched": 40,
+     "n_blocks_non_identity": 72
+    }
+   ],
+   "observed": [
+    {
+     "n_operation_arrays_permuted": 12840,
+     "n_arrays_changed": 7338,
+     "n_market_arrays_checked_untouched": 40,
+     "n_blocks_non_identity": 72
+    }
+   ]
+  },
+  {
+   "check": "[five_block_3x3] dependence checksum != base checksum",
+   "ok": true,
+   "expected": "!= 0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+   "observed": "8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a"
+  },
+  {
+   "check": "[five_block_3x3] in-child assertion PASSES at the checksum point",
+   "ok": true,
+   "expected": "ok",
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] checksum point: every operation array == base[perm, :] bitwise",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] checksum point: every market array == base bitwise (not permuted)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] checksum point: key list == base key list",
+   "ok": true,
+   "expected": 12880,
+   "observed": 12880
+  },
+  {
+   "check": "[five_block_3x3] after the read: every operation array == base[perm, :] bitwise",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] after the read: every market array == base bitwise (not permuted)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] after the read: key list == base key list",
+   "ok": true,
+   "expected": 12880,
+   "observed": 12880
+  },
+  {
+   "check": "[five_block_3x3] number of operation arrays whose bytes change == profiles n_arrays_changed[checksum]",
+   "ok": true,
+   "expected": 7338,
+   "observed": 7338
+  },
+  {
+   "check": "[five_block_3x3] every network block's own market arrays (cost_energy_p / cost_flex) == base bitwise",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] multiset of complete per-scenario block profiles (all of a block's operation arrays, row s) unchanged in every network block, bitwise, both points",
+   "ok": true,
+   "expected": {
+    "blocks": 80,
+    "bad": 0
+   },
+   "observed": {
+    "checksum": [],
+    "post_read": []
+   }
+  },
+  {
+   "check": "[five_block_3x3] multiset of rows of every operation array unchanged, bitwise, both points",
+   "ok": true,
+   "expected": 0,
+   "observed": 0
+  },
+  {
+   "check": "[five_block_3x3] within-block coherence: scenario j of the re-paired block == scenario perm[j] of the base block for EVERY array of the block (the daily profile moves as a unit)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] probabilities unchanged: operation and market [1/3]*3 on every block (== base), planning market [1/3]*3 every year, _scenario_probability == 1/9 for every pair",
+   "ok": true,
+   "expected": {
+    "blocks_bad": 0,
+    "pairs_bad": 0
+   },
+   "observed": {
+    "blocks_bad": [],
+    "pairs_bad": [],
+    "n_pairs": 720,
+    "market_same": true
+   }
+  },
+  {
+   "check": "[five_block_3x3] EV means (audit A compute_means) unchanged: bitwise, or differing only by summation order (reorder-reproduced bitwise, fsum-identical, |diff| <= 4 ulp of sum_s |w_s A[s,t]|)",
+   "ok": true,
+   "expected": {
+    "bitwise": 12880,
+    "else": "reorder-reproduced, fsum-identical, <= 4 ulp of sum |terms|"
+   },
+   "observed": {
+    "n_bitwise": 7372,
+    "n_arrays": 12880,
+    "n_differ": 5508,
+    "max_ulp_of_result": 8.0,
+    "max_ulp_of_abs_sum": 2.0,
+    "max_abs": 2.220446049250313e-16,
+    "reorder_not_reproducing": 0,
+    "fsum_differ": 0,
+    "over_bound": 0
+   }
+  },
+  {
+   "check": "[five_block_3x3] EV: base mean recomputed with the rows in the permuted order == dependence mean, bitwise (every operation array)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] EV: exactly-rounded mean (math.fsum per hour) bitwise identical, base vs dependence (every operation array)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] stored EV profiles file was derived from this base instance (source checksum == base checksum)",
+   "ok": true,
+   "expected": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+   "observed": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193"
+  },
+  {
+   "check": "[five_block_3x3] stored EV profiles == base means bitwise (every stored key)",
+   "ok": true,
+   "expected": 12880,
+   "observed": 12880
+  },
+  {
+   "check": "[five_block_3x3] statistic non-decreasing in the new index in every network block (recomputed after the read)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] recomputed statistic == base statistic taken in permuted order (bitwise, every block)",
+   "ok": true,
+   "expected": true,
+   "observed": true
+  },
+  {
+   "check": "[five_block_3x3] derive() on the re-paired instance is the identity in every block",
+   "ok": true,
+   "expected": true,
+   "observed": null
+  },
+  {
+   "check": "[five_block_3x3] object walk vs base, audit A declared exclusions (scenario fields): 0 differences",
+   "ok": true,
+   "expected": 0,
+   "observed": {
+    "n_diffs": 0,
+    "diffs_first": [],
+    "uncompared_types": {}
+   }
+  },
+  {
+   "check": "[five_block_3x3] object walk vs base, bookkeeping exclusions only: the differences are EXACTLY the operation arrays the permutation changes (nothing else)",
+   "ok": true,
+   "expected": {
+    "n": 7224
+   },
+   "observed": {
+    "n_diffs": 7224,
+    "unparsed_first": [],
+    "missing": [],
+    "extra": [],
+    "uncompared": {}
+   }
+  },
+  {
+   "check": "[five_block_3x3] in-child assertion PASSES on the dependence read (post_read, with its checksum)",
+   "ok": true,
+   "expected": "pass",
+   "observed": null
+  },
+  {
+   "check": "[five_block_3x3] in-child assertion RAISES on the base (index-paired) read, with 0 arrays differing from the base",
+   "ok": true,
+   "expected": "raise; n_differ 0",
+   "observed": {
+    "raised": true,
+    "n_differ_from_base": 0,
+    "n_mismatches": 7224
+   }
+  },
+  {
+   "check": "[five_block_3x3] in-child assertion RAISES on the dependence read when the expected checksum is the base one",
+   "ok": true,
+   "expected": "raise",
+   "observed": true
+  },
+  {
+   "check": "[five_block_3x3] second read with the hook: same checksum, assertion passes",
+   "ok": true,
+   "expected": "8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a",
+   "observed": {
+    "checksum": "8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a",
+    "raised": false
+   }
+  },
+  {
+   "check": "[five_block_3x3] ties in the statistic (exact equality within a block): count recorded; tie rule declared",
+   "ok": true,
+   "expected": "recorded",
+   "observed": 0
+  },
+  {
+   "check": "[five_block_3x3] alternative TSO statistic: only TSO blocks can differ",
+   "ok": true,
+   "expected": "TSO only",
+   "observed": [
+    "TSO|2025|Autumn",
+    "TSO|2025|Summer",
+    "TSO|2025|Winter",
+    "TSO|2028|Autumn",
+    "TSO|2028|Summer"
+   ]
+  },
+  {
+   "check": "[five_block_3x3] system net-demand range (all networks) under comonotone pairing >= index pairing in every block (sum of maxima / minima)",
+   "ok": true,
+   "expected": 0,
+   "observed": {
+    "n_blocks_wider": 20,
+    "n_blocks_equal": 0,
+    "n_blocks_narrower": 0,
+    "ratio_mean": 2.2710073837384317,
+    "ratio_min": 1.074621997258406,
+    "ratio_max": 6.941173218591491
+   }
+  },
+  {
+   "check": "[five_block_3x3] comonotone pairing: Spearman == 1 for every network pair in every block (no ties)",
+   "ok": true,
+   "expected": 1.0,
+   "observed": true
+  },
+  {
+   "check": "audit A module guard verify(0) == []",
+   "ok": true,
+   "expected": [],
+   "observed": []
+  },
+  {
+   "check": "own SolveProfileGuard(permitted=()) verify(0) == []",
+   "ok": true,
+   "expected": [],
+   "observed": []
+  },
+  {
+   "check": "every loaded tracked repository module == its committed (HEAD) bytes",
+   "ok": true,
+   "expected": {},
+   "observed": {}
+  },
+  {
+   "check": "no repository module loaded from outside the code directory",
+   "ok": true,
+   "expected": {},
+   "observed": {}
+  },
+  {
+   "check": "provenance: HEAD unchanged during the run",
+   "ok": true,
+   "expected": "9acc085afc5228ec4fb62af4a6a5f5f0241255a7",
+   "observed": "9acc085afc5228ec4fb62af4a6a5f5f0241255a7"
+  }
+ ],
+ "failed_checks": [],
+ "all_checks_ok": true,
+ "guards": {
+  "own": {
+   "label": "P5.15 S56 dependence instance (never solves)",
+   "permitted": [],
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0": []
+  },
+  "audit_A_module": {
+   "label": "P5.15 S56 input audit A (never solves)",
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0": []
+  }
+ },
+ "predictions": [
+  {
+   "prediction": "[srp1grid_3x3] EV: Planner expectation \"bitwise or to 1 ulp\": every element of every mean within 1 ulp of the result",
+   "held": false,
+   "expected": "<= 1 ulp",
+   "observed": {
+    "max_ulp_of_result": 16.0,
+    "histogram_ulp_of_result": {
+     "1.0": 17412,
+     "2.0": 610,
+     "4.0": 1,
+     "8.0": 1,
+     "16.0": 1
+    }
+   }
+  },
+  {
+   "prediction": "[srp1grid_3x3] task expectation \"the spread of total system net demand widens\": system_all_std_MWh comonotone >= index-paired in every block and > in at least one",
+   "held": true,
+   "expected": "narrower 0, wider >= 1",
+   "observed": {
+    "n_blocks_wider": 12,
+    "n_blocks_equal": 0,
+    "n_blocks_narrower": 0,
+    "ratio_mean": 40.097611813912685,
+    "ratio_min": 1.51944723636238,
+    "ratio_max": 447.76799965248733
+   }
+  },
+  {
+   "prediction": "[srp1grid_3x3] task expectation \"the spread of total system net demand widens\": system_dso_std_MWh comonotone >= index-paired in every block and > in at least one",
+   "held": true,
+   "expected": "narrower 0, wider >= 1",
+   "observed": {
+    "n_blocks_wider": 12,
+    "n_blocks_equal": 0,
+    "n_blocks_narrower": 0,
+    "ratio_mean": 2.9280466447726337,
+    "ratio_min": 1.0775629714484298,
+    "ratio_max": 15.365466048253648
+   }
+  },
+  {
+   "prediction": "[srp1grid_3x3] task expectation \"the spread of total system net demand widens\": system_all_range_MWh comonotone >= index-paired in every block and > in at least one",
+   "held": true,
+   "expected": "narrower 0, wider >= 1",
+   "observed": {
+    "n_blocks_wider": 12,
+    "n_blocks_equal": 0,
+    "n_blocks_narrower": 0,
+    "ratio_mean": 45.738449914980514,
+    "ratio_min": 1.563111880602916,
+    "ratio_max": 513.6550226030635
+   }
+  },
+  {
+   "prediction": "[srp1grid_3x3] task expectation \"the spread of total system net demand widens\": system_dso_range_MWh comonotone >= index-paired in every block and > in at least one",
+   "held": true,
+   "expected": "narrower 0, wider >= 1",
+   "observed": {
+    "n_blocks_wider": 12,
+    "n_blocks_equal": 0,
+    "n_blocks_narrower": 0,
+    "ratio_mean": 3.0888711665082442,
+    "ratio_min": 1.1784950324595604,
+    "ratio_max": 16.497550764711395
+   }
+  },
+  {
+   "prediction": "[five_block_3x3] EV: Planner expectation \"bitwise or to 1 ulp\": every element of every mean within 1 ulp of the result",
+   "held": false,
+   "expected": "<= 1 ulp",
+   "observed": {
+    "max_ulp_of_result": 8.0,
+    "histogram_ulp_of_result": {
+     "1.0": 27730,
+     "2.0": 947,
+     "8.0": 2
+    }
+   }
+  },
+  {
+   "prediction": "[five_block_3x3] task expectation \"the spread of total system net demand widens\": system_all_std_MWh comonotone >= index-paired in every block and > in at least one",
+   "held": true,
+   "expected": "narrower 0, wider >= 1",
+   "observed": {
+    "n_blocks_wider": 20,
+    "n_blocks_equal": 0,
+    "n_blocks_narrower": 0,
+    "ratio_mean": 2.1873041755067786,
+    "ratio_min": 1.0200198516373713,
+    "ratio_max": 6.470397938985041
+   }
+  },
+  {
+   "prediction": "[five_block_3x3] task expectation \"the spread of total system net demand widens\": system_dso_std_MWh comonotone >= index-paired in every block and > in at least one",
+   "held": true,
+   "expected": "narrower 0, wider >= 1",
+   "observed": {
+    "n_blocks_wider": 19,
+    "n_blocks_equal": 1,
+    "n_blocks_narrower": 0,
+    "ratio_mean": 2.939862596330026,
+    "ratio_min": 1.0000000000000002,
+    "ratio_max": 15.365466048253648
+   }
+  },
+  {
+   "prediction": "[five_block_3x3] task expectation \"the spread of total system net demand widens\": system_all_range_MWh comonotone >= index-paired in every block and > in at least one",
+   "held": true,
+   "expected": "narrower 0, wider >= 1",
+   "observed": {
+    "n_blocks_wider": 20,
+    "n_blocks_equal": 0,
+    "n_blocks_narrower": 0,
+    "ratio_mean": 2.2710073837384317,
+    "ratio_min": 1.074621997258406,
+    "ratio_max": 6.941173218591491
+   }
+  },
+  {
+   "prediction": "[five_block_3x3] task expectation \"the spread of total system net demand widens\": system_dso_range_MWh comonotone >= index-paired in every block and > in at least one",
+   "held": true,
+   "expected": "narrower 0, wider >= 1",
+   "observed": {
+    "n_blocks_wider": 19,
+    "n_blocks_equal": 1,
+    "n_blocks_narrower": 0,
+    "ratio_mean": 3.1087994009628366,
+    "ratio_min": 1.0,
+    "ratio_max": 16.497550764711395
+   }
+  }
+ ],
+ "predictions_failed": [
+  "[srp1grid_3x3] EV: Planner expectation \"bitwise or to 1 ulp\": every element of every mean within 1 ulp of the result",
+  "[five_block_3x3] EV: Planner expectation \"bitwise or to 1 ulp\": every element of every mean within 1 ulp of the result"
+ ]
+}

@@ -1,0 +1,105 @@
+{
+ "schema": "p515_s56_step4_smoke_launcher_v1",
+ "run": 1,
+ "instance": "A",
+ "arm": "V1",
+ "utc_start": "2026-11-23T13:16:28.042945+00:00",
+ "spec": {
+  "path": "data/SRP1/Results/P515S56/step4_smoke_v1/frozen_step4_smoke_spec_v1_2e60b2ca.json",
+  "sha256": "2e60b2ca8225d3d13c2b3d4bfd5d4d1c09021dabfac6fd3af1f2450cbf0a2f7d"
+ },
+ "script": "p515_s56_step4_smoke.py",
+ "script_sha256": "5646d112a67ad64b290b54c21db7ec7e55f043dd81b666bb23c81caded825b11",
+ "git_head": "4856bd460966426106b4ea052aefc6a59851bf4c",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "nlp_solver_path": "/usr/local/bin/ipopt",
+ "refusals": [],
+ "error": null,
+ "capture_path_checklist": {
+  "per_cycle_fields_priced_residual_and_both_q": true,
+  "per_cycle_trajectory_gross": true,
+  "per_cycle_response_wall_and_dso_deviation": true,
+  "s56_capture_fields": true,
+  "s56_capture_per_agent_settlement_parts": true,
+  "s56_capture_assertion_exists": true,
+  "deviation_duals_recorded": true,
+  "record_fields": true,
+  "init_identity_grouping": true,
+  "multiscenario_block_recourse_and_probabilities": true,
+  "interface_anchor_in_s31c_detail": true,
+  "pc_fixed_once_at_tso_creation": true,
+  "voltage_pin_zero_when_absent": true,
+  "s31c_detail_written_with_reporting_detail": true
+ },
+ "campaign": {
+  "root": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1",
+  "spec": {
+   "path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/campaign_spec_s56s4smoke_a_v1_f4f948de.json",
+   "sha256": "f4f948de5215c17472a384f9b57ab572a2d8743fe5dee3781ab0825282bf97cb"
+  },
+  "entry": {
+   "label": "x0_V1",
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "eval_key": "a918ba210411acece96b1c22bb4f948e603d3a77c789c454ca306d895e9913eb",
+   "overrides": {},
+   "post_certification": null,
+   "eval_dir": "a918ba210411acec_x0_v1",
+   "working_dir_ids": {
+    "run": "p515s44_s56s4smoke_a_v1_a918ba210411acec_run",
+    "precheck": "p515s44_s56s4smoke_a_v1_a918ba210411acec_precheck"
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "interface_coupling": {
+    "per_scenario_interface_coupling": true,
+    "per_scenario_voltage_mode": "per_scenario",
+    "row18_charge_reactive": false
+   },
+   "interface_coupling_label": "EVALUATION OPTION \u2014 per-scenario TN-DN interface coupling (S56 F1; not the published formulation)"
+  }
+ },
+ "init_identity_seeded": [],
+ "lock_released": true,
+ "result": {
+  "status": "error",
+  "cycles_run": null,
+  "exit_code": 1,
+  "wall_s_parent_view": 15.01544189453125,
+  "solve_profile": null,
+  "peak_rss": null,
+  "eval_dir": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/evals/a918ba210411acec_x0_v1"
+ },
+ "guard": {
+  "label": "P5.15 S56 step 4 smoke launcher (this process never solves)",
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "wall_s": 16.43292999267578,
+ "utc_end": "2026-11-23T13:16:44.475651+00:00"
+}

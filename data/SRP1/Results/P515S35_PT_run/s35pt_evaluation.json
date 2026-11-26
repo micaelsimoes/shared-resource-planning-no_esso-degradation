@@ -1,0 +1,218 @@
+{
+ "stage": "P5.15 Addendum 16 item 3 - gate s35pt - independent evaluation",
+ "sources": {
+  "pt": {
+   "path": "data/SRP1/Results/P515S35_PT_run/g_baseline.json",
+   "sha256": "787499d076c2ba941e7caefa1ba6c3554933968f0ab51f2953d8a53a120c582a"
+  },
+  "ref": {
+   "path": "data/SRP1/Results/P515S35_REF_run/g_baseline.json",
+   "sha256": "8c72a1560dc90b40d9cb653962d64dda9389c77659d7a153eea1839bc3a90124"
+  }
+ },
+ "stop": {
+  "pt": {
+   "stopped_by": "cap",
+   "stop_run_cycles": null,
+   "cycles": 150
+  },
+  "ref": {
+   "stopped_by": "boyd",
+   "stop_run_cycles": [
+    475,
+    476,
+    477
+   ],
+   "cycles": 477
+  },
+  "pt_rho_at_clamp_any": false
+ },
+ "GATE3": {
+  "criterion_a_boyd_stop_no_clamp": false,
+  "criterion_b_cost_within_rule_nine_bar": {
+   "pt_cost": 651260030.1264505,
+   "ref_cost": 651039166.0347285,
+   "abs_diff": 220864.09172201157,
+   "pt_terminal_step": 5735.410581111908,
+   "ref_terminal_step": 256.2581009864807,
+   "bar": 5991.668682098389,
+   "pass": false
+  },
+  "criterion_c_efc_within_2pct": {
+   "pt_efc": 1.1842435189565115,
+   "ref_efc": 1.058952279550704,
+   "rel_diff": 0.11831622805417298,
+   "bound": 0.02,
+   "pass": false
+  },
+  "criteria_b_c_well_posed": true,
+  "PASS": false
+ },
+ "bracket_analysis": {
+  "ref_terminal_efc": 1.058952279550704,
+  "pt_terminal_efc": 1.1842435189565115,
+  "ref_late_slope_per_cycle": 0.00014329472772843798,
+  "pt_late_slope_per_cycle": -5.132921074628705e-05,
+  "ref_approach": "from below",
+  "pt_approach": "from above",
+  "terminal_values_bracket_a_common_limit": true,
+  "relative_gap": 0.11831622805417298
+ },
+ "settling_quality": {
+  "pt": {
+   "v": 0.15569570395412666,
+   "pf": 1.4153870327152975,
+   "ess": 1.4054695444458667
+  },
+  "ref": {
+   "v": 0.013309484713471289,
+   "pf": 0.09036127684768241,
+   "ess": 0.9875860265288469
+  },
+  "pt_objective_rule_ten": 0.08806559295163482,
+  "ref_objective_rule_ten": 0.00393613800043001
+ },
+ "efc_per_cohort_year": {
+  "pt": {
+   "y0": 1.1841810469143395,
+   "y1": 1.1592120659128018,
+   "y2": 0.9517410902743929
+  },
+  "ref": {
+   "y0": 1.0581354731965484,
+   "y1": 0.8938804384858315,
+   "y2": 0.6816478218050365
+  },
+  "price_taker_bound": {
+   "y0": 1.1918,
+   "y1": 1.1888,
+   "y2": 0.9647
+  }
+ },
+ "soh_floor": {
+  "pt": {
+   "available": true,
+   "cycle": 150,
+   "n_rows": 18,
+   "n_active": 0,
+   "floor_multiplier": 0.0,
+   "min_soh": 0.5938670409639006,
+   "efc_per_day_by_year_mean_over_nodes": {
+    "y0": 1.1841810469143395,
+    "y1": 1.1592120659128018,
+    "y2": 0.9517410902743929
+   }
+  },
+  "ref": {
+   "available": true,
+   "cycle": 477,
+   "n_rows": 18,
+   "n_active": 0,
+   "floor_multiplier": 0.0,
+   "min_soh": 0.6593548806214651,
+   "efc_per_day_by_year_mean_over_nodes": {
+    "y0": 1.0581354731965484,
+    "y1": 0.8938804384858315,
+    "y2": 0.6816478218050365
+   }
+  }
+ },
+ "failures": {
+  "pt": {
+   "failures": 68,
+   "per_cycle": 0.4533333333333333
+  },
+  "ref": {
+   "failures": 298,
+   "per_cycle": 0.6247379454926625
+  }
+ },
+ "matched_cycles": [
+  {
+   "cycle": 1,
+   "pt_cost": 904886897.7198681,
+   "ref_cost": 908027813.2045348,
+   "pt_efc": 1.1918118015584207,
+   "ref_efc": 0.0002874939717676194
+  },
+  {
+   "cycle": 2,
+   "pt_cost": 1122165290.754859,
+   "ref_cost": 1125214331.3945236,
+   "pt_efc": 1.1917893075793056,
+   "ref_efc": 0.027210071258745718
+  },
+  {
+   "cycle": 5,
+   "pt_cost": 694720304.0580208,
+   "ref_cost": 696051821.6086357,
+   "pt_efc": 1.1918305503354412,
+   "ref_efc": 0.08850566070697109
+  },
+  {
+   "cycle": 10,
+   "pt_cost": 675707074.5632892,
+   "ref_cost": 677728909.7616192,
+   "pt_efc": 1.1915131708076063,
+   "ref_efc": 0.14628223472782748
+  },
+  {
+   "cycle": 20,
+   "pt_cost": 652310595.7738563,
+   "ref_cost": 653835272.6573634,
+   "pt_efc": 1.190932144669281,
+   "ref_efc": 0.2721753106819052
+  },
+  {
+   "cycle": 30,
+   "pt_cost": 653275377.4766612,
+   "ref_cost": 654099207.4848181,
+   "pt_efc": 1.1903923691371983,
+   "ref_efc": 0.4027017428076155
+  },
+  {
+   "cycle": 50,
+   "pt_cost": 651526939.5836792,
+   "ref_cost": 652063867.9551711,
+   "pt_efc": 1.1893639466749533,
+   "ref_efc": 0.5324369861160451
+  },
+  {
+   "cycle": 75,
+   "pt_cost": 651457093.7114012,
+   "ref_cost": 651770814.6541494,
+   "pt_efc": 1.1880895317791955,
+   "ref_efc": 0.5881756761818379
+  },
+  {
+   "cycle": 100,
+   "pt_cost": 651355255.5024474,
+   "ref_cost": 651631770.4502223,
+   "pt_efc": 1.1868086933181698,
+   "ref_efc": 0.6347371940654765
+  },
+  {
+   "cycle": 125,
+   "pt_cost": 651276513.0805087,
+   "ref_cost": 651478969.8253441,
+   "pt_efc": 1.1855266232578345,
+   "ref_efc": 0.6801307608804626
+  },
+  {
+   "cycle": 150,
+   "pt_cost": 651260030.1264505,
+   "ref_cost": 651337599.7744539,
+   "pt_efc": 1.1842435189565115,
+   "ref_efc": 0.7217881534803908
+  }
+ ],
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ }
+}

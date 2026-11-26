@@ -1,0 +1,2583 @@
+
+List of options:
+
+                                    Name   Value                # times used
+                         acceptable_iter = 5                         1
+                          acceptable_tol = 0.0001                    1
+                              bound_frac = 1e-06                     3
+                              bound_push = 1e-06                     3
+                           compl_inf_tol = 1e-06                     2
+                             file_append = yes                       1
+                        file_print_level = 6                         1
+                fixed_variable_treatment = make_parameter            1
+                           linear_solver = ma97                      2
+                                max_iter = 500                       1
+                             output_file = data/SRP1/Results/P515S56/tn_realized_resolve/run_v1/logs/x0/B/optim_log_case9_2028_Spring.log      1
+                        slack_bound_frac = 1e-06                     1
+                        slack_bound_push = 1e-06                     1
+                                     tol = 1e-05                     2
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit https://github.com/coin-or/Ipopt
+******************************************************************************
+
+This is Ipopt version 3.14.18, running with linear solver ma97.
+
+Number of nonzeros in equality constraint Jacobian...:    46170
+Number of nonzeros in inequality constraint Jacobian.:    20142
+Number of nonzeros in Lagrangian Hessian.............:    14418
+
+Scaling parameter for objective function = 1.800000e-02
+objective scaling factor = 0.018
+No x scaling provided
+No c scaling provided
+d scaling provided
+Moved initial values of x sufficiently inside the bounds.
+Moved initial values of s sufficiently inside the bounds.
+HSL_MA97: Make heuristic choice of AMD or MeTiS
+HSL_MA97: Used AMD
+HSL_MA97: PREDICTED nfactor 440964, maxfront 22
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Least square estimates max(y_c) = 2.181411e+02, max(y_d) = 5.060646e+01
+Total number of variables............................:    15930
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:    12042
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:    10368
+Total number of inequality constraints...............:    10935
+        inequality constraints with only lower bounds:     3888
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:     7047
+
+
+**************************************************
+*** Update HessianMatrix for Iteration 0:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 0:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  1.0800002e+00 1.07e+00 4.96e+01  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0 y
+
+**************************************************
+*** Beginning Iteration 0 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.0000000000000001e-01
+Current fraction-to-the-boundary parameter tau = 9.8999999999999999e-01
+
+||curr_x||_inf   = 1.0000000000000000e+00
+||curr_s||_inf   = 1.0000000775000200e+00
+||curr_y_c||_inf = 2.1814113510552704e+02
+||curr_y_d||_inf = 5.0606455491999199e+01
+||curr_z_L||_inf = 1.0000000000000000e+00
+||curr_z_U||_inf = 1.0000000000000000e+00
+||curr_v_L||_inf = 1.0000000000000000e+00
+||curr_v_U||_inf = 1.0000000000000000e+00
+
+
+***Current NLP Values for Iteration 0:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.9440004319999361e-02    1.0800002399999646e+00
+Dual infeasibility......:   4.9606455491999199e+01    2.7559141939999554e+03
+Constraint violation....:   1.0700999846446204e+00    1.0700999846446204e+00
+Complementarity.........:   6.2500100625000998e+00    3.4722278125000560e+02
+Overall NLP error.......:   4.9606455491999199e+01    2.7559141939999554e+03
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 0:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 4.960646e+01
+Barrier Parameter: 1.000000e-01
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 0:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 4.796021e-15
+Factorization successful.
+residual_ratio = 1.104654e-15
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 0:
+**************************************************
+
+--> Starting line search in iteration 0 <--
+Mu has changed in line search - resetting watchdog counters.
+The current filter has 0 entries.
+minimal step size ALPHA_MIN = 1.445895E-15
+Starting checks for alpha (primal) = 3.48e-05
+trial_max is initialized to 6.406467e+06
+trial_min is initialized to 6.406467e-02
+Checking acceptability for trial step size alpha_primal_test= 3.479357e-05:
+  New values of barrier function     =  9.7188561863858740e+03  (reference  1.0510734220777329e+04):
+  New values of constraint violation =  6.4062444915318588e+02  (reference  6.4064673951481211e+02):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 1:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 1:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   1  4.8672060e+01 1.07e+00 4.96e+01  -1.0 5.86e-01    -  2.33e-05 3.48e-05f  1 
+
+**************************************************
+*** Beginning Iteration 1 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.0000000000000001e-01
+Current fraction-to-the-boundary parameter tau = 9.8999999999999999e-01
+
+||curr_x||_inf   = 1.0000015505076616e+00
+||curr_s||_inf   = 1.0000038794342425e+00
+||curr_y_c||_inf = 2.1895313195894872e+02
+||curr_y_d||_inf = 5.0604694636089050e+01
+||curr_z_L||_inf = 1.2324050166294294e+00
+||curr_z_U||_inf = 1.8944033315257125e+00
+||curr_v_L||_inf = 9.9999789665411021e-01
+||curr_v_U||_inf = 3.8337100977752256e+00
+
+
+***Current NLP Values for Iteration 1:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   8.7609708886608084e-01    4.8672060492560050e+01
+Dual infeasibility......:   4.9605882236239516e+01    2.7558823464577508e+03
+Constraint violation....:   1.0700627520502708e+00    1.0700627520502708e+00
+Complementarity.........:   6.2498669765190318e+00    3.4721483202883513e+02
+Overall NLP error.......:   4.9605882236239516e+01    2.7558823464577508e+03
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 1:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 4.960588e+01
+Barrier Parameter: 1.000000e-01
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 1:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 9.589291e-16
+Factorization successful.
+residual_ratio = 9.420490e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 1:
+**************************************************
+
+--> Starting line search in iteration 1 <--
+The current filter has 0 entries.
+minimal step size ALPHA_MIN = 2.935735E-14
+Starting checks for alpha (primal) = 2.37e-02
+Checking acceptability for trial step size alpha_primal_test= 2.367136e-02:
+  New values of barrier function     =  7.3824620497918268e+03  (reference  9.7188561863858740e+03):
+  New values of constraint violation =  6.2546968701740786e+02  (reference  6.4062444915318588e+02):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 2:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 2:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   2  3.3457268e+04 1.04e+00 5.04e+03  -1.0 1.09e+00    -  6.59e-05 2.37e-02f  1 Nhj 
+
+**************************************************
+*** Beginning Iteration 2 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.0000000000000001e-01
+Current fraction-to-the-boundary parameter tau = 9.8999999999999999e-01
+
+||curr_x||_inf   = 1.0010535609916631e+00
+||curr_s||_inf   = 1.0025787977531324e+00
+||curr_y_c||_inf = 8.0361385561873499e+02
+||curr_y_d||_inf = 5.0593588002193301e+03
+||curr_z_L||_inf = 1.8907361427943439e+00
+||curr_z_U||_inf = 1.8907504204689802e+00
+||curr_v_L||_inf = 9.9999205256027079e-01
+||curr_v_U||_inf = 1.7881336063957736e+01
+
+
+***Current NLP Values for Iteration 2:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   6.0223081580129110e+02    3.3457267544516173e+04
+Dual infeasibility......:   5.0414774641553722e+03    2.8008208134196512e+05
+Constraint violation....:   1.0447329062034414e+00    1.0447329062034414e+00
+Complementarity.........:   6.2494616455605261e+00    3.4719231364225146e+02
+Overall NLP error.......:   5.0414774641553722e+03    2.8008208134196512e+05
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 2:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 5.041477e+03
+Barrier Parameter: 1.000000e-01
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 2:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 4.192730e-16
+Factorization successful.
+residual_ratio = 1.066937e-16
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 2:
+**************************************************
+
+--> Starting line search in iteration 2 <--
+The current filter has 0 entries.
+minimal step size ALPHA_MIN = 1.112675E-11
+Starting checks for alpha (primal) = 9.33e-03
+Checking acceptability for trial step size alpha_primal_test= 9.329559e-03:
+  New values of barrier function     =  7.2546720905252960e+03  (reference  7.3824620497918268e+03):
+  New values of constraint violation =  6.1963479695582316e+02  (reference  6.2546968701740786e+02):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 3:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 3:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   3  1.9900961e+04 1.03e+00 5.00e+03  -1.0 9.40e-01    -  6.01e-04 9.33e-03f  1 
+
+**************************************************
+*** Beginning Iteration 3 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.0000000000000001e-01
+Current fraction-to-the-boundary parameter tau = 9.8999999999999999e-01
+
+||curr_x||_inf   = 1.0014705166387774e+00
+||curr_s||_inf   = 1.0014705166387774e+00
+||curr_y_c||_inf = 7.9649744253342010e+02
+||curr_y_d||_inf = 5.0154985084195678e+03
+||curr_z_L||_inf = 7.8950086213457018e+00
+||curr_z_U||_inf = 7.8951592858842501e+00
+||curr_v_L||_inf = 1.0002494951052938e+00
+||curr_v_U||_inf = 2.7364698525209477e+01
+
+
+***Current NLP Values for Iteration 3:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   3.5821729955252300e+02    1.9900961086251278e+04
+Dual infeasibility......:   4.9974126296387394e+03    2.7763403497992997e+05
+Constraint violation....:   1.0349860087814768e+00    1.0349860087814768e+00
+Complementarity.........:   6.2457621359035986e+00    3.4698678532797771e+02
+Overall NLP error.......:   4.9974126296387394e+03    2.7763403497992997e+05
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 3:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 4.997413e+03
+Barrier Parameter: 1.000000e-01
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 3:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 9.612359e-16
+Factorization successful.
+residual_ratio = 9.944803e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 3:
+**************************************************
+
+--> Starting line search in iteration 3 <--
+The current filter has 0 entries.
+minimal step size ALPHA_MIN = 1.209987E-10
+Starting checks for alpha (primal) = 5.14e-03
+Checking acceptability for trial step size alpha_primal_test= 5.143174e-03:
+  New values of barrier function     =  7.2622640072846161e+03  (reference  7.2546720905252960e+03):
+  New values of constraint violation =  6.1644802744098570e+02  (reference  6.1963479695582316e+02):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 4:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 4:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   4  1.9724997e+04 1.03e+00 4.95e+03  -1.0 9.53e-01    -  6.54e-02 5.14e-03h  1 
+
+**************************************************
+*** Beginning Iteration 4 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.0000000000000001e-01
+Current fraction-to-the-boundary parameter tau = 9.8999999999999999e-01
+
+||curr_x||_inf   = 1.0016924478314937e+00
+||curr_s||_inf   = 1.0016924478314937e+00
+||curr_y_c||_inf = 7.9265054093911044e+02
+||curr_y_d||_inf = 4.9915112209876752e+03
+||curr_z_L||_inf = 6.6068158215298229e+02
+||curr_z_U||_inf = 6.6069422382996618e+02
+||curr_v_L||_inf = 9.9526082626231127e-01
+||curr_v_U||_inf = 2.0928261695650408e+03
+
+
+***Current NLP Values for Iteration 4:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   3.5504994254487752e+02    1.9724996808048752e+04
+Dual infeasibility......:   4.9516156826719880e+03    2.7508976014844381e+05
+Constraint violation....:   1.0296628953252598e+00    1.0296628953252598e+00
+Complementarity.........:   5.8449111896979264e+00    3.2471728831655150e+02
+Overall NLP error.......:   4.9516156826719880e+03    2.7508976014844381e+05
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 4:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 4.951616e+03
+Barrier Parameter: 1.000000e-01
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 4:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 1.005208e-14
+Factorization successful.
+residual_ratio = 1.068659e-16
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 4:
+**************************************************
+
+--> Starting line search in iteration 4 <--
+The current filter has 1 entries.
+minimal step size ALPHA_MIN = 3.463857E-10
+Starting checks for alpha (primal) = 3.38e-02
+Checking acceptability for trial step size alpha_primal_test= 3.381232e-02:
+  New values of barrier function     =  7.2718821217199293e+03  (reference  7.2622640072846161e+03):
+  New values of constraint violation =  5.9561663135954132e+02  (reference  6.1644802744098570e+02):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 5:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 5:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   5  2.3099139e+04 9.95e-01 4.77e+03  -1.0 3.36e+00    -  7.94e-02 3.38e-02h  1 
+
+**************************************************
+*** Beginning Iteration 5 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.0000000000000001e-01
+Current fraction-to-the-boundary parameter tau = 9.8999999999999999e-01
+
+||curr_x||_inf   = 1.0031297241539818e+00
+||curr_s||_inf   = 1.0031297241539818e+00
+||curr_y_c||_inf = 7.6857577726707177e+02
+||curr_y_d||_inf = 4.8333765403123016e+03
+||curr_z_L||_inf = 1.4016929979562858e+03
+||curr_z_U||_inf = 1.4017192551087132e+03
+||curr_v_L||_inf = 9.8993306161345873e-01
+||curr_v_U||_inf = 4.4034401058398653e+03
+
+
+***Current NLP Values for Iteration 5:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   4.1578449536752208e+02    2.3099138631529007e+04
+Dual infeasibility......:   4.7716559001682090e+03    2.6509199445378938e+05
+Constraint violation....:   9.9484760067565747e-01    9.9484760067565747e-01
+Complementarity.........:   5.3906481235510473e+00    2.9948045130839154e+02
+Overall NLP error.......:   4.7716559001682090e+03    2.6509199445378938e+05
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 5:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 4.771656e+03
+Barrier Parameter: 1.000000e-01
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 5:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 2.062466e-15
+Factorization successful.
+residual_ratio = 7.193632e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 5:
+**************************************************
+
+--> Starting line search in iteration 5 <--
+The current filter has 2 entries.
+minimal step size ALPHA_MIN = 5.000000E-07
+Starting checks for alpha (primal) = 4.26e-01
+Checking acceptability for trial step size alpha_primal_test= 4.264585e-01:
+  New values of barrier function     =  7.8741285846042847e+03  (reference  7.2718821217199293e+03):
+  New values of constraint violation =  3.4270880586878320e+02  (reference  5.9561663135954132e+02):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 6:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 6:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   6  6.6124114e+04 5.71e-01 8.23e+03  -1.0 1.52e+00    -  1.32e-01 4.26e-01h  1 
+
+**************************************************
+*** Beginning Iteration 6 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.0000000000000001e-01
+Current fraction-to-the-boundary parameter tau = 9.8999999999999999e-01
+
+||curr_x||_inf   = 1.0206250838754349e+00
+||curr_s||_inf   = 1.0206250838754349e+00
+||curr_y_c||_inf = 4.6868786964859345e+02
+||curr_y_d||_inf = 1.6516193970441509e+04
+||curr_z_L||_inf = 2.5382660578986925e+03
+||curr_z_U||_inf = 2.5382514537110105e+03
+||curr_v_L||_inf = 9.8123871296666643e-01
+||curr_v_U||_inf = 8.2829650236249945e+03
+
+
+***Current NLP Values for Iteration 6:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.1902340514807177e+03    6.6124113971150990e+04
+Dual infeasibility......:   8.2332289468165145e+03    4.5740160815647303e+05
+Constraint violation....:   5.7058637707069604e-01    5.7058637707069604e-01
+Complementarity.........:   4.6877853486766528e+00    2.6043251937092515e+02
+Overall NLP error.......:   8.2332289468165145e+03    4.5740160815647303e+05
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 6:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 8.233229e+03
+Barrier Parameter: 1.000000e-01
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 6:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 1.717102e-15
+Factorization successful.
+residual_ratio = 1.461363e-16
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 6:
+**************************************************
+
+--> Starting line search in iteration 6 <--
+The current filter has 3 entries.
+minimal step size ALPHA_MIN = 5.000000E-07
+Starting checks for alpha (primal) = 5.07e-01
+Checking acceptability for trial step size alpha_primal_test= 5.068576e-01:
+  New values of barrier function     =  8.3601445346047221e+03  (reference  7.8741285846042847e+03):
+  New values of constraint violation =  1.6940985890362390e+02  (reference  3.4270880586878320e+02):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 7:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 7:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   7  9.6561849e+04 2.81e-01 1.37e+03  -1.0 1.06e+00    -  6.00e-01 5.07e-01h  1 
+
+**************************************************
+*** Beginning Iteration 7 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.0000000000000001e-01
+Current fraction-to-the-boundary parameter tau = 9.8999999999999999e-01
+
+||curr_x||_inf   = 1.0332927032761658e+00
+||curr_s||_inf   = 1.0332927032761658e+00
+||curr_y_c||_inf = 2.6988593774435071e+02
+||curr_y_d||_inf = 3.3405893041156960e+04
+||curr_z_L||_inf = 7.0069164110224165e+03
+||curr_z_U||_inf = 7.0070269034748399e+03
+||curr_v_L||_inf = 9.2009262062520758e-01
+||curr_v_U||_inf = 3.3202841388780704e+04
+
+
+***Current NLP Values for Iteration 7:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.7381132833734744e+03    9.6561849076304134e+04
+Dual infeasibility......:   1.3731151017904886e+03    7.6284172321693812e+04
+Constraint violation....:   2.8138032466417440e-01    2.8138032466417440e-01
+Complementarity.........:   2.0566835685710521e+00    1.1426019825394735e+02
+Overall NLP error.......:   1.1135890894009492e+03    7.6284172321693812e+04
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 7:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 1.113589e+03
+Barrier Parameter: 1.000000e-01
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 7:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 1.396904e-15
+Factorization successful.
+residual_ratio = 8.676422e-18
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 7:
+**************************************************
+
+--> Starting line search in iteration 7 <--
+The current filter has 4 entries.
+minimal step size ALPHA_MIN = 5.000000E-07
+Starting checks for alpha (primal) = 1.00e+00
+Checking acceptability for trial step size alpha_primal_test= 1.000000e+00:
+  New values of barrier function     =  8.8397069091683261e+03  (reference  8.3601445346047221e+03):
+  New values of constraint violation =  2.6741613768562758e+00  (reference  1.6940985890362390e+02):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 8:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 8:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   8  1.2381902e+05 5.35e-02 1.16e+04  -1.0 1.33e+00    -  7.72e-01 1.00e+00h  1 
+
+**************************************************
+*** Beginning Iteration 8 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.0000000000000001e-01
+Current fraction-to-the-boundary parameter tau = 9.8999999999999999e-01
+
+||curr_x||_inf   = 1.6333101776818639e+00
+||curr_s||_inf   = 1.0458335111463346e+00
+||curr_y_c||_inf = 1.3195882599113108e+02
+||curr_y_d||_inf = 8.4241577004846680e+04
+||curr_z_L||_inf = 9.3102767929548208e+03
+||curr_z_U||_inf = 9.3105281708669172e+03
+||curr_v_L||_inf = 8.6260080955357343e-01
+||curr_v_U||_inf = 7.2611327395846994e+04
+
+
+***Current NLP Values for Iteration 8:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   2.2287423264584818e+03    1.2381901813658234e+05
+Dual infeasibility......:   1.1630249608999686e+04    6.4612497827776032e+05
+Constraint violation....:   5.3510536142976073e-02    5.3510536142976073e-02
+Complementarity.........:   5.3849432888217452e-01    2.9916351604565254e+01
+Overall NLP error.......:   6.6193427852090354e+03    6.4612497827776032e+05
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 8:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 6.619343e+03
+Barrier Parameter: 1.000000e-01
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 8:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 1.270293e-16
+Factorization successful.
+residual_ratio = 1.587867e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 8:
+**************************************************
+
+--> Starting line search in iteration 8 <--
+The current filter has 5 entries.
+minimal step size ALPHA_MIN = 2.242441E-10
+Starting checks for alpha (primal) = 1.00e+00
+Checking acceptability for trial step size alpha_primal_test= 1.000000e+00:
+  New values of barrier function     =  8.8378012452889707e+03  (reference  8.8397069091683261e+03):
+  New values of constraint violation =  1.9835401912158671e-01  (reference  2.6741613768562758e+00):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 9:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 9:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   9  1.2470802e+05 4.44e-03 3.62e+00  -1.0 2.63e-01    -  1.00e+00 1.00e+00f  1 
+
+**************************************************
+*** Beginning Iteration 9 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.0000000000000001e-01
+Current fraction-to-the-boundary parameter tau = 9.8999999999999999e-01
+
+||curr_x||_inf   = 1.3698977448005243e+00
+||curr_s||_inf   = 1.0457878725491172e+00
+||curr_y_c||_inf = 1.3283179110312034e+02
+||curr_y_d||_inf = 1.1784702319820857e+05
+||curr_z_L||_inf = 9.9903287207231606e+03
+||curr_z_U||_inf = 9.9900245480128233e+03
+||curr_v_L||_inf = 8.2899373588553482e-01
+||curr_v_U||_inf = 1.1784702319920858e+05
+
+
+***Current NLP Values for Iteration 9:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   2.2447443746746217e+03    1.2470802081525676e+05
+Dual infeasibility......:   3.6215279102956401e+00    2.0119599501642446e+02
+Constraint violation....:   4.4398752746445114e-03    4.4398752746445114e-03
+Complementarity.........:   1.3761023019248841e-01    7.6450127884715791e+00
+Overall NLP error.......:   1.6607632384948250e+00    2.0119599501642446e+02
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 9:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 1.660763e+00
+Barrier Parameter: 1.000000e-01
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 9:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 4.286430e-16
+Factorization successful.
+residual_ratio = 5.581289e-19
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 9:
+**************************************************
+
+--> Starting line search in iteration 9 <--
+The current filter has 5 entries.
+minimal step size ALPHA_MIN = 5.000000E-07
+Starting checks for alpha (primal) = 1.00e+00
+Checking acceptability for trial step size alpha_primal_test= 1.000000e+00:
+  New values of barrier function     =  8.8379531116041289e+03  (reference  8.8378012452889707e+03):
+  New values of constraint violation =  1.4869006372309276e-02  (reference  1.9835401912158671e-01):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 10:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 10:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  10  1.2477238e+05 3.07e-04 2.91e-02  -1.0 7.55e-02    -  1.00e+00 1.00e+00h  1 
+
+**************************************************
+*** Beginning Iteration 10 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.0000000000000001e-01
+Current fraction-to-the-boundary parameter tau = 9.8999999999999999e-01
+
+||curr_x||_inf   = 1.3034294257852315e+00
+||curr_s||_inf   = 1.0457798844838448e+00
+||curr_y_c||_inf = 1.3282438072424767e+02
+||curr_y_d||_inf = 1.1758994804324984e+05
+||curr_z_L||_inf = 9.9901680653800686e+03
+||curr_z_U||_inf = 9.9900235629794788e+03
+||curr_v_L||_inf = 8.2900841220792199e-01
+||curr_v_U||_inf = 1.1758994804424985e+05
+
+
+***Current NLP Values for Iteration 10:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   2.2459029197116597e+03    1.2477238442842555e+05
+Dual infeasibility......:   2.9079244389606629e-02    1.6155135772003684e+00
+Constraint violation....:   3.0671366699097646e-04    3.0671366699097646e-04
+Complementarity.........:   1.0508192834876634e-01    5.8378849082647974e+00
+Overall NLP error.......:   4.4355064420677916e-02    5.8378849082647974e+00
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 10:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 1.342147e-02
+  sub_problem_error < kappa_eps * mu (1.000000e+00)
+Updating mu=   1.0000000000000001e-01 and tau=   9.8999999999999999e-01 to new_mu=   2.0000000000000004e-02 and new_tau=   9.8999999999999999e-01
+  sub_problem_error < kappa_eps * mu (2.000000e-01)
+Updating mu=   2.0000000000000004e-02 and tau=   9.8999999999999999e-01 to new_mu=   2.8284271247461909e-03 and new_tau=   9.9717157287525382e-01
+Barrier Parameter: 2.828427e-03
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 10:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 1.423120e-16
+Factorization successful.
+residual_ratio = 1.778900e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 10:
+**************************************************
+
+--> Starting line search in iteration 10 <--
+Mu has changed in line search - resetting watchdog counters.
+The current filter has 0 entries.
+minimal step size ALPHA_MIN = 2.514861E-14
+Starting checks for alpha (primal) = 1.00e+00
+Checking acceptability for trial step size alpha_primal_test= 1.000000e+00:
+  New values of barrier function     =  2.1546457421366154e+03  (reference  2.4323542554160294e+03):
+  New values of constraint violation =  2.9082561191373979e-01  (reference  1.4869006372309276e-02):
+Checking Armijo Condition...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 11:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 11:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  11  1.0787085e+05 5.21e-04 1.22e+04  -2.5 9.23e-02    -  8.89e-01 1.00e+00f  1 
+
+**************************************************
+*** Beginning Iteration 11 from the following point:
+**************************************************
+
+Current barrier parameter mu = 2.8284271247461909e-03
+Current fraction-to-the-boundary parameter tau = 9.9717157287525382e-01
+
+||curr_x||_inf   = 1.3814081882987805e+00
+||curr_s||_inf   = 1.0447666522037780e+00
+||curr_y_c||_inf = 1.3750936368027385e+02
+||curr_y_d||_inf = 7.2432330750993860e+03
+||curr_z_L||_inf = 1.3557702582885904e+03
+||curr_z_U||_inf = 1.3557280522622837e+03
+||curr_v_L||_inf = 1.4584505497647310e-01
+||curr_v_U||_inf = 1.9442142396254942e+04
+
+
+***Current NLP Values for Iteration 11:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.9416752877990732e+03    1.0787084932217075e+05
+Dual infeasibility......:   1.2201614020524667e+04    6.7786744558470370e+05
+Constraint violation....:   5.2082711652157165e-04    5.2082711652157165e-04
+Complementarity.........:   2.9570295766062751e-02    1.6427942092257086e+00
+Overall NLP error.......:   1.2201614020524667e+04    6.7786744558470370e+05
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 11:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 1.220161e+04
+Barrier Parameter: 2.828427e-03
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 11:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 1.253271e-15
+Factorization successful.
+residual_ratio = 7.690668e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 11:
+**************************************************
+
+--> Starting line search in iteration 11 <--
+The current filter has 0 entries.
+minimal step size ALPHA_MIN = 4.030318E-12
+Starting checks for alpha (primal) = 9.52e-01
+Checking acceptability for trial step size alpha_primal_test= 9.515763e-01:
+  New values of barrier function     =  2.1259424343908304e+03  (reference  2.1546457421366154e+03):
+  New values of constraint violation =  3.5924231747880941e-01  (reference  2.9082561191373979e-01):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 12:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 12:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  12  1.0568941e+05 6.52e-04 1.73e+03  -2.5 9.88e-02    -  8.52e-01 9.52e-01f  1 
+
+**************************************************
+*** Beginning Iteration 12 from the following point:
+**************************************************
+
+Current barrier parameter mu = 2.8284271247461909e-03
+Current fraction-to-the-boundary parameter tau = 9.9717157287525382e-01
+
+||curr_x||_inf   = 1.4061774797105908e+00
+||curr_s||_inf   = 1.0557338992172218e+00
+||curr_y_c||_inf = 1.3823743408977634e+02
+||curr_y_d||_inf = 8.1019899834421067e+03
+||curr_z_L||_inf = 4.4174157469036834e+02
+||curr_z_U||_inf = 4.4172865158162529e+02
+||curr_v_L||_inf = 5.0499630572763181e-02
+||curr_v_U||_inf = 9.8211365260243147e+03
+
+
+***Current NLP Values for Iteration 12:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.9024093417050583e+03    1.0568940787250325e+05
+Dual infeasibility......:   1.7346446023891531e+03    9.6369144577175175e+04
+Constraint violation....:   6.5186917714332715e-04    6.5186917714332715e-04
+Complementarity.........:   1.0310794898734372e-02    5.7282193881857624e-01
+Overall NLP error.......:   1.7346446023891531e+03    9.6369144577175175e+04
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 12:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 1.734645e+03
+Barrier Parameter: 2.828427e-03
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 12:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 1.656456e-14
+Factorization successful.
+residual_ratio = 3.710858e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 12:
+**************************************************
+
+--> Starting line search in iteration 12 <--
+The current filter has 0 entries.
+minimal step size ALPHA_MIN = 1.754161E-10
+Starting checks for alpha (primal) = 1.00e+00
+Checking acceptability for trial step size alpha_primal_test= 1.000000e+00:
+  New values of barrier function     =  2.1259002119816619e+03  (reference  2.1259424343908304e+03):
+  New values of constraint violation =  3.6371741992204570e-01  (reference  3.5924231747880941e-01):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 13:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 13:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  13  1.0557658e+05 8.82e-04 3.13e-01  -2.5 5.82e-02    -  1.00e+00 1.00e+00f  1 
+
+**************************************************
+*** Beginning Iteration 13 from the following point:
+**************************************************
+
+Current barrier parameter mu = 2.8284271247461909e-03
+Current fraction-to-the-boundary parameter tau = 9.9717157287525382e-01
+
+||curr_x||_inf   = 1.4091354303315085e+00
+||curr_s||_inf   = 1.1137689604053329e+00
+||curr_y_c||_inf = 1.3804755530517423e+02
+||curr_y_d||_inf = 8.5922756950757539e+03
+||curr_z_L||_inf = 2.8256874103699039e+02
+||curr_z_U||_inf = 2.8256053208966387e+02
+||curr_v_L||_inf = 2.8882836572656837e-02
+||curr_v_U||_inf = 8.5922756951040374e+03
+
+
+***Current NLP Values for Iteration 13:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.9003783630917765e+03    1.0557657572732092e+05
+Dual infeasibility......:   3.1250649076167392e-01    1.7361471708981885e+01
+Constraint violation....:   8.8209489266621866e-04    8.8209489266621866e-04
+Complementarity.........:   4.1598990129847304e-03    2.3110550072137392e-01
+Overall NLP error.......:   3.1250649076167392e-01    1.7361471708981885e+01
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 13:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 3.125065e-01
+Barrier Parameter: 2.828427e-03
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 13:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 6.226516e-14
+Factorization successful.
+residual_ratio = 7.158881e-18
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 13:
+**************************************************
+
+--> Starting line search in iteration 13 <--
+The current filter has 0 entries.
+minimal step size ALPHA_MIN = 5.000000E-07
+Starting checks for alpha (primal) = 1.00e+00
+Checking acceptability for trial step size alpha_primal_test= 1.000000e+00:
+  New values of barrier function     =  2.1259415468185184e+03  (reference  2.1259002119816619e+03):
+  New values of constraint violation =  5.7561227349636646e-02  (reference  3.6371741992204570e-01):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 14:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 14:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  14  1.0556862e+05 6.51e-05 5.97e-03  -2.5 1.68e-02    -  1.00e+00 1.00e+00h  1 
+
+**************************************************
+*** Beginning Iteration 14 from the following point:
+**************************************************
+
+Current barrier parameter mu = 2.8284271247461909e-03
+Current fraction-to-the-boundary parameter tau = 9.9717157287525382e-01
+
+||curr_x||_inf   = 1.4088951440757322e+00
+||curr_s||_inf   = 1.1300396692633443e+00
+||curr_y_c||_inf = 1.3807459530911655e+02
+||curr_y_d||_inf = 8.7333335926145155e+03
+||curr_z_L||_inf = 2.8256842745930669e+02
+||curr_z_U||_inf = 2.8256052978312596e+02
+||curr_v_L||_inf = 2.8533793102019495e-02
+||curr_v_U||_inf = 8.7333335926427990e+03
+
+
+***Current NLP Values for Iteration 14:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.9002352306222090e+03    1.0556862392345606e+05
+Dual infeasibility......:   5.9689787588901311e-03    3.3160993104945174e-01
+Constraint violation....:   6.5149473527759127e-05    6.5149473527759127e-05
+Complementarity.........:   3.0062937468459689e-03    1.6701631926922050e-01
+Overall NLP error.......:   5.9689787588901311e-03    3.3160993104945174e-01
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 14:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 5.968979e-03
+  sub_problem_error < kappa_eps * mu (2.828427e-02)
+Updating mu=   2.8284271247461909e-03 and tau=   9.9717157287525382e-01 to new_mu=   1.5042412372345582e-04 and new_tau=   9.9984957587627654e-01
+Barrier Parameter: 1.504241e-04
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 14:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 1.283016e-14
+Factorization successful.
+residual_ratio = 2.304688e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 14:
+**************************************************
+
+--> Starting line search in iteration 14 <--
+Mu has changed in line search - resetting watchdog counters.
+The current filter has 0 entries.
+minimal step size ALPHA_MIN = 2.546373E-12
+Starting checks for alpha (primal) = 9.14e-01
+Checking acceptability for trial step size alpha_primal_test= 9.143328e-01:
+  New values of barrier function     =  1.9026339477750080e+03  (reference  1.9122389603756230e+03):
+  New values of constraint violation =  5.8890509791015311e-01  (reference  5.7561227349636646e-02):
+Checking Armijo Condition...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 15:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 15:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  15  1.0496224e+05 8.07e-04 2.71e+02  -3.8 6.30e-02    -  8.05e-01 9.14e-01f  1 
+
+**************************************************
+*** Beginning Iteration 15 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.5042412372345582e-04
+Current fraction-to-the-boundary parameter tau = 9.9984957587627654e-01
+
+||curr_x||_inf   = 1.4119299359796951e+00
+||curr_s||_inf   = 1.1873934751947661e+00
+||curr_y_c||_inf = 1.3819036786337048e+02
+||curr_y_d||_inf = 6.5382741390940355e+03
+||curr_z_L||_inf = 1.0000710576261787e+02
+||curr_z_U||_inf = 6.7308840323424164e+01
+||curr_v_L||_inf = 9.6510816827132945e-03
+||curr_v_U||_inf = 6.8017611110823573e+03
+
+
+***Current NLP Values for Iteration 15:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8893202307587230e+03    1.0496223504215128e+05
+Dual infeasibility......:   2.7069744510723376e+02    1.5038746950401875e+04
+Constraint violation....:   8.0713765944473437e-04    8.0713765944473437e-04
+Complementarity.........:   1.0199091085945327e-03    5.6661617144140711e-02
+Overall NLP error.......:   2.7069744510723376e+02    1.5038746950401875e+04
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 15:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 2.706974e+02
+Barrier Parameter: 1.504241e-04
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 15:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 1.849560e-13
+Factorization successful.
+residual_ratio = 6.474475e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 15:
+**************************************************
+
+--> Starting line search in iteration 15 <--
+The current filter has 0 entries.
+minimal step size ALPHA_MIN = 2.095119E-10
+Starting checks for alpha (primal) = 5.18e-01
+Checking acceptability for trial step size alpha_primal_test= 5.178053e-01:
+  New values of barrier function     =  1.9019962764379884e+03  (reference  1.9026339477750080e+03):
+  New values of constraint violation =  1.0716844486119135e+00  (reference  5.8890509791015311e-01):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 16:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 16:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  16  1.0490934e+05 7.03e-04 1.59e+02  -3.8 8.82e-02    -  8.99e-01 5.18e-01f  1 
+
+**************************************************
+*** Beginning Iteration 16 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.5042412372345582e-04
+Current fraction-to-the-boundary parameter tau = 9.9984957587627654e-01
+
+||curr_x||_inf   = 1.4116508118028115e+00
+||curr_s||_inf   = 1.2099966115314957e+00
+||curr_y_c||_inf = 1.3817727205130262e+02
+||curr_y_d||_inf = 6.6662011711716650e+03
+||curr_z_L||_inf = 1.0000209107156087e+02
+||curr_z_U||_inf = 2.0286460498822674e+01
+||curr_v_L||_inf = 6.5615567144796244e-03
+||curr_v_U||_inf = 6.7869831731440972e+03
+
+
+***Current NLP Values for Iteration 16:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8883680638459000e+03    1.0490933688032778e+05
+Dual infeasibility......:   1.5907405293716056e+02    8.8374473853978088e+03
+Constraint violation....:   7.0277536009433206e-04    7.0277536009433206e-04
+Complementarity.........:   5.6145843876623117e-04    3.1192135487012846e-02
+Overall NLP error.......:   1.5907405293716056e+02    8.8374473853978088e+03
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 16:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 1.590741e+02
+Barrier Parameter: 1.504241e-04
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 16:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 5.808282e-13
+Factorization successful.
+residual_ratio = 7.352492e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 16:
+**************************************************
+
+--> Starting line search in iteration 16 <--
+The current filter has 0 entries.
+minimal step size ALPHA_MIN = 6.259437E-10
+Starting checks for alpha (primal) = 4.77e-01
+Checking acceptability for trial step size alpha_primal_test= 4.770324e-01:
+  New values of barrier function     =  1.9016975931228330e+03  (reference  1.9019962764379884e+03):
+  New values of constraint violation =  1.5264307491928046e+00  (reference  1.0716844486119135e+00):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 17:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 17:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  17  1.0487903e+05 7.07e-04 3.21e+02  -3.8 9.61e-02    -  1.00e+00 4.77e-01h  1 
+
+**************************************************
+*** Beginning Iteration 17 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.5042412372345582e-04
+Current fraction-to-the-boundary parameter tau = 9.9984957587627654e-01
+
+||curr_x||_inf   = 1.4109355739827432e+00
+||curr_s||_inf   = 1.2099991499753084e+00
+||curr_y_c||_inf = 1.3815535783119429e+02
+||curr_y_d||_inf = 6.9051436213725101e+03
+||curr_z_L||_inf = 1.0000133569761181e+02
+||curr_z_U||_inf = 1.5027404477430460e+01
+||curr_v_L||_inf = 8.5474422110363019e-03
+||curr_v_U||_inf = 7.1670947416267691e+03
+
+
+***Current NLP Values for Iteration 17:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8878226237501485e+03    1.0487903465278604e+05
+Dual infeasibility......:   3.2112498626436354e+02    1.7840277014686864e+04
+Constraint violation....:   7.0700793378697391e-04    7.0700793378697391e-04
+Complementarity.........:   3.7300684677430367e-04    2.0722602598572427e-02
+Overall NLP error.......:   3.2112498626436354e+02    1.7840277014686864e+04
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 17:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 3.211250e+02
+Barrier Parameter: 1.504241e-04
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 17:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 2.109544e-13
+Factorization successful.
+residual_ratio = 5.332324e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 17:
+**************************************************
+
+--> Starting line search in iteration 17 <--
+The current filter has 1 entries.
+minimal step size ALPHA_MIN = 1.024594E-09
+Starting checks for alpha (primal) = 7.22e-01
+Checking acceptability for trial step size alpha_primal_test= 7.220556e-01:
+  New values of barrier function     =  1.9015922487456403e+03  (reference  1.9016975931228330e+03):
+  New values of constraint violation =  1.0165876537751686e+00  (reference  1.5264307491928046e+00):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 18:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 18:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  18  1.0485845e+05 5.03e-04 2.07e+02  -3.8 5.19e-02    -  1.00e+00 7.22e-01h  1 
+
+**************************************************
+*** Beginning Iteration 18 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.5042412372345582e-04
+Current fraction-to-the-boundary parameter tau = 9.9984957587627654e-01
+
+||curr_x||_inf   = 1.4083976649125001e+00
+||curr_s||_inf   = 1.2099981998972760e+00
+||curr_y_c||_inf = 1.3813364229631631e+02
+||curr_y_d||_inf = 7.3937279273554686e+03
+||curr_z_L||_inf = 1.0000133088071823e+02
+||curr_z_U||_inf = 1.5027404450110495e+01
+||curr_v_L||_inf = 1.0398231648747352e-02
+||curr_v_U||_inf = 7.5818010701274989e+03
+
+
+***Current NLP Values for Iteration 18:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8874521438966294e+03    1.0485845243870164e+05
+Dual infeasibility......:   2.0703822153144392e+02    1.1502123418413552e+04
+Constraint violation....:   5.0307040494890209e-04    5.0307040494890209e-04
+Complementarity.........:   2.1513545574120574e-04    1.1951969763400320e-02
+Overall NLP error.......:   2.0703822153144392e+02    1.1502123418413552e+04
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 18:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 2.070382e+02
+Barrier Parameter: 1.504241e-04
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 18:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 1.282978e-13
+Factorization successful.
+residual_ratio = 7.841852e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 18:
+**************************************************
+
+--> Starting line search in iteration 18 <--
+The current filter has 2 entries.
+minimal step size ALPHA_MIN = 1.350937E-09
+Starting checks for alpha (primal) = 1.00e+00
+Checking acceptability for trial step size alpha_primal_test= 1.000000e+00:
+  New values of barrier function     =  1.9015923151330351e+03  (reference  1.9015922487456403e+03):
+  New values of constraint violation =  5.7547955328281546e-02  (reference  1.0165876537751686e+00):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 19:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 19:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  19  1.0485298e+05 4.37e-05 2.90e-03  -3.8 1.43e-02    -  1.00e+00 1.00e+00h  1 
+
+**************************************************
+*** Beginning Iteration 19 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.5042412372345582e-04
+Current fraction-to-the-boundary parameter tau = 9.9984957587627654e-01
+
+||curr_x||_inf   = 1.4068816711880376e+00
+||curr_s||_inf   = 1.2092281022863087e+00
+||curr_y_c||_inf = 1.3812457940167164e+02
+||curr_y_d||_inf = 7.9115620679373342e+03
+||curr_z_L||_inf = 1.0000132795700139e+02
+||curr_z_U||_inf = 1.5027404381982134e+01
+||curr_v_L||_inf = 1.1518360061595753e-02
+||curr_v_U||_inf = 7.9115620679388385e+03
+
+
+***Current NLP Values for Iteration 19:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8873536598281307e+03    1.0485298110156282e+05
+Dual infeasibility......:   2.8975322540389925e-03    1.6097401411327736e-01
+Constraint violation....:   4.3651349247220139e-05    4.3651349247220139e-05
+Complementarity.........:   2.2183597167264838e-04    1.2324220648480466e-02
+Overall NLP error.......:   2.8975322540389925e-03    1.6097401411327736e-01
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 19:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 2.897532e-03
+Barrier Parameter: 1.504241e-04
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 19:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 1.064651e-14
+Factorization successful.
+residual_ratio = 1.576943e-18
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 19:
+**************************************************
+
+--> Starting line search in iteration 19 <--
+The current filter has 1 entries.
+minimal step size ALPHA_MIN = 5.000000E-07
+Starting checks for alpha (primal) = 1.00e+00
+Checking acceptability for trial step size alpha_primal_test= 1.000000e+00:
+  New values of barrier function     =  1.9015928354304194e+03  (reference  1.9015923151330351e+03):
+  New values of constraint violation =  2.2626086760985898e-04  (reference  5.7547955328281546e-02):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 20:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 20:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  20  1.0485308e+05 4.23e-07 9.51e-06  -3.8 1.39e-03    -  1.00e+00 1.00e+00h  1 
+
+**************************************************
+*** Beginning Iteration 20 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.5042412372345582e-04
+Current fraction-to-the-boundary parameter tau = 9.9984957587627654e-01
+
+||curr_x||_inf   = 1.4068618110222513e+00
+||curr_s||_inf   = 1.2092280799047133e+00
+||curr_y_c||_inf = 1.3812450408924161e+02
+||curr_y_d||_inf = 7.9947484766624812e+03
+||curr_z_L||_inf = 1.0000132795850757e+02
+||curr_z_U||_inf = 1.5027404376781648e+01
+||curr_v_L||_inf = 1.1660918664476385e-02
+||curr_v_U||_inf = 7.9947484766639855e+03
+
+
+***Current NLP Values for Iteration 20:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8873554589806456e+03    1.0485308105448032e+05
+Dual infeasibility......:   9.5053220441343456e-06    5.2807344689635249e-04
+Constraint violation....:   4.2280983780784709e-07    4.2280983780784709e-07
+Complementarity.........:   1.5319558063673470e-04    8.5108655909297056e-03
+Overall NLP error.......:   1.5319558063673470e-04    8.5108655909297056e-03
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 20:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 9.505322e-06
+  sub_problem_error < kappa_eps * mu (1.504241e-03)
+Updating mu=   1.5042412372345582e-04 and tau=   9.9984957587627654e-01 to new_mu=   1.8449144625279508e-06 and new_tau=   9.9999815508553747e-01
+Barrier Parameter: 1.844914e-06
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 20:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 2.414812e-12
+Factorization successful.
+residual_ratio = 1.566606e-16
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 20:
+**************************************************
+
+--> Starting line search in iteration 20 <--
+Mu has changed in line search - resetting watchdog counters.
+The current filter has 0 entries.
+minimal step size ALPHA_MIN = 1.446343E-13
+Starting checks for alpha (primal) = 4.78e-01
+Checking acceptability for trial step size alpha_primal_test= 4.776150e-01:
+  New values of barrier function     =  1.8871582887249479e+03  (reference  1.8875300768615443e+03):
+  New values of constraint violation =  2.2063470878994967e-01  (reference  2.2626086760985898e-04):
+Checking Armijo Condition...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 21:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 21:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  21  1.0483207e+05 2.09e-04 3.62e+02  -5.7 6.34e-02    -  7.47e-01 4.78e-01f  1 
+
+**************************************************
+*** Beginning Iteration 21 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.8449144625279508e-06
+Current fraction-to-the-boundary parameter tau = 9.9999815508553747e-01
+
+||curr_x||_inf   = 1.4056076398547757e+00
+||curr_s||_inf   = 1.2099999966741175e+00
+||curr_y_c||_inf = 1.3810997664790781e+02
+||curr_y_d||_inf = 8.6114512963517373e+03
+||curr_z_L||_inf = 1.0000039568331138e+02
+||curr_z_U||_inf = 8.2956251590774919e+00
+||curr_v_L||_inf = 1.5250944473729816e-02
+||curr_v_U||_inf = 8.9590238838731057e+03
+
+
+***Current NLP Values for Iteration 21:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8869772387175688e+03    1.0483206881764272e+05
+Dual infeasibility......:   3.6180191958533578e+02    2.0100106643629766e+04
+Constraint violation....:   2.0926004071486481e-04    2.0926004071486481e-04
+Complementarity.........:   8.0189598486897452e-05    4.4549776937165258e-03
+Overall NLP error.......:   3.6180191958533578e+02    2.0100106643629766e+04
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 21:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 3.618019e+02
+Barrier Parameter: 1.844914e-06
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 21:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 1.898036e-13
+Factorization successful.
+residual_ratio = 4.459029e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 21:
+**************************************************
+
+--> Starting line search in iteration 21 <--
+The current filter has 0 entries.
+minimal step size ALPHA_MIN = 2.944434E-10
+Starting checks for alpha (primal) = 3.86e-01
+Checking acceptability for trial step size alpha_primal_test= 3.861157e-01:
+  New values of barrier function     =  1.8870171642277103e+03  (reference  1.8871582887249479e+03):
+  New values of constraint violation =  2.2268612561391346e-01  (reference  2.2063470878994967e-01):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 22:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 22:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  22  1.0482398e+05 2.38e-04 6.26e+02  -5.7 5.76e-02    -  6.17e-01 3.86e-01h  1 
+
+**************************************************
+*** Beginning Iteration 22 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.8449144625279508e-06
+Current fraction-to-the-boundary parameter tau = 9.9999815508553747e-01
+
+||curr_x||_inf   = 1.4048792691095737e+00
+||curr_s||_inf   = 1.2100000038844043e+00
+||curr_y_c||_inf = 1.3809792028523904e+02
+||curr_y_d||_inf = 9.4361661921788345e+03
+||curr_z_L||_inf = 1.0000016689044897e+02
+||curr_z_U||_inf = 5.5580304172673092e+00
+||curr_v_L||_inf = 1.8070655407265861e-02
+||curr_v_U||_inf = 1.0061925459456274e+04
+
+
+***Current NLP Values for Iteration 22:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8868316843093685e+03    1.0482398246163159e+05
+Dual infeasibility......:   6.2575926727743899e+02    3.4764403737635497e+04
+Constraint violation....:   2.3775563960559687e-04    2.3775563960559687e-04
+Complementarity.........:   4.9922780722294845e-05    2.7734878179052694e-03
+Overall NLP error.......:   6.2575926727743899e+02    3.4764403737635497e+04
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 22:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 6.257593e+02
+Barrier Parameter: 1.844914e-06
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 22:
+**************************************************
+
+HSL_MA97: delays 1516, nfactor 460020, nflops 5909340, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 1.473056e-13
+Factorization successful.
+residual_ratio = 6.957389e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 22:
+**************************************************
+
+--> Starting line search in iteration 22 <--
+The current filter has 1 entries.
+minimal step size ALPHA_MIN = 5.014088E-10
+Starting checks for alpha (primal) = 4.01e-01
+Checking acceptability for trial step size alpha_primal_test= 4.014240e-01:
+  New values of barrier function     =  1.8869379186347560e+03  (reference  1.8870171642277103e+03):
+  New values of constraint violation =  1.6988771469176547e-01  (reference  2.2268612561391346e-01):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 23:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 23:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  23  1.0481935e+05 1.62e-04 8.95e+02  -5.7 4.14e-02    -  6.60e-01 4.01e-01h  1 
+
+**************************************************
+*** Beginning Iteration 23 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.8449144625279508e-06
+Current fraction-to-the-boundary parameter tau = 9.9999815508553747e-01
+
+||curr_x||_inf   = 1.4043723256031955e+00
+||curr_s||_inf   = 1.2100000036103318e+00
+||curr_y_c||_inf = 1.3808944368216123e+02
+||curr_y_d||_inf = 1.0310264222616623e+04
+||curr_z_L||_inf = 1.0000006816213991e+02
+||curr_z_U||_inf = 3.1558529354806804e+00
+||curr_v_L||_inf = 1.9650820237607208e-02
+||curr_v_U||_inf = 1.1086350302738032e+04
+
+
+***Current NLP Values for Iteration 23:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8867482645002556e+03    1.0481934802779199e+05
+Dual infeasibility......:   8.9541739643142864e+02    4.9745410912857151e+04
+Constraint violation....:   1.6212499711665274e-04    1.6212499711665274e-04
+Complementarity.........:   3.0620726680421412e-05    1.7011514822456342e-03
+Overall NLP error.......:   8.9541739643142864e+02    4.9745410912857151e+04
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 23:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 8.954174e+02
+Barrier Parameter: 1.844914e-06
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 23:
+**************************************************
+
+HSL_MA97: delays 1523, nfactor 460098, nflops 5911986, maxfront 27
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 4.317602e-14
+Factorization successful.
+residual_ratio = 6.980666e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 23:
+**************************************************
+
+--> Starting line search in iteration 23 <--
+The current filter has 2 entries.
+minimal step size ALPHA_MIN = 6.083452E-10
+Starting checks for alpha (primal) = 5.26e-01
+Checking acceptability for trial step size alpha_primal_test= 5.256265e-01:
+  New values of barrier function     =  1.8868835959907635e+03  (reference  1.8869379186347560e+03):
+  New values of constraint violation =  1.0602375163439563e-01  (reference  1.6988771469176547e-01):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 24:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 24:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  24  1.0481604e+05 1.43e-04 1.12e+03  -5.7 3.11e-02    -  1.00e+00 5.26e-01h  1 
+
+**************************************************
+*** Beginning Iteration 24 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.8449144625279508e-06
+Current fraction-to-the-boundary parameter tau = 9.9999815508553747e-01
+
+||curr_x||_inf   = 1.4039570197856193e+00
+||curr_s||_inf   = 1.2100000107877422e+00
+||curr_y_c||_inf = 1.3808260323534083e+02
+||curr_y_d||_inf = 1.1217513488284940e+04
+||curr_z_L||_inf = 1.0000001635736922e+02
+||curr_z_U||_inf = 9.3732257877933012e-01
+||curr_v_L||_inf = 2.0628717414735785e-02
+||curr_v_U||_inf = 1.2036298258414728e+04
+
+
+***Current NLP Values for Iteration 24:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8866886548466027e+03    1.0481603638036683e+05
+Dual infeasibility......:   1.1203630725713738e+03    6.2242392920631879e+04
+Constraint violation....:   1.4341086593416819e-04    1.4341086593416819e-04
+Complementarity.........:   1.5494702059467593e-05    8.6081678108153304e-04
+Overall NLP error.......:   1.1203630725713738e+03    6.2242392920631879e+04
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 24:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 1.120363e+03
+Barrier Parameter: 1.844914e-06
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 24:
+**************************************************
+
+HSL_MA97: delays 1527, nfactor 460143, nflops 5913513, maxfront 27
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 7.882336e-15
+Factorization successful.
+residual_ratio = 4.395541e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 24:
+**************************************************
+
+--> Starting line search in iteration 24 <--
+The current filter has 1 entries.
+minimal step size ALPHA_MIN = 2.579045E-10
+Starting checks for alpha (primal) = 8.46e-01
+Checking acceptability for trial step size alpha_primal_test= 8.461793e-01:
+  New values of barrier function     =  1.8868519524498129e+03  (reference  1.8868835959907635e+03):
+  New values of constraint violation =  3.5478794065041994e-02  (reference  1.0602375163439563e-01):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 25:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 25:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  25  1.0481373e+05 9.36e-05 2.26e+02  -5.7 1.89e-02    -  1.00e+00 8.46e-01h  1 
+
+**************************************************
+*** Beginning Iteration 25 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.8449144625279508e-06
+Current fraction-to-the-boundary parameter tau = 9.9999815508553747e-01
+
+||curr_x||_inf   = 1.4036306493212163e+00
+||curr_s||_inf   = 1.2099850855023910e+00
+||curr_y_c||_inf = 1.3807728305264862e+02
+||curr_y_d||_inf = 1.2050919729073512e+04
+||curr_z_L||_inf = 1.0000001632699961e+02
+||curr_z_U||_inf = 4.8771880179423344e-01
+||curr_v_L||_inf = 2.0674518757374583e-02
+||curr_v_U||_inf = 1.2202418554752476e+04
+
+
+***Current NLP Values for Iteration 25:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8866471626202938e+03    1.0481373125668299e+05
+Dual infeasibility......:   2.2550882059654032e+02    1.2528267810918907e+04
+Constraint violation....:   9.3563571134991363e-05    9.3563571134991363e-05
+Complementarity.........:   5.3845273920081808e-06    2.9914041066712117e-04
+Overall NLP error.......:   2.2550882059654032e+02    1.2528267810918907e+04
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 25:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 2.255088e+02
+Barrier Parameter: 1.844914e-06
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 25:
+**************************************************
+
+HSL_MA97: delays 1515, nfactor 460008, nflops 5908932, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 4.238418e-13
+Factorization successful.
+residual_ratio = 4.349539e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 25:
+**************************************************
+
+--> Starting line search in iteration 25 <--
+The current filter has 1 entries.
+minimal step size ALPHA_MIN = 1.016369E-10
+Starting checks for alpha (primal) = 1.00e+00
+Checking acceptability for trial step size alpha_primal_test= 1.000000e+00:
+  New values of barrier function     =  1.8868502006595991e+03  (reference  1.8868519524498129e+03):
+  New values of constraint violation =  6.7564133809709930e-04  (reference  3.5478794065041994e-02):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 26:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 26:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  26  1.0481338e+05 4.56e-06 7.46e-05  -5.7 3.93e-03    -  1.00e+00 1.00e+00h  1 A
+
+**************************************************
+*** Beginning Iteration 26 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.8449144625279508e-06
+Current fraction-to-the-boundary parameter tau = 9.9999815508553747e-01
+
+||curr_x||_inf   = 1.4035710503333394e+00
+||curr_s||_inf   = 1.2099926385713842e+00
+||curr_y_c||_inf = 1.3807630784938971e+02
+||curr_y_d||_inf = 1.2214324332441927e+04
+||curr_z_L||_inf = 1.0000001632701940e+02
+||curr_z_U||_inf = 3.1171326195996707e-01
+||curr_v_L||_inf = 2.0675414601843391e-02
+||curr_v_U||_inf = 1.2214324332441945e+04
+
+
+***Current NLP Values for Iteration 26:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8866409045783764e+03    1.0481338358768758e+05
+Dual infeasibility......:   7.4599239056932678e-05    4.1444021698295933e-03
+Constraint violation....:   4.5560035708547275e-06    4.5560035708547275e-06
+Complementarity.........:   2.1220020521058994e-06    1.1788900289477220e-04
+Overall NLP error.......:   7.4599239056932678e-05    4.1444021698295933e-03
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 26:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 7.459924e-05
+Barrier Parameter: 1.844914e-06
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 26:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 9.702779e-13
+Factorization successful.
+residual_ratio = 2.667319e-16
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 26:
+**************************************************
+
+--> Starting line search in iteration 26 <--
+Storing current iterate as backup acceptable point.
+The current filter has 1 entries.
+minimal step size ALPHA_MIN = 5.000000E-07
+Starting checks for alpha (primal) = 1.00e+00
+Checking acceptability for trial step size alpha_primal_test= 1.000000e+00:
+  New values of barrier function     =  1.8868502105690445e+03  (reference  1.8868502006595991e+03):
+  New values of constraint violation =  7.1221751242071717e-07  (reference  6.7564133809709930e-04):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 27:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 27:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  27  1.0481338e+05 5.70e-09 1.59e-06  -5.7 1.44e-04    -  1.00e+00 1.00e+00h  1 A
+
+**************************************************
+*** Beginning Iteration 27 from the following point:
+**************************************************
+
+Current barrier parameter mu = 1.8449144625279508e-06
+Current fraction-to-the-boundary parameter tau = 9.9999815508553747e-01
+
+||curr_x||_inf   = 1.4035710489737776e+00
+||curr_s||_inf   = 1.2099926385261019e+00
+||curr_y_c||_inf = 1.3807630775513468e+02
+||curr_y_d||_inf = 1.2214443073522258e+04
+||curr_z_L||_inf = 1.0000001632701941e+02
+||curr_z_U||_inf = 3.1140813592132527e-01
+||curr_v_L||_inf = 2.0675412453965952e-02
+||curr_v_U||_inf = 1.2214443073522278e+04
+
+
+***Current NLP Values for Iteration 27:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8866409273271950e+03    1.0481338485151084e+05
+Dual infeasibility......:   1.5868447709220074e-06    8.8158042829000416e-05
+Constraint violation....:   5.6989797325712743e-09    5.6989797325712743e-09
+Complementarity.........:   1.8539597198328022e-06    1.0299776221293347e-04
+Overall NLP error.......:   1.8539597198328022e-06    1.0299776221293347e-04
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 27:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 1.586845e-06
+  sub_problem_error < kappa_eps * mu (1.844914e-05)
+Updating mu=   1.8449144625279508e-06 and tau=   9.9999815508553747e-01 to new_mu=   2.5059035596800618e-09 and new_tau=   9.9999999749409640e-01
+Barrier Parameter: 2.505904e-09
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 27:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 1.641344e-12
+Factorization successful.
+residual_ratio = 1.683484e-15
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 27:
+**************************************************
+
+--> Starting line search in iteration 27 <--
+Mu has changed in line search - resetting watchdog counters.
+Storing current iterate as backup acceptable point.
+The current filter has 0 entries.
+minimal step size ALPHA_MIN = 5.215629E-14
+Starting checks for alpha (primal) = 9.19e-01
+Checking acceptability for trial step size alpha_primal_test= 9.194575e-01:
+  New values of barrier function     =  1.8866349493887208e+03  (reference  1.8866412115916589e+03):
+  New values of constraint violation =  6.3531727526397908e-04  (reference  7.1221751242071717e-07):
+Checking Armijo Condition...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 28:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 28:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  28  1.0481304e+05 3.50e-06 1.79e+01  -8.6 3.81e-03    -  8.24e-01 9.19e-01f  1 
+
+**************************************************
+*** Beginning Iteration 28 from the following point:
+**************************************************
+
+Current barrier parameter mu = 2.5059035596800618e-09
+Current fraction-to-the-boundary parameter tau = 9.9999999749409640e-01
+
+||curr_x||_inf   = 1.4035239882694490e+00
+||curr_s||_inf   = 1.2099994295003704e+00
+||curr_y_c||_inf = 1.3807556662833909e+02
+||curr_y_d||_inf = 1.2329265200166270e+04
+||curr_z_L||_inf = 1.0000000290022888e+02
+||curr_z_U||_inf = 5.8353593517836873e-02
+||curr_v_L||_inf = 2.0811689419748220e-02
+||curr_v_U||_inf = 1.2317284828032822e+04
+
+
+***Current NLP Values for Iteration 28:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8866346409860441e+03    1.0481303561033579e+05
+Dual infeasibility......:   1.7924572858035390e+01    9.9580960322418832e+02
+Constraint violation....:   3.4972538263122743e-06    3.4972538263122743e-06
+Complementarity.........:   5.9269139597290615e-07    3.2927299776272563e-05
+Overall NLP error.......:   1.7924572858035390e+01    9.9580960322418832e+02
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 28:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 1.792457e+01
+Barrier Parameter: 2.505904e-09
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 28:
+**************************************************
+
+HSL_MA97: delays 1512, nfactor 459972, nflops 5907708, maxfront 26
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 7.945311e-14
+Factorization successful.
+residual_ratio = 7.899698e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 28:
+**************************************************
+
+--> Starting line search in iteration 28 <--
+The current filter has 0 entries.
+minimal step size ALPHA_MIN = 1.051321E-10
+Starting checks for alpha (primal) = 9.92e-01
+Checking acceptability for trial step size alpha_primal_test= 9.919028e-01:
+  New values of barrier function     =  1.8866344868893200e+03  (reference  1.8866349493887208e+03):
+  New values of constraint violation =  1.5253961086682197e-05  (reference  6.3531727526397908e-04):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 29:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 29:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  29  1.0481301e+05 1.18e-07 1.24e+01  -8.6 5.90e-04    -  5.39e-01 9.92e-01h  1 
+
+**************************************************
+*** Beginning Iteration 29 from the following point:
+**************************************************
+
+Current barrier parameter mu = 2.5059035596800618e-09
+Current fraction-to-the-boundary parameter tau = 9.9999999749409640e-01
+
+||curr_x||_inf   = 1.4035197277498981e+00
+||curr_s||_inf   = 1.2099999977829736e+00
+||curr_y_c||_inf = 1.3807550054647808e+02
+||curr_y_d||_inf = 1.2340584621233425e+04
+||curr_z_L||_inf = 1.0000000134775806e+02
+||curr_z_U||_inf = 2.7133860695693388e-02
+||curr_v_L||_inf = 2.0827769333907460e-02
+||curr_v_U||_inf = 1.2329903035711184e+04
+
+
+***Current NLP Values for Iteration 29:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8866341449358520e+03    1.0481300805199178e+05
+Dual infeasibility......:   1.2383848173032675e+01    6.8799156516848200e+02
+Constraint violation....:   1.1792936538412846e-07    1.1792936538412846e-07
+Complementarity.........:   2.2819484027082334e-07    1.2677491126156854e-05
+Overall NLP error.......:   1.2383848173032675e+01    6.8799156516848200e+02
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 29:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 1.238385e+01
+Barrier Parameter: 2.505904e-09
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 29:
+**************************************************
+
+HSL_MA97: delays 1641, nfactor 461423, nflops 5956753, maxfront 27
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 3.234770e-14
+Factorization successful.
+residual_ratio = 7.644278e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 29:
+**************************************************
+
+--> Starting line search in iteration 29 <--
+The current filter has 1 entries.
+minimal step size ALPHA_MIN = 1.326278E-13
+Starting checks for alpha (primal) = 1.00e+00
+Checking acceptability for trial step size alpha_primal_test= 1.000000e+00:
+  New values of barrier function     =  1.8866344853629910e+03  (reference  1.8866344868893200e+03):
+  New values of constraint violation =  2.2962713269171162e-08  (reference  1.5253961086682197e-05):
+Checking Armijo Condition...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+**************************************************
+*** Update HessianMatrix for Iteration 30:
+**************************************************
+
+
+
+**************************************************
+*** Summary of Iteration: 30:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  30  1.0481301e+05 9.88e-10 1.93e-08  -8.6 1.07e-04    -  1.00e+00 1.00e+00f  1 A
+
+**************************************************
+*** Beginning Iteration 30 from the following point:
+**************************************************
+
+Current barrier parameter mu = 2.5059035596800618e-09
+Current fraction-to-the-boundary parameter tau = 9.9999999749409640e-01
+
+||curr_x||_inf   = 1.4035196903597975e+00
+||curr_s||_inf   = 1.2100000021159480e+00
+||curr_y_c||_inf = 1.3807549998550118e+02
+||curr_y_d||_inf = 1.2340695118043419e+04
+||curr_z_L||_inf = 1.0000000002217737e+02
+||curr_z_U||_inf = 4.2761983817188320e-04
+||curr_v_L||_inf = 2.0841507440955420e-02
+||curr_v_U||_inf = 1.2340695118043419e+04
+
+
+***Current NLP Values for Iteration 30:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8866341404132352e+03    1.0481300780073530e+05
+Dual infeasibility......:   1.9336788629341339e-08    1.0742660349634077e-06
+Constraint violation....:   9.8778973889324106e-10    9.8778973889324106e-10
+Complementarity.........:   5.5266509930504133e-08    3.0703616628057853e-06
+Overall NLP error.......:   5.5266509930504133e-08    3.0703616628057853e-06
+
+
+
+
+**************************************************
+*** Update Barrier Parameter for Iteration 30:
+**************************************************
+
+Optimality Error for Barrier Sub-problem = 5.276061e-08
+Barrier Parameter: 2.505904e-09
+
+**************************************************
+*** Solving the Primal Dual System for Iteration 30:
+**************************************************
+
+HSL_MA97: delays 1964, nfactor 464892, nflops 6026160, maxfront 27
+Ma97SolverInterface::Factorization: ma97_factor_solve took      0.000
+Factorization successful.
+Number of trial factorizations performed: 1
+Perturbation parameters: delta_x=0.000000e+00 delta_s=0.000000e+00
+                         delta_c=0.000000e+00 delta_d=0.000000e+00
+residual_ratio = 7.014557e-12
+Factorization successful.
+residual_ratio = 4.302677e-17
+
+**************************************************
+*** Finding Acceptable Trial Point for Iteration 30:
+**************************************************
+
+--> Starting line search in iteration 30 <--
+Storing current iterate as backup acceptable point.
+The current filter has 1 entries.
+minimal step size ALPHA_MIN = 1.811268E-10
+Starting checks for alpha (primal) = 1.00e+00
+Checking acceptability for trial step size alpha_primal_test= 1.000000e+00:
+  New values of barrier function     =  1.8866344853088667e+03  (reference  1.8866344853629910e+03):
+  New values of constraint violation =  6.5794520408727343e-09  (reference  2.2962713269171162e-08):
+Checking sufficient reduction...
+Succeeded...
+Checking filter acceptability...
+Succeeded...
+
+
+**************************************************
+*** Summary of Iteration: 31:
+**************************************************
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  31  1.0481301e+05 5.27e-10 1.03e-08  -8.6 7.85e-05    -  1.00e+00 1.00e+00h  1 
+
+**************************************************
+*** Beginning Iteration 31 from the following point:
+**************************************************
+
+Current barrier parameter mu = 2.5059035596800618e-09
+Current fraction-to-the-boundary parameter tau = 9.9999999749409640e-01
+
+||curr_x||_inf   = 1.4035196903494385e+00
+||curr_s||_inf   = 1.2100000021148778e+00
+||curr_y_c||_inf = 1.3807549998543831e+02
+||curr_y_d||_inf = 1.2340695170100740e+04
+||curr_z_L||_inf = 1.0000000002217735e+02
+||curr_z_U||_inf = 4.2748551850982640e-04
+||curr_v_L||_inf = 2.0841507468961743e-02
+||curr_v_U||_inf = 1.2340695170100740e+04
+
+
+***Current NLP Values for Iteration 31:
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8866341403407955e+03    1.0481300779671087e+05
+Dual infeasibility......:   1.0320608811420265e-08    5.7336715619001475e-07
+Constraint violation....:   5.2700510622116781e-10    5.2700510622116781e-10
+Complementarity.........:   1.5051767604927452e-08    8.3620931138485856e-07
+Overall NLP error.......:   1.5051767604927452e-08    8.3620931138485856e-07
+
+
+
+
+Number of Iterations....: 31
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.8866341403407955e+03    1.0481300779671087e+05
+Dual infeasibility......:   1.0320608811420265e-08    5.7336715619001475e-07
+Constraint violation....:   5.2700510622116781e-10    5.2700510622116781e-10
+Variable bound violation:   9.9749409644087569e-09    9.9749409644087569e-09
+Complementarity.........:   1.5051767604927452e-08    8.3620931138485856e-07
+Overall NLP error.......:   1.5051767604927452e-08    8.3620931138485856e-07
+
+
+Number of objective function evaluations             = 32
+Number of objective gradient evaluations             = 32
+Number of equality constraint evaluations            = 32
+Number of inequality constraint evaluations          = 32
+Number of equality constraint Jacobian evaluations   = 32
+Number of inequality constraint Jacobian evaluations = 32
+Number of Lagrangian Hessian evaluations             = 31
+Total seconds in IPOPT                               = 0.304
+
+EXIT: Optimal Solution Found.

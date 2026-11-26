@@ -1,0 +1,1646 @@
+{
+ "schema": "s56_cost_breakdown_v2",
+ "objective_convention": {
+  "units": "EUR of total discounted cost",
+  "gross_operational_cost": "production _get_operational_recourse_components gross_operational_cost, q_convention 'settlement_excluded_in_full'",
+  "net": "gross_operational_cost - terminal value credit (salvage)",
+  "total": "investment cost I(x) + net"
+ },
+ "investment_cost_eur": 862548.6983358284,
+ "gross_operational_cost_eur": 1099742608.5967152,
+ "terminal_value_credit_eur": 70251.27742495143,
+ "net_operational_recourse_eur": 1099672357.3192902,
+ "total_planning_cost_eur": 1100534906.017626,
+ "flexibility_cost_eur": {
+  "definition": "sum over blocks w_b sum_s pi_s sum_(priced load, hour) cost_flex[s_m][t] baseMVA flex_<p|q>_down; w_b = _get_admm_block_weight (years x days x annualisation); EUR of total discounted cost",
+  "active_down_eur": {
+   "TSO": 0.0,
+   "DSO": 158277996.20366505
+  },
+  "reactive_down_eur": {
+   "TSO": 0.0,
+   "DSO": 541264.6022206594
+  },
+  "per_dso": {
+   "5": {
+    "flex_p_down": 30537072.380895413,
+    "flex_q_down": 64568.892342746476
+   },
+   "7": {
+    "flex_p_down": 79682858.82365848,
+    "flex_q_down": 116072.98877008067
+   },
+   "9": {
+    "flex_p_down": 48058064.99911115,
+    "flex_q_down": 360622.72110783216
+   }
+  },
+  "max_rel_diff_vs_flex_cost_scenario_expression": 4.201782331170531e-15,
+  "reconciliation_with_total_flex_cost": {
+   "TSO": {
+    "total_flex_cost_weighted": 0.0,
+    "split_sum": 0.0,
+    "rel_diff": 0.0
+   },
+   "DSO": {
+    "total_flex_cost_weighted": 158819260.80588567,
+    "split_sum": 158819260.8058857,
+    "rel_diff": 1.8764929540958342e-16
+   }
+  },
+  "reconciles": true,
+  "split_readback": {
+   "flex_price_multiplier": 2.0,
+   "rel_tol": 1e-15,
+   "scope": "free flex Vars of every DSO flex_cost_scenario Expression (standard repn)",
+   "per_family": {
+    "flex_p_down": {
+     "n_coefficients": 248832,
+     "n_equal_applied": 248832,
+     "n_within_tol_of_m_original": 248832
+    },
+    "flex_q_down": {
+     "n_coefficients": 248832,
+     "n_equal_applied": 248832,
+     "n_within_tol_of_m_original": 248832
+    }
+   },
+   "ok": true
+  }
+ },
+ "flexibility_cost_reactive_down_eur": 541264.6022206594,
+ "flex_price_split_readback": {
+  "flex_price_multiplier": 2.0,
+  "rel_tol": 1e-15,
+  "scope": "free flex Vars of every DSO flex_cost_scenario Expression (standard repn)",
+  "per_family": {
+   "flex_p_down": {
+    "n_coefficients": 248832,
+    "n_equal_applied": 248832,
+    "n_within_tol_of_m_original": 248832
+   },
+   "flex_q_down": {
+    "n_coefficients": 248832,
+    "n_equal_applied": 248832,
+    "n_within_tol_of_m_original": 248832
+   }
+  },
+  "ok": true
+ },
+ "esso_slack_totals": {
+  "esso_slack_penalty_in_force": 10000.0,
+  "totals": {
+   "p": {
+    "sum": -1.7279842909088704e-05,
+    "max_abs": -9.999909036343807e-09,
+    "n_nodes_with_pair": 3,
+    "priced_in_esso_objective": -0.17279842909088702
+   },
+   "q": {
+    "sum": -1.151989527272728e-05,
+    "max_abs": 0.0,
+    "n_nodes_with_pair": 3,
+    "priced_in_esso_objective": -0.11519895272727279
+   }
+  },
+  "per_node": {
+   "5": {
+    "p": {
+     "max_abs": -9.99990906334064e-09,
+     "sum": -5.759947636362692e-06,
+     "max_net_abs": 5.5120192586540764e-17,
+     "n": 288
+    },
+    "q": {
+     "max_abs": 0.0,
+     "sum": -3.839965090909107e-06,
+     "max_net_abs": 0.0,
+     "n": 288
+    }
+   },
+   "7": {
+    "p": {
+     "max_abs": -9.999909080598536e-09,
+     "sum": -5.75994763636357e-06,
+     "max_net_abs": 2.0618772132723473e-17,
+     "n": 288
+    },
+    "q": {
+     "max_abs": -9.999909088240373e-09,
+     "sum": -5.75994763636363e-06,
+     "max_net_abs": 5.3372803321024545e-18,
+     "n": 288
+    }
+   },
+   "9": {
+    "p": {
+     "max_abs": -9.999909036343807e-09,
+     "sum": -5.7599476363624404e-06,
+     "max_net_abs": 1.0906514350237844e-16,
+     "n": 288
+    },
+    "q": {
+     "max_abs": 0.0,
+     "sum": -1.9199825454545436e-06,
+     "max_net_abs": 0.0,
+     "n": 288
+    }
+   }
+  },
+  "units": "MW / MVAr summed over (block, day, hour); priced = penalty x sum (ESSO objective)"
+ },
+ "leak_detector": {
+  "definition": "L = sum w_(y,d) min(pch, pdch) dt over (node, active cohort, block, day, hour); w = _get_admm_block_weight(TSO, y, d); pibar = model_construction_helpers.expected_market_price(TSO block, t); DECIDING: priced_loss_eur = sum w |pibar| (1/eta_dch - eta_ch) min(pch, pdch) dt (Planner decision, conversion loss); beside, not deciding: priced_eur = sum w |pibar| min(pch, pdch) dt (full L)",
+  "L_weighted_mwh": 16.973918313903,
+  "priced_eur": 1862.3585140140683,
+  "priced_loss_eur": 133.46902683767502,
+  "ceiling_applies_to": "priced_loss_eur",
+  "max_simultaneous_mw": 0.0024890693639062845,
+  "ceiling_eur": 25.0,
+  "ceiling_source": "Expert ruling 4 (handback 3): lambda L priced <= 1 % of R/4, R = 10,000 EUR; priced as the conversion loss (Planner decision, TASKS.md 8f2a878a)",
+  "within_ceiling": false,
+  "per_node": {
+   "5": {
+    "L_weighted_mwh": 0.0,
+    "priced_eur": 0.0,
+    "max_mw": 0.0
+   },
+   "7": {
+    "L_weighted_mwh": 16.973918313903,
+    "priced_eur": 1862.3585140140683,
+    "max_mw": 0.0024890693639062845
+   },
+   "9": {
+    "L_weighted_mwh": 0.0,
+    "priced_eur": 0.0,
+    "max_mw": 0.0
+   }
+  }
+ },
+ "per_cohort_throughput": {
+  "5": {
+   "2030|2030": {
+    "D_solved": 0.01966099691776282,
+    "D_from_own_throughput": 0.019660996917762828,
+    "abs_diff": 6.938893903907228e-18,
+    "avg_throughput_mwh_per_day": 0.7724641062731635,
+    "efc_per_day": 0.38623205313658177,
+    "soh_cumul": 0.9091645428330998,
+    "e_available_mwh": 0.9091645428330998
+   },
+   "2030|2035": {
+    "D_solved": 0.01747387698062966,
+    "D_from_own_throughput": 0.01747387698062966,
+    "abs_diff": 0.0,
+    "avg_throughput_mwh_per_day": 0.6865339952713441,
+    "efc_per_day": 0.34326699763567203,
+    "soh_cumul": 0.8283899743180506,
+    "e_available_mwh": 0.8283899743180506
+   }
+  },
+  "7": {
+   "2025|2025": {
+    "D_solved": 0.028878993443477056,
+    "D_from_own_throughput": 0.028878993443477052,
+    "abs_diff": 3.469446951953614e-18,
+    "avg_throughput_mwh_per_day": 1.134631471318211,
+    "efc_per_day": 0.5673157356591055,
+    "soh_cumul": 0.9008223753418668,
+    "e_available_mwh": 0.9008223753418668
+   },
+   "2025|2030": {
+    "D_solved": 0.03389026298148949,
+    "D_from_own_throughput": 0.0338902629814895,
+    "abs_diff": 6.938893903907228e-18,
+    "avg_throughput_mwh_per_day": 1.331520055410171,
+    "efc_per_day": 0.6657600277050855,
+    "soh_cumul": 0.8074245744309309,
+    "e_available_mwh": 0.8074245744309309
+   },
+   "2025|2035": {
+    "D_solved": 0.029152698555166986,
+    "D_from_own_throughput": 0.029152698555166986,
+    "abs_diff": 0.0,
+    "avg_throughput_mwh_per_day": 1.1453851159766337,
+    "efc_per_day": 0.5726925579883169,
+    "soh_cumul": 0.7271470719383167,
+    "e_available_mwh": 0.7271470719383167
+   },
+   "2030|2030": {
+    "D_solved": -9.99291477122266e-09,
+    "D_from_own_throughput": -9.99291477122266e-09,
+    "abs_diff": 0.0,
+    "avg_throughput_mwh_per_day": -1.9630662702669174e-07,
+    "efc_per_day": -1.9630662702669174e-07,
+    "soh_cumul": 0.9272165116312203,
+    "e_available_mwh": 0.46360825581561016
+   },
+   "2030|2035": {
+    "D_solved": -9.992773689007529e-09,
+    "D_from_own_throughput": -9.992773689007519e-09,
+    "abs_diff": 9.926167350636332e-24,
+    "avg_throughput_mwh_per_day": -1.9630385552564105e-07,
+    "efc_per_day": -1.9630385552564105e-07,
+    "soh_cumul": 0.8597304594414477,
+    "e_available_mwh": 0.42986522972072383
+   }
+  },
+  "9": {
+   "2035|2035": {
+    "D_solved": 0.011544081066620878,
+    "D_from_own_throughput": 0.011544081066620878,
+    "abs_diff": 0.0,
+    "avg_throughput_mwh_per_day": 0.22677863948536062,
+    "efc_per_day": 0.22677863948536062,
+    "soh_cumul": 0.916574185965449,
+    "e_available_mwh": 0.4582870929827245
+   }
+  }
+ },
+ "exit_certificate_e6": {
+  "summary": {
+   "closure_residual_max_abs_mwh": 0.0,
+   "energy_balance_residual_max_mwh": 1.249000902703301e-16,
+   "window_margin_min_mwh": -8.57763271522316e-09,
+   "circle_margin_min_mva": -1.9030935882735633e-08,
+   "energy_accounting_residual_max_abs_mwh": 2.185751579730777e-16,
+   "within_cohort_simultaneity_max_mwh": 0.017504720963174493,
+   "inter_cohort_gross_transfer_max_mwh": 0.017504533793651078,
+   "n_block_days": 24,
+   "soc_sources": [
+    "variable"
+   ],
+   "q_slack_max_abs_mvar": 0.0,
+   "q_slack_sum_mvar": -1.151989527272728e-05,
+   "p_slack_max_abs_mw": -9.999909036343807e-09,
+   "p_slack_sum_mw": -1.7279842909088704e-05
+  },
+  "per_node": {
+   "5": {
+    "slacks": {
+     "p": {
+      "max_abs": -9.99990906334064e-09,
+      "sum": -5.759947636362692e-06,
+      "max_net_abs": 5.5120192586540764e-17,
+      "n": 288
+     },
+     "q": {
+      "max_abs": 0.0,
+      "sum": -3.839965090909107e-06,
+      "max_net_abs": 0.0,
+      "n": 288
+     }
+    },
+    "block_day": {
+     "2030|Spring": {
+      "cohorts": [
+       "1"
+      ],
+      "n_active": 1,
+      "per_cohort": {
+       "1": {
+        "e_available_mwh": 0.9091645428330998,
+        "s_rated_mva": 0.5,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.3384058760941127e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 1.0408340855860843e-16,
+        "window_margin_min_mwh": 0.16326884532102304,
+        "window_fraction_min": 0.3436788411775812,
+        "window_fraction_max": 0.720418815704964,
+        "circle_margin_min_mva": 0.3526318527816352,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 0.6850367858094818
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": -2.3384058760941127e-07,
+      "inter_cohort_transfer_net_of_within_mwh": 0.0,
+      "conversion_loss_mwh": -1.6758575445341166e-08,
+      "transfer_hourly_max_mw": -9.677420386422551e-09,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.024294088074068396,
+       "conversion_losses_mwh": 0.024294088074068257,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": 1.3877787807814457e-16
+      }
+     },
+     "2030|Summer": {
+      "cohorts": [
+       "1"
+      ],
+      "n_active": 1,
+      "per_cohort": {
+       "1": {
+        "e_available_mwh": 0.9091645428330998,
+        "s_rated_mva": 0.5,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.3313099874759566e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 7.632783294297951e-17,
+        "window_margin_min_mwh": 0.16421176921166603,
+        "window_fraction_min": 0.3283301929314153,
+        "window_fraction_max": 0.7193816834299803,
+        "circle_margin_min_mva": 0.3588796225790005,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 0.7110598326500368
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": -2.3313099874759566e-07,
+      "inter_cohort_transfer_net_of_within_mwh": 0.0,
+      "conversion_loss_mwh": -1.6707721576911047e-08,
+      "transfer_hourly_max_mw": -9.607392643857716e-09,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.02521696726099098,
+       "conversion_losses_mwh": 0.02521696726099103,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": -5.204170427930421e-17
+      }
+     },
+     "2030|Autumn": {
+      "cohorts": [
+       "1"
+      ],
+      "n_active": 1,
+      "per_cohort": {
+       "1": {
+        "e_available_mwh": 0.9091645428330998,
+        "s_rated_mva": 0.5,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.3437530808130093e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 7.890843296771427e-17,
+        "window_margin_min_mwh": 0.19883910016549744,
+        "window_fraction_min": 0.3989183574199714,
+        "window_fraction_max": 0.6812947043162467,
+        "circle_margin_min_mva": 0.39005047860123687,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 0.8560461762848027
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": -2.3437530808130093e-07,
+      "inter_cohort_transfer_net_of_within_mwh": 0.0,
+      "conversion_loss_mwh": -1.6796897079159922e-08,
+      "transfer_hourly_max_mw": -9.665660569482478e-09,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.03035875099401781,
+       "conversion_losses_mwh": 0.030358750994017795,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": 1.3877787807814457e-17
+      }
+     },
+     "2030|Winter": {
+      "cohorts": [
+       "1"
+      ],
+      "n_active": 1,
+      "per_cohort": {
+       "1": {
+        "e_available_mwh": 0.9091645428330998,
+        "s_rated_mva": 0.5,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.3462351365467534e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 9.71445146547012e-17,
+        "window_margin_min_mwh": 0.17081904401243675,
+        "window_fraction_min": 0.36637260324983045,
+        "window_fraction_max": 0.7121142697886812,
+        "circle_margin_min_mva": 0.324415512571707,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 0.8386743701336468
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": -2.3462351365467534e-07,
+      "inter_cohort_transfer_net_of_within_mwh": 0.0,
+      "conversion_loss_mwh": -1.6814685145251755e-08,
+      "transfer_hourly_max_mw": -9.628432634082742e-09,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.029742678693399686,
+       "conversion_losses_mwh": 0.029742678693399468,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": 2.185751579730777e-16
+      }
+     },
+     "2035|Spring": {
+      "cohorts": [
+       "1"
+      ],
+      "n_active": 1,
+      "per_cohort": {
+       "1": {
+        "e_available_mwh": 0.8283899743180506,
+        "s_rated_mva": 0.5,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.3317225860305773e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 9.367506770274758e-17,
+        "window_margin_min_mwh": 0.13305631415091057,
+        "window_fraction_min": 0.3450528100189246,
+        "window_fraction_max": 0.7393796179626081,
+        "circle_margin_min_mva": 0.30564349021747805,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 0.6533122823091236
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": -2.3317225860305773e-07,
+      "inter_cohort_transfer_net_of_within_mwh": 0.0,
+      "conversion_loss_mwh": -1.671067853321916e-08,
+      "transfer_hourly_max_mw": -9.631847717245848e-09,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.02316901289838552,
+       "conversion_losses_mwh": 0.023169012898385445,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": 7.632783294297951e-17
+      }
+     },
+     "2035|Summer": {
+      "cohorts": [
+       "1"
+      ],
+      "n_active": 1,
+      "per_cohort": {
+       "1": {
+        "e_available_mwh": 0.8283899743180506,
+        "s_rated_mva": 0.5,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.337505487526353e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 5.551115123125783e-17,
+        "window_margin_min_mwh": 0.14231037620008147,
+        "window_fraction_min": 0.3230836390930262,
+        "window_fraction_max": 0.7282084759448778,
+        "circle_margin_min_mva": 0.3274317679174956,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 0.6712022420285385
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": -2.337505487526353e-07,
+      "inter_cohort_transfer_net_of_within_mwh": 0.0,
+      "conversion_loss_mwh": -1.6752122660605554e-08,
+      "transfer_hourly_max_mw": -9.692801874875736e-09,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.023803460954414168,
+       "conversion_losses_mwh": 0.02380346095441418,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": -1.3877787807814457e-17
+      }
+     },
+     "2035|Autumn": {
+      "cohorts": [
+       "1"
+      ],
+      "n_active": 1,
+      "per_cohort": {
+       "1": {
+        "e_available_mwh": 0.8283899743180506,
+        "s_rated_mva": 0.5,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.3345029331109113e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 9.020562075079397e-17,
+        "window_margin_min_mwh": 0.13459333861266232,
+        "window_fraction_min": 0.3443109725263053,
+        "window_fraction_max": 0.7375241821058222,
+        "circle_margin_min_mva": 0.37839792243507775,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 0.727255592338284
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": -2.3345029331109113e-07,
+      "inter_cohort_transfer_net_of_within_mwh": 0.0,
+      "conversion_loss_mwh": -1.6730604353961555e-08,
+      "transfer_hourly_max_mw": -9.603981138966037e-09,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.025791332346842236,
+       "conversion_losses_mwh": 0.025791332346842274,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": -3.8163916471489756e-17
+      }
+     },
+     "2035|Winter": {
+      "cohorts": [
+       "1"
+      ],
+      "n_active": 1,
+      "per_cohort": {
+       "1": {
+        "e_available_mwh": 0.8283899743180506,
+        "s_rated_mva": 0.5,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.3441664770613022e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 5.99143262761062e-17,
+        "window_margin_min_mwh": 0.1780758366367141,
+        "window_fraction_min": 0.42818409871211094,
+        "window_fraction_max": 0.6850338099717949,
+        "circle_margin_min_mva": 0.39401205363176106,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 0.6947309381782449
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": -2.3441664770613022e-07,
+      "inter_cohort_transfer_net_of_within_mwh": 0.0,
+      "conversion_loss_mwh": -1.679985975227269e-08,
+      "transfer_hourly_max_mw": -9.696465656954642e-09,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.024637880694156407,
+       "conversion_losses_mwh": 0.024637880694156344,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": 6.245004513516506e-17
+      }
+     }
+    }
+   },
+   "7": {
+    "slacks": {
+     "p": {
+      "max_abs": -9.999909080598536e-09,
+      "sum": -5.75994763636357e-06,
+      "max_net_abs": 2.0618772132723473e-17,
+      "n": 288
+     },
+     "q": {
+      "max_abs": -9.999909088240373e-09,
+      "sum": -5.75994763636363e-06,
+      "max_net_abs": 5.3372803321024545e-18,
+      "n": 288
+     }
+    },
+    "block_day": {
+     "2025|Spring": {
+      "cohorts": [
+       "0"
+      ],
+      "n_active": 1,
+      "per_cohort": {
+       "0": {
+        "e_available_mwh": 0.9008223753418668,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": 6.81099623824852e-07,
+        "within_cohort_simultaneity_max_mw": 5.5239812898106887e-08,
+        "energy_balance_residual_max_mwh": 1.0089722795306237e-16,
+        "window_margin_min_mwh": 0.11357300823870553,
+        "window_fraction_min": 0.22671022112932174,
+        "window_fraction_max": 0.7739229715562916,
+        "circle_margin_min_mva": 0.09415455894155536,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 0.9858843177076916
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": 6.81099623824852e-07,
+      "inter_cohort_transfer_net_of_within_mwh": 0.0,
+      "conversion_loss_mwh": 4.8812139707447796e-08,
+      "transfer_hourly_max_mw": 5.5239812898106887e-08,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.03496332013313888,
+       "conversion_losses_mwh": 0.0349633201331388,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": 8.326672684688674e-17
+      }
+     },
+     "2025|Summer": {
+      "cohorts": [
+       "0"
+      ],
+      "n_active": 1,
+      "per_cohort": {
+       "0": {
+        "e_available_mwh": 0.9008223753418668,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": 6.838955401265496e-07,
+        "within_cohort_simultaneity_max_mw": 4.824584882881667e-08,
+        "energy_balance_residual_max_mwh": 1.1102230246251565e-16,
+        "window_margin_min_mwh": 0.11376314479734573,
+        "window_fraction_min": 0.22663232683362367,
+        "window_fraction_max": 0.7737119015786303,
+        "circle_margin_min_mva": 0.10401934022654546,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 0.9856443947791805
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": 6.838955401265496e-07,
+      "inter_cohort_transfer_net_of_within_mwh": 0.0,
+      "conversion_loss_mwh": 4.901251370906946e-08,
+      "transfer_hourly_max_mw": 4.824584882881667e-08,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.0349548115261896,
+       "conversion_losses_mwh": 0.03495481152618954,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": 6.245004513516506e-17
+      }
+     },
+     "2025|Autumn": {
+      "cohorts": [
+       "0"
+      ],
+      "n_active": 1,
+      "per_cohort": {
+       "0": {
+        "e_available_mwh": 0.9008223753418668,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": 6.999100827648662e-07,
+        "within_cohort_simultaneity_max_mw": 5.454057719191785e-08,
+        "energy_balance_residual_max_mwh": 1.249000902703301e-16,
+        "window_margin_min_mwh": 0.11383790618692158,
+        "window_fraction_min": 0.3826749937546782,
+        "window_fraction_max": 0.7736289092023059,
+        "circle_margin_min_mva": 0.09458569045260046,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 1.239157398329925
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": 6.999100827648662e-07,
+      "inter_cohort_transfer_net_of_within_mwh": 0.0,
+      "conversion_loss_mwh": 5.016022259814882e-08,
+      "transfer_hourly_max_mw": 5.454057719191785e-08,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.043945375775824226,
+       "conversion_losses_mwh": 0.04394537577582422,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": 6.938893903907228e-18
+      }
+     },
+     "2025|Winter": {
+      "cohorts": [
+       "0"
+      ],
+      "n_active": 1,
+      "per_cohort": {
+       "0": {
+        "e_available_mwh": 0.9008223753418668,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": 6.552071651340336e-07,
+        "within_cohort_simultaneity_max_mw": 5.2328549329548316e-08,
+        "energy_balance_residual_max_mwh": 1.1340754724198376e-16,
+        "window_margin_min_mwh": 0.1138365669610587,
+        "window_fraction_min": 0.35927865779145984,
+        "window_fraction_max": 0.7736303958725969,
+        "circle_margin_min_mva": 0.08601015036141749,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 1.3294743585616566
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": 6.552071651340336e-07,
+      "inter_cohort_transfer_net_of_within_mwh": 0.0,
+      "conversion_loss_mwh": 4.695651350127247e-08,
+      "transfer_hourly_max_mw": 5.2328549329548316e-08,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.04714836900466085,
+       "conversion_losses_mwh": 0.04714836900466088,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": -2.7755575615628914e-17
+      }
+     },
+     "2030|Spring": {
+      "cohorts": [
+       "0",
+       "1"
+      ],
+      "n_active": 2,
+      "per_cohort": {
+       "0": {
+        "e_available_mwh": 0.8074245744309309,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": 0.0002826048214489448,
+        "within_cohort_simultaneity_max_mw": 9.332601070859014e-05,
+        "energy_balance_residual_max_mwh": 9.168765047580318e-17,
+        "window_margin_min_mwh": -7.901953091860037e-09,
+        "window_fraction_min": 0.09999999023207609,
+        "window_fraction_max": 0.9000000097866145,
+        "circle_margin_min_mva": 0.0404314165650361,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 1.2924687817200484
+       },
+       "1": {
+        "e_available_mwh": 0.46360825581561016,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.153676823169737e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 2.122084381337632e-17,
+        "window_margin_min_mwh": 0.18544329501960638,
+        "window_fraction_min": 0.49999998857714584,
+        "window_fraction_max": 0.5000000157603701,
+        "circle_margin_min_mva": 0.062344666697664586,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": -4.004453974397493e-07
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": 0.00028239208748253425,
+      "inter_cohort_transfer_net_of_within_mwh": 2.63371590644235e-09,
+      "conversion_loss_mwh": 2.0238099602914985e-05,
+      "transfer_hourly_max_mw": 9.331694696283941e-05,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.04583599207819386,
+       "conversion_losses_mwh": 0.045835992078193874,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": -1.3877787807814457e-17
+      }
+     },
+     "2030|Summer": {
+      "cohorts": [
+       "0",
+       "1"
+      ],
+      "n_active": 2,
+      "per_cohort": {
+       "0": {
+        "e_available_mwh": 0.8074245744309309,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": 0.011479177942714892,
+        "within_cohort_simultaneity_max_mw": 0.0024124637567160627,
+        "energy_balance_residual_max_mwh": 8.326672684688674e-17,
+        "window_margin_min_mwh": -8.57763271522316e-09,
+        "window_fraction_min": 0.10000000311025249,
+        "window_fraction_max": 0.9000000106234477,
+        "circle_margin_min_mva": 0.07046954563408114,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 1.3145672786237939
+       },
+       "1": {
+        "e_available_mwh": 0.46360825581561016,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.2004594413893047e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 3.764622052203977e-17,
+        "window_margin_min_mwh": 0.18544321160915986,
+        "window_fraction_min": 0.5,
+        "window_fraction_max": 0.500000195676162,
+        "circle_margin_min_mva": 0.24139387023750714,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": -2.7035330679287484e-07
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": 0.01147899646091957,
+      "inter_cohort_transfer_net_of_within_mwh": 3.8564148817019084e-08,
+      "conversion_loss_mwh": 0.0008226614130325703,
+      "transfer_hourly_max_mw": 0.002412454543750179,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.04661969596340693,
+       "conversion_losses_mwh": 0.04661969596340703,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": -9.71445146547012e-17
+      }
+     },
+     "2030|Autumn": {
+      "cohorts": [
+       "0",
+       "1"
+      ],
+      "n_active": 2,
+      "per_cohort": {
+       "0": {
+        "e_available_mwh": 0.8074245744309309,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": 8.193675732066014e-07,
+        "within_cohort_simultaneity_max_mw": 6.368544857276132e-08,
+        "energy_balance_residual_max_mwh": 5.551115123125783e-17,
+        "window_margin_min_mwh": -4.595822833408647e-09,
+        "window_fraction_min": 0.3554175715708691,
+        "window_fraction_max": 0.9000000056919532,
+        "circle_margin_min_mva": 0.039547016778569644,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 1.4437757216483211
+       },
+       "1": {
+        "e_available_mwh": 0.46360825581561016,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.1219865090495635e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 2.6428796111067333e-17,
+        "window_margin_min_mwh": 0.18544329637726392,
+        "window_fraction_min": 0.5,
+        "window_fraction_max": 0.5000000128319115,
+        "circle_margin_min_mva": 0.05464177521236449,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": -4.086472023409175e-07
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": 6.132613514316317e-07,
+      "inter_cohort_transfer_net_of_within_mwh": 6.092429129986623e-09,
+      "conversion_loss_mwh": 4.395039685260033e-08,
+      "transfer_hourly_max_mw": 5.4978025335521075e-08,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.0512019286260192,
+       "conversion_losses_mwh": 0.05120192862601912,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": 8.326672684688674e-17
+      }
+     },
+     "2030|Winter": {
+      "cohorts": [
+       "0",
+       "1"
+      ],
+      "n_active": 2,
+      "per_cohort": {
+       "0": {
+        "e_available_mwh": 0.8074245744309309,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": 0.0014497877932735323,
+        "within_cohort_simultaneity_max_mw": 0.0006835107433038543,
+        "energy_balance_residual_max_mwh": 1.0408340855860843e-16,
+        "window_margin_min_mwh": -8.554504771218774e-09,
+        "window_fraction_min": 0.37489307993502397,
+        "window_fraction_max": 0.9000000105948036,
+        "circle_margin_min_mva": 0.03955365208599246,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 1.2756975745242336
+       },
+       "1": {
+        "e_available_mwh": 0.46360825581561016,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.1585426910212212e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 3.4883285074879946e-17,
+        "window_margin_min_mwh": 0.18544293413835122,
+        "window_fraction_min": 0.5,
+        "window_fraction_max": 0.5000007941788961,
+        "circle_margin_min_mva": 0.23774345037298678,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 2.9646268165812695e-07
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": 0.001449634188190876,
+      "inter_cohort_transfer_net_of_within_mwh": 6.224918644589204e-08,
+      "conversion_loss_mwh": 0.0001038904501536796,
+      "transfer_hourly_max_mw": 0.000683501463898339,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.04524124408448452,
+       "conversion_losses_mwh": 0.04524124408448448,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": 4.163336342344337e-17
+      }
+     },
+     "2035|Spring": {
+      "cohorts": [
+       "0",
+       "1"
+      ],
+      "n_active": 2,
+      "per_cohort": {
+       "0": {
+        "e_available_mwh": 0.7271470719383167,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": 0.00035567987027303996,
+        "within_cohort_simultaneity_max_mw": 0.00011540383328690427,
+        "energy_balance_residual_max_mwh": 9.857356511583761e-17,
+        "window_margin_min_mwh": -5.857605511749853e-09,
+        "window_fraction_min": 0.09999999231695719,
+        "window_fraction_max": 0.9000000080555994,
+        "circle_margin_min_mva": -1.9030935882735633e-08,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 1.1709810399636287
+       },
+       "1": {
+        "e_available_mwh": 0.42986522972072383,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.207272823236735e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 3.851279478408502e-17,
+        "window_margin_min_mwh": 0.17194573958308423,
+        "window_fraction_min": 0.4999998762829032,
+        "window_fraction_max": 0.5000008195713003,
+        "circle_margin_min_mva": -1.690312079194456e-08,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 3.814263590755567e-07
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": 0.000355505775749584,
+      "inter_cohort_transfer_net_of_within_mwh": 4.663275886767444e-08,
+      "conversion_loss_mwh": 2.547791392872022e-05,
+      "transfer_hourly_max_mw": 0.00011539582550385617,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.04152758855238729,
+       "conversion_losses_mwh": 0.04152758855238725,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": 4.163336342344337e-17
+      }
+     },
+     "2035|Summer": {
+      "cohorts": [
+       "0",
+       "1"
+      ],
+      "n_active": 2,
+      "per_cohort": {
+       "0": {
+        "e_available_mwh": 0.7271470719383167,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": 0.0006057464007359864,
+        "within_cohort_simultaneity_max_mw": 0.00037230010999374306,
+        "energy_balance_residual_max_mwh": 7.593237443573016e-17,
+        "window_margin_min_mwh": -7.679863356369054e-09,
+        "window_fraction_min": 0.0999999894383631,
+        "window_fraction_max": 0.9000000105580234,
+        "circle_margin_min_mva": 0.01660060161705182,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 1.1681753415156133
+       },
+       "1": {
+        "e_available_mwh": 0.42986522972072383,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.1590631485337707e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 2.6547779424738186e-17,
+        "window_margin_min_mwh": 0.17194608708360096,
+        "window_fraction_min": 0.49999998966798265,
+        "window_fraction_max": 0.5000000111771975,
+        "circle_margin_min_mva": 0.2343737920360753,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": -4.0763451106098966e-07
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": 0.0006055348263602007,
+      "inter_cohort_transfer_net_of_within_mwh": 4.331939067658483e-09,
+      "conversion_loss_mwh": 4.339666255581444e-05,
+      "transfer_hourly_max_mw": 0.00037229108665831834,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.0414280595108349,
+       "conversion_losses_mwh": 0.04142805951083502,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": -1.249000902703301e-16
+      }
+     },
+     "2035|Autumn": {
+      "cohorts": [
+       "0",
+       "1"
+      ],
+      "n_active": 2,
+      "per_cohort": {
+       "0": {
+        "e_available_mwh": 0.7271470719383167,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": 0.017504720963174493,
+        "within_cohort_simultaneity_max_mw": 0.0024125398239054547,
+        "energy_balance_residual_max_mwh": 1.0408340855860843e-16,
+        "window_margin_min_mwh": -8.372679216606116e-09,
+        "window_fraction_min": 0.2544763853486964,
+        "window_fraction_max": 0.9000000115144233,
+        "circle_margin_min_mva": 0.09891483076350407,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 1.091982271128919
+       },
+       "1": {
+        "e_available_mwh": 0.42986522972072383,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.1891856005805007e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 2.467277107995606e-17,
+        "window_margin_min_mwh": 0.17194604439547606,
+        "window_fraction_min": 0.5,
+        "window_fraction_max": 0.500000110483031,
+        "circle_margin_min_mva": 0.24541647829728772,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": -3.530947158655211e-07
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": 0.017504533793651078,
+      "inter_cohort_transfer_net_of_within_mwh": 3.1749036642769735e-08,
+      "conversion_loss_mwh": 0.0012544915885449957,
+      "transfer_hourly_max_mw": 0.002412531077625811,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.03872595668080052,
+       "conversion_losses_mwh": 0.03872595668080068,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": -1.5959455978986625e-16
+      }
+     },
+     "2035|Winter": {
+      "cohorts": [
+       "0",
+       "1"
+      ],
+      "n_active": 2,
+      "per_cohort": {
+       "0": {
+        "e_available_mwh": 0.7271470719383167,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": 0.012410615205716274,
+        "within_cohort_simultaneity_max_mw": 0.0024890693639062845,
+        "energy_balance_residual_max_mwh": 8.326672684688674e-17,
+        "window_margin_min_mwh": -3.4946920912659607e-09,
+        "window_fraction_min": 0.4043238918071981,
+        "window_fraction_max": 0.900000004806032,
+        "circle_margin_min_mva": 0.0814875997881857,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 1.1501205374084058
+       },
+       "1": {
+        "e_available_mwh": 0.42986522972072383,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.1254198603103883e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 2.5276181138840018e-17,
+        "window_margin_min_mwh": 0.17194608716621856,
+        "window_fraction_min": 0.5,
+        "window_fraction_max": 0.5000000109850032,
+        "circle_margin_min_mva": 0.08148923596381441,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": -4.122612379285468e-07
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": 0.012410411027834838,
+      "inter_cohort_transfer_net_of_within_mwh": 8.364104596425559e-09,
+      "conversion_loss_mwh": 0.0008894127903281647,
+      "transfer_hourly_max_mw": 0.0024890610604298567,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.04078776526295115,
+       "conversion_losses_mwh": 0.040787765262951164,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": -1.3877787807814457e-17
+      }
+     }
+    }
+   },
+   "9": {
+    "slacks": {
+     "p": {
+      "max_abs": -9.999909036343807e-09,
+      "sum": -5.7599476363624404e-06,
+      "max_net_abs": 1.0906514350237844e-16,
+      "n": 288
+     },
+     "q": {
+      "max_abs": 0.0,
+      "sum": -1.9199825454545436e-06,
+      "max_net_abs": 0.0,
+      "n": 288
+     }
+    },
+    "block_day": {
+     "2035|Spring": {
+      "cohorts": [
+       "2"
+      ],
+      "n_active": 1,
+      "per_cohort": {
+       "2": {
+        "e_available_mwh": 0.4582870929827245,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.3640098303037163e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 5.551115123125783e-17,
+        "window_margin_min_mwh": 0.10350934732065897,
+        "window_fraction_min": 0.4463985657412189,
+        "window_fraction_max": 0.6741386373179817,
+        "circle_margin_min_mva": 0.14239946405716603,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 0.20874019291544138
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": -2.3640098303037163e-07,
+      "inter_cohort_transfer_net_of_within_mwh": 0.0,
+      "conversion_loss_mwh": -1.694207045050999e-08,
+      "transfer_hourly_max_mw": -9.82866409095957e-09,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.007402744985867293,
+       "conversion_losses_mwh": 0.007402744985867211,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": 8.239936510889834e-17
+      }
+     },
+     "2035|Summer": {
+      "cohorts": [
+       "2"
+      ],
+      "n_active": 1,
+      "per_cohort": {
+       "2": {
+        "e_available_mwh": 0.4582870929827245,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.3651065461381376e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 6.245004513516506e-17,
+        "window_margin_min_mwh": 0.10669845484949508,
+        "window_fraction_min": 0.43129398672695596,
+        "window_fraction_max": 0.6671798824726728,
+        "circle_margin_min_mva": 0.16329295650482523,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 0.21620644725002602
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": -2.3651065461381376e-07,
+      "inter_cohort_transfer_net_of_within_mwh": 0.0,
+      "conversion_loss_mwh": -1.6949930247323344e-08,
+      "transfer_hourly_max_mw": -9.803498742955686e-09,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.007667527613815337,
+       "conversion_losses_mwh": 0.007667527613815368,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": -3.122502256758253e-17
+      }
+     },
+     "2035|Autumn": {
+      "cohorts": [
+       "2"
+      ],
+      "n_active": 1,
+      "per_cohort": {
+       "2": {
+        "e_available_mwh": 0.4582870929827245,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.3654920637523482e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 6.063190380313473e-17,
+        "window_margin_min_mwh": 0.11198574903036412,
+        "window_fraction_min": 0.4435782764982618,
+        "window_fraction_max": 0.6556428039430177,
+        "circle_margin_min_mva": 0.16964542241710318,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 0.21557303234112626
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": -2.3654920637523482e-07,
+      "inter_cohort_transfer_net_of_within_mwh": 0.0,
+      "conversion_loss_mwh": -1.695269312355852e-08,
+      "transfer_hourly_max_mw": -9.799903912293546e-09,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.0076450642397266275,
+       "conversion_losses_mwh": 0.007645064239726549,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": 7.806255641895632e-17
+      }
+     },
+     "2035|Winter": {
+      "cohorts": [
+       "2"
+      ],
+      "n_active": 1,
+      "per_cohort": {
+       "2": {
+        "e_available_mwh": 0.4582870929827245,
+        "s_rated_mva": 0.25,
+        "soc_source": "variable",
+        "within_cohort_simultaneity_mwh": -2.3712147188116902e-07,
+        "within_cohort_simultaneity_max_mw": 0.0,
+        "energy_balance_residual_max_mwh": 2.2202626136776733e-17,
+        "window_margin_min_mwh": 0.12013457690925414,
+        "window_fraction_min": 0.3621382507793705,
+        "window_fraction_max": 0.5213032127939473,
+        "circle_margin_min_mva": 0.18823994808230995,
+        "closure_residual_mwh": 0.0,
+        "throughput_stored_side_mwh": 0.26679311012243023
+       }
+      },
+      "efficiencies_common": true,
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": -2.3712147188116902e-07,
+      "inter_cohort_transfer_net_of_within_mwh": 0.0,
+      "conversion_loss_mwh": -1.6993705484817137e-08,
+      "transfer_hourly_max_mw": -9.848447739390255e-09,
+      "energy_accounting": {
+       "grid_into_cohorts_mwh": 0.009461528853826347,
+       "conversion_losses_mwh": 0.009461528853826404,
+       "stored_change_mwh": 0.0,
+       "residual_mwh": -5.724587470723463e-17
+      }
+     }
+    }
+   }
+  },
+  "network": {
+   "closure_slack_max_mwh": 0.0,
+   "sess_comp_inactive_total": 960,
+   "per_block": {
+    "TSO|2025|Spring": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 54,
+     "sess_comp_inactive": 48,
+     "sess_comp_built": 72
+    },
+    "TSO|2025|Summer": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 54,
+     "sess_comp_inactive": 48,
+     "sess_comp_built": 72
+    },
+    "TSO|2025|Autumn": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 54,
+     "sess_comp_inactive": 48,
+     "sess_comp_built": 72
+    },
+    "TSO|2025|Winter": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 54,
+     "sess_comp_inactive": 48,
+     "sess_comp_built": 72
+    },
+    "TSO|2030|Spring": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 54,
+     "sess_comp_inactive": 48,
+     "sess_comp_built": 72
+    },
+    "TSO|2030|Summer": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 54,
+     "sess_comp_inactive": 48,
+     "sess_comp_built": 72
+    },
+    "TSO|2030|Autumn": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 54,
+     "sess_comp_inactive": 48,
+     "sess_comp_built": 72
+    },
+    "TSO|2030|Winter": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 54,
+     "sess_comp_inactive": 48,
+     "sess_comp_built": 72
+    },
+    "TSO|2035|Spring": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 54,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 72
+    },
+    "TSO|2035|Summer": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 54,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 72
+    },
+    "TSO|2035|Autumn": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 54,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 72
+    },
+    "TSO|2035|Winter": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 54,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 72
+    },
+    "DSO5|2025|Spring": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO5|2025|Summer": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO5|2025|Autumn": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO5|2025|Winter": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO5|2030|Spring": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 0,
+     "sess_comp_built": 24
+    },
+    "DSO5|2030|Summer": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 0,
+     "sess_comp_built": 24
+    },
+    "DSO5|2030|Autumn": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 0,
+     "sess_comp_built": 24
+    },
+    "DSO5|2030|Winter": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 0,
+     "sess_comp_built": 24
+    },
+    "DSO5|2035|Spring": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 0,
+     "sess_comp_built": 24
+    },
+    "DSO5|2035|Summer": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 0,
+     "sess_comp_built": 24
+    },
+    "DSO5|2035|Autumn": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 0,
+     "sess_comp_built": 24
+    },
+    "DSO5|2035|Winter": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 0,
+     "sess_comp_built": 24
+    },
+    "DSO7|2025|Spring": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 0,
+     "sess_comp_built": 24
+    },
+    "DSO7|2025|Summer": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 0,
+     "sess_comp_built": 24
+    },
+    "DSO7|2025|Autumn": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 0,
+     "sess_comp_built": 24
+    },
+    "DSO7|2025|Winter": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 0,
+     "sess_comp_built": 24
+    },
+    "DSO7|2030|Spring": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO7|2030|Summer": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO7|2030|Autumn": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO7|2030|Winter": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO7|2035|Spring": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO7|2035|Summer": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO7|2035|Autumn": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO7|2035|Winter": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO9|2025|Spring": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO9|2025|Summer": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO9|2025|Autumn": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO9|2025|Winter": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO9|2030|Spring": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO9|2030|Summer": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO9|2030|Autumn": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO9|2030|Winter": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 24,
+     "sess_comp_built": 24
+    },
+    "DSO9|2035|Spring": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 0,
+     "sess_comp_built": 24
+    },
+    "DSO9|2035|Summer": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 0,
+     "sess_comp_built": 24
+    },
+    "DSO9|2035|Autumn": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 0,
+     "sess_comp_built": 24
+    },
+    "DSO9|2035|Winter": {
+     "closure_slack_max_mwh": 0.0,
+     "closure_slack_entries": 18,
+     "sess_comp_inactive": 0,
+     "sess_comp_built": 24
+    }
+   }
+  }
+ },
+ "salvage_objective_kappa": {
+  "5": {
+   "kappa": 0.0024265512158241757,
+   "a": 227210.9966521344,
+   "sigma": 93635360.0,
+   "equals_a_over_sigma": true
+  },
+  "7": {
+   "kappa": 0.0024265512158241757,
+   "a": 227210.9966521344,
+   "sigma": 93635360.0,
+   "equals_a_over_sigma": true
+  },
+  "9": {
+   "kappa": 0.0024265512158241757,
+   "a": 227210.9966521344,
+   "sigma": 93635360.0,
+   "equals_a_over_sigma": true
+  }
+ },
+ "priced_residual_pr": {
+  "value_terminal_cycle": 37036125.31214352,
+  "label": "mixed-convention reporting field, read by no acceptance test",
+  "note": "present only on entries declaring the per-scenario coupling"
+ },
+ "recourse_components": {
+  "gross_operational_cost": 1099742608.5967152,
+  "gross_operational_cost_including_settlement": 1063283474.6059539,
+  "interface_settlement_tso": -1635344840.416081,
+  "interface_settlement_total": -36459133.99076128,
+  "interface_settlement_contracted_tso": -1640776603.7787373,
+  "interface_settlement_contracted_total": -35616350.089806795,
+  "interface_settlement_deviation_tso": 5431763.362656257,
+  "interface_settlement_deviation_total": -842783.9009544384,
+  "interface_settlement_covariance_total": -842783.9009544384,
+  "interface_settlement_identity_residual": -35616350.08980684,
+  "voltage_pin_tso": 0.0,
+  "voltage_pin_total": 0.0,
+  "terminal_salvage_value": 70251.27742495143,
+  "net_operational_recourse": 1099672357.3192902,
+  "detector_penalty_total": -10608.826757849758,
+  "economic_recourse_all_D_excluded": 1099682966.146048,
+  "economic_recourse_voltage_excluded": 1099682052.7324324,
+  "gross_operational_cost_settlement_excluded_in_full": 1099742608.5967152,
+  "net_operational_recourse_settlement_excluded_in_full": 1099672357.3192902,
+  "gross_operational_cost_contracted_excluded": 1098899824.6957607,
+  "net_operational_recourse_contracted_excluded": 1098829573.4183357,
+  "q_convention": "settlement_excluded_in_full",
+  "q_convention_settlement_excluded_in_full": "PRIMARY in this mode (author decision 6, 2026-11-21): gross_operational_cost = gross incl. settlement - interface settlement total (TSO + every DSO) - voltage pin; net_operational_recourse = that - terminal salvage; today's form (contracted part and pin excluded) is gross_operational_cost_contracted_excluded / net_operational_recourse_contracted_excluded"
+ },
+ "checks": {
+  "flex_split_reconciles_with_total_flex_cost": true,
+  "flex_split_readback_ok": true,
+  "kappa_equals_a_over_sigma_where_built": true,
+  "kappa_built_iff_tv_declared": true,
+  "leak_within_ceiling": false
+ }
+}

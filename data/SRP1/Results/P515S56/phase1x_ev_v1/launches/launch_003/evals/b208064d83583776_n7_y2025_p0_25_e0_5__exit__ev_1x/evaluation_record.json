@@ -1,0 +1,4570 @@
+{
+ "schema": "p515_s44_evaluation_record_v2",
+ "campaign_id": "s56phase1x_ev_v1_l003",
+ "campaign_spec_path": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/campaign_spec_s56phase1x_ev_v1_l003_5be81277.json",
+ "campaign_spec_sha256": "5be81277bc9fa639d8dc7af98b46bec319f96148baab46b823d7c7d9bc54da39",
+ "candidate_label": "n7_y2025_p0.25_e0.5__exit__ev_1x",
+ "candidate_canonical": {
+  "nodes": {
+   "5": {
+    "2025": [
+     0.0,
+     0.0
+    ],
+    "2030": [
+     0.0,
+     0.0
+    ],
+    "2035": [
+     0.0,
+     0.0
+    ]
+   },
+   "7": {
+    "2025": [
+     0.25,
+     0.5
+    ],
+    "2030": [
+     0.0,
+     0.0
+    ],
+    "2035": [
+     0.0,
+     0.0
+    ]
+   },
+   "9": {
+    "2025": [
+     0.0,
+     0.0
+    ],
+    "2030": [
+     0.0,
+     0.0
+    ],
+    "2035": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "schema": "v2"
+ },
+ "candidate_key": "411f7b2e88ff08cef7e565ff50e93f17d48680f04ea27d0148b7fcd11a8257a4",
+ "instance_note": "candidate_key = sha256 of the canonical candidate; identifies the problem instance",
+ "working_dir_ids": {
+  "precheck": "p515s44_s56phase1x_ev_v1_l003_b208064d83583776_precheck",
+  "run": "p515s44_s56phase1x_ev_v1_l003_b208064d83583776_run"
+ },
+ "eval_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/b208064d83583776_n7_y2025_p0_25_e0_5__exit__ev_1x",
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "convergence_depth_tail": {
+   "compl_inf_tol": 1e-06,
+   "enabled": true
+  },
+  "derived_instance": {
+   "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+   "case_sha256": "45e8e700a547de22b2c9cd2f9373c4307da30764461e647424eca7eb2d1594b3",
+   "changes_vs_source": [
+    {
+     "from": 3,
+     "key": "NumMarketScenarios",
+     "to": 1
+    },
+    {
+     "from": 3,
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "to": 1
+    },
+    {
+     "from": 3,
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "to": 1
+    },
+    {
+     "from": 3,
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "to": 1
+    },
+    {
+     "from": 3,
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "to": 1
+    },
+    {
+     "from": "production synthesis at one scenario (= the published draw 0)",
+     "key": "scenario arrays (all but A5)",
+     "to": "probability-weighted means of s56_srp1grid_3x3, injected at shared_resources_planning._compute_scenario_metadata from data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json (sha256 f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729)"
+    }
+   ],
+   "instance_label": "s56_srp1grid_3x3_ev",
+   "scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+   "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+   "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+  },
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ess_params_file": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "full_diagnostics_in_rows": true,
+  "name": "s56phase1x_ev_v1 launch 3 exit",
+  "note": null,
+  "overrides": {}
+ },
+ "cap": 300,
+ "required_consecutive_cycles": 10,
+ "status": "certified",
+ "barrier": false,
+ "barrier_cause": null,
+ "objective_convention": "gross_operational_cost: settlement-EXCLUDED gross operational cost (the oracle cost convention); net_operational_recourse = gross minus terminal salvage credit",
+ "certified_cost": 665096310.2484053,
+ "terminal_gross_operational_cost": 665096310.2484053,
+ "terminal_net_operational_recourse": 665096310.2484053,
+ "bar": {
+  "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+  "value": 9513.06659245491,
+  "n_cycles_in_window": 10,
+  "n_steps_available": 10,
+  "trajectory_cycles_contiguous_from_1": true,
+  "window": [
+   {
+    "cycle": 75,
+    "gross_operational_cost": 665135300.9086428,
+    "predecessor_cycle": 74,
+    "predecessor_gross_operational_cost": 665143557.8650467,
+    "gross_step_abs": 8256.956403970718
+   },
+   {
+    "cycle": 76,
+    "gross_operational_cost": 665125787.8420503,
+    "predecessor_cycle": 75,
+    "predecessor_gross_operational_cost": 665135300.9086428,
+    "gross_step_abs": 9513.06659245491
+   },
+   {
+    "cycle": 77,
+    "gross_operational_cost": 665117729.7414565,
+    "predecessor_cycle": 76,
+    "predecessor_gross_operational_cost": 665125787.8420503,
+    "gross_step_abs": 8058.100593805313
+   },
+   {
+    "cycle": 78,
+    "gross_operational_cost": 665109894.4601469,
+    "predecessor_cycle": 77,
+    "predecessor_gross_operational_cost": 665117729.7414565,
+    "gross_step_abs": 7835.281309604645
+   },
+   {
+    "cycle": 79,
+    "gross_operational_cost": 665103324.0192552,
+    "predecessor_cycle": 78,
+    "predecessor_gross_operational_cost": 665109894.4601469,
+    "gross_step_abs": 6570.440891742706
+   },
+   {
+    "cycle": 80,
+    "gross_operational_cost": 665098362.0100286,
+    "predecessor_cycle": 79,
+    "predecessor_gross_operational_cost": 665103324.0192552,
+    "gross_step_abs": 4962.009226560593
+   },
+   {
+    "cycle": 81,
+    "gross_operational_cost": 665095019.495177,
+    "predecessor_cycle": 80,
+    "predecessor_gross_operational_cost": 665098362.0100286,
+    "gross_step_abs": 3342.5148515701294
+   },
+   {
+    "cycle": 82,
+    "gross_operational_cost": 665093570.6697286,
+    "predecessor_cycle": 81,
+    "predecessor_gross_operational_cost": 665095019.495177,
+    "gross_step_abs": 1448.8254483938217
+   },
+   {
+    "cycle": 83,
+    "gross_operational_cost": 665094058.8280855,
+    "predecessor_cycle": 82,
+    "predecessor_gross_operational_cost": 665093570.6697286,
+    "gross_step_abs": 488.1583569049835
+   },
+   {
+    "cycle": 84,
+    "gross_operational_cost": 665096310.2484053,
+    "predecessor_cycle": 83,
+    "predecessor_gross_operational_cost": 665094058.8280855,
+    "gross_step_abs": 2251.4203197956085
+   }
+  ]
+ },
+ "bar_net_recourse_step_reported": {
+  "definition": "max objective_change_abs over the last 10 cycles (production: |net_operational_recourse[k] - net_operational_recourse[k-1]|, shared_resources_planning.py:2849/2814; NET of the terminal salvage credit; reported, not the bar)",
+  "value": 9513.06659245491,
+  "n_cycles_in_window": 10,
+  "n_steps_available": 10,
+  "window": [
+   {
+    "cycle": 75,
+    "objective_change_abs": 8256.956403970718
+   },
+   {
+    "cycle": 76,
+    "objective_change_abs": 9513.06659245491
+   },
+   {
+    "cycle": 77,
+    "objective_change_abs": 8058.100593805313
+   },
+   {
+    "cycle": 78,
+    "objective_change_abs": 7835.281309604645
+   },
+   {
+    "cycle": 79,
+    "objective_change_abs": 6570.440891742706
+   },
+   {
+    "cycle": 80,
+    "objective_change_abs": 4962.009226560593
+   },
+   {
+    "cycle": 81,
+    "objective_change_abs": 3342.5148515701294
+   },
+   {
+    "cycle": 82,
+    "objective_change_abs": 1448.8254483938217
+   },
+   {
+    "cycle": 83,
+    "objective_change_abs": 488.1583569049835
+   },
+   {
+    "cycle": 84,
+    "objective_change_abs": 2251.4203197956085
+   }
+  ]
+ },
+ "certification": {
+  "certified": true,
+  "certification_cycle": 84,
+  "cycles_run": 84,
+  "cap": 300,
+  "required_consecutive_cycles": 10,
+  "terminal_cycle_convergence": true,
+  "terminal_consecutive_converged_cycles": 10,
+  "local_solve_failures_total": 0
+ },
+ "certification_cycle": 84,
+ "cycles_run": 84,
+ "stopped_by_trajectory": {
+  "stopped_by": "boyd",
+  "converged_at_cycle": 75,
+  "stop_run_cycles": [
+   75,
+   76,
+   77,
+   78,
+   79,
+   80,
+   81,
+   82,
+   83,
+   84
+  ]
+ },
+ "first_pass_cycle_per_channel": {
+  "v": 40,
+  "pf": 75,
+  "ess": 25
+ },
+ "terminal_ratios_per_channel": {
+  "v": {
+   "primal": 0.017145221607206548,
+   "dual": 0.3466527340656526,
+   "max": 0.3466527340656526
+  },
+  "pf": {
+   "primal": 0.285589685721845,
+   "dual": 0.7618095391930395,
+   "max": 0.7618095391930395
+  },
+  "ess": {
+   "primal": 0.02860985125835153,
+   "dual": 0.2875164558052916,
+   "max": 0.2875164558052916
+  }
+ },
+ "rule_ten": {
+  "reported_not_gated": true,
+  "terminal_objective_change_abs": 2251.4203197956085,
+  "terminal_objective_tolerance": 66509.63102484054,
+  "terminal_step_over_threshold": 0.033851042098771086,
+  "boyd_terminal_ratio_max_per_channel": {
+   "v": 0.3466527340656526,
+   "pf": 0.7618095391930395,
+   "ess": 0.2875164558052916
+  }
+ },
+ "component_decomposition_totals_weighted": {
+  "generation_cost": 466327117.62615633,
+  "flexibility_cost_internal": 198782225.08757353,
+  "load_curtailment_cost": 0.0,
+  "res_curtailment_penalty": 0.0,
+  "ess_usage_cost": 0.0,
+  "flexibility_cost_tso_adn_interface_definitional": 0.0,
+  "voltage_slack": -12057.436065285505,
+  "node_balance_slack": 0.0,
+  "branch_flow_slack": 0.0,
+  "flexibility_p_day_balance_slack": -955.130704416489,
+  "local_ess_day_balance_slack": 0.0,
+  "shared_ess_day_balance_slack": -19.8985546794152,
+  "detector_penalty_total": -13032.465324381408,
+  "ess_complementarity_bilinear_definitional": 0.032177944276394733,
+  "orphan_flex_q_day_balance_slack_raw": 0.0,
+  "orphan_tso_adn_flex_p_day_balance_slack_raw": 0.0,
+  "orphan_flex_q_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional": 0.0,
+  "orphan_tso_adn_flex_p_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional": 0.0,
+  "res_curtailment_definitional_at_weight_1": 538.0019906701692
+ },
+ "recourse_components": {
+  "gross_operational_cost": 665096310.2484053,
+  "gross_operational_cost_including_settlement": 665129644.8130683,
+  "interface_settlement_tso": -1164249013.364628,
+  "interface_settlement_dso": {
+   "5": 429850942.04242957,
+   "7": 324496776.1421982,
+   "9": 409934629.7446632
+  },
+  "interface_settlement_total": 33334.56466293335,
+  "interface_settlement_contracted_tso": -1164249013.364628,
+  "interface_settlement_contracted_dso": {
+   "5": 429850942.04242957,
+   "7": 324496776.1421982,
+   "9": 409934629.7446632
+  },
+  "interface_settlement_contracted_total": 33334.56466293335,
+  "interface_settlement_deviation_tso": 0.0,
+  "interface_settlement_deviation_dso": {
+   "5": 0.0,
+   "7": 0.0,
+   "9": 0.0
+  },
+  "interface_settlement_deviation_total": 0.0,
+  "interface_settlement_covariance_total": 0.0,
+  "interface_settlement_identity_residual": 33334.56466293335,
+  "voltage_pin_tso": 0.0,
+  "voltage_pin_dso": {
+   "5": 0.0,
+   "7": 0.0,
+   "9": 0.0
+  },
+  "voltage_pin_total": 0.0,
+  "terminal_salvage_value": -5.345893343086111e-35,
+  "net_operational_recourse": 665096310.2484053,
+  "detector_penalty_total": -13032.465324381408,
+  "detector_components": {
+   "voltage_slack": -12057.436065285505,
+   "node_balance_slack": 0.0,
+   "branch_flow_slack": 0.0,
+   "flexibility_p_day_balance_slack": -955.130704416489,
+   "local_ess_day_balance_slack": 0.0,
+   "shared_ess_day_balance_slack": -19.8985546794152,
+   "detector_penalty_total": -13032.465324381408
+  },
+  "economic_recourse_all_D_excluded": 665109342.7137297,
+  "economic_recourse_voltage_excluded": 665108367.6844707
+ },
+ "settlement_remainder": {
+  "definition": "recourse_components.interface_settlement_total: T_TSO + sum(T_DSO), the non-cancelling interface settlement at the terminal point, excluded from the cost",
+  "value": 33334.56466293335
+ },
+ "storage_per_node": {
+  "5": {
+   "s_mva": 0.0,
+   "e_mwh": 0.0,
+   "has_storage": false,
+   "efc_per_day_max": null,
+   "efc_per_day_per_cohort_year": {},
+   "terminal_soh_per_active_cohort_year": {},
+   "terminal_soh_min_over_active_cohort_years": null,
+   "soh_floor_rows_active_at_terminal": [],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 0.0,
+     "e_available": 0.0
+    },
+    "2030": {
+     "s_available": 0.0,
+     "e_available": 0.0
+    },
+    "2035": {
+     "s_available": 0.0,
+     "e_available": 0.0
+    }
+   },
+   "note_zero_node": "zero-capacity node: no active cohort; EFC undefined (None), SoH variables fixed at 1.0 by production and not reported as a result"
+  },
+  "7": {
+   "s_mva": 0.25,
+   "e_mwh": 0.5,
+   "has_storage": true,
+   "efc_per_day_max": 1.0244038998714962,
+   "efc_per_day_per_cohort_year": {
+    "(0, 0)": 1.0244038998714962,
+    "(0, 1)": 0.7894105736391855,
+    "(0, 2)": 0.7393994454446733
+   },
+   "terminal_soh_per_active_cohort_year": {
+    "(0, 0)": 0.8801041000386455,
+    "(0, 1)": 0.78390462374392,
+    "(0, 2)": 0.6999999900007222
+   },
+   "terminal_soh_min_over_active_cohort_years": 0.6999999900007222,
+   "soh_floor_rows_active_at_terminal": [
+    "(0, 2)"
+   ],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 0.25,
+     "e_available": 0.44005205001932274
+    },
+    "2030": {
+     "s_available": 0.25,
+     "e_available": 0.39195231187196
+    },
+    "2035": {
+     "s_available": 0.25,
+     "e_available": 0.3499999950003611
+    }
+   },
+   "note_zero_node": null
+  },
+  "9": {
+   "s_mva": 0.0,
+   "e_mwh": 0.0,
+   "has_storage": false,
+   "efc_per_day_max": null,
+   "efc_per_day_per_cohort_year": {},
+   "terminal_soh_per_active_cohort_year": {},
+   "terminal_soh_min_over_active_cohort_years": null,
+   "soh_floor_rows_active_at_terminal": [],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 0.0,
+     "e_available": 0.0
+    },
+    "2030": {
+     "s_available": 0.0,
+     "e_available": 0.0
+    },
+    "2035": {
+     "s_available": 0.0,
+     "e_available": 0.0
+    }
+   },
+   "note_zero_node": "zero-capacity node: no active cohort; EFC undefined (None), SoH variables fixed at 1.0 by production and not reported as a result"
+  }
+ },
+ "local_solve_failures": 0,
+ "network_failures_summary": {
+  "n_blocks": 0,
+  "classes": {
+   "recovered_tier1": 0,
+   "recovered_tier2": 0,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 0
+  },
+  "n_frozen_snapshots": 2,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/b208064d83583776_n7_y2025_p0_25_e0_5__exit__ev_1x/network_failures_s39_D.jsonl"
+ },
+ "solve_profile": {
+  "observed": {
+   "permitted_solve": 4335,
+   "permitted_exec": 4335,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "identity_holds": true,
+  "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+  "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+  "n_dso": 3,
+  "n_years": 3,
+  "n_days": 4,
+  "n_esso_nodes": 3,
+  "solves_per_cycle": 51,
+  "rounds": 85,
+  "rounds_note": "one initialization round + cycles_run ADMM cycles",
+  "base_solves": 4335,
+  "retry_solves_credited": 0,
+  "reconciliation_supported": true,
+  "expected_solves": 4335,
+  "recovered_only_identity": {
+   "expected": 4335,
+   "holds": true,
+   "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+  }
+ },
+ "wall_time_s": {
+  "child_process_s": 2736.3768949508667,
+  "run_admm_arm_s": 2722.4610738754272,
+  "run_admm_arm_reported_wall_clock_s": 2481.63973402977
+ },
+ "peak_rss": {
+  "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+  "child_python_process_ru_maxrss": 2905276416,
+  "production_state_peak_rss_ru_maxrss": 2616295424,
+  "solver_subprocesses_max_ru_maxrss": 54804480,
+  "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+ },
+ "record_capture_checklist_asserted_before_run": {
+  "trajectory_field_boyd_all_pass": true,
+  "trajectory_field_boyd_ess_channel_pass": true,
+  "trajectory_field_boyd_ess_dual_ratio": true,
+  "trajectory_field_boyd_ess_primal_ratio": true,
+  "trajectory_field_boyd_pf_channel_pass": true,
+  "trajectory_field_boyd_pf_dual_ratio": true,
+  "trajectory_field_boyd_pf_primal_ratio": true,
+  "trajectory_field_boyd_stop": true,
+  "trajectory_field_boyd_v_channel_pass": true,
+  "trajectory_field_boyd_v_dual_ratio": true,
+  "trajectory_field_boyd_v_primal_ratio": true,
+  "trajectory_field_consecutive_converged_cycles": true,
+  "trajectory_field_cycle": true,
+  "trajectory_field_cycle_convergence": true,
+  "trajectory_field_efc_per_day_max": true,
+  "trajectory_field_gross_operational_cost": true,
+  "trajectory_field_local_solves_ok": true,
+  "trajectory_field_objective_change_abs": true,
+  "trajectory_field_objective_change_ratio": true,
+  "trajectory_field_objective_tolerance": true,
+  "trajectory_field_recourse": true,
+  "trajectory_field_rho_ess_action": true,
+  "trajectory_field_rho_ess_after": true,
+  "trajectory_field_rho_freeze_active": true,
+  "trajectory_field_rho_pf_action": true,
+  "trajectory_field_rho_pf_after": true,
+  "trajectory_field_rho_v_action": true,
+  "trajectory_field_rho_v_after": true,
+  "trajectory_field_terminal_salvage_value": true,
+  "esso_capture_attr_es_avg_ch_dch_per_unit": true,
+  "esso_capture_attr_es_soh_per_unit_cumul": true,
+  "esso_capture_attr_es_e_rated_per_unit": true,
+  "harness_fn_run_admm_arm": true,
+  "harness_fn_write_boyd_terminal_s35ref": true,
+  "harness_fn_s38_pf_capture_hooks": true,
+  "harness_fn_s39_exempt_until_capture_hooks": true,
+  "harness_fn__s35ref_terminal_floor_and_efc": true,
+  "harness_fn__derive_stopped_by_from_trajectory": true,
+  "harness_fn__identify_soh_floor_rows": true,
+  "evaluator_fn__certification_from_trajectory": true,
+  "evaluator_fn__first_pass_cycle": true,
+  "evaluator_fn__terminal_ratios": true,
+  "component_levels_recourse_key_interface_settlement_total": true,
+  "run_admm_arm_accepts_investment_map": true,
+  "run_admm_arm_post_run_hook_gets_state": true,
+  "production_state_has_peak_rss": true
+ },
+ "convergence_depth_tail_checklist_asserted_before_run": {
+  "checks": {
+   "production_default_tail_off": true,
+   "production_tail_helper_present": true,
+   "production_both_returns_carry_the_records": true,
+   "production_both_returns_carry_the_tail_state": true,
+   "production_records_drained_at_initialisation": true,
+   "production_records_drained_every_cycle": true,
+   "network_attempt_appends_a_record_after_the_solve": true,
+   "run_admm_arm_post_run_hook_gets_state": true
+  },
+  "declared": {
+   "enabled": true,
+   "compl_inf_tol": 1e-06
+  },
+  "tail_enabled_for_this_run": true,
+  "compl_inf_tol_tail": 1e-06,
+  "source": "campaign spec configuration.convergence_depth_tail",
+  "production_default": {
+   "enabled": false,
+   "compl_inf_tol": 1e-06
+  },
+  "persisted_files": [
+   "network_ipopt_solve_records.jsonl",
+   "convergence_depth_tail_state.json"
+  ]
+ },
+ "convergence_depth_tail_applied_in_child": {
+  "declared": {
+   "enabled": true,
+   "compl_inf_tol": 1e-06
+  },
+  "source": "campaign spec configuration.convergence_depth_tail",
+  "before": {
+   "enabled": false,
+   "compl_inf_tol": 1e-06
+  },
+  "after": {
+   "enabled": true,
+   "compl_inf_tol": 1e-06
+  },
+  "enabled_in_force": true,
+  "expected_enabled": true,
+  "dict_in_force_equals_declaration": true,
+  "ok": true
+ },
+ "convergence_depth_tail_state_check": {
+  "expected_enabled": true,
+  "enabled_in_state": true,
+  "expected_compl_inf_tol_tail": 1e-06,
+  "compl_inf_tol_tail_in_state": 1e-06,
+  "match": true,
+  "n_cycles_recorded": 84,
+  "cycles_tail_active": [
+   76,
+   77,
+   78,
+   79,
+   80,
+   81,
+   82,
+   83,
+   84
+  ],
+  "n_cycles_acted": 1,
+  "restore_at_exit_acted": true
+ },
+ "convergence_depth_capture": {
+  "status": "written",
+  "network_ipopt_solve_records_path": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/b208064d83583776_n7_y2025_p0_25_e0_5__exit__ev_1x/network_ipopt_solve_records.jsonl",
+  "network_ipopt_solve_records_sha256": "64ef6698dfcd9b5c87cb1306b8e87374342c43c5b885208ac48152f390883e77",
+  "state_carried_records": true,
+  "n_records": 4080,
+  "records_per_round": {
+   "0": 48,
+   "1": 48,
+   "2": 48,
+   "3": 48,
+   "4": 48,
+   "5": 48,
+   "6": 48,
+   "7": 48,
+   "8": 48,
+   "9": 48,
+   "10": 48,
+   "11": 48,
+   "12": 48,
+   "13": 48,
+   "14": 48,
+   "15": 48,
+   "16": 48,
+   "17": 48,
+   "18": 48,
+   "19": 48,
+   "20": 48,
+   "21": 48,
+   "22": 48,
+   "23": 48,
+   "24": 48,
+   "25": 48,
+   "26": 48,
+   "27": 48,
+   "28": 48,
+   "29": 48,
+   "30": 48,
+   "31": 48,
+   "32": 48,
+   "33": 48,
+   "34": 48,
+   "35": 48,
+   "36": 48,
+   "37": 48,
+   "38": 48,
+   "39": 48,
+   "40": 48,
+   "41": 48,
+   "42": 48,
+   "43": 48,
+   "44": 48,
+   "45": 48,
+   "46": 48,
+   "47": 48,
+   "48": 48,
+   "49": 48,
+   "50": 48,
+   "51": 48,
+   "52": 48,
+   "53": 48,
+   "54": 48,
+   "55": 48,
+   "56": 48,
+   "57": 48,
+   "58": 48,
+   "59": 48,
+   "60": 48,
+   "61": 48,
+   "62": 48,
+   "63": 48,
+   "64": 48,
+   "65": 48,
+   "66": 48,
+   "67": 48,
+   "68": 48,
+   "69": 48,
+   "70": 48,
+   "71": 48,
+   "72": 48,
+   "73": 48,
+   "74": 48,
+   "75": 48,
+   "76": 48,
+   "77": 48,
+   "78": 48,
+   "79": 48,
+   "80": 48,
+   "81": 48,
+   "82": 48,
+   "83": 48,
+   "84": 48
+  },
+  "floor_status_tally": {
+   "DSO|at": 3060,
+   "TSO|at": 1020
+  },
+  "exit_tally": {
+   "Optimal Solution Found.": 4080
+  },
+  "n_parse_problems": 0,
+  "stale_network_ipopt_solve_records_discarded": 0,
+  "convergence_depth_tail_state_path": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/b208064d83583776_n7_y2025_p0_25_e0_5__exit__ev_1x/convergence_depth_tail_state.json",
+  "convergence_depth_tail_state_sha256": "bf6b1cb01c5bf4a04b536e8b6c889108ecb4a7e653cd07ae63afe922b817ad07",
+  "state_carried_tail_state": true
+ },
+ "convergence_depth_per_round_append": {
+  "records_append_path": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/b208064d83583776_n7_y2025_p0_25_e0_5__exit__ev_1x/network_ipopt_solve_records_append.jsonl",
+  "records_append_sha256": "64ef6698dfcd9b5c87cb1306b8e87374342c43c5b885208ac48152f390883e77",
+  "end_of_run_records_sha256": "64ef6698dfcd9b5c87cb1306b8e87374342c43c5b885208ac48152f390883e77",
+  "n_records_appended": 4080,
+  "rounds_appended": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   30,
+   31,
+   32,
+   33,
+   34,
+   35,
+   36,
+   37,
+   38,
+   39,
+   40,
+   41,
+   42,
+   43,
+   44,
+   45,
+   46,
+   47,
+   48,
+   49,
+   50,
+   51,
+   52,
+   53,
+   54,
+   55,
+   56,
+   57,
+   58,
+   59,
+   60,
+   61,
+   62,
+   63,
+   64,
+   65,
+   66,
+   67,
+   68,
+   69,
+   70,
+   71,
+   72,
+   73,
+   74,
+   75,
+   76,
+   77,
+   78,
+   79,
+   80,
+   81,
+   82,
+   83,
+   84
+  ],
+  "events_path": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/b208064d83583776_n7_y2025_p0_25_e0_5__exit__ev_1x/convergence_depth_append_events.jsonl",
+  "records_append_byte_identical_to_end_of_run_file": true,
+  "tail_state_rebuilt_from_events_equals_returned_state": true,
+  "write_errors": [],
+  "ok": true
+ },
+ "eval_key": "b208064d835837763cf1dafc408ba266e6db8fe985f7eff127d6536e2c22f0a2",
+ "evaluation_overrides_effective": {},
+ "post_certification_capture_checklist_asserted_before_run": null,
+ "post_certification": null,
+ "post_certification_path": null,
+ "aa_per_cycle": {
+  "path": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/b208064d83583776_n7_y2025_p0_25_e0_5__exit__ev_1x/aa_per_cycle.jsonl",
+  "n_rows": 84,
+  "action_counts": {
+   "insufficient memory (m_k=0)": 11,
+   "accepted": 36,
+   "rejected (safeguard; memory retained)": 27,
+   "off (all channels within Boyd tolerance)": 10
+  },
+  "n_accepted": 36,
+  "n_rejected": 27,
+  "rejections_with_memory_retained": [
+   {
+    "cycle": 22,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 23,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 25,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 26,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 30,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 32,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 35,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 38,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 39,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 41,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 45,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 46,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 47,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 48,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 49,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 50,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 52,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 54,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 56,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 57,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 61,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 63,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 65,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 67,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 70,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 72,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 74,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   }
+  ],
+  "first_accept_cycle": 4,
+  "first_reject_cycle": 22
+ },
+ "configuration_checks_in_child": {
+  "rho_v_matches_D": true,
+  "rho_pf_matches_D": true,
+  "rho_ess_matches_D": true,
+  "tau_is_0": true,
+  "gamma_policy_tied_to_rho": true,
+  "balancing_exempt_until_matches_D": true,
+  "balancing_exempt_channels_empty": true,
+  "freeze_after_unchanged_cycles_is_10": true,
+  "freeze_backstop_cycle_is_200": true,
+  "minimum_consecutive_converged_cycles_matches_spec": true,
+  "shared_ess_initialization_is_standalone": true,
+  "num_max_iters_is_spec_cap": true,
+  "anderson_acceleration_case_file_matches_declaration": true,
+  "anderson_acceleration_case_file_memory_regularization_frozen": true,
+  "persistent_workers_off": true,
+  "parallel_execution_off": true
+ },
+ "overrides_applied_in_child": {},
+ "anderson_acceleration_effective_in_child": {
+  "enabled": true,
+  "memory": 5,
+  "regularization": 1e-10,
+  "reject_policy": "keep_memory"
+ },
+ "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+ "thread_caps_seen_by_child": {
+  "OMP_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1"
+ },
+ "PYTHONHASHSEED_in_child": null,
+ "nlp_solver_path_in_child": "/usr/local/bin/ipopt",
+ "campaign_lock_seen_by_child": {
+  "pid": 76735,
+  "campaign_id": "s56phase1x_ev_v1_l003",
+  "campaign_spec_sha256": "5be81277bc9fa639d8dc7af98b46bec319f96148baab46b823d7c7d9bc54da39",
+  "started_utc": "2026-11-26T14:13:58.812035+00:00",
+  "search_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase1x_ev_v1"
+ },
+ "child_pid": 76750,
+ "parent_pid": 76735,
+ "report_path": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/b208064d83583776_n7_y2025_p0_25_e0_5__exit__ev_1x/g_s39_D.json",
+ "per_cycle_record_path": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/b208064d83583776_n7_y2025_p0_25_e0_5__exit__ev_1x/per_cycle_record.jsonl",
+ "interface_dual_capture_checklist_asserted_before_run": {
+  "boyd_metrics_call_once_in_run_source": true,
+  "boyd_metrics_call_inside_the_cycle_loop": true,
+  "boyd_metrics_call_before_the_aa_step": true,
+  "boyd_metrics_signature": true,
+  "dual_leaf_is_p_q_period_lists": true,
+  "dual_update_scaled_by_rating_and_s_base": true,
+  "wrapped_names_exist": true,
+  "writer_is_gate_result_io": true
+ },
+ "interface_dual_capture": {
+  "schema": "interface_dual_capture_v1",
+  "file": "interface_duals_per_cycle.jsonl",
+  "boyd_calls_captured": 84,
+  "cycle_lines_written": 84,
+  "header_written": true,
+  "n_blocks": 36,
+  "n_periods": 24,
+  "bytes_written": 6381329,
+  "bytes_per_cycle_line_max": 76225,
+  "errors": [],
+  "ok": true
+ },
+ "ess_ageing_baseline": {
+  "calendar_life_years": 15,
+  "calendar_retention_per_year": 0.985,
+  "cycle_life_nominal": 10000,
+  "depth_of_discharge_nominal": 0.8,
+  "minimum_soh": 0.7,
+  "calibration": {
+   "status": "ACTIVE",
+   "cycles_n": 10000,
+   "reference_dod_d": 0.8,
+   "eol_retention_r": 0.8
+  }
+ },
+ "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+ "ess_params_sha256_in_child": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+ "ess_ageing_verified_pre_run": {
+  "declared": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7,
+   "calibration": {
+    "status": "ACTIVE",
+    "cycles_n": 10000,
+    "reference_dod_d": 0.8,
+    "eol_retention_r": 0.8
+   }
+  },
+  "loaded": {
+   "calendar_life_years": 15,
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "status": "ACTIVE",
+    "cycles_n": 10000,
+    "reference_dod_d": 0.8,
+    "eol_retention_r": 0.8
+   }
+  },
+  "file_used_by_production": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+  "file_sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+  "pin": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "k_production": 35851.3609417964,
+  "per_ess": [
+   {
+    "year": "2025",
+    "bus": 5,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2025",
+    "bus": 7,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2025",
+    "bus": 9,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2030",
+    "bus": 5,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2030",
+    "bus": 7,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2030",
+    "bus": 9,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2035",
+    "bus": 5,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2035",
+    "bus": 7,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2035",
+    "bus": 9,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   }
+  ],
+  "checks": {
+   "pin_path_is_ess_params_file": true,
+   "file_used_by_production_is_pinned_file": true,
+   "file_sha256_equals_pin": true,
+   "loaded_equals_declaration_types_included": true,
+   "every_ess_soh_min_is_declared": true,
+   "every_ess_phi_cal_is_declared": true,
+   "every_ess_cl_eff_is_production_k": true
+  },
+  "readback_pre_run": {
+   "expected": {
+    "k": 35851.3609417964,
+    "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.8)",
+    "phi_cal_in_model": 0.985,
+    "floor_row_lower": 0.7,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true,
+    "d_row_form": "D * 2kE == 365 n avg"
+   },
+   "per_node": {
+    "5": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8277224476758176
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    },
+    "7": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8277224476758176
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    },
+    "9": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8277224476758176
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    }
+   },
+   "all_match": true,
+   "method": "numerical read-back from the built rows (model_variant_readback) against the declaration's closed forms; on probe models"
+  },
+  "floor_rows_identical_to_precheck": true
+ },
+ "ess_ageing_readback_terminal": {
+  "expected": {
+   "k": 35851.3609417964,
+   "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.8)",
+   "phi_cal_in_model": 0.985,
+   "floor_row_lower": 0.7,
+   "available_energy_soh_point": "end",
+   "ageing_enabled": true,
+   "d_row_form": "D * 2kE == 365 n avg"
+  },
+  "per_node": {
+   "5": {
+    "readback": {
+     "y_inv": 0,
+     "y0": 0,
+     "y1_available_row": 1,
+     "n_years_data": 5,
+     "d_row_form": "D * 2kE == 365 n avg",
+     "k": 35851.3609417964,
+     "n_years_from_d_row": 5.0,
+     "phi_cal_in_model": 0.985,
+     "soh_row_exp_form_ok": true,
+     "available_energy_soh_point": "end",
+     "available_row_probe": {
+      "soh_end": 0.9,
+      "soh_prev": 0.95,
+      "D": 0.2,
+      "X": 0.9,
+      "X_end": 0.9,
+      "X_mid_closed_form": 0.8277224476758176
+     },
+     "floor_row_lower": 0.7
+    },
+    "checks": {
+     "k": true,
+     "n_years_from_d_row_equals_data": true,
+     "phi_cal_in_model": true,
+     "d_row_form": true,
+     "available_energy_soh_point": true,
+     "soh_row_exp_form": true,
+     "floor_row_lower": true
+    }
+   },
+   "7": {
+    "readback": {
+     "y_inv": 0,
+     "y0": 0,
+     "y1_available_row": 1,
+     "n_years_data": 5,
+     "d_row_form": "D * 2kE == 365 n avg",
+     "k": 35851.3609417964,
+     "n_years_from_d_row": 5.0,
+     "phi_cal_in_model": 0.985,
+     "soh_row_exp_form_ok": true,
+     "available_energy_soh_point": "end",
+     "available_row_probe": {
+      "soh_end": 0.9,
+      "soh_prev": 0.95,
+      "D": 0.2,
+      "X": 0.9,
+      "X_end": 0.9,
+      "X_mid_closed_form": 0.8277224476758176
+     },
+     "floor_row_lower": 0.7
+    },
+    "checks": {
+     "k": true,
+     "n_years_from_d_row_equals_data": true,
+     "phi_cal_in_model": true,
+     "d_row_form": true,
+     "available_energy_soh_point": true,
+     "soh_row_exp_form": true,
+     "floor_row_lower": true
+    }
+   },
+   "9": {
+    "readback": {
+     "y_inv": 0,
+     "y0": 0,
+     "y1_available_row": 1,
+     "n_years_data": 5,
+     "d_row_form": "D * 2kE == 365 n avg",
+     "k": 35851.3609417964,
+     "n_years_from_d_row": 5.0,
+     "phi_cal_in_model": 0.985,
+     "soh_row_exp_form_ok": true,
+     "available_energy_soh_point": "end",
+     "available_row_probe": {
+      "soh_end": 0.9,
+      "soh_prev": 0.95,
+      "D": 0.2,
+      "X": 0.9,
+      "X_end": 0.9,
+      "X_mid_closed_form": 0.8277224476758176
+     },
+     "floor_row_lower": 0.7
+    },
+    "checks": {
+     "k": true,
+     "n_years_from_d_row_equals_data": true,
+     "phi_cal_in_model": true,
+     "d_row_form": true,
+     "available_energy_soh_point": true,
+     "soh_row_exp_form": true,
+     "floor_row_lower": true
+    }
+   }
+  },
+  "all_match": true,
+  "method": "numerical read-back from the built rows (model_variant_readback) against the declaration's closed forms; on clones of the given models"
+ },
+ "ageing_trajectory_terminal": {
+  "available_energy_soh_point": "end",
+  "ageing_enabled": true,
+  "nodes": {
+   "5": {
+    "cells": [],
+    "salvage_value": 0.0
+   },
+   "7": {
+    "cells": [
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 0,
+      "block_year": "2025",
+      "n_years": 5,
+      "e_rated": 0.5,
+      "avg_ch_dch": 1.0244038998714962,
+      "efc_per_day": 1.0244038998714962,
+      "D": 0.05214689395754368,
+      "soh_prev_end": 1.0,
+      "soh_end": 0.8801041000386455,
+      "soh_used_for_available_energy": 0.8801041000386455,
+      "e_available": 0.44005205001932274,
+      "soh_mid_closed_form": 0.9381386358308913,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     },
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 1,
+      "block_year": "2030",
+      "n_years": 5,
+      "e_rated": 0.5,
+      "avg_ch_dch": 0.7894105736391855,
+      "efc_per_day": 0.7894105736391855,
+      "D": 0.040184647361934306,
+      "soh_prev_end": 0.8801041000386455,
+      "soh_end": 0.78390462374392,
+      "soh_used_for_available_energy": 0.78390462374392,
+      "e_available": 0.39195231187196,
+      "soh_mid_closed_form": 0.83061283002147,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     },
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 2,
+      "block_year": "2035",
+      "n_years": 5,
+      "e_rated": 0.5,
+      "avg_ch_dch": 0.7393994454446733,
+      "efc_per_day": 0.7393994454446733,
+      "D": 0.03763884975321426,
+      "soh_prev_end": 0.78390462374392,
+      "soh_end": 0.6999999900007222,
+      "soh_used_for_available_energy": 0.6999999900007222,
+      "e_available": 0.3499999950003611,
+      "soh_mid_closed_form": 0.7407652993912877,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     }
+    ],
+    "salvage_value": -5.345893343086111e-35
+   },
+   "9": {
+    "cells": [],
+    "salvage_value": 0.0
+   }
+  }
+ },
+ "flex_price_multiplier": 1.0,
+ "flex_price_applied_in_child": {
+  "flex_price_multiplier": 1.0,
+  "label": null,
+  "where_applied": "pre_solve_hook (after _construct_arm_planning, before run_operational_planning): DSO network[year][day].cost_flex replaced by m * cost_flex (new arrays); DSO holder cost_flex rebound; TSO and planning.cost_flex untouched; no file edited",
+  "precondition": {
+   "5": {
+    "obj_type_is_min_cost": true,
+    "fl_reg": true
+   },
+   "7": {
+    "obj_type_is_min_cost": true,
+    "fl_reg": true
+   },
+   "9": {
+    "obj_type_is_min_cost": true,
+    "fl_reg": true
+   }
+  },
+  "checks": {
+   "every_dso_array_is_m_times_original_bitwise": true,
+   "every_dso_array_is_a_new_object": true,
+   "no_dso_array_shared_with_the_tso": true,
+   "dso_holder_cost_flex_rebound": true,
+   "tso_arrays_unchanged": true,
+   "planning_cost_flex_unchanged": true,
+   "dso_energy_prices_unchanged": true,
+   "readback_every_dso_block_objective": true
+  },
+  "readback_pre_run": {
+   "method": "probe DSO blocks built by production network.build_model(params) before and after the replacement; objective standard repn compared (compare_flex_price_summaries)",
+   "rel_tol": 1e-15,
+   "n_blocks": 36,
+   "all_match": true,
+   "n_flex_coefficients": 55296,
+   "n_bitwise_exact": 55296,
+   "max_rel_dev": 0.0,
+   "per_block": {
+    "DSO|5|2025|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2025|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2025|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2025|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2030|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2030|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2030|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2030|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2035|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2035|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2035|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|5|2035|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2025|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2025|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2025|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2025|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2030|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2030|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2030|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2030|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2035|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2035|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2035|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|7|2035|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2025|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2025|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2025|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2025|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2030|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2030|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2030|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2030|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2035|Spring": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2035|Summer": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2035|Autumn": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    },
+    "DSO|9|2035|Winter": {
+     "checks": {
+      "flex_variables_identical_and_present": true,
+      "flex_coefficients_scale_by_m": true,
+      "other_linear_terms_identical": true,
+      "quadratic_terms_identical": true,
+      "constant_identical": true,
+      "nonlinear_part_identical": true,
+      "flex_variables_only_linear": true
+     },
+     "n_flex_coefficients": 1536,
+     "n_bitwise_exact": 1536,
+     "max_rel_dev": 0.0
+    }
+   }
+  },
+  "profile_applied_per_year_day": {
+   "2025|Autumn": {
+    "base": [
+     49.17215942055444,
+     50.17180613001724,
+     47.57282408593413,
+     45.54074904741978,
+     43.82897697429342,
+     44.292336169866765,
+     49.83492285882443,
+     56.68649821837038,
+     60.79189054031074,
+     57.70218441979853,
+     52.09079615090364,
+     45.870720562903784,
+     49.08091679639506,
+     47.00692858527823,
+     46.07958105275037,
+     49.56835848204655,
+     57.42449123915001,
+     64.0342816113212,
+     75.17202394490438,
+     76.35453491809443,
+     69.98830704439348,
+     62.534916275467886,
+     57.4131251652893,
+     55.17000962522533
+    ],
+    "applied": [
+     49.17215942055444,
+     50.17180613001724,
+     47.57282408593413,
+     45.54074904741978,
+     43.82897697429342,
+     44.292336169866765,
+     49.83492285882443,
+     56.68649821837038,
+     60.79189054031074,
+     57.70218441979853,
+     52.09079615090364,
+     45.870720562903784,
+     49.08091679639506,
+     47.00692858527823,
+     46.07958105275037,
+     49.56835848204655,
+     57.42449123915001,
+     64.0342816113212,
+     75.17202394490438,
+     76.35453491809443,
+     69.98830704439348,
+     62.534916275467886,
+     57.4131251652893,
+     55.17000962522533
+    ]
+   },
+   "2025|Spring": {
+    "base": [
+     48.899113961857886,
+     46.682391698256765,
+     47.80542541797298,
+     46.887433654153185,
+     48.36040400260878,
+     47.6776499810663,
+     49.44011675665578,
+     47.252085424664784,
+     38.1928235837336,
+     29.71889274648277,
+     27.177623837381233,
+     26.7186471509612,
+     26.1775789784979,
+     24.019558821569603,
+     22.98527474480202,
+     22.712353415397715,
+     24.531817644603997,
+     28.30181327026842,
+     35.92762503209078,
+     49.72749185665404,
+     54.89613860851751,
+     49.761088653365654,
+     48.73824217424436,
+     47.57626121812965
+    ],
+    "applied": [
+     48.899113961857886,
+     46.682391698256765,
+     47.80542541797298,
+     46.887433654153185,
+     48.36040400260878,
+     47.6776499810663,
+     49.44011675665578,
+     47.252085424664784,
+     38.1928235837336,
+     29.71889274648277,
+     27.177623837381233,
+     26.7186471509612,
+     26.1775789784979,
+     24.019558821569603,
+     22.98527474480202,
+     22.712353415397715,
+     24.531817644603997,
+     28.30181327026842,
+     35.92762503209078,
+     49.72749185665404,
+     54.89613860851751,
+     49.761088653365654,
+     48.73824217424436,
+     47.57626121812965
+    ]
+   },
+   "2025|Summer": {
+    "base": [
+     49.503088713511076,
+     49.71518768004377,
+     47.645995472030926,
+     44.74836146373175,
+     45.672618159433824,
+     46.0053491600372,
+     50.43983380995434,
+     53.76732516490384,
+     50.116200361025506,
+     45.421333227501734,
+     39.433775403607385,
+     36.73532641523035,
+     37.484572192057456,
+     36.41927185979284,
+     33.45948142799908,
+     36.81203387675435,
+     40.9021499165174,
+     48.232286105267974,
+     54.53264934966071,
+     61.752121703064,
+     59.80605019863239,
+     57.43583893945568,
+     52.5355253614015,
+     51.34700279380062
+    ],
+    "applied": [
+     49.503088713511076,
+     49.71518768004377,
+     47.645995472030926,
+     44.74836146373175,
+     45.672618159433824,
+     46.0053491600372,
+     50.43983380995434,
+     53.76732516490384,
+     50.116200361025506,
+     45.421333227501734,
+     39.433775403607385,
+     36.73532641523035,
+     37.484572192057456,
+     36.41927185979284,
+     33.45948142799908,
+     36.81203387675435,
+     40.9021499165174,
+     48.232286105267974,
+     54.53264934966071,
+     61.752121703064,
+     59.80605019863239,
+     57.43583893945568,
+     52.5355253614015,
+     51.34700279380062
+    ]
+   },
+   "2025|Winter": {
+    "base": [
+     35.467831326736984,
+     35.127796531366876,
+     34.078895912562174,
+     34.57003865629948,
+     33.26616558147795,
+     34.62799188411393,
+     37.51898716497456,
+     38.56314829142627,
+     35.52825550529258,
+     31.483875917667245,
+     27.611817541296578,
+     26.233911052802405,
+     23.000359924080815,
+     22.7083561462318,
+     21.227251396127627,
+     22.125958990420216,
+     25.43025613189895,
+     29.768884972138093,
+     36.73404433444922,
+     41.68125524889931,
+     44.228017276658356,
+     38.12009026174783,
+     38.51748131575276,
+     38.14966794591306
+    ],
+    "applied": [
+     35.467831326736984,
+     35.127796531366876,
+     34.078895912562174,
+     34.57003865629948,
+     33.26616558147795,
+     34.62799188411393,
+     37.51898716497456,
+     38.56314829142627,
+     35.52825550529258,
+     31.483875917667245,
+     27.611817541296578,
+     26.233911052802405,
+     23.000359924080815,
+     22.7083561462318,
+     21.227251396127627,
+     22.125958990420216,
+     25.43025613189895,
+     29.768884972138093,
+     36.73404433444922,
+     41.68125524889931,
+     44.228017276658356,
+     38.12009026174783,
+     38.51748131575276,
+     38.14966794591306
+    ]
+   },
+   "2030|Autumn": {
+    "base": [
+     54.70812939985208,
+     55.21343056657136,
+     52.349832423702,
+     49.91909574218824,
+     48.64206372351373,
+     48.99556025517533,
+     55.15247453369296,
+     63.68346236749838,
+     67.71555929777058,
+     64.34620913990743,
+     57.35963703440714,
+     50.60344259001714,
+     54.41610760520405,
+     52.217196658878734,
+     50.463326901242596,
+     55.655399516822854,
+     63.025804659074716,
+     71.84689441551419,
+     82.25966233429114,
+     83.87842460132626,
+     75.79730433930118,
+     69.55286954890857,
+     63.15626392412004,
+     60.86431956150352
+    ],
+    "applied": [
+     54.70812939985208,
+     55.21343056657136,
+     52.349832423702,
+     49.91909574218824,
+     48.64206372351373,
+     48.99556025517533,
+     55.15247453369296,
+     63.68346236749838,
+     67.71555929777058,
+     64.34620913990743,
+     57.35963703440714,
+     50.60344259001714,
+     54.41610760520405,
+     52.217196658878734,
+     50.463326901242596,
+     55.655399516822854,
+     63.025804659074716,
+     71.84689441551419,
+     82.25966233429114,
+     83.87842460132626,
+     75.79730433930118,
+     69.55286954890857,
+     63.15626392412004,
+     60.86431956150352
+    ]
+   },
+   "2030|Spring": {
+    "base": [
+     54.85483082125046,
+     54.31860754163452,
+     52.644211091810206,
+     50.00472857889954,
+     51.762400874032934,
+     52.254507366293424,
+     57.13675982939118,
+     53.572044471986544,
+     41.52295442402904,
+     34.16218350228366,
+     30.331258327019007,
+     30.161081948388663,
+     28.059400827695956,
+     27.21250514525461,
+     24.076476005434216,
+     24.74173047838189,
+     27.016213576647168,
+     32.03347454949408,
+     41.07429856761474,
+     53.070761442159835,
+     59.56194447154175,
+     55.35713492745635,
+     53.84792672742031,
+     52.23940196664534
+    ],
+    "applied": [
+     54.85483082125046,
+     54.31860754163452,
+     52.644211091810206,
+     50.00472857889954,
+     51.762400874032934,
+     52.254507366293424,
+     57.13675982939118,
+     53.572044471986544,
+     41.52295442402904,
+     34.16218350228366,
+     30.331258327019007,
+     30.161081948388663,
+     28.059400827695956,
+     27.21250514525461,
+     24.076476005434216,
+     24.74173047838189,
+     27.016213576647168,
+     32.03347454949408,
+     41.07429856761474,
+     53.070761442159835,
+     59.56194447154175,
+     55.35713492745635,
+     53.84792672742031,
+     52.23940196664534
+    ]
+   },
+   "2030|Summer": {
+    "base": [
+     54.559506245806126,
+     54.08668558503582,
+     52.45930170621982,
+     49.858535591412846,
+     50.421587144176826,
+     50.81826079478782,
+     55.52274506571408,
+     58.41180985894465,
+     54.894345402511206,
+     49.36826334316466,
+     43.83959817269619,
+     40.24081300796982,
+     41.440901766527624,
+     39.58754659150039,
+     37.42140006077344,
+     40.36064905590188,
+     45.08156675705759,
+     52.18507567384011,
+     60.8884701063632,
+     68.71235844401046,
+     67.62525146809352,
+     62.665645664531056,
+     58.52272308890139,
+     56.65598049734531
+    ],
+    "applied": [
+     54.559506245806126,
+     54.08668558503582,
+     52.45930170621982,
+     49.858535591412846,
+     50.421587144176826,
+     50.81826079478782,
+     55.52274506571408,
+     58.41180985894465,
+     54.894345402511206,
+     49.36826334316466,
+     43.83959817269619,
+     40.24081300796982,
+     41.440901766527624,
+     39.58754659150039,
+     37.42140006077344,
+     40.36064905590188,
+     45.08156675705759,
+     52.18507567384011,
+     60.8884701063632,
+     68.71235844401046,
+     67.62525146809352,
+     62.665645664531056,
+     58.52272308890139,
+     56.65598049734531
+    ]
+   },
+   "2030|Winter": {
+    "base": [
+     37.323185020216144,
+     38.68888831488757,
+     37.25406620584316,
+     36.50134733645072,
+     35.39113764800822,
+     37.81488597849711,
+     40.67204583109981,
+     41.84598623086139,
+     38.80473059970658,
+     33.147017990296085,
+     29.823212956777752,
+     28.227813502060947,
+     24.737187353315406,
+     24.27051178360211,
+     22.63576793586966,
+     24.170677710077996,
+     27.111613553077706,
+     31.421043395374546,
+     38.948462967555116,
+     45.31673790655357,
+     47.02285175612352,
+     41.409637128245436,
+     40.752825865174515,
+     40.68408613633797
+    ],
+    "applied": [
+     37.323185020216144,
+     38.68888831488757,
+     37.25406620584316,
+     36.50134733645072,
+     35.39113764800822,
+     37.81488597849711,
+     40.67204583109981,
+     41.84598623086139,
+     38.80473059970658,
+     33.147017990296085,
+     29.823212956777752,
+     28.227813502060947,
+     24.737187353315406,
+     24.27051178360211,
+     22.63576793586966,
+     24.170677710077996,
+     27.111613553077706,
+     31.421043395374546,
+     38.948462967555116,
+     45.31673790655357,
+     47.02285175612352,
+     41.409637128245436,
+     40.752825865174515,
+     40.68408613633797
+    ]
+   },
+   "2035|Autumn": {
+    "base": [
+     61.65973117781613,
+     60.4750546048717,
+     57.329960229939445,
+     55.08822154908941,
+     54.380276862435885,
+     54.10199769566197,
+     61.64536940927371,
+     72.65347662621232,
+     75.71412573419053,
+     71.66952086389922,
+     63.058921912227596,
+     55.63199112773271,
+     60.56352129181971,
+     58.13486758704123,
+     54.985386295155784,
+     63.535097471617476,
+     68.4217337606162,
+     81.02265829697374,
+     90.40509168849496,
+     91.85786330673523,
+     81.19091053731303,
+     77.1430113112549,
+     69.42038018562755,
+     66.92375551175921
+    ],
+    "applied": [
+     61.65973117781613,
+     60.4750546048717,
+     57.329960229939445,
+     55.08822154908941,
+     54.380276862435885,
+     54.10199769566197,
+     61.64536940927371,
+     72.65347662621232,
+     75.71412573419053,
+     71.66952086389922,
+     63.058921912227596,
+     55.63199112773271,
+     60.56352129181971,
+     58.13486758704123,
+     54.985386295155784,
+     63.535097471617476,
+     68.4217337606162,
+     81.02265829697374,
+     90.40509168849496,
+     91.85786330673523,
+     81.19091053731303,
+     77.1430113112549,
+     69.42038018562755,
+     66.92375551175921
+    ]
+   },
+   "2035|Spring": {
+    "base": [
+     60.34193235911344,
+     57.26112698888426,
+     57.555764911800914,
+     55.09012361552555,
+     57.3720888086457,
+     58.192621186992255,
+     62.00024086046821,
+     57.77996846321467,
+     45.85024551803125,
+     37.23989903839141,
+     34.10258768364233,
+     32.44268942218381,
+     31.516905761581505,
+     28.842267190710743,
+     27.292118238330307,
+     27.681543731928087,
+     29.54268810697421,
+     34.80052750281672,
+     44.67763498679645,
+     59.46943666289692,
+     67.6279549219602,
+     60.57843877865085,
+     60.4494985696664,
+     57.750430708069445
+    ],
+    "applied": [
+     60.34193235911344,
+     57.26112698888426,
+     57.555764911800914,
+     55.09012361552555,
+     57.3720888086457,
+     58.192621186992255,
+     62.00024086046821,
+     57.77996846321467,
+     45.85024551803125,
+     37.23989903839141,
+     34.10258768364233,
+     32.44268942218381,
+     31.516905761581505,
+     28.842267190710743,
+     27.292118238330307,
+     27.681543731928087,
+     29.54268810697421,
+     34.80052750281672,
+     44.67763498679645,
+     59.46943666289692,
+     67.6279549219602,
+     60.57843877865085,
+     60.4494985696664,
+     57.750430708069445
+    ]
+   },
+   "2035|Summer": {
+    "base": [
+     61.02564874371011,
+     59.5143683855588,
+     57.449078099369444,
+     54.80819139483748,
+     55.33445962948433,
+     56.025858123983504,
+     62.386665286851894,
+     64.96382318714413,
+     60.30748937258387,
+     54.44897683735179,
+     48.78648703410605,
+     44.172293190769985,
+     45.73939769045145,
+     43.43135790685157,
+     41.04364333856849,
+     45.09302283872065,
+     49.11577519447334,
+     57.49782292886697,
+     68.2708340483004,
+     75.44223862825766,
+     74.99695232210897,
+     68.66275745529103,
+     65.13296145847514,
+     62.28243259177118
+    ],
+    "applied": [
+     61.02564874371011,
+     59.5143683855588,
+     57.449078099369444,
+     54.80819139483748,
+     55.33445962948433,
+     56.025858123983504,
+     62.386665286851894,
+     64.96382318714413,
+     60.30748937258387,
+     54.44897683735179,
+     48.78648703410605,
+     44.172293190769985,
+     45.73939769045145,
+     43.43135790685157,
+     41.04364333856849,
+     45.09302283872065,
+     49.11577519447334,
+     57.49782292886697,
+     68.2708340483004,
+     75.44223862825766,
+     74.99695232210897,
+     68.66275745529103,
+     65.13296145847514,
+     62.28243259177118
+    ]
+   },
+   "2035|Winter": {
+    "base": [
+     45.156468025872535,
+     42.33268649733293,
+     42.8828517919247,
+     42.852206887403284,
+     42.96355616016267,
+     42.87101225776274,
+     45.34227042539371,
+     47.342092063495585,
+     43.98254725853267,
+     40.403785036869614,
+     34.72606551943192,
+     31.8334061661703,
+     28.7675830934442,
+     28.39164809868283,
+     26.46461056265453,
+     27.388778664777398,
+     31.444458801824776,
+     37.198562238670846,
+     46.16095783635666,
+     52.870801940402494,
+     53.67790965631649,
+     47.16025742785049,
+     47.87459031197694,
+     47.56265322234221
+    ],
+    "applied": [
+     45.156468025872535,
+     42.33268649733293,
+     42.8828517919247,
+     42.852206887403284,
+     42.96355616016267,
+     42.87101225776274,
+     45.34227042539371,
+     47.342092063495585,
+     43.98254725853267,
+     40.403785036869614,
+     34.72606551943192,
+     31.8334061661703,
+     28.7675830934442,
+     28.39164809868283,
+     26.46461056265453,
+     27.388778664777398,
+     31.444458801824776,
+     37.198562238670846,
+     46.16095783635666,
+     52.870801940402494,
+     53.67790965631649,
+     47.16025742785049,
+     47.87459031197694,
+     47.56265322234221
+    ]
+   }
+  },
+  "profile_identical_across_dso": true
+ },
+ "flex_price_readback_terminal": {
+  "method": "generate_standard_repn of every DSO block flex_cost_scenario Expression of the run's own models (read-only)",
+  "flex_price_multiplier": 1.0,
+  "rel_tol": 1e-15,
+  "n_blocks": 36,
+  "n_coefficients": 55296,
+  "n_bitwise_equal_applied_closed_form": 55296,
+  "n_bitwise_equal_m_times_original": 55296,
+  "max_rel_dev_vs_m_times_original": 0.0,
+  "tso_arrays_still_the_planning_arrays": true,
+  "all_match": true,
+  "per_block": {
+   "DSO|5|2025|Spring": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|5|2025|Summer": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|5|2025|Autumn": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|5|2025|Winter": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|5|2030|Spring": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|5|2030|Summer": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|5|2030|Autumn": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|5|2030|Winter": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|5|2035|Spring": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|5|2035|Summer": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|5|2035|Autumn": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|5|2035|Winter": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|7|2025|Spring": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|7|2025|Summer": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|7|2025|Autumn": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|7|2025|Winter": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|7|2030|Spring": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|7|2030|Summer": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|7|2030|Autumn": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|7|2030|Winter": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|7|2035|Spring": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|7|2035|Summer": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|7|2035|Autumn": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|7|2035|Winter": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|9|2025|Spring": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|9|2025|Summer": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|9|2025|Autumn": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|9|2025|Winter": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|9|2030|Spring": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|9|2030|Summer": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|9|2030|Autumn": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|9|2030|Winter": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|9|2035|Spring": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|9|2035|Summer": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|9|2035|Autumn": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   },
+   "DSO|9|2035|Winter": {
+    "n_coefficients": 1536,
+    "equals_applied_closed_form": true,
+    "equals_m_times_original_within_tol": true
+   }
+  }
+ },
+ "derived_instance": {
+  "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+  "case_sha256": "45e8e700a547de22b2c9cd2f9373c4307da30764461e647424eca7eb2d1594b3",
+  "changes_vs_source": [
+   {
+    "from": 3,
+    "key": "NumMarketScenarios",
+    "to": 1
+   },
+   {
+    "from": 3,
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "to": 1
+   },
+   {
+    "from": 3,
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "to": 1
+   },
+   {
+    "from": 3,
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "to": 1
+   },
+   {
+    "from": 3,
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "to": 1
+   },
+   {
+    "from": "production synthesis at one scenario (= the published draw 0)",
+    "key": "scenario arrays (all but A5)",
+    "to": "probability-weighted means of s56_srp1grid_3x3, injected at shared_resources_planning._compute_scenario_metadata from data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json (sha256 f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729)"
+   }
+  ],
+  "instance_label": "s56_srp1grid_3x3_ev",
+  "scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+  "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+ },
+ "derived_instance_installed_in_child": {
+  "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+  "case_sha256_in_child": "45e8e700a547de22b2c9cd2f9373c4307da30764461e647424eca7eb2d1594b3",
+  "scenario_checksum_in_child": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+  "instance_label": "s56_srp1grid_3x3_ev",
+  "checksum_matches_srp1_canonical": false,
+  "planning_dimensions": {
+   "years": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "days": {
+    "Spring": 92,
+    "Summer": 91,
+    "Autumn": 91,
+    "Winter": 91
+   },
+   "num_instants": 24,
+   "random_seed": 2026,
+   "num_market_scenarios": 1,
+   "num_operation_scenarios": {
+    "case9": 1,
+    "case33_1": 1,
+    "case33_2": 1,
+    "case33_3": 1
+   },
+   "active_distribution_network_nodes": [
+    5,
+    7,
+    9
+   ],
+   "scenario_metadata": {
+    "random_seed": 2026,
+    "deterministic_scenarios": true,
+    "market_scenario_checksum": "7696c88f7cfed726b2da8678009b3bfc68d971d18f46cc46ed59ed7d4c55d61b",
+    "operational_scenario_checksum": "eb7352f325e2704fc7ae4c7e44c438c3a7337e25a0c0a6b286e3e825f352333b",
+    "combined_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de"
+   }
+  },
+  "expected_block_counts": {
+   "tso_blocks": 12,
+   "dso_blocks": 36,
+   "network_blocks": 48,
+   "esso_models": 3,
+   "solves_per_cycle": 51
+  },
+  "planning_read_dir": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/b208064d83583776_n7_y2025_p0_25_e0_5__exit__ev_1x/planning_read",
+  "read_wall_s": 11.91851806640625,
+  "reader": "p515_s44_scale_measurement.read_planning_from_derived_case (production SharedResourcesPlanning)"
+ },
+ "derived_instance_checks_in_child": {
+  "planning_scenario_checksum_equals_declaration": true,
+  "s56_ev_planning_is_the_single_scenario_twin": true
+ },
+ "interface_deviation_premium_applied_in_child": null,
+ "multiscenario_terminal": {
+  "status": "written",
+  "path": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/b208064d83583776_n7_y2025_p0_25_e0_5__exit__ev_1x/multiscenario_terminal.json",
+  "sha256": "d8981e61393df9f048ccfe266438e6b2d96106e5c121eb4daacaacb6a01cbf6f",
+  "runtime_s": 1.323007345199585,
+  "sigma_calibration": {
+   "sigma_fixed": 93635360.0,
+   "sigma_computed": 100459771.54697995,
+   "ratio_computed_over_fixed": 1.0728828462557303,
+   "assert_factor": 3.0,
+   "band": [
+    0.3333333333333333,
+    3.0
+   ],
+   "ratio_over_lower_edge": 3.218648538767191,
+   "upper_edge_over_ratio": 2.7962046466394206,
+   "within_band": true,
+   "objective_scale_source": "case_file",
+   "definition": "sigma_computed = max over TSO/DSO blocks of |w_b * f_b| at the initialization solve (shared_resources_planning._compute_common_admm_objective_scale); the resolver raises unless 1/F <= sigma_computed/sigma_fixed <= F"
+  },
+  "objective_convention": "per-scenario obj = production base SMOPF objective per scenario (no settlement, no row 18, no voltage pin); Q per block = sum_s omega_s obj_s + (settlement - contracted) + row 18 charge = gross_operational_cost convention (_get_operational_recourse_block_components / weight)",
+  "dispersion_convention": "d_{s,t} = p_int_{s,t} - pbar_t (the DSO block's own committed schedule); block-local, probability-weighted; *_sum_over_blocks = summed over the DSO's (year, day) blocks UNWEIGHTED (MWh per representative day summed, the W44 convention); *_weighted = weighted by _get_admm_block_weight (the Q weighting)",
+  "alpha_in_force": 0.0,
+  "floor_in_force": null,
+  "n_blocks": 48,
+  "n_dso_blocks_row18_wired": 0,
+  "per_dso": {
+   "5": {
+    "rms_mw_max_over_blocks": 0.0,
+    "max_abs_mw": 0.0,
+    "rms_mvar_max_over_blocks": 0.0,
+    "rms_share_of_mean_flow_max_over_blocks": 0.0,
+    "E_abs_d_p_mwh_sum_over_blocks": 0.0,
+    "E_abs_d_p_mwh_weighted": 0.0,
+    "sum_omega_d2_p_mw2h_sum_over_blocks": 0.0,
+    "sum_omega_d2_p_mw2h_weighted": 0.0,
+    "E_abs_d_q_mvarh_sum_over_blocks": 0.0,
+    "row18_charge_sum_over_blocks": 0.0,
+    "row18_charge_weighted": 0.0,
+    "argmax_rms_block": "2035|Winter",
+    "n_blocks": 12
+   },
+   "7": {
+    "rms_mw_max_over_blocks": 5.0753633373561815e-15,
+    "max_abs_mw": 1.1102230246251565e-14,
+    "rms_mvar_max_over_blocks": 5.393474470909163e-16,
+    "rms_share_of_mean_flow_max_over_blocks": 1.230372804510027e-16,
+    "E_abs_d_p_mwh_sum_over_blocks": 4.3151246464923076e-13,
+    "E_abs_d_p_mwh_weighted": 1.7625774265470164e-10,
+    "sum_omega_d2_p_mw2h_sum_over_blocks": 2.8259786973429223e-27,
+    "sum_omega_d2_p_mw2h_weighted": 1.150590551885786e-24,
+    "E_abs_d_q_mvarh_sum_over_blocks": 2.778810168080348e-14,
+    "row18_charge_sum_over_blocks": 0.0,
+    "row18_charge_weighted": 0.0,
+    "argmax_rms_block": "2035|Summer",
+    "n_blocks": 12
+   },
+   "9": {
+    "rms_mw_max_over_blocks": 0.0,
+    "max_abs_mw": 0.0,
+    "rms_mvar_max_over_blocks": 0.0,
+    "rms_share_of_mean_flow_max_over_blocks": 0.0,
+    "E_abs_d_p_mwh_sum_over_blocks": 0.0,
+    "E_abs_d_p_mwh_weighted": 0.0,
+    "sum_omega_d2_p_mw2h_sum_over_blocks": 0.0,
+    "sum_omega_d2_p_mw2h_weighted": 0.0,
+    "E_abs_d_q_mvarh_sum_over_blocks": 0.0,
+    "row18_charge_sum_over_blocks": 0.0,
+    "row18_charge_weighted": 0.0,
+    "argmax_rms_block": "2035|Winter",
+    "n_blocks": 12
+   }
+  },
+  "all_dso": {
+   "E_abs_d_p_mwh_sum_over_blocks": 4.3151246464923076e-13,
+   "E_abs_d_p_mwh_weighted": 1.7625774265470164e-10,
+   "sum_omega_d2_p_mw2h_sum_over_blocks": 2.8259786973429223e-27,
+   "sum_omega_d2_p_mw2h_weighted": 1.150590551885786e-24,
+   "E_abs_d_q_mvarh_sum_over_blocks": 2.778810168080348e-14,
+   "row18_charge_sum_over_blocks": 0.0,
+   "row18_charge_weighted": 0.0,
+   "rms_mw_max_over_all_dso_blocks": 5.0753633373561815e-15,
+   "max_abs_mw_over_all_dso_blocks": 1.1102230246251565e-14
+  },
+  "settlement_identity": {
+   "definition": "Addendum 38 (C): residual := T_TSO + sum_DSO T_DSO (interface_settlement_total) == the price-deviation covariance (interface_settlement_deviation_total) + the leftover priced interface consensus residual (interface_settlement_identity_residual = the contracted parts, which cancel at consensus); the covariance is also recomputed here from the models",
+   "residual_interface_settlement_total": 33334.56466293335,
+   "covariance_interface_settlement_deviation_total": 0.0,
+   "covariance_recomputed_weighted_total": 0.0,
+   "covariance_recomputed_vs_production_rel_diff": 0.0,
+   "leftover_identity_residual": 33334.56466293335,
+   "contracted_total": 33334.56466293335,
+   "tso_deviation_part": 0.0,
+   "dso_deviation_part": {
+    "5": 0.0,
+    "7": 0.0,
+    "9": 0.0
+   }
+  },
+  "identity_worst_rel_diffs": {
+   "settlement_split_rel": 0.0,
+   "covariance_vs_deviation_rel": 0.0,
+   "per_scenario_settlement_rel": 0.0,
+   "per_scenario_row18_rel": 0.0,
+   "per_scenario_q_reconciliation_rel": 1.7727907914535373e-16,
+   "dispersion_identity_rel": 1.793662034335766e-43
+  },
+  "identity_rel_tol": 1e-09,
+  "checks": {
+   "settlement_split_rel": true,
+   "covariance_vs_deviation_rel": true,
+   "per_scenario_settlement_rel": true,
+   "per_scenario_row18_rel": true,
+   "per_scenario_q_reconciliation_rel": true,
+   "dispersion_identity_rel": true,
+   "covariance_recomputed_vs_production": true,
+   "row18_readback_all_blocks": true
+  },
+  "all_checks_pass": true,
+  "recourse_components": {
+   "gross_operational_cost": 665096310.2484053,
+   "net_operational_recourse": 665096310.2484053,
+   "terminal_salvage_value": -5.345893343086111e-35,
+   "voltage_pin_total": 0.0,
+   "detector_penalty_total": -13032.465324381408
+  },
+  "voltage_pin_mismatch_max_rms_pu": 0.0
+ },
+ "multiscenario_terminal_error_traceback": null,
+ "operational_workbook": {
+  "status": "written",
+  "path": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/b208064d83583776_n7_y2025_p0_25_e0_5__exit__ev_1x/results/SRP1_distributed_terminal.xlsx",
+  "sha256": "c4bb2ff9d4f76ec7cc6b98b0dfe7f6f715635a5e430ddabf79a14503fe0e64ae",
+  "size_bytes": 21170414,
+  "runtime_s": 71.49537014961243,
+  "write_s": 69.6761679649353,
+  "writer": "SharedResourcesPlanning.write_operational_planning_results_to_excel (production)",
+  "point": "terminal models of the run, BEFORE any post-certification step"
+ },
+ "terminal_phase_lock": {
+  "status": "held",
+  "lock_path": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/.terminal_phase.lock",
+  "waited_s": 165.07150411605835,
+  "stale_locks_taken_over": [],
+  "released": true
+ },
+ "sigma_calibration": {
+  "sigma_fixed": 93635360.0,
+  "sigma_computed": 100459771.54697995,
+  "ratio_computed_over_fixed": 1.0728828462557303,
+  "assert_factor": 3.0,
+  "band": [
+   0.3333333333333333,
+   3.0
+  ],
+  "ratio_over_lower_edge": 3.218648538767191,
+  "upper_edge_over_ratio": 2.7962046466394206,
+  "within_band": true,
+  "objective_scale_source": "case_file",
+  "definition": "sigma_computed = max over TSO/DSO blocks of |w_b * f_b| at the initialization solve (shared_resources_planning._compute_common_admm_objective_scale); the resolver raises unless 1/F <= sigma_computed/sigma_fixed <= F"
+ },
+ "alpha_row_capture_checklist_asserted_before_run": {
+  "production_fn_create_transmission_network_model": true,
+  "production_fn_create_shared_energy_storage_model": true,
+  "production_fn__prepare_distribution_objectives_for_admm": true,
+  "production_fn__prepare_transmission_objectives_for_admm": true,
+  "production_fn_get_admm_boyd_residual_metrics": true,
+  "production_fn__admm_local_solves_succeeded": true,
+  "production_fn__get_operational_interface_dispersion": true,
+  "production_fn__get_operational_recourse_components": true,
+  "production_fn__get_local_interface_settlement": true,
+  "production_fn__get_admm_block_weight": true,
+  "production_fn__activate_row18_with_settlement": true,
+  "init_check_then_prepare_dso_then_prepare_tso": true,
+  "tso_and_esso_built_before_prepare": true,
+  "boyd_once_per_cycle_before_local_check": true,
+  "local_check_called_exactly_twice": true,
+  "row18_activated_in_prepare_dso": true,
+  "prepare_dso_sets_weight_and_penalty": true,
+  "prepare_tso_sets_weight_and_penalty": true,
+  "model_declares_dual_and_bound_suffixes": true,
+  "release_bookkeeping_leaves_suffixes": true,
+  "solved_objective_is_p58_rescaled": true,
+  "coordination_record_by_import": true,
+  "coordination_record_reads_duals_rho_request_pbar_scale": true,
+  "audit_helpers_by_import": true,
+  "audit_constants_by_import": true,
+  "decomposition_by_import": true,
+  "post_run_hook_gets_optimization_results": true,
+  "p_posthoc_inputs_captured": true,
+  "p_posthoc_formula_defined": true,
+  "child_installs_alpha_row_hooks": true,
+  "child_closes_hooks_in_post_run_hook": true,
+  "child_writes_response_before_workbook_and_post_certification": true,
+  "child_merges_per_cycle_response": true,
+  "child_response_capture_error_exits_2": true,
+  "termination_record_carries_ipopt_exit": true,
+  "primal_split_captured_per_dso_block": true,
+  "primal_split_terms": true,
+  "ipopt_options_in_force_captured": true,
+  "compact_writer_with_roundtrip": true,
+  "no_entry_cap_in_encoder": true
+ },
+ "activation_readback": {
+  "alpha": 0.0,
+  "point": "after _prepare_distribution_objectives_for_admm and _prepare_transmission_objectives_for_admm; before any ADMM-cycle solve",
+  "n_blocks": 48,
+  "n_dso_blocks": 36,
+  "expected_n_dso_blocks": 36,
+  "failing_blocks": [],
+  "all_ok": true
+ },
+ "initialisation_identity": {
+  "path": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/init_identity/b208064d83583776_n7_y2025_p0_25_e0_5__exit__ev_1x.json",
+  "gross_operational_cost": -52487.264746791894,
+  "gross_operational_cost_hex": "-0x1.9a0e878ce439dp+15",
+  "n_compared": 0,
+  "compared": [],
+  "other_candidates_not_compared": [
+   {
+    "file": "a2825e71581b039f_n7_y2030_p0_25_e1__exit__ev_1x.json",
+    "label": "n7_y2030_p0.25_e1__exit__ev_1x",
+    "candidate_key": "d41f7545e47d9844b44e87e4197475218f6ef8de602003895b0643e88422aa14"
+   },
+   {
+    "file": "a79bfe01b90d025b_n5_y2035_p0_25_e0_5__exit__ev_1x.json",
+    "label": "n5_y2035_p0.25_e0.5__exit__ev_1x",
+    "candidate_key": "5234d09abd8b80856b3b6111b3f754c7d03990378dda82d1a28b6ac8cdb2ce1d"
+   }
+  ],
+  "mismatches": [],
+  "all_equal": true
+ },
+ "response_terminal": {
+  "status": "written",
+  "path": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/b208064d83583776_n7_y2025_p0_25_e0_5__exit__ev_1x/response_terminal.json",
+  "sha256": "5e8c63932643b17a4c175c97c013c432babc84a61a92b6691961857d5d927d73",
+  "schema": "p515_s44_response_terminal_v2",
+  "capture_cost": {
+   "runtime_s": 0.6284511089324951,
+   "rss_before_bytes": 2616246272,
+   "rss_after_bytes": 2616508416,
+   "ru_maxrss_before_bytes": 2616295424,
+   "ru_maxrss_after_bytes": 2616508416,
+   "ru_maxrss_units": "bytes on macOS/BSD, kilobytes on Linux",
+   "file_bytes": 534732,
+   "roundtrip": {
+    "verified": true,
+    "sections_compared": [
+     "capture_cost",
+     "constants",
+     "coordination_by_dso_block",
+     "curtailment_by_block",
+     "curtailment_entries",
+     "flexibility_by_dso_block",
+     "network_hour_rows",
+     "p_posthoc_by_dso_block",
+     "row18_legs_by_dso_block",
+     "schema",
+     "summary"
+    ],
+    "n_entries_written": 351,
+    "n_entries_captured": 351,
+    "write_and_verify_s": 0.07661581039428711
+   },
+   "rss_after_write_verify_bytes": 2617049088,
+   "ru_maxrss_after_write_verify_bytes": 2617049088
+  },
+  "alpha_in_force": 0.0,
+  "units": "volumes MWh (MW x 1 h periods) per representative day per block; *_weighted x admm_block_weight (the Q weighting); money EUR",
+  "n_curtailment_entries_above_tol": 351,
+  "n_entries_dso": 351,
+  "n_entries_tso": 0,
+  "n_entries_with_row18_fields": 0,
+  "n_entries_with_bus_dual": 351,
+  "n_network_hours_with_rows": 248,
+  "curtailment_per_network": {
+   "TSO": {
+    "E_plus_mwh_weighted": 0.0,
+    "E_net_mwh_weighted": -18.696871248780898,
+    "priced_eur_weighted": 0.0,
+    "n_entries_above_tol": 0
+   },
+   "DSO5": {
+    "E_plus_mwh_weighted": 186.72403219110222,
+    "E_net_mwh_weighted": 170.15570477726808,
+    "priced_eur_weighted": 18174.45873475751,
+    "n_entries_above_tol": 113
+   },
+   "DSO7": {
+    "E_plus_mwh_weighted": 215.80567173786113,
+    "E_net_mwh_weighted": 202.45632718770779,
+    "priced_eur_weighted": 11515.566823415285,
+    "n_entries_above_tol": 92
+   },
+   "DSO9": {
+    "E_plus_mwh_weighted": 195.50866999824854,
+    "E_net_mwh_weighted": 184.08682995397425,
+    "priced_eur_weighted": 15451.038657162459,
+    "n_entries_above_tol": 146
+   }
+  },
+  "n_coordination_blocks": 36,
+  "n_coordination_capture_errors": 0,
+  "flexibility_per_dso_weighted": {
+   "DSO5": {
+    "p_up_mwh": 1148246.1971842414,
+    "p_down_mwh": 1148246.1971865664,
+    "q_up_mvarh": 4956.317489907718,
+    "q_down_mvarh": -3.812968958829602
+   },
+   "DSO7": {
+    "p_up_mwh": 1147957.143562325,
+    "p_down_mwh": 1147957.1435646159,
+    "q_up_mvarh": 4779.56583754272,
+    "q_down_mvarh": -3.81286787216166
+   },
+   "DSO9": {
+    "p_up_mwh": 1352152.3553129616,
+    "p_down_mwh": 1352152.355315276,
+    "q_up_mvarh": 6904.517008734748,
+    "q_down_mvarh": -3.812993137396716
+   }
+  },
+  "row18_charge_p_weighted": 0.0,
+  "row18_charge_q_weighted": 0.0,
+  "row18_charge_weighted_legs_total": 0.0,
+  "row18_q_leg_share_of_charge": null,
+  "P_charge_over_alpha": null,
+  "P_posthoc_weighted": 1.769597405224241e-08,
+  "P_posthoc_p_leg_weighted": 1.640520452223833e-08,
+  "row18_zl_identity": {
+   "n_checked": 0,
+   "n_missing_suffix_values": 0,
+   "n_le_1e-6": 0,
+   "n_le_1e-4": 0,
+   "n_le_1e-2": 0,
+   "worst_rel_zl_sum_vs_2coef": 0.0,
+   "worst_rel_abs_dual_vs_half_zl_diff": 0.0,
+   "tol": 0.0001,
+   "holds": false
+  },
+  "voltage_pin_total": 0.0,
+  "recourse_components": {
+   "gross_operational_cost": 665096310.2484053,
+   "net_operational_recourse": 665096310.2484053,
+   "terminal_salvage_value": -5.345893343086111e-35,
+   "voltage_pin_total": 0.0,
+   "interface_settlement_total": 33334.56466293335,
+   "interface_settlement_deviation_total": 0.0,
+   "detector_penalty_total": -13032.465324381408
+  },
+  "n_blocks_last_solve_not_succeeded": 0,
+  "P_gap_decomposition_weighted": null,
+  "dso_last_solve_ipopt_exit_counts": {
+   "optimal": 36
+  },
+  "ipopt_options_in_force_dso": {
+   "DSO5": {
+    "tol": {
+     "value": 1e-05,
+     "source": "case_file"
+    },
+    "acceptable_tol": {
+     "value": 0.0001,
+     "source": "case_file"
+    },
+    "constr_viol_tol": {
+     "value": 0.0001,
+     "source": "ipopt_default"
+    },
+    "acceptable_constr_viol_tol": {
+     "value": 0.01,
+     "source": "ipopt_default"
+    },
+    "bound_relax_factor": {
+     "value": 1e-08,
+     "source": "ipopt_default"
+    },
+    "honor_original_bounds": {
+     "value": "no",
+     "source": "ipopt_default"
+    },
+    "nlp_scaling_method": {
+     "value": "gradient-based",
+     "source": "ipopt_default"
+    },
+    "nlp_scaling_max_gradient": {
+     "value": 100.0,
+     "source": "ipopt_default"
+    }
+   },
+   "DSO7": {
+    "tol": {
+     "value": 1e-05,
+     "source": "case_file"
+    },
+    "acceptable_tol": {
+     "value": 0.0001,
+     "source": "case_file"
+    },
+    "constr_viol_tol": {
+     "value": 0.0001,
+     "source": "ipopt_default"
+    },
+    "acceptable_constr_viol_tol": {
+     "value": 0.01,
+     "source": "ipopt_default"
+    },
+    "bound_relax_factor": {
+     "value": 1e-08,
+     "source": "ipopt_default"
+    },
+    "honor_original_bounds": {
+     "value": "no",
+     "source": "ipopt_default"
+    },
+    "nlp_scaling_method": {
+     "value": "gradient-based",
+     "source": "ipopt_default"
+    },
+    "nlp_scaling_max_gradient": {
+     "value": 100.0,
+     "source": "ipopt_default"
+    }
+   },
+   "DSO9": {
+    "tol": {
+     "value": 1e-05,
+     "source": "case_file"
+    },
+    "acceptable_tol": {
+     "value": 0.0001,
+     "source": "case_file"
+    },
+    "constr_viol_tol": {
+     "value": 0.0001,
+     "source": "ipopt_default"
+    },
+    "acceptable_constr_viol_tol": {
+     "value": 0.01,
+     "source": "ipopt_default"
+    },
+    "bound_relax_factor": {
+     "value": 1e-08,
+     "source": "ipopt_default"
+    },
+    "honor_original_bounds": {
+     "value": "no",
+     "source": "ipopt_default"
+    },
+    "nlp_scaling_method": {
+     "value": "gradient-based",
+     "source": "ipopt_default"
+    },
+    "nlp_scaling_max_gradient": {
+     "value": 100.0,
+     "source": "ipopt_default"
+    }
+   }
+  }
+ },
+ "response_terminal_error_traceback": null,
+ "per_cycle_response": {
+  "path": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/b208064d83583776_n7_y2025_p0_25_e0_5__exit__ev_1x/per_cycle_response.jsonl",
+  "n_lines": 84,
+  "n_trajectory_rows": 84,
+  "n_captured": 84,
+  "cycles_match": true
+ },
+ "s56_cohort_formulation": "independent_units_all_node_years",
+ "s56_terminal_value_in_objective": true,
+ "s56_esso_slack_penalty": 10000.0,
+ "s56_ev_profiles": {
+  "ev_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+  "profiles_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+  "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729"
+ },
+ "s56_staged_investment": {
+  "5": {
+   "2025": [
+    0.0,
+    0.0
+   ],
+   "2030": [
+    0.0,
+    0.0
+   ],
+   "2035": [
+    0.0,
+    0.0
+   ]
+  },
+  "7": {
+   "2025": [
+    0.25,
+    0.5
+   ],
+   "2030": [
+    0.0,
+    0.0
+   ],
+   "2035": [
+    0.0,
+    0.0
+   ]
+  },
+  "9": {
+   "2025": [
+    0.0,
+    0.0
+   ],
+   "2030": [
+    0.0,
+    0.0
+   ],
+   "2035": [
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "s56_ev_plan_label": "EVALUATION OPTION \u2014 S56 EV-plan formulation (cohort mode, terminal value in the ESSO objective, ESSO slack penalty, EV injection, staged candidate)",
+ "s56_investment": {
+  "active_cohorts": [
+   [
+    7,
+    2025
+   ]
+  ],
+  "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+  "cumulative_energy_mwh": {
+   "5|2025": 0.0,
+   "5|2030": 0.0,
+   "5|2035": 0.0,
+   "7|2025": 0.5,
+   "7|2030": 0.5,
+   "7|2035": 0.5,
+   "9|2025": 0.0,
+   "9|2030": 0.0,
+   "9|2035": 0.0
+  },
+  "investment_cost_definition": "I(x) = sum_n sum_y sum_m (1+d)^-(y-y1) omega_m (c^S_my P_ny + c^E_my E_ny), the master investment_cost expression in its own term order (p516_lattice.GeneralLattice.investment_cost)",
+  "investment_cost_eur": 191018.169784262,
+  "lattice_instance_sha256": "1c2d23f7f21b0a058fa7107d9a8bfefd95e85ccec47987d109432ad5d5c7366f",
+  "lattice_label": "n7_y2025_p0.25_e0.5"
+ },
+ "s56_ess_params_check": {
+  "available_energy_soh_point_in_file": null,
+  "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+  "cohort_formulation_in_file": null,
+  "ess_params_file": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+  "esso_slack_penalty_in_file": null,
+  "salvage_value_in_objective_in_file": null,
+  "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+ },
+ "s56_ev_plan_capture_checklist_asserted_before_run": {
+  "production_cohort_formulations_equal_mirror": true,
+  "production_cohort_default_is_legacy": true,
+  "production_params_carry_cohort_formulation": true,
+  "production_salvage_carries_in_objective": true,
+  "production_params_carry_esso_slack_penalty": true,
+  "production_default_slack_penalty_is_1e3": true,
+  "esso_build_reads_slack_penalty": true,
+  "esso_build_reads_in_objective": true,
+  "esso_build_reads_cohort_formulation": true,
+  "esso_admm_sets_kappa": true,
+  "loop_syncs_cohort_gross_flow": true,
+  "flexibility_cost_prices_p_and_q_down": true,
+  "fn_rebuild_candidate_total_capacities": true,
+  "fn_operational_recourse_components": true,
+  "fn_admm_block_weight": true,
+  "fn_expected_market_price": true,
+  "fn_esso_ageing_model_settings": true,
+  "fn_esso_update_with_candidate": true,
+  "fn_salvage_credit_expression": true,
+  "fn_diag_esso_slacks": true,
+  "fn_diag_cohort_block_day": true,
+  "fn_diag_cohort_degradation": true,
+  "fn_lattice_investment_cost": true,
+  "fn_ev_assertion": true,
+  "priced_residual_pr_is_a_coupling_field": true,
+  "cost_breakdown_every_field_has_a_source": true,
+  "staged_investment_cost_carried_in_entry": true,
+  "uncoordinated_benchmark_not_on_the_harness_path": true,
+  "uncoordinated_benchmark_scan": {
+   "files": [
+    "p515_s44_campaign_harness.py",
+    "p515_g_g1_g4_admm_gates.py",
+    "p56a_oracle.py",
+    "p515_s44_scale_measurement.py",
+    "shared_resources_planning.py",
+    "p514_n_instrumented_cstar.py"
+   ],
+   "importing": [],
+   "note": "uncoordinated_benchmark.py builds network models without _sync_shared_ess_cohort_gross_flow (cohort follow-up report); not used by this harness -- gap logged, not fixed"
+  },
+  "cost_breakdown_fields": [
+   "investment_cost_eur",
+   "gross_operational_cost_eur",
+   "terminal_value_credit_eur",
+   "net_operational_recourse_eur",
+   "total_planning_cost_eur",
+   "flexibility_cost_eur",
+   "flexibility_cost_reactive_down_eur",
+   "flex_price_split_readback",
+   "esso_slack_totals",
+   "leak_detector",
+   "per_cohort_throughput",
+   "exit_certificate_e6",
+   "salvage_objective_kappa",
+   "priced_residual_pr"
+  ]
+ },
+ "s56_ev_injection_at_read": {
+  "hook_calls": 1,
+  "inject_counts": [
+   {
+    "n_injected": 5352,
+    "n_a5_kept": 2376
+   }
+  ],
+  "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729",
+  "assertion_post_read": {
+   "point": "post_read",
+   "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729",
+   "n_arrays_read": 7728,
+   "n_injected_checked": 5352,
+   "n_a5_checked": 2376,
+   "n_mismatches": 0,
+   "n_network_market_arrays_bad": 0,
+   "scenario_dimensions": {
+    "num_market_scenarios": 1,
+    "num_oper_scenarios": {
+     "TSO": 1,
+     "DSO5": 1,
+     "DSO7": 1,
+     "DSO9": 1
+    }
+   },
+   "combined_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+   "expected_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+   "failures": [],
+   "ok": true
+  }
+ },
+ "s56_ev_assertion_in_hook": {
+  "point": "post_read",
+  "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729",
+  "n_arrays_read": 7728,
+  "n_injected_checked": 5352,
+  "n_a5_checked": 2376,
+  "n_mismatches": 0,
+  "n_network_market_arrays_bad": 0,
+  "scenario_dimensions": {
+   "num_market_scenarios": 1,
+   "num_oper_scenarios": {
+    "TSO": 1,
+    "DSO5": 1,
+    "DSO7": 1,
+    "DSO9": 1
+   }
+  },
+  "combined_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+  "expected_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+  "failures": [],
+  "ok": true
+ },
+ "s56_hook_order": [
+  "ev_assertion",
+  "esso_settings_and_staged_write",
+  "flex_price_multiplier"
+ ],
+ "s56_ev_plan_applied_in_child": {
+  "declared": {
+   "s56_cohort_formulation": "independent_units_all_node_years",
+   "s56_terminal_value_in_objective": true,
+   "s56_esso_slack_penalty": 10000.0,
+   "s56_ev_profiles": {
+    "ev_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+    "profiles_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+    "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729"
+   }
+  },
+  "before": {
+   "cohort_formulation": "legacy_h3",
+   "salvage_value_enabled": true,
+   "salvage_value_in_objective": false,
+   "esso_slack_penalty": 1000.0
+  },
+  "in_force": {
+   "cohort_formulation": "independent_units_all_node_years",
+   "salvage_value_enabled": true,
+   "salvage_value_in_objective": true,
+   "esso_slack_penalty": 10000.0
+  },
+  "settings_ok": true,
+  "available_energy_soh_point": "end",
+  "ageing_enabled": true,
+  "staged": {
+   "written": {
+    "5": {
+     "2025": {
+      "s": 0.0,
+      "e": 0.0
+     },
+     "2030": {
+      "s": 0.0,
+      "e": 0.0
+     },
+     "2035": {
+      "s": 0.0,
+      "e": 0.0
+     }
+    },
+    "7": {
+     "2025": {
+      "s": 0.25,
+      "e": 0.5
+     },
+     "2030": {
+      "s": 0.0,
+      "e": 0.0
+     },
+     "2035": {
+      "s": 0.0,
+      "e": 0.0
+     }
+    },
+    "9": {
+     "2025": {
+      "s": 0.0,
+      "e": 0.0
+     },
+     "2030": {
+      "s": 0.0,
+      "e": 0.0
+     },
+     "2035": {
+      "s": 0.0,
+      "e": 0.0
+     }
+    }
+   },
+   "total_capacity": {
+    "5": {
+     "2025": {
+      "s": 0.0,
+      "e": 0.0
+     },
+     "2030": {
+      "s": 0.0,
+      "e": 0.0
+     },
+     "2035": {
+      "s": 0.0,
+      "e": 0.0
+     }
+    },
+    "7": {
+     "2025": {
+      "s": 0.25,
+      "e": 0.5
+     },
+     "2030": {
+      "s": 0.25,
+      "e": 0.5
+     },
+     "2035": {
+      "s": 0.25,
+      "e": 0.5
+     }
+    },
+    "9": {
+     "2025": {
+      "s": 0.0,
+      "e": 0.0
+     },
+     "2030": {
+      "s": 0.0,
+      "e": 0.0
+     },
+     "2035": {
+      "s": 0.0,
+      "e": 0.0
+     }
+    }
+   },
+   "written_equals_canonical": true
+  },
+  "probe_readback": {
+   "5": {
+    "row_inventory_ok": true,
+    "row_inventory": {
+     "inventory": {
+      "registry": true,
+      "min_active_cohorts": 1,
+      "cohort_pairs": {
+       "0|0": {
+        "energy_storage_cohort_complementarity": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 0,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 0,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 0,
+         "built": 96
+        }
+       },
+       "0|1": {
+        "energy_storage_cohort_complementarity": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 0,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 0,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 0,
+         "built": 96
+        }
+       },
+       "0|2": {
+        "energy_storage_cohort_complementarity": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 0,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 0,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 0,
+         "built": 96
+        }
+       },
+       "1|1": {
+        "energy_storage_cohort_complementarity": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 0,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 0,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 0,
+         "built": 96
+        }
+       },
+       "1|2": {
+        "energy_storage_cohort_complementarity": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 0,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 0,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 0,
+         "built": 96
+        }
+       },
+       "2|2": {
+        "energy_storage_cohort_complementarity": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 0,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 0,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 0,
+         "built": 96
+        }
+       }
+      },
+      "aggregate_circle_active": {
+       "0": 96,
+       "1": 96,
+       "2": 96
+      },
+      "aggregate_circle_built": {
+       "0": 96,
+       "1": 96,
+       "2": 96
+      },
+      "aggregate_q_active": {
+       "0": 0,
+       "1": 0,
+       "2": 0
+      },
+      "multi_years": []
+     },
+     "active_cohort_counts": {
+      "2025": 0,
+      "2030": 0,
+      "2035": 0
+     },
+     "threshold": 1,
+     "violations": [],
+     "n_violations": 0
+    },
+    "tv": {
+     "has_kappa": true,
+     "available_energy_soh_point": "end",
+     "ageing_enabled": true,
+     "objective_references_kappa": true,
+     "credit_variable_families": [],
+     "credit_is_linear": true,
+     "n_credit_terms": 0,
+     "n_expected_terms": 0,
+     "max_rel_dev_coefficients": 0.0,
+     "unexpected_variables": [],
+     "constant": 0.0,
+     "constant_expected": 0.0,
+     "constant_rel_dev": 0.0,
+     "ok": true
+    },
+    "tv_ok": true,
+    "slack_coefficients": {
+     "slack_es_pnet_down": [
+      10000.0
+     ],
+     "slack_es_pnet_up": [
+      10000.0
+     ],
+     "slack_es_qnet_down": [
+      10000.0
+     ],
+     "slack_es_qnet_up": [
+      10000.0
+     ]
+    },
+    "slack_ok": true,
+    "model_cohort_formulation": "independent_units_all_node_years"
+   },
+   "7": {
+    "row_inventory_ok": true,
+    "row_inventory": {
+     "inventory": {
+      "registry": true,
+      "min_active_cohorts": 1,
+      "cohort_pairs": {
+       "0|0": {
+        "energy_storage_cohort_complementarity": {
+         "active": 96,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 96,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 96,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 4,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 192,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 96,
+         "built": 96
+        }
+       },
+       "0|1": {
+        "energy_storage_cohort_complementarity": {
+         "active": 96,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 96,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 96,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 4,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 192,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 96,
+         "built": 96
+        }
+       },
+       "0|2": {
+        "energy_storage_cohort_complementarity": {
+         "active": 96,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 96,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 96,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 4,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 192,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 96,
+         "built": 96
+        }
+       },
+       "1|1": {
+        "energy_storage_cohort_complementarity": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 0,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 0,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 0,
+         "built": 96
+        }
+       },
+       "1|2": {
+        "energy_storage_cohort_complementarity": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 0,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 0,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 0,
+         "built": 96
+        }
+       },
+       "2|2": {
+        "energy_storage_cohort_complementarity": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 0,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 0,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 0,
+         "built": 96
+        }
+       }
+      },
+      "aggregate_circle_active": {
+       "0": 0,
+       "1": 0,
+       "2": 0
+      },
+      "aggregate_circle_built": {
+       "0": 96,
+       "1": 96,
+       "2": 96
+      },
+      "aggregate_q_active": {
+       "0": 96,
+       "1": 96,
+       "2": 96
+      },
+      "multi_years": [
+       0,
+       1,
+       2
+      ]
+     },
+     "active_cohort_counts": {
+      "2025": 1,
+      "2030": 1,
+      "2035": 1
+     },
+     "threshold": 1,
+     "violations": [],
+     "n_violations": 0
+    },
+    "tv": {
+     "has_kappa": true,
+     "available_energy_soh_point": "end",
+     "ageing_enabled": true,
+     "objective_references_kappa": true,
+     "credit_variable_families": [],
+     "credit_is_linear": true,
+     "n_credit_terms": 0,
+     "n_expected_terms": 0,
+     "max_rel_dev_coefficients": 0.0,
+     "unexpected_variables": [],
+     "constant": 0.0,
+     "constant_expected": 0.0,
+     "constant_rel_dev": 0.0,
+     "ok": true
+    },
+    "tv_ok": true,
+    "slack_coefficients": {
+     "slack_es_pnet_down": [
+      10000.0
+     ],
+     "slack_es_pnet_up": [
+      10000.0
+     ],
+     "slack_es_qnet_down": [
+      10000.0
+     ],
+     "slack_es_qnet_up": [
+      10000.0
+     ]
+    },
+    "slack_ok": true,
+    "model_cohort_formulation": "independent_units_all_node_years"
+   },
+   "9": {
+    "row_inventory_ok": true,
+    "row_inventory": {
+     "inventory": {
+      "registry": true,
+      "min_active_cohorts": 1,
+      "cohort_pairs": {
+       "0|0": {
+        "energy_storage_cohort_complementarity": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 0,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 0,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 0,
+         "built": 96
+        }
+       },
+       "0|1": {
+        "energy_storage_cohort_complementarity": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 0,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 0,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 0,
+         "built": 96
+        }
+       },
+       "0|2": {
+        "energy_storage_cohort_complementarity": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 0,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 0,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 0,
+         "built": 96
+        }
+       },
+       "1|1": {
+        "energy_storage_cohort_complementarity": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 0,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 0,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 0,
+         "built": 96
+        }
+       },
+       "1|2": {
+        "energy_storage_cohort_complementarity": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 0,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 0,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 0,
+         "built": 96
+        }
+       },
+       "2|2": {
+        "energy_storage_cohort_complementarity": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_converter": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc": {
+         "active": 0,
+         "built": 96
+        },
+        "energy_storage_cohort_soc_final": {
+         "active": 0,
+         "built": 4
+        },
+        "energy_storage_cohort_soc_window": {
+         "active": 0,
+         "built": 192
+        },
+        "energy_storage_cohort_sum_limit": {
+         "active": 0,
+         "built": 96
+        }
+       }
+      },
+      "aggregate_circle_active": {
+       "0": 96,
+       "1": 96,
+       "2": 96
+      },
+      "aggregate_circle_built": {
+       "0": 96,
+       "1": 96,
+       "2": 96
+      },
+      "aggregate_q_active": {
+       "0": 0,
+       "1": 0,
+       "2": 0
+      },
+      "multi_years": []
+     },
+     "active_cohort_counts": {
+      "2025": 0,
+      "2030": 0,
+      "2035": 0
+     },
+     "threshold": 1,
+     "violations": [],
+     "n_violations": 0
+    },
+    "tv": {
+     "has_kappa": true,
+     "available_energy_soh_point": "end",
+     "ageing_enabled": true,
+     "objective_references_kappa": true,
+     "credit_variable_families": [],
+     "credit_is_linear": true,
+     "n_credit_terms": 0,
+     "n_expected_terms": 0,
+     "max_rel_dev_coefficients": 0.0,
+     "unexpected_variables": [],
+     "constant": 0.0,
+     "constant_expected": 0.0,
+     "constant_rel_dev": 0.0,
+     "ok": true
+    },
+    "tv_ok": true,
+    "slack_coefficients": {
+     "slack_es_pnet_down": [
+      10000.0
+     ],
+     "slack_es_pnet_up": [
+      10000.0
+     ],
+     "slack_es_qnet_down": [
+      10000.0
+     ],
+     "slack_es_qnet_up": [
+      10000.0
+     ]
+    },
+    "slack_ok": true,
+    "model_cohort_formulation": "independent_units_all_node_years"
+   }
+  },
+  "floor_rows_identical_to_precheck": true,
+  "all_ok": true
+ },
+ "s56_cost_breakdown": {
+  "status": "written",
+  "path": "data/SRP1/Results/P515S56/phase1x_ev_v1/launches/launch_003/evals/b208064d83583776_n7_y2025_p0_25_e0_5__exit__ev_1x/s56_cost_breakdown.json",
+  "sha256": "b03d44cf163de1cbb751a66d1809c2a7066907a6144ebcd4f43c99a238a5bfa6",
+  "checks": {
+   "flex_split_reconciles_with_total_flex_cost": true,
+   "flex_split_readback_ok": true,
+   "kappa_equals_a_over_sigma_where_built": true,
+   "kappa_built_iff_tv_declared": true,
+   "leak_within_ceiling": true
+  },
+  "harness_checks_ok": true,
+  "investment_cost_eur": 191018.169784262,
+  "gross_operational_cost_eur": 665096310.2484053,
+  "terminal_value_credit_eur": -5.345893343086111e-35,
+  "net_operational_recourse_eur": 665096310.2484053,
+  "total_planning_cost_eur": 665287328.4181896,
+  "flexibility_cost_reactive_down_eur": -546.6909184470884,
+  "flexibility_active_down_eur": {
+   "TSO": 0.0,
+   "DSO": 198782771.77849188
+  },
+  "esso_slack_totals": {
+   "p": {
+    "sum": -1.7279842908993213e-05,
+    "max_abs": -9.999908808602916e-09,
+    "n_nodes_with_pair": 3,
+    "priced_in_esso_objective": -0.17279842908993212
+   },
+   "q": {
+    "sum": -5.759947636363629e-06,
+    "max_abs": 0.0,
+    "n_nodes_with_pair": 3,
+    "priced_in_esso_objective": -0.05759947636363629
+   }
+  },
+  "leak_detector": {
+   "L_weighted_mwh": 0.0,
+   "priced_eur": 0.0,
+   "priced_loss_eur": 0.0,
+   "ceiling_applies_to": "priced_loss_eur",
+   "max_simultaneous_mw": 0.0,
+   "ceiling_eur": 25.0,
+   "within_ceiling": true
+  },
+  "exit_certificate_e6_summary": {
+   "closure_residual_max_abs_mwh": 0.0,
+   "energy_balance_residual_max_mwh": 8.326672684688674e-17,
+   "window_margin_min_mwh": -9.964861366618116e-09,
+   "circle_margin_min_mva": -1.9857467725703515e-08,
+   "energy_accounting_residual_max_abs_mwh": 1.1102230246251565e-16,
+   "within_cohort_simultaneity_max_mwh": 0.0,
+   "inter_cohort_gross_transfer_max_mwh": 0.0,
+   "n_block_days": 12,
+   "soc_sources": [
+    "variable"
+   ],
+   "q_slack_max_abs_mvar": 0.0,
+   "q_slack_sum_mvar": -5.759947636363629e-06,
+   "p_slack_max_abs_mw": -9.999908808602916e-09,
+   "p_slack_sum_mw": -1.7279842908993213e-05
+  },
+  "priced_residual_pr": {
+   "value_terminal_cycle": null,
+   "label": "mixed-convention reporting field, read by no acceptance test",
+   "note": "present only on entries declaring the per-scenario coupling"
+  }
+ },
+ "priced_residual_pr_label": "mixed-convention reporting field, read by no acceptance test"
+}

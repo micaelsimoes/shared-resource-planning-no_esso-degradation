@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s56_ev_harness_tests.py", line 557, in nokey
+    specs = {lab: _spec_norm(_freeze(mod, os.path.join(scratch, f'spec_{tag}_{lab}'), f's56evh_c3_{tag}',
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s56_ev_harness_tests.py", line 557, in <dictcomp>
+    specs = {lab: _spec_norm(_freeze(mod, os.path.join(scratch, f'spec_{tag}_{lab}'), f's56evh_c3_{tag}',
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s56_ev_harness_tests.py", line 489, in _freeze
+    _p, _d, spec = mod.freeze_campaign_spec(root, cid, candidates, cfg, 3, 1, ['zero-solve check'],
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/ev_harness_v1/nokey/scratch/harness_pre.py", line 2411, in freeze_campaign_spec
+    raise ValueError(f'duplicate evaluation label or key (candidate x configuration): {label} / {ekey[:16]}')
+ValueError: duplicate evaluation label or key (candidate x configuration): unit_pinned / db77e1549af855bc

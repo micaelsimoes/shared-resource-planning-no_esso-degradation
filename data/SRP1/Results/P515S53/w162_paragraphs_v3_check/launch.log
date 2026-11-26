@@ -1,0 +1,44 @@
+09:50:17 [W162] script p515_s53_w162_paragraphs_v3_check.py sha256 862c74a20954e7bb8381aa78a2256d2d74f635e56e19cbe06725a4385e60a5ac committed clean True; 50 inputs committed clean; paragraphs_v3 62d26e27, frozen JSON 590088fe, v6 spec 96c23404 verified
+09:50:18 [W162] tokens: 154 (148 in scope, 6 non-manuscript); every token assigned True (unassigned 0, stale 0)
+09:50:18 [W162] W161 carry-over: 164 re-derived, same counterpart as committed True; verbatim 28, rewritten 15, not in v3 121
+09:50:18 [W162] checks in v3: 116 -- match 111, MISMATCH 2 ['N60', 'N64'], approximate 2 ['N36', 'N63'], no table counterpart 1; new 73; X {'X1': 'match', 'X2': 'match', 'X3': 'match', 'X4': 'match'}
+09:50:18 [W162]   N60 MISMATCH: written '10⁻⁴', counterpart 'DSO 1e-04, TSO 0.0005' -- holds for the distribution solves only; the transmission solves were at 5 × 10⁻⁴ before the tail (REVISION_CONTEXT Addendum 48 entry says the same)
+09:50:18 [W162]   N64 MISMATCH: written '≈ 7.9', counterpart '7.8' -- -7,848.08 € = 7.8481 k€, which is 7.8 at one decimal; 7.9 is the rounding of the rounded 7.85 (TASKS W109 line, Addenda 56)
+09:50:18 [W162]   N36 approximate: written '3', counterpart '3.36' -- the record states it as an estimate for a half-life above the window, not a measured drift; "measured" is the prose's word
+09:50:18 [W162]   N63 approximate: written '≈ 1.1 × 10⁻⁶ relative, with the same sign', counterpart 'c_star -1.200e-06, n7_4h_e1 -1.036e-06, x0 -1.116e-06; mean -1.117e-06' -- range 1.04–1.20 × 10⁻⁶ (one decimal: 1.0 / 1.1 / 1.2), mean 1.12; all negative
+09:50:18 [W162]   UNCHECKED line 1 '6' [non-manuscript] title "Step 6" (stage label)
+09:50:18 [W162]   UNCHECKED line 22 '1' [enumerator] list item 1
+09:50:18 [W162]   UNCHECKED line 24 '2' [enumerator] list item 2
+09:50:18 [W162]   UNCHECKED line 26 '3' [enumerator] list item 3
+09:50:18 [W162]   UNCHECKED line 28 '4' [enumerator] list item 4
+09:50:18 [W162]   UNCHECKED line 29 '5' [enumerator] list item 5
+09:50:18 [W162]   UNCHECKED line 54 'one' [not a figure] pronoun ("An evaluation without one")
+09:50:18 [W162]   UNCHECKED line 70 '0' [notation] λ ∈ [0, c_flex]: the lower end of the set-valued interface price; no table carries it
+09:50:18 [W162]   UNCHECKED line 74 'one' [not a figure] "they share one fingerprint": the three bullets that follow are each checked (L1-L6)
+09:50:18 [W162]   UNCHECKED line 87 '10⁻⁵' [NO SOURCE FOUND] "≈ 10⁻⁵ of renewable energy": Addendum 56 states it; no record carries the renewable-energy denominator (searched w109_tso_curtailment_look.json, p515_s53_w109 script, TASKS.md, PLANNER_BRIEF Addenda 55-56)
+09:50:18 [W162]   UNCHECKED line 103 'one' [NO SOURCE FOUND] "one machine": no evaluation record carries a host identifier (launch.json keys: command, cwd, thread caps, pids, utc, spec sha, label, key; W159 uname is a read at 2026-10-06)
+09:50:18 [W162]   UNCHECKED line 120 'Two' [structural] "Two effects": the count of the two bullets that follow (each checked: N60-N65)
+09:50:18 [W162]   UNCHECKED line 131 '1' [enumerator] sentence 1
+09:50:18 [W162]   UNCHECKED line 133 '2' [enumerator] sentence 2
+09:50:18 [W162]   UNCHECKED line 136 '3' [enumerator] sentence 3
+09:50:18 [W162]   UNCHECKED line 138 '4' [enumerator] sentence 4
+09:50:18 [W162]   D1: consistent
+09:50:18 [W162]   D2: consistent
+09:50:18 [W162]   D3: consistent
+09:50:18 [W162]   D4: OBSERVATION: the code requires a successful solve, not the 10× clean classification
+09:50:18 [W162]   D5: INCONSISTENT with the code: the veto covers the certifying window; 4 certificates read a non-clean cycle outside it
+09:50:18 [W162]   D6: figures match s (N4, N5); ANCHOR differs: s is measured from the old certificate N = k0 + 9, not from the first residual pass k0
+09:50:18 [W162]   reference x0: s +14,970.62 (Q(end) − Q(N 132)), Q(end) − Q(k0 123) -16,025.26
+09:50:18 [W162]   reference n7_4h_e1: s +20,806.32 (Q(end) − Q(N 112)), Q(end) − Q(k0 103) -1,440.72
+09:50:18 [W162]   reference c_star: s -4,378.88 (Q(end) − Q(N 87)), Q(end) − Q(k0 78) -78,572.26
+09:50:18 [W162] check paragraphs_v3_sha_pinned: True
+09:50:18 [W162] check frozen_json_unchanged: True
+09:50:18 [W162] check w161_counterparts_rederived_equal_to_committed: True
+09:50:18 [W162] check w161_count_164: True
+09:50:18 [W162] check w161_evaluator_self_test_on_v1: True
+09:50:18 [W162] check w162_evaluator_self_test_on_v2_values: True
+09:50:18 [W162] check every_token_assigned_no_stale_assignment: True
+09:50:18 [W162] check every_v3_fragment_found: True
+09:50:18 [W162] check every_carried_check_names_its_tokens: True
+09:50:18 [W162] wrote data/SRP1/Results/P515S53/w162_paragraphs_v3_check/w162_paragraphs_v3_figure_check.json 3e14aa7c, data/SRP1/Results/P515S53/w162_paragraphs_v3_check/w162_paragraphs_v3_figure_check.md 9c583da6, data/SRP1/Results/P515S53/w162_paragraphs_v3_check/manifest_sha256.json 61fabd72
+09:50:18 [W162] guards [('w162_paragraphs_v3_check', 0, 0, []), ('w161_paragraphs_v2', 0, 0, []), ('w160_step6_freeze_export', 0, 0, []), ('w157_step6_tables', 0, 0, []), ('w145_banded_fit', 0, 0, []), ('w142_checks', 0, 0, []), ('w139_checks', 0, 0, []), ('w137_checks', 0, 0, []), ('w132_checks', 0, 0, []), ('w118_checks', 0, 0, []), ('w105_checks_imported', 0, 0, []), ('w101_checks_imported', 0, 0, []), ('w98_checks_imported', 0, 0, []), ('w112_imported', 0, 0, []), ('w141_swing_variants', 0, 0, []), ('w139_v5_from_records', 0, 0, []), ('w131_imported', 0, 0, []), ('w137_ra_imported', 0, 0, []), ('alpha_row_launcher', 0, 0, []), ('w86_launcher', 0, 0, []), ('w87', 0, 0, []), ('w88', 0, 0, []), ('w89_step1', 0, 0, []), ('w89_3x3_launcher', 0, 0, []), ('w90_3x3_parent', 0, 0, []), ('w98_parent', 0, 0, []), ('w101_parent', 0, 0, []), ('w118_parent', 0, 0, []), ('w132_parent', 0, 0, []), ('w137_parent', 0, 0, []), ('w139_parent', 0, 0, []), ('w142_parent', 0, 0, [])]; pickle ok True; exit 0; wall 4.5 s

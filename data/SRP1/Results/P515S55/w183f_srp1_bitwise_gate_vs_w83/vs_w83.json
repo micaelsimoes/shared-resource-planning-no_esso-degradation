@@ -1,0 +1,661 @@
+{
+ "schema": "p515_s55_w183g_a_vs_w83_v1",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 85 ruling 1 (b'); W183g order item (a)",
+  "Planner task W183g (a)"
+ ],
+ "recorded_prediction": "0 genuine diffs on all 12 files; provenance diffs <= 3, all under rule_eleven_checklist (w10_arm, w183a_nrf_option, w84_convergence_depth_tail)",
+ "timestamp_utc": "2026-10-25T22:29:05.555520+00:00",
+ "git_head_at_run": "4c0d8e1db9a070dd231e0d00dc3c5e1f4777019b",
+ "script": "p515_s55_w183g_a_vs_w83.py",
+ "script_sha256": "38dedf867c081700d47f5a01a1999a43e94906608e05321422c3fdb250d9af8e",
+ "imported_sha256": {
+  "p515_s53_srp1_bitwise_gate.py": "b63b1fb94ec305a782cb139d6e9c42be8b7a49b2ef78cb0d174f09e3d53f6766",
+  "p515_s52_srp1_bitwise_gate.py": "7bd3009ad4c263159ec84b929c921b5cf4f2d702c71154963754b3a906f28545",
+  "p515_s45_snapshot_off_two_cycle_gate.py": "f5e103577a7dc0c465144984e28b50ab4b1efc0405c3c23f2ab3afc7f917f4a2",
+  "p515_s40_clone_capture_preflight.py": "30e33d0a7803c2a958bbf7da617dba277a8fe15888078e37aa451feba09a3652",
+  "p515_s43_aa_flagoff_gate.py": "22ef58b84bdd109d39e2cbf78d2e69e7302ccd0aadae2c90dcb9f6341d9472d3",
+  "p515_s44_tie_classifier.py": "b8ecc971ef362cecc0544471421bf3953df3149fb90e8cc044cc7b2cd2e2d6f9",
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab"
+ },
+ "nothing_re_run": "no solve; the gate is not re-run; both committed arms are read only",
+ "instance": {
+  "candidate": "C* 0.96875 MVA / 3.875 MWh at nodes 5, 7, 9, investment year 2025",
+  "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+ },
+ "objective_convention": "gross_operational_cost (settlement-excluded gross cost), as in the gate",
+ "new_arm": {
+  "gate_dir": "data/SRP1/Results/P515S55/w183f_srp1_bitwise_gate",
+  "arm_name": "s55w183fgate",
+  "commit": "c5b292dd",
+  "check": {
+   "gate_dir": "data/SRP1/Results/P515S55/w183f_srp1_bitwise_gate",
+   "manifests_pinned": {
+    "manifest_sha256.json": "140c33e1a5cfc73cd05c121f10a0f8d68837dafa002f08f542cadef0dd2f17a1",
+    "w51_manifest_sha256.json": "a6c783394501190525ca2a91d0f281e5b3dd7deef91b9aeef8d2a3ffcaa63638",
+    "w183f_manifest_sha256.json": "e7cd233e812998949def55b8f175389e5a546eb1d92783271c50515837f26943"
+   },
+   "file_entries_checked": 98,
+   "files_on_disk": 36,
+   "unlisted_files": [],
+   "git_clean": true
+  }
+ },
+ "reference_arm": {
+  "gate_dir": "data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate",
+  "arm_dir": "data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate/arm",
+  "manifest": "data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate/manifest_sha256.json",
+  "manifest_sha256": "f4d3f7aa5fa2458cd664ad3a09dba394bb1c8164f7b62302c1926ca0df1b4d03",
+  "gate_json": "data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate/gate.json",
+  "arm_name": "s53w83tailgate",
+  "commit": "eb8cf81f (W83 step 5, tight tail enabled; post-W64 70950e8c, pre-W183)",
+  "check": {
+   "gate_dir": "data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate",
+   "manifests_pinned": {
+    "manifest_sha256.json": "f4d3f7aa5fa2458cd664ad3a09dba394bb1c8164f7b62302c1926ca0df1b4d03",
+    "w51_manifest_sha256.json": "8754894d0333ceac84ce5f98345b965722263454df13d0bedf721e57b8f9f81b",
+    "w83_manifest_sha256.json": "a794ce17e16b4d426858272665eec2aa376b0ca326fb29d5861c7abe9610a49f"
+   },
+   "file_entries_checked": 100,
+   "files_on_disk": 38,
+   "unlisted_files": [],
+   "git_clean": true
+  },
+  "gate_pin_check_problems": []
+ },
+ "label_mapping": {
+  "comparator 'w39' / 'legacy'": "reference = W83 arm",
+  "comparator 'w48' / 'lightweight'": "new = W183f arm"
+ },
+ "comparator_call": "S52G.compare_against_w39_arm(<W183f gate dir>) with S52G.W39_ARM = W83 arm record",
+ "per_file_counts": {
+  "g_s39_D.json": {
+   "provenance": 4,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "boyd_terminal.json": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "component_levels_terminal.json": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "interface_settlement_detail_s31c.json": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "interface_voltage_terminal.json": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "recourse_jump_sidecar_baseline.jsonl": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "ess_entry_stride_baseline.jsonl": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "soh_floor_sidecar_baseline.jsonl": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "pf_entry_stride_s39_D.jsonl": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "ess_exempt_until_state_s39_D.jsonl": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "aa_per_cycle.jsonl": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "per_cycle_record.jsonl": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  }
+ },
+ "totals": {
+  "provenance": 4,
+  "tie_order": 0,
+  "genuine": 0
+ },
+ "every_diff_by_file_class_key": [
+  {
+   "file": "g_s39_D.json",
+   "class": "provenance",
+   "field": "g_s39_D.json.rule_eleven_checklist.w10_arm",
+   "reference_w83": "s53w83tailgate",
+   "new_w183f": "s55w183fgate",
+   "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+  },
+  {
+   "file": "g_s39_D.json",
+   "class": "provenance",
+   "field": "g_s39_D.json.rule_eleven_checklist.w183a_nrf_option",
+   "reference_w83": "<MISSING>",
+   "new_w183f": {
+    "nrf_option": null,
+    "label": null,
+    "production_support": "hasattr(network_parameters.NetworkParameters(), 'no_reverse_flow') is True",
+    "before": {
+     "TSO": false,
+     "DSO5": false,
+     "DSO7": false,
+     "DSO9": false
+    },
+    "in_force": {
+     "TSO": false,
+     "DSO5": false,
+     "DSO7": false,
+     "DSO9": false
+    },
+    "checks": {
+     "every_network_flag_is_off": true
+    }
+   },
+   "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+  },
+  {
+   "file": "g_s39_D.json",
+   "class": "provenance",
+   "field": "g_s39_D.json.rule_eleven_checklist.w83_convergence_depth_tail",
+   "reference_w83": {
+    "before": {
+     "enabled": false,
+     "compl_inf_tol": 1e-06
+    },
+    "declared": {
+     "enabled": true,
+     "compl_inf_tol": 1e-06
+    },
+    "after": {
+     "enabled": true,
+     "compl_inf_tol": 1e-06
+    },
+    "enabled_helper": true,
+    "persistent_workers_enabled": false,
+    "parallel_execution": false,
+    "ok": true
+   },
+   "new_w183f": "<MISSING>",
+   "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+  },
+  {
+   "file": "g_s39_D.json",
+   "class": "provenance",
+   "field": "g_s39_D.json.rule_eleven_checklist.w84_convergence_depth_tail",
+   "reference_w83": "<MISSING>",
+   "new_w183f": {
+    "declared": null,
+    "source": "not declared -> production default (ADMMParameters.convergence_depth_tail)",
+    "before": {
+     "enabled": false,
+     "compl_inf_tol": 1e-06
+    },
+    "after": {
+     "enabled": false,
+     "compl_inf_tol": 1e-06
+    },
+    "enabled_in_force": false,
+    "expected_enabled": false,
+    "dict_in_force_equals_declaration": null,
+    "ok": true
+   },
+   "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+  }
+ ],
+ "outcome_vs_prediction": {
+  "n_files_compared": 12,
+  "all_12_files_present": true,
+  "genuine_total": 0,
+  "tie_order_total": 0,
+  "provenance_total": 4,
+  "zero_genuine_on_all_12_files": true,
+  "provenance_at_most_3": false,
+  "provenance_all_under_rule_eleven_checklist": true,
+  "provenance_keys": [
+   "w10_arm",
+   "w183a_nrf_option",
+   "w83_convergence_depth_tail",
+   "w84_convergence_depth_tail"
+  ],
+  "provenance_keys_within_predicted_set": false,
+  "prediction_part_genuine_held": true,
+  "prediction_part_provenance_held": false,
+  "prediction_held": false
+ },
+ "comparison": {
+  "reference_arm": {
+   "gate_dir": "data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate",
+   "arm_dir": "data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate/arm",
+   "manifest": "data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate/manifest_sha256.json",
+   "manifest_sha256": "f4d3f7aa5fa2458cd664ad3a09dba394bb1c8164f7b62302c1926ca0df1b4d03",
+   "gate_json": "data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate/gate.json",
+   "arm_name": "s53w83tailgate",
+   "commit": "eb8cf81f (W83 step 5, tight tail enabled; post-W64 70950e8c, pre-W183)"
+  },
+  "comparator": "W10.classify (BY IMPORT): CP._diff bitwise, CP.EXCLUDE_KEY_NAMES / EXCLUDE_DOTTED_SUFFIXES, rule_eleven_checklist subtree = provenance, arm-path tokens normalized, recourse-jump tie order reclassified by TC; everything else genuine. CP._diff's 'legacy' = the W39 arm, 'lightweight' = this arm",
+  "token_groups": [
+   [
+    "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S55/w183f_srp1_bitwise_gate/arm",
+    "data/SRP1/Results/P515S55/w183f_srp1_bitwise_gate/arm",
+    "p515s44_s45_w10_snapoff_s55w183fgate_578636daa6d6360d_run",
+    "p515s44_s45_w10_snapoff_s55w183fgate_578636daa6d6360d_precheck",
+    "s55w183fgate"
+   ],
+   [
+    "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate/arm",
+    "data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate/arm",
+    "p515s44_s45_w10_snapoff_s53w83tailgate_578636daa6d6360d_run",
+    "p515s44_s45_w10_snapoff_s53w83tailgate_578636daa6d6360d_precheck",
+    "s53w83tailgate"
+   ]
+  ],
+  "files_compared": [
+   "g_s39_D.json",
+   "boyd_terminal.json",
+   "component_levels_terminal.json",
+   "interface_settlement_detail_s31c.json",
+   "interface_voltage_terminal.json",
+   "recourse_jump_sidecar_baseline.jsonl",
+   "ess_entry_stride_baseline.jsonl",
+   "soh_floor_sidecar_baseline.jsonl",
+   "pf_entry_stride_s39_D.jsonl",
+   "ess_exempt_until_state_s39_D.jsonl",
+   "aa_per_cycle.jsonl",
+   "per_cycle_record.jsonl"
+  ],
+  "per_file": {
+   "g_s39_D.json": {
+    "n_raw_diffs": 4,
+    "fg_buckets_raw_counts": {
+     "provenance": 4,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 4,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.w10_arm",
+      "legacy": "s53w83tailgate",
+      "lightweight": "s55w183fgate",
+      "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+     },
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.w183a_nrf_option",
+      "legacy": "<MISSING>",
+      "lightweight": {
+       "nrf_option": null,
+       "label": null,
+       "production_support": "hasattr(network_parameters.NetworkParameters(), 'no_reverse_flow') is True",
+       "before": {
+        "TSO": false,
+        "DSO5": false,
+        "DSO7": false,
+        "DSO9": false
+       },
+       "in_force": {
+        "TSO": false,
+        "DSO5": false,
+        "DSO7": false,
+        "DSO9": false
+       },
+       "checks": {
+        "every_network_flag_is_off": true
+       }
+      },
+      "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+     },
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.w83_convergence_depth_tail",
+      "legacy": {
+       "before": {
+        "enabled": false,
+        "compl_inf_tol": 1e-06
+       },
+       "declared": {
+        "enabled": true,
+        "compl_inf_tol": 1e-06
+       },
+       "after": {
+        "enabled": true,
+        "compl_inf_tol": 1e-06
+       },
+       "enabled_helper": true,
+       "persistent_workers_enabled": false,
+       "parallel_execution": false,
+       "ok": true
+      },
+      "lightweight": "<MISSING>",
+      "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+     },
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.w84_convergence_depth_tail",
+      "legacy": "<MISSING>",
+      "lightweight": {
+       "declared": null,
+       "source": "not declared -> production default (ADMMParameters.convergence_depth_tail)",
+       "before": {
+        "enabled": false,
+        "compl_inf_tol": 1e-06
+       },
+       "after": {
+        "enabled": false,
+        "compl_inf_tol": 1e-06
+       },
+       "enabled_in_force": false,
+       "expected_enabled": false,
+       "dict_in_force_equals_declaration": null,
+       "ok": true
+      },
+      "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+     }
+    ],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "boyd_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "component_levels_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "interface_settlement_detail_s31c.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "interface_voltage_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "recourse_jump_sidecar_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "ess_entry_stride_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "soh_floor_sidecar_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "pf_entry_stride_s39_D.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "ess_exempt_until_state_s39_D.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "aa_per_cycle.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "per_cycle_record.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   }
+  },
+  "totals": {
+   "provenance": 4,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "all_files_present": true,
+  "zero_genuine_diffs": true,
+  "esso_models_pickle_sha256_informational": {
+   "w39": "6665c4361f76034bcbfb8b5b96f696465b78d37f5c2118b0362f7ce4ebacd526",
+   "w48": "18510da9c18841f0846d0e31c29910fd0cb430925fe1f836fc13915567cee941",
+   "sha256_equal": false
+  }
+ },
+ "guards": {
+  "zero_solve_guard": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "imported_chain_W10_GUARD": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "pickle": {
+   "load": 0,
+   "loads": 0
+  },
+  "model_build": {
+   "ConcreteModel.__init__": 0
+  },
+  "all_zero": true
+ },
+ "wall_clock_s": 0.23474574089050293
+}

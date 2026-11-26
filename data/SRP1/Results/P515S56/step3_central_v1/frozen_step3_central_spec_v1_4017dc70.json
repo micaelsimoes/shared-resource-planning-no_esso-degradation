@@ -1,0 +1,230 @@
+{
+ "audit_equivalence_with_step4": {
+  "F1_plus_V1_alpha0": "same problem as this merged model, up to the known relaxations below. The scenario-common commitment Pbar/Qbar (expected_interface_pf_p/q) is a defined Var (row: Pbar = sum_s omega_s P_s on each side); at alpha = 0 row 18 is not constructed (model_construction_helpers.add_scenario_commitment_terms: premium_alpha > 0 required), so Pbar enters no cost; its only other use is the expectation consensus channel, implied by per-scenario consensus. The TSO's per-scenario interface_delta copies are freed (shared_resources_planning._wire_per_scenario_interface_coupling), so the TN realized exchange is not tied to the commitment. Under 'per_scenario' voltage mode the pin is not constructed on either side. The ADMM path sets interface_settlement_weight 1 on both sides; at per-scenario consensus the TSO (-pi_s P^T_s) and DSO (+pi_s P^D_s) terms cancel scenario by scenario with the same omega_s, and the step-1 Q convention excludes the settlement in full; the merged model carries weight 0 and no interface",
+  "F1_plus_V2_pin_alpha0": "NOT the same problem: the voltage pin (scenario_voltage_pin, weight PENALTY_SCENARIO_DEVIATION = 9e4, sum_s omega_s (V_s - Vbar)^2) is constructed on the TSO and DSO blocks and couples scenarios; this merged model is a relaxation of it (pin excluded from reported Q)",
+  "known_relaxations": "the merge drops the DN reference generators (their P/Q limits), joins DN branches to the TN bus (DN reference-node voltage limits replaced by the TN bus limits; the ADMM TSO fixes the voltage slacks at ADN buses to 0), and has no +-R box on the TSO interface_delta about its fixed pc; all reported, none enforced",
+  "pinned_legacy_alpha0": "NOT the same problem: TSO interface_delta scenario-free (Addendum 38 (A)), pin on"
+ },
+ "authority": [
+  "S56_PLAN_v3.md section 7, row 3 (centralized comparator, x0, alpha = 0, two blocks; merged = sum omega single-scenario); existing authorization",
+  "TASKS.md, S56 section: 'Step 3 centralized comparator ... active'",
+  "Planner task 2026-11-23 (audit the interrupted script, trial, freeze, run, report); predictions P1-P5 recorded verbatim below",
+  "precedent: P5_15_CENTRAL_CHECK_REPORT.md, spec 0e00f6a8, harness 3bb5cdf6 (merge, load fixing, objective alignment, solver options, recovery off)"
+ ],
+ "block_choice": {
+  "result": {
+   "fewest": "2025|Winter",
+   "most": "2035|Summer",
+   "summary": {
+    "2025|Autumn": {
+     "max_surplus_mw": -26.454552470310887,
+     "surplus_operation_scenario_hours": 0,
+     "surplus_scenario_hours": 0,
+     "weighted_positive_surplus_mwh": 0.0
+    },
+    "2025|Spring": {
+     "max_surplus_mw": -0.6018874773467928,
+     "surplus_operation_scenario_hours": 0,
+     "surplus_scenario_hours": 0,
+     "weighted_positive_surplus_mwh": 0.0
+    },
+    "2025|Summer": {
+     "max_surplus_mw": 24.342703792201462,
+     "surplus_operation_scenario_hours": 15,
+     "surplus_scenario_hours": 45,
+     "weighted_positive_surplus_mwh": 47.401300269497675
+    },
+    "2025|Winter": {
+     "max_surplus_mw": -28.987036901862695,
+     "surplus_operation_scenario_hours": 0,
+     "surplus_scenario_hours": 0,
+     "weighted_positive_surplus_mwh": 0.0
+    },
+    "2030|Autumn": {
+     "max_surplus_mw": 15.928664042358122,
+     "surplus_operation_scenario_hours": 14,
+     "surplus_scenario_hours": 42,
+     "weighted_positive_surplus_mwh": 37.496534979318525
+    },
+    "2030|Spring": {
+     "max_surplus_mw": 56.11582439252146,
+     "surplus_operation_scenario_hours": 13,
+     "surplus_scenario_hours": 39,
+     "weighted_positive_surplus_mwh": 149.27230379015114
+    },
+    "2030|Summer": {
+     "max_surplus_mw": 79.5748277242709,
+     "surplus_operation_scenario_hours": 24,
+     "surplus_scenario_hours": 72,
+     "weighted_positive_surplus_mwh": 394.01373034329833
+    },
+    "2030|Winter": {
+     "max_surplus_mw": 7.350788182185852,
+     "surplus_operation_scenario_hours": 7,
+     "surplus_scenario_hours": 21,
+     "weighted_positive_surplus_mwh": 11.23824567903504
+    },
+    "2035|Autumn": {
+     "max_surplus_mw": 47.99361539831051,
+     "surplus_operation_scenario_hours": 21,
+     "surplus_scenario_hours": 63,
+     "weighted_positive_surplus_mwh": 146.68646093207224
+    },
+    "2035|Spring": {
+     "max_surplus_mw": 110.49739758292031,
+     "surplus_operation_scenario_hours": 26,
+     "surplus_scenario_hours": 78,
+     "weighted_positive_surplus_mwh": 524.2497303000794
+    },
+    "2035|Summer": {
+     "max_surplus_mw": 157.6965537861392,
+     "surplus_operation_scenario_hours": 28,
+     "surplus_scenario_hours": 84,
+     "weighted_positive_surplus_mwh": 982.9925760468848
+    },
+    "2035|Winter": {
+     "max_surplus_mw": 31.93448931417663,
+     "surplus_operation_scenario_hours": 20,
+     "surplus_scenario_hours": 60,
+     "weighted_positive_surplus_mwh": 82.67921682231996
+    }
+   }
+  },
+  "rule": "zero-solve proxy, computed before any solve: per (year, day) block and (operation scenario, hour), system surplus S = (TN RES available + DN RES available) - (TN non-ADN load + DN load), MW, at demand (flexibility and losses ignored); RES available = pg_avail_init over curtaillable generators with status on (DN reference generators excluded). fewest = min over blocks of (#scenario-hours with S > 0 [x n_m], omega_o-weighted positive surplus MWh, max S, year order, day order); most = the same with the first three keys negated. Premise checked: every TN conventional generator has P_min = 0, so S > 0 means some RES must be curtailed",
+  "trial": {
+   "outcome": "zero solves (guard 0/0), 15/15 phase-A checks pass on both blocks; fewest 2025|Winter, most 2035|Summer",
+   "results": "data/SRP1/Results/P515S56/step3_central_v1/trial_v1/central_ms_x0_results.json",
+   "results_sha256": "e9e9b580838c263df2da416bab3e7f1a2086a82ead3df584514aace1cf40c431",
+   "spec_draft": "data/SRP1/Results/P515S56/step3_central_v1/trial_spec_draft_v0.json",
+   "spec_draft_sha256": "9e5dd06edf7310be0a33cb961840315b046822d6dbe8dfe0bba45fc4850006b4",
+   "stderr_bytes": 0,
+   "stdout": "data/SRP1/Results/P515S56/step3_central_v1/trial_v1_stdout.log"
+  }
+ },
+ "failure_policy": "every solve reported, including failures; no re-run, no tuning, no other settings; a P4 failure is a recorded local-optimum difference, not a stop",
+ "guards": {
+  "SolveProfileGuard": "permitted call site p515_s56_central_ms_x0.py:_solve_one; exactly 22 solves and 22 process launches (0 when refused before any solve, and in --trial)",
+  "expected_solves": 22,
+  "output": "data/SRP1/Results/P515S56/step3_central_v1/run_v1 (must not exist)",
+  "pickle": "pickle.load / pickle.loads blocked (0 calls)",
+  "run": "attached, alone, stdout and stderr captured to files beside the output directory"
+ },
+ "harness": "p515_s56_central_ms_x0.py",
+ "harness_audit_fixes_2026_11_23": [
+  "solution_loaded = production solver_result_succeeded(result), not result is not None (a failed solve returns a result without loading it; the S56 G harness defect)",
+  "predictions re-written to the Planner task P1-P5 (the interrupted draft carried an unrelated P1-P4 incl. a memory limit); guards verified before the predictions are evaluated (P1 reads them)",
+  "per-solve peak RSS: sampled IPOPT child (0.1 s) beside the running-max ru_maxrss",
+  "phase-A checks added: solver_params.verbose off (production exit()s after a failed solve otherwise); block-choice premise P_min = 0",
+  "reported: block weight per block; relaxation margins against the dropped DN reference-generator limits, DN reference-node voltage limits and the interface rating; instance checksum in results and manifest",
+  "the mapped-point evaluation before the warm solve is capture-only (a None-valued Var cannot abort the declared solve set)"
+ ],
+ "harness_sha256": "e2205575bbe7e95c3d216ad2016ffae79859df93027ae53c4904b01d06480f4f",
+ "instance": {
+  "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+  "label": "s56_srp1grid_3x3",
+  "plan": "x = 0 (no storage; combine_networks empties the shared ESS)",
+  "reader": "p515_s44_scale_measurement.read_planning_from_derived_case",
+  "scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+  "scenarios": "3 market x 3 operation, omega_s = p_m * p_o"
+ },
+ "model": {
+  "alpha_pin_settlement": "alpha = 0: row 18 not constructed (add_scenario_commitment_terms is not called; row18_* absent); no voltage pin (scenario_voltage_pin absent); interface_settlement_weight 0 and the merged model has no ADN interface (adn_nodes empty), so the settlement is identically 0",
+  "decoupling": "with these settings the merged problem is separable by scenario: C_merged(block) = sum_s omega_s C_s at any common optimum",
+  "loads": "every pc, qc Var fixed at load.pd / load.qd (S55 ruling 1)",
+  "merge": "centralized_coordination.combine_networks(TN, DNs); day network merged.network[y][d]; Network.build_model(params), params = deepcopy(merged.params) with the solver overrides below",
+  "single_scenario_models": "deepcopy of the merged day network sliced to scenario (s_m, s_o): cost_energy_p and cost_flex row s_m; every element array of shape (n_o, T) row s_o; probabilities [1.0]; num_oper_scenarios 1; same build / load fixing / alignment"
+ },
+ "objective_alignment": {
+  "set": {
+   "cost_load_curtailment": 300.0,
+   "penalty_gen_curtailment": 0.0,
+   "penalty_shared_ess_usage": 0.0
+  },
+  "source": "the values the ADMM path sets on every TSO and DSO block: shared_resources_planning._prepare_transmission_objectives_for_admm / _prepare_distribution_objectives_for_admm (penalty_shared_ess_usage 0, penalty_gen_curtailment 0, cost_load_curtailment COST_CONSUMPTION_CURTAILMENT = 300); interface_settlement_weight is NOT set (stays 0; see audit)"
+ },
+ "objective_convention": "gross: model.objective with interface_settlement_weight 0, no row 18 (alpha = 0), no voltage pin = generation + flexibility (P and Q down) + load-curtailment cost + slack terms (+ zero-weighted penalties); settlement excluded (none exists in the merged model); no terminal salvage (x = 0, no storage); EUR per representative day, probability-weighted over the 9 scenarios of the block. C_central(block) = sum_s omega_s C_s, C_s = single-scenario model.objective. The block weight in the planning sum (years[y] x days[d] / 1.02^(y - 2025), NetworkData.get_primal_value) is reported beside it, not applied.",
+ "pre_solve_gates": {
+  "applies_to": "both chosen blocks, before the first solve; any failure refuses the run with ZERO solves",
+  "list": [
+   "instance case sha256 == declaration",
+   "combined scenario checksum == declaration (73d0a230...)",
+   "probabilities, energy prices and flexibility prices identical across TN and every DN, every block",
+   "solver_params.verbose is False",
+   "block-choice premise: every TN conventional generator has P_min = 0",
+   "block choice recomputed == spec block_choice.result",
+   "per block: alpha = 0 (no row 18), no voltage pin, settlement weight 0 and value 0, no ADN / shared ESS",
+   "per block: 3 market x 3 operation scenarios",
+   "per block: no coupling -- every active constraint's free Vars carry one scenario label equal to its own index; no scenario-common or unresolvable Var/Constraint component",
+   "per block: slice identity at a seeded random point -- each of the 9 single models equals the merged model restricted to that scenario (constraint bodies, bounds, Var bounds and fixings, per-scenario objective expressions), and merged objective == sum omega single objective",
+   "every imported repo module committed clean; harness and spec committed clean; spec sha256 matches its name tag",
+   "capture checklist asserted before anything is read",
+   "no campaign lock, no other p5*.py python process, output directory absent, single-instance lock"
+  ],
+  "random_point_box": 2.0,
+  "random_point_seed": 20261123,
+  "slice_identity_rel_tol": 1e-12
+ },
+ "predecessor": null,
+ "predictions": {
+  "P1": "phase A passes; 22 solves and 22 launches, guards exact.",
+  "P2": "all 22 solves Optimal.",
+  "P3": "per block, the warm-started merged objective equals Σ_s ω_s C_s within relative 1e-6.",
+  "P4": "per block, the default-start merged objective equals Σ_s ω_s C_s within relative 1e-5. If it does not, record a local-optimum difference with both values. This is not a stop.",
+  "P5": "each block's central cost is reported in the plan's convention: gross, settlement excluded, no salvage, €/representative day, with the block weight stated. The instance checksum is recorded in every artifact."
+ },
+ "predictions_operational": {
+  "P1": "no failed phase-A check; GuardProfile counts permitted_solve == permitted_exec == 22, nothing blocked; pickle 0/0",
+  "P2": "each of the 22: solution loaded (solver_result_succeeded), termination 'optimal' and IPOPT exit 'Optimal Solution Found.' ('Solved To Acceptable Level' counts as not Optimal)",
+  "P3": "|obj(merged_warm) - sum_s omega_s obj(single_s)| / |sum_s omega_s obj(single_s)| <= 1e-6 on both blocks",
+  "P4": "the same for merged_default at 1e-5; a failure is recorded as a local-optimum difference with both values",
+  "P5": "per block: C_central = sum_s omega_s obj(single_s), the two merged objectives, the block weight; scenario checksum in the spec, the results file (declared and read) and the manifest"
+ },
+ "predictions_thresholds": {
+  "P3_rel": 1e-06,
+  "P4_rel": 1e-05
+ },
+ "reported": {
+  "curtailment_threshold_mw": 0.1,
+  "per_solve": "termination condition, IPOPT exit text, iterations, wall time, peak RSS (sampled IPOPT child at 0.1 s and the exact running max ru_maxrss), objective and parts, max constraint violation, per-scenario interface P/Q/V per DN, curtailment",
+  "relaxations": "per DN: scenario-hours where the merged interface lies outside the dropped DN reference-generator P/Q limits, outside the DN reference-node voltage limits, or |P| above the interface rating R (the TSO's interface_delta box is +-R about its fixed pc in the ADMM path)",
+  "required": [
+   "status",
+   "iterations",
+   "wall_time",
+   "memory",
+   "C_gen_plus_flex",
+   "slack_terms",
+   "objective",
+   "per_scenario_costs",
+   "interface_per_scenario",
+   "curtailment_per_scenario",
+   "ipopt_final_summary",
+   "block_weight",
+   "relaxation_margins",
+   "instance_checksum"
+  ]
+ },
+ "solver": {
+  "attempts_per_solve": 1,
+  "call": "Network.run_smopf(model, params, from_warm_start=False) for every solve, through the harness's _solve_one",
+  "executable": "/usr/local/bin/ipopt (NLP_SOLVER_PATH, refused otherwise)",
+  "inherited_unchanged": "every other TN case-file option (acceptable_tol 1e-4, acceptable_iter 5, bound_push/frac 1e-6, slack_bound_push/frac 1e-6, output_file, file_print_level 6); production pins fixed_variable_treatment and max_iter 500",
+  "option_overrides": {
+   "compl_inf_tol": 1e-06,
+   "linear_solver": "ma97",
+   "tol": 1e-05
+  },
+  "recovery_enabled": false,
+  "recovery_tier2_enabled": false,
+  "source": "S55 central check rulings (spec 0e00f6a8): tol 1e-5, compl_inf_tol 1e-6, MA97, recovery off, one attempt"
+ },
+ "stage": "P5.15 S56 validation step 3: centralized comparator, x = 0, alpha = 0, two blocks, SRP1-grid 3 x 3 (frozen spec v1)",
+ "starts": {
+  "merged_default": "freshly built merged model, production initialisers",
+  "merged_warm": "a freshly built merged model whose free primal Vars are set from the 9 single solutions (scenario positions read from the Var declarations); no duals; from_warm_start=False",
+  "order_per_block": "merged_default, single 00..22, merged_warm",
+  "single": "9 single-scenario models, production initialisers"
+ },
+ "version": 1
+}

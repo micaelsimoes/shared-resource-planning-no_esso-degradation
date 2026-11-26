@@ -1,0 +1,22 @@
+10:52:50 OK   [A] the spec file name carries its sha256 prefix; schema p515_s56_phase_spec_v2; oracle harness; not test-only
+10:52:50 OK   [A] arm ev_1x; price level 1.0 at both harness depths; phase.price_level 1.0 with D1 and D2; the 1x authority
+10:52:50 OK   [A] ceiling 60 h, carried 0, not raised; R 10,000; e_EV 17,494 (rounded); K_EV 300; caps 300 / 300; block 5; cap 80; concurrency 5; memory 3.29 GiB per slot
+10:52:50 OK   [A] no cache source, no pool cache member, no pilot exit view, exit-view check stop (Q7 automatic)
+10:52:50 OK   [A] predictions Q1-Q9 recorded (statement, evaluated_as, on_failure), with the source file sha256
+10:52:50 OK   [A] capture checklist all true, the 1x items present; collision scan 0 collisions; cache-root key audit ok; domain keys distinct
+10:52:50 OK   [A] no code drift against the spec (the files a --phase-run checks)
+10:52:50 OK   [A] no predecessor (un-launched or continuation)
+10:52:50 OK   [B] the root holds only the spec and its freeze logs (no launches/, state view, results, launch logs)
+10:52:50 OK   [B] no launch (complete or incomplete)
+10:52:50 OK   [C] the driver's cache is empty (D2: nothing carries over; no exit view served)
+10:52:50 OK   [C] the replay of the empty chain gives the initial phase state
+10:52:50 OK   [C] the first action = x0's exit run alone (stage screen, purpose x0_exit, depth exit)
+10:52:50 OK   [C] the ceiling check before the first block passes (0 h + projected exit block <= 60 h)
+10:52:50 OK   [C] memory for a full block: available >= 5 x 3.29 GiB (read now; the author runs with the Claude app closed)
+10:52:50 OK   [C] disk: free space >= the most the 60 h ceiling admits (blocks at the frozen projections x 5 x the largest 2x eval dir at that depth, worse depth)
+10:52:50 OK   [D] synthetic order: x0 exit first, alone; then the 18 screen plans in blocks of <= 5 at exit (spec order), the unit's screen row among them
+10:52:50 OK   [D] synthetic order: x0 settled in the candidate confirmation; x0, the unit and the staged plan each run at settled depth by the phase (the unit in the confirmation when it is a candidate, else in the pool); every action <= 5 plans at one depth; no (plan, depth) requested twice
+10:52:50 OK   [B] the root is unchanged by this check (same file list before and after)
+10:52:50 OK   [guards] SolveProfileGuard(permitted=()) verify(0) == []
+10:52:50 OK   [guards] pickle load/loads 0
+10:52:50 checks 21/21 ok; wall 0.4 s; failed []; record sha256 f74d41b8b113dad2b56b26b008bfb54b56a478f9036a906aedfeb4ee300bbf89

@@ -1,0 +1,207 @@
+{
+ "checks": {
+  "freeze: staged plan accepted (C5), key schema v2, label at spec and entry": {
+   "detail": null,
+   "ok": true
+  }
+ },
+ "entry": {
+  "effective_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "eval_dir": "87df42471967e987_staged",
+  "eval_key": "87df42471967e987251d3d470de7a33177da7a12a24bda5aa0b4a1787da8f1ae",
+  "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+  "flex_price_multiplier": 2.0,
+  "interface_coupling": {
+   "per_scenario_interface_coupling": true,
+   "per_scenario_voltage_mode": "per_scenario",
+   "row18_charge_reactive": false
+  },
+  "interface_coupling_label": "EVALUATION OPTION \u2014 per-scenario TN-DN interface coupling (S56 F1; not the published formulation)",
+  "key": "87170f8d2133558f7e41b78671a8e43fc5453dd25b8a834739dd4498506d3f4d",
+  "label": "staged",
+  "overrides": {},
+  "post_certification": null,
+  "s56_cohort_formulation": "independent_units_all_node_years",
+  "s56_ess_params_check": {
+   "available_energy_soh_point_in_file": null,
+   "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+   "cohort_formulation_in_file": null,
+   "ess_params_file": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "esso_slack_penalty_in_file": null,
+   "salvage_value_in_objective_in_file": null,
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "s56_esso_slack_penalty": 10000.0,
+  "s56_ev_plan_label": "EVALUATION OPTION \u2014 S56 EV-plan formulation (cohort mode, terminal value in the ESSO objective, ESSO slack penalty, EV injection, staged candidate)",
+  "s56_ev_profiles": {
+   "ev_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+   "profiles_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+   "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729"
+  },
+  "s56_investment": {
+   "active_cohorts": [
+    [
+     5,
+     2030
+    ],
+    [
+     7,
+     2025
+    ],
+    [
+     7,
+     2030
+    ],
+    [
+     9,
+     2035
+    ]
+   ],
+   "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+   "cumulative_energy_mwh": {
+    "5|2025": 0.0,
+    "5|2030": 1.0,
+    "5|2035": 1.0,
+    "7|2025": 1.0,
+    "7|2030": 1.5,
+    "7|2035": 1.5,
+    "9|2025": 0.0,
+    "9|2030": 0.0,
+    "9|2035": 0.5
+   },
+   "investment_cost_definition": "I(x) = sum_n sum_y sum_m (1+d)^-(y-y1) omega_m (c^S_my P_ny + c^E_my E_ny), the master investment_cost expression in its own term order (p516_lattice.GeneralLattice.investment_cost)",
+   "investment_cost_eur": 862548.6983358284,
+   "lattice_instance_sha256": "1c2d23f7f21b0a058fa7107d9a8bfefd95e85ccec47987d109432ad5d5c7366f",
+   "lattice_label": "n5_y2030_p0.5_e1__n7_y2025_p0.25_e1__n7_y2030_p0.25_e0.5__n9_y2035_p0.25_e0.5"
+  },
+  "s56_staged_investment": {
+   "5": {
+    "2025": [
+     0.0,
+     0.0
+    ],
+    "2030": [
+     0.5,
+     1.0
+    ],
+    "2035": [
+     0.0,
+     0.0
+    ]
+   },
+   "7": {
+    "2025": [
+     0.25,
+     1.0
+    ],
+    "2030": [
+     0.25,
+     0.5
+    ],
+    "2035": [
+     0.0,
+     0.0
+    ]
+   },
+   "9": {
+    "2025": [
+     0.0,
+     0.0
+    ],
+    "2030": [
+     0.0,
+     0.0
+    ],
+    "2035": [
+     0.25,
+     0.5
+    ]
+   }
+  },
+  "s56_terminal_value_in_objective": true,
+  "working_dir_ids": {
+   "precheck": "p515s44_s56evh_stub_srp1grid_87df42471967e987_precheck",
+   "run": "p515s44_s56evh_stub_srp1grid_87df42471967e987_run"
+  }
+ },
+ "error": "RuntimeError: S56 EV plan: capture path / production support missing (before any solve): ['uncoordinated_benchmark_not_on_the_harness_path']; uncoordinated_benchmark importers ['p515_s44_campaign_harness.py']",
+ "finished_utc": "2026-11-23T19:40:14.439709+00:00",
+ "grid": "srp1grid",
+ "guards": {
+  "own": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "label": "P5.15 S56 EV harness tests (this process never solves)",
+   "verify_0": []
+  }
+ },
+ "options": {
+  "flex_price_multiplier": 2.0,
+  "interface_coupling": {
+   "per_scenario_interface_coupling": true,
+   "per_scenario_voltage_mode": "per_scenario",
+   "row18_charge_reactive": false
+  },
+  "s56_cohort_formulation": "independent_units_all_node_years",
+  "s56_esso_slack_penalty": 10000.0,
+  "s56_ev_profiles": {
+   "ev_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+   "profiles_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+   "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729"
+  },
+  "s56_staged_investment": {
+   "5": {
+    "2030": [
+     0.5,
+     1.0
+    ]
+   },
+   "7": {
+    "2025": [
+     0.25,
+     1.0
+    ],
+    "2030": [
+     0.25,
+     0.5
+    ]
+   },
+   "9": {
+    "2035": [
+     0.25,
+     0.5
+    ]
+   }
+  },
+  "s56_terminal_value_in_objective": true
+ },
+ "provenance": {
+  "dirty_tracked": [
+   " M p515_s44_campaign_harness.py"
+  ],
+  "git_head": "2c15db477072da554945f75b44255846bb545b57",
+  "harness_sha256": "8dc8eb11c7b5f7c46219c6ac296ac5f76ae65c9d464c71e526634796b39aeef2",
+  "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "nlp_solver_path": "/usr/local/bin/ipopt",
+  "script_sha256": "ba551a4d4d7cf6f290496b416d9b0eaaed8f75be05fe894691544f6be55ff8ae"
+ },
+ "schema": "p515_s56_ev_harness_tests_v1_stub_run",
+ "started_utc": "2026-11-23T19:40:12.917927+00:00",
+ "summary": {
+  "all_pass": true,
+  "failed": [],
+  "n_checks": 1,
+  "n_pass": 1
+ },
+ "traceback": "Traceback (most recent call last):\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s56_ev_harness_tests.py\", line 1166, in stub_run\n    checklist = H.assert_s56_ev_plan_capture_path(plan)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 2081, in assert_s56_ev_plan_capture_path\n    raise RuntimeError(f'S56 EV plan: capture path / production support missing (before any solve): {failed}; '\nRuntimeError: S56 EV plan: capture path / production support missing (before any solve): ['uncoordinated_benchmark_not_on_the_harness_path']; uncoordinated_benchmark importers ['p515_s44_campaign_harness.py']\n",
+ "zero_solve_verified": true
+}

@@ -1,0 +1,80 @@
+{
+ "stage": "P5.15 Addendum 22 item (3) -- zero-solve case-file load check",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 22 item 3_case_file",
+  "data/SRP1/Results/P515S40/frozen_s40_closure_spec_v11_0e9a37be.json"
+ ],
+ "timestamp_utc": "2026-09-18T08:28:09.904268+00:00",
+ "guard_observed": {
+  "permitted_solve": 0,
+  "permitted_exec": 0,
+  "blocked_solve": 0,
+  "blocked_exec": 0
+ },
+ "guard_permitted": 0,
+ "scalar_fields_checked": [
+  "num_max_iters",
+  "minimum_consecutive_converged_cycles",
+  "shared_ess_normalization_floor_mva",
+  "adaptive_penalty",
+  "objective_scale",
+  "objective_scale_assert_factor",
+  "shared_ess_reference_rating_mva",
+  "shared_ess_initialization",
+  "boyd_eps_source"
+ ],
+ "dict_fields_checked": [
+  "tol",
+  "rho",
+  "penalty_update",
+  "proximal_regularization",
+  "esso_al_scale"
+ ],
+ "scalar_diffs": {},
+ "dict_diffs": {},
+ "source_field_report": {
+  "shared_ess_initialization_source": {
+   "case_file": "case_file",
+   "override_path": "p515s39_override_not_case_file",
+   "differs": true
+  },
+  "balancing_exempt_channels_source": {
+   "case_file": "default",
+   "override_path": "p515s39_override_not_case_file",
+   "differs": true
+  },
+  "balancing_exempt_until_source": {
+   "case_file": "case_file",
+   "override_path": "p515s39_override_not_case_file",
+   "differs": true
+  },
+  "objective_scale_source": {
+   "case_file": "case_file",
+   "override_path": "case_file",
+   "differs": false
+  },
+  "shared_ess_reference_rating_source": {
+   "case_file": "case_file",
+   "override_path": "case_file",
+   "differs": false
+  }
+ },
+ "override_in_force_checks_on_override_path_object": {
+  "rho_v_is_0p0077": true,
+  "rho_pf_is_0p198": true,
+  "rho_ess_is_0p01": true,
+  "rho_ess_on_esso_present": true,
+  "tau_is_0p0": true,
+  "balancing_exempt_channels_matches_arm": true,
+  "balancing_exempt_channels_source_is_override": true,
+  "balancing_exempt_until_matches_arm": true,
+  "balancing_exempt_until_source_is_override": true,
+  "freeze_after_unchanged_cycles_is_10": true,
+  "freeze_backstop_cycle_is_200": true,
+  "minimum_consecutive_converged_cycles_is_10": true,
+  "shared_ess_initialization_is_standalone": true,
+  "shared_ess_initialization_source_is_override": true
+ },
+ "oracle_relevant_fields_match": true,
+ "note": "source_field_report differences are EXPECTED (provenance bookkeeping: 'case_file' on the case-file-alone object vs the override string 'p515s39_override_not_case_file' on the hook-applied object) -- they are reported, not gated. scalar_diffs / dict_diffs are the oracle-relevant comparison; both must be empty for the case file to reproduce the oracle configuration."
+}

@@ -1,0 +1,105 @@
+{
+ "stage": "P5.15 Addendum 19 (s37 preparation worker task) -- s37_rho0p01 two-cycle preflight",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 19",
+  "data/SRP1/Results/P515S37/frozen_s37_rho_ess_spec_v8_f91de983.json"
+ ],
+ "arm": "s37_rho0p01",
+ "num_cycles": 2,
+ "out_dir": "data/SRP1/Results/P515S37/preflight_rho0p01",
+ "solve_profile_identity": {
+  "base_permitted_solves": 153,
+  "n_tier1_recovered": 0,
+  "n_tier2_recovered": 0,
+  "retry_overhead": 0,
+  "expected_permitted_solves": 153,
+  "observed_permitted_solves": 153,
+  "exact": true
+ },
+ "rho_ess_check": {
+  "values_before_then_terminal_after": [
+   0.010000000000000004,
+   0.010000000000000004,
+   0.010000000000000004
+  ],
+  "constant_at_0p01": true,
+  "action_always_exempt_fixed": true,
+  "frozen_every_cycle": true,
+  "never_at_clamp": true,
+  "balancing_exempt_diagnostic_true_every_cycle": true
+ },
+ "v_pf_normal_balancing": true,
+ "capture_paths_populated": {
+  "recourse_jump_sidecar": true,
+  "ess_entry_stride_sidecar": true,
+  "soh_floor_sidecar": true,
+  "boyd_terminal": true,
+  "g_baseline": true,
+  "interface_voltage_terminal": true,
+  "interface_settlement_detail": true,
+  "component_levels_terminal": true,
+  "esso_models_pickle": true
+ },
+ "all_capture_paths_populated": true,
+ "evaluator_dry_run_return_code": 0,
+ "ess_entry_stride_sidecar_path": "data/SRP1/Results/P515S37/preflight_rho0p01/ess_entry_stride_baseline.jsonl",
+ "cycle_monitoring": {
+  "1": {
+   "efc_per_day_max": 0.0002872608764361283,
+   "channel_ratios": {
+    "v": {
+     "primal_ratio": 76.29213288837619,
+     "dual_ratio": 6.791866752442517
+    },
+    "pf": {
+     "primal_ratio": 2515.547600364981,
+     "dual_ratio": 2780.4755950630533
+    },
+    "ess": {
+     "primal_ratio": 1114.6765307607402,
+     "dual_ratio": 18.233606336898962
+    }
+   },
+   "step_size": null,
+   "oscillation": null
+  },
+  "2": {
+   "efc_per_day_max": 0.3291147647062786,
+   "channel_ratios": {
+    "v": {
+     "primal_ratio": 30.23053364875537,
+     "dual_ratio": 10.883788846944864
+    },
+    "pf": {
+     "primal_ratio": 1980.1410589817015,
+     "dual_ratio": 1523.8274148747853
+    },
+    "ess": {
+     "primal_ratio": 509.15794467485216,
+     "dual_ratio": 13.759253309378822
+    }
+   },
+   "step_size": {
+    "rms": 0.09492027603181556,
+    "max_abs": 0.2338802703248879
+   },
+   "oscillation": null
+  }
+ },
+ "note_step_size_cycle_1": "cycle 1 has no preceding cycle captured in THIS preflight (z_0 is the construction-time consensus, not part of the stride sidecar), so its own step size is None here -- expected, not a failure; the real 150-cycle run captures cycle 1 the same way.",
+ "network_failures_summary": {
+  "n_blocks": 0,
+  "classes": {
+   "recovered_tier1": 0,
+   "recovered_tier2": 0,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 0
+  },
+  "n_frozen_snapshots": 0,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S37/preflight_rho0p01/network_failures_s37_rho0p01.jsonl"
+ },
+ "local_solve_failures": 0
+}

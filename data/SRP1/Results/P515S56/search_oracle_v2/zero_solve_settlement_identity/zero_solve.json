@@ -1,0 +1,795 @@
+{
+ "all_checks_ok": true,
+ "checks": [
+  {
+   "check": "settled summary complete on the fixture (real smoke files + synthetic pricing, W = 2 for a 2-cycle record)",
+   "detail": "settled",
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "PR = the independent hand computation (rel 1e-12)",
+   "detail": [
+    -24.998400000000018,
+    -24.9984
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "A = the independent hand computation (rel 1e-12)",
+   "detail": [
+    51.00239999999998,
+    51.0024
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "G = the independent hand computation (rel 1e-12)",
+   "detail": [
+    5.0075,
+    5.0075
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "PR sign: Q - price + dual (Expert ruling 3): PR = -price + dual",
+   "detail": {
+    "dual": 5.001599999999984,
+    "ess_p": 1.9999999999999947,
+    "ess_q": 0.0,
+    "interface_p": 0.0020000000000000018,
+    "interface_q": -0.0004,
+    "interface_v": 2.9999999999999893,
+    "minus_price": -30.0
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "S = range of F over the last W cycles (rel 1e-12)",
+   "detail": [
+    891536837.3488126,
+    891536837.3488125
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "all settled conditions hold on the fixture -> status settled",
+   "detail": {
+    "K_at_least_W": true,
+    "guards_exact_and_no_local_failure": true,
+    "last_W_at_tail_depth": true,
+    "reached_K": true,
+    "stop_disabled_declared": true,
+    "would_have_certified_each_of_last_W": true
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "settled condition: a cycle without the production certification test -> not_settled, the failed condition named",
+   "detail": [
+    "would_have_certified_each_of_last_W"
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "settled condition: a cycle not at tail depth -> not_settled, the failed condition named",
+   "detail": [
+    "last_W_at_tail_depth"
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "a record that stopped before its cap K (2 cycles of K = 3) -> harness_error: F(K) and S do not exist (reached_K False recorded)",
+   "detail": [
+    "harness_error",
+    "incomplete settled summary"
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "a blocked solve -> not_settled (guards) and gates_pass False",
+   "detail": null,
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "gates on the fixture: dP 0.01 MW <= 12.5 kW; ESSO slack 2e-6 <= 1e-5; closure 3e-6 p.u. <= 1e-5; D1",
+   "detail": {
+    "d1_efficiency_equality": true,
+    "esso_slack_gate": true,
+    "interface_p_ceiling_12p5kw": true,
+    "network_closure_slack_le_tau_cl": true,
+    "status_ok_and_guards_exact": true
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "gate boundary: dP = 12.5 kW exactly passes",
+   "detail": {
+    "d1_efficiency_equality": true,
+    "esso_slack_gate": true,
+    "interface_p_ceiling_12p5kw": true,
+    "network_closure_slack_le_tau_cl": true,
+    "status_ok_and_guards_exact": true
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "gate boundary: dP = 12.6 kW fails",
+   "detail": {
+    "d1_efficiency_equality": true,
+    "esso_slack_gate": true,
+    "interface_p_ceiling_12p5kw": false,
+    "network_closure_slack_le_tau_cl": true,
+    "status_ok_and_guards_exact": true
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "gate boundary: ESSO slack 2e-5 fails",
+   "detail": {
+    "d1_efficiency_equality": true,
+    "esso_slack_gate": false,
+    "interface_p_ceiling_12p5kw": true,
+    "network_closure_slack_le_tau_cl": true,
+    "status_ok_and_guards_exact": true
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "gate boundary: closure 2e-5 p.u. fails",
+   "detail": {
+    "d1_efficiency_equality": true,
+    "esso_slack_gate": true,
+    "interface_p_ceiling_12p5kw": true,
+    "network_closure_slack_le_tau_cl": false,
+    "status_ok_and_guards_exact": true
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "gate boundary: unequal efficiencies across active cohorts fail D1",
+   "detail": {
+    "d1_efficiency_equality": false,
+    "esso_slack_gate": true,
+    "interface_p_ceiling_12p5kw": true,
+    "network_closure_slack_le_tau_cl": true,
+    "status_ok_and_guards_exact": true
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "leak 25.01 EUR > 25: flagged, NOT in gates_pass (reported)",
+   "detail": {
+    "L_weighted_mwh": 103.35306005670759,
+    "ceiling_eur": 25.0,
+    "gate": false,
+    "note": "reported and flagged; not in gates_pass until the pilot measures it (TASKS 28ba36b4)",
+    "priced_full_eur": 11083.119674158468,
+    "priced_loss_eur": 25.01,
+    "within_ceiling": false
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "a closure row without its dual -> harness_error (incomplete G), never a silent 0",
+   "detail": "incomplete settled summary",
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "a non-zero settlement deviation part (not one scenario) -> harness_error (the price derivation fails)",
+   "detail": "incomplete settled summary",
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "identity_tolerance: the 1e-6 EUR floor on small totals; 64 u sum|s| on large ones",
+   "detail": [
+    1e-06,
+    2.8421709430404007e-05
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "settlement fixture sanity: production-order and list-order sums differ, beyond the old 1e-9 x max(1, |T|) form and within the identity tolerance",
+   "detail": [
+    6.110000014305115,
+    6.110000133514404,
+    -1.1920928955078125e-07,
+    1.8406368022084998e-05
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "cancelling blocks summed in another order than production reconcile with the record (not harness_error)",
+   "detail": [
+    "settled",
+    null,
+    {
+     "abs_diff_blocks_minus_record_eur": 1.1920928955078125e-07,
+     "abs_diff_contracted_minus_total_eur": 0.0,
+     "blocks_reconcile_with_record": true,
+     "contracted_equals_total": true,
+     "contracted_total": 6.110000014305115,
+     "deviation_is_zero": true,
+     "deviation_total": 0.0,
+     "identity_tolerance_eur": 1.8406368022084998e-05,
+     "identity_tolerance_rule": "max(64 u sum|per-block settlement totals|, 1e-6 EUR), u = 2^-53 (Expert handback 3 ruling 2)",
+     "interface_settlement_total_record": 6.110000133514404,
+     "sum_blocks_total": 6.110000014305115
+    }
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "settlement identity: record offset 2 x tolerance -> blocks_reconcile_with_record False -> harness_error",
+   "detail": [
+    "harness_error",
+    false
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "settlement identity: contracted offset 2 x tolerance -> contracted_equals_total False -> harness_error",
+   "detail": [
+    "harness_error",
+    false
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "settlement identity floor 1e-6 EUR on the small fixture: record offset 9e-07 -> reconcile True",
+   "detail": [
+    "settled",
+    {
+     "abs_diff_blocks_minus_record_eur": 8.999999998593466e-07,
+     "abs_diff_contracted_minus_total_eur": 0.0,
+     "blocks_reconcile_with_record": true,
+     "contracted_equals_total": true,
+     "contracted_total": -30.0,
+     "deviation_is_zero": true,
+     "deviation_total": 0.0,
+     "identity_tolerance_eur": 1e-06,
+     "identity_tolerance_rule": "max(64 u sum|per-block settlement totals|, 1e-6 EUR), u = 2^-53 (Expert handback 3 ruling 2)",
+     "interface_settlement_total_record": -29.9999991,
+     "sum_blocks_total": -30.0
+    }
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "settlement identity floor 1e-6 EUR on the small fixture: record offset 1.1e-06 -> reconcile False",
+   "detail": [
+    "harness_error",
+    {
+     "abs_diff_blocks_minus_record_eur": 1.0999999986438525e-06,
+     "abs_diff_contracted_minus_total_eur": 0.0,
+     "blocks_reconcile_with_record": false,
+     "contracted_equals_total": true,
+     "contracted_total": -30.0,
+     "deviation_is_zero": true,
+     "deviation_total": 0.0,
+     "identity_tolerance_eur": 1e-06,
+     "identity_tolerance_rule": "max(64 u sum|per-block settlement totals|, 1e-6 EUR), u = 2^-53 (Expert handback 3 ruling 2)",
+     "interface_settlement_total_record": -29.9999989,
+     "sum_blocks_total": -30.0
+    }
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "pilot records (7, real): record interface_settlement_total == production-order sum of the captured blocks bitwise (and the contracted total likewise) -- summation order, not reduced precision",
+   "detail": [
+    {
+     "abs_diff": 4.6938657760620117e-07,
+     "contracted_record_is_production_order_bitwise": true,
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/142a02890a1d630f_x0_i1",
+     "list_order_sum": 6.114009626209736,
+     "new_rule_holds": true,
+     "old_rule_holds": false,
+     "production_order_sum": 6.1140100955963135,
+     "ratio": 0.02550131438434697,
+     "record": 6.1140100955963135,
+     "record_is_production_order_bitwise": true,
+     "tolerance": 1.8406368022125032e-05
+    },
+    {
+     "abs_diff": 3.2782554626464844e-07,
+     "contracted_record_is_production_order_bitwise": true,
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/fe40736832cfbdba_unit_i1",
+     "list_order_sum": 20.506121307611465,
+     "new_rule_holds": true,
+     "old_rule_holds": false,
+     "production_order_sum": 20.50612163543701,
+     "ratio": 0.017808267553670994,
+     "record": 20.50612163543701,
+     "record_is_production_order_bitwise": true,
+     "tolerance": 1.8408615283695606e-05
+    },
+    {
+     "abs_diff": 3.203749656677246e-07,
+     "contracted_record_is_production_order_bitwise": true,
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/dddc5b8382a39c0a_staged_i1",
+     "list_order_sum": 61.295784153044224,
+     "new_rule_holds": true,
+     "old_rule_holds": false,
+     "production_order_sum": 61.29578447341919,
+     "ratio": 0.017399749686824256,
+     "record": 61.29578447341919,
+     "record_is_production_order_bitwise": true,
+     "tolerance": 1.841261922924814e-05
+    },
+    {
+     "abs_diff": 3.5762786865234375e-07,
+     "contracted_record_is_production_order_bitwise": true,
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/830a6306e0c27969_x0_i2",
+     "list_order_sum": -71.36107838153839,
+     "new_rule_holds": true,
+     "old_rule_holds": false,
+     "production_order_sum": -71.36107873916626,
+     "ratio": 0.01942739459764234,
+     "record": -71.36107873916626,
+     "record_is_production_order_bitwise": true,
+     "tolerance": 1.8408431807718807e-05
+    },
+    {
+     "abs_diff": 5.21540641784668e-08,
+     "contracted_record_is_production_order_bitwise": true,
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/6b05f4c326441274_unit_i2",
+     "list_order_sum": -34.4955031350255,
+     "new_rule_holds": true,
+     "old_rule_holds": false,
+     "production_order_sum": -34.495503187179565,
+     "ratio": 0.0028330239129407625,
+     "record": -34.495503187179565,
+     "record_is_production_order_bitwise": true,
+     "tolerance": 1.840932719989975e-05
+    },
+    {
+     "abs_diff": 1.564621925354004e-07,
+     "contracted_record_is_production_order_bitwise": true,
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_002/evals/0f20f46f0a99c162_x0_i3",
+     "list_order_sum": -61.20403488725424,
+     "new_rule_holds": true,
+     "old_rule_holds": false,
+     "production_order_sum": -61.20403504371643,
+     "ratio": 0.008499822659482495,
+     "record": -61.20403504371643,
+     "record_is_production_order_bitwise": true,
+     "tolerance": 1.84077008195988e-05
+    },
+    {
+     "abs_diff": 1.4901161193847656e-07,
+     "contracted_record_is_production_order_bitwise": true,
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_002/evals/ecac63e76319052f_unit_i3",
+     "list_order_sum": -58.371037632226944,
+     "new_rule_holds": true,
+     "old_rule_holds": false,
+     "production_order_sum": -58.37103748321533,
+     "ratio": 0.008094068971298257,
+     "record": -58.37103748321533,
+     "record_is_production_order_bitwise": true,
+     "tolerance": 1.840997555949609e-05
+    }
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "pilot records (7, real): list-order sum reconciles under the identity tolerance on all 7; the old 1e-9 form failed on all 7",
+   "detail": [
+    {
+     "abs_diff": 4.6938657760620117e-07,
+     "contracted_record_is_production_order_bitwise": true,
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/142a02890a1d630f_x0_i1",
+     "list_order_sum": 6.114009626209736,
+     "new_rule_holds": true,
+     "old_rule_holds": false,
+     "production_order_sum": 6.1140100955963135,
+     "ratio": 0.02550131438434697,
+     "record": 6.1140100955963135,
+     "record_is_production_order_bitwise": true,
+     "tolerance": 1.8406368022125032e-05
+    },
+    {
+     "abs_diff": 3.2782554626464844e-07,
+     "contracted_record_is_production_order_bitwise": true,
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/fe40736832cfbdba_unit_i1",
+     "list_order_sum": 20.506121307611465,
+     "new_rule_holds": true,
+     "old_rule_holds": false,
+     "production_order_sum": 20.50612163543701,
+     "ratio": 0.017808267553670994,
+     "record": 20.50612163543701,
+     "record_is_production_order_bitwise": true,
+     "tolerance": 1.8408615283695606e-05
+    },
+    {
+     "abs_diff": 3.203749656677246e-07,
+     "contracted_record_is_production_order_bitwise": true,
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/dddc5b8382a39c0a_staged_i1",
+     "list_order_sum": 61.295784153044224,
+     "new_rule_holds": true,
+     "old_rule_holds": false,
+     "production_order_sum": 61.29578447341919,
+     "ratio": 0.017399749686824256,
+     "record": 61.29578447341919,
+     "record_is_production_order_bitwise": true,
+     "tolerance": 1.841261922924814e-05
+    },
+    {
+     "abs_diff": 3.5762786865234375e-07,
+     "contracted_record_is_production_order_bitwise": true,
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/830a6306e0c27969_x0_i2",
+     "list_order_sum": -71.36107838153839,
+     "new_rule_holds": true,
+     "old_rule_holds": false,
+     "production_order_sum": -71.36107873916626,
+     "ratio": 0.01942739459764234,
+     "record": -71.36107873916626,
+     "record_is_production_order_bitwise": true,
+     "tolerance": 1.8408431807718807e-05
+    },
+    {
+     "abs_diff": 5.21540641784668e-08,
+     "contracted_record_is_production_order_bitwise": true,
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/6b05f4c326441274_unit_i2",
+     "list_order_sum": -34.4955031350255,
+     "new_rule_holds": true,
+     "old_rule_holds": false,
+     "production_order_sum": -34.495503187179565,
+     "ratio": 0.0028330239129407625,
+     "record": -34.495503187179565,
+     "record_is_production_order_bitwise": true,
+     "tolerance": 1.840932719989975e-05
+    },
+    {
+     "abs_diff": 1.564621925354004e-07,
+     "contracted_record_is_production_order_bitwise": true,
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_002/evals/0f20f46f0a99c162_x0_i3",
+     "list_order_sum": -61.20403488725424,
+     "new_rule_holds": true,
+     "old_rule_holds": false,
+     "production_order_sum": -61.20403504371643,
+     "ratio": 0.008499822659482495,
+     "record": -61.20403504371643,
+     "record_is_production_order_bitwise": true,
+     "tolerance": 1.84077008195988e-05
+    },
+    {
+     "abs_diff": 1.4901161193847656e-07,
+     "contracted_record_is_production_order_bitwise": true,
+     "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_002/evals/ecac63e76319052f_unit_i3",
+     "list_order_sum": -58.371037632226944,
+     "new_rule_holds": true,
+     "old_rule_holds": false,
+     "production_order_sum": -58.37103748321533,
+     "ratio": 0.008094068971298257,
+     "record": -58.37103748321533,
+     "record_is_production_order_bitwise": true,
+     "tolerance": 1.840997555949609e-05
+    }
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "the policy's confirm() consumes two mapped settled summaries (shape check)",
+   "detail": {
+    "A_sum": 102.00479999999996,
+    "R": 10000.0,
+    "V_pair": 1783073684.712625,
+    "dF_exit": 0.0,
+    "dF_set": 0.0,
+    "e": 15000.0,
+    "failed": [
+     "F_set(inc) - F_set(x) < R",
+     "V_pair > R/4"
+    ],
+    "gates_pass": true,
+    "improvement_set": -0.0,
+    "not_settled": false,
+    "offset": 0.0,
+    "result": "unresolved_after_confirmation"
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "SolveProfileGuard(permitted=()) verify(0) == [] in this parent",
+   "detail": [],
+   "item": "guards",
+   "ok": true
+  },
+  {
+   "check": "pickle load/loads 0",
+   "detail": {
+    "load": 0,
+    "loads": 0
+   },
+   "item": "guards",
+   "ok": true
+  }
+ ],
+ "code_sha256": {
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+  "p515_s44_campaign_harness.py": "05a9838c46f19837398af31252bd85c465a3794aa03e9cfc1a7a30c08c462b29",
+  "p515_s56_neighbourhood.py": "bd95342d2da2b0ecf2d99b9ef3b8a396e3637e18a050f8ce0117ec2ec9590cc0",
+  "p515_s56_search_driver.py": "ddb4a7ddef01659ab64a5ba15d27e61e808dcc9e1eafa7a7d4f69a810e5214cf",
+  "p515_s56_search_oracle_tests.py": "0b5ea55913892eaefafd729cb78dfba1997a43bfe545f8116af2398ba79acfaf",
+  "p515_s56_search_policy.py": "a39919ed1620845c2ca2a5fbf1776b38aa3f578e95f30d14a1db30e467d7b71a",
+  "p516_lattice.py": "ff5d63ef897ccd04e5bbaa719b352537108180a31b83c1b8574506612af86e88"
+ },
+ "failed_checks": [],
+ "finished_utc": "2026-11-24T17:15:33.440232+00:00",
+ "git_head": "b17e1711ca05258e13a82992b8fa76823d8e16a2",
+ "guards": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "pickle": {
+   "load": 0,
+   "loads": 0
+  },
+  "verify_0": []
+ },
+ "instance": {
+  "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+  "lattice": {
+   "block_widths": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "budget_eur": 1000000.0,
+   "cost_energy": {
+    "0": {
+     "2025": 212132.83090957787,
+     "2030": 167114.2595388713,
+     "2035": 152464.16443904658
+    },
+    "1": {
+     "2025": 264982.3635447595,
+     "2030": 222115.86276729195,
+     "2035": 204988.41411333327
+    },
+    "2": {
+     "2025": 338908.86670623126,
+     "2030": 275450.090999905,
+     "2035": 266020.3907359085
+    }
+   },
+   "cost_power": {
+    "0": {
+     "2025": 214171.32910223768,
+     "2030": 168720.15012439265,
+     "2035": 153929.27440020515
+    },
+    "1": {
+     "2025": 267528.7212530719,
+     "2030": 224250.2932694956,
+     "2035": 206958.25777164166
+    },
+    "2": {
+     "2025": 342165.6238488894,
+     "2030": 278097.0387178216,
+     "2035": 268576.723404457
+    }
+   },
+   "discount_factor": 0.02,
+   "max_capacity_mwh": 5.0,
+   "max_energy_to_power_ratio": 4.0,
+   "min_energy_to_power_ratio": 2.0,
+   "nodes": [
+    5,
+    7,
+    9
+   ],
+   "prob_market": [
+    0.35,
+    0.55,
+    0.1
+   ],
+   "sources": {
+    "case": {
+     "path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+     "sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+    },
+    "cost_file": {
+     "cells": "Scenarios!B1 = number of market scenarios, Scenarios!C1.. = omega_m; 'Investment Cost, Power'/'Investment Cost, Energy' row 1 (from column B) = years, row 1 + m = scenario m (EUR/MVA, EUR/MWh, undiscounted)",
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/SharedESS/SRP1_ESS.xlsx",
+     "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+     "sheets": {
+      "energy": "Investment Cost, Energy",
+      "power": "Investment Cost, Power",
+      "scenarios": "Scenarios"
+     }
+    },
+    "note": "omega_m is read from the workbook Scenarios sheet, as production does; it is independent of the case file NumMarketScenarios",
+    "num_market_scenarios_case_file": 3,
+    "params_file": {
+     "fields": "budget, max_capacity, min_energy_to_power_factor, max_energy_to_power_factor, ageing.calendar_life_years",
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/SharedESS/SRP1_ESS_Params.json",
+     "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+    }
+   },
+   "t_cal_years": 15.0,
+   "years": [
+    2025,
+    2030,
+    2035
+   ]
+  }
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "items": [
+  "2"
+ ],
+ "results": {
+  "2": {
+   "result": {
+    "fixture_expected": {
+     "A": 51.0024,
+     "G": 5.0075,
+     "PR": -24.9984,
+     "dual": 5.0016,
+     "price": 30.0
+    },
+    "note": "SYNTHETIC pricing fixture on the real smoke files: an arithmetic check, not a measurement",
+    "pilot_settlement_identity_rows": [
+     {
+      "abs_diff": 4.6938657760620117e-07,
+      "contracted_record_is_production_order_bitwise": true,
+      "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/142a02890a1d630f_x0_i1",
+      "list_order_sum": 6.114009626209736,
+      "new_rule_holds": true,
+      "old_rule_holds": false,
+      "production_order_sum": 6.1140100955963135,
+      "ratio": 0.02550131438434697,
+      "record": 6.1140100955963135,
+      "record_is_production_order_bitwise": true,
+      "tolerance": 1.8406368022125032e-05
+     },
+     {
+      "abs_diff": 3.2782554626464844e-07,
+      "contracted_record_is_production_order_bitwise": true,
+      "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/fe40736832cfbdba_unit_i1",
+      "list_order_sum": 20.506121307611465,
+      "new_rule_holds": true,
+      "old_rule_holds": false,
+      "production_order_sum": 20.50612163543701,
+      "ratio": 0.017808267553670994,
+      "record": 20.50612163543701,
+      "record_is_production_order_bitwise": true,
+      "tolerance": 1.8408615283695606e-05
+     },
+     {
+      "abs_diff": 3.203749656677246e-07,
+      "contracted_record_is_production_order_bitwise": true,
+      "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/dddc5b8382a39c0a_staged_i1",
+      "list_order_sum": 61.295784153044224,
+      "new_rule_holds": true,
+      "old_rule_holds": false,
+      "production_order_sum": 61.29578447341919,
+      "ratio": 0.017399749686824256,
+      "record": 61.29578447341919,
+      "record_is_production_order_bitwise": true,
+      "tolerance": 1.841261922924814e-05
+     },
+     {
+      "abs_diff": 3.5762786865234375e-07,
+      "contracted_record_is_production_order_bitwise": true,
+      "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/830a6306e0c27969_x0_i2",
+      "list_order_sum": -71.36107838153839,
+      "new_rule_holds": true,
+      "old_rule_holds": false,
+      "production_order_sum": -71.36107873916626,
+      "ratio": 0.01942739459764234,
+      "record": -71.36107873916626,
+      "record_is_production_order_bitwise": true,
+      "tolerance": 1.8408431807718807e-05
+     },
+     {
+      "abs_diff": 5.21540641784668e-08,
+      "contracted_record_is_production_order_bitwise": true,
+      "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/6b05f4c326441274_unit_i2",
+      "list_order_sum": -34.4955031350255,
+      "new_rule_holds": true,
+      "old_rule_holds": false,
+      "production_order_sum": -34.495503187179565,
+      "ratio": 0.0028330239129407625,
+      "record": -34.495503187179565,
+      "record_is_production_order_bitwise": true,
+      "tolerance": 1.840932719989975e-05
+     },
+     {
+      "abs_diff": 1.564621925354004e-07,
+      "contracted_record_is_production_order_bitwise": true,
+      "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_002/evals/0f20f46f0a99c162_x0_i3",
+      "list_order_sum": -61.20403488725424,
+      "new_rule_holds": true,
+      "old_rule_holds": false,
+      "production_order_sum": -61.20403504371643,
+      "ratio": 0.008499822659482495,
+      "record": -61.20403504371643,
+      "record_is_production_order_bitwise": true,
+      "tolerance": 1.84077008195988e-05
+     },
+     {
+      "abs_diff": 1.4901161193847656e-07,
+      "contracted_record_is_production_order_bitwise": true,
+      "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_002/evals/ecac63e76319052f_unit_i3",
+      "list_order_sum": -58.371037632226944,
+      "new_rule_holds": true,
+      "old_rule_holds": false,
+      "production_order_sum": -58.37103748321533,
+      "ratio": 0.008094068971298257,
+      "record": -58.37103748321533,
+      "record_is_production_order_bitwise": true,
+      "tolerance": 1.840997555949609e-05
+     }
+    ],
+    "summary": {
+     "F": 873899483.2599616,
+     "V": {
+      "A": 51.00239999999998,
+      "G": 5.0075,
+      "PR": -24.998400000000018,
+      "S": 891536837.3488126
+     },
+     "gates": {
+      "d1_efficiency_equality": true,
+      "esso_slack_gate": true,
+      "interface_p_ceiling_12p5kw": true,
+      "network_closure_slack_le_tau_cl": true,
+      "status_ok_and_guards_exact": true
+     },
+     "gates_pass": true,
+     "settled_checks": {
+      "K_at_least_W": true,
+      "guards_exact_and_no_local_failure": true,
+      "last_W_at_tail_depth": true,
+      "reached_K": true,
+      "stop_disabled_declared": true,
+      "would_have_certified_each_of_last_W": true
+     },
+     "status": "settled"
+    }
+   },
+   "wall_s": 0.10453915596008301
+  }
+ },
+ "schema": "p515_s56_search_oracle_tests_v1",
+ "scratch_note": "test_trees/ holds frozen campaign / pilot specs carrying EV-configuration eval keys: hash-recorded in the manifest, NOT committed (a later collision scan would hit them)",
+ "script": "p515_s56_search_oracle_tests.py",
+ "solve_claim": "ZERO SOLVES, guard-verified; driver subprocesses arm their own guard; stub children import no model",
+ "wall_s": 0.349153995513916
+}

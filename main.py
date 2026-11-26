@@ -63,7 +63,7 @@ def shared_resources_planning(working_directory, specification_filename):
     planning_problem.read_planning_problem()
     # planning_problem.plot_diagram()
 
-    # candidate_solution = planning_problem.get_test_candidate_solution(s_inv=1.00, e_inv=2.00)
+    candidate_solution = planning_problem.get_test_candidate_solution(s_inv=1.00, e_inv=3.00, node_id=7, investment_year=2025)
 
     # planning_problem.run_operational_planning(type='uncoordinated', print_results=True, debug_flag=False)
     # planning_problem.run_operational_planning(type='centralized', print_results=True, debug_flag=False)
@@ -74,7 +74,32 @@ def shared_resources_planning(working_directory, specification_filename):
     # planning_problem.run_operational_planning(type='distributed', print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_distributed_without ESS')
     # planning_problem.run_operational_planning(type='distributed', candidate_solution=candidate_solution, print_results=True, debug_flag=False, filename=f'{planning_problem.name}_operational_planning_results_distributed_with ESS')
 
-    planning_problem.run_planning_problem()
+    convergence, results, models, sensitivities, primal_evolution, state = \
+        planning_problem.run_operational_planning(
+            type='distributed',
+            candidate_solution=candidate_solution,
+            print_results=True,
+            debug_flag=False,
+            filename=f'{planning_problem.name}_operational_planning_results_distributed_test_node7_2025',
+            return_state=True
+        )
+
+    print(f'\nOperational convergence: {convergence}')
+    years = list(planning_problem.years)
+    print('\nESSO cohort states:')
+    for node_id, model in models['esso'].items():
+        print(f'\nNode {node_id}')
+        for y_inv in model.years:
+            num_registered = 0
+            num_active = 0
+            for constraint_name, constraint_idx, y in model._esso_cohort_constraints[y_inv]:
+                constraint = getattr(model, constraint_name)[constraint_idx]
+                num_registered += 1
+                if constraint.active:
+                    num_active += 1
+            print(f'{years[y_inv]} | inactive={model._esso_cohort_inactive[y_inv]} | active constraints={num_active}/{num_registered}')
+
+    # planning_problem.run_planning_problem()
 
     # transmission_network_copy = deepcopy(planning_problem.transmission_network)
     # for year in transmission_network_copy.years:

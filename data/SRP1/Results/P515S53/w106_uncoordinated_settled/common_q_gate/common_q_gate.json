@@ -1,0 +1,1200 @@
+{
+ "arm_network_compl_inf_tol": 1e-06,
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 49 (rulings 1-3, consistency convention, resolution, timing)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 49 clarification 2026-09-26 (tie-breaker roles; lambda_t recovery)",
+  "TASKS.md Addendum 49 order",
+  "Planner task W93",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 53 Ruling 4 (coordinated arm reported only as the settled x = 0 value)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 54 Ruling 3 (common-Q gate and lambda_t look on the settled cycle-181 x = 0 models; the gate reference is the settled value)",
+  "Planner task W106",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 55 (option (a): the lambda consensus item gated on the settled cycle-181 models, tolerance 0.05 unchanged; candidate lambda != pi hour; signed curtailment reporting after W109 f6e3533f)",
+  "Planner task W111 (benchmark spec v2)"
+ ],
+ "capture_path_checklist": {
+  "DSO5_ipopt_file_print_level_ge_5": true,
+  "DSO5_ipopt_output_file_configured": true,
+  "DSO5_single_scenario": true,
+  "DSO7_ipopt_file_print_level_ge_5": true,
+  "DSO7_ipopt_output_file_configured": true,
+  "DSO7_single_scenario": true,
+  "DSO9_ipopt_file_print_level_ge_5": true,
+  "DSO9_ipopt_output_file_configured": true,
+  "DSO9_single_scenario": true,
+  "TSO_ipopt_file_print_level_ge_5": true,
+  "TSO_ipopt_output_file_configured": true,
+  "TSO_single_scenario": true,
+  "coordinated_campaign_manifest_equals_evidence_commit_blob": true,
+  "coordinated_campaign_manifest_git_tracked_and_clean": true,
+  "coordinated_certified_models_sha_in_campaign_manifest": true,
+  "coordinated_certified_models_sha_in_child_manifest": true,
+  "coordinated_child_manifest_git_tracked_and_clean": true,
+  "coordinated_dso_all_have_admm_objective_scale": true,
+  "coordinated_dso_all_have_dual_pf_p_req": true,
+  "coordinated_dso_all_have_expected_interface_pf_p": true,
+  "coordinated_dso_all_have_expected_interface_vmag": true,
+  "coordinated_dso_all_have_node_balance_p": true,
+  "coordinated_dso_all_have_p_pf_req": true,
+  "coordinated_dso_all_have_rho_pf": true,
+  "coordinated_dso_one_active_objective_p58_or_admm": true,
+  "coordinated_esso_models_sha_in_campaign_manifest": true,
+  "coordinated_esso_models_sha_in_child_manifest": true,
+  "coordinated_evaluation_record_git_tracked_and_clean": true,
+  "coordinated_evaluation_record_sha_in_campaign_manifest": true,
+  "coordinated_evaluation_record_sha_in_child_manifest": true,
+  "coordinated_interface_duals_git_tracked_and_clean": true,
+  "coordinated_interface_duals_sha_in_campaign_manifest": true,
+  "coordinated_interface_duals_sha_in_child_manifest": true,
+  "coordinated_n_dso_blocks_36": true,
+  "coordinated_n_tso_blocks_12": true,
+  "coordinated_persist_requested": true,
+  "coordinated_persisted_sha_in_post_certification": true,
+  "coordinated_pf_entry_stride_sha_in_campaign_manifest": true,
+  "coordinated_pf_entry_stride_sha_in_child_manifest": true,
+  "coordinated_post_certification_cost_is_reference_q_bitwise": true,
+  "coordinated_post_certification_cycle": true,
+  "coordinated_post_certification_git_tracked_and_clean": true,
+  "coordinated_post_certification_sha_in_campaign_manifest": true,
+  "coordinated_post_certification_sha_in_child_manifest": true,
+  "coordinated_record_campaign_spec": true,
+  "coordinated_record_candidate_key_is_x0": true,
+  "coordinated_record_certification_cycle": true,
+  "coordinated_record_certified": true,
+  "coordinated_record_certified_gross_is_declared": true,
+  "coordinated_record_curtailment_figure_is_declared": true,
+  "coordinated_record_eval_key": true,
+  "coordinated_record_recourse_components_present": true,
+  "coordinated_record_recourse_gross_is_declared": true,
+  "coordinated_settling_decision_certified": true,
+  "coordinated_settling_decision_git_tracked_and_clean": true,
+  "coordinated_settling_decision_k_star_is_certification_cycle": true,
+  "coordinated_settling_decision_q_k_star_is_reference_q_bitwise": true,
+  "coordinated_settling_decision_sha_in_campaign_manifest": true,
+  "coordinated_settling_decision_sha_in_child_manifest": true,
+  "coordinated_tso_all_have_admm_objective_scale": true,
+  "coordinated_tso_all_have_dual_pf_p_req": true,
+  "coordinated_tso_all_have_expected_interface_pf_p": true,
+  "coordinated_tso_all_have_expected_interface_vmag": true,
+  "coordinated_tso_all_have_node_balance_p": true,
+  "coordinated_tso_all_have_p_pf_req": true,
+  "coordinated_tso_all_have_rho_pf": true,
+  "coordinated_tso_one_active_objective_p58_or_admm": true,
+  "coordination_components_all_declared_consensus_terms": true,
+  "coordination_components_found_in_source": true,
+  "dual_param_is_dual_var_over_s_base_dso": true,
+  "dual_param_is_dual_var_over_s_base_tso": true,
+  "instance_candidate_key_is_x0": true,
+  "new_module_does_not_call_retired_path": true,
+  "objective_divided_by_effective_scale_dso": true,
+  "objective_divided_by_effective_scale_tso": true,
+  "p58_rescaled_objective_declared": true,
+  "pf_channel_dso_rating_normalised": true,
+  "pf_channel_tso_rating_normalised": true,
+  "recourse_components_reads_gross": true,
+  "retired_path_source_sha_equals_bitwise_gate_pin": true,
+  "srp_has__add_tso_scenario_tracking_penalty": true,
+  "srp_has__apply_convergence_depth_tail": true,
+  "srp_has__capture_convergence_depth_tail_baseline": true,
+  "srp_has__drain_network_ipopt_solve_records": true,
+  "srp_has__get_admm_block_weight": true,
+  "srp_has__get_operational_recourse_block_components": true,
+  "srp_has__get_operational_recourse_components": true,
+  "srp_has__prepare_distribution_objectives_for_admm": true,
+  "srp_has__prepare_transmission_objectives_for_admm": true,
+  "srp_has__set_row18_inactive_for_initialisation": true
+ },
+ "coordinated_cell": {
+  "campaign_manifest": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/campaign_manifest_sha256.json",
+  "campaign_spec_sha256": "d1d5c3bcbdc261d297282382ce4a54263a811059d17230613a1765ee915ebd33",
+  "certification_cycle": 181,
+  "certification_rule": "settling criterion of stage spec v39 (Boyd residuals + three turning points, swings not growing, one-period range <= tau = 4,539.07 EUR); branch oscillatory; band width 4,209.17",
+  "certified_gross": 653873702.1876609,
+  "certified_gross_source": "settling_decision.json Q_k_star; equal (bitwise, checked) to evaluation_record certified_cost, recourse_components.gross_operational_cost and post_certification certified_cost",
+  "certified_models": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/certified_models.pkl",
+   "sha256": "99ab1070b0e61cc7818975ce898069d2060d2668bae67c166b58913e9923c33a"
+  },
+  "child_manifest": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/child_manifest_sha256.json",
+  "esso_models": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/esso_models_s39_D.pkl",
+   "sha256": "118487e1853bbad176f324b1173df8c4198cb6c7709c25d7dce9f94ce4c199fa"
+  },
+  "eval_dir": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0",
+  "eval_key": "d110bd1a5977df1e811a1b3963afc565de6daa65f76dcc096ead3fdc70b08546",
+  "evaluation_record": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/evaluation_record.json",
+  "evidence_commit": "e4b5c9928d96b413c77039c377e5f7a82a6549f5",
+  "interface_duals": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/interface_duals_per_cycle.jsonl",
+   "sha256": "10c986c79eebe9e6d84bbd9c3978b802b2760c00399cb427125a0b797b41e8cb"
+  },
+  "pf_entry_stride": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/pf_entry_stride_s39_D.jsonl",
+   "sha256": "f71147584175a42f7c503e905e8e519841424b5a89bf33724dfce753769f498a"
+  },
+  "post_certification": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/post_certification.json",
+  "res_curtailment_definitional_at_weight_1": 589.425936658749,
+  "settling_decision": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/settling_decision.json",
+  "stage_spec": {
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v39_8a612429.json",
+   "version": 39
+  }
+ },
+ "coordinated_cell_description": "W102 settled SRP1 x = 0 cell (settling continuation of the W86 re-certification: bitwise replay through cycle 132, then certified by the settling rule at k* = 181; terminal models persisted)",
+ "coordinated_previous_reference_reported_only": {
+  "cell": "W86 5cfe69a615ae3708_x0 (campaign s53_w86_tail_recert, spec ddd6cd44) -- UNWIRED",
+  "certification_cycle": 132,
+  "certified_gross": 653858731.5686293,
+  "res_curtailment_definitional_at_weight_1": 589.1778397145646,
+  "source": "committed W86 evaluation_record.json (certified_cost; component_decomposition_totals_weighted.res_curtailment_definitional_at_weight_1)"
+ },
+ "curtailment_signed_parts": {
+  "counts": {
+   "DSO": {
+    "max_c_mwh": 0.0369896172776607,
+    "min_c_mwh": -0.0010009994187927843,
+    "n_entries": 3456,
+    "n_negative": 489,
+    "n_positive": 1911,
+    "n_zero": 1056
+   },
+   "TSO": {
+    "max_c_mwh": 0.0,
+    "min_c_mwh": -0.0010009993587390075,
+    "n_entries": 1728,
+    "n_negative": 1332,
+    "n_positive": 0,
+    "n_zero": 396
+   }
+  },
+  "definition": "W111 (Addendum 55; W109 f6e3533f: the negative entries are the model, not the helper). Per entry (curtaillable generator g, scenarios s_m/s_o, period p) c = baseMVA x (pg_avail[g,s_o,p] - pg[g,s_m,s_o,p]) [MWh per representative day], the exact term of model_construction_helpers.gen_curtailment_definitional_value (weight 1; zero when params.rg_curt is off); block value = sum over scenarios of omega x sum over entries. NET = production's definitional quantity, taken from uncoordinated_benchmark.curtailment_report UNCHANGED (the primary figure; frozen); POSITIVE PART = entries with c > 0 only; NEGATIVE PART = entries with c < 0 only; each on the same weightings as the net (EUR at 1 EUR/MWh block-weighted = years x days x discount; raw MWh day-weighted = years x days, undiscounted; and the plain sum over representative days), TSO and DSO separately. The helper, the model and Q are unchanged; which figure the manuscript uses is pending the author",
+  "net_from_entries": {
+   "DSO": {
+    "eur_at_1_block_weighted": 608.6677991851257,
+    "mwh_day_weighted": 681.6614408448545,
+    "mwh_rep_day_sum": 1.4930020979937129
+   },
+   "TSO": {
+    "eur_at_1_block_weighted": -19.241862526376515,
+    "mwh_day_weighted": -21.006826875664466,
+    "mwh_rep_day_sum": -0.04609955859345323
+   }
+  },
+  "per_block": {
+   "DSO|5|2025|Autumn": {
+    "block_weight": 455.0,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.01883093713388429,
+    "negative_part_mwh_rep_day": -0.004366839001865451,
+    "net_mwh_rep_day": 0.01883093713388429,
+    "positive_part_mwh_rep_day": 0.02319777613574974
+   },
+   "DSO|5|2025|Spring": {
+    "block_weight": 460.0,
+    "day_weight": 460.0,
+    "entries_sum_mwh_rep_day": 0.0141954652008551,
+    "negative_part_mwh_rep_day": -0.002311918661133776,
+    "net_mwh_rep_day": 0.0141954652008551,
+    "positive_part_mwh_rep_day": 0.016507383861988877
+   },
+   "DSO|5|2025|Summer": {
+    "block_weight": 455.0,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.015695657363151434,
+    "negative_part_mwh_rep_day": -0.004913305252196678,
+    "net_mwh_rep_day": 0.015695657363151434,
+    "positive_part_mwh_rep_day": 0.020608962615348107
+   },
+   "DSO|5|2025|Winter": {
+    "block_weight": 455.0,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.03345557409833314,
+    "negative_part_mwh_rep_day": -0.005503554459397858,
+    "net_mwh_rep_day": 0.03345557409833314,
+    "positive_part_mwh_rep_day": 0.038959128557730996
+   },
+   "DSO|5|2030|Autumn": {
+    "block_weight": 412.10751847261173,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.026730774923735722,
+    "negative_part_mwh_rep_day": -0.004194479895846081,
+    "net_mwh_rep_day": 0.026730774923735722,
+    "positive_part_mwh_rep_day": 0.030925254819581804
+   },
+   "DSO|5|2030|Spring": {
+    "block_weight": 416.63617252176135,
+    "day_weight": 460.0,
+    "entries_sum_mwh_rep_day": 0.022896766997820967,
+    "negative_part_mwh_rep_day": -0.0014075396140950883,
+    "net_mwh_rep_day": 0.022896766997820967,
+    "positive_part_mwh_rep_day": 0.024304306611916057
+   },
+   "DSO|5|2030|Summer": {
+    "block_weight": 412.10751847261173,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.033420341761177495,
+    "negative_part_mwh_rep_day": -0.003928795405866606,
+    "net_mwh_rep_day": 0.033420341761177495,
+    "positive_part_mwh_rep_day": 0.037349137167044105
+   },
+   "DSO|5|2030|Winter": {
+    "block_weight": 412.10751847261173,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.04252040438708969,
+    "negative_part_mwh_rep_day": -0.004777975397584986,
+    "net_mwh_rep_day": 0.04252040438708969,
+    "positive_part_mwh_rep_day": 0.047298379784674674
+   },
+   "DSO|5|2035|Autumn": {
+    "block_weight": 373.2584764431956,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.03810559983473763,
+    "negative_part_mwh_rep_day": -0.001829563555282265,
+    "net_mwh_rep_day": 0.03810559983473763,
+    "positive_part_mwh_rep_day": 0.03993516339001989
+   },
+   "DSO|5|2035|Spring": {
+    "block_weight": 377.36021794257135,
+    "day_weight": 460.0,
+    "entries_sum_mwh_rep_day": 0.036360536825736686,
+    "negative_part_mwh_rep_day": -0.0008874721163310353,
+    "net_mwh_rep_day": 0.036360536825736686,
+    "positive_part_mwh_rep_day": 0.037248008942067715
+   },
+   "DSO|5|2035|Summer": {
+    "block_weight": 373.2584764431956,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.075882926699787,
+    "negative_part_mwh_rep_day": -0.003932874884779363,
+    "net_mwh_rep_day": 0.075882926699787,
+    "positive_part_mwh_rep_day": 0.07981580158456636
+   },
+   "DSO|5|2035|Winter": {
+    "block_weight": 373.2584764431956,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.05640061060605905,
+    "negative_part_mwh_rep_day": -0.004075862887300686,
+    "net_mwh_rep_day": 0.05640061060605905,
+    "positive_part_mwh_rep_day": 0.06047647349335973
+   },
+   "DSO|7|2025|Autumn": {
+    "block_weight": 455.0,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.005518457287566049,
+    "negative_part_mwh_rep_day": -0.002623150489461319,
+    "net_mwh_rep_day": 0.005518457287566049,
+    "positive_part_mwh_rep_day": 0.008141607777027368
+   },
+   "DSO|7|2025|Spring": {
+    "block_weight": 460.0,
+    "day_weight": 460.0,
+    "entries_sum_mwh_rep_day": 0.10543957738169707,
+    "negative_part_mwh_rep_day": -0.00211579404473508,
+    "net_mwh_rep_day": 0.10543957738169707,
+    "positive_part_mwh_rep_day": 0.10755537142643212
+   },
+   "DSO|7|2025|Summer": {
+    "block_weight": 455.0,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.07396341234611764,
+    "negative_part_mwh_rep_day": -0.0036104305928855657,
+    "net_mwh_rep_day": 0.07396341234611764,
+    "positive_part_mwh_rep_day": 0.0775738429390032
+   },
+   "DSO|7|2025|Winter": {
+    "block_weight": 455.0,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.00657563922044013,
+    "negative_part_mwh_rep_day": -0.0043813533233516295,
+    "net_mwh_rep_day": 0.00657563922044013,
+    "positive_part_mwh_rep_day": 0.01095699254379176
+   },
+   "DSO|7|2030|Autumn": {
+    "block_weight": 412.10751847261173,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.006830407933594828,
+    "negative_part_mwh_rep_day": -0.0026050804337319575,
+    "net_mwh_rep_day": 0.006830407933594828,
+    "positive_part_mwh_rep_day": 0.009435488367326786
+   },
+   "DSO|7|2030|Spring": {
+    "block_weight": 416.63617252176135,
+    "day_weight": 460.0,
+    "entries_sum_mwh_rep_day": 0.10732012952403985,
+    "negative_part_mwh_rep_day": -0.0017140720398998608,
+    "net_mwh_rep_day": 0.10732012952403985,
+    "positive_part_mwh_rep_day": 0.10903420156393971
+   },
+   "DSO|7|2030|Summer": {
+    "block_weight": 412.10751847261173,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.05683642893388906,
+    "negative_part_mwh_rep_day": -0.003017316045629282,
+    "net_mwh_rep_day": 0.05683642893388906,
+    "positive_part_mwh_rep_day": 0.05985374497951834
+   },
+   "DSO|7|2030|Winter": {
+    "block_weight": 412.10751847261173,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.012760769423286527,
+    "negative_part_mwh_rep_day": -0.0038198145978998108,
+    "net_mwh_rep_day": 0.012760769423286527,
+    "positive_part_mwh_rep_day": 0.01658058402118634
+   },
+   "DSO|7|2035|Autumn": {
+    "block_weight": 373.2584764431956,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.012679427043659087,
+    "negative_part_mwh_rep_day": -0.0018677398209444678,
+    "net_mwh_rep_day": 0.012679427043659087,
+    "positive_part_mwh_rep_day": 0.014547166864603556
+   },
+   "DSO|7|2035|Spring": {
+    "block_weight": 377.36021794257135,
+    "day_weight": 460.0,
+    "entries_sum_mwh_rep_day": 0.05299594513602324,
+    "negative_part_mwh_rep_day": -0.0009009877499318577,
+    "net_mwh_rep_day": 0.05299594513602324,
+    "positive_part_mwh_rep_day": 0.053896932885955096
+   },
+   "DSO|7|2035|Summer": {
+    "block_weight": 373.2584764431956,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.16415290343444283,
+    "negative_part_mwh_rep_day": -0.003171138176395515,
+    "net_mwh_rep_day": 0.16415290343444283,
+    "positive_part_mwh_rep_day": 0.16732404161083833
+   },
+   "DSO|7|2035|Winter": {
+    "block_weight": 373.2584764431956,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.015378159081582379,
+    "negative_part_mwh_rep_day": -0.0031126436335149653,
+    "net_mwh_rep_day": 0.015378159081582379,
+    "positive_part_mwh_rep_day": 0.018490802715097343
+   },
+   "DSO|9|2025|Autumn": {
+    "block_weight": 455.0,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.014888486080705048,
+    "negative_part_mwh_rep_day": -0.0016200252702192031,
+    "net_mwh_rep_day": 0.014888486080705048,
+    "positive_part_mwh_rep_day": 0.01650851135092425
+   },
+   "DSO|9|2025|Spring": {
+    "block_weight": 460.0,
+    "day_weight": 460.0,
+    "entries_sum_mwh_rep_day": 0.03501277121735988,
+    "negative_part_mwh_rep_day": -0.0009150054174408753,
+    "net_mwh_rep_day": 0.03501277121735988,
+    "positive_part_mwh_rep_day": 0.03592777663480075
+   },
+   "DSO|9|2025|Summer": {
+    "block_weight": 455.0,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.053085916705507205,
+    "negative_part_mwh_rep_day": -0.0026318824280943632,
+    "net_mwh_rep_day": 0.053085916705507205,
+    "positive_part_mwh_rep_day": 0.05571779913360157
+   },
+   "DSO|9|2025|Winter": {
+    "block_weight": 455.0,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.008624181234687613,
+    "negative_part_mwh_rep_day": -0.003951240408913063,
+    "net_mwh_rep_day": 0.008624181234687613,
+    "positive_part_mwh_rep_day": 0.012575421643600676
+   },
+   "DSO|9|2030|Autumn": {
+    "block_weight": 412.10751847261173,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.028832060108691885,
+    "negative_part_mwh_rep_day": -0.001376508955783489,
+    "net_mwh_rep_day": 0.028832060108691885,
+    "positive_part_mwh_rep_day": 0.030208569064475374
+   },
+   "DSO|9|2030|Spring": {
+    "block_weight": 416.63617252176135,
+    "day_weight": 460.0,
+    "entries_sum_mwh_rep_day": 0.03730740844486166,
+    "negative_part_mwh_rep_day": -0.000906981581587276,
+    "net_mwh_rep_day": 0.03730740844486166,
+    "positive_part_mwh_rep_day": 0.03821439002644894
+   },
+   "DSO|9|2030|Summer": {
+    "block_weight": 412.10751847261173,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.06270151518744366,
+    "negative_part_mwh_rep_day": -0.0031676461111821807,
+    "net_mwh_rep_day": 0.06270151518744366,
+    "positive_part_mwh_rep_day": 0.06586916129862584
+   },
+   "DSO|9|2030|Winter": {
+    "block_weight": 412.10751847261173,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.019092165849549626,
+    "negative_part_mwh_rep_day": -0.004172655146219148,
+    "net_mwh_rep_day": 0.019092165849549626,
+    "positive_part_mwh_rep_day": 0.023264820995768775
+   },
+   "DSO|9|2035|Autumn": {
+    "block_weight": 373.2584764431956,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.029509280740200233,
+    "negative_part_mwh_rep_day": -0.0009804369673687037,
+    "net_mwh_rep_day": 0.029509280740200233,
+    "positive_part_mwh_rep_day": 0.030489717707568934
+   },
+   "DSO|9|2035|Spring": {
+    "block_weight": 377.36021794257135,
+    "day_weight": 460.0,
+    "entries_sum_mwh_rep_day": 0.057568650814630085,
+    "negative_part_mwh_rep_day": -0.0006286500416991143,
+    "net_mwh_rep_day": 0.057568650814630085,
+    "positive_part_mwh_rep_day": 0.058197300856329195
+   },
+   "DSO|9|2035|Summer": {
+    "block_weight": 373.2584764431956,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.08415001093890684,
+    "negative_part_mwh_rep_day": -0.002852351680541766,
+    "net_mwh_rep_day": 0.08415001093890684,
+    "positive_part_mwh_rep_day": 0.08700236261944862
+   },
+   "DSO|9|2035|Winter": {
+    "block_weight": 373.2584764431956,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": 0.02728279809246239,
+    "negative_part_mwh_rep_day": -0.0037182701198957106,
+    "net_mwh_rep_day": 0.02728279809246239,
+    "positive_part_mwh_rep_day": 0.031001068212358103
+   },
+   "TSO|-|2025|Autumn": {
+    "block_weight": 455.0,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": -0.003850593115111339,
+    "negative_part_mwh_rep_day": -0.003850593115111339,
+    "net_mwh_rep_day": -0.003850593115111339,
+    "positive_part_mwh_rep_day": 0.0
+   },
+   "TSO|-|2025|Spring": {
+    "block_weight": 460.0,
+    "day_weight": 460.0,
+    "entries_sum_mwh_rep_day": -0.0028750558497653853,
+    "negative_part_mwh_rep_day": -0.0028750558497653853,
+    "net_mwh_rep_day": -0.0028750558497653853,
+    "positive_part_mwh_rep_day": 0.0
+   },
+   "TSO|-|2025|Summer": {
+    "block_weight": 455.0,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": -0.005200333092800259,
+    "negative_part_mwh_rep_day": -0.005200333092800259,
+    "net_mwh_rep_day": -0.005200333092800259,
+    "positive_part_mwh_rep_day": 0.0
+   },
+   "TSO|-|2025|Winter": {
+    "block_weight": 455.0,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": -0.005791346155037509,
+    "negative_part_mwh_rep_day": -0.005791346155037509,
+    "net_mwh_rep_day": -0.005791346155037509,
+    "positive_part_mwh_rep_day": 0.0
+   },
+   "TSO|-|2030|Autumn": {
+    "block_weight": 412.10751847261173,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": -0.0030718008589955353,
+    "negative_part_mwh_rep_day": -0.0030718008589955353,
+    "net_mwh_rep_day": -0.0030718008589955353,
+    "positive_part_mwh_rep_day": 0.0
+   },
+   "TSO|-|2030|Spring": {
+    "block_weight": 416.63617252176135,
+    "day_weight": 460.0,
+    "entries_sum_mwh_rep_day": -0.0017859416859723667,
+    "negative_part_mwh_rep_day": -0.0017859416859723667,
+    "net_mwh_rep_day": -0.0017859416859723667,
+    "positive_part_mwh_rep_day": 0.0
+   },
+   "TSO|-|2030|Summer": {
+    "block_weight": 412.10751847261173,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": -0.004612184448388425,
+    "negative_part_mwh_rep_day": -0.004612184448388425,
+    "net_mwh_rep_day": -0.004612184448388425,
+    "positive_part_mwh_rep_day": 0.0
+   },
+   "TSO|-|2030|Winter": {
+    "block_weight": 412.10751847261173,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": -0.004876924262138284,
+    "negative_part_mwh_rep_day": -0.004876924262138284,
+    "net_mwh_rep_day": -0.004876924262138284,
+    "positive_part_mwh_rep_day": 0.0
+   },
+   "TSO|-|2035|Autumn": {
+    "block_weight": 373.2584764431956,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": -0.003859070297865556,
+    "negative_part_mwh_rep_day": -0.003859070297865556,
+    "net_mwh_rep_day": -0.003859070297865556,
+    "positive_part_mwh_rep_day": 0.0
+   },
+   "TSO|-|2035|Spring": {
+    "block_weight": 377.36021794257135,
+    "day_weight": 460.0,
+    "entries_sum_mwh_rep_day": -0.0016445455929108618,
+    "negative_part_mwh_rep_day": -0.0016445455929108618,
+    "net_mwh_rep_day": -0.0016445455929108618,
+    "positive_part_mwh_rep_day": 0.0
+   },
+   "TSO|-|2035|Summer": {
+    "block_weight": 373.2584764431956,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": -0.003754974300618525,
+    "negative_part_mwh_rep_day": -0.003754974300618525,
+    "net_mwh_rep_day": -0.003754974300618525,
+    "positive_part_mwh_rep_day": 0.0
+   },
+   "TSO|-|2035|Winter": {
+    "block_weight": 373.2584764431956,
+    "day_weight": 455.0,
+    "entries_sum_mwh_rep_day": -0.0047767889338491834,
+    "negative_part_mwh_rep_day": -0.0047767889338491834,
+    "net_mwh_rep_day": -0.0047767889338491834,
+    "positive_part_mwh_rep_day": 0.0
+   }
+  },
+  "primary": "net",
+  "reconciliation": {
+   "max_abs_block_mwh_rep_day_entries_or_parts_minus_helper_net": 2.7755575615628914e-17,
+   "positive_plus_negative_minus_net": {
+    "DSO": {
+     "eur_at_1_block_weighted": 1.1368683772161603e-13,
+     "mwh_day_weighted": 1.1368683772161603e-13,
+     "mwh_rep_day_sum": 0.0
+    },
+    "TSO": {
+     "eur_at_1_block_weighted": 0.0,
+     "mwh_day_weighted": 0.0,
+     "mwh_rep_day_sum": 0.0
+    }
+   }
+  },
+  "totals": {
+   "DSO": {
+    "negative_part": {
+     "eur_at_1_block_weighted": -42.67056179555638,
+     "mwh_day_weighted": -46.46500918143206,
+     "mwh_rep_day_sum": -0.10199135620900607
+    },
+    "net": {
+     "eur_at_1_block_weighted": 608.6677991851257,
+     "mwh_day_weighted": 681.6614408448545,
+     "mwh_rep_day_sum": 1.4930020979937129
+    },
+    "positive_part": {
+     "eur_at_1_block_weighted": 651.3383609806822,
+     "mwh_day_weighted": 728.1264500262866,
+     "mwh_rep_day_sum": 1.5949934542027189
+    }
+   },
+   "TSO": {
+    "negative_part": {
+     "eur_at_1_block_weighted": -19.241862526376515,
+     "mwh_day_weighted": -21.006826875664466,
+     "mwh_rep_day_sum": -0.04609955859345323
+    },
+    "net": {
+     "eur_at_1_block_weighted": -19.241862526376515,
+     "mwh_day_weighted": -21.006826875664466,
+     "mwh_rep_day_sum": -0.04609955859345323
+    },
+    "positive_part": {
+     "eur_at_1_block_weighted": 0.0,
+     "mwh_day_weighted": 0.0,
+     "mwh_rep_day_sum": 0.0
+    }
+   }
+  }
+ },
+ "evaluation_at_0": {
+  "curtailment": {
+   "definition": "model_construction_helpers.gen_curtailment_definitional_value(weight=1.0) = sum over curtaillable generators and periods of baseMVA x (pg_avail - pg) [MWh per representative day]; expectation over scenarios",
+   "per_block": {
+    "DSO|5|2025|Autumn": {
+     "block_weight": 455.0,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.01883093713388429
+    },
+    "DSO|5|2025|Spring": {
+     "block_weight": 460.0,
+     "day_weight": 460.0,
+     "mwh_rep_day": 0.0141954652008551
+    },
+    "DSO|5|2025|Summer": {
+     "block_weight": 455.0,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.015695657363151434
+    },
+    "DSO|5|2025|Winter": {
+     "block_weight": 455.0,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.03345557409833314
+    },
+    "DSO|5|2030|Autumn": {
+     "block_weight": 412.10751847261173,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.026730774923735722
+    },
+    "DSO|5|2030|Spring": {
+     "block_weight": 416.63617252176135,
+     "day_weight": 460.0,
+     "mwh_rep_day": 0.022896766997820967
+    },
+    "DSO|5|2030|Summer": {
+     "block_weight": 412.10751847261173,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.033420341761177495
+    },
+    "DSO|5|2030|Winter": {
+     "block_weight": 412.10751847261173,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.04252040438708969
+    },
+    "DSO|5|2035|Autumn": {
+     "block_weight": 373.2584764431956,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.03810559983473763
+    },
+    "DSO|5|2035|Spring": {
+     "block_weight": 377.36021794257135,
+     "day_weight": 460.0,
+     "mwh_rep_day": 0.036360536825736686
+    },
+    "DSO|5|2035|Summer": {
+     "block_weight": 373.2584764431956,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.075882926699787
+    },
+    "DSO|5|2035|Winter": {
+     "block_weight": 373.2584764431956,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.05640061060605905
+    },
+    "DSO|7|2025|Autumn": {
+     "block_weight": 455.0,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.005518457287566049
+    },
+    "DSO|7|2025|Spring": {
+     "block_weight": 460.0,
+     "day_weight": 460.0,
+     "mwh_rep_day": 0.10543957738169707
+    },
+    "DSO|7|2025|Summer": {
+     "block_weight": 455.0,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.07396341234611764
+    },
+    "DSO|7|2025|Winter": {
+     "block_weight": 455.0,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.00657563922044013
+    },
+    "DSO|7|2030|Autumn": {
+     "block_weight": 412.10751847261173,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.006830407933594828
+    },
+    "DSO|7|2030|Spring": {
+     "block_weight": 416.63617252176135,
+     "day_weight": 460.0,
+     "mwh_rep_day": 0.10732012952403985
+    },
+    "DSO|7|2030|Summer": {
+     "block_weight": 412.10751847261173,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.05683642893388906
+    },
+    "DSO|7|2030|Winter": {
+     "block_weight": 412.10751847261173,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.012760769423286527
+    },
+    "DSO|7|2035|Autumn": {
+     "block_weight": 373.2584764431956,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.012679427043659087
+    },
+    "DSO|7|2035|Spring": {
+     "block_weight": 377.36021794257135,
+     "day_weight": 460.0,
+     "mwh_rep_day": 0.05299594513602324
+    },
+    "DSO|7|2035|Summer": {
+     "block_weight": 373.2584764431956,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.16415290343444283
+    },
+    "DSO|7|2035|Winter": {
+     "block_weight": 373.2584764431956,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.015378159081582379
+    },
+    "DSO|9|2025|Autumn": {
+     "block_weight": 455.0,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.014888486080705048
+    },
+    "DSO|9|2025|Spring": {
+     "block_weight": 460.0,
+     "day_weight": 460.0,
+     "mwh_rep_day": 0.03501277121735988
+    },
+    "DSO|9|2025|Summer": {
+     "block_weight": 455.0,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.053085916705507205
+    },
+    "DSO|9|2025|Winter": {
+     "block_weight": 455.0,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.008624181234687613
+    },
+    "DSO|9|2030|Autumn": {
+     "block_weight": 412.10751847261173,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.028832060108691885
+    },
+    "DSO|9|2030|Spring": {
+     "block_weight": 416.63617252176135,
+     "day_weight": 460.0,
+     "mwh_rep_day": 0.03730740844486166
+    },
+    "DSO|9|2030|Summer": {
+     "block_weight": 412.10751847261173,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.06270151518744366
+    },
+    "DSO|9|2030|Winter": {
+     "block_weight": 412.10751847261173,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.019092165849549626
+    },
+    "DSO|9|2035|Autumn": {
+     "block_weight": 373.2584764431956,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.029509280740200233
+    },
+    "DSO|9|2035|Spring": {
+     "block_weight": 377.36021794257135,
+     "day_weight": 460.0,
+     "mwh_rep_day": 0.057568650814630085
+    },
+    "DSO|9|2035|Summer": {
+     "block_weight": 373.2584764431956,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.08415001093890684
+    },
+    "DSO|9|2035|Winter": {
+     "block_weight": 373.2584764431956,
+     "day_weight": 455.0,
+     "mwh_rep_day": 0.02728279809246239
+    },
+    "TSO|-|2025|Autumn": {
+     "block_weight": 455.0,
+     "day_weight": 455.0,
+     "mwh_rep_day": -0.003850593115111339
+    },
+    "TSO|-|2025|Spring": {
+     "block_weight": 460.0,
+     "day_weight": 460.0,
+     "mwh_rep_day": -0.0028750558497653853
+    },
+    "TSO|-|2025|Summer": {
+     "block_weight": 455.0,
+     "day_weight": 455.0,
+     "mwh_rep_day": -0.005200333092800259
+    },
+    "TSO|-|2025|Winter": {
+     "block_weight": 455.0,
+     "day_weight": 455.0,
+     "mwh_rep_day": -0.005791346155037509
+    },
+    "TSO|-|2030|Autumn": {
+     "block_weight": 412.10751847261173,
+     "day_weight": 455.0,
+     "mwh_rep_day": -0.0030718008589955353
+    },
+    "TSO|-|2030|Spring": {
+     "block_weight": 416.63617252176135,
+     "day_weight": 460.0,
+     "mwh_rep_day": -0.0017859416859723667
+    },
+    "TSO|-|2030|Summer": {
+     "block_weight": 412.10751847261173,
+     "day_weight": 455.0,
+     "mwh_rep_day": -0.004612184448388425
+    },
+    "TSO|-|2030|Winter": {
+     "block_weight": 412.10751847261173,
+     "day_weight": 455.0,
+     "mwh_rep_day": -0.004876924262138284
+    },
+    "TSO|-|2035|Autumn": {
+     "block_weight": 373.2584764431956,
+     "day_weight": 455.0,
+     "mwh_rep_day": -0.003859070297865556
+    },
+    "TSO|-|2035|Spring": {
+     "block_weight": 377.36021794257135,
+     "day_weight": 460.0,
+     "mwh_rep_day": -0.0016445455929108618
+    },
+    "TSO|-|2035|Summer": {
+     "block_weight": 373.2584764431956,
+     "day_weight": 455.0,
+     "mwh_rep_day": -0.003754974300618525
+    },
+    "TSO|-|2035|Winter": {
+     "block_weight": 373.2584764431956,
+     "day_weight": 455.0,
+     "mwh_rep_day": -0.0047767889338491834
+    }
+   },
+   "totals": {
+    "DSO": {
+     "eur_at_1_block_weighted": 608.6677991851257,
+     "mwh_day_weighted": 681.6614408448545,
+     "mwh_rep_day_sum": 1.4930020979937129
+    },
+    "TSO": {
+     "eur_at_1_block_weighted": -19.241862526376515,
+     "mwh_day_weighted": -21.006826875664466,
+     "mwh_rep_day_sum": -0.04609955859345323
+    }
+   }
+  },
+  "evaluation_curtailment_penalty": 0.0,
+  "gross_operational_cost": 653873702.1876609,
+  "gross_operational_cost_hex": "0x1.37ca913180546p+29",
+  "objective_convention": "gross_operational_cost = production _get_operational_recourse_components: sum of every TSO/DSO block's objective_function_rule value x block weight (years x days x discount annualization), MINUS the contracted interface settlement (a transfer) and the solver-only voltage pin -- i.e. SETTLEMENT-EXCLUDED; salvage NOT subtracted (net_operational_recourse = gross - salvage, reported separately). Every block is priced for the evaluation with production's own ADMM-subproblem pricing (_prepare_transmission_objectives_for_admm / _prepare_distribution_objectives_for_admm) and the curtailment tie-breaker penalty_gen_curtailment at the declared EVALUATION value (recorded as evaluation_curtailment_penalty); the decision objectives the arms were solved with are recorded separately.",
+  "pricing_changed_by_evaluation": {}
+ },
+ "evaluation_at_1_gross": 653874291.6135976,
+ "frozen_benchmark_spec": {
+  "path": "data/SRP1/Results/P515S53/w106_uncoordinated_settled/frozen_s53_benchmark_spec_v2_bb659122.json",
+  "sha256": "bb659122af30b70a878c039c63d6458bf2c87d2a8971222f76f5c7cbb7576112",
+  "version": 2
+ },
+ "gate": {
+  "difference": 0.0,
+  "fields": {
+   "detector_components": {
+    "certified": {
+     "branch_flow_slack": 0.0,
+     "detector_penalty_total": -13012.566792612752,
+     "flexibility_p_day_balance_slack": -955.1307261622013,
+     "local_ess_day_balance_slack": 0.0,
+     "node_balance_slack": 0.0,
+     "shared_ess_day_balance_slack": 0.0,
+     "voltage_slack": -12057.436066450551
+    },
+    "equal_bitwise": true,
+    "evaluated": {
+     "branch_flow_slack": 0.0,
+     "detector_penalty_total": -13012.566792612752,
+     "flexibility_p_day_balance_slack": -955.1307261622013,
+     "local_ess_day_balance_slack": 0.0,
+     "node_balance_slack": 0.0,
+     "shared_ess_day_balance_slack": 0.0,
+     "voltage_slack": -12057.436066450551
+    }
+   },
+   "detector_penalty_total": {
+    "certified": -13012.566792612752,
+    "equal_bitwise": true,
+    "evaluated": -13012.566792612752
+   },
+   "economic_recourse_all_D_excluded": {
+    "certified": 653886714.7544535,
+    "equal_bitwise": true,
+    "evaluated": 653886714.7544535
+   },
+   "economic_recourse_voltage_excluded": {
+    "certified": 653885759.6237274,
+    "equal_bitwise": true,
+    "evaluated": 653885759.6237274
+   },
+   "gross_operational_cost": {
+    "certified": 653873702.1876609,
+    "equal_bitwise": true,
+    "evaluated": 653873702.1876609
+   },
+   "gross_operational_cost_including_settlement": {
+    "certified": 653873844.7159548,
+    "equal_bitwise": true,
+    "evaluated": 653873844.7159548
+   },
+   "interface_settlement_contracted_dso": {
+    "certified": {
+     "5": 428054779.0411291,
+     "7": 311087973.8105726,
+     "9": 391962023.67091036
+    },
+    "equal_bitwise": true,
+    "evaluated": {
+     "5": 428054779.0411291,
+     "7": 311087973.8105726,
+     "9": 391962023.67091036
+    }
+   },
+   "interface_settlement_contracted_total": {
+    "certified": 142.52829384803772,
+    "equal_bitwise": true,
+    "evaluated": 142.52829384803772
+   },
+   "interface_settlement_contracted_tso": {
+    "certified": -1131104633.9943182,
+    "equal_bitwise": true,
+    "evaluated": -1131104633.9943182
+   },
+   "interface_settlement_covariance_total": {
+    "certified": 0.0,
+    "equal_bitwise": true,
+    "evaluated": 0.0
+   },
+   "interface_settlement_deviation_dso": {
+    "certified": {
+     "5": 0.0,
+     "7": 0.0,
+     "9": 0.0
+    },
+    "equal_bitwise": true,
+    "evaluated": {
+     "5": 0.0,
+     "7": 0.0,
+     "9": 0.0
+    }
+   },
+   "interface_settlement_deviation_total": {
+    "certified": 0.0,
+    "equal_bitwise": true,
+    "evaluated": 0.0
+   },
+   "interface_settlement_deviation_tso": {
+    "certified": 0.0,
+    "equal_bitwise": true,
+    "evaluated": 0.0
+   },
+   "interface_settlement_dso": {
+    "certified": {
+     "5": 428054779.0411291,
+     "7": 311087973.8105726,
+     "9": 391962023.67091036
+    },
+    "equal_bitwise": true,
+    "evaluated": {
+     "5": 428054779.0411291,
+     "7": 311087973.8105726,
+     "9": 391962023.67091036
+    }
+   },
+   "interface_settlement_identity_residual": {
+    "certified": 142.52829384803772,
+    "equal_bitwise": true,
+    "evaluated": 142.52829384803772
+   },
+   "interface_settlement_total": {
+    "certified": 142.52829384803772,
+    "equal_bitwise": true,
+    "evaluated": 142.52829384803772
+   },
+   "interface_settlement_tso": {
+    "certified": -1131104633.9943182,
+    "equal_bitwise": true,
+    "evaluated": -1131104633.9943182
+   },
+   "net_operational_recourse": {
+    "certified": 653873702.1876609,
+    "equal_bitwise": true,
+    "evaluated": 653873702.1876609
+   },
+   "terminal_salvage_value": {
+    "certified": 0.0,
+    "equal_bitwise": true,
+    "evaluated": 0.0
+   },
+   "voltage_pin_dso": {
+    "certified": {
+     "5": 0.0,
+     "7": 0.0,
+     "9": 0.0
+    },
+    "equal_bitwise": true,
+    "evaluated": {
+     "5": 0.0,
+     "7": 0.0,
+     "9": 0.0
+    }
+   },
+   "voltage_pin_total": {
+    "certified": 0.0,
+    "equal_bitwise": true,
+    "evaluated": 0.0
+   },
+   "voltage_pin_tso": {
+    "certified": 0.0,
+    "equal_bitwise": true,
+    "evaluated": 0.0
+   }
+  },
+  "gross_certified": 653873702.1876609,
+  "gross_certified_hex": "0x1.37ca913180546p+29",
+  "gross_evaluated": 653873702.1876609,
+  "gross_evaluated_hex": "0x1.37ca913180546p+29",
+  "n_fields": 22,
+  "n_fields_bitwise_equal": 22,
+  "passed": true,
+  "relative_difference": 0.0,
+  "status": "PASS_BITWISE"
+ },
+ "git_head": "34753387aa69cb5a8e9c030c86ebe589e18d4872",
+ "idempotent_repeat_bitwise": true,
+ "instance": {
+  "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+  "candidate_key_declared": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+  "candidate_key_matches": true,
+  "canonical_candidate": {
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.0,
+     0.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "label": "x0",
+  "problem": "SRP1"
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "lambda_channel_scaling": {
+  "accepted_by": "Planner, task W94 (correction to the Addendum 49 clarification wording)",
+  "addendum_49_wording": "undo sigma, S_ref, D5 when converting lambda_t to EUR/MWh",
+  "correction": "on the interface-P channel only sigma (through admm_objective_scale = sigma / block weight) and the interface rating apply; S_ref (shared_ess_reference_rating_mva) and D5 (the ESSO AL scale, al_scale_esso) act ONLY on the shared-ESS channel and are therefore not undone",
+  "source": {
+   "at_commit": "a8c58da0",
+   "d5": "update_shared_energy_storage_model_to_admm L5486 (admm_esso_al_scale = al_scale_esso) and L5515-5518 (multiplies ONLY the ESSO AL terms); al_scale_esso is never passed to the TSO/DSO updates",
+   "file": "shared_resources_planning.py",
+   "implemented_in": "uncoordinated_benchmark.interface_price_terms (docstring carries the same citation)",
+   "rating_dso": "update_distribution_models_to_admm L5428-5429 (same as TSO)",
+   "rating_tso": "update_transmission_model_to_admm L5156-5157: constraint_p_req/q_req = (E - z) / interface_transf_rating",
+   "sigma_dso": "update_distribution_models_to_admm L5402-5407 (same as TSO)",
+   "sigma_tso": "update_transmission_model_to_admm L5137-5142: effective_scale = objective_scale / block_weight; obj = copy(objective.expr) / effective_scale",
+   "sref_dso": "update_distribution_models_to_admm L5410-5415: only in shared_ess_rating (ESS channel)",
+   "sref_tso": "update_transmission_model_to_admm L5179: _admm_shared_ess_reference_mva(params) only in the shared-ESS loop (shared_ess_rating)"
+  }
+ },
+ "module_sha256": {
+  "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+  "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+  "p58_rescale.py": "2c9d4f2a7125d4103da0d9cc7bba6d600bf97a3f03805d32955738d71b537cf0",
+  "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0",
+  "uncoordinated_benchmark.py": "fd80c93e5b0df9a39c2583e1b6b53df179af7b229276d29fb3611b1c3680360e"
+ },
+ "negative_controls": {
+  "certified_record_res_curtailment_definitional_at_weight_1": 589.425936658749,
+  "delta_q_eur": 589.4259366989136,
+  "explained_residual_eur": 4.016442289866973e-08,
+  "explained_to_tolerance": true,
+  "gate_can_discriminate_0_from_1": true,
+  "note": "if the x = 0 cell curtailed nothing the gate cannot discriminate 0 from 1 and the rule stands by principle (Addendum 49 clarification)",
+  "priced_curtailment_at_1_eur": 589.4259366587492,
+  "priced_vs_certified_record_abs": 1.1368683772161603e-13,
+  "refusal": "common-Q evaluation: 48 blocks do not carry the common evaluation pricing (require_unchanged=True); first ('TSO|-|2025|Spring', {'penalty_gen_curtailment': {'before': 0.0, 'after': 1.0}})",
+  "repriced_at_1_gate_failed": true,
+  "repriced_at_1_gate_status": "DIFFERS_EXPLANATION_REQUIRED",
+  "wrong_configuration_refused_under_require_unchanged": true
+ },
+ "nlp_solver_path": {
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "source": "environment"
+ },
+ "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (production _get_operational_recourse_components); every block priced for the evaluation with production's ADMM-subproblem pricing and the curtailment tie-breaker at the EVALUATION value; salvage reported separately",
+ "perturbation": {
+  "delta": 0.05,
+  "seed": 20260926
+ },
+ "q_min_over_starts_note": "each uncoordinated arm's Q is the MINIMUM over its three starts (cold, warm_from_certified, perturbed); this is CONSERVATIVE AGAINST THE COORDINATION CLAIM: the uncoordinated side gets its best local optimum of three, while the coordinated side is one certified cell (W106: the settled cycle-181 cell d110bd1a5977df1e_x0, not re-run; W94 named the W86 cell 5cfe69a615ae3708_x0, now unwired)",
+ "reference_q": {
+  "certification_cycle": 181,
+  "evaluated_equals_reference_bitwise": true,
+  "evaluated_minus_reference_eur": 0.0,
+  "hex": "0x1.37ca913180546p+29",
+  "previous_reference_reported_only": {
+   "cell": "W86 5cfe69a615ae3708_x0 (campaign s53_w86_tail_recert, spec ddd6cd44) -- UNWIRED",
+   "certification_cycle": 132,
+   "certified_gross": 653858731.5686293,
+   "res_curtailment_definitional_at_weight_1": 589.1778397145646,
+   "source": "committed W86 evaluation_record.json (certified_cost; component_decomposition_totals_weighted.res_curtailment_definitional_at_weight_1)"
+  },
+  "source": "settling_decision.json Q_k_star; equal (bitwise, checked) to evaluation_record certified_cost, recourse_components.gross_operational_cost and post_certification certified_cost",
+  "value": 653873702.1876609
+ },
+ "run": "common_q_gate",
+ "script": "p515_s53_w93_uncoordinated_benchmark.py",
+ "script_sha256": "342b89cea9058e1b26453fb61bf1830ce7dd9186a3d96f3cf4103f5668f2b071",
+ "solve_profile_guard": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "expected": 0,
+  "verified": true,
+  "where": "common-q-gate end"
+ },
+ "stage": "P5.15 Addendum 49 W93 -- uncoordinated benchmark: three arms, fixed interface, common Q",
+ "status": "PASS",
+ "tie_breaker": {
+  "authority": "Addendum 49 clarification 2026-09-26",
+  "decision": {
+   "passive_dso": 1.0,
+   "price_taker_dso": 0.0,
+   "tso": 0.0
+  },
+  "evaluation": 0.0,
+  "passive_value_independence_variants": [
+   0.1,
+   10.0
+  ]
+ },
+ "tolerances": {
+  "consistency": {
+   "hard_tol_pu2": 1e-06,
+   "soft_excess_tol_pu2": 1e-06,
+   "thermal_tol_pu2": 1e-06
+  },
+  "lambda_neq_pi_eur": 0.05,
+  "negative_control_explained_abs_eur": 1e-05,
+  "units_check": {
+   "consensus_eur": 0.05,
+   "kkt_eur": 0.001,
+   "repro_eur": 1e-09
+  }
+ },
+ "utc": "2026-09-28T15:15:59.447109+00:00"
+}

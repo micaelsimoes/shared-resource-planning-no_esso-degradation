@@ -1,0 +1,62 @@
+{
+ "NOMAD": {
+  "what": "STEP4 section 6 (ii) stub check of directions and mesh against the in-house OrthoMADS, in a SEPARATE environment (never the canonical opf_env_py311); one bounded, time-capped Worker task; if it does not build on Apple silicon within the cap, record 'not done' and the manuscript cites the in-house OrthoMADS with the algorithm references",
+  "when": "machine otherwise idle (not concurrent with any campaign or the memory task)"
+ },
+ "Q4_terminal_tso_capture": {
+  "gate": "the x = 0 evaluation reproduces the committed A0 x0 evaluation bitwise on every trajectory field and cost (132 cycles, 653,859,461.2279255) - Q(0) is ageing-independent (W21 NL identity) and the oracle is deterministic; the persistence step must not alter the trajectory",
+  "prediction_planner": "bitwise reproduction; LMP7 < market price in the top-4 hours because zero-cost TN renewables and/or a binding TN limit set the marginal cost, and LMP7 > market price in the bottom-4 hours through losses/voltage support - a hypothesis to be confirmed or refuted",
+  "what": "one certified evaluation of x = 0 under the baseline with the certified TSO/DSO models persisted (existing post-certification persist option; no hull polish), then zero-solve analysis of a 2030 day: in the top-4 and bottom-4 hours of the bus-7 marginal cost, which generator(s) are marginal, which generator limits / branch limits / voltage bounds bind (with duals), and how the bus-7 marginal cost departs from the market price; the physical explanation of the -12.3 EUR/MWh flatness term"
+ },
+ "Q6_negative_penalties": {
+  "prediction_planner": "reporting convention (the component levels are reported as differences or with a sign convention), not an unbounded slack - the value differences reconcile exactly and every Q certified; stated so it can fail",
+  "what": "zero solves: read slack bounds and values in persisted certified models for every penalty component whose reported level is negative (e.g. voltage slack -11,797 at the baseline unit); classify each as reporting convention (e.g. a signed credit or a difference convention in the component report) or an unbounded slack; if any slack is unbounded below, STOP: it biases absolute Q (not differences) and is fixed before any absolute cost is quoted"
+ },
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 32 (and Addendum 29 for the memory task)",
+  "P5_15_ADDENDUM30_PHASE_B_REPORT.md (accepted)"
+ ],
+ "baseline": "unchanged from v17: C2 (10000, 0.80, 0.80), phi_cal 0.985, soh_min 0.70; AA-on; cap 500; 10 cycles; concurrency 5 for SRP1 campaigns",
+ "citations": {
+  "baseline_position": "the baseline k = 35,851 (10,000 cycles at 0.80 DoD to 0.80) sits at the favourable end of the datasheet range; C4 is the datasheet-exact sensitivity; no re-run (Addendum 32)",
+  "calendar_fade": {
+   "candidate_references_for_author_to_verify": [
+    "Naumann et al., J. Energy Storage 2018",
+    "Keil et al., J. Electrochem. Soc. 2016"
+   ],
+   "statement": "phi_cal = 0.985 per year (0.80 at the 15-year calendar life) is a model assumption"
+  },
+  "cycle_life": [
+   {
+    "calibration": "(cycles 8000, DoD 1.0, EOL 0.70) -> k = 22,430 = C4's k; also cites the 0.70 floor",
+    "source": "EVE MB31 314 Ah LFP datasheet",
+    "statement": "8,000 full cycles to 70 % SOH at 0.5P, 25 C"
+   },
+   {
+    "calibration": "k ~ 30,200",
+    "source": "Hithium 314 Ah LFP datasheet",
+    "statement": "13,000+ cycles to 65 % SOH"
+   }
+  ],
+  "not_verified_by_planner": "the Planner has not accessed these datasheets or papers; the values above are as stated in Addendum 32",
+  "status": "PROPOSED BY THE EXPERT (Addendum 32); AUTHOR TO CONFIRM AND VERIFY"
+ },
+ "memory_task": {
+  "decision_rule_recorded_before_run": "from spec v16: resident after initialization <= 26 GiB AND flat across cycles AND one cycle <= 25 min -> three paper-scale evaluations on this machine after the code-path generalization and row 18; otherwise the >= 64 GiB machine or the SRP1-with-caveat fallback",
+  "what": "Addendum 29: profile the +0.22 GiB per first solve (resident before/after the first and second solve of one block; load_solutions on/off; NL symbol maps and solution objects cleared after value extraction); classify one-time bookkeeping / inherent IPOPT-NL workspace / per-solve leak (a second-solve increment is a leak, fixed regardless); fix what is bookkeeping, gate bitwise identity on two SRP1 cycles; then re-measure paper-scale build + initialization and time one cycle; machine alone"
+ },
+ "order": [
+  "citations (author)",
+  "Q6 check and Q4 capture, alongside",
+  "NOMAD stub task when the machine is otherwise idle",
+  "memory task, machine alone",
+  "STOP FOR REVIEW"
+ ],
+ "predecessor": {
+  "note": "v17 is frozen and is NOT edited; its 'TO BE SUPPLIED BY THE AUTHOR' citation fields are superseded by this successor's citations block",
+  "path": "data/SRP1/Results/P515S47/frozen_s47_baseline_spec_v17_ff0056b8.json",
+  "sha256": "ff0056b850957d47cc3aa2595eab13497e100cc7bcda84514c5ca58e25d1e109"
+ },
+ "stage": "P5.15 Addendum 32 - citations successor record; Q6 negative-penalty check (zero solves); Q4 terminal TSO capture at x = 0 (one evaluation); NOMAD stub check (separate environment); memory task (Addendum 29, machine alone); stop for review",
+ "wording": "signal size: 'the planning signal is about 4 x 10^-4 of the system cost, resolvable because the certification bar and the polish gap hold the cost to about 2 x 10^-5' (Addendum 32; 'four orders of magnitude' withdrawn)"
+}

@@ -1,0 +1,173 @@
+{
+ "stage": "P5.12-Z classification re-derivation",
+ "frozen_utc": "2026-09-12T11:20Z",
+ "status": "FROZEN v2 \u2014 amended per user approval 2026-09-12; nothing computed at time of freezing",
+ "authority_order": [
+  "1. frozen plans (P512W/frozen_sampling_plan.json, P512X/frozen_reconstruction_plan.json, P512Y/frozen_tso_plan.json) define thresholds and rules",
+  "2. primary artifacts (.sol, prepared_mapping.json, preserved fixture models, IPOPT logs) supply every number",
+  "3. report prose is CHECKED against 1 and 2; it is never a source"
+ ],
+ "disclosed_gaps_motivating_this_stage": [
+  "TARGET_cycle20 (W): interface quantities were NEVER measured, yet the corrected multi-axis table in P5_12_X_COMPARATOR_BREADTH_REPORT.md records its interface axis as EQUIVALENT. Asserted, not measured.",
+  "TSO case9 (Y): interface compared on expected_interface_vmag only; prepared_mapping.json shows expected_interface_pf_p (72) and expected_interface_pf_q (72) also present. Partial by omission, not by structure. The earlier 'consistent with a transmission block's interface role' rationale is FALSE and is withdrawn.",
+  "Column set: the frozen W plan says the primal metric is taken 'over the 9166 IPOPT optimization columns', but the reported W/X/Y numbers were computed over the full NL primal vector (9268 / 9268 / 3036). This deviation is disclosed and both sets are computed below.",
+  "Planning weight for TARGET_cycle20 (2025 Spring, D=92) was never computed; only X and Y (2025 Autumn/Summer, D=91) were."
+ ],
+ "fixtures": {
+  "W_TARGET_cycle20": {
+   "block": "DSO:case33_3|2025|Spring cycle 20",
+   "baseline_source": "data/SRP1/Results/P512R/cycle20_target_result.pkl (SolverResults, load_solutions=False)",
+   "baseline_sol_equivalent_available": false,
+   "arms": {
+    "LOW": "data/SRP1/Results/P512W/LOW_1e-6/used_*.sol",
+    "HIGH": "data/SRP1/Results/P512W/HIGH_1e-4/used_*.sol"
+   },
+   "symbol_map": "data/SRP1/Results/P512W/LOW_1e-6/prepared_mapping.json",
+   "model_for_bounds": "data/SRP1/Results/P512R/cycle20_pre_setup/snapshot.pkl",
+   "ladder": {
+    "BASELINE": 1e-05,
+    "LOW": 1e-06,
+    "HIGH": 0.0001
+   },
+   "year": 2025,
+   "day": "Spring"
+  },
+  "X_DSO_case33_2_cycle7": {
+   "block": "DSO:case33_2|node7|2025|Autumn cycle 7",
+   "baseline_source": "data/SRP1/Results/P512X/BASELINE/used_*.sol",
+   "baseline_sol_equivalent_available": true,
+   "arms": {
+    "LOW": "data/SRP1/Results/P512X/LOW_1e-6/used_*.sol",
+    "HIGH": "data/SRP1/Results/P512X/HIGH_1e-4/used_*.sol"
+   },
+   "symbol_map": "data/SRP1/Results/P512X/BASELINE/prepared_mapping.json",
+   "model_for_bounds": "data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+   "ladder": {
+    "BASELINE": 1e-05,
+    "LOW": 1e-06,
+    "HIGH": 0.0001
+   },
+   "year": 2025,
+   "day": "Autumn"
+  },
+  "Y_TSO_case9_cycle7": {
+   "block": "TSO:case9|2025|Summer cycle 7",
+   "baseline_source": "data/SRP1/Results/P512Y/BASELINE/used_*.sol",
+   "baseline_sol_equivalent_available": true,
+   "arms": {
+    "LOW": "data/SRP1/Results/P512Y/LOW_1e-7/used_*.sol",
+    "HIGH": "data/SRP1/Results/P512Y/HIGH_1e-5/used_*.sol"
+   },
+   "symbol_map": "data/SRP1/Results/P512Y/BASELINE/prepared_mapping.json",
+   "model_for_bounds": "data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+   "ladder": {
+    "BASELINE": 1e-06,
+    "LOW": 1e-07,
+    "HIGH": 1e-05
+   },
+   "ladder_authorization": "user-approved before execution: +/-10x around this fixture's own historical baseline 1e-6",
+   "year": 2025,
+   "day": "Summer"
+  }
+ },
+ "column_sets": {
+  "C_nl": "every primal entry in the .sol, in NL column order; size = n from the .sol header",
+  "C_opt": "OPERATIONAL per fixture: C_nl minus the equal-bound set (preserved-model bounds with lb == ub exactly) that IPOPT removes under default fixed_variable_treatment=make_parameter",
+  "cross_check": "|C_opt| must equal the 'Total number of variables' reported in that fixture's own IPOPT log; expected W 9166, X 9168, Y 2934 against NL 9268/9268/3036, i.e. 102/100/102 removed",
+  "do_not_inherit_literal_9166": "the frozen W plan's phrase names a count valid only for W; it must not be applied to X or Y",
+  "record": "emit n_nl, n_opt, n_removed for every fixture",
+  "fixture_property": "the 100-vs-102 difference is recorded as a fixture property alongside the fixture-dependent c-scaling (Arm A and DSO case33_2 'c scaling provided'; TSO case9 'No c scaling provided'); both are modelling-invariant conditioning differences between blocks",
+  "authoritative": "C_opt",
+  "also_reported": "C_nl"
+ },
+ "normalization": {
+  "per_column": "d_i = |x_i - b_i| / max(1, |b_i|)  (b = baseline arm, x = perturbed arm)",
+  "metric": "max_scaled_primal = max_i d_i over the stated column set",
+  "auxiliary": [
+   "argmax column index and component name via symbol map",
+   "n_cols_gt_1e-3 = count of d_i > 1e-3",
+   "family histogram of d_i > 1e-3 by component-name prefix",
+   "top-6 movers with base and perturbed values",
+   "signed pairwise cancellation for the top-2 movers if they share a component family and opposite sign"
+  ]
+ },
+ "interface_families_in_scope": {
+  "families": [
+   "expected_interface_vmag",
+   "expected_interface_pf_p",
+   "expected_interface_pf_q"
+  ],
+  "selection_rule": "variables only (symbol starts with 'v'); the corresponding *_def entries are constraint rows and are excluded",
+  "requirement": "ALL families present in a fixture's prepared_mapping.json MUST be compared; the output must list families_found and families_compared per fixture so partial coverage is recorded, never inferred",
+  "metric": "per family, max over its entries of d_i, using the same normalization"
+ },
+ "objective": {
+  "source": "final unscaled 'Objective...............:' value in each arm's IPOPT log (data/SRP1/Results/P512{W,X,Y}/<arm>/logs/*.log)",
+  "metric": "relative_objective_difference = |obj_arm - obj_baseline| / max(1, |obj_baseline|)"
+ },
+ "planning_weight": {
+  "formula": "w = N_year * D_day * annualization, annualization = 1 / (1 + discount)^(year - year0)",
+  "source": "data/SRP1/SRP1.json Years/Days/DiscountFactor; shared_resources_planning.py:2690-2691",
+  "constants": {
+   "N_2025": 5,
+   "D_Spring": 92,
+   "D_Summer": 91,
+   "D_Autumn": 91,
+   "discount": 0.02,
+   "year0": 2025
+  },
+  "expected": {
+   "W": 460,
+   "X": 455,
+   "Y": 455
+  },
+  "metric": "weighted_obj_planning_units = |obj_arm - obj_baseline| * w",
+  "use": "DESCRIPTIVE ONLY; must not redefine any threshold"
+ },
+ "threshold_application": {
+  "source": "data/SRP1/Results/P512W/frozen_sampling_plan.json predeclared_thresholds (verbatim, unchanged)",
+  "objective": "<=1e-6 EQUIVALENT; >1e-3 MATERIALLY DIFFERENT; otherwise INDETERMINATE",
+  "primal": "<=1e-6 EQUIVALENT; >1e-3 MATERIALLY DIFFERENT; otherwise INDETERMINATE",
+  "interface": "same three-region rule applied per family and aggregated as the worst family",
+  "branch": "declared only if primal > 1e-3 AND relative objective > 1e-3",
+  "path": "material if |d_iterations| / baseline_iterations > 0.5, or restoration entries appear/disappear, or safeguard count changes between zero and nonzero",
+  "note": "completing an unfinished interface measurement under these unchanged thresholds is a COMPLETION, not a threshold revision"
+ },
+ "W_baseline_dual_derivation": {
+  "baseline_symbol_map": "data/SRP1/Results/P512R/cycle20_prepared/original_mapping.json (the baseline's OWN map; nothing borrowed from a variant directory)",
+  "precondition_gate": "sha256(P512R/cycle20_prepared/original.nl) must equal sha256 of both W arms' prepared.nl (expected fbe9e6e846f6b5b5...6817dbda); equal NL bytes imply a shared symbol map BY CONSTRUCTION",
+  "consequence": "given that gate passes, a method A vs method B disagreement is a BUG TO REPORT, not an ambiguity to adjudicate",
+  "method_A": "index-order: column i <-> symbol 'v{i}' in SolverResults.solution(0).variable",
+  "method_B": "symbol-map-mediated: symbol -> component name -> SolverResults value, compared component-wise against the arm .sol value for the same component",
+  "requirement": "report both; on disagreement identify which assumption fails"
+ },
+ "outputs": {
+  "path": "data/SRP1/Results/P512Z/classification.json",
+  "per_number": "every emitted number carries its source artifact path",
+  "discrepancy_list": "each report-prose value that fails to reproduce is listed as a REPORT CORRECTION with both values and the artifact that settles it"
+ },
+ "policies": {
+  "no_solve": "zero solver calls; p512_k install_solver_guards armed and asserted at 0 for OptSolver.solve and SystemCallSolver._execute_command",
+  "mismatch": "any mismatch is a report correction, never a script adjustment; the script is not tuned to match prose",
+  "writes": "only under data/SRP1/Results/P512Z/; note that this stage does NOT call fresh_planning, so no diagram side effects are expected"
+ },
+ "gap3_attribution": {
+  "status": "HYPOTHESIS, not a finding",
+  "statement": "the previously reported W/X/Y primal numbers may have been computed over C_nl rather than C_opt",
+  "basis": "Planner recollection of an unpreserved ad-hoc step; not readable from any artifact",
+  "predeclared_outcomes": {
+   "C_nl_reproduces": "supports the hypothesis that the unpreserved step used C_nl",
+   "C_opt_reproduces": "refutes it; the unpreserved step used C_opt and the frozen-plan wording was honoured",
+   "neither_reproduces": "a third cause; report as an open discrepancy and do not attribute"
+  },
+  "rule": "do not record a cause ahead of the evidence"
+ },
+ "implementation_notes": {
+  "variable_vs_constraint": "discriminate by mapping KEY PREFIX ('v' = variable, 'c' = constraint), never by a name suffix such as '_def'. The mapping is one flat list holding variables, constraints and the objective (e.g. Y: 6565 entries = 3036 vars + 3528 cons + 1 obj); a naming rule would silently misclassify exactly the *_def rows.",
+  "interface_selection": "families expected_interface_vmag / _pf_p / _pf_q, selected among 'v'-prefixed symbols only"
+ },
+ "mismatch_log_required_entries": [
+  "TARGET_cycle20 interface axis recorded EQUIVALENT in P5_12_X_COMPARATOR_BREADTH_REPORT.md with no measurement behind it",
+  "TSO case9 interface axis recorded EQUIVALENT on expected_interface_vmag alone while _pf_p and _pf_q were present and uncompared"
+ ]
+}

@@ -1,0 +1,917 @@
+{
+ "stage": "P5.15 Planner task W153 -- Step 5 zero-solve rows (discount, salvage add-back, certification statistics)",
+ "git_HEAD": "acedf45c987e2b3ef195b1f4285871b7f1703da5",
+ "git_status_porcelain_tracked": "",
+ "script": {
+  "path": "p515_s53_w153_step5_zero_solve_rows.py",
+  "sha256": "dbf9af5990cf0b88c9f7fc710b3a6f96dafb12f27fe6be079cb6a8c3d46d856f"
+ },
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Roadmap Step 5; Addendum 28 (discount ruling); Addendum 31 (Step 5 list)",
+  "Planner task W153"
+ ],
+ "section": "discount",
+ "result": {
+  "instance": {
+   "unit": {
+    "candidate_canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       0.25,
+       1.0
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "eval_key": "3f084f2ffaeef2b78c9c6930d7f2134e66b61fbbefecef19a5ce0db8b1e9d153",
+    "campaign_id": "s53_w101_srp1_cont_n7_4h_e1",
+    "eval_dir": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1",
+    "k_star": 172,
+    "certified_cost_gross_eur": 653620162.5657823,
+    "name": "unit n7_4h_e1 settled (W101 3f084f2f, certified at 172)"
+   },
+   "x0": {
+    "candidate_canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       0.0,
+       0.0
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "eval_key": "d110bd1a5977df1e811a1b3963afc565de6daa65f76dcc096ead3fdc70b08546",
+    "campaign_id": "s53_w101_srp1_cont_x0",
+    "eval_dir": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0",
+    "k_star": 181,
+    "certified_cost_gross_eur": 653873702.1876609,
+    "name": "x0 settled (W101 d110bd1a, certified at 181)"
+   }
+  },
+  "Q_per_year": {
+   "x0": {
+    "per_year": {
+     "2025": {
+      "weighted_r2": 306232161.1367745,
+      "undiscounted": 306232161.1367745
+     },
+     "2030": {
+      "weighted_r2": 170761093.48928517,
+      "undiscounted": 188534045.25496024
+     },
+     "2035": {
+      "weighted_r2": 176880447.5616014,
+      "undiscounted": 215616278.58376732
+     }
+    },
+    "sum_blocks_weighted_r2": 653873702.187661,
+    "recorded_gross_operational_cost": 653873702.1876609,
+    "abs_sum_minus_recorded": 1.1920928955078125e-07,
+    "max_block_weight_deviation": 5.684341886080802e-14,
+    "n_blocks": 48
+   },
+   "unit": {
+    "per_year": {
+     "2025": {
+      "weighted_r2": 306127792.3685973,
+      "undiscounted": 306127792.3685973
+     },
+     "2030": {
+      "weighted_r2": 170682012.19118753,
+      "undiscounted": 188446733.1118386
+     },
+     "2035": {
+      "weighted_r2": 176810358.0059975,
+      "undiscounted": 215530839.8065863
+     }
+    },
+    "sum_blocks_weighted_r2": 653620162.5657824,
+    "recorded_gross_operational_cost": 653620162.5657823,
+    "abs_sum_minus_recorded": 1.1920928955078125e-07,
+    "max_block_weight_deviation": 5.684341886080802e-14,
+    "n_blocks": 48
+   }
+  },
+  "V_per_year": {
+   "2025": {
+    "V_weighted_r2": 104368.76817715168,
+    "V_undiscounted": 104368.76817715168
+   },
+   "2030": {
+    "V_weighted_r2": 79081.29809764028,
+    "V_undiscounted": 87312.14312162995
+   },
+   "2035": {
+    "V_weighted_r2": 70089.55560389161,
+    "V_undiscounted": 85438.77718102932
+   }
+  },
+  "reconstruction": {
+   "certified_value_eur": 253539.62187862396,
+   "certified_value_definition": "Q181(x0 d110bd1a) - Q172(unit 3f084f2f), gross, settlement excluded",
+   "V_r2_from_weighted_blocks": 253539.62187868357,
+   "V_r2_from_undiscounted_reweighted": 253539.6218785607,
+   "abs_diff_weighted": 5.960464477539063e-08,
+   "abs_diff_reweighted": 6.327172741293907e-08,
+   "tolerance_eur": 1.0
+  },
+  "I_x_eur": 317957.0085035586,
+  "I_x_source": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/w142_ext_summary_after_07_pb_y2025_n5_v6.json item_E.I_unit (paid in 2025, factor 1.0, held fixed); equal to W19's Z3 I_x_eur and to the v6 summary's CHECK:headline_V_minus_I_settled I_other",
+  "table": [
+   {
+    "rate": 0.0,
+    "V_per_year": {
+     "2025": 104368.76817715168,
+     "2030": 87312.14312162995,
+     "2035": 85438.77718102932
+    },
+    "V": 277119.68847981095,
+    "I": 317957.0085035586,
+    "value_to_cost": 0.8715633908623512,
+    "value_minus_I": -40837.32002374763,
+    "resolution_w19_bar_sum_conservative": 246.57639964737257,
+    "a61_threshold_conservative": 15913.023190481566,
+    "value_minus_I_over_a61_threshold": -2.5662829454163445,
+    "value_minus_I_verdict_a61": "determinate",
+    "reweighting_scale_factor_max_over_years": 1.2189944199947573,
+    "V_over_V_2pct": 1.0930034778254285,
+    "change_vs_2pct_pct": 9.30034778254285
+   },
+   {
+    "rate": 0.02,
+    "V_per_year": {
+     "2025": 104368.76817715168,
+     "2030": 79081.29809753942,
+     "2035": 70089.55560386961
+    },
+    "V": 253539.6218785607,
+    "I": 317957.0085035586,
+    "value_to_cost": 0.7974022119274125,
+    "value_minus_I": -64417.38662499789,
+    "resolution_w19_bar_sum_conservative": 202.2785302400589,
+    "a61_threshold_conservative": 13054.22152018547,
+    "value_minus_I_over_a61_threshold": -4.934601923629887,
+    "value_minus_I_verdict_a61": "determinate",
+    "reweighting_scale_factor_max_over_years": 1.0,
+    "V_over_V_2pct": 1.0,
+    "change_vs_2pct_pct": 0.0
+   },
+   {
+    "rate": 0.05,
+    "V_per_year": {
+     "2025": 104368.76817715168,
+     "2030": 68411.34878623614,
+     "2035": 52451.99767774968
+    },
+    "V": 225232.11464113748,
+    "I": 317957.0085035586,
+    "value_to_cost": 0.7083728573909283,
+    "value_minus_I": -92724.8938624211,
+    "resolution_w19_bar_sum_conservative": 202.2785302400589,
+    "a61_threshold_conservative": 13054.22152018547,
+    "value_minus_I_over_a61_threshold": -7.103058096497177,
+    "value_minus_I_verdict_a61": "determinate",
+    "reweighting_scale_factor_max_over_years": 1.0,
+    "V_over_V_2pct": 0.888350755484751,
+    "change_vs_2pct_pct": -11.164924451524904
+   },
+   {
+    "rate": 0.08,
+    "V_per_year": {
+     "2025": 104368.76817715168,
+     "2030": 59423.17750558751,
+     "2035": 39574.685220171086
+    },
+    "V": 203366.63090291028,
+    "I": 317957.0085035586,
+    "value_to_cost": 0.639604177495695,
+    "value_minus_I": -114590.3776006483,
+    "resolution_w19_bar_sum_conservative": 202.2785302400589,
+    "a61_threshold_conservative": 13054.22152018547,
+    "value_minus_I_over_a61_threshold": -8.778032257493072,
+    "value_minus_I_verdict_a61": "determinate",
+    "reweighting_scale_factor_max_over_years": 1.0,
+    "V_over_V_2pct": 0.8021098611573932,
+    "change_vs_2pct_pct": -19.789013884260676
+   }
+  ],
+  "resolution_note": "(i) W19 formula: bar(x) + bar(x0), each = max |gross step| over the last 10 cycles of the record (99.88 + 102.40), scaled by max_y ((1.02/(1+r))^(y-2025)); (ii) the Addendum 61 rule for a difference of two certified cells, max(3 x the larger band width, 2 TAU) (bands x0 4209.17, unit 4351.41; TAU 4539.07), with the same conservative scaling; the per-year split of either bar is not recorded, so the scaling bounds it.",
+  "bands": {
+   "x0": 4209.1713362932205,
+   "unit": 4351.407173395157
+  },
+  "bar_sum_w19_formula": 202.2785302400589,
+  "a61_threshold_at_2pct": 13054.22152018547,
+  "earlier_row": {
+   "source": "data/SRP1/Results/P515S46/zero_solve_reports/zero_solve_reports.json Z3 (W19, commit dd3afa6e, script p515_s46_zero_solve_reports.py)",
+   "instance_earlier": "Phase A, certified under the frozen oracle: a1a n7_4h_e1 eval 7eb1ce62 (Q 653597653.7234993) and x0 eval 7aa017f0 (Q 653859461.2279255); minimum SoH 0.50 era",
+   "candidate_key_same_as_settled_unit": true,
+   "configuration_differences": {
+    "note": "the two rows differ in the ageing configuration as well as in settling, so their difference is NOT a settling effect alone",
+    "earlier_ageing_as_consumed_w19_Z2": {
+     "k_cl_eff": {
+      "2025": 11541.560327111707,
+      "2030": 11541.560327111707,
+      "2035": 11541.560327111707
+     },
+     "phi_cal": {
+      "2025": 1.0,
+      "2030": 1.0,
+      "2035": 1.0
+     },
+     "soh_min": {
+      "2025": 0.5,
+      "2030": 0.5,
+      "2035": 0.5
+     }
+    },
+    "settled_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+    "settled_ageing_baseline": {
+     "calendar_life_years": 15,
+     "calendar_retention_per_year": 0.985,
+     "cycle_life_nominal": 10000,
+     "depth_of_discharge_nominal": 0.8,
+     "minimum_soh": 0.7,
+     "calibration": {
+      "status": "ACTIVE",
+      "cycles_n": 10000,
+      "reference_dod_d": 0.8,
+      "eol_retention_r": 0.8
+     }
+    },
+    "earlier_trajectory_w19_Z2": [
+     {
+      "year_block": 2025,
+      "efc_per_day": 1.1445130063747824,
+      "soh_end_of_block": 0.8344560494683406,
+      "floor_row_active": false
+     },
+     {
+      "year_block": 2030,
+      "efc_per_day": 1.0270140074738057,
+      "soh_end_of_block": 0.7093750037117399,
+      "floor_row_active": false
+     },
+     {
+      "year_block": 2035,
+      "efc_per_day": 0.8264722451025055,
+      "soh_end_of_block": 0.622472246143986,
+      "floor_row_active": false
+     }
+    ]
+   },
+   "V_per_year_earlier": {
+    "2025": {
+     "V_weighted_r2": 103371.94794565439,
+     "V_undiscounted": 103371.94794559479
+    },
+    "2030": {
+     "V_weighted_r2": 75388.31500807405,
+     "V_undiscounted": 83234.79138600826
+    },
+    "2035": {
+     "V_weighted_r2": 83047.24147260189,
+     "V_undiscounted": 101234.12395110726
+    }
+   },
+   "rows": [
+    {
+     "rate": 0.0,
+     "V_earlier": 287840.8632827103,
+     "value_to_cost_earlier": 0.9052823356132714,
+     "value_minus_I_earlier": -30116.145220848266,
+     "change_vs_2pct_pct_earlier": 9.943702306565516,
+     "V_per_year_earlier": {
+      "2025": 103371.94794559479,
+      "2030": 83234.79138600826,
+      "2035": 101234.12395110726
+     },
+     "V_settled": 277119.68847981095,
+     "value_to_cost_settled": 0.8715633908623512,
+     "value_minus_I_settled": -40837.32002374763,
+     "V_settled_minus_earlier": -10721.17480289936
+    },
+    {
+     "rate": 0.02,
+     "V_earlier": 261807.50442630972,
+     "value_to_cost_earlier": 0.823405358034055,
+     "value_minus_I_earlier": -56149.50407724886,
+     "change_vs_2pct_pct_earlier": 0.0,
+     "V_per_year_earlier": {
+      "2025": 103371.94794559479,
+      "2030": 75388.31500807338,
+      "2035": 83047.24147264157
+     },
+     "V_settled": 253539.6218785607,
+     "value_to_cost_settled": 0.7974022119274125,
+     "value_minus_I_settled": -64417.38662499789,
+     "V_settled_minus_earlier": -8267.882547749032
+    },
+    {
+     "rate": 0.05,
+     "V_earlier": 230737.5553612485,
+     "value_to_cost_earlier": 0.725687904937834,
+     "value_minus_I_earlier": -87219.45314231009,
+     "change_vs_2pct_pct_earlier": -11.867478410576426,
+     "V_per_year_earlier": {
+      "2025": 103371.94794559479,
+      "2030": 65216.637011480954,
+      "2035": 62148.97040417275
+     },
+     "V_settled": 225232.11464113748,
+     "value_to_cost_settled": 0.7083728573909283,
+     "value_minus_I_settled": -92724.8938624211,
+     "V_settled_minus_earlier": -5505.440720111015
+    },
+    {
+     "rate": 0.08,
+     "V_earlier": 206911.13535763242,
+     "value_to_cost_earlier": 0.6507519250210729,
+     "value_minus_I_earlier": -111045.87314592616,
+     "change_vs_2pct_pct_earlier": -20.968218305647856,
+     "V_per_year_earlier": {
+      "2025": 103371.94794559479,
+      "2030": 56648.20042592698,
+      "2035": 46890.98698611064
+     },
+     "V_settled": 203366.63090291028,
+     "value_to_cost_settled": 0.639604177495695,
+     "value_minus_I_settled": -114590.3776006483,
+     "V_settled_minus_earlier": -3544.5044547221332
+    }
+   ]
+  },
+  "settled_unit_ageing": {
+   "per_year": [
+    {
+     "year_block": 2025,
+     "efc_per_day": 1.0165116593513808,
+     "EFC_block_cycles": 1855.1337783162699,
+     "soh_end_of_block": 0.8804577542392256,
+     "floor_row_active": false,
+     "e_available_mwh": 0.8804577542392256
+    },
+    {
+     "year_block": 2030,
+     "efc_per_day": 0.8999938673104734,
+     "EFC_block_cycles": 1642.4888078416138,
+     "soh_end_of_block": 0.7798174939987235,
+     "floor_row_active": false,
+     "e_available_mwh": 0.7798174939987235
+    },
+    {
+     "year_block": 2035,
+     "efc_per_day": 0.6367083923121929,
+     "EFC_block_cycles": 1161.992815969752,
+     "soh_end_of_block": 0.6999999900000561,
+     "floor_row_active": true,
+     "e_available_mwh": 0.6999999900000561
+    }
+   ],
+   "EFC_horizon_cycles": 4659.615402127636,
+   "EFC_horizon_discounted_2pct_cycles": 4296.025327427158,
+   "source": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/evaluation_record.json storage_per_node['7']"
+  },
+  "price_spread": {
+   "formula_spread": "per representative (year, day): max_p c_p - min_p c_p, and mean of the top-4 hourly prices minus mean of the bottom-4 (h = E/P = 4 h); averaged with weight num_years * num_days (undiscounted) and, separately, with the model block weight num_years * num_days / 1.02^(y-2025).",
+   "formula_captured": "captured spread [EUR/MWh per full cycle] = (V / E) / EFC_horizon, EFC_horizon = sum_y 365 * num_years * EFC/day_y (full equivalent cycles of the nameplate E over the 15 years; Z2 EFC, cell-side throughput / (2 E))",
+   "prices_source": "per-(year, day) price_per_mwh recorded by the settled runs (interface_settlement_detail_s31c.json, every node), checked equal to the market prices W19 read through production",
+   "max_abs_dev_recorded_vs_w19": 0.0,
+   "market_spread": {
+    "all_years_day_weighted_undiscounted": {
+     "max_minus_min": 116.92360725884495,
+     "top4_mean_minus_bottom4_mean": 97.99086039739976,
+     "mean_price": 108.41103934457304
+    },
+    "all_years_model_block_weight_r2": {
+     "max_minus_min": 115.88134479781247,
+     "top4_mean_minus_bottom4_mean": 97.0178867418757,
+     "mean_price": 107.59962048048975
+    },
+    "per_year_day_weighted": {
+     "2025": {
+      "max_minus_min": 101.04359365809823,
+      "top4_mean_minus_bottom4_mean": 83.21675130578896
+     },
+     "2030": {
+      "max_minus_min": 117.05925002146218,
+      "top4_mean_minus_bottom4_mean": 98.01183260261246
+     },
+     "2035": {
+      "max_minus_min": 132.66797809697445,
+      "top4_mean_minus_bottom4_mean": 112.7439972837978
+     }
+    }
+   },
+   "captured_settled": {
+    "a_literal_V2pct_over_undiscounted_EFC": 54.41213490769892,
+    "b_consistent_undiscounted_V0_over_undiscounted_EFC": 59.47265269002133,
+    "c_consistent_discounted_V2pct_over_discounted_EFC": 59.017254916977585,
+    "per_year_undiscounted": {
+     "2025": 56.25942958780977,
+     "2030": 53.15844023093612,
+     "2035": 73.52780155506004
+    }
+   },
+   "captured_earlier_w19": {
+    "a_literal_V2pct_over_undiscounted_EFC": 47.85063451254076,
+    "b_consistent_undiscounted_V0_over_undiscounted_EFC": 52.608759160270516,
+    "c_consistent_discounted_V2pct_over_discounted_EFC": 52.11459170947094
+   },
+   "captured_earlier_w19_per_year": {
+    "2025": 49.490187479190695,
+    "2030": 44.40845454603877,
+    "2035": 67.11750234642408
+   },
+   "expert_expectation": "captured ~55-60 EUR/MWh per full cycle (Addendum 28)",
+   "captured_over_top4_spread_settled_c": 0.6022730556465615
+  },
+  "formula": "W19's Z3 formula, reused: Q_y = sum over the TSO block and the three DSO blocks of every day of year y of the gross settlement-excluded per-block cost (sum of generation_cost + flexibility_cost_internal + load_curtailment_cost + res_curtailment_penalty + ess_usage_cost + detector_penalty_total, as recorded in component_levels_terminal.json); undiscounted Q_y = sum of unweighted * num_years * num_days; V_y = Q_y(0) - Q_y(x); V(r) = sum_y V_y_undiscounted / (1 + r)^(y - 2025); value_to_cost(r) = V(r) / I(x); value - I = V(r) - I(x). Production applies ONE discount factor per representative year to all 5 years of the block (W19 Z3 production_convention); I(x) is paid in 2025 and not discounted.",
+  "rate_statement": "The production rate stays at 2 % and is not tuned (Addendum 28).",
+  "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED; V = Q(0) - Q(x); EUR"
+ },
+ "section_checks": {
+  "d_case_discount_factor_is_the_production_rate_0_02": true,
+  "d_case_num_years_equal_across_blocks": true,
+  "d_x0_eval_key_prefix": true,
+  "d_x0_settling_certified_at_k_star": true,
+  "d_x0_run_ended_at_k_star": true,
+  "d_x0_component_levels_at_k_star": true,
+  "d_x0_certified_cost_is_Q_k_star": true,
+  "d_x0_component_levels_gross_is_certified_cost": true,
+  "d_unit_eval_key_prefix": true,
+  "d_unit_settling_certified_at_k_star": true,
+  "d_unit_run_ended_at_k_star": true,
+  "d_unit_component_levels_at_k_star": true,
+  "d_unit_certified_cost_is_Q_k_star": true,
+  "d_unit_component_levels_gross_is_certified_cost": true,
+  "d_unit_candidate_key_recomputed": true,
+  "d_x0_candidate_key_recomputed": true,
+  "d_x0_blocks_reconcile_to_gross_within_0.01_eur": true,
+  "d_x0_recorded_block_weights_match_case_formula": true,
+  "d_x0_48_blocks": true,
+  "d_x0_undiscounted_times_factor_equals_weighted": true,
+  "d_unit_blocks_reconcile_to_gross_within_0.01_eur": true,
+  "d_unit_recorded_block_weights_match_case_formula": true,
+  "d_unit_48_blocks": true,
+  "d_unit_undiscounted_times_factor_equals_weighted": true,
+  "d_r2_reconstruction_within_tolerance": true,
+  "d_I_equals_W19_I_x": true,
+  "d_I_equals_headline_claim_I_other": true,
+  "d_ext_Q0_is_x0_Q181": true,
+  "d_headline_claim_d_Q_equals_value_minus_I_at_2pct": true,
+  "d_days_sum_is_365": true,
+  "d_recorded_prices_equal_w19_market_prices_within_1e-9": true,
+  "d_spread_summary_reproduces_w19": true
+ },
+ "checks": {
+  "discount": {
+   "d_case_discount_factor_is_the_production_rate_0_02": true,
+   "d_case_num_years_equal_across_blocks": true,
+   "d_x0_eval_key_prefix": true,
+   "d_x0_settling_certified_at_k_star": true,
+   "d_x0_run_ended_at_k_star": true,
+   "d_x0_component_levels_at_k_star": true,
+   "d_x0_certified_cost_is_Q_k_star": true,
+   "d_x0_component_levels_gross_is_certified_cost": true,
+   "d_unit_eval_key_prefix": true,
+   "d_unit_settling_certified_at_k_star": true,
+   "d_unit_run_ended_at_k_star": true,
+   "d_unit_component_levels_at_k_star": true,
+   "d_unit_certified_cost_is_Q_k_star": true,
+   "d_unit_component_levels_gross_is_certified_cost": true,
+   "d_unit_candidate_key_recomputed": true,
+   "d_x0_candidate_key_recomputed": true,
+   "d_x0_blocks_reconcile_to_gross_within_0.01_eur": true,
+   "d_x0_recorded_block_weights_match_case_formula": true,
+   "d_x0_48_blocks": true,
+   "d_x0_undiscounted_times_factor_equals_weighted": true,
+   "d_unit_blocks_reconcile_to_gross_within_0.01_eur": true,
+   "d_unit_recorded_block_weights_match_case_formula": true,
+   "d_unit_48_blocks": true,
+   "d_unit_undiscounted_times_factor_equals_weighted": true,
+   "d_r2_reconstruction_within_tolerance": true,
+   "d_I_equals_W19_I_x": true,
+   "d_I_equals_headline_claim_I_other": true,
+   "d_ext_Q0_is_x0_Q181": true,
+   "d_headline_claim_d_Q_equals_value_minus_I_at_2pct": true,
+   "d_days_sum_is_365": true,
+   "d_recorded_prices_equal_w19_market_prices_within_1e-9": true,
+   "d_spread_summary_reproduces_w19": true
+  },
+  "salvage": {
+   "s_claim_count_48_plus_12": true,
+   "s_every_completed_claim_present": true,
+   "s_d_gross_recomputed_from_form_equals_record_within_1e-6": true,
+   "s_recorded_net_figures_reproduced_by_the_form_and_scorer": true,
+   "s_every_claim_view_matched_to_a_cell": true,
+   "s_every_cell_gross_minus_net_equals_salvage_within_1e-6": true
+  },
+  "certification": {
+   "c_34_v6_stage_cells": true,
+   "c_7_extension_cells": true,
+   "c_42_cells": true,
+   "c_every_cell_check_holds": true
+  }
+ },
+ "failed_checks": {
+  "discount": [],
+  "salvage": [],
+  "certification": []
+ },
+ "errors": {},
+ "solve_profile_guards": {
+  "w153_step5_rows": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "s46_zero_solve_reports": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w132_checks": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w118_checks": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w105_checks_imported": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w101_checks_imported": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w98_checks_imported": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w112_imported": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "alpha_row_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w86_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w87": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w88": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_step1": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_3x3_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w90_3x3_parent": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w98_parent": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w101_parent": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w118_parent": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w131_imported": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w132_parent": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  }
+ },
+ "pickle_guard": {
+  "load": 0,
+  "loads": 0
+ },
+ "all_pass": true,
+ "ended_utc": "2026-10-04T08:42:59.852828+00:00",
+ "inputs_sha256": {
+  "data/SRP1/Results/P515S46/zero_solve_reports/manifest_sha256.json": "57ebe1b3744cb200a4b4b43ec3ade0704fd29e8b9a9ab44ae7e8bea60e60ca25",
+  "data/SRP1/Results/P515S46/zero_solve_reports/zero_solve_reports.json": "16579f3202781f74b1d2d83ae2809340d1334718a2dee4e73f4895f05e570ef6",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/campaign_manifest_sha256.json": "d2eec7cfdeafbc94e77f5a4e484cf79e9097818930dfb7127597e1a822ab7753",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/component_levels_terminal.json": "2883c3be464192f4d5453a46be653f886b4802b33b6ef134a138fd073ebb89a9",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/evaluation_record.json": "d15fc96b1e3df549a2ebb5a600621017efc78f2fe6c35adc8fb53fa661663247",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/interface_settlement_detail_s31c.json": "81a94f88f3542ac64e983741a66124e839dd825bebf905b8639261f12f297ad0",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/settling_decision.json": "566904472876b800e65f79c47eea7da3f7b1a8d8addf409374322126220d6ec9",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/campaign_manifest_sha256.json": "284d5bd50273e9aa20d4527d3c263ef6281a107695c109913ce20afcce1f6265",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/component_levels_terminal.json": "033c1e7eac919969c0cdfbfbb8969484b49b2e83b09a36cd171e7c3068a3a3d1",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/evaluation_record.json": "c08fa4335c7e266d6d61439fe36d28d56cc7ead31b4956d0f2c6d1fe2b0e8956",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/interface_settlement_detail_s31c.json": "ec59332e8eb3bfce8a7586f52c965078ac3641bf87888c499ac9275981e44403",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/settling_decision.json": "6c559f2fc39a79dcd54e9339541fb09b599f87689c26a489a8e7e77b17e80be6",
+  "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/campaign_manifest_sha256.json": "c008f55ea7093300638d596f2068ad5e84e9328efdcc884d3efcf54ffb80470c",
+  "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/campaign_results.json": "b4fd61aadeb29b112b887b9212a5edfaa391980a1c63b4f3545590a839c7046e",
+  "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/resettle_cycle_record.jsonl": "05e2b6e54e290bc6d0a949ed62becd63dec710d4c494fb435677a65c6d2f3ded",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2/campaign_manifest_sha256.json": "397107e3651ee132c190499b86577fefd02235786e6dbb20d2fc5e0d38d5ea43",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2/campaign_results.json": "9ddf2659ba61d6e956ae2a2183dd6b36fc5e62ab9518570248ee4d665510cba0",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2/evals/ba969ad21c1831ab_e_c2/resettle_cycle_record.jsonl": "2655f21a532399cf4bdebc7b301138e7131cfd1633ac0256fbf6fea294c88dfc",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2/evals/ba969ad21c1831ab_e_c2/resettle_decision.json": "4be32b96b0dc2b8820f88fe6278d027750ad71a37ea4fb8d62293c4d3dd5802d",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2_calfade/campaign_manifest_sha256.json": "17890772e770847f9efa718ba3b9870d0e4e718a6624ad3c58a92f9e411c468b",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2_calfade/campaign_results.json": "850206a2a57e26f22ba787266aa9c37edb76894e8a3aa956c819f35104cf2b34",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2_calfade/evals/bbd82994a7ddff94_e_c2_calfade/resettle_cycle_record.jsonl": "666d3ff78d65b3bf183883bb690ed39886cb25d3700c830d432fddd521d9b616",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2_calfade/evals/bbd82994a7ddff94_e_c2_calfade/resettle_decision.json": "03a4f1704f4d19d959ec85820241b23ad3664d4ee93ba272b5c33d1875b31abc",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_midblock/campaign_manifest_sha256.json": "d9c265610ff7d8cf5277b4ab57407334af37afbd871478473596b9d7a39d3e94",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_midblock/campaign_results.json": "5466aa4a7e312c6f12c0ec9fb6acb80087a189e7dd96e2f7abd0bdf648fd534f",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_midblock/evals/8b1eace91df86cd5_e_c3_midblock/resettle_cycle_record.jsonl": "3d1aab3b085910039b74702b7d8e9e12d0a1c1aa87474794e85d666b15b3711d",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_midblock/evals/8b1eace91df86cd5_e_c3_midblock/resettle_decision.json": "1668556a2f0a59c7f60134093886f435e599824d12093ffa0f3c8f3e71981cee",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_unit/campaign_manifest_sha256.json": "d890ef271fb8e8e55d98282718a2ef72781b3b1651457119b99e869fa80f482c",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_unit/campaign_results.json": "032d82bfb4792521a8c250eca520ae3485d0eb2fc4919ca4e2027fbd55d7f18e",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_unit/evals/409740fb51f27cab_e_c3_unit/resettle_cycle_record.jsonl": "806bed14956252b0eacdd99c3c2eafc148d7a487f6e88b20e8f45f646114a725",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_unit/evals/409740fb51f27cab_e_c3_unit/resettle_decision.json": "ef6172f8ce4df2461138e13ef6fa1f87333db5c5f28e2d6736b8f2d9fe34b9eb",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c4/campaign_manifest_sha256.json": "5f7394920f4d9e55d84ff7057829e53bccc8f2689eaa739f53f5910e295bceec",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c4/campaign_results.json": "dbe441118990072d01bc81b40facce60f122ab3b678b69aa8a16377caff7064c",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c4/evals/c59d7006b4b9c0a2_e_c4/resettle_cycle_record.jsonl": "fd4e667911d93f76b30d3df667df1dcddfb41cc61624f15718caf47deb2798a9",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c4/evals/c59d7006b4b9c0a2_e_c4/resettle_decision.json": "27093dd15ac65d3b2e0013a4ea59d2d989156877d19847f3ea291a9799277615",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/campaign_manifest_sha256.json": "1bf26c0c6715ae2f4382b8093c03d15af035ad3064dd41b12bc55165e50b245e",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/campaign_results.json": "a1ed9ffa0735ef1cc7a5e0183e0eeff96e3f030c0de88a9832888d9d5041e13e",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/evals/1b10e9e161523f46_e_no_ageing/resettle_cycle_record.jsonl": "a15a122fc2fb3eb1245bb3f1236e21db4c121190b5d8650e5e1a25d837cd4076",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/evals/1b10e9e161523f46_e_no_ageing/resettle_decision.json": "3dce59c17960f9cc4a66cf1697484fb4d9ab9cf9a035e7ff5a23ed14d741f80f",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_pb_y2025_n5_v6/campaign_manifest_sha256.json": "41b0dd4c9fbcf1d9399f7645dcd081047c00ba52e23ffca7b9284ef816fedb1e",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_pb_y2025_n5_v6/campaign_results.json": "4550cbcb47da679daaffefaf9878e1b2ccfd6ff4bf1ad4d674a09f539d128aeb",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_pb_y2025_n5_v6/evals/be95e57603437a06_pb_y2025_n5_v6/resettle_cycle_record.jsonl": "9a572617b3a84991459e6688cd8416958a9e6ad316680dbf7a1f086141c782fb",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_pb_y2025_n5_v6/evals/be95e57603437a06_pb_y2025_n5_v6/resettle_decision.json": "84d838707edd6b08dc66e7c15430d519b5eb0cf53c3147a8ee8aca47b9afa091",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/w142_ext_summary_after_07_pb_y2025_n5_v6.json": "183871cd29c7f3309e6301cc32da90a4a7d4b58e385a82b1ba2530ec925c63ce",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/w142_ext_summary_after_07_pb_y2025_n5_v6_manifest_sha256.json": "530571facf851f6b336a6be30cdafd9769713287effae65197ed6d28b0563a2e",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_c_156ce2d1/campaign_manifest_sha256.json": "7ca527509faa23fd426f30a2bd5e9c45a642a7635b8c8ed9f9c885601353a6a4",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_c_156ce2d1/campaign_results.json": "46ae8923b70c219969d2af6801a4ce1bb092d1a2c3170451c95d72f9ca73beee",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_c_156ce2d1/evals/3a4c10c859114e20_c_156ce2d1/resettle_cycle_record.jsonl": "abebe36adeaadadf9a0bc833a8d19c0dbb4a0cbcfc2519d48fce23c6a5760b3f",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_c_156ce2d1/evals/3a4c10c859114e20_c_156ce2d1/resettle_decision.json": "3da32e1a854b364c7eff94e8e02d28a7c332a10b14371b6ffce33ad2f09ff1ce",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_c_6597a79d/campaign_manifest_sha256.json": "2cba8bfc3202378e9a3c943d99f1af99d5c13af9a3c18f36bd78ef7cc460ee65",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_c_6597a79d/campaign_results.json": "aecdc58ba4b53bf438ad47e19cfc82e3526abdd680bddea265a06aaa952ff6bb",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_c_6597a79d/evals/3a0d03e88a16f174_c_6597a79d/resettle_cycle_record.jsonl": "df44900fba29a85852340d724c9997e4148f3e70208e8c035b338c2e5112d878",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_c_6597a79d/evals/3a0d03e88a16f174_c_6597a79d/resettle_decision.json": "75918442d46b0ceffbe36057d1b75d06b3c9d3b5f8f776455d0f77575c781b23",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_3632b0ae/campaign_manifest_sha256.json": "b5d5d7a0e61030b55847123aef4479948398c5582df684f07304ef7b7fe08bf7",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_3632b0ae/campaign_results.json": "8fccec3b1ffdafc3461d6be92cd359d9d1b62e52832991d71e2a2f97ced448c1",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_3632b0ae/evals/1fe57699ce791ef6_d_3632b0ae/resettle_cycle_record.jsonl": "0a30b2cf782e9b41cf3d88881e703ae8d2cb504f89d1c1890d4134d68619df1b",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_3632b0ae/evals/1fe57699ce791ef6_d_3632b0ae/resettle_decision.json": "fa28a031f47ab2b5ba10e06f5d5fd5593f46f95f2fbc30fd790d480dcee4758c",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_36686489/campaign_manifest_sha256.json": "57c6f25732ace8b03341739cac60ae82ce633bc7347088474a9140e7e0b71753",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_36686489/campaign_results.json": "3e3beea44e03e20b7f9f356bc83794315824f33b950e367ca32aa473afbb2e57",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_36686489/evals/4de61708589e6e26_d_36686489/resettle_cycle_record.jsonl": "384f2487398cafff992ed19e8b60a458b464a7d60f37d45f67d74cd82e6c73b3",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_36686489/evals/4de61708589e6e26_d_36686489/resettle_decision.json": "68f525214af7e9bdeee203861bf2838288c7d02e42112a30475f2363d946d53c",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_4a82a64a/campaign_manifest_sha256.json": "79e9641017203dcbdfe70a54d48210b42fc811205869964a3d0af12be9385660",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_4a82a64a/campaign_results.json": "9c8afacae5fa1c992b3999d910c3eedc7762e8a03750fa6895d781d178430f8c",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_4a82a64a/evals/14b00a04ffbcfd33_d_4a82a64a/resettle_cycle_record.jsonl": "36334a3768756ef010b527b161e190e7cd6cda2949bedb30ad5201b1f48d2160",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_4a82a64a/evals/14b00a04ffbcfd33_d_4a82a64a/resettle_decision.json": "6879a6343f86c7cbd2e2fd32929ac1f65e71860ddd55da3c31c7b06545f78c0b",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_9246ed01/campaign_manifest_sha256.json": "d0c9a0b5d84c438a96f0b8b69d0b21600cfd57021bcb114312cabf70fde1c6fa",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_9246ed01/campaign_results.json": "f399a818411d845f7e14f2ebef0e62ca36d863c43237c808f28e6a04ada60863",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_9246ed01/evals/579a1370d1e916a7_d_9246ed01/resettle_cycle_record.jsonl": "e180a674a1c8c444ef0a7871a486599ef4d0b9c68e6bae725e10ce8ba53f9ab2",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_9246ed01/evals/579a1370d1e916a7_d_9246ed01/resettle_decision.json": "86b4e11560e08c024de852456762709ba81fc889a57b273316ea3d63ddc8a6be",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_a12d95a2/campaign_manifest_sha256.json": "314751797aea3bb79c8618e995cfe9f8719beadfbea7d17e296bb8f631e45777",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_a12d95a2/campaign_results.json": "24745232af56e1b737cb546c375c9ccd98d67eea29e6b2bf081ee104820f01b5",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_a12d95a2/evals/9bc66d9ed4863f39_d_a12d95a2/resettle_cycle_record.jsonl": "6cb3005d20894b065ee1c6df9af6cb3e4a3d79573e6d9e63fcf252e260dcf7d1",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_a12d95a2/evals/9bc66d9ed4863f39_d_a12d95a2/resettle_decision.json": "3d394572f80bed8a1440f10d6bb4a265a469d5ed056c43d075c32e23f26f84c5",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_c7fee8be/campaign_manifest_sha256.json": "4cef32beb1b83ab6d85c6c5c930ef49625ce9cb257bfb89e70565d57a9a7ca86",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_c7fee8be/campaign_results.json": "669c6745c30067c99331fd2edc8cbf4d4b55412d28ee3adc2a5022282c1a0910",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_c7fee8be/evals/aa0b99f57c75682a_d_c7fee8be/resettle_cycle_record.jsonl": "aee3bd250a7155da018fde65b308cf546314c6f23804559cbe07253069cbd7d3",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_c7fee8be/evals/aa0b99f57c75682a_d_c7fee8be/resettle_decision.json": "716b3e758daac5e4462fcf0bfeb141b66f0b89fd4f89ce1b1f73ad200362dc4a",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_d3709599/campaign_manifest_sha256.json": "99856678cdf875ac88b739907bea7f1e0f271712e88118cfdceccd3c641acb90",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_d3709599/campaign_results.json": "761b2a40b65cbf59d7d6a5b8c8f69f5b7f5b0edec40a768efc1a5acf9aa85fab",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_d3709599/evals/64408baeee0990b9_d_d3709599/resettle_cycle_record.jsonl": "86e2a38e8b82d3680c59a022d7fee75852bf84f79bed7078e804443a6e6d29a8",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_d3709599/evals/64408baeee0990b9_d_d3709599/resettle_decision.json": "2f811d270e1cba428c62bde4c07a4fcbe9ed7bd767b5e69396fde7825ff9b820",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_f759dd48/campaign_manifest_sha256.json": "c161e22e772fa7dafd5fd9bcea9cff885f969bbff1895c8ffae7e18dc4f91d3c",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_f759dd48/campaign_results.json": "37eb2a7a53bef638f46aaf98ab2c3c6228a4d7637fe2f04b82c7422bb8ebb0d8",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_f759dd48/evals/5f1b1aa621d3450a_d_f759dd48/resettle_cycle_record.jsonl": "589b38e75c155a3bad3905829a95de74e05b07271a009f87edea3f28c75caba9",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_f759dd48/evals/5f1b1aa621d3450a_d_f759dd48/resettle_decision.json": "2bda1506c1035dac92161436566c0a88b9a0554b863f66d557dbe8ecbe830568",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_37b5c499/campaign_manifest_sha256.json": "2a015cd395c73de00776ec54774d680a60b0ae3e0f538f2a989444111cb2d7e8",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_37b5c499/campaign_results.json": "3261762e7e67cb57a54406c8efad3074da71105b41ea278c61eff6a7f89a6e0e",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_37b5c499/evals/bf2d8348d3a4b730_g_37b5c499/resettle_cycle_record.jsonl": "c068a5b5a05b16cc63c870a09e6f0aa3e87ace17c2513d093e5402522ec38c55",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_37b5c499/evals/bf2d8348d3a4b730_g_37b5c499/resettle_decision.json": "118ca2e6cfb7113f00728fcd433758ab26104a5a4712f1536395b08ad9d2c12e",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_47dce43c/campaign_manifest_sha256.json": "e753129d9dc7785b01521fcfd77dac078cc74b308600e277d2ee1bdad4d75da0",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_47dce43c/campaign_results.json": "01f20b1006a08a99301069c62801baad049141e71dcbd5af88dc99177fa7e614",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_47dce43c/evals/46ff23a160a27b67_g_47dce43c/resettle_cycle_record.jsonl": "05fe274596e0605311ac31a6957b120ae4c4fb20f2cf75a3a287feb3de0febfe",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_47dce43c/evals/46ff23a160a27b67_g_47dce43c/resettle_decision.json": "1f0891b4518ecc39d6842c4ec24ff79ca292f8fac1ef6aa8ad879968a2d5081f",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_48749148/campaign_manifest_sha256.json": "7dfbdd4e570aff0bbed6005122db31088218dc4c073519cfc5c8425e16bd6c06",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_48749148/campaign_results.json": "f3c5d47a4900440540c79cfd357d75cfd15678cd6b22da9f814b40f600df6605",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_48749148/evals/22331aa714b8af80_g_48749148/resettle_cycle_record.jsonl": "0e22bfc6e47e8d070695ff8d5552f4ef382ef441168e2d472a3a082da89dc9da",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_48749148/evals/22331aa714b8af80_g_48749148/resettle_decision.json": "4ddf8756631bf0130fcca117c8c28670e124168a80919cde607b52b044d8465c",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_9abf31d4/campaign_manifest_sha256.json": "1414a48e898f524e789d5366305fd063945fb980c5815d5eaca32e209f6aa84b",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_9abf31d4/campaign_results.json": "c18693ba1fc8d876bfbdf6fdfb7856862292b979c139e0f8c6b59a867a986c4b",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_9abf31d4/evals/5560d0f015a8d196_g_9abf31d4/resettle_cycle_record.jsonl": "46d686799b4d5ebbb0c656f310de4ddd98ad9d77e1064458ba04ac52c8dd466a",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_9abf31d4/evals/5560d0f015a8d196_g_9abf31d4/resettle_decision.json": "10a625e60dd2fc63cb4dcf0178de5b11d3b2b8e4c69eb1b00b63d862ae51da14",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_50dea31c/campaign_manifest_sha256.json": "6ded4b38a175c4a9e72af90911a56706e684ed4a6b1355f9f5f4a157513dbce6",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_50dea31c/campaign_results.json": "c1576de53fc9050de35adc312aab5f490efec7cd059a34556beb7244cd74f882",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_50dea31c/evals/354b1bdae2b86bce_h_50dea31c/resettle_cycle_record.jsonl": "90839e04a7a66f80276edeb3e7f948b010f6ad50f07723a873f52db38eded573",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_50dea31c/evals/354b1bdae2b86bce_h_50dea31c/resettle_decision.json": "2cbe8d8f8e6b6cf5bd91cd9f96ab43340ce89dd5b31b8b01b5db1c7179a73b63",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_74eda68d/campaign_manifest_sha256.json": "a46ca7e7397268b5ef422f78840b7f13806f7b0d9006e6eca84796703eeabd64",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_74eda68d/campaign_results.json": "a281d6f987c7797b067ce1e68fa9318db0a051afd3e5daa0385c3c508964819b",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_74eda68d/evals/dca0862812873604_h_74eda68d/resettle_cycle_record.jsonl": "6e8c70b76c67ca4af5f84c8d1b4e375998cdc061a37d4bbd04c5eb32d9cb8eb8",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_74eda68d/evals/dca0862812873604_h_74eda68d/resettle_decision.json": "a0be0de0ea220a00805eb7f139816f86f03ac140180ccbfbeb665368105b4ea7",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_aa8a76d7/campaign_manifest_sha256.json": "aafdcb1fe5a8964f5796cc783e732c50cd173397777e8044a9a5905f4d85a378",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_aa8a76d7/campaign_results.json": "0b9bbb29e3ae266badab6f02a0df79e9a238c195cfab8d45861e3b81ad844053",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_aa8a76d7/evals/22dd5ef8a9223f56_h_aa8a76d7/resettle_cycle_record.jsonl": "7bbc7890574c488f3d9a6adb03c60bfa10ab4547e86bce92ab61bb683e17b1b7",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_aa8a76d7/evals/22dd5ef8a9223f56_h_aa8a76d7/resettle_decision.json": "faa2c5a6f4a06b856e85588c31c9cc77d205acf7eb744505c5442f2b9ddc0316",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_f9eae48f/campaign_manifest_sha256.json": "5c4a94254a925b2df5c71843abea949ca3d5fd8250a8343bc70c5165f7358874",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_f9eae48f/campaign_results.json": "1323e6d0664bec87d502a5b601eae86310034d4eb5e95bc70911e97f0bee8985",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_f9eae48f/evals/aed2d618a19ca483_h_f9eae48f/resettle_cycle_record.jsonl": "ddfe92db5e818f2cdc56ba60aa97289deb1fdec40960078a0c3cc781cb5662e2",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_f9eae48f/evals/aed2d618a19ca483_h_f9eae48f/resettle_decision.json": "462b2f3f04b97ef28265c079b65868cec415536cbf5732556355188156784c7b",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_i_5a6a88b4/campaign_manifest_sha256.json": "e5f02653c46c4a83d23a113990d3710b0c6c4dc61f04ab8af5f8d3fd7f89c6f7",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_i_5a6a88b4/campaign_results.json": "130b1c8cb1469a0d40d2f7c0d0931764efc53633d1aefc0f1f87466117d928c7",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_i_5a6a88b4/evals/e046a8cfd25f819c_i_5a6a88b4/resettle_cycle_record.jsonl": "e49ef2e12c0589ab5c97425768999b25ddfc1254a1f9550425606793f395117f",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_i_5a6a88b4/evals/e046a8cfd25f819c_i_5a6a88b4/resettle_decision.json": "69b46d0d43d27d184ec7c4f11d0c3e6379cdbd8a9211c42739cb5511c2b60861",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_5f3cccb4/campaign_manifest_sha256.json": "7df38f8a7846e4d99080246097d0f6f0e856c1ea80bc218891e24838bb7af4cf",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_5f3cccb4/campaign_results.json": "ae21b55f37bf1c6b54da3dc3aa4ad3130d3ead30363f4b5f704e2cdf1aead0db",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_5f3cccb4/evals/cc7f005909db6741_j_5f3cccb4/resettle_cycle_record.jsonl": "43e478e34f37d876981c6c659ade649e6890917b33a40333946b352672236e25",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_5f3cccb4/evals/cc7f005909db6741_j_5f3cccb4/resettle_decision.json": "a4c1cb0e72faca177a037751858b35d5d08eecb05965e6e5026de3d9ee783d09",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_a11d7966/campaign_manifest_sha256.json": "c6e06d14ab685d3b968b2c36720046c34a1e81197eb9776e4c1b19d6fc74dd8a",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_a11d7966/campaign_results.json": "c65ad5340238035ed5315056f96e6749849fa0d7075db272b1262801fef10b3b",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_a11d7966/evals/87efbc3d23566c29_j_a11d7966/resettle_cycle_record.jsonl": "e2af455d064f159bf52fdd35d0d6997da898a61de17625a4bf4e02fc309d18fe",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_a11d7966/evals/87efbc3d23566c29_j_a11d7966/resettle_decision.json": "1ab779b7336a1d2a3415b81b1768723c6371573707c550695132aae6f2be7ac1",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_f3aa335e/campaign_manifest_sha256.json": "ffd3c1201c59936b18215bf31cf2f7736f57d75c4702ed08e0984ec9b8094bbf",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_f3aa335e/campaign_results.json": "117aeabd95e9ac517b6a9853f8996a5928aab4e406ca12e1226d0cc9331b389d",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_f3aa335e/evals/af066d6bc9fdb74d_j_f3aa335e/resettle_cycle_record.jsonl": "45a8318c343e6ab8be183a76e91314db119aa2042aebf386a4162b691ad32056",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_f3aa335e/evals/af066d6bc9fdb74d_j_f3aa335e/resettle_decision.json": "6ff801e2d1d3a70a63dc7bd77224e64224d4592c0fac55ba78ea778b0ec19e58",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_0ee93aca/campaign_manifest_sha256.json": "d4ea6917989ffb8bd819734f4d832ce8da26e2dc8157477cc6d54542864b1d65",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_0ee93aca/campaign_results.json": "03afb0a49991a8b2313de2b58a097a427ea1625b83b3b9f4d0dccdd81960addd",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_0ee93aca/evals/86d27f42e98503ca_l_0ee93aca/resettle_cycle_record.jsonl": "bea52c4ed5bef03d9ecc2b5b150944f19e6266d9bd0474f35b0fbda214591c5e",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_0ee93aca/evals/86d27f42e98503ca_l_0ee93aca/resettle_decision.json": "8379a34e4c553a72051ea38c94debcd128e08d8c0972c0034708c69610df4ae9",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_195156fa/campaign_manifest_sha256.json": "f1a85d784426c26a7795eed227e2918361f0a5f3cd8e9332a5400059e5563f47",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_195156fa/campaign_results.json": "3637aa5addc9e523a8e0ba93df60bc7d982ec803b95957d409d127ffc5febff5",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_195156fa/evals/1fd23b8db2be1ba0_l_195156fa/resettle_cycle_record.jsonl": "008eb52a4c4fd66782463aca2967a996150d08e32d02cf05a5dbcecdff47e2b3",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_195156fa/evals/1fd23b8db2be1ba0_l_195156fa/resettle_decision.json": "c88321c9961fd0c38be1713b40be65a76cd4350a6abba82ef6984cec0dc3af59",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_2ab0ce2d/campaign_manifest_sha256.json": "d16495a5fd7ac3f7ce65394d267152bff4f3f6509d5474bcbef53cef6114dde2",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_2ab0ce2d/campaign_results.json": "cb3827e7f999fb8c696f273e0ce581dc4ff7310b47015632bf39c4ffd21862e4",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_2ab0ce2d/evals/75266862b990d2eb_l_2ab0ce2d/resettle_cycle_record.jsonl": "99498ce7b94ed8af8f105ee8972dab6c58d206ae8dd26c4707e464eedd150ac1",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_2ab0ce2d/evals/75266862b990d2eb_l_2ab0ce2d/resettle_decision.json": "0e27d5889bff41f15564bd64ea26d7082800c6af838cc77184b0b72abc96e683",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_45aa25a6/campaign_manifest_sha256.json": "9050c37b460a607b83b51b658740b6b67ac902e572ae818998b77c384aa98d64",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_45aa25a6/campaign_results.json": "f79be96de9aa91d0a27c65346fce770982026af90f1cc4ee0c976c20d0874984",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_45aa25a6/evals/296e09ff97ac2db4_l_45aa25a6/resettle_cycle_record.jsonl": "a7d2c5856c685d889794832c1661f8e5bbeb9a931aecc590fd2ff780630f4de4",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_45aa25a6/evals/296e09ff97ac2db4_l_45aa25a6/resettle_decision.json": "1b1b4ed460f0f38307f1a56e30012bee196d3d755681a19528a4bd0030974454",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_76c78064/campaign_manifest_sha256.json": "0c45565f054ba89356ff11c9b4b6ec726806dbf647c0749e927823eae627eea5",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_76c78064/campaign_results.json": "1aed589f066505515dda514ac85cbd168108fd79e9f2a49b40e043a7fd194a61",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_76c78064/evals/571ed31e4139a567_l_76c78064/resettle_cycle_record.jsonl": "32db2125ceee229e06090245dca1ce314de8a7d9dec98236424774f849322766",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_76c78064/evals/571ed31e4139a567_l_76c78064/resettle_decision.json": "468194415265e7b47e06def6c1fcb330db553c290ab484677ecb58719afcf583",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7b199ef9/campaign_manifest_sha256.json": "9ede2902d7942fb0042b7cab0dc7e53c29b56db01024767294d601ac4bd398c4",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7b199ef9/campaign_results.json": "692c9968970688193bbc7039556f93441082058c7af9657b96b514097b6fbdd1",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7b199ef9/evals/331e76c7c613b64e_l_7b199ef9/resettle_cycle_record.jsonl": "f89812abe85821a8b1eb08afeae3a995e41e8306cb0e17c1b976eb13e7789578",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7b199ef9/evals/331e76c7c613b64e_l_7b199ef9/resettle_decision.json": "39f755fceaabe8cb29cfef2c05107686120483432a99d8496caf78ac76aec2ed",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7c455554/campaign_manifest_sha256.json": "2319d5b025acc59f030a2d283de17182ae2ea8a964055d9ca367b88dbb942a53",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7c455554/campaign_results.json": "2ce94f0affe965af183afd6d7c632bf14af9ef22cb7a5d996af8a98ffb382d94",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7c455554/evals/9906389c1cd682a9_l_7c455554/resettle_cycle_record.jsonl": "f25a91459f4ab8273b053c09e76ddf526dcb499ec31a42ea3828408f0a782367",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7c455554/evals/9906389c1cd682a9_l_7c455554/resettle_decision.json": "cfb368d92e620481577fdcf03d3919a42ccf1b092d8302ad966d15d6212b8465",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7db09f6c/campaign_manifest_sha256.json": "5cb154377fafbf8c09bb8f649c20e30b4b4e59f30f2f04355eaba0dd1e72405a",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7db09f6c/campaign_results.json": "9a5d84ecfe98772c3ba7baa205088718a6175fab85dfb55108166388703d3ff3",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7db09f6c/evals/7f5a857b06a6083a_l_7db09f6c/resettle_cycle_record.jsonl": "6f9431ee5cdc3fe5ca1a8b383e3badcb01fb61e9519f0d9ecf5ab8e17f6f3915",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7db09f6c/evals/7f5a857b06a6083a_l_7db09f6c/resettle_decision.json": "bd5bfe209062a01bbc39e0c74bb802a119fbc1dd4671d40f8f4a23bd9300d4c2",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_8e4c220e/campaign_manifest_sha256.json": "78b9a3ee614570c78eb676451479b29fa6cd5998c66390fde9ff56d0145d308f",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_8e4c220e/campaign_results.json": "1d8ca49733dcc52f29a95a70aa8a03b0ffc40c843ec362d0e91af7cc5be074f8",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_8e4c220e/evals/5775a50cf6c84503_l_8e4c220e/resettle_cycle_record.jsonl": "e2391c0e6fa6a38c585a07629ff96e003593aa20e0dc9a080c6c76c1b74af091",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_8e4c220e/evals/5775a50cf6c84503_l_8e4c220e/resettle_decision.json": "00271e4e379c33fc2d01e1e00a4598e400f7342620d4e820ba380bac9a8fbde9",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_b2251bc5/campaign_manifest_sha256.json": "a53033a9b1f0eac5b50956e1b070723a3e12df8d7e4d52f8e8925d4f48e17005",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_b2251bc5/campaign_results.json": "3445c90a9f9c57437bba15d4d4c2a1ad52e16dda52a3cd8ca98f39e32ae05c8d",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_b2251bc5/evals/abf4ac0af85dcb5e_l_b2251bc5/resettle_cycle_record.jsonl": "312a8e3a4636e2c6fcfa8e87f6f3a910e69e0c4611df803dd658882f2ed17fd4",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_b2251bc5/evals/abf4ac0af85dcb5e_l_b2251bc5/resettle_decision.json": "661cef9da81d576297844372ef1828da72198419fde2b3eddef680d758a61245",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_df1a5525/campaign_manifest_sha256.json": "623bed40b32119322502e5efc2088292c75c31aa6a80f88ab8022a30ec4813f8",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_df1a5525/campaign_results.json": "daedba22d6bb12e2ff746bffa0c0ebd20a79080563caad1772096dc7a7e0f770",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_df1a5525/evals/6c8f6353e29b204f_l_df1a5525/resettle_cycle_record.jsonl": "a7527d8e493cfe7f601c64cf8a9779bea6a842d3e964553a066fd5cd36a4e688",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_df1a5525/evals/6c8f6353e29b204f_l_df1a5525/resettle_decision.json": "f5f4c0ca53ec3a1d037bd126cf6330a63d511909851592918521ae01aa0d7f76",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_e1da0984/campaign_manifest_sha256.json": "f664d83d2b4dfd0c33c6274fc8f04aff1b7062a93d47f8d30e5fbbd436673a04",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_e1da0984/campaign_results.json": "1cc0f2fde62b6aeb29f902a6e8592d7060d36b778e3a1d21d5258000ce576885",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_e1da0984/evals/2587ab4987bc3125_l_e1da0984/resettle_cycle_record.jsonl": "6435317b678f1f24dd3a9542829bed6ee3f0da1182efaea3d3c8ea2ac35db86f",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_e1da0984/evals/2587ab4987bc3125_l_e1da0984/resettle_decision.json": "d81df848181093a509b36e7e7e11b49e0ee9ce293043f2b47316f2cb055a39a6",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/v6_from_records/d_c52e1670_v6_from_records_certificate.json": "c96e3588d38a5abba3349620fed5d446748e89d97a9da92a657e7933e6c6c87f",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/v6_from_records/manifest_sha256.json": "b99cca8a581c32b71004ba48d0f488eae94aaccddcd1b34ea5219938eae158ef",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/w142_summary_after_34_l_195156fa.json": "ba15d547133b5c291f4b5a87036482222dc370f29b22dfb9c3a739c2c9c8732c",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/w142_summary_after_34_l_195156fa_manifest_sha256.json": "a5c59361abcaf25348f7a997a3ceb776cdabd0b281ccdde81744d3e7962486ff",
+  "data/SRP1/SRP1.json": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+ }
+}

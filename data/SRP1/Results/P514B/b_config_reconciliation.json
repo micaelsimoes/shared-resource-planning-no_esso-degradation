@@ -1,0 +1,898 @@
+{
+ "stage": "Track B \u2014 configuration reconciliation",
+ "timestamp_utc": "2026-09-12T19:29:02.175402+00:00",
+ "solve_profile": {
+  "declared": 0,
+  "observed": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "failures": []
+ },
+ "q1_governing_configuration_per_stage": {
+  "P5.9-B": {
+   "date": "2026-09-09",
+   "rho_requested": {
+    "v": 1.5,
+    "pf": 1000.0
+   },
+   "adaptive_penalty": {
+    "arm_on": true,
+    "arm_off": false
+   },
+   "num_max_iters": "not serialized",
+   "tol_stationarity_pf_derived": 0.01,
+   "tol_consensus_pf_derived": 0.01,
+   "objective_tolerance_observed": 828029.4609969885,
+   "source": "data/SRP1/Results/P59/p59_b_adaptive.json"
+  },
+  "P5.10-B": {
+   "date": "2026-09-09",
+   "rho_requested": {
+    "v": 1.5,
+    "pf": 300.0,
+    "ess": 1.0
+   },
+   "adaptive_penalty": false,
+   "config_label": "RESCALED_v1.5_pf300_ess1_ad0_nh1",
+   "num_max_iters": "not serialized",
+   "tol_stationarity_pf_derived": 0.01,
+   "tol_consensus_pf_derived": 0.01,
+   "objective_tolerance_observed": 827944.6981064962,
+   "source": "data/SRP1/Results/P510/p510_b_fixedrho_pf300.json"
+  },
+  "P5.12-R": {
+   "date": "2026-09-11",
+   "rho_requested": {
+    "v": 1.5,
+    "pf": 300.0,
+    "ess": 1.0
+   },
+   "adaptive_penalty": false,
+   "num_max_iters": 21,
+   "source": "data/SRP1/Results/P512R/run.json (configuration block)"
+  },
+  "AB1 control": {
+   "date": "2026-09-12",
+   "rho_requested": {
+    "v": 1.5,
+    "pf": 300.0,
+    "ess": 1.0
+   },
+   "adaptive_penalty": false,
+   "num_max_iters": 50,
+   "tol_stationarity_pf_derived": 0.01,
+   "tol_consensus_pf_derived": 0.01,
+   "objective_tolerance_observed": 1313596.219745411,
+   "penalty_update": {
+    "residual_balance_ratio": 5.0,
+    "residual_balance_ratio_pf_decrease": 3.0,
+    "increase_factor": 1.5,
+    "decrease_factor": 1.5,
+    "min": 0.0001,
+    "max": 10000.0
+   },
+   "source": "data/SRP1/Results/P514AB1/ab1_control.json"
+  },
+  "AB1 treatment": {
+   "date": "2026-09-12",
+   "rho_requested": {
+    "v": 1.5,
+    "pf": 300.0,
+    "ess": 1.0
+   },
+   "adaptive_penalty": true,
+   "num_max_iters": 50,
+   "tol_stationarity_pf_derived": 0.01,
+   "tol_consensus_pf_derived": 0.01,
+   "objective_tolerance_observed": 827536.2446756636,
+   "penalty_update": {
+    "residual_balance_ratio": 5.0,
+    "residual_balance_ratio_pf_decrease": 3.0,
+    "increase_factor": 1.5,
+    "decrease_factor": 1.5,
+    "min": 0.0001,
+    "max": 10000.0
+   },
+   "source": "data/SRP1/Results/P514AB1/ab1_treatment.json"
+  },
+  "X22 warm_fixed": {
+   "date": "2026-09-12",
+   "rho_requested": {
+    "v": 1.5,
+    "pf": 300.0,
+    "ess": 1.0
+   },
+   "adaptive_penalty": false,
+   "num_max_iters": 50,
+   "tol_stationarity_pf_derived": 0.01,
+   "tol_consensus_pf_derived": 0.01,
+   "objective_tolerance_observed": 827944.6981064962,
+   "source": "data/SRP1/Results/P514X22/x22_warm_fixed.json"
+  },
+  "X22 warm_adaptive": {
+   "date": "2026-09-12",
+   "rho_requested": {
+    "v": 1.5,
+    "pf": 300.0,
+    "ess": 1.0
+   },
+   "adaptive_penalty": true,
+   "num_max_iters": 50,
+   "tol_stationarity_pf_derived": 0.01,
+   "tol_consensus_pf_derived": 0.01,
+   "objective_tolerance_observed": 827947.7034255052,
+   "source": "data/SRP1/Results/P514X22/x22_warm_adaptive.json"
+  }
+ },
+ "q2_mechanism": {
+  "case_file_history": [
+   {
+    "commit": "784346d7",
+    "date": "2025-12-15",
+    "subject": "Case studies. Update.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     }
+    }
+   },
+   {
+    "commit": "9a26a394",
+    "date": "2025-12-15",
+    "subject": "Case studies. Update.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     }
+    }
+   },
+   {
+    "commit": "fa414d68",
+    "date": "2025-12-16",
+    "subject": "Regularization. Test",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     }
+    }
+   },
+   {
+    "commit": "5ce0abbd",
+    "date": "2025-12-16",
+    "subject": "Case studies. Update.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     }
+    }
+   },
+   {
+    "commit": "92e96458",
+    "date": "2025-12-16",
+    "subject": "Case studies. Update.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.001,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     }
+    }
+   },
+   {
+    "commit": "935794d1",
+    "date": "2025-12-16",
+    "subject": "Case studies. Update.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.001,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     }
+    }
+   },
+   {
+    "commit": "362a91b5",
+    "date": "2025-12-19",
+    "subject": "Case studies. Update.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.001,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     }
+    }
+   },
+   {
+    "commit": "4d2f3971",
+    "date": "2025-12-19",
+    "subject": "Case studies. Update.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     }
+    }
+   },
+   {
+    "commit": "6e4d2e3a",
+    "date": "2025-12-19",
+    "subject": "Case studies. Update.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.001,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     }
+    }
+   },
+   {
+    "commit": "b530180a",
+    "date": "2025-12-20",
+    "subject": "Case studies. Update.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.001,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     }
+    }
+   },
+   {
+    "commit": "49dcfb21",
+    "date": "2025-12-20",
+    "subject": "Case studies. Update.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     }
+    }
+   },
+   {
+    "commit": "4f7c1cce",
+    "date": "2025-12-20",
+    "subject": "Update. Primal computation.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     }
+    }
+   },
+   {
+    "commit": "c309c889",
+    "date": "2025-12-20",
+    "subject": "Update. Case studies",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     }
+    }
+   },
+   {
+    "commit": "3a79c05d",
+    "date": "2026-08-03",
+    "subject": "Test.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     }
+    }
+   },
+   {
+    "commit": "a782bad7",
+    "date": "2026-08-04",
+    "subject": "Diagnostics implementation.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     }
+    }
+   },
+   {
+    "commit": "2b7a22fe",
+    "date": "2026-08-04",
+    "subject": "ADMM cycle updated.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     },
+     "objective": {
+      "abs": 10000.0,
+      "rel": 0.0005
+     }
+    }
+   },
+   {
+    "commit": "1eeeb12b",
+    "date": "2026-08-04",
+    "subject": "ADMM cycle updated.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     },
+     "objective": {
+      "abs": 10000.0,
+      "rel": 0.005
+     }
+    }
+   },
+   {
+    "commit": "c2a7755e",
+    "date": "2026-08-05",
+    "subject": "finite-difference validation updated.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     },
+     "objective": {
+      "abs": 10000.0,
+      "rel": 0.005
+     }
+    }
+   },
+   {
+    "commit": "9b700463",
+    "date": "2026-08-05",
+    "subject": "validation polishing.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     },
+     "objective": {
+      "abs": 10000.0,
+      "rel": 0.005
+     }
+    }
+   },
+   {
+    "commit": "50ee16d1",
+    "date": "2026-08-05",
+    "subject": "debug.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     },
+     "objective": {
+      "abs": 10000.0,
+      "rel": 0.005
+     }
+    }
+   },
+   {
+    "commit": "d4b1afaa",
+    "date": "2026-08-18",
+    "subject": "finite_difference tests updated.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     },
+     "objective": {
+      "abs": 10000.0,
+      "rel": 0.005
+     }
+    }
+   },
+   {
+    "commit": "60d63bb3",
+    "date": "2026-08-20",
+    "subject": "Debug.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     },
+     "objective": {
+      "abs": 10000.0,
+      "rel": 0.005
+     }
+    }
+   },
+   {
+    "commit": "449457a8",
+    "date": "2026-08-21",
+    "subject": "Debug.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.001,
+      "pf": 0.001,
+      "ess": 0.001
+     },
+     "stationarity": {
+      "v": 0.001,
+      "pf": 0.001,
+      "ess": 0.001
+     },
+     "objective": {
+      "abs": 1000.0,
+      "rel": 0.001
+     }
+    }
+   },
+   {
+    "commit": "f090d562",
+    "date": "2026-08-21",
+    "subject": "Shared ESS non-anticipativity constraints updated.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.001,
+      "pf": 0.001,
+      "ess": 0.01
+     },
+     "stationarity": {
+      "v": 0.001,
+      "pf": 0.001,
+      "ess": 0.01
+     },
+     "objective": {
+      "abs": 1000.0,
+      "rel": 0.001
+     }
+    }
+   },
+   {
+    "commit": "42ad317e",
+    "date": "2026-08-21",
+    "subject": "Shared ESS non-anticipativity constraints updated.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v": 0.005,
+      "pf": 0.005,
+      "ess": 0.05
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.5
+     },
+     "objective": {
+      "abs": 10000.0,
+      "rel": 0.005
+     }
+    }
+   },
+   {
+    "commit": "2bfd462c",
+    "date": "2026-08-25",
+    "subject": "ADMM. Shared ESS consensus formulation updated to consider max stopping criteria. Debug.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v_mean": 0.005,
+      "v": 0.005,
+      "pf_mean": 0.005,
+      "pf": 0.02,
+      "ess_mean": 0.005,
+      "ess": 0.02
+     },
+     "stationarity": {
+      "v": 0.05,
+      "pf": 0.05,
+      "ess": 0.05
+     },
+     "objective": {
+      "abs": 10000.0,
+      "rel": 0.01
+     }
+    }
+   },
+   {
+    "commit": "3839cad1",
+    "date": "2026-08-27",
+    "subject": "Debug.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v_mean": 0.001,
+      "v": 0.01,
+      "pf_mean": 0.001,
+      "pf": 0.01,
+      "ess_mean": 0.01,
+      "ess": 0.1
+     },
+     "stationarity": {
+      "v": 0.01,
+      "pf": 0.01,
+      "ess": 0.01
+     },
+     "objective": {
+      "abs": 1000.0,
+      "rel": 0.001
+     }
+    }
+   },
+   {
+    "commit": "090e4436",
+    "date": "2026-09-02",
+    "subject": "Debug.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 50,
+    "tol": {
+     "consensus": {
+      "v_mean": 0.001,
+      "v": 0.01,
+      "pf_mean": 0.001,
+      "pf": 0.01,
+      "ess_mean": 0.01,
+      "ess": 0.1
+     },
+     "stationarity": {
+      "v": 0.01,
+      "pf": 0.01,
+      "ess": 0.01
+     },
+     "objective": {
+      "abs": 1000.0,
+      "rel": 0.001
+     }
+    }
+   },
+   {
+    "commit": "4b4002a7",
+    "date": "2026-09-04",
+    "subject": "Debug.",
+    "rho_v": 1.0,
+    "rho_pf": 1.0,
+    "adaptive_penalty": true,
+    "num_max_iters": 25,
+    "tol": {
+     "consensus": {
+      "v_mean": 0.001,
+      "v": 0.01,
+      "pf_mean": 0.001,
+      "pf": 0.01,
+      "ess_mean": 0.01,
+      "ess": 0.1
+     },
+     "stationarity": {
+      "v": 0.01,
+      "pf": 0.01,
+      "ess": 0.01
+     },
+     "objective": {
+      "abs": 1000.0,
+      "rel": 0.001
+     }
+    }
+   }
+  ],
+  "finding": "data/SRP1/SRP1_params.json has carried rho.{v,pf,ess} = 1.0 and adaptive_penalty = true CONTINUOUSLY since 784346d7 (2025-12-15), which PRE-DATES every preserved stage. The file was therefore NOT edited after those runs. The divergence is PROGRAMMATIC OVERRIDE: the harnesses call p59_rho.apply_rho_to_params and p59_rho.set_adaptive_penalty on the in-memory planning problem.",
+  "harnesses_that_override": [
+   "./p512_b_cycle21_forensic.py",
+   "./p511_1_selfconsistent_t0.py",
+   "./p59_eval.py",
+   "./p512_a_cold_rescaled_convergence.py",
+   "./p514_b_config_reconciliation.py",
+   "./p510_oracle.py",
+   "./p512_r_presolve_recapture.py",
+   "./p514_ab1_adaptive_cold.py",
+   "./p59_rho.py"
+  ],
+  "what_did_change_in_the_file": "the TOLERANCES moved repeatedly \u2014 stationarity 0.05 -> 0.001 -> 0.01 and objective rel 0.0005 -> 0.005 -> 0.001 -> 0.01 -> 0.001 \u2014 and num_max_iters 50 -> 25 on 2026-09-04. Tolerances are NOT overridden by the harnesses, so each stage ran with whatever the file held at its commit; the per-stage derived values above are the authority."
+ },
+ "q3_plain_production_run_today": {
+  "effective_configuration": {
+   "rho": {
+    "v": {
+     "case9": 1.0,
+     "case33_1": 1.0,
+     "case33_2": 1.0,
+     "case33_3": 1.0
+    },
+    "pf": {
+     "case9": 1.0,
+     "case33_1": 1.0,
+     "case33_2": 1.0,
+     "case33_3": 1.0
+    },
+    "ess": {
+     "case9": 1.0,
+     "case33_1": 1.0,
+     "case33_2": 1.0,
+     "case33_3": 1.0,
+     "esso": 1.0
+    }
+   },
+   "adaptive_penalty": true,
+   "num_max_iters": 25,
+   "tol": {
+    "consensus": {
+     "v_mean": 0.001,
+     "v": 0.01,
+     "pf_mean": 0.001,
+     "pf": 0.01,
+     "ess_mean": 0.01,
+     "ess": 0.1
+    },
+    "stationarity": {
+     "v": 0.01,
+     "pf": 0.01,
+     "ess": 0.01
+    },
+    "objective": {
+     "abs": 1000.0,
+     "rel": 0.001
+    }
+   },
+   "proximal_regularization": {
+    "enabled": true,
+    "tso": {
+     "enabled": true,
+     "gamma": {
+      "v": 1.0,
+      "pf": 1.0,
+      "ess": 1.0
+     }
+    },
+    "dso": {
+     "enabled": false,
+     "gamma": {
+      "v": 1.0,
+      "pf": 1.0,
+      "ess": 1.0
+     }
+    }
+   },
+   "penalty_update": {
+    "residual_balance_ratio": 5.0,
+    "residual_balance_ratio_pf_decrease": 3.0,
+    "increase_factor": 1.5,
+    "decrease_factor": 1.5,
+    "min": 0.0001,
+    "max": 10000.0
+   }
+  },
+  "statement": "A plain production run from this case file today would use rho = 1.0 on every family, adaptive_penalty = True, num_max_iters = 25, stationarity tolerances 0.01, objective (abs 1000, rel 0.001), TSO proximal on and DSO proximal off, and C3 active. That configuration matches NO preserved stage: every stage in the evidence base used an overridden rho and, except P5.9-B's treatment arm, adaptive_penalty = False."
+ }
+}

@@ -1,0 +1,54 @@
+WARNING: Failed to create solver with name 'ipopt': [Errno 2] No such file or
+directory
+Traceback (most recent call last):
+  File "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/opt/base/solvers.py", line 161, in __call__
+    opt = self._cls[_name](**kwds)
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/solvers/plugins/solvers/IPOPT.py", line 44, in __init__
+    super(IPOPT, self).__init__(**kwds)
+  File "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/opt/solver/shellcmd.py", line 66, in __init__
+    self.set_executable(name=executable, validate=validate)
+  File "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/opt/solver/shellcmd.py", line 112, in set_executable
+    exe.rehash()
+  File "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/common/fileutils.py", line 628, in rehash
+    self.path()
+  File "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/common/fileutils.py", line 574, in path
+    tmp = self._mngr._find(target, pathlist=self._mngr.pathlist)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/common/fileutils.py", line 458, in find_executable
+    return find_file(
+           ^^^^^^^^^^
+  File "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/common/fileutils.py", line 224, in find_file
+    return find_path(
+           ^^^^^^^^^^
+  File "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/common/fileutils.py", line 143, in find_path
+    locations.append(os.getcwd())
+                     ^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory
+Traceback (most recent call last):
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_g_g1_g4_admm_gates.py", line 308, in <module>
+    'bytes': os.path.getsize(pickle_path)}
+^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_g_g1_g4_admm_gates.py", line 225, in run_admm_arm
+    'assignment': 'uniform across active nodes (control/perturbation)'}
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/shared_resources_planning.py", line 72, in run_operational_planning
+    convergence, results, models, sensitivities, primal_evolution, execution_time, state = _run_operational_planning(self, candidate_solution, initial_state=initial_state, debug_flag=debug_flag)
+                                                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/shared_resources_planning.py", line 2241, in _run_operational_planning
+    results['tso'] = update_transmission_coordination_model_and_solve(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/shared_resources_planning.py", line 4476, in update_transmission_coordination_model_and_solve
+    res = transmission_network.optimize(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/network_data.py", line 64, in optimize
+    failure_snapshot_callback(pre_solve_model, year, day, results[year][day])
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/shared_resources_planning.py", line 4445, in save_failed_tso_block
+    _save_frozen_network_block(
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/shared_resources_planning.py", line 4522, in _save_frozen_network_block
+    os.makedirs(save_dir, exist_ok=True)
+  File "<frozen os>", line 215, in makedirs
+  File "<frozen os>", line 215, in makedirs
+  File "<frozen os>", line 215, in makedirs
+  File "<frozen os>", line 225, in makedirs
+FileNotFoundError: [Errno 2] No such file or directory: 'data'

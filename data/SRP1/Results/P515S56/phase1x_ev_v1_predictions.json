@@ -1,0 +1,207 @@
+{
+ "authority": "TASKS.md step 5d; author decisions 2026-11-26 (1x phase authorized, 60 h ceiling, execution as at 2x, budget B = 1,000,000 EUR kept); Planner decisions D1 (e_EV = 17,494 EUR and K_EV = 300 carry over from the 2x pilot; no 1x pilot) and D2 (no record carries over; x0, the reference unit and the staged plan evaluated by the phase itself on the R4 path); predictions Q1-Q9 stated by the Planner before the run (statements copied verbatim; evaluated_as added from phase_results fields as in the 2x file)",
+ "derived_from_existing_data": {
+  "K_EV": 300,
+  "block_projection_inputs": {
+   "K_EV_frozen_rule": 175,
+   "child_walls_to_300_h": [
+    2.3641764680544535,
+    2.5265590555800332,
+    2.624462284180853,
+    2.387246166401439,
+    2.55884320696195,
+    2.1352816763851377,
+    2.2915958519114388
+   ],
+   "e_EV": 17494.04935669899,
+   "formula": "exit block = kappa psi t_exit; settled block = kappa psi t_300 (t_300 = mean pilot child wall to K = 300); the design count formula per block, kappa and psi as measured",
+   "kappa": 1.18,
+   "pilot_launch_walls_h": [
+    2.626724124153455,
+    2.293328847951359
+   ],
+   "projection_h": {
+    "exit": 1.292401447922688,
+    "settled": 3.0935732228831774
+   },
+   "psi": 1.0866607399429278,
+   "source": {
+    "pilot_result": "data/SRP1/Results/P515S56/pilot_ev_v1_result_r2/pilot_result.json",
+    "pilot_result_sha256": "c49ac8a0ab59c1f2a4cb813e8389ce0831c43a14881e9fd61b572ca007330561",
+    "pilot_root": "data/SRP1/Results/P515S56/pilot_ev_v1"
+   },
+   "t_300_h": 2.4125949584964723,
+   "t_exit_h": 1.0079092987189218
+  },
+  "e_EV": 17494.04935669899,
+  "memory_per_slot_gib": 3.29,
+  "note": "numbers derived from committed records before the phase; they inform the predictions, they are not predictions themselves",
+  "projected_hours_restated": {
+   "each_search_move_adds_h": [
+    8.0,
+    22.0
+   ],
+   "no_confirm_candidate_in_the_screen_h": [
+    7.8,
+    22.0
+   ],
+   "source": "P5_15_S56_PHASE2X_REPORT.md (50d7dc67) section 7b, restated by the Planner in TASKS 5d -- a PROJECTION, not a prediction",
+   "two_candidates_no_search_move_h": [
+    16.7,
+    32.8
+   ]
+  }
+ },
+ "objective_convention": "F = I(x) + gross_operational_cost - TV credit, EUR of total discounted planning cost (oracle mapping p515_s56_oracle_mapping_v2, cost-breakdown schema v2); gross settlement-excluded; dF_exit = F_exit(x) - F_exit(x0), x0 read from x0's own exit run of this phase (at 2x it was the exit view of the pilot x0_i1 record)",
+ "phase": "the 1x flexibility-price EV phase (TASKS.md step 5d), root data/SRP1/Results/P515S56/phase1x_ev_v1",
+ "predictions": {
+  "Q1": {
+   "basis": "the earlier SRP1 flexibility ladder put storage break-even between 1.5× and 1.75× (different model: legacy cohort, TV not in the objective) — low confidence. For reference, at 2× 12 of 18 had dF_exit < 0 (phase2x_ev_v3/phase_results.json prediction_inputs.Q1)",
+   "decision_role": "none (recorded only; same reasoning as 2x R1)",
+   "evaluated_as": "phase_results.json prediction_inputs.Q1.screen_dF_exit_below_0 <= 9, over report.marginal_value_table.rows with source == \"screen\" (18 rows; dF_exit = F_exit(x) - F_exit(x0), x0 = this phase's x0 exit run, report.marginal_value_table.x0). A row without a numeric dF_exit (uncertified / harness_error) is not counted as dF_exit < 0; the number of such rows = prediction_inputs.Q1.screen_rows - prediction_inputs.Q1.screen_certified, reported beside",
+   "on_failure": "recorded with the plans named; NON-STOPPING (same reasoning as 2x R1, TASKS 5a): no phase decision reads the sign of dF_exit -- the ladder, the table, the efficiency rule, the candidates and the pool read the exit class against x0 and settled values -- and its threshold (dF_exit < 0) lies inside the e_EV band (|dF_exit| <= e_EV = 17,494 EUR), so a failure is not a determinate sign result; the phase continues and the outcome is reported at the end",
+   "statement": "at most 9 of the 18 screen plans have dF_exit < 0 against 1× x0",
+   "threshold": {
+    "rows": 18,
+    "screen_dF_exit_lt_0_max": 9
+   }
+  },
+  "Q2": {
+   "basis": "2x phase: Q2 held (P5_15_S56_PHASE2X_REPORT.md); its ESSO recovery events (6 on 4 plans, all tier 1) are reconciled by the extended solve-count guard of 4030508f, not failures",
+   "evaluated_as": "phase_results.json prediction_inputs.Q2: harness_error_summaries == 0 (every summary the phase read, cache included) and local_solve_failures_total == 0 (sum of evaluation_record.local_solve_failures over every evaluation the phase launched)",
+   "on_failure": "a harness_error already stops the phase for review (exit 5, by construction); a local-solve failure is recorded with the run named (the run is then not certified / not settled and is listed as such, never \"worse\") (as at 2x)",
+   "statement": "0 harness_error and 0 local-solve failures over the phase",
+   "threshold": {
+    "harness_error": 0,
+    "local_solve_failures": 0
+   }
+  },
+  "Q3": {
+   "basis": "Planner (TASKS 5d); recorded before the run",
+   "decision_role": "none (recorded only, NON-STOPPING)",
+   "evaluated_as": "phase_results.json report.pool.chosen_label == \"x0\" (prediction_inputs.Q3.best_start_is_x0 is true)",
+   "on_failure": "recorded; NON-STOPPING: the search starts from the rule's start as frozen (P.phase_step stage pool)",
+   "statement": "the best start is x0",
+   "threshold": {
+    "best_start_label_eq": "x0"
+   }
+  },
+  "Q4": {
+   "basis": "PROJECTED (restated from the 2x report section 7b, not a prediction): 16.7-32.8 h with two candidates and no search move; 7.8-22.0 h if no screen row is a confirm-candidate; each move + 8-22 h. Per block (frozen projections from the pilot): exit 1.292 h, settled 3.094 h",
+   "evaluated_as": "the author's loop ends with exit 0 (phase_results.json report.termination.reason == \"phase_complete\") and phase_results.json hours.cumulative_h <= 60 (prediction_inputs.Q4)",
+   "on_failure": "exit 6 (the ceiling) -> its hours summary (ceiling/ceiling_stop_<MMM>.json) to the author (his decision); exit 5 (a review stop) -> the Planner with its reason",
+   "statement": "the search terminates (exit 0) inside the 60 h ceiling",
+   "threshold": {
+    "cumulative_h_max": 60.0,
+    "exit": 0
+   }
+  },
+  "Q5": {
+   "basis": "2x phase: within 3.29 GiB (Q5 held, P5_15_S56_PHASE2X_REPORT.md); pilot peak 2.77-2.86 GiB",
+   "evaluated_as": "phase_results.json prediction_inputs.Q5.peak_child_rss_gib = max over every evaluation the phase launched of evaluation_record.peak_rss.child_python_process_ru_maxrss / 2^30 <= 3.29",
+   "on_failure": "recorded with the run named; the per-slot memory figure is re-derived before any further phase",
+   "statement": "peak child RSS ≤ 3.29 GiB",
+   "threshold": {
+    "peak_child_rss_gib_max": 3.29
+   }
+  },
+  "Q6": {
+   "basis": "author-approved efficiency rule with the measure of Planner decision P1 (TASKS 5a, 2026-11-24): > 1/2 of the screen and ladder rows NOT classed worse against x0 (confirm_candidate + unresolved: the rows the exit value cannot resolve) -> settled-direct; the v1 measure (+- e_EV band) recorded beside it, information only",
+   "evaluated_as": "phase_results.json report.efficiency holds n_not_worse, n_rows, class_counts (per exit class), the exact fraction, the branch taken, the rule, and band_measure_information_only (the v1 band fraction and the branch it would have given) (prediction_inputs.Q6)",
+   "on_failure": "a missing record is a harness defect: stop for the Planner",
+   "statement": "the efficiency fraction is recorded (no direction predicted)",
+   "threshold": null
+  },
+  "Q7": {
+   "basis": "2x: held on candidate 1 (the independent check; P5_15_S56_PHASE2X_REPORT.md). At 1x no exit view is served (D2), so the check guards the carry-over of e_EV and the exit/settled run identity (D1), not a served value",
+   "decision_role": "automatic stop (exit 5) on failure (spec policy.exit_view_check == \"stop\")",
+   "evaluated_as": "AUTOMATIC: P.exit_view_check in phase_step at candidate_confirmation (fields read_cycle, F, bar; float.hex identity). phase_results.json report.candidates[i].exit_view_check (equal, differing, exit_run, exit_view, mode) and prediction_inputs.Q7 (n_checked, n_equal, termination_reason)",
+   "on_failure": "the phase stops with exit 5, reason \"exit_view_mismatch\" (mode stop; a first-in-order harness_error stop precedes it, it precedes the offset stop). FALLBACK as at 2x (TASKS 5a, R4): a continuation spec of this root (--continuation-of, --no-pilot-exit-views: mode record, the check recorded, not stopping) and zero-solve reclassification; at 1x x0 already has its exit run and no exit view is served, so no extra exit run is needed; its freeze is a Planner decision",
+   "statement": "as at 2×: for each candidate, the exit run's (read_cycle, F, bar) equals bitwise the exit_view of the candidate's settled summary",
+   "threshold": {
+    "candidates": "all",
+    "fields": [
+     "read_cycle",
+     "F",
+     "bar"
+    ],
+    "identity": "bitwise (float.hex / int)"
+   }
+  },
+  "Q8": {
+   "basis": "Planner (TASKS 5d); recorded before the run. 2x values from phase2x_ev_v3/phase_results.json (sha256 in reference_2x); at 2x x0 was the exit view of the pilot x0_i1 record and the unit's row its exit view, at 1x both are exit runs of this phase",
+   "decision_role": "none (recorded, NON-STOPPING); computed at zero solves after the phase",
+   "evaluated_as": "after the phase, at zero solves: for each of the 18 screen labels, d = dF_exit(1x) - dF_exit(2x), dF_exit(1x) from this phase's phase_results.json report.marginal_value_table.rows (source == \"screen\"; also prediction_inputs.Q8.screen_dF_exit), dF_exit(2x) from reference_2x.screen_dF_exit_2x (= phase2x_ev_v3/phase_results.json, sha256 cited); mean(d) > 0 over the labels with a numeric dF_exit at both levels; n of such labels reported (the statement's 18 holds iff n = 18; all 18 are certified at 2x)",
+   "on_failure": "recorded with the per-plan differences; NON-STOPPING; reported at the end of the phase",
+   "statement": "price monotonicity — the mean over the 18 screen plans of [dF_exit(1×) − dF_exit(2×)], each against its own price level's x0, is > 0",
+   "threshold": {
+    "mean_difference_gt": 0.0,
+    "plans": 18
+   }
+  },
+  "Q9": {
+   "basis": "2x phase: leak 0 EUR on all 31 settled evaluations (P5_15_S56_PHASE2X_REPORT.md)",
+   "decision_role": "none (recorded, NON-STOPPING)",
+   "evaluated_as": "phase_results.json prediction_inputs.Q9: over every settled summary the phase read, leak.priced_loss_eur (the cost breakdown's leak_detector.priced_loss_eur, mapping v2) <= 25 (mapping leak_ceiling_eur): n_above_ceiling == 0 and without_leak_z empty (a settled summary without a numeric leak is listed, not counted as holding)",
+   "on_failure": "named in report (ii) for the Expert (the row-tolerance option, a formulation question); the phase continues",
+   "statement": "the within-cohort leak, loss-priced, is ≤ 25 € on every settled evaluation",
+   "threshold": {
+    "leak_priced_loss_eur_max": 25.0,
+    "scope": "every settled evaluation"
+   }
+  }
+ },
+ "reference_2x": {
+  "note": "the 2x values Q8 reads, copied from the committed v3 results (report.marginal_value_table, rows with source == \"screen\"); the file sha256 above is the citation",
+  "phase_results": "data/SRP1/Results/P515S56/phase2x_ev_v3/phase_results.json",
+  "phase_results_sha256": "2f8778b5ed573492d5d8bd4e2bf31c1113c61b946a56bc65c20c20d85f2a898c",
+  "phase_spec": "data/SRP1/Results/P515S56/phase2x_ev_v3/phase_spec_600bbceb.json",
+  "phase_spec_sha256": "600bbceb98b8d88a3a487f95ba8201bd037759b7696e1c182bc4c21a423facd7",
+  "screen_dF_exit_2x": {
+   "n5_y2025_p0.25_e0.5": 11257.799013018608,
+   "n5_y2025_p0.25_e1": -25997.409665107727,
+   "n5_y2030_p0.25_e0.5": -12566.579594254494,
+   "n5_y2030_p0.25_e1": -45370.48562955856,
+   "n5_y2035_p0.25_e0.5": 10046.744092583656,
+   "n5_y2035_p0.25_e1": -4160.251751899719,
+   "n7_y2025_p0.25_e0.5": 14090.710342764854,
+   "n7_y2025_p0.25_e1": -20932.796013116837,
+   "n7_y2030_p0.25_e0.5": -8300.650107383728,
+   "n7_y2030_p0.25_e1": -39271.49773824215,
+   "n7_y2035_p0.25_e0.5": 14701.39276099205,
+   "n7_y2035_p0.25_e1": -1184.5436599254608,
+   "n9_y2025_p0.25_e0.5": 11484.610694646835,
+   "n9_y2025_p0.25_e1": -20220.471006512642,
+   "n9_y2030_p0.25_e0.5": -8043.794800758362,
+   "n9_y2030_p0.25_e1": -44087.96833920479,
+   "n9_y2035_p0.25_e0.5": 10973.76848769188,
+   "n9_y2035_p0.25_e1": -2540.6163082122803
+  },
+  "screen_status_2x": {
+   "n5_y2025_p0.25_e0.5": "certified",
+   "n5_y2025_p0.25_e1": "certified",
+   "n5_y2030_p0.25_e0.5": "certified",
+   "n5_y2030_p0.25_e1": "certified",
+   "n5_y2035_p0.25_e0.5": "certified",
+   "n5_y2035_p0.25_e1": "certified",
+   "n7_y2025_p0.25_e0.5": "certified",
+   "n7_y2025_p0.25_e1": "certified",
+   "n7_y2030_p0.25_e0.5": "certified",
+   "n7_y2030_p0.25_e1": "certified",
+   "n7_y2035_p0.25_e0.5": "certified",
+   "n7_y2035_p0.25_e1": "certified",
+   "n9_y2025_p0.25_e0.5": "certified",
+   "n9_y2025_p0.25_e1": "certified",
+   "n9_y2030_p0.25_e0.5": "certified",
+   "n9_y2030_p0.25_e1": "certified",
+   "n9_y2035_p0.25_e0.5": "certified",
+   "n9_y2035_p0.25_e1": "certified"
+  },
+  "x0_2x": {
+   "F_exit": 812009208.7128427,
+   "bar": 4271.357581973076,
+   "served_as": "exit_view_of_settled_cache_record"
+  }
+ },
+ "schema": "p515_s56_phase_predictions_v3"
+}

@@ -1,0 +1,537 @@
+{
+  "meta": {
+    "stage": "P5.15 Gate G5",
+    "authority": "PLANNER_BRIEF_2026-09-13.md Addendum 1 (\"Gate G5 (new)\") + Addendum 3",
+    "gate_requirement": "A1, A3, A4 must agree to 1e-6 relative on node 7 AND node 9",
+    "objective_convention": "model.objective == model.feasibility_penalty (ESSO subproblem objective only; this harness never builds/solves the TSO/DSO SMOPFs, so gross_operational_cost and net_operational_recourse have NO capture path here and are not reported -- same convention as p515_h_tol_remedy_check.py and p515_1b_eps_sensitivity_check.py.",
+    "instance": {
+      "construction_source": "p515_1_esso_reform_smoke.py (imported, not reimplemented)",
+      "baseline_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+      "head_commit": "8af3e242286172efda0d02a67c55f586af94cd8c",
+      "shared_energy_storage_data_py_sha256_working_tree": "c793b713e675f773974b655263e8b4d4cbc6fcc51d1157870a3ff1cbf7811b7d",
+      "working_tree_note": "shared_energy_storage_data.py carries UNCOMMITTED changes on top of head_commit: remedy (h) ESSO_TOL_OVERRIDES (WORKER_REPORT_H.md) and the H3 cohort-split rule (WORKER_REPORT_H3.md). The sha256 above is of the exact file this run executed against.",
+      "smoke_nodes_with_investment": [
+        7,
+        9
+      ],
+      "s_candidate_mva": 1.0,
+      "e_candidate_mvah": 2.0,
+      "amplitude_mw_formula": "0.10 * S_CANDIDATE_MVA",
+      "eps_esso_throughput_in_force": 0.001,
+      "esso_tol_overrides_in_force": {
+        "tol": 1e-08,
+        "acceptable_tol": 1e-07
+      },
+      "gate_nodes": [
+        7,
+        9
+      ],
+      "candidate_solution": {
+        "5": {
+          "2025": {
+            "s": 0.0,
+            "e": 0.0
+          },
+          "2030": {
+            "s": 0.0,
+            "e": 0.0
+          },
+          "2035": {
+            "s": 0.0,
+            "e": 0.0
+          }
+        },
+        "7": {
+          "2025": {
+            "s": 1.0,
+            "e": 2.0
+          },
+          "2030": {
+            "s": 0.0,
+            "e": 0.0
+          },
+          "2035": {
+            "s": 0.0,
+            "e": 0.0
+          }
+        },
+        "9": {
+          "2025": {
+            "s": 1.0,
+            "e": 2.0
+          },
+          "2030": {
+            "s": 0.0,
+            "e": 0.0
+          },
+          "2035": {
+            "s": 0.0,
+            "e": 0.0
+          }
+        }
+      }
+    },
+    "instance_hash_sha256": "49fb0d26cd115c2dbe4b44ca85e4f2d316580f6a8126a151d6b20f4efeda330f",
+    "arm_specs": {
+      "A1": {
+        "from_warm_start": true,
+        "extra_overrides": {
+          "warm_start_mult_bound_push": 0.001,
+          "warm_start_bound_push": 0.001,
+          "warm_start_slack_bound_push": 0.001
+        },
+        "description": "warm start, pushes=1e-3, frac at IPOPT defaults"
+      },
+      "A3": {
+        "from_warm_start": true,
+        "extra_overrides": {
+          "warm_start_mult_bound_push": 0.001,
+          "warm_start_bound_push": 0.001,
+          "warm_start_slack_bound_push": 0.001,
+          "mu_strategy": "adaptive"
+        },
+        "description": "A1 + mu_strategy=adaptive"
+      },
+      "A4": {
+        "from_warm_start": false,
+        "extra_overrides": {
+          "warm_start_init_point": "no"
+        },
+        "description": "cold start"
+      }
+    },
+    "guard": {
+      "permitted_call_sites": [
+        [
+          "shared_energy_storage_data.py",
+          "_run_solver_attempt"
+        ]
+      ],
+      "expected_solves_declared_in_advance": 6,
+      "observed_counts": {
+        "permitted_solve": 6,
+        "permitted_exec": 6,
+        "blocked_solve": 0,
+        "blocked_exec": 0
+      },
+      "permitted_sites_hit": {
+        "shared_energy_storage_data.py:_run_solver_attempt": 6
+      },
+      "verify_failures": []
+    },
+    "maxiterations_or_recovery_events": {
+      "count": 0,
+      "events": [],
+      "expected": "zero"
+    },
+    "leak_explained_disagreements": {
+      "7": [
+        {
+          "pair": "A1_vs_A3",
+          "observed_diff": -6.5985065364586315e-06,
+          "predicted_diff_from_leak": -2.1949951560620913e-06,
+          "residual": -4.40351138039654e-06,
+          "residual_over_observed": 0.6673497034618187
+        },
+        {
+          "pair": "A3_vs_A4",
+          "observed_diff": 6.598506660290132e-06,
+          "predicted_diff_from_leak": 2.194995279754922e-06,
+          "residual": 4.40351138053521e-06,
+          "residual_over_observed": 0.6673496909589526
+        }
+      ],
+      "9": [
+        {
+          "pair": "A1_vs_A3",
+          "observed_diff": -6.5985065364586315e-06,
+          "predicted_diff_from_leak": -2.1949951560620913e-06,
+          "residual": -4.40351138039654e-06,
+          "residual_over_observed": 0.6673497034618187
+        },
+        {
+          "pair": "A3_vs_A4",
+          "observed_diff": 6.598506660290132e-06,
+          "predicted_diff_from_leak": 2.194995279754922e-06,
+          "residual": 4.40351138053521e-06,
+          "residual_over_observed": 0.6673496909589526
+        }
+      ]
+    },
+    "node_pass": {
+      "7": false,
+      "9": false
+    },
+    "gate_pass_strict_1e-6": false
+  },
+  "arms_full": {
+    "7": {
+      "A1": {
+        "node_id": 7,
+        "arm": "A1",
+        "description": "warm start, pushes=1e-3, frac at IPOPT defaults",
+        "from_warm_start": true,
+        "option_overrides": {
+          "tol": 1e-08,
+          "acceptable_tol": 1e-07,
+          "warm_start_mult_bound_push": 0.001,
+          "warm_start_bound_push": 0.001,
+          "warm_start_slack_bound_push": 0.001,
+          "output_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node7_A1.txt"
+        },
+        "wall_seconds": 0.05332374572753906,
+        "termination_condition": "optimal",
+        "status": "ok",
+        "recovery_fired": false,
+        "objective": 0.02304784858129412,
+        "load_solutions_error": null,
+        "max_constraint_violation": 4.580583690128037e-10,
+        "worst_constraint": "energy_storage_capacity_degradation[8]",
+        "n_constraints_checked": 1200,
+        "diagnostics": {
+          "node_id": "7_A1",
+          "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node7_A1.txt",
+          "complementarity_ratio_max": 4.53510819052276e-06,
+          "complementarity_ratio_argmax": {
+            "y_inv": 0,
+            "y": 2,
+            "d": 1,
+            "p": 12,
+            "pch": 4.53510819052276e-06,
+            "pdch": 0.1000045351081905,
+            "s_max": 1.0
+          },
+          "n_active_cohort_periods": 288,
+          "eps_esso_throughput_in_force": 0.001,
+          "mu_final": 9.096027172233772e-10,
+          "s_obj": 0.1,
+          "parse_reason": null,
+          "spurious_throughput_bound": 0.002619655825603326,
+          "spurious_throughput_measured": 0.002612217657694498
+        },
+        "primary_log_tail": {
+          "exit_line": "EXIT: Optimal Solution Found.",
+          "n_iterations": 19,
+          "total_seconds_in_ipopt": 0.009,
+          "nlp_error_summary_unscaled": {
+            "Objective": 0.02304784858129412,
+            "Dual infeasibility": 4.349157398289366e-12,
+            "Constraint violation": 4.580583690128037e-10,
+            "Complementarity": 9.096027172233772e-09,
+            "Overall NLP error": 9.096027172233772e-09
+          },
+          "n_iteration_table_rows": 20
+        },
+        "recovery_log_tail": null,
+        "primary_log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node7_A1.txt",
+        "recovery_log_path": null,
+        "rule_ten_ratio": 0.04580583690128037
+      },
+      "A3": {
+        "node_id": 7,
+        "arm": "A3",
+        "description": "A1 + mu_strategy=adaptive",
+        "from_warm_start": true,
+        "option_overrides": {
+          "tol": 1e-08,
+          "acceptable_tol": 1e-07,
+          "warm_start_mult_bound_push": 0.001,
+          "warm_start_bound_push": 0.001,
+          "warm_start_slack_bound_push": 0.001,
+          "mu_strategy": "adaptive",
+          "output_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node7_A3.txt"
+        },
+        "wall_seconds": 0.049748897552490234,
+        "termination_condition": "optimal",
+        "status": "ok",
+        "recovery_fired": false,
+        "objective": 0.02305444708783058,
+        "load_solutions_error": null,
+        "max_constraint_violation": 4.5083914379517864e-10,
+        "worst_constraint": "energy_storage_capacity_degradation[8]",
+        "n_constraints_checked": 1200,
+        "diagnostics": {
+          "node_id": "7_A3",
+          "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node7_A3.txt",
+          "complementarity_ratio_max": 8.354848119684891e-06,
+          "complementarity_ratio_argmax": {
+            "y_inv": 0,
+            "y": 2,
+            "d": 0,
+            "p": 12,
+            "pch": 8.354848119684891e-06,
+            "pdch": 0.10000835484811965,
+            "s_max": 1.0
+          },
+          "n_active_cohort_periods": 288,
+          "eps_esso_throughput_in_force": 0.001,
+          "mu_final": 1.8704114605523745e-09,
+          "s_obj": 0.1,
+          "parse_reason": null,
+          "spurious_throughput_bound": 0.005386785006390838,
+          "spurious_throughput_measured": 0.004807212813756589
+        },
+        "primary_log_tail": {
+          "exit_line": "EXIT: Optimal Solution Found.",
+          "n_iterations": 16,
+          "total_seconds_in_ipopt": 0.01,
+          "nlp_error_summary_unscaled": {
+            "Objective": 0.023054447087830488,
+            "Dual infeasibility": 9.036066928723746e-10,
+            "Constraint violation": 4.5083914379517864e-10,
+            "Complementarity": 1.8704114605523743e-08,
+            "Overall NLP error": 1.8704114605523743e-08
+          },
+          "n_iteration_table_rows": 17
+        },
+        "recovery_log_tail": null,
+        "primary_log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node7_A3.txt",
+        "recovery_log_path": null,
+        "rule_ten_ratio": 0.045083914379517864
+      },
+      "A4": {
+        "node_id": 7,
+        "arm": "A4",
+        "description": "cold start",
+        "from_warm_start": false,
+        "option_overrides": {
+          "tol": 1e-08,
+          "acceptable_tol": 1e-07,
+          "warm_start_init_point": "no",
+          "output_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node7_A4.txt"
+        },
+        "wall_seconds": 0.04692792892456055,
+        "termination_condition": "optimal",
+        "status": "ok",
+        "recovery_fired": false,
+        "objective": 0.023047848581170288,
+        "load_solutions_error": null,
+        "max_constraint_violation": 4.5757142519420313e-10,
+        "worst_constraint": "energy_storage_capacity_degradation[8]",
+        "n_constraints_checked": 1200,
+        "diagnostics": {
+          "node_id": "7_A4",
+          "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node7_A4.txt",
+          "complementarity_ratio_max": 4.535107906477239e-06,
+          "complementarity_ratio_argmax": {
+            "y_inv": 0,
+            "y": 2,
+            "d": 1,
+            "p": 12,
+            "pch": 4.535107906477239e-06,
+            "pdch": 0.10000453510790647,
+            "s_max": 1.0
+          },
+          "n_active_cohort_periods": 288,
+          "eps_esso_throughput_in_force": 0.001,
+          "mu_final": 9.096063001298259e-10,
+          "s_obj": 0.1,
+          "parse_reason": null,
+          "spurious_throughput_bound": 0.0026196661443738988,
+          "spurious_throughput_measured": 0.002612217534001667
+        },
+        "primary_log_tail": {
+          "exit_line": "EXIT: Optimal Solution Found.",
+          "n_iterations": 17,
+          "total_seconds_in_ipopt": 0.009,
+          "nlp_error_summary_unscaled": {
+            "Objective": 0.023047848581170458,
+            "Dual infeasibility": 4.395310666401206e-12,
+            "Constraint violation": 4.5757142519420313e-10,
+            "Complementarity": 9.096063001298258e-09,
+            "Overall NLP error": 9.096063001298258e-09
+          },
+          "n_iteration_table_rows": 18
+        },
+        "recovery_log_tail": null,
+        "primary_log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node7_A4.txt",
+        "recovery_log_path": null,
+        "rule_ten_ratio": 0.04575714251942031
+      }
+    },
+    "9": {
+      "A1": {
+        "node_id": 9,
+        "arm": "A1",
+        "description": "warm start, pushes=1e-3, frac at IPOPT defaults",
+        "from_warm_start": true,
+        "option_overrides": {
+          "tol": 1e-08,
+          "acceptable_tol": 1e-07,
+          "warm_start_mult_bound_push": 0.001,
+          "warm_start_bound_push": 0.001,
+          "warm_start_slack_bound_push": 0.001,
+          "output_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node9_A1.txt"
+        },
+        "wall_seconds": 0.04775500297546387,
+        "termination_condition": "optimal",
+        "status": "ok",
+        "recovery_fired": false,
+        "objective": 0.02304784858129412,
+        "load_solutions_error": null,
+        "max_constraint_violation": 4.580583690128037e-10,
+        "worst_constraint": "energy_storage_capacity_degradation[8]",
+        "n_constraints_checked": 1200,
+        "diagnostics": {
+          "node_id": "9_A1",
+          "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node9_A1.txt",
+          "complementarity_ratio_max": 4.53510819052276e-06,
+          "complementarity_ratio_argmax": {
+            "y_inv": 0,
+            "y": 2,
+            "d": 1,
+            "p": 12,
+            "pch": 4.53510819052276e-06,
+            "pdch": 0.1000045351081905,
+            "s_max": 1.0
+          },
+          "n_active_cohort_periods": 288,
+          "eps_esso_throughput_in_force": 0.001,
+          "mu_final": 9.096027172233772e-10,
+          "s_obj": 0.1,
+          "parse_reason": null,
+          "spurious_throughput_bound": 0.002619655825603326,
+          "spurious_throughput_measured": 0.002612217657694498
+        },
+        "primary_log_tail": {
+          "exit_line": "EXIT: Optimal Solution Found.",
+          "n_iterations": 19,
+          "total_seconds_in_ipopt": 0.009,
+          "nlp_error_summary_unscaled": {
+            "Objective": 0.02304784858129412,
+            "Dual infeasibility": 4.349157398289366e-12,
+            "Constraint violation": 4.580583690128037e-10,
+            "Complementarity": 9.096027172233772e-09,
+            "Overall NLP error": 9.096027172233772e-09
+          },
+          "n_iteration_table_rows": 20
+        },
+        "recovery_log_tail": null,
+        "primary_log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node9_A1.txt",
+        "recovery_log_path": null,
+        "rule_ten_ratio": 0.04580583690128037
+      },
+      "A3": {
+        "node_id": 9,
+        "arm": "A3",
+        "description": "A1 + mu_strategy=adaptive",
+        "from_warm_start": true,
+        "option_overrides": {
+          "tol": 1e-08,
+          "acceptable_tol": 1e-07,
+          "warm_start_mult_bound_push": 0.001,
+          "warm_start_bound_push": 0.001,
+          "warm_start_slack_bound_push": 0.001,
+          "mu_strategy": "adaptive",
+          "output_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node9_A3.txt"
+        },
+        "wall_seconds": 0.05022597312927246,
+        "termination_condition": "optimal",
+        "status": "ok",
+        "recovery_fired": false,
+        "objective": 0.02305444708783058,
+        "load_solutions_error": null,
+        "max_constraint_violation": 4.5083914379517864e-10,
+        "worst_constraint": "energy_storage_capacity_degradation[8]",
+        "n_constraints_checked": 1200,
+        "diagnostics": {
+          "node_id": "9_A3",
+          "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node9_A3.txt",
+          "complementarity_ratio_max": 8.354848119684891e-06,
+          "complementarity_ratio_argmax": {
+            "y_inv": 0,
+            "y": 2,
+            "d": 0,
+            "p": 12,
+            "pch": 8.354848119684891e-06,
+            "pdch": 0.10000835484811965,
+            "s_max": 1.0
+          },
+          "n_active_cohort_periods": 288,
+          "eps_esso_throughput_in_force": 0.001,
+          "mu_final": 1.8704114605523745e-09,
+          "s_obj": 0.1,
+          "parse_reason": null,
+          "spurious_throughput_bound": 0.005386785006390838,
+          "spurious_throughput_measured": 0.004807212813756589
+        },
+        "primary_log_tail": {
+          "exit_line": "EXIT: Optimal Solution Found.",
+          "n_iterations": 16,
+          "total_seconds_in_ipopt": 0.01,
+          "nlp_error_summary_unscaled": {
+            "Objective": 0.023054447087830488,
+            "Dual infeasibility": 9.036066928723746e-10,
+            "Constraint violation": 4.5083914379517864e-10,
+            "Complementarity": 1.8704114605523743e-08,
+            "Overall NLP error": 1.8704114605523743e-08
+          },
+          "n_iteration_table_rows": 17
+        },
+        "recovery_log_tail": null,
+        "primary_log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node9_A3.txt",
+        "recovery_log_path": null,
+        "rule_ten_ratio": 0.045083914379517864
+      },
+      "A4": {
+        "node_id": 9,
+        "arm": "A4",
+        "description": "cold start",
+        "from_warm_start": false,
+        "option_overrides": {
+          "tol": 1e-08,
+          "acceptable_tol": 1e-07,
+          "warm_start_init_point": "no",
+          "output_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node9_A4.txt"
+        },
+        "wall_seconds": 0.046859025955200195,
+        "termination_condition": "optimal",
+        "status": "ok",
+        "recovery_fired": false,
+        "objective": 0.023047848581170288,
+        "load_solutions_error": null,
+        "max_constraint_violation": 4.5757142519420313e-10,
+        "worst_constraint": "energy_storage_capacity_degradation[8]",
+        "n_constraints_checked": 1200,
+        "diagnostics": {
+          "node_id": "9_A4",
+          "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node9_A4.txt",
+          "complementarity_ratio_max": 4.535107906477239e-06,
+          "complementarity_ratio_argmax": {
+            "y_inv": 0,
+            "y": 2,
+            "d": 1,
+            "p": 12,
+            "pch": 4.535107906477239e-06,
+            "pdch": 0.10000453510790647,
+            "s_max": 1.0
+          },
+          "n_active_cohort_periods": 288,
+          "eps_esso_throughput_in_force": 0.001,
+          "mu_final": 9.096063001298259e-10,
+          "s_obj": 0.1,
+          "parse_reason": null,
+          "spurious_throughput_bound": 0.0026196661443738988,
+          "spurious_throughput_measured": 0.002612217534001667
+        },
+        "primary_log_tail": {
+          "exit_line": "EXIT: Optimal Solution Found.",
+          "n_iterations": 17,
+          "total_seconds_in_ipopt": 0.008,
+          "nlp_error_summary_unscaled": {
+            "Objective": 0.023047848581170458,
+            "Dual infeasibility": 4.395310666401206e-12,
+            "Constraint violation": 4.5757142519420313e-10,
+            "Complementarity": 9.096063001298258e-09,
+            "Overall NLP error": 9.096063001298258e-09
+          },
+          "n_iteration_table_rows": 18
+        },
+        "recovery_log_tail": null,
+        "primary_log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/g5_gate_logs/node9_A4.txt",
+        "recovery_log_path": null,
+        "rule_ten_ratio": 0.04575714251942031
+      }
+    }
+  }
+}

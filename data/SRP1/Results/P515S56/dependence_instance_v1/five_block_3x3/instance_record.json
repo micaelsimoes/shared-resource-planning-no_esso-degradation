@@ -1,0 +1,501 @@
+{
+ "schema": "p515_s56_dependence_instance_record_v1",
+ "stage": "P5.15 S56 dependence stress-test instance (author decision 3; zero solves)",
+ "grid": "five_block_3x3",
+ "utc": "2026-11-21T16:59:13.096270+00:00",
+ "instance_label": "s53_3x3_comonotone",
+ "description": "dependence STRESS TEST (TASKS.md S56 author decision 3): comonotone re-pairing of the operation scenarios within each network and (year, day) block by rank of the daily net demand; complete within-network daily profiles, marginals, probabilities and EV inputs preserved; market arrays not permuted; not a calibrated or worst-case joint model",
+ "base_instance": {
+  "label": "s53_3x3",
+  "case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+  "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+  "scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+  "instance_record": "data/SRP1/Results/P515S53/w89_3x3/instance/instance_record.json",
+  "instance_record_sha256": "a47dc358edc1a69279ddd1965a587efc2906eb6c770d336cb9c8f34227f910ea"
+ },
+ "case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+ "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+ "case_note": "the re-paired instance has NO case file of its own: it is the base case read through the production reader with p515_s56_dependence_instance.DependenceHook(load_profiles(<profiles>)) installed at shared_resources_planning._compute_scenario_metadata",
+ "profiles_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/dependence_instance_v1/five_block_3x3/SRP1__s53_3x3_comonotone_profiles.json",
+ "profiles_sha256": "4743e37160ed8a50d77a7c6de1c2a9d3827001639a079913f6b2bde9cd23e422",
+ "permutations_path": "five_block_3x3/permutations_five_block_3x3.json",
+ "permutations_sha256": "23cf8f306d1ac8336c58d5a69d5ba9bc095b0fb1415406fec923f62461040b8b",
+ "scenario_checksum": "8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a",
+ "base_scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+ "warning": "read WITHOUT the hook the case is the base (index-paired) instance (checksum 0248a5c8...); a child must call p515_s56_dependence_instance.assert_dependence_arrays(planning, profiles, point=\"post_read\", expected_scenario_checksum=<scenario_checksum>) after its read",
+ "definition": {
+  "statistic": "ND[s] = sum_{loads l not ADN} sum_t pd_l[s,t] * baseMVA * dt - sum_{generators g, gen_type in definitions.GEN_CURTAILLABLE_TYPES} sum_t pg_g[s,t] * baseMVA * dt, in MWh, dt = 24 h / num_instants; per network block (network, year, day); ADN loads = the TSO loads production zeroes after the checksum point (network.adn_load_exists / get_adn_load_idx for every DSO node); evaluation: float(np.sum(A[s])) * baseMVA * dt per array, accumulated in Python floats, loads by index then generators by index",
+  "tie_rule": "perm = sorted(range(n), key=lambda s: (ND[s], s)): ascending ND, exact ties -> lower original index first; new index k takes original index perm[k]; new_A = old_A[perm, :] for every operation array of the block (market arrays never permuted)",
+  "coherence": "each load / generator quantity is sampled with its own seed (network._update_network_with_operational_data), so a scenario of a network is the index s: the tuple of row s of all of that network block's operation arrays; the permutation moves that tuple as a unit",
+  "array_sha": "sha256 over b\"<f8\" + repr(shape).encode(\"ascii\") + np.ascontiguousarray(A, dtype=\"<f8\").tobytes() (the array as float64, C order)"
+ },
+ "blocks_changed": {
+  "per_network_non_identity": {
+   "TSO": 19,
+   "DSO5": 18,
+   "DSO7": 18,
+   "DSO9": 17
+  },
+  "per_network_blocks": {
+   "TSO": 20,
+   "DSO5": 20,
+   "DSO7": 20,
+   "DSO9": 20
+  },
+  "total_non_identity": 72,
+  "total_blocks": 80
+ },
+ "n_ties": 0,
+ "ties": {},
+ "n_arrays_changed": {
+  "checksum": 7338,
+  "post_read": 7224
+ },
+ "loading_route": "p515_s44_scale_measurement.read_planning_from_derived_case on the base case + p515_s56_dependence_instance.DependenceHook(profiles) at shared_resources_planning._compute_scenario_metadata",
+ "assertion": {
+  "module": "p515_s56_dependence_instance.py",
+  "module_sha256": "aaf2dd34b085914477ef0ebe400690bd0c35db1146e0e8019bab233360a617ee",
+  "function": "assert_dependence_arrays(planning, profiles, point=\"post_read\", expected_scenario_checksum=None)"
+ },
+ "git_head": "9acc085afc5228ec4fb62af4a6a5f5f0241255a7",
+ "script": "p515_s56_build_dependence_instance.py",
+ "script_sha256": "3334d54edaf1dcbffae7673dcc98e67645c8a38ce2bd5ba1bbfa96770e9c2da0",
+ "all_checks_pass": true,
+ "failed_checks": [],
+ "checks": [
+  {
+   "check": "[five_block_3x3] base case sha256 == its instance record",
+   "ok": true,
+   "expected": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+   "observed": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871"
+  },
+  {
+   "check": "[five_block_3x3] pinned base checksum starts with the Planner-given prefix",
+   "ok": true,
+   "expected": "0248a5c8",
+   "observed": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193"
+  },
+  {
+   "check": "[five_block_3x3] base read: combined scenario checksum == pinned",
+   "ok": true,
+   "expected": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+   "observed": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193"
+  },
+  {
+   "check": "[five_block_3x3] derive() operation keys == audit A enumeration (operation keys, in order)",
+   "ok": true,
+   "expected": 12840,
+   "observed": 12840
+  },
+  {
+   "check": "[five_block_3x3] no two operation keys share an ndarray (in-place permutation is safe)",
+   "ok": true,
+   "expected": true,
+   "observed": true
+  },
+  {
+   "check": "[five_block_3x3] derive() on the post-read object == at the checksum point (permutations; statistic bitwise)",
+   "ok": true,
+   "expected": true,
+   "observed": {
+    "permutations": true,
+    "statistic": true
+   }
+  },
+  {
+   "check": "[five_block_3x3] base read: arrays production changes after the checksum point == TSO ADN loads pd / qd (zeroed)",
+   "ok": true,
+   "expected": "TSO|...|load|<adn>|pd/qd -> 0",
+   "observed": [
+    "TSO|2025|Spring|load|0|pd",
+    "TSO|2025|Spring|load|0|qd",
+    "TSO|2025|Spring|load|1|pd",
+    "TSO|2025|Spring|load|1|qd",
+    "TSO|2025|Spring|load|2|pd",
+    "TSO|2025|Spring|load|2|qd",
+    "TSO|2025|Summer|load|0|pd",
+    "TSO|2025|Summer|load|0|qd"
+   ]
+  },
+  {
+   "check": "[five_block_3x3] statistic ADN-load exclusion == the loads production zeroes (every TSO block)",
+   "ok": true,
+   "expected": true,
+   "observed": true
+  },
+  {
+   "check": "[five_block_3x3] coverage: no (3 x 24) array reachable from the planning object outside the enumerated scenario arrays",
+   "ok": true,
+   "expected": [],
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] profiles file round trip (permutations, statistic bitwise, keys)",
+   "ok": true,
+   "expected": true,
+   "observed": true
+  },
+  {
+   "check": "[five_block_3x3] hook: applied once, every operation array permuted, market arrays untouched",
+   "ok": true,
+   "expected": [
+    {
+     "n_operation_arrays_permuted": 12840,
+     "n_arrays_changed": 7338,
+     "n_market_arrays_checked_untouched": 40,
+     "n_blocks_non_identity": 72
+    }
+   ],
+   "observed": [
+    {
+     "n_operation_arrays_permuted": 12840,
+     "n_arrays_changed": 7338,
+     "n_market_arrays_checked_untouched": 40,
+     "n_blocks_non_identity": 72
+    }
+   ]
+  },
+  {
+   "check": "[five_block_3x3] dependence checksum != base checksum",
+   "ok": true,
+   "expected": "!= 0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+   "observed": "8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a"
+  },
+  {
+   "check": "[five_block_3x3] in-child assertion PASSES at the checksum point",
+   "ok": true,
+   "expected": "ok",
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] checksum point: every operation array == base[perm, :] bitwise",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] checksum point: every market array == base bitwise (not permuted)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] checksum point: key list == base key list",
+   "ok": true,
+   "expected": 12880,
+   "observed": 12880
+  },
+  {
+   "check": "[five_block_3x3] after the read: every operation array == base[perm, :] bitwise",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] after the read: every market array == base bitwise (not permuted)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] after the read: key list == base key list",
+   "ok": true,
+   "expected": 12880,
+   "observed": 12880
+  },
+  {
+   "check": "[five_block_3x3] number of operation arrays whose bytes change == profiles n_arrays_changed[checksum]",
+   "ok": true,
+   "expected": 7338,
+   "observed": 7338
+  },
+  {
+   "check": "[five_block_3x3] every network block's own market arrays (cost_energy_p / cost_flex) == base bitwise",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] multiset of complete per-scenario block profiles (all of a block's operation arrays, row s) unchanged in every network block, bitwise, both points",
+   "ok": true,
+   "expected": {
+    "blocks": 80,
+    "bad": 0
+   },
+   "observed": {
+    "checksum": [],
+    "post_read": []
+   }
+  },
+  {
+   "check": "[five_block_3x3] multiset of rows of every operation array unchanged, bitwise, both points",
+   "ok": true,
+   "expected": 0,
+   "observed": 0
+  },
+  {
+   "check": "[five_block_3x3] within-block coherence: scenario j of the re-paired block == scenario perm[j] of the base block for EVERY array of the block (the daily profile moves as a unit)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] probabilities unchanged: operation and market [1/3]*3 on every block (== base), planning market [1/3]*3 every year, _scenario_probability == 1/9 for every pair",
+   "ok": true,
+   "expected": {
+    "blocks_bad": 0,
+    "pairs_bad": 0
+   },
+   "observed": {
+    "blocks_bad": [],
+    "pairs_bad": [],
+    "n_pairs": 720,
+    "market_same": true
+   }
+  },
+  {
+   "check": "[five_block_3x3] EV means (audit A compute_means) unchanged: bitwise, or differing only by summation order (reorder-reproduced bitwise, fsum-identical, |diff| <= 4 ulp of sum_s |w_s A[s,t]|)",
+   "ok": true,
+   "expected": {
+    "bitwise": 12880,
+    "else": "reorder-reproduced, fsum-identical, <= 4 ulp of sum |terms|"
+   },
+   "observed": {
+    "n_bitwise": 7372,
+    "n_arrays": 12880,
+    "n_differ": 5508,
+    "max_ulp_of_result": 8.0,
+    "max_ulp_of_abs_sum": 2.0,
+    "max_abs": 2.220446049250313e-16,
+    "reorder_not_reproducing": 0,
+    "fsum_differ": 0,
+    "over_bound": 0
+   }
+  },
+  {
+   "check": "[five_block_3x3] EV: base mean recomputed with the rows in the permuted order == dependence mean, bitwise (every operation array)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] EV: exactly-rounded mean (math.fsum per hour) bitwise identical, base vs dependence (every operation array)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] stored EV profiles file was derived from this base instance (source checksum == base checksum)",
+   "ok": true,
+   "expected": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+   "observed": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193"
+  },
+  {
+   "check": "[five_block_3x3] stored EV profiles == base means bitwise (every stored key)",
+   "ok": true,
+   "expected": 12880,
+   "observed": 12880
+  },
+  {
+   "check": "[five_block_3x3] statistic non-decreasing in the new index in every network block (recomputed after the read)",
+   "ok": true,
+   "expected": 0,
+   "observed": []
+  },
+  {
+   "check": "[five_block_3x3] recomputed statistic == base statistic taken in permuted order (bitwise, every block)",
+   "ok": true,
+   "expected": true,
+   "observed": true
+  },
+  {
+   "check": "[five_block_3x3] derive() on the re-paired instance is the identity in every block",
+   "ok": true,
+   "expected": true,
+   "observed": null
+  },
+  {
+   "check": "[five_block_3x3] object walk vs base, audit A declared exclusions (scenario fields): 0 differences",
+   "ok": true,
+   "expected": 0,
+   "observed": {
+    "n_diffs": 0,
+    "diffs_first": [],
+    "uncompared_types": {}
+   }
+  },
+  {
+   "check": "[five_block_3x3] object walk vs base, bookkeeping exclusions only: the differences are EXACTLY the operation arrays the permutation changes (nothing else)",
+   "ok": true,
+   "expected": {
+    "n": 7224
+   },
+   "observed": {
+    "n_diffs": 7224,
+    "unparsed_first": [],
+    "missing": [],
+    "extra": [],
+    "uncompared": {}
+   }
+  },
+  {
+   "check": "[five_block_3x3] in-child assertion PASSES on the dependence read (post_read, with its checksum)",
+   "ok": true,
+   "expected": "pass",
+   "observed": null
+  },
+  {
+   "check": "[five_block_3x3] in-child assertion RAISES on the base (index-paired) read, with 0 arrays differing from the base",
+   "ok": true,
+   "expected": "raise; n_differ 0",
+   "observed": {
+    "raised": true,
+    "n_differ_from_base": 0,
+    "n_mismatches": 7224
+   }
+  },
+  {
+   "check": "[five_block_3x3] in-child assertion RAISES on the dependence read when the expected checksum is the base one",
+   "ok": true,
+   "expected": "raise",
+   "observed": true
+  },
+  {
+   "check": "[five_block_3x3] second read with the hook: same checksum, assertion passes",
+   "ok": true,
+   "expected": "8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a",
+   "observed": {
+    "checksum": "8c5a2039a1bbd672f31272590293e6fbe7af47887340d88f7322e09e1086ce0a",
+    "raised": false
+   }
+  },
+  {
+   "check": "[five_block_3x3] ties in the statistic (exact equality within a block): count recorded; tie rule declared",
+   "ok": true,
+   "expected": "recorded",
+   "observed": 0
+  },
+  {
+   "check": "[five_block_3x3] alternative TSO statistic: only TSO blocks can differ",
+   "ok": true,
+   "expected": "TSO only",
+   "observed": [
+    "TSO|2025|Autumn",
+    "TSO|2025|Summer",
+    "TSO|2025|Winter",
+    "TSO|2028|Autumn",
+    "TSO|2028|Summer"
+   ]
+  },
+  {
+   "check": "[five_block_3x3] system net-demand range (all networks) under comonotone pairing >= index pairing in every block (sum of maxima / minima)",
+   "ok": true,
+   "expected": 0,
+   "observed": {
+    "n_blocks_wider": 20,
+    "n_blocks_equal": 0,
+    "n_blocks_narrower": 0,
+    "ratio_mean": 2.2710073837384317,
+    "ratio_min": 1.074621997258406,
+    "ratio_max": 6.941173218591491
+   }
+  },
+  {
+   "check": "[five_block_3x3] comonotone pairing: Spearman == 1 for every network pair in every block (no ties)",
+   "ok": true,
+   "expected": 1.0,
+   "observed": true
+  }
+ ],
+ "predictions": [
+  {
+   "prediction": "[five_block_3x3] EV: Planner expectation \"bitwise or to 1 ulp\": every element of every mean within 1 ulp of the result",
+   "held": false,
+   "expected": "<= 1 ulp",
+   "observed": {
+    "max_ulp_of_result": 8.0,
+    "histogram_ulp_of_result": {
+     "1.0": 27730,
+     "2.0": 947,
+     "8.0": 2
+    }
+   }
+  },
+  {
+   "prediction": "[five_block_3x3] task expectation \"the spread of total system net demand widens\": system_all_std_MWh comonotone >= index-paired in every block and > in at least one",
+   "held": true,
+   "expected": "narrower 0, wider >= 1",
+   "observed": {
+    "n_blocks_wider": 20,
+    "n_blocks_equal": 0,
+    "n_blocks_narrower": 0,
+    "ratio_mean": 2.1873041755067786,
+    "ratio_min": 1.0200198516373713,
+    "ratio_max": 6.470397938985041
+   }
+  },
+  {
+   "prediction": "[five_block_3x3] task expectation \"the spread of total system net demand widens\": system_dso_std_MWh comonotone >= index-paired in every block and > in at least one",
+   "held": true,
+   "expected": "narrower 0, wider >= 1",
+   "observed": {
+    "n_blocks_wider": 19,
+    "n_blocks_equal": 1,
+    "n_blocks_narrower": 0,
+    "ratio_mean": 2.939862596330026,
+    "ratio_min": 1.0000000000000002,
+    "ratio_max": 15.365466048253648
+   }
+  },
+  {
+   "prediction": "[five_block_3x3] task expectation \"the spread of total system net demand widens\": system_all_range_MWh comonotone >= index-paired in every block and > in at least one",
+   "held": true,
+   "expected": "narrower 0, wider >= 1",
+   "observed": {
+    "n_blocks_wider": 20,
+    "n_blocks_equal": 0,
+    "n_blocks_narrower": 0,
+    "ratio_mean": 2.2710073837384317,
+    "ratio_min": 1.074621997258406,
+    "ratio_max": 6.941173218591491
+   }
+  },
+  {
+   "prediction": "[five_block_3x3] task expectation \"the spread of total system net demand widens\": system_dso_range_MWh comonotone >= index-paired in every block and > in at least one",
+   "held": true,
+   "expected": "narrower 0, wider >= 1",
+   "observed": {
+    "n_blocks_wider": 19,
+    "n_blocks_equal": 1,
+    "n_blocks_narrower": 0,
+    "ratio_mean": 3.1087994009628366,
+    "ratio_min": 1.0,
+    "ratio_max": 16.497550764711395
+   }
+  }
+ ],
+ "solve_claim": "ZERO SOLVES, guard-verified (SolveProfileGuard(permitted=()) armed for the whole run, verify(0))",
+ "guards": {
+  "own": {
+   "label": "P5.15 S56 dependence instance (never solves)",
+   "permitted": [],
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0": []
+  },
+  "audit_A_module": {
+   "label": "P5.15 S56 input audit A (never solves)",
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0": []
+  }
+ }
+}

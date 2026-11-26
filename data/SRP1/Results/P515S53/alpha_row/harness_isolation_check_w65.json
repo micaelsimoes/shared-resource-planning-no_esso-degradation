@@ -1,0 +1,287 @@
+{
+ "stage": "P5.15 W65 ruling 6 -- zero-solve harness-isolation check",
+ "utc": "2026-09-24T15:47:37.660272+00:00",
+ "git_head": "5ad77b2706c81edd7e1137e1396e6ba7af1db602",
+ "harness_sha256": "5c67acc27d2e56c8783fc93705cd5de7201cf0800a969281ae8ebbb5c8a50589",
+ "script_sha256": "61d99609edb998a54d84a6843b36c47060bdda2de3e5049f031f8431235db425",
+ "scratch": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w65_isolation_attempt2",
+ "baseline": {
+  "probe": "baseline_srp1",
+  "derived_instance": false,
+  "premium": null,
+  "campaign_spec_sha256": "617dff41893c26426c8872b58ea18b5abd4091ccbb61ddfcb669dd9bac0bf5c6",
+  "eval_key": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7",
+  "stopped_by_probe_before_any_solve": true,
+  "error": null,
+  "reached_run_admm_arm": true,
+  "six_production_functions_at_run": {
+   "create_transmission_network_model": {
+    "qualname": "create_transmission_network_model",
+    "module": "shared_resources_planning",
+    "is_original": true,
+    "is_w64_wrapper": false
+   },
+   "create_shared_energy_storage_model": {
+    "qualname": "create_shared_energy_storage_model",
+    "module": "shared_resources_planning",
+    "is_original": true,
+    "is_w64_wrapper": false
+   },
+   "_prepare_distribution_objectives_for_admm": {
+    "qualname": "_prepare_distribution_objectives_for_admm",
+    "module": "shared_resources_planning",
+    "is_original": true,
+    "is_w64_wrapper": false
+   },
+   "_prepare_transmission_objectives_for_admm": {
+    "qualname": "_prepare_transmission_objectives_for_admm",
+    "module": "shared_resources_planning",
+    "is_original": true,
+    "is_w64_wrapper": false
+   },
+   "get_admm_boyd_residual_metrics": {
+    "qualname": "s38_pf_capture_hooks.<locals>.wrapper3",
+    "module": "p515_g_g1_g4_admm_gates",
+    "is_original": false,
+    "is_w64_wrapper": false
+   },
+   "_admm_local_solves_succeeded": {
+    "qualname": "_admm_local_solves_succeeded",
+    "module": "shared_resources_planning",
+    "is_original": true,
+    "is_w64_wrapper": false
+   }
+  },
+  "w64_harness_calls_at_run": {
+   "assert_alpha_row_capture_paths": 0,
+   "alpha_row_run_hooks": 0,
+   "activation_readback": 0,
+   "initialisation_identity_record": 0,
+   "register_initialisation_identity": 0,
+   "per_cycle_response_record": 0,
+   "read_per_cycle_response": 0,
+   "response_terminal_capture": 0,
+   "write_response_terminal": 0,
+   "write_multiscenario_terminal": 0,
+   "install_derived_instance": 0
+  },
+  "w64_harness_calls_total": {
+   "assert_alpha_row_capture_paths": 0,
+   "alpha_row_run_hooks": 0,
+   "activation_readback": 0,
+   "initialisation_identity_record": 0,
+   "register_initialisation_identity": 0,
+   "per_cycle_response_record": 0,
+   "read_per_cycle_response": 0,
+   "response_terminal_capture": 0,
+   "write_response_terminal": 0,
+   "write_multiscenario_terminal": 0,
+   "install_derived_instance": 0
+  },
+  "run_admm_arm_kwargs": [
+   "apply_rho",
+   "eval_id",
+   "full_diagnostics_in_rows",
+   "investment_map",
+   "investment_year",
+   "k_override",
+   "num_max_iters_override",
+   "post_run_hook",
+   "pre_solve_hook"
+  ],
+  "files_written_under_probe_root": [
+   "campaign_spec_w65_isolation_baseline_srp1_617dff41.json"
+  ],
+  "w64_output_files_present": [],
+  "init_identity_dir_present": false,
+  "six_restored_after": true,
+  "harness_functions_restored_after": true
+ },
+ "positive_control": {
+  "probe": "positive_control_derived_premium",
+  "derived_instance": true,
+  "premium": {
+   "alpha": 0.5,
+   "floor": null
+  },
+  "campaign_spec_sha256": "f724cdd7168eba823e97e2d2d75e9d76be63eb2c77908bae024095607fc559ba",
+  "eval_key": "7d53b6f21b686a44db69f0901e03c870d14e15d00bfaaa6a5379822890918a94",
+  "stopped_by_probe_before_any_solve": true,
+  "error": null,
+  "reached_run_admm_arm": true,
+  "six_production_functions_at_run": {
+   "create_transmission_network_model": {
+    "qualname": "alpha_row_run_hooks.<locals>._cm.<locals>.w_create_tso",
+    "module": "p515_s44_campaign_harness",
+    "is_original": false,
+    "is_w64_wrapper": true
+   },
+   "create_shared_energy_storage_model": {
+    "qualname": "alpha_row_run_hooks.<locals>._cm.<locals>.w_create_esso",
+    "module": "p515_s44_campaign_harness",
+    "is_original": false,
+    "is_w64_wrapper": true
+   },
+   "_prepare_distribution_objectives_for_admm": {
+    "qualname": "alpha_row_run_hooks.<locals>._cm.<locals>.w_prep_dso",
+    "module": "p515_s44_campaign_harness",
+    "is_original": false,
+    "is_w64_wrapper": true
+   },
+   "_prepare_transmission_objectives_for_admm": {
+    "qualname": "alpha_row_run_hooks.<locals>._cm.<locals>.w_prep_tso",
+    "module": "p515_s44_campaign_harness",
+    "is_original": false,
+    "is_w64_wrapper": true
+   },
+   "get_admm_boyd_residual_metrics": {
+    "qualname": "alpha_row_run_hooks.<locals>._cm.<locals>.w_boyd",
+    "module": "p515_s44_campaign_harness",
+    "is_original": false,
+    "is_w64_wrapper": true
+   },
+   "_admm_local_solves_succeeded": {
+    "qualname": "alpha_row_run_hooks.<locals>._cm.<locals>.w_local",
+    "module": "p515_s44_campaign_harness",
+    "is_original": false,
+    "is_w64_wrapper": true
+   }
+  },
+  "w64_harness_calls_at_run": {
+   "assert_alpha_row_capture_paths": 1,
+   "alpha_row_run_hooks": 1,
+   "activation_readback": 0,
+   "initialisation_identity_record": 0,
+   "register_initialisation_identity": 0,
+   "per_cycle_response_record": 0,
+   "read_per_cycle_response": 0,
+   "response_terminal_capture": 0,
+   "write_response_terminal": 0,
+   "write_multiscenario_terminal": 0,
+   "install_derived_instance": 1
+  },
+  "w64_harness_calls_total": {
+   "assert_alpha_row_capture_paths": 1,
+   "alpha_row_run_hooks": 1,
+   "activation_readback": 0,
+   "initialisation_identity_record": 0,
+   "register_initialisation_identity": 0,
+   "per_cycle_response_record": 0,
+   "read_per_cycle_response": 0,
+   "response_terminal_capture": 0,
+   "write_response_terminal": 0,
+   "write_multiscenario_terminal": 0,
+   "install_derived_instance": 1
+  },
+  "run_admm_arm_kwargs": [
+   "apply_rho",
+   "eval_id",
+   "full_diagnostics_in_rows",
+   "investment_map",
+   "investment_year",
+   "k_override",
+   "num_max_iters_override",
+   "post_run_hook",
+   "pre_solve_hook"
+  ],
+  "files_written_under_probe_root": [
+   "campaign_spec_w65_isolation_positive_control_derived_premium_f724cdd7.json",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/SRP1_market_prices_2025_Autumn.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/SRP1_market_prices_2025_Spring.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/SRP1_market_prices_2025_Summer.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/SRP1_market_prices_2025_Winter.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_1_RES_generation_scenarios_2025_Autumn.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_1_RES_generation_scenarios_2025_Spring.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_1_RES_generation_scenarios_2025_Summer.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_1_RES_generation_scenarios_2025_Winter.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_1_flexibility_scenarios_2025_Autumn.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_1_flexibility_scenarios_2025_Spring.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_1_flexibility_scenarios_2025_Summer.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_1_flexibility_scenarios_2025_Winter.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_1_load_scenarios_2025_Autumn.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_1_load_scenarios_2025_Spring.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_1_load_scenarios_2025_Summer.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_1_load_scenarios_2025_Winter.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_2_RES_generation_scenarios_2025_Autumn.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_2_RES_generation_scenarios_2025_Spring.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_2_RES_generation_scenarios_2025_Summer.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_2_RES_generation_scenarios_2025_Winter.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_2_flexibility_scenarios_2025_Autumn.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_2_flexibility_scenarios_2025_Spring.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_2_flexibility_scenarios_2025_Summer.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_2_flexibility_scenarios_2025_Winter.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_2_load_scenarios_2025_Autumn.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_2_load_scenarios_2025_Spring.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_2_load_scenarios_2025_Summer.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_2_load_scenarios_2025_Winter.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_3_RES_generation_scenarios_2025_Autumn.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_3_RES_generation_scenarios_2025_Spring.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_3_RES_generation_scenarios_2025_Summer.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_3_RES_generation_scenarios_2025_Winter.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_3_flexibility_scenarios_2025_Autumn.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_3_flexibility_scenarios_2025_Spring.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_3_flexibility_scenarios_2025_Summer.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_3_flexibility_scenarios_2025_Winter.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_3_load_scenarios_2025_Autumn.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_3_load_scenarios_2025_Spring.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_3_load_scenarios_2025_Summer.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case33_3_load_scenarios_2025_Winter.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case9_RES_generation_scenarios_2025_Autumn.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case9_RES_generation_scenarios_2025_Spring.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case9_RES_generation_scenarios_2025_Summer.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case9_RES_generation_scenarios_2025_Winter.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case9_flexibility_scenarios_2025_Autumn.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case9_flexibility_scenarios_2025_Spring.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case9_flexibility_scenarios_2025_Summer.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case9_flexibility_scenarios_2025_Winter.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case9_load_scenarios_2025_Autumn.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case9_load_scenarios_2025_Spring.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case9_load_scenarios_2025_Summer.pdf",
+   "evals/7d53b6f21b686a44_x0/planning_read/Diagrams/case9_load_scenarios_2025_Winter.pdf"
+  ],
+  "w64_output_files_present": [],
+  "init_identity_dir_present": false,
+  "six_restored_after": true,
+  "harness_functions_restored_after": true
+ },
+ "oracle_baseline_dropped_between_probes": true,
+ "static": {
+  "per_cycle_trajectory_fields_equal_pre_w64_record_fields": true,
+  "record_trajectory_fields_equal_pre_w64": true,
+  "non_derived_per_cycle_record_writes_trajectory_fields_only": true,
+  "alpha_row_checklist_only_if_capture_multiscenario": true,
+  "hooks_nullcontext_otherwise": true,
+  "w64_record_keys_only_in_the_capture_multiscenario_branch": true,
+  "terminal_captures_only_in_the_capture_multiscenario_branch": true,
+  "capture_error_only_if_capture_multiscenario": true,
+  "capture_multiscenario_definition": true,
+  "pre_w64_revision": "70950e8c^"
+ },
+ "expectations": {
+  "A_baseline_reached_run_and_stopped": true,
+  "A_baseline_no_w64_wrapper_installed": true,
+  "A_baseline_no_w64_harness_call": true,
+  "A_baseline_no_w64_output": true,
+  "A_baseline_restored": true,
+  "B_positive_reached_run_and_stopped": true,
+  "B_positive_all_six_w64_wrappers_installed": true,
+  "B_positive_checklist_hooks_and_derived_install_called_once": true,
+  "B_positive_restored": true,
+  "C_static_all": true,
+  "no_tracked_file_changed": true
+ },
+ "tracked_status_before": "M PLANNER_BRIEF_2026-09-13.md\n M REVISION_CONTEXT.md\n M p515_s53_alpha_row_campaign.py",
+ "tracked_status_after": "M PLANNER_BRIEF_2026-09-13.md\n M REVISION_CONTEXT.md\n M p515_s53_alpha_row_campaign.py",
+ "solve_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": [],
+  "label": "P5.15 W64 alpha-row launcher (no solve outside the smoke gate)"
+ },
+ "pass": true,
+ "scope_note": "the probe stops at run_admm_arm: the post-run branches are covered by (C) only; no full SRP1 campaign bitwise gate was run (known, accepted: spec v25 known_gaps)"
+}

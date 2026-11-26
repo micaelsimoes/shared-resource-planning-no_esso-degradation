@@ -1,0 +1,320 @@
+{
+ "stage": "P5.15 Addendum 25 item 2 -- Task 2: AA reject-policy sub-option, zero-solve checks",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 25",
+  "data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json item2_aa_variant"
+ ],
+ "timestamp_utc": "2026-09-19T11:16:16.519182+00:00",
+ "git_head": "631d4183d6ad540fe46ffd08b2bf5e9350ab854b",
+ "file_sha256_at_run": {
+  "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+  "shared_resources_planning.py": "68b0f4d8b272700e67822a09840d3fdf68b7633c06b976a962c9a5da894d7e6d",
+  "admm_parameters.py": "b226b47fa436a8405e50ccbdf8055b043534765851017711656970a523361f55",
+  "p515_s44_aa_variant_checks.py": "7c4a1317b35682cf4761a68709c7e03749d749cfbb67b0ecd8b3530f9f1db061"
+ },
+ "V0_committed_step37_checks": {
+  "checks": {
+   "check_A_passes": true,
+   "check_A_no_unguarded_aa_reference": true,
+   "check_A_default_settings_unchanged": true,
+   "check_B_passes": true,
+   "check_C_passes": true,
+   "check_B_output_equals_committed": true,
+   "check_C_output_equals_committed": true
+  },
+  "check_A": {
+   "default_settings": {
+    "enabled": false,
+    "memory": 5,
+    "regularization": 1e-10
+   },
+   "default_enabled": false,
+   "toggled_enabled_after_setting_true": true,
+   "default_settings_as_expected": true,
+   "default_enabled_is_false": true,
+   "toggled_enabled_is_true": true,
+   "n_call_sites_checked": 7,
+   "call_sites": [
+    {
+     "name": "admm_anderson_acceleration.anderson_acceleration_enabled",
+     "lineno": 258,
+     "guarded": false
+    },
+    {
+     "name": "admm_anderson_acceleration.build_iterate_layout",
+     "lineno": 262,
+     "guarded": true
+    },
+    {
+     "name": "admm_anderson_acceleration.AndersonAccelerationState",
+     "lineno": 264,
+     "guarded": true
+    },
+    {
+     "name": "_get_admm_rho_channel_scalars_for_aa",
+     "lineno": 292,
+     "guarded": true
+    },
+    {
+     "name": "admm_anderson_acceleration.collect_w",
+     "lineno": 293,
+     "guarded": true
+    },
+    {
+     "name": "admm_anderson_acceleration.DEFAULT_REJECT_POLICY",
+     "lineno": 269,
+     "guarded": true
+    },
+    {
+     "name": "_anderson_acceleration_cycle_step",
+     "lineno": 472,
+     "guarded": true
+    }
+   ],
+   "n_unguarded_call_sites": 0,
+   "unguarded_call_sites": [],
+   "passed": true
+  },
+  "committed_path": "data/SRP1/Results/P515S41/aa_checks/aa_checks.json",
+  "committed_sha256": "dae72666dfd318d6aefc8fff5d7a243ef2b2801c7f4066c635bd673627021c26",
+  "pass": true
+ },
+ "V1_default_path_bitwise_vs_9a965494": {
+  "checks": {
+   "no_mismatch_any_seed_default_or_explicit_clear_memory": true,
+   "sensitivity_keep_memory_detected_as_different_in_every_seed": true,
+   "sequences_contain_accepts": true,
+   "sequences_contain_rejections": true,
+   "sequences_contain_rho_clears": true,
+   "sequences_contain_failure_skips": true,
+   "sequences_contain_off_cycles": true,
+   "default_constructor_policy_is_clear_memory": true
+  },
+  "pre_variant_module": {
+   "commit": "9a965494",
+   "git_blob": "3e7924f74be85d29c21c6b69ab960c1c55e1e7ca",
+   "source_sha256": "967a2a10a5051050a37265eb70fd620200f7c6164b7445ad3fdd912c8681f93c"
+  },
+  "seeds": [
+   20260919,
+   20260942
+  ],
+  "n_sequences": 24,
+  "cycles_per_sequence": 200,
+  "event_totals": {
+   "accepted": 1947,
+   "rejected": 1108,
+   "rho": 241,
+   "failure": 130,
+   "off": 284,
+   "insufficient": 1331
+  },
+  "sensitivity_seeds_differing_keep_memory_vs_committed": 24,
+  "mismatches": [],
+  "pass": true
+ },
+ "V2_keep_memory_semantics": {
+  "checks": {
+   "reject_takes_plain_iterate_keeps_mark_appends_pair_no_removal": true,
+   "next_attempt_uses_retained_memory": true,
+   "reject_at_full_memory_keeps_5_and_drops_oldest_like_an_accept": true,
+   "rho_change_still_clears": true,
+   "failure_cycle_still_clears": true,
+   "keep_equals_clear_through_first_rejection_then_differs_at_7": true,
+   "unknown_policy_refused": true,
+   "policies_constant": true
+  },
+  "reject_below_capacity": {
+   "actions_before": [
+    "insufficient memory (m_k=0)",
+    "accepted",
+    "accepted",
+    "accepted"
+   ],
+   "memory_before": 3,
+   "record": {
+    "cycle": 5,
+    "combined_residual": 62.5,
+    "baseline_residual_before": 6.25,
+    "memory_size_before": 3,
+    "boyd_all_pass": false,
+    "rho_changed_channels": [],
+    "action": "rejected (safeguard; memory retained)",
+    "accepted": false,
+    "memory_size_after": 4,
+    "gamma_columns": 4,
+    "reset": false,
+    "reset_reason": null
+   },
+   "memory_after": 4,
+   "history_len_before": 4,
+   "history_len_after": 5,
+   "mark_before": 6.25,
+   "mark_after": 6.25
+  },
+  "next_attempt_after_reject": {
+   "cycle": 6,
+   "combined_residual": 3.125,
+   "baseline_residual_before": 6.25,
+   "memory_size_before": 4,
+   "boyd_all_pass": false,
+   "rho_changed_channels": [],
+   "action": "accepted",
+   "accepted": true,
+   "memory_size_after": 5,
+   "gamma_columns": 5,
+   "reset": false,
+   "reset_reason": null
+  },
+  "reject_at_full_memory": {
+   "memory_before": 5,
+   "record": {
+    "cycle": 8,
+    "combined_residual": 2.34375,
+    "baseline_residual_before": 0.78125,
+    "memory_size_before": 5,
+    "boyd_all_pass": false,
+    "rho_changed_channels": [],
+    "action": "rejected (safeguard; memory retained)",
+    "accepted": false,
+    "memory_size_after": 5,
+    "gamma_columns": 5,
+    "reset": false,
+    "reset_reason": null
+   },
+   "memory_after": 5
+  },
+  "rho_change_clear": {
+   "record": {
+    "cycle": 9,
+    "action": "memory reset (rho change)",
+    "accepted": false,
+    "combined_residual": null,
+    "baseline_residual_before": 0.78125,
+    "memory_size_before": 5,
+    "memory_size_after": 0,
+    "reset": true,
+    "reset_reason": "rho changed on channel(s): ['v']",
+    "rho_changed_channels": [
+     "v"
+    ]
+   },
+   "memory_after": 0,
+   "next_record": {
+    "cycle": 10,
+    "combined_residual": 1e-09,
+    "baseline_residual_before": 0.78125,
+    "memory_size_before": 0,
+    "boyd_all_pass": false,
+    "rho_changed_channels": [],
+    "action": "insufficient memory (m_k=0)",
+    "accepted": false,
+    "memory_size_after": 0,
+    "reset": false,
+    "reset_reason": null
+   }
+  },
+  "failure_clear": {
+   "memory_before": 3,
+   "record": {
+    "cycle": 14,
+    "action": "skipped (local solve failure this cycle)",
+    "accepted": false,
+    "combined_residual": null,
+    "baseline_residual_before": 7.692307692307692e-14,
+    "memory_size_before": 3,
+    "memory_size_after": 0,
+    "reset": true,
+    "reset_reason": "local solve failure this cycle",
+    "rho_changed_channels": []
+   },
+   "memory_after": 0
+  },
+  "keep_vs_clear": {
+   "residual_schedule": [
+    50.0,
+    25.0,
+    12.5,
+    6.25,
+    3.125,
+    1000000.0,
+    1.5625,
+    0.78125,
+    0.390625
+   ],
+   "first_iterate_difference_cycle": 7,
+   "reject_record_clear": {
+    "cycle": 6,
+    "combined_residual": 1000000.0,
+    "baseline_residual_before": 3.125,
+    "memory_size_before": 4,
+    "boyd_all_pass": false,
+    "rho_changed_channels": [],
+    "action": "rejected (safeguard)",
+    "accepted": false,
+    "memory_size_after": 0,
+    "gamma_columns": 5,
+    "reset": true,
+    "reset_reason": "safeguard rejection (combined residual did not fall below the last accepted mark)"
+   },
+   "reject_record_keep": {
+    "cycle": 6,
+    "combined_residual": 1000000.0,
+    "baseline_residual_before": 3.125,
+    "memory_size_before": 4,
+    "boyd_all_pass": false,
+    "rho_changed_channels": [],
+    "action": "rejected (safeguard; memory retained)",
+    "accepted": false,
+    "memory_size_after": 5,
+    "gamma_columns": 5,
+    "reset": false,
+    "reset_reason": null
+   },
+   "fields_differing_at_reject": [
+    "action",
+    "memory_size_after",
+    "reset",
+    "reset_reason"
+   ],
+   "records_identical_cycles_1_to_5": true,
+   "cycle_7_actions_clear_keep": [
+    "insufficient memory (m_k=0)",
+    "accepted"
+   ]
+  },
+  "pass": true
+ },
+ "V3_wiring": {
+  "checks": {
+   "exactly_one_construction_site": true,
+   "reject_policy_passed_from_settings_with_default": true,
+   "memory_and_regularization_unchanged": true,
+   "construction_guarded_by_aa_enabled": true,
+   "admm_parameters_default_dict_has_no_reject_policy_key": true
+  },
+  "construction_sites": [
+   {
+    "keywords": {
+     "memory": "aa_settings.get('memory', 5)",
+     "regularization": "aa_settings.get('regularization', 1e-10)",
+     "reject_policy": "aa_settings.get('reject_policy', admm_anderson_acceleration.DEFAULT_REJECT_POLICY)"
+    },
+    "guarded_by_aa_enabled": true,
+    "lineno": 264
+   }
+  ],
+  "pass": true
+ },
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "all_pass": true,
+ "wall_clock_s": 0.45950984954833984
+}

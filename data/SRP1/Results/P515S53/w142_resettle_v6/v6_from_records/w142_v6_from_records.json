@@ -1,0 +1,2401 @@
+{
+ "code_sha256": {
+  "p515_s53_w132_resettle_v3_campaign.py": "995edabb9f70fcaceebcd135536bf2700bcca7b35a7018a42480aec3df271b07",
+  "p515_s53_w139_v5_from_records.py": "b7d9cb180d9bf1f5362074e5ed01cb09922079597206b93bf8a367cb126c9a3d",
+  "p515_s53_w141_swing_variants.py": "16b0b31b352a605b10fa16fa8c2aa102a996b7293e65ae1bbfb4159d120f65c0",
+  "p515_s53_w142_determinacy.py": "c8b4a54565c9c59fe24451d56b8afd0ce56c15c0b0183146a1a989a0516c360f",
+  "p515_s53_w142_resettle_v6_hooks.py": "19631fb246a4fe81d7a20b3915e38b362a174656ab7403416325057c0925b38e",
+  "p515_s53_w142_v6_from_records.py": "0a439cef99e362fcb2387e5974b3780530738db6d049ef26b0163f16ec61bee0",
+  "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+  "settling_criterion_v2.py": "3db13b0eb7a093f49a7ff014a3c46a5aa013b86da5e5d78c3a19daba476af59e",
+  "settling_criterion_v5.py": "5ea29fb303c5f9ac1e6c2fcb869b7c6d044d2d8738298dee67093d70086a976f",
+  "settling_criterion_v6.py": "53f477118d51f5fd843190c0da920f1647618ef41f6a1973988653b10eb66e2d"
+ },
+ "constants": {
+  "GAP_BOUND": 2269.5341375000003,
+  "SWING_FLOOR": 453.9068275000001,
+  "TAU": 4539.0682750000005,
+  "TWO_TAU": 9078.136550000001
+ },
+ "definition": "P5.15 Planner task W142 items 1-3 (PLANNER_BRIEF_2026-09-13.md Addendum 61) -- CRITERION v6 FROM RECORDS, NO RE-RUNS:\nv6 on every committed re-settle record; d_c52e1670's v6-from-records CERTIFICATE; the determinacy floor applied to every\nclaim scored so far; the post-certification movement record. ZERO SOLVES, NO MODEL LOADS.\n\nAn armed `SolveProfileGuard(permitted=())` is installed BEFORE any other project import and verified at exactly 0 at the\nend (every imported module's own zero-permit guard is verified at 0 as well); `pickle.load` / `pickle.loads` are blocked\nfor the whole run (W141's module, imported, installs the blocking counters at import) and verified at 0. Only JSON /\nJSONL records are read.\n\nWHAT IS COMPUTED\n  1. v6 (`settling_criterion_v6.replay`, the frozen-to-be rule itself) on the 18 committed re-settle records of the W142\n     floor replay (the non-clean cycles as the replay committed them, recomputed there from the logs and cross-checked),\n     each against the replay's (A)+(B) arm, field for field: the rule v6 carries (Addendum 61 rule applied in the replay:\n     'A_and_B').\n  2. d_c52e1670 CERTIFIED UNDER v6 FROM ITS RECORDS (Planner reading of Addendum 61: the order names only the eight\n     remaining D cells; the cell is not re-run): its committed v5 run (51280961; stage spec ab32ffc9, uncertified at its\n     cap 198) holds every quantity v6 needs -- Q_k (per_cycle_record gross_operational_cost), boyd_k (all_boyd_pass AND\n     local_solves_ok), t_sum_k and the in-run all_clean_k (resettle_cycle_record.jsonl) -- every input sha256-verified\n     against the run's campaign manifest. The v6 decision over the recorded cycles 1..198 with the cell's v5 cap rule\n     (fixed 198, ceiling 300) is written as the cell's certificate record, LABELLED \"v6 from records\": k*, window, W,\n     P_hat, band, band width, range / TAU, t_sum(k*), the out-of-window reads, the turning points and the floor\n     rejections, and the scorer's report of the cell at k* (Q, t_sum, Q_cc, Q_net, salvage, band, s = Q(k*) - Q_N_old).\n     The in-run all_clean_k is cross-checked against the non-clean cycles the replay recomputed from the logs.\n  3. THE DETERMINACY FLOOR ON EVERY CLAIM SCORED SO FAR (Addendum 61 ruling 2; `p515_s53_w142_determinacy`): certified\n     cells -- determinate iff |margin| >= max(3 x the larger band width, 2 TAU); uncertified cells -- 3 x max(|gap|,\n     |slack|) unchanged. Scored so far, each re-scored from its committed artefact (manifest-verified), with the verdict\n     it carried reproduced first:\n       B   the W138 claim point #3 summary (w137_summary_after_03_b_4649234b.json, f26e4437): every claim scored there\n           (B n5_4h_e1, n7_4h_e1, n9_4h_e1, n9_4h_e3; the CHECK headline; the L F2-pair claim), on the views that summary\n           recorded; and B:n9_4h_e3 again on cell 3's v5 certificate (4b3be392), which has since replaced the v4 cell;\n       Phase B and the year ladder vs x = 0, and the year ladder 2035 - 2030 (w118_resettle_summary.json 'differences');\n       F2: the F2 certificate (w118, both cells uncertified) and the F2 plan vs corner (W130 task 3, 2c1b731a).\n     A verdict change is reported per claim (Addendum 61 predicts none).\n  4. THE POST-CERTIFICATION MOVEMENT RECORD (Addendum 61 ruling 2): the two cells with records beyond a certifying cycle\n     -- cell 3 (b_4649234b: certified at 148 under v5; its v4 run 0734f103 continued to 193, bitwise equal to the v5 run\n     through 148, G26) and d_c52e1670 (v6 from records at 150; the last-pair reading's 148, W141; its v5 run continued to\n     198): Q(last) - Q(k*) and the largest |Q(c) - Q(k*)| over c > k*, in EUR and in TAU; the statement \"cells continued\n     past certification moved at most 0.9 tau\" checked against them.\n\nOUTPUT (write-once, new directory data/SRP1/Results/P515S53/w142_resettle_v6/v6_from_records/):\n  w142_v6_from_records.json, d_c52e1670_v6_from_records_certificate.json, manifest_sha256.json (launch.log beside)\nLaunch (attached, alone, both streams captured):\n    mkdir -p data/SRP1/Results/P515S53/w142_resettle_v6/v6_from_records && set -o noclobber && \\\n    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w142_v6_from_records.py \\\n        > data/SRP1/Results/P515S53/w142_resettle_v6/v6_from_records/launch.log 2>&1\n",
+ "git_head": "367f06f2b5742b92eb84d2b865170115c115f27e",
+ "guards": {
+  "alpha_row_launcher": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w101_checks_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w101_parent": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w105_checks_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w112_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w118_checks": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w118_parent": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w131_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w132_checks": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w132_parent": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w137_checks": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w137_ra_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w139_v5_from_records": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w141_swing_variants": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w142_v6_from_records": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w86_launcher": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w87": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w88": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_3x3_launcher": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_step1": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w90_3x3_parent": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w98_checks_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w98_parent": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  }
+ },
+ "inputs": {
+  "cell3_v5_results": {
+   "in_its_campaign_manifest": true,
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_b_4649234b/campaign_results.json",
+   "sha256": "064425d49cd2871bada9e0d17d84c4784c3cdec509a19af9654144f146ad7054"
+  },
+  "floor_replay": {
+   "manifest": "data/SRP1/Results/P515S53/w142_resettle_v6/floor_replay/manifest_sha256.json",
+   "path": "data/SRP1/Results/P515S53/w142_resettle_v6/floor_replay/w142_floor_replay.json",
+   "sha256": "778b561f30e1a2d319d7765bbfc403e6b3609a04c4b6c5b206f210d317b516a4"
+  },
+  "w118_summary": {
+   "manifest": "data/SRP1/Results/P515S53/w118_resettle/w118_resettle_summary_manifest_sha256.json",
+   "path": "data/SRP1/Results/P515S53/w118_resettle/w118_resettle_summary.json",
+   "sha256": "34df1c15e27f37951d7e09c8bb43c91f75dc1d6a8bfa9faef196432964c56aa5"
+  },
+  "w130": {
+   "commit": "2c1b731a",
+   "manifest": "data/SRP1/Results/P515S53/w130_benchmark_addendum/manifest_sha256.json",
+   "path": "data/SRP1/Results/P515S53/w130_benchmark_addendum/w130_benchmark_addendum.json",
+   "sha256": "bb71dee7b639f6246a05e4ee024a77c9a5eea167dc63118a53d99d8f70d70d63"
+  },
+  "w138_summary": {
+   "commit": "f26e4437",
+   "manifest": "data/SRP1/Results/P515S53/w137_resettle_v4/w137_summary_after_03_b_4649234b_manifest_sha256.json",
+   "path": "data/SRP1/Results/P515S53/w137_resettle_v4/w137_summary_after_03_b_4649234b.json",
+   "sha256": "0178dbeb54c53d6ff36f57b042400dcc10dd8df51711115b1ad5981a6efe1a2a"
+  }
+ },
+ "item1_mismatches": [],
+ "item1_v6_carries": "A_and_B",
+ "item1_v6_changes_vs_v5": [
+  "d_c52e1670@v5"
+ ],
+ "item1_v6_equals_replay_arm_AB_every_record": true,
+ "item1_v6_on_every_record": {
+  "b_0dd237f0@v4": {
+   "certifying_spec": {
+    "criterion": "v4",
+    "k_star": 173,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w137_resettle_v4/frozen_s53_resettle_spec_v4_e11fbc89.json",
+     "sha8": "e11fbc89"
+    }
+   },
+   "committed_run": {
+    "commit": "653e4e5e",
+    "criterion": "v4 (reading gamma, window a)",
+    "k_cap": null,
+    "k_star": 173,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w137_resettle_v4/frozen_s53_resettle_spec_v4_e11fbc89.json",
+     "sha8": "e11fbc89"
+    },
+    "status": "certified"
+   },
+   "v5_V0": {
+    "k_star": 173,
+    "status": "certified",
+    "window": [
+     141,
+     173
+    ]
+   },
+   "v6": {
+    "A": [
+     38747.78034007549,
+     16586.21589386463,
+     6248.539753317833,
+     2396.4328488111496
+    ],
+    "P_hat": 30,
+    "Q_k_star": 653616845.7282246,
+    "T": [
+     [
+      109,
+      "min",
+      653590375.7597291
+     ],
+     [
+      123,
+      "max",
+      653629123.5400692
+     ],
+     [
+      136,
+      "min",
+      653612537.3241754
+     ],
+     [
+      151,
+      "max",
+      653618785.8639287
+     ],
+     [
+      166,
+      "min",
+      653616389.4310799
+     ]
+    ],
+    "W": 33,
+    "band_width": 4180.764466881752,
+    "branch": "oscillatory",
+    "floor_rejections": [],
+    "k_cap": null,
+    "k_star": 173,
+    "n_vetoes": 0,
+    "range_over_tau": 0.9210622563023139,
+    "status": "certified",
+    "t_sum_k_star": 591.9839557078449,
+    "window": [
+     141,
+     173
+    ]
+   },
+   "v6_changes_vs_v5": false,
+   "v6_equals_replay_arm_AB": true
+  },
+  "b_2a0ba8b2@v3": {
+   "certifying_spec": null,
+   "committed_run": {
+    "commit": "ed71177e",
+    "criterion": "v3 (reading alpha)",
+    "k_cap": 213,
+    "k_star": null,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w132_resettle_v3/frozen_s53_resettle_spec_v3_139d1e62.json",
+     "sha8": "139d1e62"
+    },
+    "status": "uncertified"
+   },
+   "v5_V0": {
+    "k_star": 173,
+    "status": "certified",
+    "window": [
+     142,
+     173
+    ]
+   },
+   "v6": {
+    "A": [
+     29604.853482961655,
+     13005.122444152832,
+     4651.431612968445
+    ],
+    "P_hat": 29,
+    "Q_k_star": 653613781.2111955,
+    "T": [
+     [
+      113,
+      "min",
+      653594425.2561548
+     ],
+     [
+      126,
+      "max",
+      653624030.1096377
+     ],
+     [
+      140,
+      "min",
+      653611024.9871936
+     ],
+     [
+      155,
+      "max",
+      653615676.4188066
+     ]
+    ],
+    "W": 32,
+    "band_width": 4404.700753211975,
+    "branch": "oscillatory",
+    "floor_rejections": [],
+    "k_cap": null,
+    "k_star": 173,
+    "n_vetoes": 0,
+    "range_over_tau": 0.9703975543773847,
+    "status": "certified",
+    "t_sum_k_star": 1016.3335584336926,
+    "window": [
+     142,
+     173
+    ]
+   },
+   "v6_changes_vs_v5": false,
+   "v6_equals_replay_arm_AB": true
+  },
+  "b_2a0ba8b2@v4": {
+   "certifying_spec": {
+    "criterion": "v4",
+    "k_star": 173,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w137_resettle_v4/frozen_s53_resettle_spec_v4_e11fbc89.json",
+     "sha8": "e11fbc89"
+    }
+   },
+   "committed_run": {
+    "commit": "903657de",
+    "criterion": "v4 (reading gamma, window a)",
+    "k_cap": null,
+    "k_star": 173,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w137_resettle_v4/frozen_s53_resettle_spec_v4_e11fbc89.json",
+     "sha8": "e11fbc89"
+    },
+    "status": "certified"
+   },
+   "v5_V0": {
+    "k_star": 173,
+    "status": "certified",
+    "window": [
+     142,
+     173
+    ]
+   },
+   "v6": {
+    "A": [
+     29604.853482961655,
+     13005.122444152832,
+     4651.431612968445
+    ],
+    "P_hat": 29,
+    "Q_k_star": 653613781.2111955,
+    "T": [
+     [
+      113,
+      "min",
+      653594425.2561548
+     ],
+     [
+      126,
+      "max",
+      653624030.1096377
+     ],
+     [
+      140,
+      "min",
+      653611024.9871936
+     ],
+     [
+      155,
+      "max",
+      653615676.4188066
+     ]
+    ],
+    "W": 32,
+    "band_width": 4404.700753211975,
+    "branch": "oscillatory",
+    "floor_rejections": [],
+    "k_cap": null,
+    "k_star": 173,
+    "n_vetoes": 0,
+    "range_over_tau": 0.9703975543773847,
+    "status": "certified",
+    "t_sum_k_star": 1016.3335584336926,
+    "window": [
+     142,
+     173
+    ]
+   },
+   "v6_changes_vs_v5": false,
+   "v6_equals_replay_arm_AB": true
+  },
+  "b_4649234b@v4": {
+   "certifying_spec": null,
+   "committed_run": {
+    "commit": "0734f103",
+    "criterion": "v4 (reading gamma, window a)",
+    "k_cap": 193,
+    "k_star": null,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w137_resettle_v4/frozen_s53_resettle_spec_v4_e11fbc89.json",
+     "sha8": "e11fbc89"
+    },
+    "status": "uncertified"
+   },
+   "v5_V0": {
+    "k_star": 148,
+    "status": "certified",
+    "window": [
+     121,
+     148
+    ]
+   },
+   "v6": {
+    "A": [
+     61469.170087099075,
+     25382.378618359566,
+     5856.083389163017
+    ],
+    "P_hat": 25,
+    "Q_k_star": 653118928.6917074,
+    "T": [
+     [
+      92,
+      "min",
+      653081439.1937218
+     ],
+     [
+      105,
+      "max",
+      653142908.3638089
+     ],
+     [
+      117,
+      "min",
+      653117525.9851905
+     ],
+     [
+      130,
+      "max",
+      653123382.0685797
+     ]
+    ],
+    "W": 28,
+    "band_width": 4490.6242525577545,
+    "branch": "oscillatory",
+    "floor_rejections": [],
+    "k_cap": null,
+    "k_star": 148,
+    "n_vetoes": 0,
+    "range_over_tau": 0.9893273201663295,
+    "status": "certified",
+    "t_sum_k_star": 2028.7251510715223,
+    "window": [
+     121,
+     148
+    ]
+   },
+   "v6_changes_vs_v5": false,
+   "v6_equals_replay_arm_AB": true
+  },
+  "b_4649234b@v5": {
+   "certifying_spec": {
+    "criterion": "v5",
+    "k_star": 148,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w139_resettle_v5/frozen_s53_resettle_spec_v5_ab32ffc9.json",
+     "sha8": "ab32ffc9"
+    }
+   },
+   "committed_run": {
+    "commit": "4b3be392",
+    "criterion": "v5 (Addendum 60)",
+    "k_cap": null,
+    "k_star": 148,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w139_resettle_v5/frozen_s53_resettle_spec_v5_ab32ffc9.json",
+     "sha8": "ab32ffc9"
+    },
+    "status": "certified"
+   },
+   "v5_V0": {
+    "k_star": 148,
+    "status": "certified",
+    "window": [
+     121,
+     148
+    ]
+   },
+   "v6": {
+    "A": [
+     61469.170087099075,
+     25382.378618359566,
+     5856.083389163017
+    ],
+    "P_hat": 25,
+    "Q_k_star": 653118928.6917074,
+    "T": [
+     [
+      92,
+      "min",
+      653081439.1937218
+     ],
+     [
+      105,
+      "max",
+      653142908.3638089
+     ],
+     [
+      117,
+      "min",
+      653117525.9851905
+     ],
+     [
+      130,
+      "max",
+      653123382.0685797
+     ]
+    ],
+    "W": 28,
+    "band_width": 4490.6242525577545,
+    "branch": "oscillatory",
+    "floor_rejections": [],
+    "k_cap": null,
+    "k_star": 148,
+    "n_vetoes": 0,
+    "range_over_tau": 0.9893273201663295,
+    "status": "certified",
+    "t_sum_k_star": 2028.7251510715223,
+    "window": [
+     121,
+     148
+    ]
+   },
+   "v6_changes_vs_v5": false,
+   "v6_equals_replay_arm_AB": true
+  },
+  "d_c52e1670@v5": {
+   "certifying_spec": null,
+   "committed_run": {
+    "commit": "51280961",
+    "criterion": "v5 (Addendum 60)",
+    "k_cap": 198,
+    "k_star": null,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w139_resettle_v5/frozen_s53_resettle_spec_v5_ab32ffc9.json",
+     "sha8": "ab32ffc9"
+    },
+    "status": "uncertified"
+   },
+   "v5_V0": {
+    "k_star": null,
+    "status": "uncertified",
+    "window": null
+   },
+   "v6": {
+    "A": [
+     20702.728690743446,
+     11709.601402521133,
+     2960.7645828723907
+    ],
+    "P_hat": 28,
+    "Q_k_star": 653373327.8473792,
+    "T": [
+     [
+      98,
+      "min",
+      653363574.1215132
+     ],
+     [
+      111,
+      "max",
+      653384276.850204
+     ],
+     [
+      127,
+      "min",
+      653372567.2488015
+     ],
+     [
+      139,
+      "max",
+      653375528.0133843
+     ]
+    ],
+    "W": 31,
+    "band_width": 4459.583585500717,
+    "branch": "oscillatory",
+    "floor_rejections": [
+     {
+      "candidate": [
+       112,
+       "min",
+       653384051.2060513
+      ],
+      "closed_swing": 225.6441526412964,
+      "cycle": 113,
+      "popped": [
+       111,
+       "max",
+       653384276.850204
+      ]
+     }
+    ],
+    "k_cap": null,
+    "k_star": 150,
+    "n_vetoes": 0,
+    "range_over_tau": 0.9824887653845032,
+    "status": "certified",
+    "t_sum_k_star": 1316.1434544128035,
+    "window": [
+     120,
+     150
+    ]
+   },
+   "v6_changes_vs_v5": true,
+   "v6_equals_replay_arm_AB": true
+  },
+  "f2_challenger": {
+   "certifying_spec": null,
+   "committed_run": {
+    "campaign_spec": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_f2_challenger/campaign_spec_s53_w118_resettle_r2_f2_challenger_c7c9aea8.json",
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "k_cap": 261,
+    "k_star": null,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    },
+    "status": "uncertified"
+   },
+   "v5_V0": {
+    "k_star": null,
+    "status": "uncertified",
+    "window": null
+   },
+   "v6": {
+    "A": [],
+    "P_hat": null,
+    "Q_k_star": null,
+    "T": [],
+    "W": null,
+    "band_width": 1219.023425579071,
+    "branch": null,
+    "floor_rejections": [],
+    "k_cap": 261,
+    "k_star": null,
+    "n_vetoes": 0,
+    "range_over_tau": null,
+    "status": "uncertified",
+    "t_sum_k_star": null,
+    "window": null
+   },
+   "v6_changes_vs_v5": false,
+   "v6_equals_replay_arm_AB": true
+  },
+  "f2_incumbent": {
+   "certifying_spec": null,
+   "committed_run": {
+    "campaign_spec": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_f2_incumbent/campaign_spec_s53_w118_resettle_r2_f2_incumbent_b1dd9b82.json",
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "k_cap": 281,
+    "k_star": null,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    },
+    "status": "uncertified"
+   },
+   "v5_V0": {
+    "k_star": null,
+    "status": "uncertified",
+    "window": null
+   },
+   "v6": {
+    "A": [],
+    "P_hat": null,
+    "Q_k_star": null,
+    "T": [
+     [
+      176,
+      "min",
+      809793410.6122015
+     ]
+    ],
+    "W": null,
+    "band_width": 398.1944086551666,
+    "branch": null,
+    "floor_rejections": [],
+    "k_cap": 281,
+    "k_star": null,
+    "n_vetoes": 0,
+    "range_over_tau": null,
+    "status": "uncertified",
+    "t_sum_k_star": null,
+    "window": null
+   },
+   "v6_changes_vs_v5": false,
+   "v6_equals_replay_arm_AB": true
+  },
+  "pb_y2025_n5": {
+   "certifying_spec": {
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "excluded": "Addendum 58 Ruling 2 / Addendum 59: the certificate stays EXCLUDED (the Acceptable recovery at k* 167 lies in its window); the re-run pb_y2025_n5 is queued (W135 extension)",
+    "k_star": 167,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    }
+   },
+   "committed_run": {
+    "campaign_spec": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_pb_y2025_n5/campaign_spec_s53_w118_resettle_r2_pb_y2025_n5_d3223edb.json",
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "k_cap": null,
+    "k_star": 167,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    },
+    "status": "certified"
+   },
+   "v5_V0": {
+    "k_star": null,
+    "status": "not decided within the recorded cycles 1..167",
+    "window": null
+   },
+   "v6": {
+    "A": [
+     31172.541702389717,
+     12257.353842377663,
+     4508.629555821419,
+     687.0228977203369
+    ],
+    "P_hat": null,
+    "Q_k_star": null,
+    "T": [
+     [
+      119,
+      "min",
+      653710770.7396618
+     ],
+     [
+      133,
+      "max",
+      653741943.2813642
+     ],
+     [
+      147,
+      "min",
+      653729685.9275218
+     ],
+     [
+      161,
+      "max",
+      653734194.5570776
+     ],
+     [
+      166,
+      "min",
+      653733507.5341799
+     ]
+    ],
+    "W": null,
+    "band_width": null,
+    "branch": null,
+    "floor_rejections": [],
+    "k_cap": null,
+    "k_star": null,
+    "n_vetoes": 1,
+    "range_over_tau": null,
+    "status": "not decided within the recorded cycles 1..167",
+    "t_sum_k_star": null,
+    "window": null
+   },
+   "v6_changes_vs_v5": false,
+   "v6_equals_replay_arm_AB": true
+  },
+  "pb_y2025_n7": {
+   "certifying_spec": {
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "k_star": 172,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    }
+   },
+   "committed_run": {
+    "campaign_spec": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_pb_y2025_n7/campaign_spec_s53_w118_resettle_r2_pb_y2025_n7_fd95aa25.json",
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "k_cap": null,
+    "k_star": 172,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    },
+    "status": "certified"
+   },
+   "v5_V0": {
+    "k_star": 172,
+    "status": "certified",
+    "window": [
+     142,
+     172
+    ]
+   },
+   "v6": {
+    "A": [
+     18274.8546769619,
+     7219.062215566635,
+     2429.575686454773
+    ],
+    "P_hat": 28,
+    "Q_k_star": 653737624.7532905,
+    "T": [
+     [
+      122,
+      "min",
+      653724723.874917
+     ],
+     [
+      137,
+      "max",
+      653742998.729594
+     ],
+     [
+      151,
+      "min",
+      653735779.6673784
+     ],
+     [
+      165,
+      "max",
+      653738209.2430649
+     ]
+    ],
+    "W": 31,
+    "band_width": 4421.739609241486,
+    "branch": "oscillatory",
+    "floor_rejections": [],
+    "k_cap": null,
+    "k_star": 172,
+    "n_vetoes": 0,
+    "range_over_tau": 0.9741513767473535,
+    "status": "certified",
+    "t_sum_k_star": 223.32203454050304,
+    "window": [
+     142,
+     172
+    ]
+   },
+   "v6_changes_vs_v5": false,
+   "v6_equals_replay_arm_AB": true
+  },
+  "pb_y2025_n9": {
+   "certifying_spec": {
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "k_star": 174,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    }
+   },
+   "committed_run": {
+    "campaign_spec": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_pb_y2025_n9/campaign_spec_s53_w118_resettle_r2_pb_y2025_n9_106fd385.json",
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "k_cap": null,
+    "k_star": 174,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    },
+    "status": "certified"
+   },
+   "v5_V0": {
+    "k_star": 174,
+    "status": "certified",
+    "window": [
+     144,
+     174
+    ]
+   },
+   "v6": {
+    "A": [
+     19282.982293725014,
+     7762.084318041801,
+     2724.8319215774536
+    ],
+    "P_hat": 28,
+    "Q_k_star": 653735144.2779412,
+    "T": [
+     [
+      123,
+      "min",
+      653721719.7719457
+     ],
+     [
+      138,
+      "max",
+      653741002.7542394
+     ],
+     [
+      152,
+      "min",
+      653733240.6699214
+     ],
+     [
+      166,
+      "max",
+      653735965.501843
+     ]
+    ],
+    "W": 31,
+    "band_width": 3696.4868445396423,
+    "branch": "oscillatory",
+    "floor_rejections": [],
+    "k_cap": null,
+    "k_star": 174,
+    "n_vetoes": 0,
+    "range_over_tau": 0.8143712807535687,
+    "status": "certified",
+    "t_sum_k_star": 431.47784142924854,
+    "window": [
+     144,
+     174
+    ]
+   },
+   "v6_changes_vs_v5": false,
+   "v6_equals_replay_arm_AB": true
+  },
+  "pb_y2030_n5": {
+   "certifying_spec": {
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "k_star": 182,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    }
+   },
+   "committed_run": {
+    "campaign_spec": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_pb_y2030_n5/campaign_spec_s53_w118_resettle_r2_pb_y2030_n5_19adf88a.json",
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "k_cap": null,
+    "k_star": 182,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    },
+    "status": "certified"
+   },
+   "v5_V0": {
+    "k_star": 182,
+    "status": "certified",
+    "window": [
+     151,
+     182
+    ]
+   },
+   "v6": {
+    "A": [
+     21021.43651986122,
+     8077.273782610893,
+     2571.0485916137695
+    ],
+    "P_hat": 29,
+    "Q_k_star": 653775145.819995,
+    "T": [
+     [
+      132,
+      "min",
+      653760454.2300228
+     ],
+     [
+      145,
+      "max",
+      653781475.6665426
+     ],
+     [
+      159,
+      "min",
+      653773398.39276
+     ],
+     [
+      174,
+      "max",
+      653775969.4413517
+     ]
+    ],
+    "W": 32,
+    "band_width": 4249.3788031339645,
+    "branch": "oscillatory",
+    "floor_rejections": [],
+    "k_cap": null,
+    "k_star": 182,
+    "n_vetoes": 0,
+    "range_over_tau": 0.9361786484989508,
+    "status": "certified",
+    "t_sum_k_star": 244.62998423902835,
+    "window": [
+     151,
+     182
+    ]
+   },
+   "v6_changes_vs_v5": false,
+   "v6_equals_replay_arm_AB": true
+  },
+  "pb_y2030_n7": {
+   "certifying_spec": {
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "k_star": 195,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    }
+   },
+   "committed_run": {
+    "campaign_spec": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_pb_y2030_n7/campaign_spec_s53_w118_resettle_r2_pb_y2030_n7_6d3f53e2.json",
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "k_cap": null,
+    "k_star": 195,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    },
+    "status": "certified"
+   },
+   "v5_V0": {
+    "k_star": 195,
+    "status": "certified",
+    "window": [
+     163,
+     195
+    ]
+   },
+   "v6": {
+    "A": [
+     31769.247810602188,
+     13490.016718029976,
+     5053.693318605423,
+     1867.111810684204
+    ],
+    "P_hat": 30,
+    "Q_k_star": 653780841.8689828,
+    "T": [
+     [
+      134,
+      "min",
+      653759121.4379122
+     ],
+     [
+      147,
+      "max",
+      653790890.6857228
+     ],
+     [
+      160,
+      "min",
+      653777400.6690048
+     ],
+     [
+      175,
+      "max",
+      653782454.3623234
+     ],
+     [
+      190,
+      "min",
+      653780587.2505127
+     ]
+    ],
+    "W": 33,
+    "band_width": 4512.0154839754105,
+    "branch": "oscillatory",
+    "floor_rejections": [],
+    "k_cap": null,
+    "k_star": 195,
+    "n_vetoes": 0,
+    "range_over_tau": 0.9940400123140712,
+    "status": "certified",
+    "t_sum_k_star": 723.2072896191556,
+    "window": [
+     163,
+     195
+    ]
+   },
+   "v6_changes_vs_v5": false,
+   "v6_equals_replay_arm_AB": true
+  },
+  "pb_y2030_n9": {
+   "certifying_spec": {
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "k_star": 192,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    }
+   },
+   "committed_run": {
+    "campaign_spec": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_pb_y2030_n9/campaign_spec_s53_w118_resettle_r2_pb_y2030_n9_88c4456d.json",
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "k_cap": null,
+    "k_star": 192,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    },
+    "status": "certified"
+   },
+   "v5_V0": {
+    "k_star": 192,
+    "status": "certified",
+    "window": [
+     160,
+     192
+    ]
+   },
+   "v6": {
+    "A": [
+     41494.23348939419,
+     17883.547662377357,
+     6576.444283485413,
+     2500.5095040798187
+    ],
+    "P_hat": 30,
+    "Q_k_star": 653778526.1392748,
+    "T": [
+     [
+      129,
+      "min",
+      653750308.8322139
+     ],
+     [
+      141,
+      "max",
+      653791803.0657033
+     ],
+     [
+      155,
+      "min",
+      653773919.5180409
+     ],
+     [
+      170,
+      "max",
+      653780495.9623244
+     ],
+     [
+      185,
+      "min",
+      653777995.4528203
+     ]
+    ],
+    "W": 33,
+    "band_width": 4275.442954301834,
+    "branch": "oscillatory",
+    "floor_rejections": [],
+    "k_cap": null,
+    "k_star": 192,
+    "n_vetoes": 0,
+    "range_over_tau": 0.9419208294023367,
+    "status": "certified",
+    "t_sum_k_star": 453.33539859616104,
+    "window": [
+     160,
+     192
+    ]
+   },
+   "v6_changes_vs_v5": false,
+   "v6_equals_replay_arm_AB": true
+  },
+  "unit_n7_4h_e1": {
+   "certifying_spec": {
+    "criterion": "v1 (settling_criterion.py; W101)",
+    "k_star": 172,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v39_8a612429.json",
+     "sha8": "8a612429"
+    }
+   },
+   "committed_run": {
+    "campaign_spec": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/campaign_spec_s53_w101_srp1_cont_n7_4h_e1_434f46fc.json",
+    "criterion": "v1 (settling_criterion.py; W101)",
+    "k_cap": null,
+    "k_star": 172,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v39_8a612429.json",
+     "sha8": "8a612429"
+    },
+    "status": "certified"
+   },
+   "v5_V0": {
+    "k_star": 172,
+    "status": "certified",
+    "window": [
+     140,
+     172
+    ]
+   },
+   "v6": {
+    "A": [
+     40513.71030175686,
+     17195.042121767998,
+     6311.16253221035,
+     2382.030532002449
+    ],
+    "P_hat": 30,
+    "Q_k_star": 653620162.5657823,
+    "T": [
+     [
+      109,
+      "min",
+      653592447.0485184
+     ],
+     [
+      122,
+      "max",
+      653632960.7588202
+     ],
+     [
+      135,
+      "min",
+      653615765.7166984
+     ],
+     [
+      150,
+      "max",
+      653622076.8792306
+     ],
+     [
+      165,
+      "min",
+      653619694.8486986
+     ]
+    ],
+    "W": 33,
+    "band_width": 4351.407173395157,
+    "branch": "oscillatory",
+    "floor_rejections": [],
+    "k_cap": null,
+    "k_star": 172,
+    "n_vetoes": 0,
+    "range_over_tau": 0.9586564708360014,
+    "status": "certified",
+    "t_sum_k_star": 662.9971061576365,
+    "window": [
+     140,
+     172
+    ]
+   },
+   "v6_changes_vs_v5": false,
+   "v6_equals_replay_arm_AB": true
+  },
+  "x0": {
+   "certifying_spec": {
+    "criterion": "v1 (settling_criterion.py; W101)",
+    "k_star": 181,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v39_8a612429.json",
+     "sha8": "8a612429"
+    }
+   },
+   "committed_run": {
+    "campaign_spec": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/campaign_spec_s53_w101_srp1_cont_x0_d1d5c3bc.json",
+    "criterion": "v1 (settling_criterion.py; W101)",
+    "k_cap": null,
+    "k_star": 181,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v39_8a612429.json",
+     "sha8": "8a612429"
+    },
+    "status": "certified"
+   },
+   "v5_V0": {
+    "k_star": 181,
+    "status": "certified",
+    "window": [
+     150,
+     181
+    ]
+   },
+   "v6": {
+    "A": [
+     20095.168155789375,
+     7027.44649708271,
+     2605.3597543239594
+    ],
+    "P_hat": 29,
+    "Q_k_star": 653873702.1876609,
+    "T": [
+     [
+      131,
+      "min",
+      653858577.1796229
+     ],
+     [
+      145,
+      "max",
+      653878672.3477787
+     ],
+     [
+      159,
+      "min",
+      653871644.9012816
+     ],
+     [
+      174,
+      "max",
+      653874250.2610359
+     ]
+    ],
+    "W": 32,
+    "band_width": 4209.1713362932205,
+    "branch": "oscillatory",
+    "floor_rejections": [],
+    "k_cap": null,
+    "k_star": 181,
+    "n_vetoes": 0,
+    "range_over_tau": 0.9273205603617451,
+    "status": "certified",
+    "t_sum_k_star": 142.52829395444053,
+    "window": [
+     150,
+     181
+    ]
+   },
+   "v6_changes_vs_v5": false,
+   "v6_equals_replay_arm_AB": true
+  },
+  "yl_y2030": {
+   "certifying_spec": {
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "k_star": 169,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    }
+   },
+   "committed_run": {
+    "campaign_spec": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_yl_y2030/campaign_spec_s53_w118_resettle_r2_yl_y2030_fa79efec.json",
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "k_cap": null,
+    "k_star": 169,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    },
+    "status": "certified"
+   },
+   "v5_V0": {
+    "k_star": 169,
+    "status": "certified",
+    "window": [
+     138,
+     169
+    ]
+   },
+   "v6": {
+    "A": [
+     27310.543655395508,
+     10071.879343986511,
+     3400.3473467826843
+    ],
+    "P_hat": 29,
+    "Q_k_star": 653706033.0830176,
+    "T": [
+     [
+      118,
+      "min",
+      653686335.6310427
+     ],
+     [
+      131,
+      "max",
+      653713646.1746981
+     ],
+     [
+      145,
+      "min",
+      653703574.2953541
+     ],
+     [
+      160,
+      "max",
+      653706974.6427009
+     ]
+    ],
+    "W": 32,
+    "band_width": 4084.7481145858765,
+    "branch": "oscillatory",
+    "floor_rejections": [],
+    "k_cap": null,
+    "k_star": 169,
+    "n_vetoes": 0,
+    "range_over_tau": 0.8999089388198013,
+    "status": "certified",
+    "t_sum_k_star": 493.4760420794428,
+    "window": [
+     138,
+     169
+    ]
+   },
+   "v6_changes_vs_v5": false,
+   "v6_equals_replay_arm_AB": true
+  },
+  "yl_y2035": {
+   "certifying_spec": {
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "k_star": 167,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    }
+   },
+   "committed_run": {
+    "campaign_spec": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_yl_y2035/campaign_spec_s53_w118_resettle_r2_yl_y2035_316eed36.json",
+    "criterion": "v2 (settling_criterion_v2.py; W118 r2)",
+    "k_cap": null,
+    "k_star": 167,
+    "spec": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+     "sha8": "fc791891"
+    },
+    "status": "certified"
+   },
+   "v5_V0": {
+    "k_star": 167,
+    "status": "certified",
+    "window": [
+     136,
+     167
+    ]
+   },
+   "v6": {
+    "A": [
+     26976.687087893486,
+     10016.244642496109,
+     3541.5813665390015
+    ],
+    "P_hat": 29,
+    "Q_k_star": 653786670.2430254,
+    "T": [
+     [
+      116,
+      "min",
+      653767252.0818468
+     ],
+     [
+      129,
+      "max",
+      653794228.7689347
+     ],
+     [
+      143,
+      "min",
+      653784212.5242922
+     ],
+     [
+      158,
+      "max",
+      653787754.1056588
+     ]
+    ],
+    "W": 32,
+    "band_width": 4051.796447992325,
+    "branch": "oscillatory",
+    "floor_rejections": [],
+    "k_cap": null,
+    "k_star": 167,
+    "n_vetoes": 0,
+    "range_over_tau": 0.892649372627541,
+    "status": "certified",
+    "t_sum_k_star": 576.7994951596219,
+    "window": [
+     136,
+     167
+    ]
+   },
+   "v6_changes_vs_v5": false,
+   "v6_equals_replay_arm_AB": true
+  }
+ },
+ "item2_d_c52e1670_certificate": {
+  "Q_k_star": 653373327.8473792,
+  "W": 31,
+  "all_clean_crosscheck": {
+   "equal": true,
+   "in_run_non_clean_cycles": [
+    117
+   ],
+   "recomputed_from_the_logs_non_clean_cycles": [
+    117
+   ]
+  },
+  "band": [
+   653372567.2488015,
+   653377026.832387
+  ],
+  "band_width": 4459.583585500717,
+  "k_star": 150,
+  "path": "data/SRP1/Results/P515S53/w142_resettle_v6/v6_from_records/d_c52e1670_v6_from_records_certificate.json",
+  "report_view": {
+   "Q": 653373327.8473792,
+   "Q_cc": 653374643.9908336,
+   "Q_net": 653373327.8473792,
+   "band": 4459.583585500717,
+   "gap": null,
+   "gap_refused": null,
+   "gated": true,
+   "label": "v6 from records",
+   "salvage": 2.498334423338841e-51,
+   "slack": null,
+   "status": "certified",
+   "t": 1316.1434544128035
+  },
+  "sha256": "c96e3588d38a5abba3349620fed5d446748e89d97a9da92a657e7933e6c6c87f",
+  "t_sum_k_star": 1316.1434544128035,
+  "window": [
+   120,
+   150
+  ]
+ },
+ "item3_determinacy_rescore": {
+  "n_rescored": 18,
+  "not_reproduced": [],
+  "prediction_addendum61": "changes no verdict to date",
+  "prediction_held": true,
+  "rows": [
+   {
+    "bands": [
+     4209.1713362932205,
+     4404.700753211975
+    ],
+    "claim_id": "B:n5_4h_e1",
+    "d_Q": 58036.03203809261,
+    "d_Qcc": 58909.837302684784,
+    "gross_v6": {
+     "bars": [
+      4209.1713362932205,
+      4404.700753211975
+     ],
+     "binding_term": "3 x larger bar",
+     "larger_bar": 4404.700753211975,
+     "margin_Q": 58036.03203809261,
+     "margin_Qcc": 58909.837302684784,
+     "margin_over_threshold": 4.391976912072998,
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "superseded_rule_report_only": {
+      "margin_over_resolution": 6.737507991185688,
+      "resolution": 8613.872089505196,
+      "rule": "settled_vs_settled",
+      "verdict": "determinate"
+     },
+     "three_x_larger_bar": 13214.102259635925,
+     "threshold": 13214.102259635925,
+     "two_tau": 9078.136550000001,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate"
+    },
+    "other_status": "certified",
+    "ref_status": "certified",
+    "reproduced": true,
+    "source": "W138 claim point #3 (w137_summary_after_03, f26e4437)",
+    "verdict_changed": false,
+    "verdict_committed": "determinate",
+    "verdict_reproduced_with_the_old_rule": "determinate",
+    "verdict_v6": "determinate"
+   },
+   {
+    "bands": [
+     4209.1713362932205,
+     4351.407173395157
+    ],
+    "claim_id": "B:n7_4h_e1",
+    "d_Q": 64417.38662493229,
+    "d_Qcc": 64937.85543715954,
+    "gross_v6": {
+     "bars": [
+      4209.1713362932205,
+      4351.407173395157
+     ],
+     "binding_term": "3 x larger bar",
+     "larger_bar": 4351.407173395157,
+     "margin_Q": 64417.38662493229,
+     "margin_Qcc": 64937.85543715954,
+     "margin_over_threshold": 4.934601923624862,
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "superseded_rule_report_only": {
+      "margin_over_resolution": 7.52488708000614,
+      "resolution": 8560.578509688377,
+      "rule": "settled_vs_settled",
+      "verdict": "determinate"
+     },
+     "three_x_larger_bar": 13054.22152018547,
+     "threshold": 13054.22152018547,
+     "two_tau": 9078.136550000001,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate"
+    },
+    "other_status": "certified",
+    "ref_status": "certified",
+    "reproduced": true,
+    "source": "W138 claim point #3 (w137_summary_after_03, f26e4437)",
+    "verdict_changed": false,
+    "verdict_committed": "determinate",
+    "verdict_reproduced_with_the_old_rule": "determinate",
+    "verdict_v6": "determinate"
+   },
+   {
+    "bands": [
+     4209.1713362932205,
+     4180.764466881752
+    ],
+    "claim_id": "B:n9_4h_e1",
+    "d_Q": 61100.549067258835,
+    "d_Qcc": 61550.004729151726,
+    "gross_v6": {
+     "bars": [
+      4209.1713362932205,
+      4180.764466881752
+     ],
+     "binding_term": "3 x larger bar",
+     "larger_bar": 4209.1713362932205,
+     "margin_Q": 61100.549067258835,
+     "margin_Qcc": 61550.004729151726,
+     "margin_over_threshold": 4.838683926566461,
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "superseded_rule_report_only": {
+      "margin_over_resolution": 7.282600308352393,
+      "resolution": 8389.935803174973,
+      "rule": "settled_vs_settled",
+      "verdict": "determinate"
+     },
+     "three_x_larger_bar": 12627.514008879662,
+     "threshold": 12627.514008879662,
+     "two_tau": 9078.136550000001,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate"
+    },
+    "other_status": "certified",
+    "ref_status": "certified",
+    "reproduced": true,
+    "source": "W138 claim point #3 (w137_summary_after_03, f26e4437)",
+    "verdict_changed": false,
+    "verdict_committed": "determinate",
+    "verdict_reproduced_with_the_old_rule": "determinate",
+    "verdict_v6": "determinate"
+   },
+   {
+    "bands": [
+     4209.1713362932205,
+     6816.561980962753
+    ],
+    "claim_id": "B:n9_4h_e3",
+    "d_Q": 195746.24436604977,
+    "d_Qcc": 196567.56561779976,
+    "gross_v6": {
+     "bar": 96884.0493171215,
+     "bar_components": [
+      963.8495455993577,
+      32294.68310570717
+     ],
+     "margin_Q": 195746.24436604977,
+     "margin_Qcc": 196567.56561779976,
+     "margin_over_bar_Q": 2.02041766158361,
+     "margin_over_bar_Qcc": 2.0288950245503625,
+     "rule": "uncertified_form",
+     "rule_v6": "uncertified form (unchanged by Addendum 61)",
+     "verdict": "determinate"
+    },
+    "other_status": "uncertified",
+    "ref_status": "certified",
+    "reproduced": true,
+    "source": "W138 claim point #3 (w137_summary_after_03, f26e4437)",
+    "verdict_changed": false,
+    "verdict_committed": "determinate",
+    "verdict_reproduced_with_the_old_rule": "determinate",
+    "verdict_v6": "determinate"
+   },
+   {
+    "bands": [
+     398.1944086551666,
+     1219.023425579071
+    ],
+    "claim_id": "L:y2030__n5_p0.25_e1__n7_p1_e3",
+    "d_Q": -6107.638909578323,
+    "d_Qcc": -6173.34067606926,
+    "gross_v6": {
+     "bar": 27900.378565777683,
+     "bar_components": [
+      9234.424422092314,
+      1461.4875311851501,
+      9300.126188592561,
+      997.838485956192
+     ],
+     "margin_Q": 6107.638909578323,
+     "margin_Qcc": 6173.34067606926,
+     "margin_over_bar_Q": 0.21890881857316052,
+     "margin_over_bar_Qcc": 0.2212636886454801,
+     "rule": "uncertified_form",
+     "rule_v6": "uncertified form (unchanged by Addendum 61)",
+     "verdict": "within the uncertified bar"
+    },
+    "other_status": "uncertified",
+    "ref_status": "uncertified",
+    "reproduced": true,
+    "source": "W138 claim point #3 (w137_summary_after_03, f26e4437)",
+    "verdict_changed": false,
+    "verdict_committed": "within the uncertified bar",
+    "verdict_reproduced_with_the_old_rule": "within the uncertified bar",
+    "verdict_v6": "within the uncertified bar"
+   },
+   {
+    "bands": [
+     4209.1713362932205,
+     4351.407173395157
+    ],
+    "claim_id": "CHECK:headline_V_minus_I_settled",
+    "d_Q": -64417.38662493462,
+    "d_Qcc": -64937.85543716187,
+    "gross_v6": {
+     "bars": [
+      4209.1713362932205,
+      4351.407173395157
+     ],
+     "binding_term": "3 x larger bar",
+     "larger_bar": 4351.407173395157,
+     "margin_Q": 64417.38662493462,
+     "margin_Qcc": 64937.85543716187,
+     "margin_over_threshold": 4.93460192362504,
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "superseded_rule_report_only": {
+      "margin_over_resolution": 7.524887080006412,
+      "resolution": 8560.578509688377,
+      "rule": "settled_vs_settled",
+      "verdict": "determinate"
+     },
+     "three_x_larger_bar": 13054.22152018547,
+     "threshold": 13054.22152018547,
+     "two_tau": 9078.136550000001,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate"
+    },
+    "other_status": "certified",
+    "ref_status": "certified",
+    "reproduced": true,
+    "source": "W138 claim point #3 (w137_summary_after_03, f26e4437)",
+    "verdict_changed": false,
+    "verdict_committed": "determinate",
+    "verdict_reproduced_with_the_old_rule": "determinate",
+    "verdict_v6": "determinate"
+   },
+   {
+    "bands": [
+     4209.1713362932205,
+     4490.6242525577545
+    ],
+    "claim_id": "B:n9_4h_e3",
+    "d_Q": 199097.52955710888,
+    "d_Qcc": 200983.72641432285,
+    "gross_v6": {
+     "bars": [
+      4209.1713362932205,
+      4490.6242525577545
+     ],
+     "binding_term": "3 x larger bar",
+     "larger_bar": 4490.6242525577545,
+     "margin_Q": 199097.52955710888,
+     "margin_Qcc": 200983.72641432285,
+     "margin_over_threshold": 14.77875668352847,
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "superseded_rule_report_only": {
+      "margin_over_resolution": 22.8853112149276,
+      "resolution": 8699.795588850975,
+      "rule": "settled_vs_settled",
+      "verdict": "determinate"
+     },
+     "three_x_larger_bar": 13471.872757673264,
+     "threshold": 13471.872757673264,
+     "two_tau": 9078.136550000001,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate"
+    },
+    "other_status": "certified",
+    "ref_status": "certified",
+    "source": "the W138 claim with the other cell replaced by cell 3's v5 certificate (4b3be392, certified at 148)",
+    "verdict_changed_vs_old_rule_same_inputs": false,
+    "verdict_committed_at_W138_on_the_v4_cell": "determinate",
+    "verdict_old_rule_on_the_v5_certificate": "determinate",
+    "verdict_v6": "determinate"
+   },
+   {
+    "M": 46705.97347736359,
+    "M_cc": 47016.78058207035,
+    "bands": [
+     4209.1713362932205,
+     4275.442954301834
+    ],
+    "difference": "pb_y2030_n9 vs x0 (M = I + Q(k*) - Q181)",
+    "note": null,
+    "recomputed_minus_committed": [
+     0.0,
+     0.0
+    ],
+    "reproduced": true,
+    "source": "w118_resettle_summary differences",
+    "v6": {
+     "bars": [
+      4209.1713362932205,
+      4275.442954301834
+     ],
+     "binding_term": "3 x larger bar",
+     "larger_bar": 4275.442954301834,
+     "margin_Q": 46705.97347736359,
+     "margin_Qcc": 47016.78058207035,
+     "margin_over_threshold": 3.6414139990157284,
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "superseded_rule_report_only": {
+      "margin_over_resolution": 5.5047845285242705,
+      "resolution": 8484.614290595055,
+      "rule": "settled_vs_settled",
+      "verdict": "determinate"
+     },
+     "three_x_larger_bar": 12826.328862905502,
+     "threshold": 12826.328862905502,
+     "two_tau": 9078.136550000001,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate"
+    },
+    "verdict_changed": false,
+    "verdict_committed": "determinate",
+    "verdict_v6": "determinate"
+   },
+   {
+    "M": 49021.7031853199,
+    "M_cc": 49602.38218104839,
+    "bands": [
+     4209.1713362932205,
+     4512.0154839754105
+    ],
+    "difference": "pb_y2030_n7 vs x0 (M = I + Q(k*) - Q181)",
+    "note": null,
+    "recomputed_minus_committed": [
+     0.0,
+     0.0
+    ],
+    "reproduced": true,
+    "source": "w118_resettle_summary differences",
+    "v6": {
+     "bars": [
+      4209.1713362932205,
+      4512.0154839754105
+     ],
+     "binding_term": "3 x larger bar",
+     "larger_bar": 4512.0154839754105,
+     "margin_Q": 49021.7031853199,
+     "margin_Qcc": 49602.38218104839,
+     "margin_over_threshold": 3.621567298798973,
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "superseded_rule_report_only": {
+      "margin_over_resolution": 5.62098991749496,
+      "resolution": 8721.186820268631,
+      "rule": "settled_vs_settled",
+      "verdict": "determinate"
+     },
+     "three_x_larger_bar": 13536.046451926231,
+     "threshold": 13536.046451926231,
+     "two_tau": 9078.136550000001,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate"
+    },
+    "verdict_changed": false,
+    "verdict_committed": "determinate",
+    "verdict_v6": "determinate"
+   },
+   {
+    "M": 51262.81463038921,
+    "M_cc": 50533.68177163601,
+    "bands": [
+     4209.1713362932205,
+     4508.629555821419
+    ],
+    "difference": "pb_y2025_n5 vs x0 (M = I + Q(k*) - Q181)",
+    "note": "certificate EXCLUDED under v4+ (Addendum 59; the Acceptable recovery at k* 167 lies in its window); re-scored as recorded, its re-run pending",
+    "recomputed_minus_committed": [
+     0.0,
+     0.0
+    ],
+    "reproduced": true,
+    "source": "w118_resettle_summary differences",
+    "v6": {
+     "bars": [
+      4209.1713362932205,
+      4508.629555821419
+     ],
+     "binding_term": "3 x larger bar",
+     "larger_bar": 4508.629555821419,
+     "margin_Q": 51262.81463038921,
+     "margin_Qcc": 50533.68177163601,
+     "margin_over_threshold": 3.7899775675145806,
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "superseded_rule_report_only": {
+      "margin_over_resolution": 5.880246092424189,
+      "resolution": 8717.80089211464,
+      "rule": "settled_vs_settled",
+      "verdict": "determinate"
+     },
+     "three_x_larger_bar": 13525.888667464256,
+     "threshold": 13525.888667464256,
+     "two_tau": 9078.136550000001,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate"
+    },
+    "verdict_changed": false,
+    "verdict_committed": "determinate",
+    "verdict_v6": "determinate"
+   },
+   {
+    "M": 43325.65419757366,
+    "M_cc": 43427.75588798523,
+    "bands": [
+     4209.1713362932205,
+     4249.3788031339645
+    ],
+    "difference": "pb_y2030_n5 vs x0 (M = I + Q(k*) - Q181)",
+    "note": null,
+    "recomputed_minus_committed": [
+     0.0,
+     0.0
+    ],
+    "reproduced": true,
+    "source": "w118_resettle_summary differences",
+    "v6": {
+     "bars": [
+      4209.1713362932205,
+      4249.3788031339645
+     ],
+     "binding_term": "3 x larger bar",
+     "larger_bar": 4249.3788031339645,
+     "margin_Q": 43325.65419757366,
+     "margin_Qcc": 43427.75588798523,
+     "margin_over_threshold": 3.3985872763034215,
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "superseded_rule_report_only": {
+      "margin_over_resolution": 5.122113539958006,
+      "resolution": 8458.550139427185,
+      "rule": "settled_vs_settled",
+      "verdict": "determinate"
+     },
+     "three_x_larger_bar": 12748.136409401894,
+     "threshold": 12748.136409401894,
+     "two_tau": 9078.136550000001,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate"
+    },
+    "verdict_changed": false,
+    "verdict_committed": "determinate",
+    "verdict_v6": "determinate"
+   },
+   {
+    "M": 52460.2600646019,
+    "M_cc": 52749.20961213112,
+    "bands": [
+     4209.1713362932205,
+     3696.4868445396423
+    ],
+    "difference": "pb_y2025_n9 vs x0 (M = I + Q(k*) - Q181)",
+    "note": null,
+    "recomputed_minus_committed": [
+     0.0,
+     0.0
+    ],
+    "reproduced": true,
+    "source": "w118_resettle_summary differences",
+    "v6": {
+     "bars": [
+      4209.1713362932205,
+      3696.4868445396423
+     ],
+     "binding_term": "3 x larger bar",
+     "larger_bar": 4209.1713362932205,
+     "margin_Q": 52460.2600646019,
+     "margin_Qcc": 52749.20961213112,
+     "margin_over_threshold": 4.154440852547213,
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "superseded_rule_report_only": {
+      "margin_over_resolution": 6.635786529677052,
+      "resolution": 7905.658180832863,
+      "rule": "settled_vs_settled",
+      "verdict": "determinate"
+     },
+     "three_x_larger_bar": 12627.514008879662,
+     "threshold": 12627.514008879662,
+     "two_tau": 9078.136550000001,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate"
+    },
+    "verdict_changed": false,
+    "verdict_committed": "determinate",
+    "verdict_v6": "determinate"
+   },
+   {
+    "M": 54940.73541390896,
+    "M_cc": 55021.52915465832,
+    "bands": [
+     4209.1713362932205,
+     4421.739609241486
+    ],
+    "difference": "pb_y2025_n7 vs x0 (M = I + Q(k*) - Q181)",
+    "note": null,
+    "recomputed_minus_committed": [
+     0.0,
+     0.0
+    ],
+    "reproduced": true,
+    "source": "w118_resettle_summary differences",
+    "v6": {
+     "bars": [
+      4209.1713362932205,
+      4421.739609241486
+     ],
+     "binding_term": "3 x larger bar",
+     "larger_bar": 4421.739609241486,
+     "margin_Q": 54940.73541390896,
+     "margin_Qcc": 55021.52915465832,
+     "margin_over_threshold": 4.1417134634132236,
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "superseded_rule_report_only": {
+      "margin_over_resolution": 6.36557783536547,
+      "resolution": 8630.910945534706,
+      "rule": "settled_vs_settled",
+      "verdict": "determinate"
+     },
+     "three_x_larger_bar": 13265.218827724457,
+     "threshold": 13265.218827724457,
+     "two_tau": 9078.136550000001,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate"
+    },
+    "verdict_changed": false,
+    "verdict_committed": "determinate",
+    "verdict_v6": "determinate"
+   },
+   {
+    "M": 68498.91687583923,
+    "M_cc": 68849.86462402344,
+    "bands": [
+     4209.1713362932205,
+     4084.7481145858765
+    ],
+    "difference": "yl_y2030 vs x0 (M = I + Q(k*) - Q181)",
+    "note": null,
+    "recomputed_minus_committed": [
+     0.0,
+     0.0
+    ],
+    "reproduced": true,
+    "source": "w118_resettle_summary differences",
+    "v6": {
+     "bars": [
+      4209.1713362932205,
+      4084.7481145858765
+     ],
+     "binding_term": "3 x larger bar",
+     "larger_bar": 4209.1713362932205,
+     "margin_Q": 68498.91687583923,
+     "margin_Qcc": 68849.86462402344,
+     "margin_over_threshold": 5.4245765894752385,
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "superseded_rule_report_only": {
+      "margin_over_resolution": 8.258932014173206,
+      "resolution": 8293.919450879097,
+      "rule": "settled_vs_settled",
+      "verdict": "determinate"
+     },
+     "three_x_larger_bar": 12627.514008879662,
+     "threshold": 12627.514008879662,
+     "two_tau": 9078.136550000001,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate"
+    },
+    "verdict_changed": false,
+    "verdict_committed": "determinate",
+    "verdict_v6": "determinate"
+   },
+   {
+    "M": 110957.57071387768,
+    "M_cc": 111391.84191513062,
+    "bands": [
+     4209.1713362932205,
+     4051.796447992325
+    ],
+    "difference": "yl_y2035 vs x0 (M = I + Q(k*) - Q181)",
+    "note": null,
+    "recomputed_minus_committed": [
+     0.0,
+     0.0
+    ],
+    "reproduced": true,
+    "source": "w118_resettle_summary differences",
+    "v6": {
+     "bars": [
+      4209.1713362932205,
+      4051.796447992325
+     ],
+     "binding_term": "3 x larger bar",
+     "larger_bar": 4209.1713362932205,
+     "margin_Q": 110957.57071387768,
+     "margin_Qcc": 111391.84191513062,
+     "margin_over_threshold": 8.786968728433195,
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "superseded_rule_report_only": {
+      "margin_over_resolution": 13.431546231780143,
+      "resolution": 8260.967784285545,
+      "rule": "settled_vs_settled",
+      "verdict": "determinate"
+     },
+     "three_x_larger_bar": 12627.514008879662,
+     "threshold": 12627.514008879662,
+     "two_tau": 9078.136550000001,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate"
+    },
+    "verdict_changed": false,
+    "verdict_committed": "determinate",
+    "verdict_v6": "determinate"
+   },
+   {
+    "M": 42458.653838038445,
+    "M_cc": 42541.97729111862,
+    "bands": [
+     4084.7481145858765,
+     4051.796447992325
+    ],
+    "difference": "year ladder 2035 - 2030 (D = (I + Q)_2035 - (I + Q)_2030)",
+    "recomputed_minus_committed": [
+     0.0,
+     0.0
+    ],
+    "reproduced": true,
+    "source": "w118_resettle_summary differences.year_ladder",
+    "v6": {
+     "bars": [
+      4084.7481145858765,
+      4051.796447992325
+     ],
+     "binding_term": "3 x larger bar",
+     "larger_bar": 4084.7481145858765,
+     "margin_Q": 42458.653838038445,
+     "margin_Qcc": 42541.97729111862,
+     "margin_over_threshold": 3.464812080368471,
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "superseded_rule_report_only": {
+      "margin_over_resolution": 5.218265998728175,
+      "resolution": 8136.544562578201,
+      "rule": "settled_vs_settled",
+      "verdict": "determinate"
+     },
+     "three_x_larger_bar": 12254.24434375763,
+     "threshold": 12254.24434375763,
+     "two_tau": 9078.136550000001,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate"
+    },
+    "verdict_changed": false,
+    "verdict_committed": "determinate",
+    "verdict_v6": "determinate"
+   },
+   {
+    "M": null,
+    "bands": [
+     1219.023425579071,
+     398.1944086551666
+    ],
+    "difference": "F2 certificate (challenger vs incumbent)",
+    "note": "both cells uncertified: the Addendum 61 floor applies to certified cells only; the uncertified-form rule is unchanged, so this verdict is unchanged by construction (its uncertified-form scoring is the L F2-pair claim in the W138 summary, re-scored above)",
+    "reproduced": true,
+    "source": "w118_resettle_summary differences",
+    "verdict_changed": false,
+    "verdict_committed": "indeterminate_uncertified",
+    "verdict_v6": "indeterminate_uncertified"
+   },
+   {
+    "M": 103578.54433846474,
+    "M_cc": 112885.65556526184,
+    "bar_committed": 27703.27326607704,
+    "bar_v6_uncertified_form": 27703.27326607704,
+    "bar_w130_reading_recomputed": 27703.27326607704,
+    "difference": "F2 plan (incumbent, uncertified at its cap) vs corner (old certificate f3aa335e)",
+    "note": "the incumbent is uncertified: the uncertified-form rule applies, unchanged by Addendum 61 (the corner's own slack is unmeasured, as W130 recorded)",
+    "recomputed_minus_committed": [
+     0.0,
+     0.0
+    ],
+    "reproduced": true,
+    "source": "W130 task 3 (w130_benchmark_addendum.json, 2c1b731a)",
+    "v6": {
+     "bar": 27703.27326607704,
+     "bar_components": [
+      9234.42442202568,
+      1461.4875311851501
+     ],
+     "margin_Q": 103578.54433846474,
+     "margin_Qcc": 112885.65556526184,
+     "margin_over_bar_Q": 3.7388558147494355,
+     "margin_over_bar_Qcc": 4.07481291041126,
+     "rule": "uncertified_form",
+     "rule_v6": "uncertified form (unchanged by Addendum 61)",
+     "verdict": "determinate"
+    },
+    "verdict_changed": false,
+    "verdict_committed": {
+     "Q_cc": "stands",
+     "gross": "stands"
+    },
+    "verdict_v6": "stands"
+   }
+  ],
+  "rule": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+  "verdict_changes": []
+ },
+ "item3_movement_record": {
+  "bound_tau": 0.9,
+  "largest_endpoint_movement_over_tau": 0.8821427874222325,
+  "largest_excursion_over_tau": 0.8821427874222325,
+  "rows": {
+   "b_4649234b (cell 3)": {
+    "Q_k_star": 653118928.6917074,
+    "Q_last": 653115577.4065163,
+    "Q_last_minus_Q_k_star": -3351.2851910591125,
+    "k_star": 148,
+    "last_recorded": 193,
+    "max_abs_deviation_after_k_star": {
+     "Q_c_minus_Q_k_star": -3351.2851910591125,
+     "cycle": 193,
+     "over_tau": 0.7383200665910037
+    },
+    "n_cycles_after": 45,
+    "over_tau": -0.7383200665910037,
+    "source": "the v4 run 0734f103 (b_4649234b@v4), which continued to its cap 193; certified at 148 under v5 (run 4b3be392, bitwise equal to the v4 run through 148: G26 held)"
+   },
+   "d_c52e1670 at its v6 certificate": {
+    "Q_k_star": 653373327.8473792,
+    "Q_last": 653369784.7463357,
+    "Q_last_minus_Q_k_star": -3543.1010434627533,
+    "k_star": 150,
+    "last_recorded": 198,
+    "max_abs_deviation_after_k_star": {
+     "Q_c_minus_Q_k_star": -3543.1010434627533,
+     "cycle": 198,
+     "over_tau": 0.7805789269523056
+    },
+    "n_cycles_after": 48,
+    "over_tau": -0.7805789269523056,
+    "source": "the v5 run 51280961, which continued to its cap 198"
+   },
+   "d_c52e1670 at the last-pair reading's 148 (W141 V1)": {
+    "Q_k_star": 653373788.8526762,
+    "Q_last": 653369784.7463357,
+    "Q_last_minus_Q_k_star": -4004.106340408325,
+    "k_star": 148,
+    "last_recorded": 198,
+    "max_abs_deviation_after_k_star": {
+     "Q_c_minus_Q_k_star": -4004.106340408325,
+     "cycle": 198,
+     "over_tau": 0.8821427874222325
+    },
+    "n_cycles_after": 50,
+    "over_tau": -0.8821427874222325,
+    "source": "the v5 run 51280961 (W141 V1 / V2)"
+   }
+  },
+  "scope": "the only committed records that continue past a certifying cycle (every other run stops at its k*); searched: the 18 re-settle records of the W142 floor replay",
+  "statement": "cells continued past certification moved at most 0.9 tau",
+  "statement_holds_on_the_endpoint_movement": true,
+  "statement_holds_on_the_largest_excursion": true,
+  "tau": 4539.0682750000005
+ },
+ "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED; Q_cc = Q + t_sum (diagnostic); margins F-form I + Q (gross) unless a claim states net of salvage",
+ "pickle_guard": {
+  "load": 0,
+  "loads": 0
+ },
+ "schema": "p515_s53_w142_v6_from_records_v1",
+ "task": "W142 items 1-3 (Addendum 61): v6 from records; d_c52e1670 certificate; determinacy re-score; movement",
+ "utc": "2026-09-30T19:56:57.690578+00:00",
+ "wall_s": 2.8340108394622803
+}

@@ -1,0 +1,98 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 27 item 1 (AA-on into the case file; re-verification)",
+  "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json configuration.oracle, configuration.reverification_gate"
+ ],
+ "bar_window_cycles": 10,
+ "campaign_id": "s45_reverify_aa_c_star",
+ "candidates": [
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "3e741dac72c9e1bc_c_star_aa_case_file",
+   "eval_key": "3e741dac72c9e1bcccc04ce5cc2e29f91cd639c43620d4efa3e36885915263aa",
+   "key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "label": "c_star_aa_case_file",
+   "overrides": {},
+   "post_certification": null,
+   "working_dir_ids": {
+    "precheck": "p515s44_s45_reverify_aa_c_star_3e741dac72c9e1bc_precheck",
+    "run": "p515s44_s45_reverify_aa_c_star_3e741dac72c9e1bc_run"
+   }
+  }
+ ],
+ "cap": 500,
+ "concurrency": 1,
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "full_diagnostics_in_rows": true,
+  "name": "case file alone: AA keep_memory adopted in data/SRP1/SRP1_params.json (Addendum 27)",
+  "note": "no overrides; the case file carries AA (declared, checked by the child hook); num_max_iters := cap (run_admm_arm always sets it)",
+  "overrides": {}
+ },
+ "extra": {
+  "campaign_script": "p515_s45_reverify_aa_c_star.py",
+  "campaign_script_sha256": "de3b673e4c12b73e8db5314e51dc68e305f8f45b90ebffe2b5074c9a6e2677a4",
+  "mode": "full",
+  "reference_aa_c_star_evaluation": {
+   "campaign_spec": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/campaign_spec_s44_aa_variant_f90618e8.json",
+   "certification_cycle": 107,
+   "certified_cost": 650982939.9389359,
+   "component_levels_terminal_sha256": "8452f6261b1bf1fe84d4dfd8a177fa8f4145ade4c042a4904a29d4483a745782",
+   "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory",
+   "evaluation_record_sha256": "6e90d4424df3405b0cc066bba1f57c28666a1524e5cdcc62890c6e6a74e69a4f"
+  },
+  "reverification_gate": "spec v15 5feefd7b configuration.reverification_gate: a case-file-alone C* evaluation through the campaign harness (no overrides) reproduces the committed AA C* evaluation (campaign_s44_aa_variant, 107 cycles, 650,982,939.9389359) bitwise on every numeric trajectory field and cost; tie-order in the recourse-jump top-10 classified with p515_s44_tie_classifier; provenance non-gating. NOT evaluated by this script."
+ },
+ "frozen_utc": "2026-09-19T16:44:13.930540+00:00",
+ "git_head": "b5629311c092863c78cc508eaf34676382ac9f83",
+ "harness": {
+  "path": "p515_s44_campaign_harness.py",
+  "sha256": "ac13f0e4a96b9e22059eba4519c6f167409e246f77b83f866b63109018024ab8"
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "nlp_solver_path_env": {
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "source": ".env"
+ },
+ "required_consecutive_cycles": 10,
+ "schema": "p515_s44_campaign_spec_v2",
+ "thread_caps": {
+  "MKL_NUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1"
+ }
+}

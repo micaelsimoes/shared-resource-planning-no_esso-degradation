@@ -1,0 +1,575 @@
+{
+ "authority": [
+  "TASKS.md S56: Expert rulings on the handback (2026-11-23) items 1, 2, 7; author authorization of the step 4 main run inside the existing 10-20 h",
+  "S56_STEP4_DESIGN.md (ruled status paragraph governs)",
+  "S56_PLAN_v4.md sections 3 and 7",
+  "Planner task 2026-11-23 (step 4 main run)"
+ ],
+ "cap": {
+  "cont600": 600,
+  "main": 300
+ },
+ "cites": {
+  "design": {
+   "governs": "its \"Status: ruled (2026-11-23)\" paragraph governs where the design text conflicts",
+   "path": "S56_STEP4_DESIGN.md",
+   "sha256": "cc1ea169c61d8f33d1f33b2bc51c5747da338ed9d56a986bbabf592ed849d885"
+  },
+  "diag_results": {
+   "path": "data/SRP1/Results/P515S56/step4_diag_v1/run_v1/step4_diag_results.json",
+   "sha256": "d4e023beb6bebd8b0d1d9f408ca09f555d5fa1dbc4dcb0b2a34e07e75c947118"
+  },
+  "diag_spec_ff466289": {
+   "path": "data/SRP1/Results/P515S56/step4_diag_v1/frozen_step4_diag_spec_v2_ff466289.json",
+   "sha256": "ff4662895b10382d92b710b7862f1684e71eb8f9cb7370d29c3056c4e8defed4"
+  },
+  "plan_v4": {
+   "path": "S56_PLAN_v4.md",
+   "sections": [
+    "3",
+    "7 (row 4)"
+   ],
+   "sha256": "fbf13f46ac0210e54053982058b314ddf629b0cdbba1dfbda36c403203dd1790"
+  },
+  "smoke_evaluation": {
+   "path": "data/SRP1/Results/P515S56/step4_smoke_v1/smoke_evaluation_20261123T135123.json",
+   "sha256": "5aea08d66a951bcb02d6bbfdb07654e6572ad5c222e4f93f388f50ea1fd7d317"
+  },
+  "smoke_launcher": {
+   "path": "p515_s56_step4_smoke.py",
+   "reused_by_import": [
+    "arm_options",
+    "coupling_gates_literals",
+    "capture_path_checklist",
+    "root_path",
+    "SMOKE_DIR",
+    "DIAG_SPEC"
+   ],
+   "sha256": "2a9d2981cbeb33bc11356f9cbc1be56bb1b5971b3476248ce775595897257a48"
+  },
+  "smoke_spec_v2": {
+   "path": "data/SRP1/Results/P515S56/step4_smoke_v1/frozen_step4_smoke_spec_v2_e36c29bd.json",
+   "sha256": "e36c29bdd7791a4639156d2fa0aa6d5bb28bbf02bc586a416199a057d8859795"
+  },
+  "tasks": {
+   "items": "S56 \"Expert rulings on the handback\" items 1, 2, 7; Order (2026-11-23) step 4 main run",
+   "path": "TASKS.md",
+   "sha256_at_freeze": "381d78dedb80955e470adc889671189c7f3b0a5583892e9fdd751faf99c6c1c8"
+  }
+ },
+ "concurrency_per_campaign": 4,
+ "coupling_gates_literals_source": {
+  "path": "p515_s56_coupling_gates.py",
+  "sha256": "b46faf10bd2ffa0072061d6c19829bbcd08083c7b9ada9bb3fb38dc7ea61b3fb"
+ },
+ "failure_policy": "M1-M5 failure: stop and report (harness or wiring fault). A harness fault (exception, guard mismatch, child exit != 0, an initialisation-identity mismatch raised by the harness) is recorded and stops the order. P3-P9: recorded, never re-run or tuned. The cycle-40 stop rule as in (iv)",
+ "harness": {
+  "commit_of_pinned_capture_key": "a662c9bf",
+  "path": "p515_s44_campaign_harness.py",
+  "sha256": "450bf677096fbee4c95d5db3b29181b75137b250a6b3df764813775714067c7d"
+ },
+ "i_arms_instances_cap": {
+  "alpha": {
+   "how": "interface_deviation_premium not declared: admm_parameters default {'alpha': 0.0}; model_construction_helpers.add_scenario_commitment_terms builds row 18 only when premium_alpha > 0, so row18_charge_reactive is inert",
+   "value": 0.0
+  },
+  "arms": {
+   "V1": {
+    "aa": "forced off by production under the option",
+    "init_identity_group": "voltage_pin_not_constructed",
+    "options": {
+     "interface_coupling": {
+      "per_scenario_interface_coupling": true,
+      "per_scenario_voltage_mode": "per_scenario",
+      "row18_charge_reactive": false
+     }
+    },
+    "q_primary": "settlement_excluded_in_full",
+    "role": "calibration arm; formulation of record (Expert ruling 2)"
+   },
+   "V2": {
+    "aa": "forced off by production under the option",
+    "init_identity_group": "voltage_pin_constructed",
+    "options": {
+     "interface_coupling": {
+      "per_scenario_interface_coupling": true,
+      "per_scenario_voltage_mode": "pin",
+      "row18_charge_reactive": false
+     }
+    },
+    "q_primary": "settlement_excluded_in_full",
+    "role": "V-2 is a measured, non-deciding arm. (Expert ruling 2, variant (b))"
+   },
+   "pinned_aa_off": {
+    "aa": "off via the harness AA override",
+    "init_identity_group": "voltage_pin_constructed",
+    "options": {
+     "overrides": {
+      "anderson_acceleration": {
+       "enabled": false
+      }
+     },
+     "s56_cycle_capture_pinned": true
+    },
+    "q_primary": "contracted_excluded",
+    "role": "control (option off, AA off via the harness override)"
+   },
+   "pinned_aa_on": {
+    "aa": "case default (keep_memory, enabled)",
+    "init_identity_group": "voltage_pin_constructed",
+    "options": {
+     "s56_cycle_capture_pinned": true
+    },
+    "q_primary": "contracted_excluded",
+    "role": "control (option off, case-default AA)"
+   }
+  },
+  "cap": 300,
+  "configuration": {
+   "arm_label": "s39_D",
+   "case_file_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "convergence_depth_tail": {
+    "compl_inf_tol": 1e-06,
+    "enabled": true
+   },
+   "ess_ageing_baseline": {
+    "calendar_life_years": 15,
+    "calendar_retention_per_year": 0.985,
+    "calibration": {
+     "cycles_n": 10000,
+     "eol_retention_r": 0.8,
+     "reference_dod_d": 0.8,
+     "status": "ACTIVE"
+    },
+    "cycle_life_nominal": 10000,
+    "depth_of_discharge_nominal": 0.8,
+    "minimum_soh": 0.7
+   },
+   "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+   "note": "S56 step 4 smoke: the G-f / step 4 build configuration (p515_s56_coupling_gates.py literals) on the derived instance; no row 18 declaration (production default alpha 0.0), no model variant, no flex variant, no NRF, no rho0 scale, no post-certification",
+   "overrides": {}
+  },
+  "execution_order": "instance B: one campaign, its four arms concurrent (concurrency 4); then instance A: one campaign, its four arms concurrent. The harness campaign lock is one per checkout and the derived instance is campaign-level, so A cannot run concurrently with B; the task's memory rule for starting A during B is therefore moot (A runs after B, its stated fallback). vm_stat recorded before and during each campaign",
+  "instances": {
+   "A": {
+    "blocks": [
+     "2025|Winter"
+    ],
+    "derived_instance": {
+     "case_path": "data/SRP1/Results/P515S56/step4_instances_v1/SRP1__s56_step4_2025_Winter.json",
+     "case_sha256": "92e6283bdb1dafcb328ec951095ebf2173d314754e7f946c0c2210694ca7537e",
+     "changes_vs_source": [
+      {
+       "from": {
+        "2025": 5,
+        "2030": 5,
+        "2035": 5
+       },
+       "key": "Years",
+       "to": {
+        "2025": 5
+       }
+      },
+      {
+       "from": {
+        "Autumn": 91,
+        "Spring": 92,
+        "Summer": 91,
+        "Winter": 91
+       },
+       "key": "Days",
+       "to": {
+        "Winter": 91
+       }
+      }
+     ],
+     "instance_label": "s56_step4_2025_Winter",
+     "scenario_checksum": "58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e",
+     "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+     "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+    },
+    "n_days": 1,
+    "n_years": 1,
+    "record": {
+     "path": "data/SRP1/Results/P515S56/step4_instances_v1/step4_instances.json",
+     "sha256": "2d95b73d30b4572abb0459efa0b817866142473038c0d50db20c2dd16d95d425"
+    },
+    "w_b_own": {
+     "2025|Winter": 455.0
+    }
+   },
+   "B": {
+    "blocks": [
+     "2025|Summer",
+     "2035|Summer"
+    ],
+    "derived_instance": {
+     "case_path": "data/SRP1/Results/P515S56/step4_instances_v2/SRP1__s56_step4_2025_2035_Summer.json",
+     "case_sha256": "b1cd5440e70fb8cde8694b12f9e897037dcb072c4551fe97753e3785a1b6a00c",
+     "changes_vs_source": [
+      {
+       "from": {
+        "2025": 5,
+        "2030": 5,
+        "2035": 5
+       },
+       "key": "Years",
+       "to": {
+        "2025": 5,
+        "2035": 5
+       }
+      },
+      {
+       "from": {
+        "Autumn": 91,
+        "Spring": 92,
+        "Summer": 91,
+        "Winter": 91
+       },
+       "key": "Days",
+       "to": {
+        "Summer": 91
+       }
+      }
+     ],
+     "instance_label": "s56_step4_2025_2035_Summer",
+     "scenario_checksum": "ade7456c3d110e4cbc9aec7f701feb431854bd03ec1dc8f37601fc164721ed1a",
+     "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+     "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+    },
+    "n_days": 1,
+    "n_years": 2,
+    "record": {
+     "path": "data/SRP1/Results/P515S56/step4_instances_v2/step4_instance_b.json",
+     "sha256": "94e3c5ab6489c611207782ae40f4efe38f8f3383f87512c0db47bf4768b6a70d"
+    },
+    "w_b_own": {
+     "2025|Summer": 455.0,
+     "2035|Summer": 373.2584764431956
+    }
+   }
+  },
+  "required_consecutive_cycles": 10,
+  "runs": [
+   {
+    "arm": "V1",
+    "campaign_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B",
+    "instance": "B",
+    "label": "x0_V1_main",
+    "phase": "main"
+   },
+   {
+    "arm": "V2",
+    "campaign_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B",
+    "instance": "B",
+    "label": "x0_V2_main",
+    "phase": "main"
+   },
+   {
+    "arm": "pinned_aa_off",
+    "campaign_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B",
+    "instance": "B",
+    "label": "x0_pinned_aa_off_main",
+    "phase": "main"
+   },
+   {
+    "arm": "pinned_aa_on",
+    "campaign_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B",
+    "instance": "B",
+    "label": "x0_pinned_aa_on_main",
+    "phase": "main"
+   },
+   {
+    "arm": "V1",
+    "campaign_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A",
+    "instance": "A",
+    "label": "x0_V1_main",
+    "phase": "main"
+   },
+   {
+    "arm": "V2",
+    "campaign_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A",
+    "instance": "A",
+    "label": "x0_V2_main",
+    "phase": "main"
+   },
+   {
+    "arm": "pinned_aa_off",
+    "campaign_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A",
+    "instance": "A",
+    "label": "x0_pinned_aa_off_main",
+    "phase": "main"
+   },
+   {
+    "arm": "pinned_aa_on",
+    "campaign_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A",
+    "instance": "A",
+    "label": "x0_pinned_aa_on_main",
+    "phase": "main"
+   }
+  ],
+  "sigma_fixed_expected": 93635360.0,
+  "stopping": "production: a cycle converges when every Boyd channel passes and every local solve succeeded; the run stops after required_consecutive_cycles (10) consecutive converged cycles or at the cap. The convergence-depth tail (compl_inf_tol 1e-6) is active in cycle k+1 iff cycle k converged (production _convergence_depth_tail_next_state; not sticky)",
+  "v2_declaration": "V-2 is a measured, non-deciding arm.",
+  "x0": {
+   "investment_year": 2025,
+   "label": "x0",
+   "map": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.0,
+     0.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   }
+  }
+ },
+ "ii_central_and_allowance": {
+  "R_eur": 10000.0,
+  "R_over_4_eur": 2500.0,
+  "allowance_rule": "e_b <= (R/4) x w_b / Sigma_12 w (S56_PLAN_v4 section 3)",
+  "blocks": {
+   "2025|Summer": {
+    "C_central_eur_per_day": 185674.155753,
+    "D1_floor_eur": null,
+    "allowance_eur": null,
+    "allowance_formula_value": null,
+    "calibrated": false,
+    "delta_pin_eur_per_day": null,
+    "instance": "B",
+    "w_b": 455.0,
+    "w_b_C_central_eur": 84481740.867615
+   },
+   "2025|Winter": {
+    "C_central_eur_per_day": 175188.67874987266,
+    "D1_floor_eur": {
+     "production_depth": 597.67,
+     "tail_depth": 45.67
+    },
+    "allowance_eur": 228.64,
+    "allowance_formula_value": 228.6388788256071,
+    "calibrated": true,
+    "delta_pin_eur_per_day": 0.4056,
+    "instance": "A",
+    "w_b": 455.0,
+    "w_b_C_central_eur": 79710848.83119206
+   },
+   "2035|Summer": {
+    "C_central_eur_per_day": 153017.21416429273,
+    "D1_floor_eur": {
+     "production_depth": 499.03,
+     "tail_depth": 40.58
+    },
+    "allowance_eur": 187.56,
+    "allowance_formula_value": 187.5635155299484,
+    "calibrated": true,
+    "delta_pin_eur_per_day": 4.8856,
+    "instance": "B",
+    "w_b": 373.2584764431956,
+    "w_b_C_central_eur": 57114972.228546076
+   }
+  },
+  "central": {
+   "2025|Summer": {
+    "C_central_eur_per_day": 185674.155753,
+    "role": "reported, not calibrated",
+    "source": "step 3 v2 S3-2 merged-default solution (185,674.1557530493 EUR/day); Planner ruling at 98b7f597: labelled merged-only (bias +0.035 EUR/day on 26 pairs), not used for calibration",
+    "status": "MERGED-ONLY"
+   },
+   "2025|Winter": {
+    "C_central_eur_per_day": 175188.67874987266,
+    "C_central_hex": "0x1.562a56e1469cap+17",
+    "source": "data/SRP1/Results/P515S56/step4_diag_v1/run_v1/step4_diag_results.json central.2025|Winter (run_v1 singles + S3-1 single 02)"
+   },
+   "2035|Summer": {
+    "C_central_eur_per_day": 153017.21416429273,
+    "C_central_hex": "0x1.2adc9b69bc4cap+17",
+    "source": "data/SRP1/Results/P515S56/step4_diag_v1/run_v1/step4_diag_results.json central.2035|Summer (step 3 run_v1 singles)"
+   }
+  },
+  "sum_12_w": 4975.0943752117555
+ },
+ "iii_tail_depth_only": {
+  "cross_check": "the S56 capture line of cycle k (read after the cycle's solves) records the options in force for the NEXT cycle's solves; recorded beside, never used to classify",
+  "rule": "calibration and acceptance on tail-depth cycles only (Expert X4-2 (a)); the production-depth floor (D-1: +597.67 EUR 2025|Winter, +499.03 EUR 2035|Summer, one-signed) is reported as a limitation",
+  "tail_depth_cycle": "cycle k (k >= 1) is tail-depth iff every record of round k in the run's network_ipopt_solve_records.jsonl (agents TSO, DSO5, DSO7, DSO9; every attempt) has compl_inf_tol_in_force == 1e-6, and there is at least one such record"
+ },
+ "iv_cycle40_look": {
+  "fit": "ordinary least squares of ln|e_b(k)| = a + k ln r on cycles 21..34; validated on the held-out cycles 35..40: the held-out error is max over those cycles of |ln(|e_hat(k)| / |e_b(k)|)| (recorded with the predicted and observed values); the projection refits on cycles 21..40",
+  "output": "look40_<inst>_<utc>.json in the main directory",
+  "projection": "k_star = 40 + ln(allowance_b / |e_hat(40)|) / ln r when r < 1 and |e_hat(40)| > allowance; k_star = 40 when |e_hat(40)| <= allowance; k_star = infinity when r >= 1",
+  "recorded_beside_not_deciding": "the same fit on e_b(k) - F_b with F_b the D-1 production-depth floor (the cycles of the look are production-depth until the first Boyd pass); the tail-depth classification of cycles 1..40",
+  "stop_rule": "if k_star > 600 on a calibrated block, STOP AND REPORT: the running campaign is terminated through the harness's own interrupt path (SIGINT to the launcher parent; the harness SIGTERMs and reaps its children, records written up to the stop are kept) and nothing further is launched. Otherwise continue",
+  "what": "per calibrated block b of the instance (A: 2025|Winter; B: 2035|Summer), e_b(k) = Q_b(k) - w_b x C_central, Q_b = V-1 capture q_blocks.per_year_day[b].settlement_excluded_in_full",
+  "when": "once V-1 of the instance has written its cycle-40 capture line (or the run ended before 40)"
+ },
+ "kind": "addendum",
+ "labels": {
+  "cont600": {
+   "V1": "x0_V1_cont600",
+   "V2": "x0_V2_cont600",
+   "pinned_aa_off": "x0_pinned_aa_off_cont600",
+   "pinned_aa_on": "x0_pinned_aa_on_cont600"
+  },
+  "main": {
+   "V1": "x0_V1_main",
+   "V2": "x0_V2_main",
+   "pinned_aa_off": "x0_pinned_aa_off_main",
+   "pinned_aa_on": "x0_pinned_aa_on_main"
+  }
+ },
+ "launcher": "p515_s56_step4_main.py",
+ "m3": {
+  "cycles": 3,
+  "equality": "canonical json.dumps(sort_keys=True) of each line / record with the excluded keys removed recursively; floats compare by their JSON repr (exact round trip)",
+  "excluded_keys_declared_in_advance": [
+   "cycle_wall_s",
+   "rss_bytes",
+   "ru_maxrss_bytes",
+   "response_capture_s",
+   "capture_s",
+   "log_path",
+   "log_bytes",
+   "utc",
+   "pid",
+   "timestamp_utc",
+   "wall_s"
+  ],
+  "files": {
+   "interface_duals_per_cycle.jsonl": "cycle lines 1..3 (header excluded)",
+   "network_ipopt_solve_records.jsonl": "every record of rounds 0..3, in file order",
+   "per_cycle_record.jsonl": "every cycle line 1..3 (keys present in both files; keys present in one only are listed)",
+   "s56_cycle_capture.jsonl": "coupled arms only (the smoke pinned arms had no capture): cycle lines 1..3, header excluded, the field voltage_pin (added by a662c9bf, absent from the smoke file) listed not compared"
+  },
+  "smoke_counterpart": "the smoke run of the same instance and arm (spec e36c29bd, root campaign_s56s4smoke_v2_<inst>_<arm>)"
+ },
+ "measured_vs_projected": "every reported value is labelled measured, fitted or projected",
+ "memory_rule": "record vm_stat (free + inactive GiB) before each campaign and during it (at the cycle-40 look and at least hourly while a campaign runs)",
+ "not_permitted": [
+  "production or harness edits",
+  "any run not in this spec",
+  "cap changes",
+  "overwriting committed artifacts",
+  "detached runs (screen, nohup, shell backgrounding)",
+  "pgrep -f wait loops",
+  "writes into .claude/worktrees/"
+ ],
+ "objective_convention": "Q in EUR of total discounted cost. Coupled arms: primary gross_operational_cost = settlement excluded in full (pin excluded, salvage separate), contracted-excluded beside it. Pinned arms: gross_operational_cost = contracted settlement and pin excluded. C_central: step 3 gross EUR/day (settlement weight 0, no row 18, no pin, no salvage). e_b(k) = Q_b(k) - w_b C_central and D_b = w_b C_central - Q_pin,b in EUR of total discounted cost",
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S56/step4_main_v1/frozen_step4_main_spec_v1_3dfb2889.json",
+  "relation": "spec v1 3dfb2889, whose instance-B attempt was killed by the session exit before cycle 1 and is preserved in its own root. v2 is v1 verbatim except the campaign roots (new, absolute, version-tagged) and this field set; v1's own predecessor is the smoke spec v2 e36c29bd, unchanged",
+  "sha256": "3dfb28898fc28d324a2faadb77c5181ff0a98172d4f4b2820b45f69ad925adf1"
+ },
+ "roots": {
+  "campaign_roots": {
+   "cont600": {
+    "A": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_cont600_A",
+    "B": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_cont600_B"
+   },
+   "main": {
+    "A": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A",
+    "B": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B"
+   }
+  },
+  "main_dir": "data/SRP1/Results/P515S56/step4_main_v2",
+  "root_tag": "v2"
+ },
+ "solves": {
+  "evaluate": 0,
+  "launcher_parent": 0,
+  "look40": 0,
+  "per_round": {
+   "A": 7,
+   "B": 11
+  },
+  "per_run": "per_round x (cycles_run + 1) + every recovery retry actually attempted (credited per failure event by the solve_profile identity)"
+ },
+ "stage": "P5.15 S56 validation step 4 MAIN RUN: arms V-1, V-2 (measured, non-deciding), pinned AA-off, pinned AA-on on instance A (2025|Winter) and instance B ({2025, 2035} x Summer); x0, alpha 0, cap 300; cycle-40 look; continuation to 600 declared",
+ "v_continuation": {
+  "arms": "V-1; V-2 too if it is still contracting at cycle 300",
+  "budget_guard": "launched only if the measured wall of the step 4 runs so far plus the projected continuation wall (measured s/cycle x 600) stays inside the author's 20 h; otherwise stop and report (machine allocation is the author's)",
+  "cap": 600,
+  "condition": "per instance and arm: the cap-300 run has not settled (record certification.certified is not True, i.e. it stopped at the cap) AND its fitted contraction rate r < 1, where r is the OLS rate of ln|Q_b(k) - Q_b(k-1)| (V-1: of ln|e_b(k)|) on cycles 261..300, per calibrated block; V-2 \"still contracting\" means the same step-rate fit gives r < 1 on its calibrated block",
+  "how": "a NEW campaign root data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_cont600_<inst> (absolute) (labels x0_<arm>_cont600), fresh runs from cycle 1 with the same code, configuration and seeding (the harness has no generic resume); its cycles 1..300 are compared with the cap-300 run (recorded), its cycles 1..3 with the smoke (M3)",
+  "when": "after both main campaigns, from the same launcher and spec"
+ },
+ "version": 2,
+ "vi_predictions": {
+  "also_record": [
+   "M1 for V-1 vs V-2: the Delta V_s trajectory (max and omega-RMS)",
+   "M4 effort: cycles and wall time to the same per-block error level",
+   "local-solve failures per run",
+   "per run, the terminal-step-to-threshold ratio (CLAUDE.md rule)",
+   "the settling bars S per block, in validated extrapolation form",
+   "the working level: the loosest Boyd tolerance at which the V-1 per-block error stays <= allowance at every later tail-depth cycle, also expressed as per-block observables (max and omega-RMS of Delta P_s, Delta Q_s, Delta V_s, and A_b)"
+  ],
+  "must_hold": {
+   "M1": "F1 identities every cycle in the coupled arms: PR price part + settlement total = 0, to rel 1e-9; contracted - primary = deviation total, to rel 1e-9; Sigma_s omega_s mu_s = 0, to 1e-9 x max|mu|; V-1 pin total == 0.",
+   "M2": "Initialisation identity: pinned AA-off == pinned AA-on == V-2, bitwise; V-1 forms its own group.",
+   "M3": "Every run's first 3 cycles are bitwise equal to its serial smoke counterpart, with timing fields excluded in advance. This checks concurrency and continuation equivalence.",
+   "M4": "Capture-path assertions hold, and the per-block Q sums equal production's Q to rel 1e-12, every cycle, in every arm.",
+   "M5": "Solve-count identity in every run."
+  },
+  "must_hold_failure": "a harness or wiring fault: stop and report (stated with the local-solution caveat: these are identities and equalities of the implementation, not optimality claims)",
+  "operational": {
+   "M1": "coupled arms (V1, V2), every cycle: (i) rel(priced_residual_price_part_c, -T_c) <= 1e-9, T_c = sum over agent blocks of weight x settlement_total_unweighted (capture); (ii) rel(gross_operational_cost_contracted_excluded_c - gross_operational_cost_c, D_c) <= 1e-9, D_c = sum over agent blocks of weight x (settlement_total_unweighted - settlement_contracted_unweighted), plus the DSO decomposition against per_cycle_response covariance_dso_weighted <= 1e-9 every cycle and against the record's interface_settlement_deviation_total at the terminal cycle; (iii) every deviation-dual coordinate of interface_duals_per_cycle.jsonl: |sum_s omega_s mu_s| <= 1e-9 x max|mu| (per cycle, agent, kind); (iv) V1: the capture's voltage_pin.total == 0.0 and every voltage_pin.per_agent weighted == 0.0 with pin_constructed False, EVERY cycle (a662c9bf field), and the terminal record voltage_pin_total == 0.0. rel = |a - b| / max(|a|, |b|, 1)",
+   "M2": "per instance: the main V2, pinned_aa_off and pinned_aa_on initialisation records have equal gross_operational_cost_hex and equal components_hex, equal to the smoke V2 / pinned records' hex; every harness comparison of these three has all_equal True and n_compared >= 1; main V1 group \"voltage_pin_not_constructed\", its hex equal to the smoke V1 hex and different from the V2 hex, compared only within its group",
+   "M3": "per run: the files and exclusions of the spec's \"m3\" block; held iff every compared item is equal",
+   "M4": "every arm: the record's s56_cycle_capture_checklist_asserted_before_run all True (coupled: the coupled checklist; pinned: the pinned checklist), s56_cycle_capture_summary ok with cycle_lines_written == cycles_run, no capture line with captured False; per cycle rel(sum over (year, day) of the arm's primary Q, per_cycle_record gross_operational_cost) <= 1e-12",
+   "M4_effort": "V1 and V2, each calibrated block: the first cycle after which |Q_b(k) - Q_hat_inf_b| <= allowance_b at every later cycle (each arm against its own extrapolated limit), the cumulative cycle_wall_s to it, and cycles x wall ratios V1 / V2",
+   "M5": "every run: solve_profile.identity_holds True, base_solves == per_round x (cycles_run + 1), blocked_solve == blocked_exec == 0, exit code 0 (parent view and exit_code.txt); launcher guard 0",
+   "P3": "V1, each calibrated block: T = the tail-depth cycles of the run (cap-300 run, and the continuation when run). Held iff |e_b(K)| <= allowance_b at the last tail-depth cycle K. Recorded: min over T of |e_b|, its cycle, R_eff = 4 x min|e_b| x Sigma_12 w / w_b, and the dominant term = the largest of {S_b (settling bar, tail-depth cycles), |PR_b(K)| (full-channel priced residual), the D-1 tail-depth floor}. If T is empty: not evaluable (recorded with the production-depth values)",
+   "P4": "D_b = w_b C_central - Q_pin,b(K), K the last cycle of the pinned AA-off run (contracted-excluded), its bar = S_b of that run. Recorded: D_b >= 0 on 2035|Summer; |D_b(2025|Winter)| <= |D_b(2035|Summer)| / 3 (\"much smaller\", operationalised so); a negative D_b is not a defect (Expert ruling 7)",
+   "P5": "V2, each calibrated block: lim Q_V2,b = the validated extrapolation Q_hat_inf on the run's tail-depth cycles (the terminal value, labelled, when no validated extrapolation exists); held iff lim Q_V2,b - w_b (C_central + Delta_pin_b) <= S_b(V2); the local-solution caveat is stated beside",
+   "P6": "per instance: r_pf,exp(k) = sqrt(sum over blocks, periods, kinds p and q of ((x_dso - z_tso) / rating_MVA)^2) from the capture's primal_expectation (the same formula for every arm; for the coupled arms it reproduces production's boyd_pf_r_expectation_part, checked). L = max over the four arms of min_k r_pf,exp(k). cycles(arm) = first k with r_pf,exp(k) <= L; wall(arm) = mean cycle_wall_s over cycles 1..cycles(arm). Held iff 1.0 <= cycles(V1)/cycles(AA-off) <= 2.0 and 0.9 <= wall(V1)/wall(AA-off) <= 1.2 and cycles(AA-off)/cycles(AA-on) >= 2; the V2 ratios recorded beside",
+   "P7": "V1, each calibrated block, cycles k >= 21: PR_b(k) = price_b(k) + sum over DNs and periods of [lambda_P dPbar + lambda_Q dQbar] x w_b eff_b / (s_T R) + lambda_V dVbar x w_b eff_b / v_b^2 + sum_s omega_s [(mu_P,s dP_s + mu_Q,s dQ_s) x w_b eff_b / (s_T R) + mu_V,s dV_s x w_b eff_b / v_b^2], with lambda / mu the TSO-side stored expectation / deviation duals (interface_duals_per_cycle.jsonl lambda_pf_*_tso, lambda_dev_*_tso; capture dual_expectation_v tso), dXbar = TSO - DSO expectation copies (capture), dX_s = (xbar_T + d_T,s) - (xbar_D + d_D,s) (capture expectation + deviation copies; MW, MVAr, kV), eff_b, s_T and R from the interface-dual header metadata (admm_objective_scale_tso, tso_base_mva, interface_rating_mva), v_b the interface base kV (= capture kV / interface_voltage_terminal pu, checked constant), price_b(k) = -sum over the block's agents of weight x settlement_total_unweighted. The P-deviation part is validated against production's priced_residual_dual_part (sum over blocks, rel 1e-9 every cycle). Held iff sum_{k >= 21} |Q_b + PR_b - w_b C| <= (1/5) sum_{k >= 21} |Q_b - w_b C| on every calibrated block; the per-cycle ratios recorded",
+   "P8": "per run: K1 = the first tail-depth cycle; the step Q(K1) - Q(K1 - 1) total and per block (EUR); \"no tail onset\" when none",
+   "P9": "per child: record peak_rss.child_python_process_ru_maxrss <= 6 GiB; IPOPT maximum beside",
+   "Q_b": "per cycle, from the run's s56_cycle_capture.jsonl q_blocks.per_year_day[b]: coupled arms settlement_excluded_in_full (contracted_excluded beside), pinned arms contracted_excluded",
+   "S_b": "validated extrapolation on the last W = min(20, n) cycles of the window (V1 calibration: tail-depth cycles only; other uses: the run's last cycles): steps delta_k = Q_b(k) - Q_b(k-1) on consecutive cycles; OLS ln|delta_k| = a + k ln r on the window minus its last h = 3 cycles; validated by predicting Q_b on the h held-out cycles (geometric sum from the last fitted cycle), H = max |predicted - observed|; refit on the whole window, Q_hat_inf = Q_b(K) + delta_K r / (1 - r); S_b = |Q_hat_inf - Q_b(K)| + H. Valid only with >= 6 steps of one sign and r < 1; otherwise S_b = the range of Q_b over the last 10 cycles, labelled \"range (no validated extrapolation)\"",
+   "dV_trajectory": "V1 and V2, every cycle: production scenario_mismatch_v_max_pu and _rms_pu (pooled) and, per block, the max and omega-RMS of dV_s from the capture",
+   "local_solve_failures": "per run: record local_solve_failures and per-cycle non_optimal_blocks",
+   "terminal_step_to_threshold": "per run: record rule_ten.terminal_step_over_threshold (objective change / objective tolerance, reported-not-gated) and the terminal Boyd ratio max per channel",
+   "working_level": "V1, each calibrated block: m(k) = max over channels v, pf, ess of max(primal_ratio, dual_ratio) (per_cycle_record; production tolerance = 1). For a level s, k_s = the first tail-depth cycle with m(k) <= s. Working level s* = the largest s (over the observed m values at tail-depth cycles) such that |e_b(k)| <= allowance_b at every tail-depth cycle k >= k_s. Expressed at k_s*: s*, k_s*, and the block's max and omega-RMS of dP_s, dQ_s, dV_s (capture), and A_b = the absolute form of PR_b (sum of absolute terms); \"not attained\" when no s qualifies"
+  },
+  "recorded": {
+   "P3": "On tail-depth cycles, V-1's e_b(k) contracts to <= the block allowance. If it does not, report the smallest |e_b| reached, R_eff = 4 x |e_b| x Sigma_12 w / w_b, and the dominant term, before anything touches R.",
+   "P4": "D_b = w_b x C_central - Q_pin,b (pinned AA-off, contracted-excluded): D_b >= 0 on 2035|Summer, and |D_b| on 2025|Winter much smaller. Expert ruling 7 applies: D_b is pinned accounting optimism (>= 0) plus DN re-optimisation gain (<= 0). A negative value is not a defect.",
+   "P5": "lim Q_V2 <= w_b x (C_central + Delta_pin) + bars, where Delta_pin is 0.4056 EUR/day on 2025|Winter and 4.8856 EUR/day on 2035|Summer. This is subject to the local-solution caveat.",
+   "P6": "At a matched expectation-channel residual: cycles F1 / pinned AA-off between 1.0 and 2.0; wall time per cycle between 0.9 and 1.2; AA-off / AA-on >= 2.",
+   "P7": "After the run, PR over all channels (recomputed from the capture) reduces |Q_k - w x C| at least fivefold after cycle 20.",
+   "P8": "The Q step at tail onset is recorded per run.",
+   "P9": "Peak RSS <= 6 GiB per child."
+  },
+  "recorded_failure": "reported, not a stop"
+ },
+ "why_v2": {
+  "changed": [
+   "version",
+   "predecessor",
+   "why_v2",
+   "roots",
+   "i_arms_instances_cap.runs[*].campaign_root",
+   "v_continuation.how (root name only)"
+  ],
+  "derivation_script": "p515_s56_step4_main_spec_v2_derive.py",
+  "killed_attempt_note": {
+   "path": "data/SRP1/Results/P515S56/step4_main_v1/killed_attempt_v1_note.json",
+   "sha256": "8a89c1d3a7475eda7f4cd6263453a562f96e941297558248c588d600c0a1866e"
+  },
+  "launcher_change": "p515_s56_step4_main.py takes MAIN_DIR, ROOT_TAG and the absolute campaign roots from this spec's roots block (apply_spec_roots); nothing else changed. Launcher records, logs, vm_stat snapshots and look-40 files go to roots.main_dir",
+  "reason": "relaunch of the step 4 main run (author authorization 2026-11-23, inside the existing 10-20 h). The v1 attempt (instance B, step4_main_v1/campaign_s56s4main_v1_main_B, launched 14:47:08 UTC) was killed by the Claude session exit before cycle 1; its root is preserved and committed (4e6bb1d3), so v1's roots cannot be reused (write-once)",
+  "unchanged": "everything else, verbatim from v1 (arms, instances, predictions, cap, cycle-40 look, continuation)"
+ }
+}

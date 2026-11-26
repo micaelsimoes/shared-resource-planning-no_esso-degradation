@@ -1,0 +1,2838 @@
+{
+ "stage": "P5.15 Addendum 89 W188 (c) -- code reading for ruling 5 (zero-capacity conventions; zero solves)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 89 ruling 5 and Planner order W188 (c)",
+  "manuscript_review/REFOCUS_ANALYSIS_2026-11-10.md G1",
+  "P5_15_W182E_CODE_PATHS.md Z1 (c)"
+ ],
+ "timestamp_utc": "2026-11-10T13:57:38.853349+00:00",
+ "script": "p515_s55_w188c_code_reading.py",
+ "script_sha256": "fa7398600f37a072cac76d31d848052d1e9f855ffb9e75663c471b46291fee89",
+ "objective_convention": "not applicable (no objective value is reported); the frozen convention of Addendum 85 is the one the V1 rows were run under",
+ "problem_instance": "SRP1 (data/SRP1/SRP1.json); instance files hashed at both heads in git_facts",
+ "git_facts": {
+  "HEAD": "5d00d3bddf7eb0ee569507634df2f0ba5f9707e4",
+  "V1": "6f43479ed8ece7a4a5878942ca38952ce1cae1bc",
+  "v1_is_ancestor_of_head": true,
+  "convention_commit": "f6c23977",
+  "convention_commit_is_ancestor_of_head": true,
+  "production_modules_changed_v1_to_head": [
+   "shared_energy_storage_data.py",
+   "shared_energy_storage_parameters.py",
+   "shared_resources_planning.py"
+  ],
+  "convention_commit_files": [
+   "p516_cc_gates.py",
+   "shared_energy_storage_data.py",
+   "shared_energy_storage_parameters.py",
+   "shared_resources_planning.py"
+  ],
+  "commits_touching_those_modules_v1_to_head": [
+   "f6c23977 2026-10-31 P5.16 convention change C1 + C3 + C4 (switch-controlled; defaults bitwise): salvage term with kappa = al_scale_esso/objective_scale in the ESSO objective, 'mid' baseline, five-block single-scenario instance SRP1_5x3y_1x1 + ESS params; gates G-CC-1 (bitwise identity with HEAD HELD), G-CC-2 HELD, G-CC-5 HELD, G-CC-3 marginals as predicted (0/-1.23/-2.36/-3.59/-4.85 EUR/MWh) but slack safety FAILED as worded (5.84 vs 1.0 per MW-period) -> STOP for the expert (EXPERT_REQUEST_2026-10-31b.md R8); harness, report, gate evidence + manifests + logs; TASKS.md"
+  ],
+  "srp1_instance_files": {
+   "data/SRP1/SRP1.json": {
+    "blob_v1": "9a6d7373c8335777c14c24c05e18d43e2fe45d0b",
+    "blob_head": "9a6d7373c8335777c14c24c05e18d43e2fe45d0b",
+    "identical": true,
+    "at_head": {
+     "tracked": true,
+     "status_clean": true,
+     "head_blob": "9a6d7373c8335777c14c24c05e18d43e2fe45d0b",
+     "worktree_blob": "9a6d7373c8335777c14c24c05e18d43e2fe45d0b",
+     "ok": true
+    }
+   },
+   "data/SRP1/SharedESS/SRP1_ESS_Params.json": {
+    "blob_v1": "45034b489d464fb41c49b106f660a2bce691e662",
+    "blob_head": "45034b489d464fb41c49b106f660a2bce691e662",
+    "identical": true,
+    "at_head": {
+     "tracked": true,
+     "status_clean": true,
+     "head_blob": "45034b489d464fb41c49b106f660a2bce691e662",
+     "worktree_blob": "45034b489d464fb41c49b106f660a2bce691e662",
+     "ok": true
+    }
+   },
+   "data/SRP1/case9/case9_params.json": {
+    "blob_v1": "975332dd52ce24318fab789a15631fd1475ee129",
+    "blob_head": "975332dd52ce24318fab789a15631fd1475ee129",
+    "identical": true,
+    "at_head": {
+     "tracked": true,
+     "status_clean": true,
+     "head_blob": "975332dd52ce24318fab789a15631fd1475ee129",
+     "worktree_blob": "975332dd52ce24318fab789a15631fd1475ee129",
+     "ok": true
+    }
+   },
+   "data/SRP1/case33_1/case33_1_params.json": {
+    "blob_v1": "6976e695213178b04827ace061133a7b2abb5012",
+    "blob_head": "6976e695213178b04827ace061133a7b2abb5012",
+    "identical": true,
+    "at_head": {
+     "tracked": true,
+     "status_clean": true,
+     "head_blob": "6976e695213178b04827ace061133a7b2abb5012",
+     "worktree_blob": "6976e695213178b04827ace061133a7b2abb5012",
+     "ok": true
+    }
+   },
+   "data/SRP1/case33_2/case33_2_params.json": {
+    "blob_v1": "d53faa5e18465b7d679d449b65e07bb9d569a5d3",
+    "blob_head": "d53faa5e18465b7d679d449b65e07bb9d569a5d3",
+    "identical": true,
+    "at_head": {
+     "tracked": true,
+     "status_clean": true,
+     "head_blob": "d53faa5e18465b7d679d449b65e07bb9d569a5d3",
+     "worktree_blob": "d53faa5e18465b7d679d449b65e07bb9d569a5d3",
+     "ok": true
+    }
+   },
+   "data/SRP1/case33_3/case33_3_params.json": {
+    "blob_v1": "66a2a6b258fe4d5520a711637a520e51a1a4eed1",
+    "blob_head": "66a2a6b258fe4d5520a711637a520e51a1a4eed1",
+    "identical": true,
+    "at_head": {
+     "tracked": true,
+     "status_clean": true,
+     "head_blob": "66a2a6b258fe4d5520a711637a520e51a1a4eed1",
+     "worktree_blob": "66a2a6b258fe4d5520a711637a520e51a1a4eed1",
+     "ok": true
+    }
+   },
+   "data/SRP1/SRP1_params.json": {
+    "blob_v1": "a80056d0e3fd58dcbe43f89a142d2bc270269295",
+    "blob_head": "a80056d0e3fd58dcbe43f89a142d2bc270269295",
+    "identical": true,
+    "at_head": {
+     "tracked": true,
+     "status_clean": true,
+     "head_blob": "a80056d0e3fd58dcbe43f89a142d2bc270269295",
+     "worktree_blob": "a80056d0e3fd58dcbe43f89a142d2bc270269295",
+     "ok": true
+    }
+   }
+  },
+  "srp1_ess_params_declares_in_objective": false,
+  "srp1_ess_params_declares_available_energy_soh_point": false
+ },
+ "manuscript": {
+  "path": "manuscript_review/main_edd7a63_round8.tex",
+  "md5": "39f6fd86f90b0fbe7c3cc335b1bb793c",
+  "sha256": "cec2e2982dfa1509e6e066a208521fb1eea40d5c71f1cdf71a9bf00a12b3520b",
+  "md5_matches_addendum89_a87e195": true,
+  "at_head": {
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "8b8577c677c244a60ad166cb562bd6d0d7117b02",
+   "worktree_blob": "8b8577c677c244a60ad166cb562bd6d0d7117b02",
+   "ok": true
+  }
+ },
+ "files": {
+  "network.py": {
+   "head": {
+    "sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+    "n_lines": 2473,
+    "exists": true
+   },
+   "v1": {
+    "sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+    "n_lines": 2473,
+    "exists": true
+   },
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "ffa61728b2bc449d4aa14a055c4ffbe4683f898e",
+    "worktree_blob": "ffa61728b2bc449d4aa14a055c4ffbe4683f898e",
+    "ok": true,
+    "worktree_sha256_equals_head_show": true
+   },
+   "diff_hunks_v1_to_head": [],
+   "identical_v1_head": true
+  },
+  "model_construction_helpers.py": {
+   "head": {
+    "sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+    "n_lines": 2511,
+    "exists": true
+   },
+   "v1": {
+    "sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+    "n_lines": 2511,
+    "exists": true
+   },
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+    "worktree_blob": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+    "ok": true,
+    "worktree_sha256_equals_head_show": true
+   },
+   "diff_hunks_v1_to_head": [],
+   "identical_v1_head": true
+  },
+  "definitions.py": {
+   "head": {
+    "sha256": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+    "n_lines": 98,
+    "exists": true
+   },
+   "v1": {
+    "sha256": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+    "n_lines": 98,
+    "exists": true
+   },
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "2f649080e8e753c878b92b1579cbbcdf040b0d6b",
+    "worktree_blob": "2f649080e8e753c878b92b1579cbbcdf040b0d6b",
+    "ok": true,
+    "worktree_sha256_equals_head_show": true
+   },
+   "diff_hunks_v1_to_head": [],
+   "identical_v1_head": true
+  },
+  "network_parameters.py": {
+   "head": {
+    "sha256": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92",
+    "n_lines": 200,
+    "exists": true
+   },
+   "v1": {
+    "sha256": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92",
+    "n_lines": 200,
+    "exists": true
+   },
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "e89a1d7ba129cb2c4bd816b40df1426cf4d93211",
+    "worktree_blob": "e89a1d7ba129cb2c4bd816b40df1426cf4d93211",
+    "ok": true,
+    "worktree_sha256_equals_head_show": true
+   },
+   "diff_hunks_v1_to_head": [],
+   "identical_v1_head": true
+  },
+  "data/SRP1/case9/case9_params.json": {
+   "head": {
+    "sha256": "f3eff0502c606a9076af19969ec3705c2e6204fa4d9172a218345e986dbbf4ab",
+    "n_lines": 58,
+    "exists": true
+   },
+   "v1": {
+    "sha256": "f3eff0502c606a9076af19969ec3705c2e6204fa4d9172a218345e986dbbf4ab",
+    "n_lines": 58,
+    "exists": true
+   },
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "975332dd52ce24318fab789a15631fd1475ee129",
+    "worktree_blob": "975332dd52ce24318fab789a15631fd1475ee129",
+    "ok": true,
+    "worktree_sha256_equals_head_show": true
+   },
+   "diff_hunks_v1_to_head": [],
+   "identical_v1_head": true
+  },
+  "data/SRP1/case33_1/case33_1_params.json": {
+   "head": {
+    "sha256": "8e9e5a536fd1ef2bca5694274a68795d1099884ef23f2134e7db7d3a58c80b8e",
+    "n_lines": 53,
+    "exists": true
+   },
+   "v1": {
+    "sha256": "8e9e5a536fd1ef2bca5694274a68795d1099884ef23f2134e7db7d3a58c80b8e",
+    "n_lines": 53,
+    "exists": true
+   },
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "6976e695213178b04827ace061133a7b2abb5012",
+    "worktree_blob": "6976e695213178b04827ace061133a7b2abb5012",
+    "ok": true,
+    "worktree_sha256_equals_head_show": true
+   },
+   "diff_hunks_v1_to_head": [],
+   "identical_v1_head": true
+  },
+  "data/SRP1/case33_2/case33_2_params.json": {
+   "head": {
+    "sha256": "31b5fedf87b96724dc5676566fd87f1c21dc02ecfb8d2bd9fdf280a9b7be35ff",
+    "n_lines": 55,
+    "exists": true
+   },
+   "v1": {
+    "sha256": "31b5fedf87b96724dc5676566fd87f1c21dc02ecfb8d2bd9fdf280a9b7be35ff",
+    "n_lines": 55,
+    "exists": true
+   },
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "d53faa5e18465b7d679d449b65e07bb9d569a5d3",
+    "worktree_blob": "d53faa5e18465b7d679d449b65e07bb9d569a5d3",
+    "ok": true,
+    "worktree_sha256_equals_head_show": true
+   },
+   "diff_hunks_v1_to_head": [],
+   "identical_v1_head": true
+  },
+  "data/SRP1/case33_3/case33_3_params.json": {
+   "head": {
+    "sha256": "a19bd5b9d18a26deff44dc62a351f2e6c193012c3f7075d12cade4f230760c49",
+    "n_lines": 54,
+    "exists": true
+   },
+   "v1": {
+    "sha256": "a19bd5b9d18a26deff44dc62a351f2e6c193012c3f7075d12cade4f230760c49",
+    "n_lines": 54,
+    "exists": true
+   },
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "66a2a6b258fe4d5520a711637a520e51a1a4eed1",
+    "worktree_blob": "66a2a6b258fe4d5520a711637a520e51a1a4eed1",
+    "ok": true,
+    "worktree_sha256_equals_head_show": true
+   },
+   "diff_hunks_v1_to_head": [],
+   "identical_v1_head": true
+  },
+  "admm_persistent_workers.py": {
+   "head": {
+    "sha256": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+    "n_lines": 969,
+    "exists": true
+   },
+   "v1": {
+    "sha256": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+    "n_lines": 969,
+    "exists": true
+   },
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "0d6caa30df0bffed4d7bbb5faf7fc63322f188df",
+    "worktree_blob": "0d6caa30df0bffed4d7bbb5faf7fc63322f188df",
+    "ok": true,
+    "worktree_sha256_equals_head_show": true
+   },
+   "diff_hunks_v1_to_head": [],
+   "identical_v1_head": true
+  },
+  "shared_resources_planning.py": {
+   "head": {
+    "sha256": "c9336a61a713ef6890fbffcda845395d757e26c41ae2422e82dd88bb881c33e8",
+    "n_lines": 13541,
+    "exists": true
+   },
+   "v1": {
+    "sha256": "ade9c843bc7c5b6514ab91ecc54f327330a5249709766699ff2f50c8288473d6",
+    "n_lines": 13523,
+    "exists": true
+   },
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "6810d71a909a7e317539ffc0da1ba432c494ca79",
+    "worktree_blob": "6810d71a909a7e317539ffc0da1ba432c494ca79",
+    "ok": true,
+    "worktree_sha256_equals_head_show": true
+   },
+   "diff_hunks_v1_to_head": [
+    {
+     "v1": [
+      2933,
+      2933
+     ],
+     "head": [
+      2933,
+      2933
+     ],
+     "v1_len": 1,
+     "head_len": 1
+    },
+    {
+     "v1": [
+      5494,
+      5494
+     ],
+     "head": [
+      5494,
+      5494
+     ],
+     "v1_len": 1,
+     "head_len": 1
+    },
+    {
+     "v1": [
+      5510,
+      5509
+     ],
+     "head": [
+      5511,
+      5519
+     ],
+     "v1_len": 0,
+     "head_len": 9
+    },
+    {
+     "v1": [
+      5526,
+      5525
+     ],
+     "head": [
+      5536,
+      5544
+     ],
+     "v1_len": 0,
+     "head_len": 9
+    }
+   ],
+   "identical_v1_head": false
+  },
+  "shared_energy_storage_data.py": {
+   "head": {
+    "sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85",
+    "n_lines": 3027,
+    "exists": true
+   },
+   "v1": {
+    "sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+    "n_lines": 2889,
+    "exists": true
+   },
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "7dfbd9eb800a80db29dee941951490f29b5b6acb",
+    "worktree_blob": "7dfbd9eb800a80db29dee941951490f29b5b6acb",
+    "ok": true,
+    "worktree_sha256_equals_head_show": true
+   },
+   "diff_hunks_v1_to_head": [
+    {
+     "v1": [
+      175,
+      174
+     ],
+     "head": [
+      176,
+      179
+     ],
+     "v1_len": 0,
+     "head_len": 4
+    },
+    {
+     "v1": [
+      851,
+      854
+     ],
+     "head": [
+      855,
+      878
+     ],
+     "v1_len": 4,
+     "head_len": 24
+    },
+    {
+     "v1": [
+      909,
+      908
+     ],
+     "head": [
+      934,
+      1005
+     ],
+     "v1_len": 0,
+     "head_len": 72
+    },
+    {
+     "v1": [
+      2116,
+      2115
+     ],
+     "head": [
+      2213,
+      2254
+     ],
+     "v1_len": 0,
+     "head_len": 42
+    }
+   ],
+   "identical_v1_head": false
+  },
+  "helper_functions.py": {
+   "head": {
+    "sha256": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+    "n_lines": 200,
+    "exists": true
+   },
+   "v1": {
+    "sha256": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+    "n_lines": 200,
+    "exists": true
+   },
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "8c23f978f5f66dd7dca024eb94c799d4df633b3e",
+    "worktree_blob": "8c23f978f5f66dd7dca024eb94c799d4df633b3e",
+    "ok": true,
+    "worktree_sha256_equals_head_show": true
+   },
+   "diff_hunks_v1_to_head": [],
+   "identical_v1_head": true
+  },
+  "shared_energy_storage_parameters.py": {
+   "head": {
+    "sha256": "f31a2caa83a7c07f8f2375bf2016dd2180ff470ee33c1df0a04ece038d46aff6",
+    "n_lines": 288,
+    "exists": true
+   },
+   "v1": {
+    "sha256": "5fe0c4fb876a9c2f1e506e982f2a120c320a3fd4198b870f877d9a310cd390bb",
+    "n_lines": 267,
+    "exists": true
+   },
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "116c85286f612effc5e1b8bdd9cf93f83fe38c13",
+    "worktree_blob": "116c85286f612effc5e1b8bdd9cf93f83fe38c13",
+    "ok": true,
+    "worktree_sha256_equals_head_show": true
+   },
+   "diff_hunks_v1_to_head": [
+    {
+     "v1": [
+      18,
+      17
+     ],
+     "head": [
+      19,
+      24
+     ],
+     "v1_len": 0,
+     "head_len": 6
+    },
+    {
+     "v1": [
+      24,
+      23
+     ],
+     "head": [
+      31,
+      34
+     ],
+     "v1_len": 0,
+     "head_len": 4
+    },
+    {
+     "v1": [
+      48,
+      47
+     ],
+     "head": [
+      59,
+      60
+     ],
+     "v1_len": 0,
+     "head_len": 2
+    },
+    {
+     "v1": [
+      233,
+      232
+     ],
+     "head": [
+      246,
+      249
+     ],
+     "v1_len": 0,
+     "head_len": 4
+    },
+    {
+     "v1": [
+      266,
+      265
+     ],
+     "head": [
+      283,
+      287
+     ],
+     "v1_len": 0,
+     "head_len": 5
+    }
+   ],
+   "identical_v1_head": false
+  },
+  "manuscript_review/main_edd7a63_round8.tex": {
+   "head": {
+    "sha256": "cec2e2982dfa1509e6e066a208521fb1eea40d5c71f1cdf71a9bf00a12b3520b",
+    "n_lines": 2962,
+    "exists": true
+   },
+   "v1": {
+    "sha256": "cec2e2982dfa1509e6e066a208521fb1eea40d5c71f1cdf71a9bf00a12b3520b",
+    "n_lines": 2962,
+    "exists": true
+   },
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "8b8577c677c244a60ad166cb562bd6d0d7117b02",
+    "worktree_blob": "8b8577c677c244a60ad166cb562bd6d0d7117b02",
+    "ok": true,
+    "worktree_sha256_equals_head_show": true
+   },
+   "diff_hunks_v1_to_head": [],
+   "identical_v1_head": true
+  }
+ },
+ "claims": [
+  {
+   "id": "NC-01",
+   "item": "C-net",
+   "file": "network.py",
+   "statement": "Network copy: capacity S is a mutable Param (shared_es_s_rated_fixed); P^Ch, P^Dch are non-negative Vars.",
+   "required_substrings": [
+    "model.shared_es_s_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True",
+    "model.shared_es_pch = pe.Var(",
+    "model.shared_es_pdch = pe.Var(",
+    "domain=pe.NonNegativeReals"
+   ],
+   "head": {
+    "line_first": 393,
+    "line_last": 396,
+    "excerpt": "    model.shared_es_s_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)\n    model.shared_es_e_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)\n    model.shared_es_pch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)\n    model.shared_es_pdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)",
+    "excerpt_sha256": "4f9477404ee6e5e4e839d9bbf5df38a07b721bfdbacef0f4e2e5c69c8df95c93",
+    "missing_substrings": [],
+    "file_sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 393,
+    "line_last": 396,
+    "excerpt": "    model.shared_es_s_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)\n    model.shared_es_e_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)\n    model.shared_es_pch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)\n    model.shared_es_pdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)",
+    "excerpt_sha256": "4f9477404ee6e5e4e839d9bbf5df38a07b721bfdbacef0f4e2e5c69c8df95c93",
+    "missing_substrings": [],
+    "file_sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "NC-02",
+   "item": "C-net",
+   "file": "network.py",
+   "statement": "Dimensionless pair pch_hat, pdch_hat in [0, 1], used only by the complementarity row.",
+   "required_substrings": [
+    "used ONLY by the complementarity row",
+    "model.shared_es_pch_hat = pe.Var(",
+    "model.shared_es_pdch_hat = pe.Var(",
+    "bounds=(0.0, 1.0)"
+   ],
+   "head": {
+    "line_first": 397,
+    "line_last": 402,
+    "excerpt": "    # P5.4-H1: dimensionless charge/discharge, used ONLY by the complementarity row.\n    # Bounds [0, 1] are implied by the existing `pch + pdch <= S_rated` envelope, so\n    # they add no restriction. These are internal: nothing outside the local ESS\n    # formulation reads them.\n    model.shared_es_pch_hat = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=(0.0, 1.0), initialize=0.0)\n    model.shared_es_pdch_hat = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=(0.0, 1.0), initialize=0.0)",
+    "excerpt_sha256": "9d723edff771da0d981c16d57e8f0a259f051ae03de8f2111c2ec87ab09c3112",
+    "missing_substrings": [],
+    "file_sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 397,
+    "line_last": 402,
+    "excerpt": "    # P5.4-H1: dimensionless charge/discharge, used ONLY by the complementarity row.\n    # Bounds [0, 1] are implied by the existing `pch + pdch <= S_rated` envelope, so\n    # they add no restriction. These are internal: nothing outside the local ESS\n    # formulation reads them.\n    model.shared_es_pch_hat = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=(0.0, 1.0), initialize=0.0)\n    model.shared_es_pdch_hat = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=(0.0, 1.0), initialize=0.0)",
+    "excerpt_sha256": "9d723edff771da0d981c16d57e8f0a259f051ae03de8f2111c2ec87ab09c3112",
+    "missing_substrings": [],
+    "file_sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "NC-03",
+   "item": "C-net",
+   "file": "network.py",
+   "statement": "Rows wired in every network model (TSO and DSO): the two hat links, the converter circle, the active sum limit.",
+   "required_substrings": [
+    "model.sess_pch_hat_link = pe.Constraint(",
+    "model.sess_pdch_hat_link = pe.Constraint(",
+    "model.sess_converter_capability = pe.Constraint(",
+    "model.sess_active_sum_limit = pe.Constraint("
+   ],
+   "head": {
+    "line_first": 500,
+    "line_last": 503,
+    "excerpt": "    model.sess_pch_hat_link = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pch_hat_link_rule)\n    model.sess_pdch_hat_link = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pdch_hat_link_rule)\n    model.sess_converter_capability = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_converter_capability_rule)\n    model.sess_active_sum_limit = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_active_sum_limit_rule)",
+    "excerpt_sha256": "68fe6a3fb5d69c0fbfd3944db5b1a92841ead959cfd9c0086a43db9a0a98c385",
+    "missing_substrings": [],
+    "file_sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 500,
+    "line_last": 503,
+    "excerpt": "    model.sess_pch_hat_link = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pch_hat_link_rule)\n    model.sess_pdch_hat_link = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pdch_hat_link_rule)\n    model.sess_converter_capability = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_converter_capability_rule)\n    model.sess_active_sum_limit = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_active_sum_limit_rule)",
+    "excerpt_sha256": "68fe6a3fb5d69c0fbfd3944db5b1a92841ead959cfd9c0086a43db9a0a98c385",
+    "missing_substrings": [],
+    "file_sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "NC-04",
+   "item": "C-net",
+   "file": "network.py",
+   "statement": "The complementarity row sess_comp, one per (e, s_m, s_o, t), built from the network parameters.",
+   "required_substrings": [
+    "model.sess_comp = pe.Constraint(",
+    "rule=partial(sess_comp_rule, network=network, params=params)"
+   ],
+   "head": {
+    "line_first": 512,
+    "line_last": 512,
+    "excerpt": "    model.sess_comp = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_comp_rule, network=network, params=params))",
+    "excerpt_sha256": "83e14dffccc4b5e4c51519f864900584d4dbaab4106fd029a98d3904c9a2664f",
+    "missing_substrings": [],
+    "file_sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 512,
+    "line_last": 512,
+    "excerpt": "    model.sess_comp = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_comp_rule, network=network, params=params))",
+    "excerpt_sha256": "83e14dffccc4b5e4c51519f864900584d4dbaab4106fd029a98d3904c9a2664f",
+    "missing_substrings": [],
+    "file_sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "NC-05",
+   "item": "C-net",
+   "file": "model_construction_helpers.py",
+   "statement": "Power bound P^Ch + P^Dch <= S (eq. storage_active_power_limit).",
+   "required_substrings": [
+    "def sess_active_sum_limit_rule(m, e, s_m, s_o, p):",
+    "+ m.shared_es_pdch[e, s_m0, s_o0, p]) <= m.shared_es_s_rated_fixed[e]"
+   ],
+   "head": {
+    "line_first": 874,
+    "line_last": 887,
+    "excerpt": "def sess_active_sum_limit_rule(m, e, s_m, s_o, p):\n    \"\"\"Active charging/discharging envelope (P5.4-A).\n\n    Derived from the retired production feasible set, which enforced\n    `pch <= sch`, `pdch <= sdch` and `sch + sdch <= S_rated`; those together\n    imply `pch + pdch <= S_rated`, so this preserves the original active-power\n    envelope exactly. `S_rated` is `shared_es_s_rated_fixed` (P5.15-1b\n    Candidate 2); this row is linear.\n    \"\"\"\n    if sess_row_is_duplicate(m, s_m, s_o):\n        return pe.Constraint.Skip\n    s_m0, s_o0 = sess_na_scenario(m)\n    return (m.shared_es_pch[e, s_m0, s_o0, p]\n            + m.shared_es_pdch[e, s_m0, s_o0, p]) <= m.shared_es_s_rated_fixed[e]",
+    "excerpt_sha256": "8cd6cddd0bb919959e896c54f6ee951bd932a836de02a4132429233a2f03a4f5",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 874,
+    "line_last": 887,
+    "excerpt": "def sess_active_sum_limit_rule(m, e, s_m, s_o, p):\n    \"\"\"Active charging/discharging envelope (P5.4-A).\n\n    Derived from the retired production feasible set, which enforced\n    `pch <= sch`, `pdch <= sdch` and `sch + sdch <= S_rated`; those together\n    imply `pch + pdch <= S_rated`, so this preserves the original active-power\n    envelope exactly. `S_rated` is `shared_es_s_rated_fixed` (P5.15-1b\n    Candidate 2); this row is linear.\n    \"\"\"\n    if sess_row_is_duplicate(m, s_m, s_o):\n        return pe.Constraint.Skip\n    s_m0, s_o0 = sess_na_scenario(m)\n    return (m.shared_es_pch[e, s_m0, s_o0, p]\n            + m.shared_es_pdch[e, s_m0, s_o0, p]) <= m.shared_es_s_rated_fixed[e]",
+    "excerpt_sha256": "8cd6cddd0bb919959e896c54f6ee951bd932a836de02a4132429233a2f03a4f5",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "NC-06",
+   "item": "C-net",
+   "file": "model_construction_helpers.py",
+   "statement": "Linear links P^Ch - S * pch_hat = 0 and P^Dch - S * pdch_hat = 0 (no division by S).",
+   "required_substrings": [
+    "def sess_pch_hat_link_rule(m, e, s_m, s_o, p):",
+    "no expression ever divides by the rated-capacity",
+    "- m.shared_es_s_rated_fixed[e] * m.shared_es_pch_hat[e, s_m0, s_o0, p]) == 0",
+    "def sess_pdch_hat_link_rule(m, e, s_m, s_o, p):",
+    "- m.shared_es_s_rated_fixed[e] * m.shared_es_pdch_hat[e, s_m0, s_o0, p]) == 0"
+   ],
+   "head": {
+    "line_first": 906,
+    "line_last": 930,
+    "excerpt": "def sess_pch_hat_link_rule(m, e, s_m, s_o, p):\n    \"\"\"Link the dimensionless charging variable to physical power (P5.4-H1).\n\n    Written as `pch - S_rated * pch_hat == 0` rather than `pch_hat == pch/S` so\n    that no expression ever divides by the rated-capacity decision variable, and\n    so the row keeps a unit coefficient on the physical variable. That unit\n    coefficient is what keeps the row from being zero-gradient at zero dispatch\n    -- the defect that `sess_snet_def` had.\n\n    P5.15-1b (Step 2 Candidate 2): `S_rated` is now `shared_es_s_rated_fixed`\n    (a Param), so this row is LINEAR rather than bilinear.\n    \"\"\"\n    if sess_row_is_duplicate(m, s_m, s_o):\n        return pe.Constraint.Skip\n    s_m0, s_o0 = sess_na_scenario(m)\n    return (m.shared_es_pch[e, s_m0, s_o0, p]\n            - m.shared_es_s_rated_fixed[e] * m.shared_es_pch_hat[e, s_m0, s_o0, p]) == 0\n\n\ndef sess_pdch_hat_link_rule(m, e, s_m, s_o, p):\n    if sess_row_is_duplicate(m, s_m, s_o):\n        return pe.Constraint.Skip\n    s_m0, s_o0 = sess_na_scenario(m)\n    return (m.shared_es_pdch[e, s_m0, s_o0, p]\n            - m.shared_es_s_rated_fixed[e] * m.shared_es_pdch_hat[e, s_m0, s_o0, p]) == 0",
+    "excerpt_sha256": "e135a90ad98da1126327feaa458361b65bcc37879358e28964d5428cc81dc199",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 906,
+    "line_last": 930,
+    "excerpt": "def sess_pch_hat_link_rule(m, e, s_m, s_o, p):\n    \"\"\"Link the dimensionless charging variable to physical power (P5.4-H1).\n\n    Written as `pch - S_rated * pch_hat == 0` rather than `pch_hat == pch/S` so\n    that no expression ever divides by the rated-capacity decision variable, and\n    so the row keeps a unit coefficient on the physical variable. That unit\n    coefficient is what keeps the row from being zero-gradient at zero dispatch\n    -- the defect that `sess_snet_def` had.\n\n    P5.15-1b (Step 2 Candidate 2): `S_rated` is now `shared_es_s_rated_fixed`\n    (a Param), so this row is LINEAR rather than bilinear.\n    \"\"\"\n    if sess_row_is_duplicate(m, s_m, s_o):\n        return pe.Constraint.Skip\n    s_m0, s_o0 = sess_na_scenario(m)\n    return (m.shared_es_pch[e, s_m0, s_o0, p]\n            - m.shared_es_s_rated_fixed[e] * m.shared_es_pch_hat[e, s_m0, s_o0, p]) == 0\n\n\ndef sess_pdch_hat_link_rule(m, e, s_m, s_o, p):\n    if sess_row_is_duplicate(m, s_m, s_o):\n        return pe.Constraint.Skip\n    s_m0, s_o0 = sess_na_scenario(m)\n    return (m.shared_es_pdch[e, s_m0, s_o0, p]\n            - m.shared_es_s_rated_fixed[e] * m.shared_es_pdch_hat[e, s_m0, s_o0, p]) == 0",
+    "excerpt_sha256": "e135a90ad98da1126327feaa458361b65bcc37879358e28964d5428cc81dc199",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "NC-07",
+   "item": "C-net",
+   "file": "model_construction_helpers.py",
+   "statement": "The complementarity row in force (BILINEAR_RELAXATION branch): pch_hat * pdch_hat <= ESS_COMPLEMENTARITY_TOLERANCE.",
+   "required_substrings": [
+    "def sess_comp_rule(m, e, s_m, s_o, p, network, params):",
+    "`pch * pdch <= eps * S_rated^2` -- substituting the link equalities",
+    "reproduces it identically",
+    "elif params.shared_ess_model == ESS_MODEL_BILINEAR_RELAXATION:",
+    "* m.shared_es_pdch_hat[e, s_m0, s_o0, p]) <= ESS_COMPLEMENTARITY_TOLERANCE"
+   ],
+   "head": {
+    "line_first": 933,
+    "line_last": 955,
+    "excerpt": "def sess_comp_rule(m, e, s_m, s_o, p, network, params):\n    # P5.4-H1: the BILINEAR_RELAXATION branch is written on the dimensionless\n    # charge/discharge variables. For positive capacity this is an exact\n    # reformulation of the previous relative condition\n    # `pch * pdch <= eps * S_rated^2` -- substituting the link equalities\n    # reproduces it identically -- but the row now sits at O(1) with an RHS of\n    # 1e-4 instead of O(S^2) ~ 1e-12, which is what IPOPT can actually resolve.\n    # ESS_COMPLEMENTARITY_TOLERANCE is unchanged at 1e-4; this stage rescales\n    # the row, it does not tighten the physical tolerance.\n    if sess_row_is_duplicate(m, s_m, s_o):\n        return pe.Constraint.Skip\n    s_m0, s_o0 = sess_na_scenario(m)\n    pch = m.shared_es_pch[e, s_m0, s_o0, p]\n    pdch = m.shared_es_pdch[e, s_m0, s_o0, p]\n    if params.shared_ess_model == ESS_MODEL_EXACT:\n        return pch * pdch <= EQUALITY_TOLERANCE\n    elif params.shared_ess_model == ESS_MODEL_BILINEAR_RELAXATION:\n        return (m.shared_es_pch_hat[e, s_m0, s_o0, p]\n                * m.shared_es_pdch_hat[e, s_m0, s_o0, p]) <= ESS_COMPLEMENTARITY_TOLERANCE\n    elif params.shared_ess_model == ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY:\n        return pch ** 2 + pdch ** 2 <= (pch + pdch) ** 2 + EQUALITY_TOLERANCE\n    else:\n        return pe.Constraint.Skip",
+    "excerpt_sha256": "28b828a77d76d8323e56185122e5b803edc318a115864ac78d35bff308d5950b",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 933,
+    "line_last": 955,
+    "excerpt": "def sess_comp_rule(m, e, s_m, s_o, p, network, params):\n    # P5.4-H1: the BILINEAR_RELAXATION branch is written on the dimensionless\n    # charge/discharge variables. For positive capacity this is an exact\n    # reformulation of the previous relative condition\n    # `pch * pdch <= eps * S_rated^2` -- substituting the link equalities\n    # reproduces it identically -- but the row now sits at O(1) with an RHS of\n    # 1e-4 instead of O(S^2) ~ 1e-12, which is what IPOPT can actually resolve.\n    # ESS_COMPLEMENTARITY_TOLERANCE is unchanged at 1e-4; this stage rescales\n    # the row, it does not tighten the physical tolerance.\n    if sess_row_is_duplicate(m, s_m, s_o):\n        return pe.Constraint.Skip\n    s_m0, s_o0 = sess_na_scenario(m)\n    pch = m.shared_es_pch[e, s_m0, s_o0, p]\n    pdch = m.shared_es_pdch[e, s_m0, s_o0, p]\n    if params.shared_ess_model == ESS_MODEL_EXACT:\n        return pch * pdch <= EQUALITY_TOLERANCE\n    elif params.shared_ess_model == ESS_MODEL_BILINEAR_RELAXATION:\n        return (m.shared_es_pch_hat[e, s_m0, s_o0, p]\n                * m.shared_es_pdch_hat[e, s_m0, s_o0, p]) <= ESS_COMPLEMENTARITY_TOLERANCE\n    elif params.shared_ess_model == ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY:\n        return pch ** 2 + pdch ** 2 <= (pch + pdch) ** 2 + EQUALITY_TOLERANCE\n    else:\n        return pe.Constraint.Skip",
+    "excerpt_sha256": "28b828a77d76d8323e56185122e5b803edc318a115864ac78d35bff308d5950b",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "NC-08",
+   "item": "C-net",
+   "file": "definitions.py",
+   "statement": "Storage model codes.",
+   "required_substrings": [
+    "ESS_MODEL_EXACT = 1",
+    "ESS_MODEL_BILINEAR_RELAXATION = 2",
+    "ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY = 3"
+   ],
+   "head": {
+    "line_first": 34,
+    "line_last": 36,
+    "excerpt": "ESS_MODEL_EXACT = 1\nESS_MODEL_BILINEAR_RELAXATION = 2\nESS_MODEL_POLYNOMIAL_COMPLEMENTARITY = 3",
+    "excerpt_sha256": "a49fbc24703c5526e3c66753280f16c06faadb0be775a4bf742a13373de3680d",
+    "missing_substrings": [],
+    "file_sha256": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 34,
+    "line_last": 36,
+    "excerpt": "ESS_MODEL_EXACT = 1\nESS_MODEL_BILINEAR_RELAXATION = 2\nESS_MODEL_POLYNOMIAL_COMPLEMENTARITY = 3",
+    "excerpt_sha256": "a49fbc24703c5526e3c66753280f16c06faadb0be775a4bf742a13373de3680d",
+    "missing_substrings": [],
+    "file_sha256": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "NC-09",
+   "item": "C-net",
+   "file": "definitions.py",
+   "statement": "eps^C = 1e-4; the zero-capacity tolerance 1e-10 (network and ESSO tests).",
+   "required_substrings": [
+    "SMALL_TOLERANCE = 1e-4",
+    "ESS_COMPLEMENTARITY_TOLERANCE = SMALL_TOLERANCE",
+    "SHARED_ESS_ZERO_CAPACITY_TOLERANCE = 1e-10"
+   ],
+   "head": {
+    "line_first": 91,
+    "line_last": 93,
+    "excerpt": "SMALL_TOLERANCE = 1e-4\nESS_COMPLEMENTARITY_TOLERANCE = SMALL_TOLERANCE\nSHARED_ESS_ZERO_CAPACITY_TOLERANCE = 1e-10",
+    "excerpt_sha256": "1a49b4d0dbb7c37930e1b21a078ab2a394b37ca70719b0c821d8f18be1432d7c",
+    "missing_substrings": [],
+    "file_sha256": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 91,
+    "line_last": 93,
+    "excerpt": "SMALL_TOLERANCE = 1e-4\nESS_COMPLEMENTARITY_TOLERANCE = SMALL_TOLERANCE\nSHARED_ESS_ZERO_CAPACITY_TOLERANCE = 1e-10",
+    "excerpt_sha256": "1a49b4d0dbb7c37930e1b21a078ab2a394b37ca70719b0c821d8f18be1432d7c",
+    "missing_substrings": [],
+    "file_sha256": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "NC-10",
+   "item": "C-net",
+   "file": "network_parameters.py",
+   "statement": "The shared-storage model is read per network from its params file.",
+   "required_substrings": [
+    "if 'shared_ess_model' in params_data:",
+    "elif params_data['shared_ess_model'] == 'BILINEAR_RELAXATION':",
+    "parameters.shared_ess_model = ESS_MODEL_BILINEAR_RELAXATION"
+   ],
+   "head": {
+    "line_first": 172,
+    "line_last": 178,
+    "excerpt": "    if 'shared_ess_model' in params_data:\n        if params_data['shared_ess_model'] == 'EXACT':\n            parameters.shared_ess_model = ESS_MODEL_EXACT\n        elif params_data['shared_ess_model'] == 'BILINEAR_RELAXATION':\n            parameters.shared_ess_model = ESS_MODEL_BILINEAR_RELAXATION\n        elif params_data['shared_ess_model'] == 'POLYNOMIAL_COMPLEMENTARITY':\n            parameters.shared_ess_model = ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY",
+    "excerpt_sha256": "f367780cf233280399e0c610ef7b3c7f6f714a4c3e8bf06a17da53495d7d06e1",
+    "missing_substrings": [],
+    "file_sha256": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 172,
+    "line_last": 178,
+    "excerpt": "    if 'shared_ess_model' in params_data:\n        if params_data['shared_ess_model'] == 'EXACT':\n            parameters.shared_ess_model = ESS_MODEL_EXACT\n        elif params_data['shared_ess_model'] == 'BILINEAR_RELAXATION':\n            parameters.shared_ess_model = ESS_MODEL_BILINEAR_RELAXATION\n        elif params_data['shared_ess_model'] == 'POLYNOMIAL_COMPLEMENTARITY':\n            parameters.shared_ess_model = ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY",
+    "excerpt_sha256": "f367780cf233280399e0c610ef7b3c7f6f714a4c3e8bf06a17da53495d7d06e1",
+    "missing_substrings": [],
+    "file_sha256": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "NC-11",
+   "item": "C-net",
+   "file": "data/SRP1/case9/case9_params.json",
+   "statement": "TSO (case9) uses the BILINEAR_RELAXATION branch.",
+   "required_substrings": [
+    "\"shared_ess_model\": \"BILINEAR_RELAXATION\""
+   ],
+   "head": {
+    "line_first": 11,
+    "line_last": 11,
+    "excerpt": "\t\"shared_ess_model\": \"BILINEAR_RELAXATION\",",
+    "excerpt_sha256": "dbe7eb850402d5814a325404e05ab17bb107d3df7da375708be530d3195207f1",
+    "missing_substrings": [],
+    "file_sha256": "f3eff0502c606a9076af19969ec3705c2e6204fa4d9172a218345e986dbbf4ab"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 11,
+    "line_last": 11,
+    "excerpt": "\t\"shared_ess_model\": \"BILINEAR_RELAXATION\",",
+    "excerpt_sha256": "dbe7eb850402d5814a325404e05ab17bb107d3df7da375708be530d3195207f1",
+    "missing_substrings": [],
+    "file_sha256": "f3eff0502c606a9076af19969ec3705c2e6204fa4d9172a218345e986dbbf4ab"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "NC-12",
+   "item": "C-net",
+   "file": "data/SRP1/case33_1/case33_1_params.json",
+   "statement": "DSO case33_1 uses the BILINEAR_RELAXATION branch.",
+   "required_substrings": [
+    "\"shared_ess_model\": \"BILINEAR_RELAXATION\""
+   ],
+   "head": {
+    "line_first": 11,
+    "line_last": 11,
+    "excerpt": "\t\"shared_ess_model\": \"BILINEAR_RELAXATION\",",
+    "excerpt_sha256": "dbe7eb850402d5814a325404e05ab17bb107d3df7da375708be530d3195207f1",
+    "missing_substrings": [],
+    "file_sha256": "8e9e5a536fd1ef2bca5694274a68795d1099884ef23f2134e7db7d3a58c80b8e"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 11,
+    "line_last": 11,
+    "excerpt": "\t\"shared_ess_model\": \"BILINEAR_RELAXATION\",",
+    "excerpt_sha256": "dbe7eb850402d5814a325404e05ab17bb107d3df7da375708be530d3195207f1",
+    "missing_substrings": [],
+    "file_sha256": "8e9e5a536fd1ef2bca5694274a68795d1099884ef23f2134e7db7d3a58c80b8e"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "NC-13",
+   "item": "C-net",
+   "file": "data/SRP1/case33_2/case33_2_params.json",
+   "statement": "DSO case33_2 uses the BILINEAR_RELAXATION branch.",
+   "required_substrings": [
+    "\"shared_ess_model\": \"BILINEAR_RELAXATION\""
+   ],
+   "head": {
+    "line_first": 11,
+    "line_last": 11,
+    "excerpt": "\t\"shared_ess_model\": \"BILINEAR_RELAXATION\",",
+    "excerpt_sha256": "dbe7eb850402d5814a325404e05ab17bb107d3df7da375708be530d3195207f1",
+    "missing_substrings": [],
+    "file_sha256": "31b5fedf87b96724dc5676566fd87f1c21dc02ecfb8d2bd9fdf280a9b7be35ff"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 11,
+    "line_last": 11,
+    "excerpt": "\t\"shared_ess_model\": \"BILINEAR_RELAXATION\",",
+    "excerpt_sha256": "dbe7eb850402d5814a325404e05ab17bb107d3df7da375708be530d3195207f1",
+    "missing_substrings": [],
+    "file_sha256": "31b5fedf87b96724dc5676566fd87f1c21dc02ecfb8d2bd9fdf280a9b7be35ff"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "NC-14",
+   "item": "C-net",
+   "file": "data/SRP1/case33_3/case33_3_params.json",
+   "statement": "DSO case33_3 uses the BILINEAR_RELAXATION branch.",
+   "required_substrings": [
+    "\"shared_ess_model\": \"BILINEAR_RELAXATION\""
+   ],
+   "head": {
+    "line_first": 11,
+    "line_last": 11,
+    "excerpt": "\t\"shared_ess_model\": \"BILINEAR_RELAXATION\",",
+    "excerpt_sha256": "dbe7eb850402d5814a325404e05ab17bb107d3df7da375708be530d3195207f1",
+    "missing_substrings": [],
+    "file_sha256": "a19bd5b9d18a26deff44dc62a351f2e6c193012c3f7075d12cade4f230760c49"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 11,
+    "line_last": 11,
+    "excerpt": "\t\"shared_ess_model\": \"BILINEAR_RELAXATION\",",
+    "excerpt_sha256": "dbe7eb850402d5814a325404e05ab17bb107d3df7da375708be530d3195207f1",
+    "missing_substrings": [],
+    "file_sha256": "a19bd5b9d18a26deff44dc62a351f2e6c193012c3f7075d12cade4f230760c49"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "NC-15",
+   "item": "C-net",
+   "file": "admm_persistent_workers.py",
+   "statement": "The S in the network rows is the ESSO available capacity S^Av (per node and year, p.u.), set per ADMM cycle.",
+   "required_substrings": [
+    "shared_es_s_rated_fixed[shared_ess_idx].set_value(sess_capacity_year['s_available'] / s_base)",
+    "shared_es_e_rated_fixed[shared_ess_idx].set_value(sess_capacity_year['e_available'] / s_base)",
+    "configure_shared_ess_operational_state("
+   ],
+   "head": {
+    "line_first": 333,
+    "line_last": 339,
+    "excerpt": "    model_yd.shared_es_s_rated_fixed[shared_ess_idx].set_value(sess_capacity_year['s_available'] / s_base)\n    model_yd.shared_es_e_rated_fixed[shared_ess_idx].set_value(sess_capacity_year['e_available'] / s_base)\n    configure_shared_ess_operational_state(\n        model_yd, shared_ess_idx,\n        pe.value(model_yd.shared_es_s_rated_fixed[shared_ess_idx]),\n        pe.value(model_yd.shared_es_e_rated_fixed[shared_ess_idx]),\n    )",
+    "excerpt_sha256": "c01ceee5357304f1d9cb200a8fd3b86c96194137c0e59bc6fed8a298920bb69e",
+    "missing_substrings": [],
+    "file_sha256": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 333,
+    "line_last": 339,
+    "excerpt": "    model_yd.shared_es_s_rated_fixed[shared_ess_idx].set_value(sess_capacity_year['s_available'] / s_base)\n    model_yd.shared_es_e_rated_fixed[shared_ess_idx].set_value(sess_capacity_year['e_available'] / s_base)\n    configure_shared_ess_operational_state(\n        model_yd, shared_ess_idx,\n        pe.value(model_yd.shared_es_s_rated_fixed[shared_ess_idx]),\n        pe.value(model_yd.shared_es_e_rated_fixed[shared_ess_idx]),\n    )",
+    "excerpt_sha256": "c01ceee5357304f1d9cb200a8fd3b86c96194137c0e59bc6fed8a298920bb69e",
+    "missing_substrings": [],
+    "file_sha256": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "NC-16",
+   "item": "C-net",
+   "file": "shared_resources_planning.py",
+   "statement": "Same assignment of S^Av on the in-process path (shifted +18 lines at HEAD by f6c23977).",
+   "required_substrings": [
+    "shared_es_s_rated_fixed[shared_ess_idx].set_value(sess_estimated_capacity[year]['s_available'] / s_base)",
+    "configure_shared_ess_operational_state("
+   ],
+   "head": {
+    "line_first": 6132,
+    "line_last": 6139,
+    "excerpt": "                model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(sess_estimated_capacity[year]['s_available'] / s_base)\n                model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(sess_estimated_capacity[year]['e_available'] / s_base)\n                configure_shared_ess_operational_state(\n                    model[year][day],\n                    shared_ess_idx,\n                    pe.value(model[year][day].shared_es_s_rated_fixed[shared_ess_idx]),\n                    pe.value(model[year][day].shared_es_e_rated_fixed[shared_ess_idx]),\n                )",
+    "excerpt_sha256": "bb4774ebfb2d5e68c30cc69ede2144f92c4c9d37b181c1ac1b96db5b1e47f345",
+    "missing_substrings": [],
+    "file_sha256": "c9336a61a713ef6890fbffcda845395d757e26c41ae2422e82dd88bb881c33e8"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 6114,
+    "line_last": 6121,
+    "excerpt": "                model[year][day].shared_es_s_rated_fixed[shared_ess_idx].set_value(sess_estimated_capacity[year]['s_available'] / s_base)\n                model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(sess_estimated_capacity[year]['e_available'] / s_base)\n                configure_shared_ess_operational_state(\n                    model[year][day],\n                    shared_ess_idx,\n                    pe.value(model[year][day].shared_es_s_rated_fixed[shared_ess_idx]),\n                    pe.value(model[year][day].shared_es_e_rated_fixed[shared_ess_idx]),\n                )",
+    "excerpt_sha256": "bb4774ebfb2d5e68c30cc69ede2144f92c4c9d37b181c1ac1b96db5b1e47f345",
+    "missing_substrings": [],
+    "file_sha256": "ade9c843bc7c5b6514ab91ecc54f327330a5249709766699ff2f50c8288473d6"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 18,
+   "citation_holds": true
+  },
+  {
+   "id": "NC-17",
+   "item": "C-net",
+   "file": "shared_energy_storage_data.py",
+   "statement": "S^Av sent to the networks = sum over cohorts of es_s_available_per_unit.",
+   "required_substrings": [
+    "def get_available_capacities(self, model, year_idx):",
+    "s_available += pe.value(model.es_s_available_per_unit[y_inv, year_idx])"
+   ],
+   "head": {
+    "line_first": 278,
+    "line_last": 283,
+    "excerpt": "    def get_available_capacities(self, model, year_idx):\n        s_available = 0.00\n        e_available = 0.00\n        for y_inv in model.years:\n            s_available += pe.value(model.es_s_available_per_unit[y_inv, year_idx])\n            e_available += pe.value(model.es_e_available_per_unit[y_inv, year_idx])",
+    "excerpt_sha256": "bd429d01990003ae3a5f600e9084d69510334ce63a4336eb6f008a0d98ae1cff",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 274,
+    "line_last": 279,
+    "excerpt": "    def get_available_capacities(self, model, year_idx):\n        s_available = 0.00\n        e_available = 0.00\n        for y_inv in model.years:\n            s_available += pe.value(model.es_s_available_per_unit[y_inv, year_idx])\n            e_available += pe.value(model.es_e_available_per_unit[y_inv, year_idx])",
+    "excerpt_sha256": "bd429d01990003ae3a5f600e9084d69510334ce63a4336eb6f008a0d98ae1cff",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "NC-18",
+   "item": "C-net",
+   "file": "shared_energy_storage_data.py",
+   "statement": "Available S per cohort-year = rated S per cohort-year (no SoH on power).",
+   "required_substrings": [
+    "model.available_s_capacity_unit.add(model.es_s_available_per_unit[y_inv, y] == model.es_s_rated_per_unit[y_inv, y])"
+   ],
+   "head": {
+    "line_first": 619,
+    "line_last": 623,
+    "excerpt": "    model.available_s_capacity_unit = pe.ConstraintList()\n    model.available_e_capacity_unit = pe.ConstraintList()\n    for y_inv in model.years:\n        for y in model.years:\n            model.available_s_capacity_unit.add(model.es_s_available_per_unit[y_inv, y] == model.es_s_rated_per_unit[y_inv, y])",
+    "excerpt_sha256": "325783ac1a8c693d00516ab00157817b30a9d9644625db7e2b06fe2e95d07f41",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 615,
+    "line_last": 619,
+    "excerpt": "    model.available_s_capacity_unit = pe.ConstraintList()\n    model.available_e_capacity_unit = pe.ConstraintList()\n    for y_inv in model.years:\n        for y in model.years:\n            model.available_s_capacity_unit.add(model.es_s_available_per_unit[y_inv, y] == model.es_s_rated_per_unit[y_inv, y])",
+    "excerpt_sha256": "325783ac1a8c693d00516ab00157817b30a9d9644625db7e2b06fe2e95d07f41",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "EC-01",
+   "item": "C-esso",
+   "file": "shared_energy_storage_data.py",
+   "statement": "ESSO side: NO complementarity row. The per-cohort and aggregate complementarity rows and the hat pair are retired.",
+   "required_substrings": [
+    "model.es_pch_per_unit = pe.Var(",
+    "model.es_pdch_per_unit = pe.Var(",
+    "complementarity rows (`energy_storage_complementarity` and the aggregate",
+    "all retired. Complementarity is no longer enforced by a constraint"
+   ],
+   "head": {
+    "line_first": 474,
+    "line_last": 482,
+    "excerpt": "    model.es_pch_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)\n    model.es_pdch_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)\n    # P5.15-1 (PLANNER_BRIEF_2026-09-13.md Step 1 item 3): the dimensionless\n    # pch_hat/pdch_hat pair, the per-cohort and aggregate normalization rows, the\n    # complementarity rows (`energy_storage_complementarity` and the aggregate\n    # `pch_hat_agg * pdch_hat_agg <= tol` row) and `slack_es_ch_comp_per_unit` are\n    # all retired. Complementarity is no longer enforced by a constraint; it now\n    # follows from the LP structure of the throughput regularization added to\n    # `feasibility_penalty` below (EPS_ESSO_THROUGHPUT * sum(pch + pdch)).",
+    "excerpt_sha256": "5f902d0f150af02f6bd93fa5f09533d21008575bb751a863442c9db25ba23632",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 470,
+    "line_last": 478,
+    "excerpt": "    model.es_pch_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)\n    model.es_pdch_per_unit = pe.Var(model.years, model.years, model.days, model.periods, domain=pe.NonNegativeReals, initialize=0.00)\n    # P5.15-1 (PLANNER_BRIEF_2026-09-13.md Step 1 item 3): the dimensionless\n    # pch_hat/pdch_hat pair, the per-cohort and aggregate normalization rows, the\n    # complementarity rows (`energy_storage_complementarity` and the aggregate\n    # `pch_hat_agg * pdch_hat_agg <= tol` row) and `slack_es_ch_comp_per_unit` are\n    # all retired. Complementarity is no longer enforced by a constraint; it now\n    # follows from the LP structure of the throughput regularization added to\n    # `feasibility_penalty` below (EPS_ESSO_THROUGHPUT * sum(pch + pdch)).",
+    "excerpt_sha256": "5f902d0f150af02f6bd93fa5f09533d21008575bb751a863442c9db25ba23632",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "EC-02",
+   "item": "C-esso",
+   "file": "shared_energy_storage_data.py",
+   "statement": "ESSO side: energy_storage_complementarity, its normalization and the hat links are retired (second statement).",
+   "required_substrings": [
+    "`energy_storage_complementarity`",
+    "retired"
+   ],
+   "head": {
+    "line_first": 739,
+    "line_last": 742,
+    "excerpt": "    # P5.15-1 (Step 1 item 3): `energy_storage_complementarity`,\n    # `energy_storage_normalization` and the pch_hat/pdch_hat link rows are\n    # retired (see the Variables section above). `energy_storage_limits`\n    # (pch <= s_max, pdch <= s_max) is unchanged and remains linear.",
+    "excerpt_sha256": "68459c43be50baab7d3a4df5e9b44144ec8b3d0fa76d3867c57baeb7915fa6d8",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 735,
+    "line_last": 738,
+    "excerpt": "    # P5.15-1 (Step 1 item 3): `energy_storage_complementarity`,\n    # `energy_storage_normalization` and the pch_hat/pdch_hat link rows are\n    # retired (see the Variables section above). `energy_storage_limits`\n    # (pch <= s_max, pdch <= s_max) is unchanged and remains linear.",
+    "excerpt_sha256": "68459c43be50baab7d3a4df5e9b44144ec8b3d0fa76d3867c57baeb7915fa6d8",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "EC-03",
+   "item": "C-esso",
+   "file": "shared_energy_storage_data.py",
+   "statement": "ESSO side: the aggregate complementarity link is retired too.",
+   "required_substrings": [
+    "the aggregate complementarity link",
+    "is retired along with",
+    "the LP throughput regularization in `feasibility_penalty`"
+   ],
+   "head": {
+    "line_first": 811,
+    "line_last": 816,
+    "excerpt": "                # P5.15-1 (Step 1 item 3): the aggregate complementarity link\n                # (agg_pch/agg_pdch vs. es_pch_hat_agg/es_pdch_hat_agg and the\n                # `pch_hat_agg * pdch_hat_agg <= tol` row) is retired along with\n                # the per-cohort complementarity it mirrored. Aggregate\n                # complementarity now follows, like the per-cohort case, from\n                # the LP throughput regularization in `feasibility_penalty`.",
+    "excerpt_sha256": "fe63b0333a41207db3115fd3ff50ba865dee718a3d8b458c0bed2b1d93f084a1",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 807,
+    "line_last": 812,
+    "excerpt": "                # P5.15-1 (Step 1 item 3): the aggregate complementarity link\n                # (agg_pch/agg_pdch vs. es_pch_hat_agg/es_pdch_hat_agg and the\n                # `pch_hat_agg * pdch_hat_agg <= tol` row) is retired along with\n                # the per-cohort complementarity it mirrored. Aggregate\n                # complementarity now follows, like the per-cohort case, from\n                # the LP throughput regularization in `feasibility_penalty`.",
+    "excerpt_sha256": "fe63b0333a41207db3115fd3ff50ba865dee718a3d8b458c0bed2b1d93f084a1",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "EC-04",
+   "item": "C-esso",
+   "file": "shared_energy_storage_data.py",
+   "statement": "ESSO side: complementarity is replaced by the objective term eps^E * sum(P^Ch + P^Dch).",
+   "required_substrings": [
+    "throughput += model.es_pch_per_unit[y_inv, y, d, p] + model.es_pdch_per_unit[y_inv, y, d, p]",
+    "slack_penalty += EPS_ESSO_THROUGHPUT * throughput"
+   ],
+   "head": {
+    "line_first": 835,
+    "line_last": 848,
+    "excerpt": "    # P5.15-1 (Step 1 item 3): throughput regularization. Complementarity is no\n    # longer an explicit constraint; it follows from LP structure because both\n    # directions of throughput are penalized identically here (see the Variables\n    # section comment above). Summed over ALL cohort-periods, not just active\n    # ones: pch/pdch are fixed to 0.0 for inactive cohort-years by\n    # `_configure_esso_cohort_state`, so inactive terms contribute exactly zero\n    # and do not need to be excluded explicitly.\n    throughput = 0.0\n    for y_inv in model.years:\n        for y in model.years:\n            for d in model.days:\n                for p in model.periods:\n                    throughput += model.es_pch_per_unit[y_inv, y, d, p] + model.es_pdch_per_unit[y_inv, y, d, p]\n    slack_penalty += EPS_ESSO_THROUGHPUT * throughput",
+    "excerpt_sha256": "a78001c4f4a99d390d252d15b34fba45b364a274625b5507fa1f6763b33a9f31",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 831,
+    "line_last": 844,
+    "excerpt": "    # P5.15-1 (Step 1 item 3): throughput regularization. Complementarity is no\n    # longer an explicit constraint; it follows from LP structure because both\n    # directions of throughput are penalized identically here (see the Variables\n    # section comment above). Summed over ALL cohort-periods, not just active\n    # ones: pch/pdch are fixed to 0.0 for inactive cohort-years by\n    # `_configure_esso_cohort_state`, so inactive terms contribute exactly zero\n    # and do not need to be excluded explicitly.\n    throughput = 0.0\n    for y_inv in model.years:\n        for y in model.years:\n            for d in model.days:\n                for p in model.periods:\n                    throughput += model.es_pch_per_unit[y_inv, y, d, p] + model.es_pdch_per_unit[y_inv, y, d, p]\n    slack_penalty += EPS_ESSO_THROUGHPUT * throughput",
+    "excerpt_sha256": "a78001c4f4a99d390d252d15b34fba45b364a274625b5507fa1f6763b33a9f31",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "EC-05",
+   "item": "C-esso",
+   "file": "definitions.py",
+   "statement": "eps^E = 1e-5.",
+   "required_substrings": [
+    "EPS_ESSO_THROUGHPUT = 1e-5"
+   ],
+   "head": {
+    "line_first": 74,
+    "line_last": 74,
+    "excerpt": "EPS_ESSO_THROUGHPUT = 1e-5",
+    "excerpt_sha256": "fe2d68b39ce1d9cdd3169626e0fba58cbf4d4c29226d46e8d819583ca8693fa5",
+    "missing_substrings": [],
+    "file_sha256": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 74,
+    "line_last": 74,
+    "excerpt": "EPS_ESSO_THROUGHPUT = 1e-5",
+    "excerpt_sha256": "fe2d68b39ce1d9cdd3169626e0fba58cbf4d4c29226d46e8d819583ca8693fa5",
+    "missing_substrings": [],
+    "file_sha256": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "EC-06",
+   "item": "C-esso",
+   "file": "shared_energy_storage_data.py",
+   "statement": "ESSO power bounds per cohort: P^Ch <= S^Rated,Unit, P^Dch <= S^Rated,Unit (cohort-registered).",
+   "required_substrings": [
+    "model.energy_storage_limits = pe.ConstraintList()",
+    "s_max = model.es_s_rated_per_unit[y_inv, y]",
+    "_add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, pch <= s_max)",
+    "_add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, pdch <= s_max)"
+   ],
+   "head": {
+    "line_first": 743,
+    "line_last": 753,
+    "excerpt": "    model.energy_storage_limits = pe.ConstraintList()\n    for y_inv in model.years:\n        for y in model.years:\n            s_max = model.es_s_rated_per_unit[y_inv, y]\n            for d in model.days:\n                for p in model.periods:\n                    pch = model.es_pch_per_unit[y_inv, y, d, p]\n                    pdch = model.es_pdch_per_unit[y_inv, y, d, p]\n\n                    _add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, pch <= s_max)\n                    _add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, pdch <= s_max)",
+    "excerpt_sha256": "ebeaf69b3f9511e7a37ddea7e20e16d843d44d73b1e0b784b56a6542c35e9b0c",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 739,
+    "line_last": 749,
+    "excerpt": "    model.energy_storage_limits = pe.ConstraintList()\n    for y_inv in model.years:\n        for y in model.years:\n            s_max = model.es_s_rated_per_unit[y_inv, y]\n            for d in model.days:\n                for p in model.periods:\n                    pch = model.es_pch_per_unit[y_inv, y, d, p]\n                    pdch = model.es_pdch_per_unit[y_inv, y, d, p]\n\n                    _add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, pch <= s_max)\n                    _add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, pdch <= s_max)",
+    "excerpt_sha256": "ebeaf69b3f9511e7a37ddea7e20e16d843d44d73b1e0b784b56a6542c35e9b0c",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "EC-07",
+   "item": "C-esso",
+   "file": "shared_energy_storage_data.py",
+   "statement": "ESSO objective with the C1 switch off (default; the only form at V1): feasibility_penalty alone. At HEAD it sits in the else branch of the C1 switch, so it differs from V1 by indentation only (EXPECTED_INDENT_ONLY).",
+   "required_substrings": [
+    "model.objective = pe.Objective(",
+    "sense=pe.minimize,",
+    "expr=model.feasibility_penalty,"
+   ],
+   "head": {
+    "line_first": 875,
+    "line_last": 878,
+    "excerpt": "        model.objective = pe.Objective(\n            sense=pe.minimize,\n            expr=model.feasibility_penalty,\n        )",
+    "excerpt_sha256": "7162a2b744ad6dfdabe42a951565717adb24c2942f60a95dced50d521330f61d",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 851,
+    "line_last": 854,
+    "excerpt": "    model.objective = pe.Objective(\n        sense=pe.minimize,\n        expr=model.feasibility_penalty,\n    )",
+    "excerpt_sha256": "d6c682c9181eabfd5c3cf9728416939ec64a9a8f98440c1863679fb3875ef2a1",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": false,
+   "range_touches_diff_hunk": [
+    {
+     "v1": [
+      851,
+      854
+     ],
+     "head": [
+      855,
+      878
+     ],
+     "v1_len": 4,
+     "head_len": 24
+    }
+   ],
+   "line_shift_head_minus_v1": 24,
+   "citation_holds": true
+  },
+  {
+   "id": "A-01",
+   "item": "A",
+   "file": "shared_energy_storage_data.py",
+   "statement": "Within the calendar-life window E^Rated,Unit[y_inv, y] = E^Inv[y_inv] (a Param).",
+   "required_substrings": [
+    "for y in range(y_inv, max_tcal_norm):",
+    "model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[y_inv, y] == model.es_e_investment_fixed[y_inv])"
+   ],
+   "head": {
+    "line_first": 564,
+    "line_last": 574,
+    "excerpt": "    model.rated_s_capacity_unit = pe.ConstraintList()\n    model.rated_e_capacity_unit = pe.ConstraintList()\n    for y_inv in model.years:\n        shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][shared_ess_idx]\n        tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y_inv]]))\n        max_tcal_norm = min(y_inv + tcal_norm, len(shared_ess_data.years))\n        for y in range(y_inv, max_tcal_norm):\n            model.es_s_rated_per_unit[y_inv, y].fixed = False\n            model.es_e_rated_per_unit[y_inv, y].fixed = False\n            model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[y_inv, y] == model.es_s_investment_fixed[y_inv])\n            model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[y_inv, y] == model.es_e_investment_fixed[y_inv])",
+    "excerpt_sha256": "aa78141a6da4596eb0026e0d61d8a43995285b2f8e73e35c042512e99983d3e0",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 560,
+    "line_last": 570,
+    "excerpt": "    model.rated_s_capacity_unit = pe.ConstraintList()\n    model.rated_e_capacity_unit = pe.ConstraintList()\n    for y_inv in model.years:\n        shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][shared_ess_idx]\n        tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y_inv]]))\n        max_tcal_norm = min(y_inv + tcal_norm, len(shared_ess_data.years))\n        for y in range(y_inv, max_tcal_norm):\n            model.es_s_rated_per_unit[y_inv, y].fixed = False\n            model.es_e_rated_per_unit[y_inv, y].fixed = False\n            model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[y_inv, y] == model.es_s_investment_fixed[y_inv])\n            model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[y_inv, y] == model.es_e_investment_fixed[y_inv])",
+    "excerpt_sha256": "aa78141a6da4596eb0026e0d61d8a43995285b2f8e73e35c042512e99983d3e0",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "A-02",
+   "item": "A",
+   "file": "shared_energy_storage_data.py",
+   "statement": "Outside the window E^Rated,Unit and S^Rated,Unit stay fixed at 0 (the lifetime test reads this fixing).",
+   "required_substrings": [
+    "model.es_s_rated_per_unit.fix(0.00)",
+    "model.es_e_rated_per_unit.fix(0.00)"
+   ],
+   "head": {
+    "line_first": 470,
+    "line_last": 472,
+    "excerpt": "    model.es_e_available_per_unit = pe.Var(model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)\n    model.es_s_rated_per_unit.fix(0.00)\n    model.es_e_rated_per_unit.fix(0.00)",
+    "excerpt_sha256": "d7e8a5b138ed5473d6a7ed02edd5d95e0f18bce8914d075333143c795afbedd5",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 466,
+    "line_last": 468,
+    "excerpt": "    model.es_e_available_per_unit = pe.Var(model.years, model.years, domain=pe.NonNegativeReals, initialize=0.0)\n    model.es_s_rated_per_unit.fix(0.00)\n    model.es_e_rated_per_unit.fix(0.00)",
+    "excerpt_sha256": "d7e8a5b138ed5473d6a7ed02edd5d95e0f18bce8914d075333143c795afbedd5",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "A-03",
+   "item": "A",
+   "file": "shared_energy_storage_data.py",
+   "statement": "Allocation share is a mutable Param (initialised 0), not an expression in Vars.",
+   "required_substrings": [
+    "model.es_pnet_cohort_share_h3 = pe.Param(model.years, model.years, mutable=True, initialize=0.00)",
+    "model.energy_storage_cohort_pnet_share_h3 = pe.ConstraintList()"
+   ],
+   "head": {
+    "line_first": 764,
+    "line_last": 765,
+    "excerpt": "    model.es_pnet_cohort_share_h3 = pe.Param(model.years, model.years, mutable=True, initialize=0.00)\n    model.energy_storage_cohort_pnet_share_h3 = pe.ConstraintList()",
+    "excerpt_sha256": "dbf7a3946589276e89285b58dec75c1ad5f4974fd9afcc595246e87e1f51bebd",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 760,
+    "line_last": 761,
+    "excerpt": "    model.es_pnet_cohort_share_h3 = pe.Param(model.years, model.years, mutable=True, initialize=0.00)\n    model.energy_storage_cohort_pnet_share_h3 = pe.ConstraintList()",
+    "excerpt_sha256": "dbf7a3946589276e89285b58dec75c1ad5f4974fd9afcc595246e87e1f51bebd",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "A-04",
+   "item": "A",
+   "file": "shared_energy_storage_data.py",
+   "statement": "agg_pnet = sum over cohorts of (P^Ch - P^Dch), without the sigma slacks; es_pnet carries the slacks.",
+   "required_substrings": [
+    "agg_pnet += (model.es_pch_per_unit[y_inv, y, d, p] - model.es_pdch_per_unit[y_inv, y, d, p])",
+    "model.es_pnet[y, d, p] == agg_pnet + model.slack_es_pnet_up[y, d, p] - model.slack_es_pnet_down[y, d, p]"
+   ],
+   "head": {
+    "line_first": 782,
+    "line_last": 788,
+    "excerpt": "                for y_inv in model.years:\n                    agg_pnet += (model.es_pch_per_unit[y_inv, y, d, p] - model.es_pdch_per_unit[y_inv, y, d, p])\n\n                if shared_ess_data.params.slacks:\n                    model.energy_storage_operation_agg.add(model.es_pnet[y, d, p] == agg_pnet + model.slack_es_pnet_up[y, d, p] - model.slack_es_pnet_down[y, d, p])\n                else:\n                    model.energy_storage_operation_agg.add(model.es_pnet[y, d, p] == agg_pnet)",
+    "excerpt_sha256": "c0b8abbde1937378cee15011238e3b843b5a0242d81f133b3d37d0601b756286",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 778,
+    "line_last": 784,
+    "excerpt": "                for y_inv in model.years:\n                    agg_pnet += (model.es_pch_per_unit[y_inv, y, d, p] - model.es_pdch_per_unit[y_inv, y, d, p])\n\n                if shared_ess_data.params.slacks:\n                    model.energy_storage_operation_agg.add(model.es_pnet[y, d, p] == agg_pnet + model.slack_es_pnet_up[y, d, p] - model.slack_es_pnet_down[y, d, p])\n                else:\n                    model.energy_storage_operation_agg.add(model.es_pnet[y, d, p] == agg_pnet)",
+    "excerpt_sha256": "c0b8abbde1937378cee15011238e3b843b5a0242d81f133b3d37d0601b756286",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "A-05",
+   "item": "A",
+   "file": "shared_energy_storage_data.py",
+   "statement": "Allocation row: P^Ch[y_inv] - P^Dch[y_inv] = share[y_inv, y] * agg_pnet, built for every y_inv, cohort-registered.",
+   "required_substrings": [
+    "model, 'energy_storage_cohort_pnet_share_h3', y_inv, y,",
+    "model.es_pch_per_unit[y_inv, y, d, p] - model.es_pdch_per_unit[y_inv, y, d, p]",
+    "== model.es_pnet_cohort_share_h3[y_inv, y] * agg_pnet)"
+   ],
+   "head": {
+    "line_first": 805,
+    "line_last": 809,
+    "excerpt": "                for y_inv in model.years:\n                    _add_esso_cohort_constraint(\n                        model, 'energy_storage_cohort_pnet_share_h3', y_inv, y,\n                        model.es_pch_per_unit[y_inv, y, d, p] - model.es_pdch_per_unit[y_inv, y, d, p]\n                        == model.es_pnet_cohort_share_h3[y_inv, y] * agg_pnet)",
+    "excerpt_sha256": "569817be66bc685da3ed31afecbdaf20ff63ec00ebd9f5bc61b9b8ec48d1e800",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 801,
+    "line_last": 805,
+    "excerpt": "                for y_inv in model.years:\n                    _add_esso_cohort_constraint(\n                        model, 'energy_storage_cohort_pnet_share_h3', y_inv, y,\n                        model.es_pch_per_unit[y_inv, y, d, p] - model.es_pdch_per_unit[y_inv, y, d, p]\n                        == model.es_pnet_cohort_share_h3[y_inv, y] * agg_pnet)",
+    "excerpt_sha256": "569817be66bc685da3ed31afecbdaf20ff63ec00ebd9f5bc61b9b8ec48d1e800",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "A-06",
+   "item": "A",
+   "file": "shared_energy_storage_data.py",
+   "statement": "Per candidate: each cohort state is set first, then the allocation rows and shares once per node.",
+   "required_substrings": [
+    "def _update_model_with_candidate_solution(shared_ess_data, models, candidate_solution):",
+    "model.es_e_investment_fixed[y_inv].set_value(e_candidate)",
+    "_configure_esso_cohort_state(model, y_inv, s_candidate, e_candidate, shared_ess_data.params.slacks)",
+    "_configure_esso_cohort_pnet_share_rows(model)"
+   ],
+   "head": {
+    "line_first": 1523,
+    "line_last": 1543,
+    "excerpt": "def _update_model_with_candidate_solution(shared_ess_data, models, candidate_solution):\n    repr_years = [year for year in shared_ess_data.years]\n    for node_id in models:\n        model = models[node_id]\n        for y_inv in model.years:\n            year = repr_years[y_inv]\n            s_candidate = candidate_solution[node_id][year]['s']\n            e_candidate = candidate_solution[node_id][year]['e']\n            model.es_s_investment_fixed[y_inv].set_value(s_candidate)\n            model.es_e_investment_fixed[y_inv].set_value(e_candidate)\n            # P5.15-1: es_s_investment / es_e_investment (Vars) are retired;\n            # es_s_investment_fixed / es_e_investment_fixed (Params, above) ARE\n            # the investment values consumed by the rest of the model, so there\n            # is nothing left to .fix() here.\n            _configure_esso_cohort_state(model, y_inv, s_candidate, e_candidate, shared_ess_data.params.slacks)\n\n        # P5.15 Addendum 3 item 2 (H3 rule): run once per node, AFTER every\n        # cohort's own activity has been (re)established above, since the\n        # per-cohort share and row selection need to know the FULL active-\n        # cohort set for each calendar year, not just this one cohort.\n        _configure_esso_cohort_pnet_share_rows(model)",
+    "excerpt_sha256": "d09c1ae7555f9afe72a3a0a5f0bc6ce64c948962de92b76aee75b839494e1ec4",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 1427,
+    "line_last": 1447,
+    "excerpt": "def _update_model_with_candidate_solution(shared_ess_data, models, candidate_solution):\n    repr_years = [year for year in shared_ess_data.years]\n    for node_id in models:\n        model = models[node_id]\n        for y_inv in model.years:\n            year = repr_years[y_inv]\n            s_candidate = candidate_solution[node_id][year]['s']\n            e_candidate = candidate_solution[node_id][year]['e']\n            model.es_s_investment_fixed[y_inv].set_value(s_candidate)\n            model.es_e_investment_fixed[y_inv].set_value(e_candidate)\n            # P5.15-1: es_s_investment / es_e_investment (Vars) are retired;\n            # es_s_investment_fixed / es_e_investment_fixed (Params, above) ARE\n            # the investment values consumed by the rest of the model, so there\n            # is nothing left to .fix() here.\n            _configure_esso_cohort_state(model, y_inv, s_candidate, e_candidate, shared_ess_data.params.slacks)\n\n        # P5.15 Addendum 3 item 2 (H3 rule): run once per node, AFTER every\n        # cohort's own activity has been (re)established above, since the\n        # per-cohort share and row selection need to know the FULL active-\n        # cohort set for each calendar year, not just this one cohort.\n        _configure_esso_cohort_pnet_share_rows(model)",
+    "excerpt_sha256": "d09c1ae7555f9afe72a3a0a5f0bc6ce64c948962de92b76aee75b839494e1ec4",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 96,
+   "citation_holds": true
+  },
+  {
+   "id": "A-07",
+   "item": "A",
+   "file": "shared_energy_storage_data.py",
+   "statement": "Allocation docstring: N_active - 1 rows active (largest y_inv omitted; sum-to-one supplies it); shares are floats.",
+   "required_substrings": [
+    "def _configure_esso_cohort_pnet_share_rows(model):",
+    "exactly\n    N_active(y)-1 rows are left ACTIVE per (y, d, p) -- never N.",
+    "the one with the LARGEST y_inv among that year's active cohorts",
+    "every\n    share written here is a plain PYTHON FLOAT"
+   ],
+   "head": {
+    "line_first": 1735,
+    "line_last": 1769,
+    "excerpt": "def _configure_esso_cohort_pnet_share_rows(model):\n    \"\"\"\n    P5.15 Addendum 3 item 2 (H3 rule, PLANNER_BRIEF_2026-09-13.md, Addendum 3,\n    \"Authorized\" item 2): pins each active cohort's per-period net power to\n    its pro-rata share (by rated energy capacity) of the aggregate net power,\n    for every calendar year with more than one active cohort. This is a\n    HOMOGENEOUS-FLEET APPROXIMATION -- to be stated in the manuscript\n    (answers Expert Section 2.4 / R3.3 cohort realizability). It resolves the\n    per-cohort split degeneracy noted as H3 in `P5_15_EXPERT_HANDOFF.md`\n    section 3, reason 3: the throughput regularization in\n    `feasibility_penalty` is indifferent to how `|pnet|` is split among\n    active cohorts, so per-cohort `es_D_per_unit` / `es_soh_per_unit_cumul`\n    are non-unique whenever two or more cohorts are active, even under\n    perfect complementarity.\n\n    ROW COUNT (mandatory constraint, Addendum 3 item 2): exactly\n    N_active(y)-1 rows are left ACTIVE per (y, d, p) -- never N. The shares\n    sum to 1 by construction and `agg_pnet` (used identically by\n    `energy_storage_operation_agg`'s own row, immediately above where these\n    rows are built) is already defined as the sum of the same per-cohort\n    powers; writing all N pro-rata rows would therefore make the constraint\n    set linearly dependent -- an LICQ violation of exactly the class this\n    programme has been removing elsewhere. The omitted cohort, per year, is\n    the one with the LARGEST y_inv among that year's active cohorts -- a\n    deterministic, otherwise-arbitrary convention (any single fixed choice\n    works, because of the sum-to-one identity); `energy_storage_operation_agg`\n    supplies its value.\n\n    PARAMETER, NOT EXPRESSION (mandatory constraint, Addendum 3 item 2): every\n    share written here is a plain PYTHON FLOAT, computed from\n    `es_e_investment_fixed` (a mutable Param) via `pe.value(...)`, and is\n    then pushed into the model with `.set_value(...)` on the mutable Param\n    `es_pnet_cohort_share_h3`. It is never built as a Pyomo expression out of\n    the rated-capacity Vars (`es_e_rated_per_unit`) -- dividing by a SUM OF\n    VARS would make the row's coefficient a decision variable, i.e. a",
+    "excerpt_sha256": "79ba7114be8423ef09f5a2819df5268879e1c651b871d9bac9391c6b980110a0",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 1639,
+    "line_last": 1673,
+    "excerpt": "def _configure_esso_cohort_pnet_share_rows(model):\n    \"\"\"\n    P5.15 Addendum 3 item 2 (H3 rule, PLANNER_BRIEF_2026-09-13.md, Addendum 3,\n    \"Authorized\" item 2): pins each active cohort's per-period net power to\n    its pro-rata share (by rated energy capacity) of the aggregate net power,\n    for every calendar year with more than one active cohort. This is a\n    HOMOGENEOUS-FLEET APPROXIMATION -- to be stated in the manuscript\n    (answers Expert Section 2.4 / R3.3 cohort realizability). It resolves the\n    per-cohort split degeneracy noted as H3 in `P5_15_EXPERT_HANDOFF.md`\n    section 3, reason 3: the throughput regularization in\n    `feasibility_penalty` is indifferent to how `|pnet|` is split among\n    active cohorts, so per-cohort `es_D_per_unit` / `es_soh_per_unit_cumul`\n    are non-unique whenever two or more cohorts are active, even under\n    perfect complementarity.\n\n    ROW COUNT (mandatory constraint, Addendum 3 item 2): exactly\n    N_active(y)-1 rows are left ACTIVE per (y, d, p) -- never N. The shares\n    sum to 1 by construction and `agg_pnet` (used identically by\n    `energy_storage_operation_agg`'s own row, immediately above where these\n    rows are built) is already defined as the sum of the same per-cohort\n    powers; writing all N pro-rata rows would therefore make the constraint\n    set linearly dependent -- an LICQ violation of exactly the class this\n    programme has been removing elsewhere. The omitted cohort, per year, is\n    the one with the LARGEST y_inv among that year's active cohorts -- a\n    deterministic, otherwise-arbitrary convention (any single fixed choice\n    works, because of the sum-to-one identity); `energy_storage_operation_agg`\n    supplies its value.\n\n    PARAMETER, NOT EXPRESSION (mandatory constraint, Addendum 3 item 2): every\n    share written here is a plain PYTHON FLOAT, computed from\n    `es_e_investment_fixed` (a mutable Param) via `pe.value(...)`, and is\n    then pushed into the model with `.set_value(...)` on the mutable Param\n    `es_pnet_cohort_share_h3`. It is never built as a Pyomo expression out of\n    the rated-capacity Vars (`es_e_rated_per_unit`) -- dividing by a SUM OF\n    VARS would make the row's coefficient a decision variable, i.e. a",
+    "excerpt_sha256": "79ba7114be8423ef09f5a2819df5268879e1c651b871d9bac9391c6b980110a0",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 96,
+   "citation_holds": true
+  },
+  {
+   "id": "A-08",
+   "item": "A",
+   "file": "shared_energy_storage_data.py",
+   "statement": "Guard: the only division E^Inv / sum_active E^Inv is a float, reached only with >= 2 active cohorts and a positive sum; with <= 1 active cohort every allocation row of the year is deactivated and every share set 0.",
+   "required_substrings": [
+    "active_cohorts = [",
+    "if (not model._esso_cohort_inactive.get(y_inv, False))",
+    "and _esso_cohort_pair_is_within_lifetime(model, y_inv, y)",
+    "if n_active <= 1:",
+    "model.energy_storage_cohort_pnet_share_h3[constraint_idx].deactivate()",
+    "pe.value(model.es_e_investment_fixed[y_inv]) for y_inv in active_cohorts",
+    "omitted = max(active_cohorts)",
+    "if y_inv in active_cohorts and total_e_rated > 0.00:",
+    "share = pe.value(model.es_e_investment_fixed[y_inv]) / total_e_rated",
+    "enable_row = (y_inv in active_cohorts) and (y_inv != omitted)"
+   ],
+   "head": {
+    "line_first": 1798,
+    "line_last": 1830,
+    "excerpt": "        active_cohorts = [\n            y_inv for y_inv in years\n            if (not model._esso_cohort_inactive.get(y_inv, False))\n            and _esso_cohort_pair_is_within_lifetime(model, y_inv, y)\n        ]\n        n_active = len(active_cohorts)\n\n        if n_active <= 1:\n            for y_inv in years:\n                model.es_pnet_cohort_share_h3[y_inv, y].set_value(0.00)\n                for constraint_idx in rows_by_year_cohort[y][y_inv]:\n                    model.energy_storage_cohort_pnet_share_h3[constraint_idx].deactivate()\n            continue\n\n        total_e_rated = sum(\n            pe.value(model.es_e_investment_fixed[y_inv]) for y_inv in active_cohorts\n        )\n        omitted = max(active_cohorts)\n\n        for y_inv in years:\n\n            share = 0.00\n            if y_inv in active_cohorts and total_e_rated > 0.00:\n                share = pe.value(model.es_e_investment_fixed[y_inv]) / total_e_rated\n            model.es_pnet_cohort_share_h3[y_inv, y].set_value(share)\n\n            enable_row = (y_inv in active_cohorts) and (y_inv != omitted)\n            for constraint_idx in rows_by_year_cohort[y][y_inv]:\n                constraint = model.energy_storage_cohort_pnet_share_h3[constraint_idx]\n                if enable_row:\n                    constraint.activate()\n                else:\n                    constraint.deactivate()",
+    "excerpt_sha256": "65cc51b9582d1371fe9a952344f11d39913da54d120b4ef4c6a59c85989b0012",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 1702,
+    "line_last": 1734,
+    "excerpt": "        active_cohorts = [\n            y_inv for y_inv in years\n            if (not model._esso_cohort_inactive.get(y_inv, False))\n            and _esso_cohort_pair_is_within_lifetime(model, y_inv, y)\n        ]\n        n_active = len(active_cohorts)\n\n        if n_active <= 1:\n            for y_inv in years:\n                model.es_pnet_cohort_share_h3[y_inv, y].set_value(0.00)\n                for constraint_idx in rows_by_year_cohort[y][y_inv]:\n                    model.energy_storage_cohort_pnet_share_h3[constraint_idx].deactivate()\n            continue\n\n        total_e_rated = sum(\n            pe.value(model.es_e_investment_fixed[y_inv]) for y_inv in active_cohorts\n        )\n        omitted = max(active_cohorts)\n\n        for y_inv in years:\n\n            share = 0.00\n            if y_inv in active_cohorts and total_e_rated > 0.00:\n                share = pe.value(model.es_e_investment_fixed[y_inv]) / total_e_rated\n            model.es_pnet_cohort_share_h3[y_inv, y].set_value(share)\n\n            enable_row = (y_inv in active_cohorts) and (y_inv != omitted)\n            for constraint_idx in rows_by_year_cohort[y][y_inv]:\n                constraint = model.energy_storage_cohort_pnet_share_h3[constraint_idx]\n                if enable_row:\n                    constraint.activate()\n                else:\n                    constraint.deactivate()",
+    "excerpt_sha256": "65cc51b9582d1371fe9a952344f11d39913da54d120b4ef4c6a59c85989b0012",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 96,
+   "citation_holds": true
+  },
+  {
+   "id": "X-01",
+   "item": "X",
+   "file": "shared_energy_storage_data.py",
+   "statement": "Cell throughput row (eq. cell_throughput), cohort-registered, built for every (y_inv, y).",
+   "required_substrings": [
+    "avg_ch_dch += (num_days / 365.00) * (eff_ch * pch * dt + pdch * dt / eff_dch)",
+    "_add_esso_cohort_constraint(model, 'energy_storage_charging_discharging', y_inv, y, model.es_avg_ch_dch_per_unit[y_inv, y] == avg_ch_dch)"
+   ],
+   "head": {
+    "line_first": 656,
+    "line_last": 670,
+    "excerpt": "    dt = period_duration_hours(model)\n    for y_inv in model.years:\n        shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][shared_ess_idx]\n        eff_ch = shared_energy_storage.eff_ch\n        eff_dch = shared_energy_storage.eff_dch\n        for y in model.years:\n            avg_ch_dch = 0.0\n            for d in model.days:\n                day = repr_days[d]\n                num_days = shared_ess_data.days[day]\n                for p in model.periods:\n                    pch = model.es_pch_per_unit[y_inv, y, d, p]\n                    pdch = model.es_pdch_per_unit[y_inv, y, d, p]\n                    avg_ch_dch += (num_days / 365.00) * (eff_ch * pch * dt + pdch * dt / eff_dch)\n            _add_esso_cohort_constraint(model, 'energy_storage_charging_discharging', y_inv, y, model.es_avg_ch_dch_per_unit[y_inv, y] == avg_ch_dch)",
+    "excerpt_sha256": "55f7ee5fd64b1412322779f59234f764d606a4c391e5d83ac21c68dfb520381f",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 652,
+    "line_last": 666,
+    "excerpt": "    dt = period_duration_hours(model)\n    for y_inv in model.years:\n        shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][shared_ess_idx]\n        eff_ch = shared_energy_storage.eff_ch\n        eff_dch = shared_energy_storage.eff_dch\n        for y in model.years:\n            avg_ch_dch = 0.0\n            for d in model.days:\n                day = repr_days[d]\n                num_days = shared_ess_data.days[day]\n                for p in model.periods:\n                    pch = model.es_pch_per_unit[y_inv, y, d, p]\n                    pdch = model.es_pdch_per_unit[y_inv, y, d, p]\n                    avg_ch_dch += (num_days / 365.00) * (eff_ch * pch * dt + pdch * dt / eff_dch)\n            _add_esso_cohort_constraint(model, 'energy_storage_charging_discharging', y_inv, y, model.es_avg_ch_dch_per_unit[y_inv, y] == avg_ch_dch)",
+    "excerpt_sha256": "55f7ee5fd64b1412322779f59234f764d606a4c391e5d83ac21c68dfb520381f",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "X-02",
+   "item": "X",
+   "file": "shared_energy_storage_data.py",
+   "statement": "Degradation rows exist only inside the calendar window; Y is read from the INVESTMENT block of the cohort.",
+   "required_substrings": [
+    "model.energy_storage_capacity_degradation = pe.ConstraintList()",
+    "num_years = shared_ess_data.years[repr_years[y_inv]]",
+    "for y in range(y_inv, max_tcal_norm):",
+    "model.es_soh_per_unit_cumul[y_inv, y].fixed = False"
+   ],
+   "head": {
+    "line_first": 679,
+    "line_last": 693,
+    "excerpt": "    model.energy_storage_capacity_degradation = pe.ConstraintList()\n    for y_inv in model.years:\n\n        num_years = shared_ess_data.years[repr_years[y_inv]]\n        shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][shared_ess_idx]\n        tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y_inv]]))\n        max_tcal_norm = min(y_inv + tcal_norm, len(shared_ess_data.years))\n        phi_cal = shared_energy_storage.phi_cal\n        if not ageing_enabled:\n            # P5.15 Addenda 28-29 (task W20): ageing off -- no calendar loss.\n            phi_cal = 1.00\n\n        for y in range(y_inv, max_tcal_norm):\n\n            model.es_soh_per_unit_cumul[y_inv, y].fixed = False",
+    "excerpt_sha256": "fced50cc350dc95667ffab635f702f1a9aa3919709b9ec891ee766a5df9631f2",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 675,
+    "line_last": 689,
+    "excerpt": "    model.energy_storage_capacity_degradation = pe.ConstraintList()\n    for y_inv in model.years:\n\n        num_years = shared_ess_data.years[repr_years[y_inv]]\n        shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][shared_ess_idx]\n        tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y_inv]]))\n        max_tcal_norm = min(y_inv + tcal_norm, len(shared_ess_data.years))\n        phi_cal = shared_energy_storage.phi_cal\n        if not ageing_enabled:\n            # P5.15 Addenda 28-29 (task W20): ageing off -- no calendar loss.\n            phi_cal = 1.00\n\n        for y in range(y_inv, max_tcal_norm):\n\n            model.es_soh_per_unit_cumul[y_inv, y].fixed = False",
+    "excerpt_sha256": "fced50cc350dc95667ffab635f702f1a9aa3919709b9ec891ee766a5df9631f2",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "X-03",
+   "item": "X",
+   "file": "shared_energy_storage_data.py",
+   "statement": "Cycling exponent in product form: D * (2 k E^Inv) = 365 Y E^Cell (ageing on); D == 0 (ageing off).",
+   "required_substrings": [
+    "if ageing_enabled:",
+    "model.es_D_per_unit[y_inv, y] * (2 * shared_energy_storage.cl_eff * model.es_e_investment_fixed[y_inv])",
+    "== 365.00 * num_years * model.es_avg_ch_dch_per_unit[y_inv, y])",
+    "model.es_D_per_unit[y_inv, y] == 0.00)"
+   ],
+   "head": {
+    "line_first": 703,
+    "line_last": 715,
+    "excerpt": "            if ageing_enabled:\n                _add_esso_cohort_constraint(\n                    model, 'energy_storage_capacity_degradation', y_inv, y,\n                    model.es_D_per_unit[y_inv, y] * (2 * shared_energy_storage.cl_eff * model.es_e_investment_fixed[y_inv])\n                    == 365.00 * num_years * model.es_avg_ch_dch_per_unit[y_inv, y])\n            else:\n                # P5.15 Addenda 28-29 (task W20): ageing off -- D == 0 directly, so\n                # the characteristic constant cl_eff is never divided by (no\n                # \"infinite k\"). Same row family and position, so the\n                # (D, SoH, floor) triple structure per (y_inv, y) is unchanged.\n                _add_esso_cohort_constraint(\n                    model, 'energy_storage_capacity_degradation', y_inv, y,\n                    model.es_D_per_unit[y_inv, y] == 0.00)",
+    "excerpt_sha256": "b70de04120b4c32cf816f59046d94e8db043d9389517fb98746c00580a4025a4",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 699,
+    "line_last": 711,
+    "excerpt": "            if ageing_enabled:\n                _add_esso_cohort_constraint(\n                    model, 'energy_storage_capacity_degradation', y_inv, y,\n                    model.es_D_per_unit[y_inv, y] * (2 * shared_energy_storage.cl_eff * model.es_e_investment_fixed[y_inv])\n                    == 365.00 * num_years * model.es_avg_ch_dch_per_unit[y_inv, y])\n            else:\n                # P5.15 Addenda 28-29 (task W20): ageing off -- D == 0 directly, so\n                # the characteristic constant cl_eff is never divided by (no\n                # \"infinite k\"). Same row family and position, so the\n                # (D, SoH, floor) triple structure per (y_inv, y) is unchanged.\n                _add_esso_cohort_constraint(\n                    model, 'energy_storage_capacity_degradation', y_inv, y,\n                    model.es_D_per_unit[y_inv, y] == 0.00)",
+    "excerpt_sha256": "b70de04120b4c32cf816f59046d94e8db043d9389517fb98746c00580a4025a4",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "X-04",
+   "item": "X",
+   "file": "shared_energy_storage_data.py",
+   "statement": "SoH row and floor row: cohort-registered, same family as the D row.",
+   "required_substrings": [
+    "== prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y]) * (phi_cal ** num_years))",
+    "model.es_soh_per_unit_cumul[y_inv, y] >= shared_energy_storage.soh_min)"
+   ],
+   "head": {
+    "line_first": 725,
+    "line_last": 736,
+    "excerpt": "            _add_esso_cohort_constraint(\n                model, 'energy_storage_capacity_degradation', y_inv, y,\n                model.es_soh_per_unit_cumul[y_inv, y]\n                == prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y]) * (phi_cal ** num_years))\n\n            # Minimum admissible SoH -- LINEAR floor directly on the cumulative\n            # SoH variable (Step 1 item 2). Equivalent to the retired\n            # `e_available >= soh_min * e_rated` floor given\n            # `available_e_capacity_unit`'s definition of e_available (above).\n            _add_esso_cohort_constraint(\n                model, 'energy_storage_capacity_degradation', y_inv, y,\n                model.es_soh_per_unit_cumul[y_inv, y] >= shared_energy_storage.soh_min)",
+    "excerpt_sha256": "3ef35adb55e494fe46886a06ca10617efa425e67b828c6d826e1a23bc6311088",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 721,
+    "line_last": 732,
+    "excerpt": "            _add_esso_cohort_constraint(\n                model, 'energy_storage_capacity_degradation', y_inv, y,\n                model.es_soh_per_unit_cumul[y_inv, y]\n                == prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y]) * (phi_cal ** num_years))\n\n            # Minimum admissible SoH -- LINEAR floor directly on the cumulative\n            # SoH variable (Step 1 item 2). Equivalent to the retired\n            # `e_available >= soh_min * e_rated` floor given\n            # `available_e_capacity_unit`'s definition of e_available (above).\n            _add_esso_cohort_constraint(\n                model, 'energy_storage_capacity_degradation', y_inv, y,\n                model.es_soh_per_unit_cumul[y_inv, y] >= shared_energy_storage.soh_min)",
+    "excerpt_sha256": "3ef35adb55e494fe46886a06ca10617efa425e67b828c6d826e1a23bc6311088",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "ZE-01",
+   "item": "Z-esso",
+   "file": "shared_energy_storage_data.py",
+   "statement": "Per-cohort registry of rows and of the inactive flag.",
+   "required_substrings": [
+    "model._esso_cohort_constraints = {",
+    "model._esso_cohort_inactive = {"
+   ],
+   "head": {
+    "line_first": 435,
+    "line_last": 441,
+    "excerpt": "    model._esso_cohort_constraints = {\n        y_inv: [] for y_inv in model.years\n    }\n\n    model._esso_cohort_inactive = {\n        y_inv: False for y_inv in model.years\n    }",
+    "excerpt_sha256": "d18549957be2d04b1f345ebaa3eaa62ad5e6731c234cc8805c38cb83b823598e",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 431,
+    "line_last": 437,
+    "excerpt": "    model._esso_cohort_constraints = {\n        y_inv: [] for y_inv in model.years\n    }\n\n    model._esso_cohort_inactive = {\n        y_inv: False for y_inv in model.years\n    }",
+    "excerpt_sha256": "d18549957be2d04b1f345ebaa3eaa62ad5e6731c234cc8805c38cb83b823598e",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "ZE-02",
+   "item": "Z-esso",
+   "file": "shared_energy_storage_data.py",
+   "statement": "Every row added through _add_esso_cohort_constraint is registered to its cohort.",
+   "required_substrings": [
+    "def _add_esso_cohort_constraint(model, constraint_name, y_inv, y, expr):",
+    "model._esso_cohort_constraints[y_inv].append((constraint_name, constraint_idx, y))"
+   ],
+   "head": {
+    "line_first": 1662,
+    "line_last": 1666,
+    "excerpt": "def _add_esso_cohort_constraint(model, constraint_name, y_inv, y, expr):\n    constraint_list = getattr(model, constraint_name)\n    constraint_list.add(expr)\n    constraint_idx = len(constraint_list)\n    model._esso_cohort_constraints[y_inv].append((constraint_name, constraint_idx, y))",
+    "excerpt_sha256": "4381d87ce8a420c5f1def5302f93255e3cecbd1aad9ed9ba2c68c512ee1c209b",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 1566,
+    "line_last": 1570,
+    "excerpt": "def _add_esso_cohort_constraint(model, constraint_name, y_inv, y, expr):\n    constraint_list = getattr(model, constraint_name)\n    constraint_list.add(expr)\n    constraint_idx = len(constraint_list)\n    model._esso_cohort_constraints[y_inv].append((constraint_name, constraint_idx, y))",
+    "excerpt_sha256": "4381d87ce8a420c5f1def5302f93255e3cecbd1aad9ed9ba2c68c512ee1c209b",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 96,
+   "citation_holds": true
+  },
+  {
+   "id": "ZE-03",
+   "item": "Z-esso",
+   "file": "shared_energy_storage_data.py",
+   "statement": "Window test: a (y_inv, y) pair is in the window iff its rated per-unit Vars were unfixed at build.",
+   "required_substrings": [
+    "def _esso_cohort_pair_is_within_lifetime(model, y_inv, y):",
+    "return (not model.es_s_rated_per_unit[y_inv, y].fixed and not model.es_e_rated_per_unit[y_inv, y].fixed)"
+   ],
+   "head": {
+    "line_first": 1677,
+    "line_last": 1679,
+    "excerpt": "def _esso_cohort_pair_is_within_lifetime(model, y_inv, y):\n    # These variables are already fixed to zero outside the calendar lifetime when the model is constructed.\n    return (not model.es_s_rated_per_unit[y_inv, y].fixed and not model.es_e_rated_per_unit[y_inv, y].fixed)",
+    "excerpt_sha256": "e70b8d662b739c965a0f310879a933bb63c7cfa252057ebd9c1283ee3136d585",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 1581,
+    "line_last": 1583,
+    "excerpt": "def _esso_cohort_pair_is_within_lifetime(model, y_inv, y):\n    # These variables are already fixed to zero outside the calendar lifetime when the model is constructed.\n    return (not model.es_s_rated_per_unit[y_inv, y].fixed and not model.es_e_rated_per_unit[y_inv, y].fixed)",
+    "excerpt_sha256": "e70b8d662b739c965a0f310879a933bb63c7cfa252057ebd9c1283ee3136d585",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 96,
+   "citation_holds": true
+  },
+  {
+   "id": "ZE-04",
+   "item": "Z-esso",
+   "file": "shared_energy_storage_data.py",
+   "statement": "Cohort inactive iff |S^Inv| <= 1e-10 and |E^Inv| <= 1e-10 (one without the other raises). For an inactive cohort or a pair outside the window: throughput, D, P^Ch, P^Dch fixed 0, SoH fixed 1; every registered row deactivated.",
+   "required_substrings": [
+    "tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE",
+    "if s_is_zero != e_is_zero:",
+    "raise ValueError(f'Inconsistent shared ESS cohort capacity: S={s_capacity}, E={e_capacity}.')",
+    "inactive = s_is_zero and e_is_zero",
+    "active_pair = (not inactive and within_lifetime)",
+    "_set_esso_variable_state(model.es_avg_ch_dch_per_unit[y_inv, y], active_pair, 0.0)",
+    "_set_esso_variable_state(model.es_D_per_unit[y_inv, y], active_pair, 0.0)",
+    "_set_esso_variable_state(model.es_soh_per_unit_cumul[y_inv, y], active_pair, 1.0)",
+    "_set_esso_variable_state(model.es_pch_per_unit[y_inv, y, d, p], active_pair, 0.0)",
+    "_set_esso_variable_state(model.es_pdch_per_unit[y_inv, y, d, p], active_pair, 0.0)",
+    "for constraint_name, constraint_idx, y in (model._esso_cohort_constraints[y_inv]):",
+    "active_constraint = (not inactive and _esso_cohort_pair_is_within_lifetime(model, y_inv, y))",
+    "constraint.deactivate()"
+   ],
+   "head": {
+    "line_first": 1682,
+    "line_last": 1732,
+    "excerpt": "def _configure_esso_cohort_state(model, y_inv, s_capacity, e_capacity, slacks_enabled):\n\n    tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE\n    s_is_zero = abs(s_capacity) <= tolerance\n    e_is_zero = abs(e_capacity) <= tolerance\n    if s_is_zero != e_is_zero:\n        raise ValueError(f'Inconsistent shared ESS cohort capacity: S={s_capacity}, E={e_capacity}.')\n    inactive = s_is_zero and e_is_zero\n\n    model._esso_cohort_inactive[y_inv] = inactive\n\n    # ------------------------------------------------------------------\n    # Variables\n    # ------------------------------------------------------------------\n    for y in model.years:\n\n        within_lifetime = _esso_cohort_pair_is_within_lifetime(model, y_inv, y)\n        active_pair = (not inactive and within_lifetime)\n\n        # Annual degradation quantities\n        # P5.15-1: es_degradation_per_unit / es_degradation_per_unit_cumul /\n        # es_soh_per_unit and their slack families are retired; es_D_per_unit\n        # takes es_degradation_per_unit's former place (same gating, inactive\n        # value 0.0 -- consistent with D representing zero throughput/loss when\n        # the cohort is inactive or outside its calendar-life window).\n        _set_esso_variable_state(model.es_avg_ch_dch_per_unit[y_inv, y], active_pair, 0.0)\n        _set_esso_variable_state(model.es_D_per_unit[y_inv, y], active_pair, 0.0)\n        _set_esso_variable_state(model.es_soh_per_unit_cumul[y_inv, y], active_pair, 1.0)\n\n        # --------------------------------------------------------------\n        # Time-dependent operation\n        # --------------------------------------------------------------\n        for d in model.days:\n            for p in model.periods:\n                _set_esso_variable_state(model.es_pch_per_unit[y_inv, y, d, p], active_pair, 0.0)\n                _set_esso_variable_state(model.es_pdch_per_unit[y_inv, y, d, p], active_pair, 0.0)\n                # P5.15-1: es_pch_hat_per_unit / es_pdch_hat_per_unit / the\n                # complementarity slack are retired (Step 1 item 3).\n\n    # ------------------------------------------------------------------\n    # Constraints\n    # ------------------------------------------------------------------\n    for constraint_name, constraint_idx, y in (model._esso_cohort_constraints[y_inv]):\n        constraint = getattr(model, constraint_name)[constraint_idx]\n        active_constraint = (not inactive and _esso_cohort_pair_is_within_lifetime(model, y_inv, y))\n        if active_constraint:\n            constraint.activate()\n        else:\n            constraint.deactivate()\n\n    return inactive",
+    "excerpt_sha256": "97ec19d40f7ee9f71e391a49825eb16894a6ff539970ea463ac6c7f41ca71466",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 1586,
+    "line_last": 1636,
+    "excerpt": "def _configure_esso_cohort_state(model, y_inv, s_capacity, e_capacity, slacks_enabled):\n\n    tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE\n    s_is_zero = abs(s_capacity) <= tolerance\n    e_is_zero = abs(e_capacity) <= tolerance\n    if s_is_zero != e_is_zero:\n        raise ValueError(f'Inconsistent shared ESS cohort capacity: S={s_capacity}, E={e_capacity}.')\n    inactive = s_is_zero and e_is_zero\n\n    model._esso_cohort_inactive[y_inv] = inactive\n\n    # ------------------------------------------------------------------\n    # Variables\n    # ------------------------------------------------------------------\n    for y in model.years:\n\n        within_lifetime = _esso_cohort_pair_is_within_lifetime(model, y_inv, y)\n        active_pair = (not inactive and within_lifetime)\n\n        # Annual degradation quantities\n        # P5.15-1: es_degradation_per_unit / es_degradation_per_unit_cumul /\n        # es_soh_per_unit and their slack families are retired; es_D_per_unit\n        # takes es_degradation_per_unit's former place (same gating, inactive\n        # value 0.0 -- consistent with D representing zero throughput/loss when\n        # the cohort is inactive or outside its calendar-life window).\n        _set_esso_variable_state(model.es_avg_ch_dch_per_unit[y_inv, y], active_pair, 0.0)\n        _set_esso_variable_state(model.es_D_per_unit[y_inv, y], active_pair, 0.0)\n        _set_esso_variable_state(model.es_soh_per_unit_cumul[y_inv, y], active_pair, 1.0)\n\n        # --------------------------------------------------------------\n        # Time-dependent operation\n        # --------------------------------------------------------------\n        for d in model.days:\n            for p in model.periods:\n                _set_esso_variable_state(model.es_pch_per_unit[y_inv, y, d, p], active_pair, 0.0)\n                _set_esso_variable_state(model.es_pdch_per_unit[y_inv, y, d, p], active_pair, 0.0)\n                # P5.15-1: es_pch_hat_per_unit / es_pdch_hat_per_unit / the\n                # complementarity slack are retired (Step 1 item 3).\n\n    # ------------------------------------------------------------------\n    # Constraints\n    # ------------------------------------------------------------------\n    for constraint_name, constraint_idx, y in (model._esso_cohort_constraints[y_inv]):\n        constraint = getattr(model, constraint_name)[constraint_idx]\n        active_constraint = (not inactive and _esso_cohort_pair_is_within_lifetime(model, y_inv, y))\n        if active_constraint:\n            constraint.activate()\n        else:\n            constraint.deactivate()\n\n    return inactive",
+    "excerpt_sha256": "97ec19d40f7ee9f71e391a49825eb16894a6ff539970ea463ac6c7f41ca71466",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 96,
+   "citation_holds": true
+  },
+  {
+   "id": "ZE-05",
+   "item": "Z-esso",
+   "file": "shared_energy_storage_data.py",
+   "statement": "SoH is built fixed at 1.0 (unfixed only inside the window).",
+   "required_substrings": [
+    "model.es_soh_per_unit_cumul.fix(1.00)"
+   ],
+   "head": {
+    "line_first": 554,
+    "line_last": 554,
+    "excerpt": "    model.es_soh_per_unit_cumul.fix(1.00)",
+    "excerpt_sha256": "150ad7b481eadf989def6611fbbafed07ca3a75b1e8fc64a1d60d58c01c4e0ee",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 550,
+    "line_last": 550,
+    "excerpt": "    model.es_soh_per_unit_cumul.fix(1.00)",
+    "excerpt_sha256": "150ad7b481eadf989def6611fbbafed07ca3a75b1e8fc64a1d60d58c01c4e0ee",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "ZE-06",
+   "item": "Z-esso",
+   "file": "shared_energy_storage_data.py",
+   "statement": "NOT cohort-registered: node-level rated S and E rows (stay active at zero capacity; they then read 0 = 0 sums).",
+   "required_substrings": [
+    "model.rated_s_capacity.add(model.es_s_rated[y] == total_s_capacity)",
+    "model.rated_e_capacity.add(model.es_e_rated[y] == total_e_capacity)"
+   ],
+   "head": {
+    "line_first": 577,
+    "line_last": 586,
+    "excerpt": "    model.rated_s_capacity = pe.ConstraintList()\n    model.rated_e_capacity = pe.ConstraintList()\n    for y in model.years:\n        total_s_capacity = 0.00\n        total_e_capacity = 0.00\n        for y_inv in model.years:\n            total_s_capacity += model.es_s_rated_per_unit[y_inv, y]\n            total_e_capacity += model.es_e_rated_per_unit[y_inv, y]\n        model.rated_s_capacity.add(model.es_s_rated[y] == total_s_capacity)\n        model.rated_e_capacity.add(model.es_e_rated[y] == total_e_capacity)",
+    "excerpt_sha256": "65c7624eaf000bb0746d5f25644a396ec841914ac71e49094a133d2ab670b1bb",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 573,
+    "line_last": 582,
+    "excerpt": "    model.rated_s_capacity = pe.ConstraintList()\n    model.rated_e_capacity = pe.ConstraintList()\n    for y in model.years:\n        total_s_capacity = 0.00\n        total_e_capacity = 0.00\n        for y_inv in model.years:\n            total_s_capacity += model.es_s_rated_per_unit[y_inv, y]\n            total_e_capacity += model.es_e_rated_per_unit[y_inv, y]\n        model.rated_s_capacity.add(model.es_s_rated[y] == total_s_capacity)\n        model.rated_e_capacity.add(model.es_e_rated[y] == total_e_capacity)",
+    "excerpt_sha256": "65c7624eaf000bb0746d5f25644a396ec841914ac71e49094a133d2ab670b1bb",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "ZE-07",
+   "item": "Z-esso",
+   "file": "shared_energy_storage_data.py",
+   "statement": "NOT cohort-registered: available S/E per cohort-year rows (built for every pair; stay active).",
+   "required_substrings": [
+    "model.available_s_capacity_unit = pe.ConstraintList()",
+    "model.available_e_capacity_unit = pe.ConstraintList()",
+    "model.es_e_available_per_unit[y_inv, y] == model.es_e_rated_per_unit[y_inv, y] * model.es_soh_per_unit_cumul[y_inv, y]"
+   ],
+   "head": {
+    "line_first": 619,
+    "line_last": 632,
+    "excerpt": "    model.available_s_capacity_unit = pe.ConstraintList()\n    model.available_e_capacity_unit = pe.ConstraintList()\n    for y_inv in model.years:\n        for y in model.years:\n            model.available_s_capacity_unit.add(model.es_s_available_per_unit[y_inv, y] == model.es_s_rated_per_unit[y_inv, y])\n            if (y_inv, y) in mid_block_context:\n                num_years, phi_cal = mid_block_context[(y_inv, y)]\n                prev_soh = 1.00\n                if y > y_inv:\n                    prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]\n                soh_mid = prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y] / 2.00) * (phi_cal ** (num_years / 2.00))\n                model.available_e_capacity_unit.add(model.es_e_available_per_unit[y_inv, y] == model.es_e_rated_per_unit[y_inv, y] * soh_mid)\n            else:\n                model.available_e_capacity_unit.add(model.es_e_available_per_unit[y_inv, y] == model.es_e_rated_per_unit[y_inv, y] * model.es_soh_per_unit_cumul[y_inv, y])",
+    "excerpt_sha256": "20f2b8f2f8071d3483a0d6c2005dc2933acdf643fe010a43dd2e041a5d5ea81b",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 615,
+    "line_last": 628,
+    "excerpt": "    model.available_s_capacity_unit = pe.ConstraintList()\n    model.available_e_capacity_unit = pe.ConstraintList()\n    for y_inv in model.years:\n        for y in model.years:\n            model.available_s_capacity_unit.add(model.es_s_available_per_unit[y_inv, y] == model.es_s_rated_per_unit[y_inv, y])\n            if (y_inv, y) in mid_block_context:\n                num_years, phi_cal = mid_block_context[(y_inv, y)]\n                prev_soh = 1.00\n                if y > y_inv:\n                    prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]\n                soh_mid = prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y] / 2.00) * (phi_cal ** (num_years / 2.00))\n                model.available_e_capacity_unit.add(model.es_e_available_per_unit[y_inv, y] == model.es_e_rated_per_unit[y_inv, y] * soh_mid)\n            else:\n                model.available_e_capacity_unit.add(model.es_e_available_per_unit[y_inv, y] == model.es_e_rated_per_unit[y_inv, y] * model.es_soh_per_unit_cumul[y_inv, y])",
+    "excerpt_sha256": "20f2b8f2f8071d3483a0d6c2005dc2933acdf643fe010a43dd2e041a5d5ea81b",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "ZE-08",
+   "item": "Z-esso",
+   "file": "shared_energy_storage_data.py",
+   "statement": "NOT cohort-registered: node-level net-power definition (with sigma slacks) and converter circle; they stay active at zero capacity, where the circle has radius es_s_rated[y] = 0.",
+   "required_substrings": [
+    "model.energy_storage_operation_agg = pe.ConstraintList()",
+    "model.es_pnet[y, d, p] ** 2 + model.es_qnet[y, d, p] ** 2 <= model.es_s_rated[y] ** 2)"
+   ],
+   "head": {
+    "line_first": 768,
+    "line_last": 791,
+    "excerpt": "    model.energy_storage_operation_agg = pe.ConstraintList()\n    for y in model.years:\n        for d in model.days:\n            for p in model.periods:\n\n                # P5.4-C: with active per-cohort powers, the cohort sum IS the\n                # aggregate active power, so es_pnet is defined directly. This\n                # retires es_snet and the `es_snet^2 == es_pnet^2 + es_qnet^2`\n                # equality -- the ESSO instance of the same exact-zero-gradient\n                # row that P5.4-A retired in the network models -- and replaces\n                # it with the converter capability INEQUALITY, in parity with\n                # sess_converter_capability. Aggregate P and Q are both still\n                # represented: P by the cohort sum, Q by the capability circle.\n                agg_pnet = 0.00\n                for y_inv in model.years:\n                    agg_pnet += (model.es_pch_per_unit[y_inv, y, d, p] - model.es_pdch_per_unit[y_inv, y, d, p])\n\n                if shared_ess_data.params.slacks:\n                    model.energy_storage_operation_agg.add(model.es_pnet[y, d, p] == agg_pnet + model.slack_es_pnet_up[y, d, p] - model.slack_es_pnet_down[y, d, p])\n                else:\n                    model.energy_storage_operation_agg.add(model.es_pnet[y, d, p] == agg_pnet)\n\n                model.energy_storage_operation_agg.add(\n                    model.es_pnet[y, d, p] ** 2 + model.es_qnet[y, d, p] ** 2 <= model.es_s_rated[y] ** 2)",
+    "excerpt_sha256": "9e9ed5022612c7d10c36a8c3f775a9407bea7b3b11bd741bd4a5f0c0da0685cc",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 764,
+    "line_last": 787,
+    "excerpt": "    model.energy_storage_operation_agg = pe.ConstraintList()\n    for y in model.years:\n        for d in model.days:\n            for p in model.periods:\n\n                # P5.4-C: with active per-cohort powers, the cohort sum IS the\n                # aggregate active power, so es_pnet is defined directly. This\n                # retires es_snet and the `es_snet^2 == es_pnet^2 + es_qnet^2`\n                # equality -- the ESSO instance of the same exact-zero-gradient\n                # row that P5.4-A retired in the network models -- and replaces\n                # it with the converter capability INEQUALITY, in parity with\n                # sess_converter_capability. Aggregate P and Q are both still\n                # represented: P by the cohort sum, Q by the capability circle.\n                agg_pnet = 0.00\n                for y_inv in model.years:\n                    agg_pnet += (model.es_pch_per_unit[y_inv, y, d, p] - model.es_pdch_per_unit[y_inv, y, d, p])\n\n                if shared_ess_data.params.slacks:\n                    model.energy_storage_operation_agg.add(model.es_pnet[y, d, p] == agg_pnet + model.slack_es_pnet_up[y, d, p] - model.slack_es_pnet_down[y, d, p])\n                else:\n                    model.energy_storage_operation_agg.add(model.es_pnet[y, d, p] == agg_pnet)\n\n                model.energy_storage_operation_agg.add(\n                    model.es_pnet[y, d, p] ** 2 + model.es_qnet[y, d, p] ** 2 <= model.es_s_rated[y] ** 2)",
+    "excerpt_sha256": "9e9ed5022612c7d10c36a8c3f775a9407bea7b3b11bd741bd4a5f0c0da0685cc",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 4,
+   "citation_holds": true
+  },
+  {
+   "id": "ZE-09",
+   "item": "Z-esso",
+   "file": "shared_energy_storage_data.py",
+   "statement": "Public entry that applies the cohort states for a candidate.",
+   "required_substrings": [
+    "def update_model_with_candidate_solution(self, models, candidate_solution):",
+    "_update_model_with_candidate_solution(self, models, candidate_solution)"
+   ],
+   "head": {
+    "line_first": 157,
+    "line_last": 158,
+    "excerpt": "    def update_model_with_candidate_solution(self, models, candidate_solution):\n        _update_model_with_candidate_solution(self, models, candidate_solution)",
+    "excerpt_sha256": "b17f5dd3913a0adbf540574f195ef104877a409d77742b7813fff6917b80815f",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 157,
+    "line_last": 158,
+    "excerpt": "    def update_model_with_candidate_solution(self, models, candidate_solution):\n        _update_model_with_candidate_solution(self, models, candidate_solution)",
+    "excerpt_sha256": "b17f5dd3913a0adbf540574f195ef104877a409d77742b7813fff6917b80815f",
+    "missing_substrings": [],
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "ZE-10",
+   "item": "Z-esso",
+   "file": "helper_functions.py",
+   "statement": "SHARED_ESS_ZERO_CAPACITY_TOLERANCE reaches shared_energy_storage_data through helper_functions (import *).",
+   "required_substrings": [
+    "from definitions import *"
+   ],
+   "head": {
+    "line_first": 10,
+    "line_last": 10,
+    "excerpt": "from definitions import *",
+    "excerpt_sha256": "919b7c32775d9d7b72688406e3f74b14b598f351772cf8e8fc92e23f6aea6897",
+    "missing_substrings": [],
+    "file_sha256": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 10,
+    "line_last": 10,
+    "excerpt": "from definitions import *",
+    "excerpt_sha256": "919b7c32775d9d7b72688406e3f74b14b598f351772cf8e8fc92e23f6aea6897",
+    "missing_substrings": [],
+    "file_sha256": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "ZN-01",
+   "item": "Z-net",
+   "file": "model_construction_helpers.py",
+   "statement": "The nine network storage variables gated at zero capacity (hats included).",
+   "required_substrings": [
+    "_SHARED_ESS_OPERATIONAL_VARIABLES = (",
+    "'shared_es_pch',",
+    "'shared_es_pdch',",
+    "'shared_es_pch_hat',",
+    "'shared_es_pdch_hat',",
+    "'shared_es_pnet',",
+    "'shared_es_qnet',",
+    "'shared_es_soc',",
+    "'slack_shared_es_soc_final_up',",
+    "'slack_shared_es_soc_final_down',"
+   ],
+   "head": {
+    "line_first": 1002,
+    "line_last": 1013,
+    "excerpt": "_SHARED_ESS_OPERATIONAL_VARIABLES = (\n    'shared_es_pch',\n    'shared_es_pdch',\n    # P5.4-H1: the dimensionless pair follows exactly the same zero-capacity\n    # gating as the physical pair -- fixed at 0 when inactive, unfixed otherwise.\n    'shared_es_pch_hat',\n    'shared_es_pdch_hat',\n    'shared_es_pnet',\n    'shared_es_qnet',\n    'shared_es_soc',\n    'slack_shared_es_soc_final_up',\n    'slack_shared_es_soc_final_down',",
+    "excerpt_sha256": "95c28a787e468e23db90353e5dc957e459e4df3f086b80dc28fc28db5fc99284",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 1002,
+    "line_last": 1013,
+    "excerpt": "_SHARED_ESS_OPERATIONAL_VARIABLES = (\n    'shared_es_pch',\n    'shared_es_pdch',\n    # P5.4-H1: the dimensionless pair follows exactly the same zero-capacity\n    # gating as the physical pair -- fixed at 0 when inactive, unfixed otherwise.\n    'shared_es_pch_hat',\n    'shared_es_pdch_hat',\n    'shared_es_pnet',\n    'shared_es_qnet',\n    'shared_es_soc',\n    'slack_shared_es_soc_final_up',\n    'slack_shared_es_soc_final_down',",
+    "excerpt_sha256": "95c28a787e468e23db90353e5dc957e459e4df3f086b80dc28fc28db5fc99284",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "ZN-02",
+   "item": "Z-net",
+   "file": "model_construction_helpers.py",
+   "statement": "Variables whose box collapses to [0, 0] at zero capacity.",
+   "required_substrings": [
+    "_SHARED_ESS_ZERO_GATED_BOUND_VARIABLES = (",
+    "('shared_es_pch', 0.0, None)",
+    "('shared_es_qnet', None, None)"
+   ],
+   "head": {
+    "line_first": 1043,
+    "line_last": 1048,
+    "excerpt": "_SHARED_ESS_ZERO_GATED_BOUND_VARIABLES = (\n    ('shared_es_pch', 0.0, None),      # nonnegativity only; upper bound is symbolic\n    ('shared_es_pdch', 0.0, None),\n    ('shared_es_pnet', None, None),    # bounded by the capability circle\n    ('shared_es_qnet', None, None),\n)",
+    "excerpt_sha256": "78576a9a82d87fffb007048b4b3fc79c0c65524b3174cdc58007891fcc31b54d",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 1043,
+    "line_last": 1048,
+    "excerpt": "_SHARED_ESS_ZERO_GATED_BOUND_VARIABLES = (\n    ('shared_es_pch', 0.0, None),      # nonnegativity only; upper bound is symbolic\n    ('shared_es_pdch', 0.0, None),\n    ('shared_es_pnet', None, None),    # bounded by the capability circle\n    ('shared_es_qnet', None, None),\n)",
+    "excerpt_sha256": "78576a9a82d87fffb007048b4b3fc79c0c65524b3174cdc58007891fcc31b54d",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "ZN-03",
+   "item": "Z-net",
+   "file": "model_construction_helpers.py",
+   "statement": "The ten network storage rows gated at zero capacity (sess_comp included).",
+   "required_substrings": [
+    "_SHARED_ESS_OPERATIONAL_CONSTRAINTS = (",
+    "'sess_pnet_def',",
+    "'sess_pch_hat_link',",
+    "'sess_pdch_hat_link',",
+    "'sess_converter_capability',",
+    "'sess_active_sum_limit',",
+    "'sess_soc_def',",
+    "'sess_soc_limit_upper',",
+    "'sess_soc_limit_lower',",
+    "'sess_soc_final',",
+    "'sess_comp',"
+   ],
+   "head": {
+    "line_first": 1050,
+    "line_last": 1064,
+    "excerpt": "_SHARED_ESS_OPERATIONAL_CONSTRAINTS = (\n    'sess_pnet_def',\n    'sess_pch_hat_link',\n    'sess_pdch_hat_link',\n    'sess_converter_capability',\n    'sess_active_sum_limit',\n    # P5.15-1b Candidate 1: 'sess_phi_limit_lower'/'sess_phi_limit_upper' are\n    # removed (see the deletion note above `period_duration_hours`); no longer\n    # wired in `network.py`, so they are dropped from this activation list too.\n    'sess_soc_def',\n    'sess_soc_limit_upper',\n    'sess_soc_limit_lower',\n    'sess_soc_final',\n    'sess_comp',\n)",
+    "excerpt_sha256": "5801b780f587242d389a14fde95b8f8ae0f6eb1173717948a4819f5f8a1242d9",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 1050,
+    "line_last": 1064,
+    "excerpt": "_SHARED_ESS_OPERATIONAL_CONSTRAINTS = (\n    'sess_pnet_def',\n    'sess_pch_hat_link',\n    'sess_pdch_hat_link',\n    'sess_converter_capability',\n    'sess_active_sum_limit',\n    # P5.15-1b Candidate 1: 'sess_phi_limit_lower'/'sess_phi_limit_upper' are\n    # removed (see the deletion note above `period_duration_hours`); no longer\n    # wired in `network.py`, so they are dropped from this activation list too.\n    'sess_soc_def',\n    'sess_soc_limit_upper',\n    'sess_soc_limit_lower',\n    'sess_soc_final',\n    'sess_comp',\n)",
+    "excerpt_sha256": "5801b780f587242d389a14fde95b8f8ae0f6eb1173717948a4819f5f8a1242d9",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "ZN-04",
+   "item": "Z-net",
+   "file": "model_construction_helpers.py",
+   "statement": "Network node inactive iff S^Av <= 1e-10 OR E^Av <= 1e-10; values within the tolerance are normalised to 0.",
+   "required_substrings": [
+    "def shared_ess_capacity_is_inactive(s_capacity, e_capacity):",
+    "return abs(s_capacity) <= tolerance or abs(e_capacity) <= tolerance",
+    "def normalize_shared_ess_capacity(capacity):",
+    "return 0.0 if abs(capacity) <= tolerance else capacity"
+   ],
+   "head": {
+    "line_first": 1067,
+    "line_last": 1078,
+    "excerpt": "def shared_ess_capacity_is_inactive(s_capacity, e_capacity):\n    tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE\n    return abs(s_capacity) <= tolerance or abs(e_capacity) <= tolerance\n\n\ndef normalize_shared_ess_capacity(capacity):\n    tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE\n    if capacity < -tolerance:\n        raise ValueError(\n            f'Shared ESS available capacity cannot be negative: {capacity}.'\n        )\n    return 0.0 if abs(capacity) <= tolerance else capacity",
+    "excerpt_sha256": "3808c891e74ae65d75f464f45b833cd8bad1792b5050ae7eb0bb8995231a8e30",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 1067,
+    "line_last": 1078,
+    "excerpt": "def shared_ess_capacity_is_inactive(s_capacity, e_capacity):\n    tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE\n    return abs(s_capacity) <= tolerance or abs(e_capacity) <= tolerance\n\n\ndef normalize_shared_ess_capacity(capacity):\n    tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE\n    if capacity < -tolerance:\n        raise ValueError(\n            f'Shared ESS available capacity cannot be negative: {capacity}.'\n        )\n    return 0.0 if abs(capacity) <= tolerance else capacity",
+    "excerpt_sha256": "3808c891e74ae65d75f464f45b833cd8bad1792b5050ae7eb0bb8995231a8e30",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "ZN-05",
+   "item": "Z-net",
+   "file": "model_construction_helpers.py",
+   "statement": "At an inactive node: the nine variables fixed 0, the closure slacks bounded [0, 0], the ten rows deactivated, the gated boxes [0, 0], the expected-schedule variables fixed 0 and their rows deactivated.",
+   "required_substrings": [
+    "def configure_shared_ess_operational_state(",
+    "inactive = shared_ess_capacity_is_inactive(s_capacity, e_capacity)",
+    "entry.fix(0.0)",
+    "slack_ub = 0.0 if inactive else e_capacity * ESS_DAY_BALANCE_SLACK_FRACTION + EQUALITY_TOLERANCE",
+    "for constraint_name in _SHARED_ESS_OPERATIONAL_CONSTRAINTS:",
+    "entry.deactivate()",
+    "entry.setlb(0.0)\n                entry.setub(0.0)",
+    "_configure_shared_ess_expected_schedule(",
+    "return inactive"
+   ],
+   "head": {
+    "line_first": 1117,
+    "line_last": 1202,
+    "excerpt": "def configure_shared_ess_operational_state(\n        model, shared_ess_idx, s_capacity, e_capacity):\n    s_capacity = normalize_shared_ess_capacity(s_capacity)\n    e_capacity = normalize_shared_ess_capacity(e_capacity)\n    inactive = shared_ess_capacity_is_inactive(s_capacity, e_capacity)\n\n    # P5.4-A: the shared-ESS rows now depend directly on the rated-capacity\n    # parameter (`shared_es_s_rated_fixed`), so a capacity change is carried by\n    # the model itself. The former `sess_snet_def` kappa scale and its\n    # KKT-consistent multiplier transfer are gone with that row, and no\n    # replacement multiplier transformation is required.\n    #\n    # P5.15-1b (Step 2 Candidate 2): `shared_es_s_rated`/`shared_es_e_rated`\n    # (the `Var`s pinned to these Params by the now-deleted\n    # `shared_energy_storage_s/e_sensitivities` equalities) are gone --\n    # `shared_es_s_rated_fixed`/`shared_es_e_rated_fixed`, set here, are the\n    # sole capacity quantities read by the shared-ESS rows.\n    model.shared_es_s_rated_fixed[shared_ess_idx].set_value(s_capacity)\n    model.shared_es_e_rated_fixed[shared_ess_idx].set_value(e_capacity)\n\n    for variable_name in _SHARED_ESS_OPERATIONAL_VARIABLES:\n        if not hasattr(model, variable_name):\n            continue\n        variable = getattr(model, variable_name)\n        for entry in _component_entries_for_shared_ess(variable, shared_ess_idx):\n            if inactive:\n                entry.fix(0.0)\n            else:\n                if entry.fixed:\n                    entry.unfix()\n                if variable_name == 'shared_es_soc':\n                    entry.set_value(\n                        e_capacity * ENERGY_STORAGE_RELATIVE_INIT_SOC\n                    )\n\n    # P5.15 Step 3 (D6, signed table `P5_15_S31_PENALTY_TABLE_DRAFT.md`): the\n    # shared-ESS day-balance slack is bounded to the same fraction of energy\n    # capacity as the local-ESS one (`slack_es_balance_bounds`,\n    # `ESS_DAY_BALANCE_SLACK_FRACTION`). Capacity is candidate-dependent (Step\n    # 2 Candidate 2 made it a mutable Param), so a `bounds=` callable evaluated\n    # once at Var-construction time cannot track it; the bound is instead\n    # re-applied here, every time this function runs (i.e. every time the\n    # candidate capacity is set -- `shared_resources_planning.py`, every\n    # caller of `configure_shared_ess_operational_state`). Previously\n    # unbounded (D6 defect).\n    for variable_name in ('slack_shared_es_soc_final_up', 'slack_shared_es_soc_final_down'):\n        if not hasattr(model, variable_name):\n            continue\n        variable = getattr(model, variable_name)\n        slack_ub = 0.0 if inactive else e_capacity * ESS_DAY_BALANCE_SLACK_FRACTION + EQUALITY_TOLERANCE\n        for entry in _component_entries_for_shared_ess(variable, shared_ess_idx):\n            entry.setlb(0.0)\n            entry.setub(slack_ub)\n\n    for constraint_name in _SHARED_ESS_OPERATIONAL_CONSTRAINTS:\n        constraint = getattr(model, constraint_name)\n        for entry in _component_entries_for_shared_ess(\n                constraint, shared_ess_idx):\n            if inactive:\n                entry.deactivate()\n            else:\n                entry.activate()\n\n    # P5.4-D2-P: at zero capacity the box still collapses to [0, 0] -- that is a\n    # structural gate and the variables are additionally fixed at 0 above. At\n    # POSITIVE capacity the bounds are restored to their capacity-INDEPENDENT\n    # values, so installed power no longer enters through bound multipliers.\n    # The model stays bounded there via sess_active_sum_limit, the H1 links with\n    # pch_hat/pdch_hat in [0, 1], and sess_converter_capability.\n    for variable_name, positive_lb, positive_ub in _SHARED_ESS_ZERO_GATED_BOUND_VARIABLES:\n        if not hasattr(model, variable_name):\n            continue\n        variable = getattr(model, variable_name)\n        for entry in _component_entries_for_shared_ess(variable, shared_ess_idx):\n            if inactive:\n                entry.setlb(0.0)\n                entry.setub(0.0)\n            else:\n                entry.setlb(positive_lb)\n                entry.setub(positive_ub)\n\n    _configure_shared_ess_expected_schedule(\n        model, shared_ess_idx, inactive\n    )\n\n    return inactive",
+    "excerpt_sha256": "3a35ac32d276b038c8f36feb3d77651287f51aed0402398984fc61c656d3bb6d",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 1117,
+    "line_last": 1202,
+    "excerpt": "def configure_shared_ess_operational_state(\n        model, shared_ess_idx, s_capacity, e_capacity):\n    s_capacity = normalize_shared_ess_capacity(s_capacity)\n    e_capacity = normalize_shared_ess_capacity(e_capacity)\n    inactive = shared_ess_capacity_is_inactive(s_capacity, e_capacity)\n\n    # P5.4-A: the shared-ESS rows now depend directly on the rated-capacity\n    # parameter (`shared_es_s_rated_fixed`), so a capacity change is carried by\n    # the model itself. The former `sess_snet_def` kappa scale and its\n    # KKT-consistent multiplier transfer are gone with that row, and no\n    # replacement multiplier transformation is required.\n    #\n    # P5.15-1b (Step 2 Candidate 2): `shared_es_s_rated`/`shared_es_e_rated`\n    # (the `Var`s pinned to these Params by the now-deleted\n    # `shared_energy_storage_s/e_sensitivities` equalities) are gone --\n    # `shared_es_s_rated_fixed`/`shared_es_e_rated_fixed`, set here, are the\n    # sole capacity quantities read by the shared-ESS rows.\n    model.shared_es_s_rated_fixed[shared_ess_idx].set_value(s_capacity)\n    model.shared_es_e_rated_fixed[shared_ess_idx].set_value(e_capacity)\n\n    for variable_name in _SHARED_ESS_OPERATIONAL_VARIABLES:\n        if not hasattr(model, variable_name):\n            continue\n        variable = getattr(model, variable_name)\n        for entry in _component_entries_for_shared_ess(variable, shared_ess_idx):\n            if inactive:\n                entry.fix(0.0)\n            else:\n                if entry.fixed:\n                    entry.unfix()\n                if variable_name == 'shared_es_soc':\n                    entry.set_value(\n                        e_capacity * ENERGY_STORAGE_RELATIVE_INIT_SOC\n                    )\n\n    # P5.15 Step 3 (D6, signed table `P5_15_S31_PENALTY_TABLE_DRAFT.md`): the\n    # shared-ESS day-balance slack is bounded to the same fraction of energy\n    # capacity as the local-ESS one (`slack_es_balance_bounds`,\n    # `ESS_DAY_BALANCE_SLACK_FRACTION`). Capacity is candidate-dependent (Step\n    # 2 Candidate 2 made it a mutable Param), so a `bounds=` callable evaluated\n    # once at Var-construction time cannot track it; the bound is instead\n    # re-applied here, every time this function runs (i.e. every time the\n    # candidate capacity is set -- `shared_resources_planning.py`, every\n    # caller of `configure_shared_ess_operational_state`). Previously\n    # unbounded (D6 defect).\n    for variable_name in ('slack_shared_es_soc_final_up', 'slack_shared_es_soc_final_down'):\n        if not hasattr(model, variable_name):\n            continue\n        variable = getattr(model, variable_name)\n        slack_ub = 0.0 if inactive else e_capacity * ESS_DAY_BALANCE_SLACK_FRACTION + EQUALITY_TOLERANCE\n        for entry in _component_entries_for_shared_ess(variable, shared_ess_idx):\n            entry.setlb(0.0)\n            entry.setub(slack_ub)\n\n    for constraint_name in _SHARED_ESS_OPERATIONAL_CONSTRAINTS:\n        constraint = getattr(model, constraint_name)\n        for entry in _component_entries_for_shared_ess(\n                constraint, shared_ess_idx):\n            if inactive:\n                entry.deactivate()\n            else:\n                entry.activate()\n\n    # P5.4-D2-P: at zero capacity the box still collapses to [0, 0] -- that is a\n    # structural gate and the variables are additionally fixed at 0 above. At\n    # POSITIVE capacity the bounds are restored to their capacity-INDEPENDENT\n    # values, so installed power no longer enters through bound multipliers.\n    # The model stays bounded there via sess_active_sum_limit, the H1 links with\n    # pch_hat/pdch_hat in [0, 1], and sess_converter_capability.\n    for variable_name, positive_lb, positive_ub in _SHARED_ESS_ZERO_GATED_BOUND_VARIABLES:\n        if not hasattr(model, variable_name):\n            continue\n        variable = getattr(model, variable_name)\n        for entry in _component_entries_for_shared_ess(variable, shared_ess_idx):\n            if inactive:\n                entry.setlb(0.0)\n                entry.setub(0.0)\n            else:\n                entry.setlb(positive_lb)\n                entry.setub(positive_ub)\n\n    _configure_shared_ess_expected_schedule(\n        model, shared_ess_idx, inactive\n    )\n\n    return inactive",
+    "excerpt_sha256": "3a35ac32d276b038c8f36feb3d77651287f51aed0402398984fc61c656d3bb6d",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "ZN-06",
+   "item": "Z-net",
+   "file": "model_construction_helpers.py",
+   "statement": "Expected storage schedule (consensus copy) fixed at 0 and its definition rows deactivated at an inactive node.",
+   "required_substrings": [
+    "def _configure_shared_ess_expected_schedule(model, shared_ess_idx, inactive):",
+    "for variable_name in ('expected_shared_ess_p', 'expected_shared_ess_q'):",
+    "variable.fix(0.0)",
+    "for constraint_name in ('expected_shared_ess_p_def', 'expected_shared_ess_q_def'):",
+    "entry.deactivate()"
+   ],
+   "head": {
+    "line_first": 1088,
+    "line_last": 1114,
+    "excerpt": "def _configure_shared_ess_expected_schedule(model, shared_ess_idx, inactive):\n\n    if not hasattr(model, 'expected_shared_ess_p'):\n        return\n\n    is_transmission_model = hasattr(model, 'active_distribution_networks')\n    for p in model.periods:\n        index = (shared_ess_idx, p) if is_transmission_model else p\n        for variable_name in ('expected_shared_ess_p', 'expected_shared_ess_q'):\n            variable = getattr(model, variable_name)[index]\n            if inactive:\n                variable.fix(0.0)\n            elif variable.fixed:\n                variable.unfix()\n\n    for constraint_name in ('expected_shared_ess_p_def', 'expected_shared_ess_q_def'):\n\n        if not hasattr(model, constraint_name):\n            continue\n\n        constraint = getattr(model, constraint_name)\n        entries = (_component_entries_for_shared_ess(constraint, shared_ess_idx) if is_transmission_model else constraint.values())\n        for entry in entries:\n            if inactive:\n                entry.deactivate()\n            else:\n                entry.activate()",
+    "excerpt_sha256": "a50cc48c2db759a94215fbb8642a34a515e7f2dba556b6f9d2cf7724d5e2cd81",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "v1": {
+    "present": true,
+    "line_first": 1088,
+    "line_last": 1114,
+    "excerpt": "def _configure_shared_ess_expected_schedule(model, shared_ess_idx, inactive):\n\n    if not hasattr(model, 'expected_shared_ess_p'):\n        return\n\n    is_transmission_model = hasattr(model, 'active_distribution_networks')\n    for p in model.periods:\n        index = (shared_ess_idx, p) if is_transmission_model else p\n        for variable_name in ('expected_shared_ess_p', 'expected_shared_ess_q'):\n            variable = getattr(model, variable_name)[index]\n            if inactive:\n                variable.fix(0.0)\n            elif variable.fixed:\n                variable.unfix()\n\n    for constraint_name in ('expected_shared_ess_p_def', 'expected_shared_ess_q_def'):\n\n        if not hasattr(model, constraint_name):\n            continue\n\n        constraint = getattr(model, constraint_name)\n        entries = (_component_entries_for_shared_ess(constraint, shared_ess_idx) if is_transmission_model else constraint.values())\n        for entry in entries:\n            if inactive:\n                entry.deactivate()\n            else:\n                entry.activate()",
+    "excerpt_sha256": "a50cc48c2db759a94215fbb8642a34a515e7f2dba556b6f9d2cf7724d5e2cd81",
+    "missing_substrings": [],
+    "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "identical_modulo_leading_whitespace": true,
+   "identical_at_both_heads": true,
+   "range_touches_diff_hunk": [],
+   "line_shift_head_minus_v1": 0,
+   "citation_holds": true
+  },
+  {
+   "id": "S-01",
+   "item": "S",
+   "file": "shared_energy_storage_parameters.py",
+   "statement": "C1 switch salvage_value.in_objective: default False (HEAD only).",
+   "required_substrings": [
+    "P5.16 convention change C1",
+    "self.in_objective = False"
+   ],
+   "head": {
+    "line_first": 19,
+    "line_last": 24,
+    "excerpt": "        # P5.16 convention change C1 (P5_16_CONVENTION_CHANGE_SPEC_v4.md; Addendum 88 R1): when True, the ESSO\n        # objective carries kappa * salvage_credit_obj (`shared_energy_storage_data._build_subproblem`). Default\n        # False: the term, its kappa Param and its Expression are NOT constructed, so the built model is the\n        # pre-P5.16 model bit for bit. Read with getattr(..., False) by the builder, because parameter objects\n        # pickled before P5.16 do not carry the attribute.\n        self.in_objective = False",
+    "excerpt_sha256": "68b63a9e166bec0f246a1743450d346f3742cd19472b8c51b77aa504a4b66424",
+    "missing_substrings": [],
+    "file_sha256": "f31a2caa83a7c07f8f2375bf2016dd2180ff470ee33c1df0a04ece038d46aff6"
+   },
+   "v1": {
+    "present": false,
+    "file_exists_at_v1": true,
+    "file_sha256": "5fe0c4fb876a9c2f1e506e982f2a120c320a3fd4198b870f877d9a310cd390bb",
+    "substrings_found_in_v1_file": []
+   },
+   "identical_at_both_heads": null,
+   "range_touches_diff_hunk": null,
+   "citation_holds": true
+  },
+  {
+   "id": "S-02",
+   "item": "S",
+   "file": "shared_energy_storage_parameters.py",
+   "statement": "C3 switch available_energy_soh_point: default None = not declared (HEAD only).",
+   "required_substrings": [
+    "P5.16 convention change C3",
+    "self.available_energy_soh_point = None"
+   ],
+   "head": {
+    "line_first": 246,
+    "line_last": 249,
+    "excerpt": "        # P5.16 convention change C3 (spec v4): the available-energy SoH point declared by the parameters file\n        # ('end' or 'mid'). None = not declared: `SharedEnergyStorageData.available_energy_soh_point` keeps its own\n        # default ('end') and is not assigned at all, so files without the key build exactly as before.\n        self.available_energy_soh_point = None",
+    "excerpt_sha256": "ea8f12c6cb14cf85a3034638d5cdcb9427095b5fbecfd3b14ee0bf86bf9be0c8",
+    "missing_substrings": [],
+    "file_sha256": "f31a2caa83a7c07f8f2375bf2016dd2180ff470ee33c1df0a04ece038d46aff6"
+   },
+   "v1": {
+    "present": false,
+    "file_exists_at_v1": true,
+    "file_sha256": "5fe0c4fb876a9c2f1e506e982f2a120c320a3fd4198b870f877d9a310cd390bb",
+    "substrings_found_in_v1_file": []
+   },
+   "identical_at_both_heads": null,
+   "range_touches_diff_hunk": null,
+   "citation_holds": true
+  },
+  {
+   "id": "S-03",
+   "item": "S",
+   "file": "shared_energy_storage_data.py",
+   "statement": "C3 is applied only when the ESS parameters file declares it (HEAD only).",
+   "required_substrings": [
+    "P5.16 convention change C3",
+    "if self.params.available_energy_soh_point is not None:",
+    "self.available_energy_soh_point = self.params.available_energy_soh_point"
+   ],
+   "head": {
+    "line_first": 176,
+    "line_last": 179,
+    "excerpt": "        # P5.16 convention change C3 (spec v4): a parameters file MAY declare the available-energy SoH point.\n        # Absent (None) -> nothing is assigned and the W20 default / model-variant path is untouched.\n        if self.params.available_energy_soh_point is not None:\n            self.available_energy_soh_point = self.params.available_energy_soh_point",
+    "excerpt_sha256": "2e4e603f787fe9128efa942aa0ae64162b23e790e579489da9506db8764167fe",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": false,
+    "file_exists_at_v1": true,
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+    "substrings_found_in_v1_file": []
+   },
+   "identical_at_both_heads": null,
+   "range_touches_diff_hunk": null,
+   "citation_holds": true
+  },
+  {
+   "id": "S-04",
+   "item": "S",
+   "file": "shared_energy_storage_data.py",
+   "statement": "C1 changes the ESSO OBJECTIVE only (no row); off by default (HEAD only).",
+   "required_substrings": [
+    "if getattr(shared_ess_data.params.salvage_value, 'in_objective', False):",
+    "model.salvage_objective_kappa = pe.Param(mutable=True, initialize=0.00)",
+    "expr=model.feasibility_penalty + model.salvage_objective_kappa * model.salvage_credit_obj,"
+   ],
+   "head": {
+    "line_first": 855,
+    "line_last": 873,
+    "excerpt": "    if getattr(shared_ess_data.params.salvage_value, 'in_objective', False):\n        # P5.16 convention change C1 (P5_16_CONVENTION_CHANGE_SPEC_v4.md; Addendum 88 R1 option (a)): the terminal\n        # salvage credit enters the ESSO objective as kappa * salvage_credit_obj. kappa is a mutable Param\n        # initialised 0 here -- the standalone initialisation solve therefore runs WITHOUT the term -- and set to\n        # admm_esso_al_scale / admm_common_objective_scale (= a / sigma) by\n        # `update_shared_energy_storage_model_to_admm`. salvage_credit_obj is linear in one Var per cohort\n        # (Param es_e_investment_fixed x Var es_soh_per_unit_cumul at the terminal block), never the bilinear\n        # e_available row. With the switch off (default) none of these components is constructed.\n        model.salvage_objective_kappa = pe.Param(mutable=True, initialize=0.00)\n        salvage_credit_obj, throughput_coefficients = _build_salvage_credit_objective_expression(\n            shared_ess_data, model, shared_ess_idx)\n        model.salvage_credit_obj = pe.Expression(expr=salvage_credit_obj)\n        # Plain dict (not a component): d(-S)/d(pch|pdch)[y_inv, y, d] per unit of terminal SoH, read by\n        # `_get_esso_complementarity_diagnostics` for the effective throughput marginal (Addendum 88 R1.4 (iii)).\n        model._salvage_throughput_coefficients = throughput_coefficients\n        model.objective = pe.Objective(\n            sense=pe.minimize,\n            expr=model.feasibility_penalty + model.salvage_objective_kappa * model.salvage_credit_obj,\n        )",
+    "excerpt_sha256": "5d0a5fcbbb1ea105e783da516fb4680ac328108dea86c2ae4d551a8d19fa961e",
+    "missing_substrings": [],
+    "file_sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "v1": {
+    "present": false,
+    "file_exists_at_v1": true,
+    "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+    "substrings_found_in_v1_file": []
+   },
+   "identical_at_both_heads": null,
+   "range_touches_diff_hunk": null,
+   "citation_holds": true
+  },
+  {
+   "id": "M-01",
+   "item": "M",
+   "file": "manuscript_review/main_edd7a63_round8.tex",
+   "statement": "Manuscript at a87e195: the normalised complementarity (divides by S^Av).",
+   "required_substrings": [
+    "normalised complementarity condition relaxed with tolerance $\\varepsilon^{\\text{C}}$",
+    "\\frac{P^{\\text{Ch}}_{e,y,d,t}}{S^{\\text{Av}}_{e,y}} \\; \\frac{P^{\\text{Dch}}_{e,y,d,t}}{S^{\\text{Av}}_{e,y}} \\le \\varepsilon^{\\text{C}}",
+    "\\label{eq:network_complementarity}"
+   ],
+   "head": {
+    "line_first": 946,
+    "line_last": 952,
+    "excerpt": "\\textcolor{blue}{Simultaneous charging and discharging is restricted by a normalised complementarity condition relaxed with tolerance $\\varepsilon^{\\text{C}}$:}\n\n\\textcolor{blue}{\n    \\begin{equation}\n        \\frac{P^{\\text{Ch}}_{e,y,d,t}}{S^{\\text{Av}}_{e,y}} \\; \\frac{P^{\\text{Dch}}_{e,y,d,t}}{S^{\\text{Av}}_{e,y}} \\le \\varepsilon^{\\text{C}}\n        \\label{eq:network_complementarity}\n    \\end{equation}",
+    "excerpt_sha256": "f4141ee285756c9611037960013ed7ef7c4db03be8fb96393dde62874644df0e",
+    "missing_substrings": [],
+    "file_sha256": "cec2e2982dfa1509e6e066a208521fb1eea40d5c71f1cdf71a9bf00a12b3520b"
+   },
+   "v1": {
+    "present": false,
+    "file_exists_at_v1": true,
+    "file_sha256": "cec2e2982dfa1509e6e066a208521fb1eea40d5c71f1cdf71a9bf00a12b3520b",
+    "substrings_found_in_v1_file": [
+     "normalised complementarity condition relaxed with tolerance $\\varepsilon^{\\text{C}}$",
+     "\\frac{P^{\\text{Ch}}_{e,y,d,t}}{S^{\\text{Av}}_{e,y}} \\; \\frac{P^{\\text{Dch}}_{e,y,d,t}}{S^{\\text{Av}}_{e,y}} \\le \\varepsilon^{\\text{C}}",
+     "\\label{eq:network_complementarity}"
+    ]
+   },
+   "identical_at_both_heads": null,
+   "range_touches_diff_hunk": null,
+   "citation_holds": true
+  },
+  {
+   "id": "M-02",
+   "item": "M",
+   "file": "manuscript_review/main_edd7a63_round8.tex",
+   "statement": "Manuscript: the power bound that makes the product form vacuous at S^Av = 0.",
+   "required_substrings": [
+    "P^{\\text{Ch}}_{e,y,d,t}",
+    "+ P^{\\text{Dch}}_{e,y,d,t}",
+    "\\le S^{\\text{Av}}_{e,y}",
+    "\\label{eq:storage_active_power_limit}"
+   ],
+   "head": {
+    "line_first": 918,
+    "line_last": 925,
+    "excerpt": "}\n\n\\textcolor{blue}{\n    \\begin{equation}\n        P^{\\text{Ch}}_{e,y,d,t}\n        + P^{\\text{Dch}}_{e,y,d,t}\n        \\le S^{\\text{Av}}_{e,y}\n        \\label{eq:storage_active_power_limit}",
+    "excerpt_sha256": "10e0fc536ff6c6a89744060500d13b12e6465952d92e2f408e09d69f6dd08c6c",
+    "missing_substrings": [],
+    "file_sha256": "cec2e2982dfa1509e6e066a208521fb1eea40d5c71f1cdf71a9bf00a12b3520b"
+   },
+   "v1": {
+    "present": false,
+    "file_exists_at_v1": true,
+    "file_sha256": "cec2e2982dfa1509e6e066a208521fb1eea40d5c71f1cdf71a9bf00a12b3520b",
+    "substrings_found_in_v1_file": [
+     "P^{\\text{Ch}}_{e,y,d,t}",
+     "+ P^{\\text{Dch}}_{e,y,d,t}",
+     "\\le S^{\\text{Av}}_{e,y}",
+     "\\label{eq:storage_active_power_limit}"
+    ]
+   },
+   "identical_at_both_heads": null,
+   "range_touches_diff_hunk": null,
+   "citation_holds": true
+  },
+  {
+   "id": "M-03",
+   "item": "M",
+   "file": "manuscript_review/main_edd7a63_round8.tex",
+   "statement": "Manuscript: the cohort allocation (divides by the sum of E^Rated,Unit), stated for all active cohorts.",
+   "required_substrings": [
+    "\\frac{E^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}}{\\sum_{y'} E^{\\text{Rated,Unit}}_{e,y',y}}",
+    "\\label{eq:cohort_allocation}",
+    "The sums extend over $\\mathcal{Y}^{\\text{Act}}_{e,y}$."
+   ],
+   "head": {
+    "line_first": 984,
+    "line_last": 996,
+    "excerpt": "}\n\n\\textcolor{blue}{\n    \\begin{equation}\n        P^{\\text{Ch}}_{e,y^\\text{Inv},y,d,t} - P^{\\text{Dch}}_{e,y^\\text{Inv},y,d,t} =\n        \\frac{E^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}}{\\sum_{y'} E^{\\text{Rated,Unit}}_{e,y',y}}\n        \\sum_{y''} \\left( P^{\\text{Ch}}_{e,y'',y,d,t} - P^{\\text{Dch}}_{e,y'',y,d,t} \\right)\n        \\label{eq:cohort_allocation}\n    \\end{equation}\n}\n\n\\textcolor{blue}{\n    The sums extend over $\\mathcal{Y}^{\\text{Act}}_{e,y}$. The case study considers one installation per node, which receives the full schedule.",
+    "excerpt_sha256": "97721eb124a96f7b299122caa57b9c4e5c153920d56a39d68d77b99b256a7fd5",
+    "missing_substrings": [],
+    "file_sha256": "cec2e2982dfa1509e6e066a208521fb1eea40d5c71f1cdf71a9bf00a12b3520b"
+   },
+   "v1": {
+    "present": false,
+    "file_exists_at_v1": true,
+    "file_sha256": "cec2e2982dfa1509e6e066a208521fb1eea40d5c71f1cdf71a9bf00a12b3520b",
+    "substrings_found_in_v1_file": [
+     "\\frac{E^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}}{\\sum_{y'} E^{\\text{Rated,Unit}}_{e,y',y}}",
+     "\\label{eq:cohort_allocation}",
+     "The sums extend over $\\mathcal{Y}^{\\text{Act}}_{e,y}$."
+    ]
+   },
+   "identical_at_both_heads": null,
+   "range_touches_diff_hunk": null,
+   "citation_holds": true
+  },
+  {
+   "id": "M-04",
+   "item": "M",
+   "file": "manuscript_review/main_edd7a63_round8.tex",
+   "statement": "Manuscript: the cycling exponent (divides by E^Rated,Unit), with Y_y.",
+   "required_substrings": [
+    "{2 \\, k_e \\, E^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}}",
+    "\\label{eq:cycling_loss}",
+    "\\frac{365 \\, Y_y \\, \\bar{E}^{\\text{Cell}}_{e,y^\\text{Inv},y}}"
+   ],
+   "head": {
+    "line_first": 1019,
+    "line_last": 1026,
+    "excerpt": "\n\\textcolor{blue}{\n    \\begin{equation}\n        D_{e,y^\\text{Inv},y} =\n        \\frac{365 \\, Y_y \\, \\bar{E}^{\\text{Cell}}_{e,y^\\text{Inv},y}}\n             {2 \\, k_e \\, E^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}}\n        \\label{eq:cycling_loss}\n    \\end{equation}",
+    "excerpt_sha256": "092bb4f42d28d505b5cf25b5fa06f6335506df634cdf100f66504f110a6118cd",
+    "missing_substrings": [],
+    "file_sha256": "cec2e2982dfa1509e6e066a208521fb1eea40d5c71f1cdf71a9bf00a12b3520b"
+   },
+   "v1": {
+    "present": false,
+    "file_exists_at_v1": true,
+    "file_sha256": "cec2e2982dfa1509e6e066a208521fb1eea40d5c71f1cdf71a9bf00a12b3520b",
+    "substrings_found_in_v1_file": [
+     "{2 \\, k_e \\, E^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}}",
+     "\\label{eq:cycling_loss}",
+     "\\frac{365 \\, Y_y \\, \\bar{E}^{\\text{Cell}}_{e,y^\\text{Inv},y}}"
+    ]
+   },
+   "identical_at_both_heads": null,
+   "range_touches_diff_hunk": null,
+   "citation_holds": true
+  },
+  {
+   "id": "M-05",
+   "item": "M",
+   "file": "manuscript_review/main_edd7a63_round8.tex",
+   "statement": "Manuscript (Appendix A): ESSO-side complementarity is structural, not a row -- consistent with EC-01..04.",
+   "required_substrings": [
+    "complementarity in the agent follows from the problem structure and needs no nonconvex constraint"
+   ],
+   "head": {
+    "line_first": 1914,
+    "line_last": 1914,
+    "excerpt": "    a feasibility penalty on the slack pair of \\eqref{eq:esso_net_power} and a linear regularization of throughput. The weight $\\varepsilon^{\\text{E}}$ is far below the resolution of Subsection~\\ref{subsubsec:certification} and serves one purpose: with a linear, strictly positive price on $P^{\\text{Ch}} + P^{\\text{Dch}}$, simultaneous charging and discharging is never optimal, so complementarity in the agent follows from the problem structure and needs no nonconvex constraint; the residual $\\min\\{P^{\\text{Ch}}, P^{\\text{Dch}}\\}$ is checked after every solve and recorded, not enforced, and at the certified points it was below $4 \\times 10^{-5}$ of the rating. ",
+    "excerpt_sha256": "0211502408d91be7bd56d95ee45ccf50b3e7412e184d834e6fe55946b39b3e96",
+    "missing_substrings": [],
+    "file_sha256": "cec2e2982dfa1509e6e066a208521fb1eea40d5c71f1cdf71a9bf00a12b3520b"
+   },
+   "v1": {
+    "present": false,
+    "file_exists_at_v1": true,
+    "file_sha256": "cec2e2982dfa1509e6e066a208521fb1eea40d5c71f1cdf71a9bf00a12b3520b",
+    "substrings_found_in_v1_file": [
+     "complementarity in the agent follows from the problem structure and needs no nonconvex constraint"
+    ]
+   },
+   "identical_at_both_heads": null,
+   "range_touches_diff_hunk": null,
+   "citation_holds": true
+  },
+  {
+   "id": "M-06",
+   "item": "M",
+   "file": "manuscript_review/main_edd7a63_round8.tex",
+   "statement": "Manuscript: eps^C = 1e-4, eps^E = 1e-5 (= NC-09, EC-05).",
+   "required_substrings": [
+    "The normalized network complementarity condition uses $\\varepsilon^{\\text{C}} = 10^{-4}$.",
+    "$\\varepsilon^{\\text{E}} = 10^{-5}$"
+   ],
+   "head": {
+    "line_first": 2117,
+    "line_last": 2117,
+    "excerpt": "    The normalized network complementarity condition uses $\\varepsilon^{\\text{C}} = 10^{-4}$. The shared-ESS agent uses a throughput regularization weight of $\\varepsilon^{\\text{E}} = 10^{-5}$ and a slack penalty of $c^{\\sigma} = 10^{3}$.",
+    "excerpt_sha256": "3096254a9f27ab431c58e0d467cc034357d9c4c6951aa78c78102a766076b3d3",
+    "missing_substrings": [],
+    "file_sha256": "cec2e2982dfa1509e6e066a208521fb1eea40d5c71f1cdf71a9bf00a12b3520b"
+   },
+   "v1": {
+    "present": false,
+    "file_exists_at_v1": true,
+    "file_sha256": "cec2e2982dfa1509e6e066a208521fb1eea40d5c71f1cdf71a9bf00a12b3520b",
+    "substrings_found_in_v1_file": [
+     "The normalized network complementarity condition uses $\\varepsilon^{\\text{C}} = 10^{-4}$.",
+     "$\\varepsilon^{\\text{E}} = 10^{-5}$"
+    ]
+   },
+   "identical_at_both_heads": null,
+   "range_touches_diff_hunk": null,
+   "citation_holds": true
+  }
+ ],
+ "n_claims": 63,
+ "n_claims_holding": 63,
+ "head_comparison": {
+  "n_claims_at_both_heads": 53,
+  "excerpts_differing": [
+   "EC-07"
+  ],
+  "ranges_touching_a_diff_hunk": [
+   "EC-07"
+  ],
+  "expected_indentation_only": [
+   "EC-07"
+  ],
+  "expected_indentation_only_hold": true,
+  "unexpected_differences": [],
+  "unexpected_hunk_contacts": [],
+  "head_only_claims": [
+   "S-01",
+   "S-02",
+   "S-03",
+   "S-04",
+   "M-01",
+   "M-02",
+   "M-03",
+   "M-04",
+   "M-05",
+   "M-06"
+  ],
+  "all_rows_identical": true
+ },
+ "verdicts": [
+  {
+   "id": "V1",
+   "question": "(1) network complementarity row vs P^Ch P^Dch <= eps^C (S^Av)^2",
+   "verdict": "POSITIVE SCALING ONLY. The coded row is pch_hat * pdch_hat <= eps^C (eps^C = 1e-4) with the linear links P^Ch = S^Av pch_hat, P^Dch = S^Av pdch_hat and pch_hat, pdch_hat in [0, 1]. Substituting the links gives P^Ch P^Dch = (S^Av)^2 pch_hat pdch_hat, so for S^Av > 0 the coded row is the product form divided by (S^Av)^2 (a positive constant: S^Av is a Param in every network solve). The hat bounds add nothing beyond P^Ch + P^Dch <= S^Av. The scaling is carried by two auxiliary variables and two linear rows, not by multiplying the product row by a constant; the projection onto (P^Ch, P^Dch) is identical. At S^Av <= 1e-10 (or E^Av <= 1e-10) the row is not merely vacuous: it is deactivated and P^Ch, P^Dch, the hats and every other storage variable are fixed at 0.",
+   "basis": [
+    "NC-01",
+    "NC-02",
+    "NC-05",
+    "NC-06",
+    "NC-07",
+    "NC-09",
+    "NC-11",
+    "NC-12",
+    "NC-13",
+    "NC-14",
+    "NC-15",
+    "NC-17",
+    "NC-18",
+    "ZN-03",
+    "ZN-04",
+    "ZN-05"
+   ]
+  },
+  {
+   "id": "V2",
+   "question": "(1) ESSO-side complementarity row",
+   "verdict": "NONE EXISTS. The ESSO has no complementarity row at either head (retired in P5.15-1); simultaneous charging and discharging is discouraged by eps^E sum(P^Ch + P^Dch) in the objective. The product form of ruling 5 applies to eq. network_complementarity only; it must not be printed for the agent.",
+   "basis": [
+    "EC-01",
+    "EC-02",
+    "EC-03",
+    "EC-04",
+    "EC-05",
+    "M-05"
+   ]
+  },
+  {
+   "id": "V3",
+   "question": "(2) cohort allocation and its guard",
+   "verdict": "The row is P^Ch[y_inv] - P^Dch[y_inv] = share * sum_cohorts (P^Ch - P^Dch) (sigma slacks excluded), with share = E^Inv[y_inv] / sum_active E^Inv a Python float (E^Inv = E^Rated,Unit inside the window). Division only when >= 2 cohorts are active and the sum is > 0; with <= 1 active cohort every allocation row of the year is deactivated and the shares are 0. Exactly N_active - 1 rows are active (largest y_inv omitted, supplied by the sum-to-one identity) where the manuscript prints N; equivalent. Inert on SRP1 (one cohort).",
+   "basis": [
+    "A-01",
+    "A-02",
+    "A-03",
+    "A-04",
+    "A-05",
+    "A-06",
+    "A-07",
+    "A-08",
+    "M-03"
+   ]
+  },
+  {
+   "id": "V4",
+   "question": "(2) cycling exponent and its guard",
+   "verdict": "Coded in product form D * (2 k E^Inv) = 365 Y E^Cell (ageing on) or D = 0 (ageing off): the manuscript equation multiplied by the positive constant 2 k E^Rated,Unit for an active cohort; no division is coded. Built only inside the calendar window; deactivated (D fixed 0, SoH fixed 1) for an inactive cohort. Y is the investment block width of the cohort, which equals Y_y when all blocks have equal width (SRP1: 5-year blocks).",
+   "basis": [
+    "X-01",
+    "X-02",
+    "X-03",
+    "X-04",
+    "A-01",
+    "ZE-04",
+    "M-04"
+   ]
+  },
+  {
+   "id": "V5",
+   "question": "(3) deactivation of inactive cohorts / zero-capacity nodes",
+   "verdict": "Network side: complete -- the ten storage rows deactivated and the storage variables fixed at 0 when S^Av or E^Av <= 1e-10. ESSO side: every cohort-registered row (throughput, D, SoH, floor, power bounds, allocation) is deactivated and its variables fixed for an inactive cohort; the node-level rows (rated S/E sums, available S/E per pair, net-power definition with sigma slacks, converter circle with radius es_s_rated = 0) are NOT deactivated -- they stay active and are satisfied at zero.",
+   "basis": [
+    "ZN-01",
+    "ZN-02",
+    "ZN-03",
+    "ZN-04",
+    "ZN-05",
+    "ZN-06",
+    "ZE-01",
+    "ZE-02",
+    "ZE-03",
+    "ZE-04",
+    "ZE-05",
+    "ZE-06",
+    "ZE-07",
+    "ZE-08"
+   ]
+  },
+  {
+   "id": "V6",
+   "question": "differences between V1 (6f43479e) and HEAD for the cited rows",
+   "verdict": "Computed below (head_comparison): every row excerpt present at both heads is byte-identical (EC-07, the ESSO objective, identical modulo indentation, moved into the else branch of C1); f6c23977 shifts line numbers (+4 / +24 / +96 in shared_energy_storage_data.py, +18 in shared_resources_planning.py past l. 5533) and adds the C1/C3 switches, which with their defaults (in_objective False, available_energy_soh_point None) construct nothing.",
+   "basis": [
+    "S-01",
+    "S-02",
+    "S-03",
+    "S-04",
+    "EC-07"
+   ]
+  }
+ ],
+ "integrity_failures": [],
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "pickle_guard": {
+  "counts": {
+   "load": 0,
+   "loads": 0
+  },
+  "pickle_load_and_loads_blocked": true,
+  "ok": true
+ },
+ "guards_ok": true,
+ "production_modules_imported": false,
+ "wall_clock_s": 1.6864209175109863
+}

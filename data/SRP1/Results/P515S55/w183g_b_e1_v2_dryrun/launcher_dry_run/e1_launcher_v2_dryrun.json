@@ -1,0 +1,3139 @@
+{
+ "alias": {
+  "alias_eval_key": "c15eea6214da5f31653345d3a2591e90aac3e9e8105c4699579abea800b31289",
+  "alias_label": "x0_N_2x",
+  "g0_accepted": true,
+  "g0_artifact_path": "data/SRP1/Results/P515S55/w183_nl_post_w183c_off/w183_nl_digest.json.gz",
+  "g0_artifact_sha256": "ca195bd38fe2384493012dcf7127a36a8923d8a5029c2c821b5bb0f47f57ab6a",
+  "g0_checks": {
+   "artifact_all_ok": true,
+   "artifact_configuration_equals_launcher": true,
+   "artifact_guard_zero_solves": true,
+   "artifact_model_N_equals_launcher": true,
+   "artifact_x0_A_2x_key_equals_alias_target": true,
+   "artifact_x0_N_2x_key_equals_alias_key": true,
+   "exists": true,
+   "git_tracked_and_clean": true,
+   "sha256_equals_pin": true,
+   "x0_A_vs_N_2x_esso_nl_all_four_files_identical_every_node": true,
+   "x0_A_vs_N_2x_esso_nl_plain_identical_every_node": true,
+   "x0_A_vs_N_2x_network_nl_identical_parallel": true,
+   "x0_A_vs_N_2x_network_nl_identical_sequential": true
+  },
+  "justification": "G0",
+  "reuse_of": "5f6b784127e0eb2bd6fac06206f4329752a6b56b81247bafdbc660f5222c3a4a",
+  "reuse_of_label": "x0_A_2x",
+  "rule": "x = 0 is evaluated once, under A; its N seed reuses that evaluation by the G0 identity (the model IPOPT receives at x = 0 is byte-identical under A and N); never written as an evaluation"
+ },
+ "all_assertions_hold": true,
+ "argv": [
+  "p515_s55_w183g_b_e1_v2_dryrun.py",
+  "--out",
+  "data/SRP1/Results/P515S55/w183g_b_e1_v2_dryrun",
+  "--g0-artifact",
+  "data/SRP1/Results/P515S55/w183_nl_post_w183c_off/w183_nl_digest.json.gz",
+  "--g0-sha256",
+  "ca195bd38fe2384493012dcf7127a36a8923d8a5029c2c821b5bb0f47f57ab6a",
+  "--scratch",
+  "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/29148893-7f64-448e-bb3c-36e0ff121aae/scratchpad/w183g_b_gate_scratch"
+ ],
+ "assertions": {
+  "cache_scope": {
+   "never_reads_the_sibling_root": true,
+   "r1_A_has_no_alias": true,
+   "r1_A_ok_and_exact": true,
+   "r1_N_has_the_alias_once": true,
+   "r1_N_ok_and_exact": true,
+   "stray_eval_dir_refuses_the_load": true,
+   "this_root_has_no_seeds_so_arm_A_refuses": true,
+   "this_root_has_no_seeds_so_arm_N_refuses": true
+  },
+  "concurrency_and_preflight": {
+   "concurrency_in_spec": true,
+   "preflight_recorded_in_spec": true,
+   "preflight_rule_is_n_x_2_75_gib": true
+  },
+  "configuration": {
+   "equals_ext_v6_minus_resettle": true,
+   "ext_v6_reference_entry_had_the_resettle": true,
+   "ext_v6_reference_sha256_holds": true,
+   "ext_v6_seven_specs_agree": true
+  },
+  "domain_keys": {
+   "A_and_N_key_sets_disjoint": true,
+   "domain_1705": true,
+   "every_seed_key_in_its_arm_domain": true,
+   "keys_distinct_per_arm": true
+  },
+  "g0_alias_accepted": {
+   "accepted_for_the_dry_run": true
+  },
+  "guards": {
+   "zero_solves_pickle_build_tripwires": true
+  },
+  "pins_recorded": {
+   "case_file": true,
+   "cost_file": true,
+   "cost_file_equals_pb_pin": true,
+   "ess_params_equals_pb_pin": true,
+   "ess_params_file": true,
+   "every_pinned_file_committed_and_clean": true,
+   "imported_repo_modules": true,
+   "network_params_files": true,
+   "production_head": true,
+   "production_modules_sha256": true,
+   "run_file:p515_g_g1_g4_admm_gates.py": true,
+   "run_file:p515_s44_campaign_harness.py": true,
+   "run_file:p515_s55_e1_launcher.py": true,
+   "run_file:p56a_oracle.py": true,
+   "run_file:settling_criterion.py": true,
+   "run_file:settling_criterion_v2.py": true,
+   "run_file:settling_criterion_v3.py": true,
+   "run_file:settling_criterion_v4.py": true,
+   "run_file:settling_criterion_v5.py": true,
+   "run_file:settling_criterion_v6.py": true,
+   "search_tables": true
+  },
+  "rule_eleven": {
+   "ageing_trajectory_terminal": true,
+   "barrier_stop_rule_fires": true,
+   "budget_rule_refuses_poll": true,
+   "candidate_record_fields": true,
+   "e1_loop_advance_ran_from_a_storage_incumbent": true,
+   "e1_loop_advance_rule_fields": true,
+   "e1_loop_barrier_stop_rule_fires": true,
+   "e1_loop_budget_rule_refuses_poll": true,
+   "e1_loop_candidate_record_fields": true,
+   "e1_loop_poll_failure_certificate_fields": true,
+   "e1_loop_poll_record_fields": true,
+   "e1_loop_skipped_index_fields": true,
+   "e1_point_record_fields": true,
+   "ess_ageing_readback_terminal": true,
+   "flex_price_readback_terminal": true,
+   "model_variant_readback_terminal": true,
+   "parent_barrier_record_for_missing": true,
+   "per_cycle_trajectory_written": true,
+   "poll_failure_certificate_fields": true,
+   "poll_record_fields": true,
+   "record_Q_gross": true,
+   "record_bar": true,
+   "record_candidate_hash": true,
+   "record_cycles_and_certification_cycle": true,
+   "record_spec_hash": true,
+   "record_status": true,
+   "record_stopping_ratio_rule_ten": true,
+   "record_storage_per_node": true,
+   "record_wall_and_rss": true,
+   "snap_record_fields": true,
+   "storage_per_node_E_av_terminal": true,
+   "storage_per_node_soh_terminal": true
+  },
+  "seed_keys": {
+   "N_keys_differ_from_A_keys": true,
+   "alias_is_x0_under_N": true,
+   "alias_own_key_not_evaluated": true,
+   "alias_target_eq_x0_A_2x_key": true,
+   "alias_target_is_evaluated": true,
+   "all_8_seed_model_keys_pairwise_distinct": true,
+   "every_key_carries_flex_2": true,
+   "every_seed_budget_feasible": true,
+   "exactly_one_alias": true,
+   "len_keys_to_evaluate_eq_7_no_duplicates": true,
+   "len_set_keys_to_evaluate_eq_7": true
+  },
+  "would_be_seeds_spec": {
+   "A_entries_carry_no_variant": true,
+   "N_entries_carry_the_variant_and_its_label": true,
+   "cap_500": true,
+   "concurrency_recorded": true,
+   "configuration_equals_ext_v6_minus_resettle": true,
+   "e1_root_recorded": true,
+   "eval_keys_recompute": true,
+   "every_entry_flex_2": true,
+   "every_entry_flex_label": true,
+   "harness_sha256_recorded": true,
+   "labels_as_expected": true,
+   "memory_preflight_recorded": true,
+   "n_entries": true,
+   "no_post_certification": true,
+   "no_rho0_scale_or_nrf_option": true,
+   "no_wrapper_declaration": true,
+   "overrides_empty": true,
+   "phase_recorded": true,
+   "pins_recorded": true,
+   "script_recorded": true,
+   "spec_flex_label": true,
+   "spec_variant_label_iff_N_entry": true,
+   "ten_cycles": true
+  }
+ },
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 83 rulings 3 (i), (v), (vi) and 6; campaign spec v1; W183 order item W183b",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 82 v2 ruling 1 (E1); Addendum 70 ruling 6 (variant B)",
+  "STEP7_SIMULATION_PLAN_2026-10-25.md sections 5.1, 5.2, 11",
+  "P5_15_W182E_CODE_PATHS.md (Blocked 1: no committed search launcher accepts a model variant)",
+  "P5_15_W183_0_NL_REFERENCE.md (G0 at x = 0; unit_N_1x key = the ext-v6 e_no_ageing base key)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 85 ruling 2 (E1 poll rule B+), ruling 3 (A7 confirmed), ruling 4 (i), (iv) (k0 = 0; the 4-slot batch seeds and the roots); W183g order item (b) -- launcher v2"
+ ],
+ "cache_loader_on_this_root_A": {
+  "arm": "A",
+  "enforcement": "one path, built from --root; realpath containment of the results file, its spec and every point eval_dir in the root; spec sha256 == results campaign_spec_sha256; spec extra e1_root == this root and campaign_script == this launcher; every point key recomputed under the arm model at 2x == its recorded key and in the seeds spec; other-model points skipped; manifest hashes of the evaluation records; git tracked and clean",
+  "n_entries": 0,
+  "ok": false,
+  "reason": "no seeds results in this root: data/SRP1/Results/P515S55/w183g_b_e1_v2_dryrun/launcher_dry_run/campaign_s55_launcher_dry_run_seeds/campaign_results.json",
+  "root": "data/SRP1/Results/P515S55/w183g_b_e1_v2_dryrun/launcher_dry_run",
+  "the_only_file_read": "data/SRP1/Results/P515S55/w183g_b_e1_v2_dryrun/launcher_dry_run/campaign_s55_launcher_dry_run_seeds/campaign_results.json"
+ },
+ "cache_loader_on_this_root_N": {
+  "arm": "N",
+  "enforcement": "one path, built from --root; realpath containment of the results file, its spec and every point eval_dir in the root; spec sha256 == results campaign_spec_sha256; spec extra e1_root == this root and campaign_script == this launcher; every point key recomputed under the arm model at 2x == its recorded key and in the seeds spec; other-model points skipped; manifest hashes of the evaluation records; git tracked and clean",
+  "n_entries": 0,
+  "ok": false,
+  "reason": "no seeds results in this root: data/SRP1/Results/P515S55/w183g_b_e1_v2_dryrun/launcher_dry_run/campaign_s55_launcher_dry_run_seeds/campaign_results.json",
+  "root": "data/SRP1/Results/P515S55/w183g_b_e1_v2_dryrun/launcher_dry_run",
+  "the_only_file_read": "data/SRP1/Results/P515S55/w183g_b_e1_v2_dryrun/launcher_dry_run/campaign_s55_launcher_dry_run_seeds/campaign_results.json"
+ },
+ "cache_scope_planted_test": {
+  "checks": {
+   "never_reads_the_sibling_root": true,
+   "r1_A_has_no_alias": true,
+   "r1_A_ok_and_exact": true,
+   "r1_N_has_the_alias_once": true,
+   "r1_N_ok_and_exact": true,
+   "stray_eval_dir_refuses_the_load": true
+  },
+  "detail": {
+   "r1_A": {
+    "every_entry_from_r1": true,
+    "keys_equal_expected": true,
+    "n_alias_entries": 0,
+    "n_entries": 4,
+    "no_r2_cost": true,
+    "ok": true,
+    "other_model_points_skipped": 3
+   },
+   "r1_N": {
+    "every_entry_from_r1": true,
+    "keys_equal_expected": true,
+    "n_alias_entries": 1,
+    "n_entries": 4,
+    "no_r2_cost": true,
+    "ok": true,
+    "other_model_points_skipped": 4
+   },
+   "r3_stray_eval_dir_refused": {
+    "n_entries": 0,
+    "ok": false,
+    "reason": "point x0_A_2x refused: ['eval_dir_inside_root']"
+   }
+  }
+ },
+ "committed_cell_comparison": {
+  "cells": [
+   {
+    "base_key_equals_launcher_key": true,
+    "cell": "h_74eda68d",
+    "committed_base_key": "bde9355eba3e09296aba8519573f6c256df68e06c87a33fc315cfd382c3eab03",
+    "committed_eval_key_recomputes": true,
+    "differing_key_inputs": {},
+    "entry_found_uniquely": true,
+    "eval_key": "dca08628128736042fb1d1fa1a933b0b93f6d4cfea9ef8b4279e3c45d5a6139a",
+    "flex": 2.0,
+    "launcher_disposition": "evaluate",
+    "launcher_key_2x": "bde9355eba3e09296aba8519573f6c256df68e06c87a33fc315cfd382c3eab03",
+    "launcher_label": "unit_A_2x",
+    "model": "A",
+    "non_key_differences": {
+     "cap": {
+      "committed_cell": 232,
+      "launcher": 500
+     },
+     "post_certification": {
+      "committed_cell": {
+       "hull_polish": false,
+       "persist_certified_models": true,
+       "reference": null
+      },
+      "launcher": null
+     },
+     "stop_rule": {
+      "committed_cell": "re-settle declaration: schema p515_s53_w142_settling_resettle_v6, settling rule settling_criterion_v6.SettlingRuleV6",
+      "launcher": "production exit (10 consecutive passing cycles)"
+     }
+    },
+    "row": 35,
+    "seed": "unit",
+    "source": "W182f Z3 row 35",
+    "spec": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_74eda68d/campaign_spec_s53_w142_resettle_v6_h_74eda68d_63ca1061.json",
+    "spec_git_tracked_and_clean": true,
+    "spec_sha256": "63ca1061295f572e7bece04dfb4eb5891ce2aa05dcde6990d7c9916297d0162d",
+    "spec_sha256_holds": true,
+    "w182f_row_names_this_spec_and_key": true,
+    "wrappers_declared": [
+     "settling_resettle"
+    ]
+   },
+   {
+    "base_key_equals_launcher_key": true,
+    "cell": "ref:5ca4f86c (issuing run: W118 r2 re-settle)",
+    "committed_base_key": "c4dea62e18c62f41df3af31a520a383697810613380356014c894f57f39fea36",
+    "committed_eval_key_recomputes": true,
+    "differing_key_inputs": {},
+    "entry_found_uniquely": true,
+    "eval_key": "24c5ccb6f285219f112f54709f268a76b7eace266d5c3ea1320f92f06859c7f3",
+    "flex": 2.0,
+    "launcher_disposition": "evaluate",
+    "launcher_key_2x": "c4dea62e18c62f41df3af31a520a383697810613380356014c894f57f39fea36",
+    "launcher_label": "hist_inc_A_2x",
+    "model": "A",
+    "non_key_differences": {
+     "cap": {
+      "committed_cell": 281,
+      "launcher": 500
+     },
+     "post_certification": {
+      "committed_cell": {
+       "hull_polish": false,
+       "persist_certified_models": true,
+       "reference": null
+      },
+      "launcher": null
+     },
+     "stop_rule": {
+      "committed_cell": "re-settle declaration: schema None, settling rule settling_criterion_v2.SettlingRuleV2",
+      "launcher": "production exit (10 consecutive passing cycles)"
+     }
+    },
+    "row": 40,
+    "seed": "hist_inc",
+    "source": "W182f Z3 row 40",
+    "spec": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_f2_incumbent/campaign_spec_s53_w118_resettle_r2_f2_incumbent_b1dd9b82.json",
+    "spec_git_tracked_and_clean": true,
+    "spec_sha256": "b1dd9b82655072dcb9c6318914bd5abc840b7bbea2d4f9b33e61db62b556ef30",
+    "spec_sha256_holds": true,
+    "w182f_row_names_this_spec_and_key": true,
+    "wrappers_declared": [
+     "settling_resettle"
+    ]
+   },
+   {
+    "base_key_equals_launcher_key": false,
+    "cell": "ref:5ca4f86c (the original s51 F2 Phase B evaluation the row is named after)",
+    "committed_base_key": "5ca4f86c3406c0424d3b63b8f39df4568f1be77f7f2d72642491539c0eb42663",
+    "committed_eval_key_recomputes": true,
+    "differing_key_inputs": {
+     "convergence_depth_tail_in_key": {
+      "committed_cell": null,
+      "launcher": {
+       "compl_inf_tol": 1e-06,
+       "enabled": true
+      }
+     }
+    },
+    "entry_found_uniquely": true,
+    "eval_key": "5ca4f86c3406c0424d3b63b8f39df4568f1be77f7f2d72642491539c0eb42663",
+    "flex": 2.0,
+    "launcher_disposition": "evaluate",
+    "launcher_key_2x": "c4dea62e18c62f41df3af31a520a383697810613380356014c894f57f39fea36",
+    "launcher_label": "hist_inc_A_2x",
+    "model": "A",
+    "non_key_differences": {
+     "cap": {
+      "committed_cell": 500,
+      "launcher": 500
+     },
+     "post_certification": {
+      "committed_cell": null,
+      "launcher": null
+     },
+     "stop_rule": {
+      "committed_cell": "production exit",
+      "launcher": "production exit (10 consecutive passing cycles)"
+     }
+    },
+    "row": 40,
+    "seed": "hist_inc",
+    "source": "the row label; s51 F2 Phase B spec 5ce295e1",
+    "spec": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_spec_s51_f2_phase_b_5ce295e1.json",
+    "spec_git_tracked_and_clean": true,
+    "spec_sha256": "5ce295e17c5165ea2148d1240c918ebca05b8aafbeeb22e2ebfc03f9bf120094",
+    "spec_sha256_holds": true,
+    "wrappers_declared": []
+   },
+   {
+    "base_key_equals_launcher_key": false,
+    "base_key_equals_launcher_key_at_the_cell_price": true,
+    "cell": "e_no_ageing",
+    "committed_base_key": "054976fb6f0c6adbd3175a23f60915e931e161f71e3bd59c8719e71d3ffa000a",
+    "committed_base_key_equals_expected": true,
+    "committed_eval_key_recomputes": true,
+    "differing_key_inputs": {
+     "flex_price_multiplier_in_key": {
+      "committed_cell": null,
+      "launcher": 2.0
+     }
+    },
+    "differing_key_inputs_at_the_cell_price": {},
+    "entry_found_uniquely": true,
+    "eval_key": "1b10e9e161523f46b9e4c0a2b6f7400ae1d2b2d7a42ef311e0d4726a7effd7e0",
+    "flex": 1.0,
+    "launcher_disposition": "evaluate",
+    "launcher_key_2x": "057f9a6f427ac78e23e6e912af51d651633c469eb3336b71ee3f6f952d1cbe64",
+    "launcher_key_at_the_cell_price": "054976fb6f0c6adbd3175a23f60915e931e161f71e3bd59c8719e71d3ffa000a",
+    "launcher_label": "unit_N_2x",
+    "model": "N",
+    "non_key_differences": {
+     "cap": {
+      "committed_cell": 300,
+      "launcher": 500
+     },
+     "post_certification": {
+      "committed_cell": {
+       "hull_polish": false,
+       "persist_certified_models": true,
+       "reference": null
+      },
+      "launcher": null
+     },
+     "stop_rule": {
+      "committed_cell": "re-settle declaration: schema p515_s53_w142_settling_resettle_ext_v6, settling rule settling_criterion_v6.SettlingRuleV6",
+      "launcher": "production exit (10 consecutive passing cycles)"
+     }
+    },
+    "row": 54,
+    "seed": "unit",
+    "source": "W182f Z3 row 54",
+    "spec": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/campaign_spec_s53_w142_resettle_ext_v6_e_no_ageing_10f4aa7a.json",
+    "spec_git_tracked_and_clean": true,
+    "spec_sha256": "10f4aa7a05b5022ecdd347d45aea1070dc1557237ad482e17a0ee1645846d022",
+    "spec_sha256_holds": true,
+    "w182f_row_names_this_spec_and_key": true,
+    "wrappers_declared": [
+     "settling_resettle"
+    ]
+   }
+  ],
+  "w182f_records": {
+   "path": "data/SRP1/Results/P515S53/w182f_records/w182f_records.json",
+   "sha256": "405c79c9e146600421a76443692fb23eb69d0d35d90358de14c899d66ddda085",
+   "sha256_on_disk": "405c79c9e146600421a76443692fb23eb69d0d35d90358de14c899d66ddda085"
+  }
+ },
+ "committed_specs_scanned": 263,
+ "concurrency": 1,
+ "configuration_vs_ext_v6": {
+  "compared_keys": [
+   "apply_rho",
+   "arm_label",
+   "case_file",
+   "case_file_anderson_acceleration",
+   "case_file_last_commit",
+   "case_file_sha256",
+   "convergence_depth_tail",
+   "ess_ageing_baseline",
+   "ess_ageing_baseline_label",
+   "ess_params_file",
+   "full_diagnostics_in_rows",
+   "overrides"
+  ],
+  "differing_keys": {},
+  "equal_except_text": true,
+  "ext_v6_reference_entry_carries_settling_resettle": true,
+  "ext_v6_specs": [
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2/campaign_spec_s53_w142_resettle_ext_v6_e_c2_9f676e06.json",
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2_calfade/campaign_spec_s53_w142_resettle_ext_v6_e_c2_calfade_aedebc38.json",
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_midblock/campaign_spec_s53_w142_resettle_ext_v6_e_c3_midblock_8b86d33f.json",
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_unit/campaign_spec_s53_w142_resettle_ext_v6_e_c3_unit_9a52754a.json",
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c4/campaign_spec_s53_w142_resettle_ext_v6_e_c4_98223186.json",
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/campaign_spec_s53_w142_resettle_ext_v6_e_no_ageing_10f4aa7a.json",
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_pb_y2025_n5_v6/campaign_spec_s53_w142_resettle_ext_v6_pb_y2025_n5_v6_dafacff3.json"
+  ],
+  "ext_v6_specs_agree": true,
+  "ext_v6_specs_differing_keys_from_reference": {
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2/campaign_spec_s53_w142_resettle_ext_v6_e_c2_9f676e06.json": [],
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2_calfade/campaign_spec_s53_w142_resettle_ext_v6_e_c2_calfade_aedebc38.json": [],
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_midblock/campaign_spec_s53_w142_resettle_ext_v6_e_c3_midblock_8b86d33f.json": [],
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_unit/campaign_spec_s53_w142_resettle_ext_v6_e_c3_unit_9a52754a.json": [],
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c4/campaign_spec_s53_w142_resettle_ext_v6_e_c4_98223186.json": [],
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/campaign_spec_s53_w142_resettle_ext_v6_e_no_ageing_10f4aa7a.json": [],
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_pb_y2025_n5_v6/campaign_spec_s53_w142_resettle_ext_v6_pb_y2025_n5_v6_dafacff3.json": []
+  },
+  "reference": {
+   "path": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/campaign_spec_s53_w142_resettle_ext_v6_e_no_ageing_10f4aa7a.json",
+   "sha256": "10f4aa7a05b5022ecdd347d45aea1070dc1557237ad482e17a0ee1645846d022",
+   "sha256_on_disk": "10f4aa7a05b5022ecdd347d45aea1070dc1557237ad482e17a0ee1645846d022",
+   "what": "the committed W142 extension v6 e_no_ageing campaign spec (E.21 row 54): its configuration block"
+  },
+  "reference_sha256_holds": true,
+  "text_keys_not_compared": [
+   "name",
+   "note"
+  ]
+ },
+ "domain_keys": {
+  "A_N_disjoint": true,
+  "n_distinct_A": 1705,
+  "n_distinct_N": 1705,
+  "n_points": 1705
+ },
+ "failing_assertions": [],
+ "finished_utc": "2026-10-25T23:03:49.898265+00:00",
+ "first_poll_if_each_seed_were_the_incumbent": {
+  "hist_inc_A": {
+   "completion_n_feasible": 61,
+   "completion_over_cap_30_STOP_FOR_REVIEW": true,
+   "completion_triggered": true,
+   "halton_t": 17,
+   "incumbent": "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+   "n_distinct_feasible_poll_points_after_snap": 7,
+   "n_new_evaluations_needed": null,
+   "n_poll_points": null,
+   "n_poll_points_that_are_seeds": null,
+   "same_incumbent_at_k_0_to_9": [
+    {
+     "completion_triggered": true,
+     "halton_t": 17,
+     "k": 0,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 18,
+     "k": 1,
+     "n_distinct": 8,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 19,
+     "k": 2,
+     "n_distinct": 11,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 20,
+     "k": 3,
+     "n_distinct": 11,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 21,
+     "k": 4,
+     "n_distinct": 10,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 22,
+     "k": 5,
+     "n_distinct": 8,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 23,
+     "k": 6,
+     "n_distinct": 9,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 24,
+     "k": 7,
+     "n_distinct": 10,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 25,
+     "k": 8,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 26,
+     "k": 9,
+     "n_distinct": 10,
+     "over_cap": false
+    }
+   ]
+  },
+  "hist_inc_N": {
+   "completion_n_feasible": 61,
+   "completion_over_cap_30_STOP_FOR_REVIEW": true,
+   "completion_triggered": true,
+   "halton_t": 17,
+   "incumbent": "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+   "n_distinct_feasible_poll_points_after_snap": 7,
+   "n_new_evaluations_needed": null,
+   "n_poll_points": null,
+   "n_poll_points_that_are_seeds": null,
+   "same_incumbent_at_k_0_to_9": [
+    {
+     "completion_triggered": true,
+     "halton_t": 17,
+     "k": 0,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 18,
+     "k": 1,
+     "n_distinct": 8,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 19,
+     "k": 2,
+     "n_distinct": 11,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 20,
+     "k": 3,
+     "n_distinct": 11,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 21,
+     "k": 4,
+     "n_distinct": 10,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 22,
+     "k": 5,
+     "n_distinct": 8,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 23,
+     "k": 6,
+     "n_distinct": 9,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 24,
+     "k": 7,
+     "n_distinct": 10,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 25,
+     "k": 8,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 26,
+     "k": 9,
+     "n_distinct": 10,
+     "over_cap": false
+    }
+   ]
+  },
+  "n7_05_2_A": {
+   "completion_n_feasible": 34,
+   "completion_over_cap_30_STOP_FOR_REVIEW": true,
+   "completion_triggered": true,
+   "halton_t": 17,
+   "incumbent": "y2025__n7_p0.5_e2",
+   "n_distinct_feasible_poll_points_after_snap": 6,
+   "n_new_evaluations_needed": null,
+   "n_poll_points": null,
+   "n_poll_points_that_are_seeds": null,
+   "same_incumbent_at_k_0_to_9": [
+    {
+     "completion_triggered": true,
+     "halton_t": 17,
+     "k": 0,
+     "n_distinct": 6,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 18,
+     "k": 1,
+     "n_distinct": 6,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 19,
+     "k": 2,
+     "n_distinct": 9,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 20,
+     "k": 3,
+     "n_distinct": 8,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 21,
+     "k": 4,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 22,
+     "k": 5,
+     "n_distinct": 6,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 23,
+     "k": 6,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 24,
+     "k": 7,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 25,
+     "k": 8,
+     "n_distinct": 6,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 26,
+     "k": 9,
+     "n_distinct": 7,
+     "over_cap": true
+    }
+   ]
+  },
+  "n7_05_2_N": {
+   "completion_n_feasible": 34,
+   "completion_over_cap_30_STOP_FOR_REVIEW": true,
+   "completion_triggered": true,
+   "halton_t": 17,
+   "incumbent": "y2025__n7_p0.5_e2",
+   "n_distinct_feasible_poll_points_after_snap": 6,
+   "n_new_evaluations_needed": null,
+   "n_poll_points": null,
+   "n_poll_points_that_are_seeds": null,
+   "same_incumbent_at_k_0_to_9": [
+    {
+     "completion_triggered": true,
+     "halton_t": 17,
+     "k": 0,
+     "n_distinct": 6,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 18,
+     "k": 1,
+     "n_distinct": 6,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 19,
+     "k": 2,
+     "n_distinct": 9,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 20,
+     "k": 3,
+     "n_distinct": 8,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 21,
+     "k": 4,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 22,
+     "k": 5,
+     "n_distinct": 6,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 23,
+     "k": 6,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 24,
+     "k": 7,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 25,
+     "k": 8,
+     "n_distinct": 6,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 26,
+     "k": 9,
+     "n_distinct": 7,
+     "over_cap": true
+    }
+   ]
+  },
+  "unit_A": {
+   "completion_n_feasible": 31,
+   "completion_over_cap_30_STOP_FOR_REVIEW": true,
+   "completion_triggered": true,
+   "halton_t": 17,
+   "incumbent": "y2025__n7_p0.25_e1",
+   "n_distinct_feasible_poll_points_after_snap": 6,
+   "n_new_evaluations_needed": null,
+   "n_poll_points": null,
+   "n_poll_points_that_are_seeds": null,
+   "same_incumbent_at_k_0_to_9": [
+    {
+     "completion_triggered": true,
+     "halton_t": 17,
+     "k": 0,
+     "n_distinct": 6,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 18,
+     "k": 1,
+     "n_distinct": 6,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 19,
+     "k": 2,
+     "n_distinct": 8,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 20,
+     "k": 3,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 21,
+     "k": 4,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 22,
+     "k": 5,
+     "n_distinct": 6,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 23,
+     "k": 6,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 24,
+     "k": 7,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 25,
+     "k": 8,
+     "n_distinct": 6,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 26,
+     "k": 9,
+     "n_distinct": 6,
+     "over_cap": true
+    }
+   ]
+  },
+  "unit_N": {
+   "completion_n_feasible": 31,
+   "completion_over_cap_30_STOP_FOR_REVIEW": true,
+   "completion_triggered": true,
+   "halton_t": 17,
+   "incumbent": "y2025__n7_p0.25_e1",
+   "n_distinct_feasible_poll_points_after_snap": 6,
+   "n_new_evaluations_needed": null,
+   "n_poll_points": null,
+   "n_poll_points_that_are_seeds": null,
+   "same_incumbent_at_k_0_to_9": [
+    {
+     "completion_triggered": true,
+     "halton_t": 17,
+     "k": 0,
+     "n_distinct": 6,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 18,
+     "k": 1,
+     "n_distinct": 6,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": false,
+     "halton_t": 19,
+     "k": 2,
+     "n_distinct": 8,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 20,
+     "k": 3,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 21,
+     "k": 4,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 22,
+     "k": 5,
+     "n_distinct": 6,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 23,
+     "k": 6,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 24,
+     "k": 7,
+     "n_distinct": 7,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 25,
+     "k": 8,
+     "n_distinct": 6,
+     "over_cap": true
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 26,
+     "k": 9,
+     "n_distinct": 6,
+     "over_cap": true
+    }
+   ]
+  },
+  "x0_A": {
+   "completion_n_feasible": 14,
+   "completion_over_cap_30_STOP_FOR_REVIEW": false,
+   "completion_triggered": true,
+   "halton_t": 17,
+   "incumbent": "x0",
+   "n_distinct_feasible_poll_points_after_snap": 3,
+   "n_new_evaluations_needed": 14,
+   "n_poll_points": 14,
+   "n_poll_points_that_are_seeds": 0,
+   "same_incumbent_at_k_0_to_9": [
+    {
+     "completion_triggered": true,
+     "halton_t": 17,
+     "k": 0,
+     "n_distinct": 3,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 18,
+     "k": 1,
+     "n_distinct": 4,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 19,
+     "k": 2,
+     "n_distinct": 5,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 20,
+     "k": 3,
+     "n_distinct": 5,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 21,
+     "k": 4,
+     "n_distinct": 4,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 22,
+     "k": 5,
+     "n_distinct": 5,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 23,
+     "k": 6,
+     "n_distinct": 4,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 24,
+     "k": 7,
+     "n_distinct": 3,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 25,
+     "k": 8,
+     "n_distinct": 3,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 26,
+     "k": 9,
+     "n_distinct": 3,
+     "over_cap": false
+    }
+   ]
+  },
+  "x0_N": {
+   "completion_n_feasible": 14,
+   "completion_over_cap_30_STOP_FOR_REVIEW": false,
+   "completion_triggered": true,
+   "halton_t": 17,
+   "incumbent": "x0",
+   "n_distinct_feasible_poll_points_after_snap": 3,
+   "n_new_evaluations_needed": 14,
+   "n_poll_points": 14,
+   "n_poll_points_that_are_seeds": 0,
+   "same_incumbent_at_k_0_to_9": [
+    {
+     "completion_triggered": true,
+     "halton_t": 17,
+     "k": 0,
+     "n_distinct": 3,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 18,
+     "k": 1,
+     "n_distinct": 4,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 19,
+     "k": 2,
+     "n_distinct": 5,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 20,
+     "k": 3,
+     "n_distinct": 5,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 21,
+     "k": 4,
+     "n_distinct": 4,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 22,
+     "k": 5,
+     "n_distinct": 5,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 23,
+     "k": 6,
+     "n_distinct": 4,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 24,
+     "k": 7,
+     "n_distinct": 3,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 25,
+     "k": 8,
+     "n_distinct": 3,
+     "over_cap": false
+    },
+    {
+     "completion_triggered": true,
+     "halton_t": 26,
+     "k": 9,
+     "n_distinct": 3,
+     "over_cap": false
+    }
+   ]
+  }
+ },
+ "g0": {
+  "accepted": true,
+  "artifact_eval_keys": {
+   "x0_A_2x": "5f6b784127e0eb2bd6fac06206f4329752a6b56b81247bafdbc660f5222c3a4a",
+   "x0_N_2x": "c15eea6214da5f31653345d3a2591e90aac3e9e8105c4699579abea800b31289"
+  },
+  "artifact_production": {
+   "current_production_head": "6f43479ed8ece7a4a5878942ca38952ce1cae1bc",
+   "equals_current_production": true,
+   "expected_commit": "6f43479ed8ece7a4a5878942ca38952ce1cae1bc",
+   "git_head_at_run": "6f43479ed8ece7a4a5878942ca38952ce1cae1bc",
+   "modules_differing_from_current": []
+  },
+  "checks": {
+   "artifact_all_ok": true,
+   "artifact_configuration_equals_launcher": true,
+   "artifact_guard_zero_solves": true,
+   "artifact_model_N_equals_launcher": true,
+   "artifact_x0_A_2x_key_equals_alias_target": true,
+   "artifact_x0_N_2x_key_equals_alias_key": true,
+   "exists": true,
+   "git_tracked_and_clean": true,
+   "sha256_equals_pin": true,
+   "x0_A_vs_N_2x_esso_nl_all_four_files_identical_every_node": true,
+   "x0_A_vs_N_2x_esso_nl_plain_identical_every_node": true,
+   "x0_A_vs_N_2x_network_nl_identical_parallel": true,
+   "x0_A_vs_N_2x_network_nl_identical_sequential": true
+  },
+  "differing_esso_rows_every_index_inactive": {
+   "ESSO|node5": {
+    "Constraint:energy_storage_capacity_degradation": true
+   },
+   "ESSO|node7": {
+    "Constraint:energy_storage_capacity_degradation": true
+   },
+   "ESSO|node9": {
+    "Constraint:energy_storage_capacity_degradation": true
+   }
+  },
+  "exists": true,
+  "git_clean": true,
+  "git_tracked": true,
+  "path": "data/SRP1/Results/P515S55/w183_nl_post_w183c_off/w183_nl_digest.json.gz",
+  "require_current_production": false,
+  "sha256_on_disk": "ca195bd38fe2384493012dcf7127a36a8923d8a5029c2c821b5bb0f47f57ab6a",
+  "sha256_pinned": "ca195bd38fe2384493012dcf7127a36a8923d8a5029c2c821b5bb0f47f57ab6a"
+ },
+ "git_head": "7cf88b15a3191317ae6c0808356bc02aa4ec5981",
+ "guards": {
+  "all_zero": true,
+  "committed_launcher_function_tripwires": {
+   "C.baseline_exclusion": 0,
+   "C.budget_facts": 0,
+   "C.build_inputs": 0,
+   "C.campaign_root": 0,
+   "C.check_pins": 0,
+   "C.continuation_facts": 0,
+   "C.dry_run": 0,
+   "C.freeze": 0,
+   "C.load_phase_b_source": 0,
+   "C.make_key_of": 0,
+   "C.rule_eleven": 0,
+   "C.run": 0,
+   "C.shared_constants": 0,
+   "C.validate_spec": 0,
+   "F51._cache_entry_from_point": 0,
+   "F51._point_result": 0,
+   "F51._spec_declares_the_same_configuration": 0,
+   "F51.baseline_exclusion": 0,
+   "F51.budget_facts": 0,
+   "F51.build_inputs": 0,
+   "F51.campaign_root": 0,
+   "F51.check_pins": 0,
+   "F51.eval_key_of_canonical": 0,
+   "F51.freeze": 0,
+   "F51.incumbent_matches_committed_ladder": 0,
+   "F51.load_cache_source": 0,
+   "F51.make_key_of": 0,
+   "F51.memory_preflight": 0,
+   "F51.rule_eleven": 0,
+   "F51.run": 0,
+   "F51.shared_constants": 0,
+   "F51.validate_spec": 0,
+   "PB._check_baseline_launcher_declaration": 0,
+   "PB._check_case_file_loads_to_declaration": 0,
+   "PB._check_pins": 0,
+   "PB.build_inputs": 0,
+   "PB.c3_exclusion": 0,
+   "PB.campaign_root": 0,
+   "PB.eval_key_of": 0,
+   "PB.expected_first_poll": 0,
+   "PB.freeze": 0,
+   "PB.initial_incumbent": 0,
+   "PB.load_cache_source": 0,
+   "PB.make_key_of": 0,
+   "PB.memory_preflight": 0,
+   "PB.merge_cache": 0,
+   "PB.rule_eleven": 0,
+   "PB.run": 0,
+   "PB.run_mads": 0,
+   "PB.spec_matches_baseline": 0,
+   "PB.validate_spec": 0,
+   "PB.x0_entry": 0
+  },
+  "model_build_tripwire": {
+   "ConcreteModel.__init__": 0
+  },
+  "pickle": {
+   "blocked": true,
+   "counts": {
+    "load": 0,
+    "loads": 0
+   }
+  },
+  "solve_guards_ok": true,
+  "solve_profile_guards": {
+   "__main__.GATE_GUARD": {
+    "counts": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 0,
+     "permitted_solve": 0
+    },
+    "verify_0_failures": []
+   },
+   "p515_s47_phase_b_record.PARENT_GUARD": {
+    "counts": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 0,
+     "permitted_solve": 0
+    },
+    "verify_0_failures": []
+   },
+   "p515_s49_flex_ladder_campaign.PARENT_GUARD": {
+    "counts": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 0,
+     "permitted_solve": 0
+    },
+    "verify_0_failures": []
+   },
+   "p515_s50_marginal_campaign.PARENT_GUARD": {
+    "counts": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 0,
+     "permitted_solve": 0
+    },
+    "verify_0_failures": []
+   },
+   "p515_s51_f2_ladder_campaign.PARENT_GUARD": {
+    "counts": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 0,
+     "permitted_solve": 0
+    },
+    "verify_0_failures": []
+   },
+   "p515_s51_f2_phase_b.PARENT_GUARD": {
+    "counts": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 0,
+     "permitted_solve": 0
+    },
+    "verify_0_failures": []
+   },
+   "p515_s53_f2_certificate.PARENT_GUARD": {
+    "counts": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 0,
+     "permitted_solve": 0
+    },
+    "verify_0_failures": []
+   },
+   "p515_s55_e1_launcher.PARENT_GUARD": {
+    "counts": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 0,
+     "permitted_solve": 0
+    },
+    "verify_0_failures": []
+   }
+  }
+ },
+ "informative": {
+  "g0_artifact_production_equals_current": true,
+  "memory_preflight_pass_at_declared_concurrency": true,
+  "pinned_files_uncommitted_or_untracked": {
+   "uncommitted": [],
+   "untracked": []
+  }
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "key_table": [
+  {
+   "I_x_eur": 0.0,
+   "alias_of_eval_key": null,
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "committed_campaign_specs_holding_this_eval_key": [],
+   "disposition": "evaluate",
+   "eval_key": "5f6b784127e0eb2bd6fac06206f4329752a6b56b81247bafdbc660f5222c3a4a",
+   "label": "x0_A_2x",
+   "lattice_label": "x0",
+   "model": "A",
+   "seed": "x0"
+  },
+  {
+   "I_x_eur": 0.0,
+   "alias_of_eval_key": "5f6b784127e0eb2bd6fac06206f4329752a6b56b81247bafdbc660f5222c3a4a",
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "committed_campaign_specs_holding_this_eval_key": [],
+   "disposition": "alias",
+   "eval_key": "c15eea6214da5f31653345d3a2591e90aac3e9e8105c4699579abea800b31289",
+   "label": "x0_N_2x",
+   "lattice_label": "x0",
+   "model": "N",
+   "seed": "x0"
+  },
+  {
+   "I_x_eur": 317957.0085035585,
+   "alias_of_eval_key": null,
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "committed_campaign_specs_holding_this_eval_key": [],
+   "disposition": "evaluate",
+   "eval_key": "bde9355eba3e09296aba8519573f6c256df68e06c87a33fc315cfd382c3eab03",
+   "label": "unit_A_2x",
+   "lattice_label": "y2025__n7_p0.25_e1",
+   "model": "A",
+   "seed": "unit"
+  },
+  {
+   "I_x_eur": 317957.0085035585,
+   "alias_of_eval_key": null,
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "committed_campaign_specs_holding_this_eval_key": [],
+   "disposition": "evaluate",
+   "eval_key": "057f9a6f427ac78e23e6e912af51d651633c469eb3336b71ee3f6f952d1cbe64",
+   "label": "unit_N_2x",
+   "lattice_label": "y2025__n7_p0.25_e1",
+   "model": "N",
+   "seed": "unit"
+  },
+  {
+   "I_x_eur": 635914.017007117,
+   "alias_of_eval_key": null,
+   "candidate_key": "cc4eb5df385852e67c612ab21d74526d90a2c66f5c7c934889ce4f67731c4ffe",
+   "committed_campaign_specs_holding_this_eval_key": [],
+   "disposition": "evaluate",
+   "eval_key": "933a529742ce7b625a323337231756510f107200b8db94c208fffa40e0cfc15c",
+   "label": "n7_05_2_A_2x",
+   "lattice_label": "y2025__n7_p0.5_e2",
+   "model": "A",
+   "seed": "n7_05_2"
+  },
+  {
+   "I_x_eur": 635914.017007117,
+   "alias_of_eval_key": null,
+   "candidate_key": "cc4eb5df385852e67c612ab21d74526d90a2c66f5c7c934889ce4f67731c4ffe",
+   "committed_campaign_specs_holding_this_eval_key": [],
+   "disposition": "evaluate",
+   "eval_key": "e9f793f691d22c626ab8f3209feb5ed3ba2c1b07d45c15cd9c549c4960740439",
+   "label": "n7_05_2_N_2x",
+   "lattice_label": "y2025__n7_p0.5_e2",
+   "model": "N",
+   "seed": "n7_05_2"
+  },
+  {
+   "I_x_eur": 992268.1082843702,
+   "alias_of_eval_key": null,
+   "candidate_key": "59757776a2da3ffeb369b361520faa715a159976c3b98437b6be1d863278b8db",
+   "committed_campaign_specs_holding_this_eval_key": [],
+   "disposition": "evaluate",
+   "eval_key": "c4dea62e18c62f41df3af31a520a383697810613380356014c894f57f39fea36",
+   "label": "hist_inc_A_2x",
+   "lattice_label": "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+   "model": "A",
+   "seed": "hist_inc"
+  },
+  {
+   "I_x_eur": 992268.1082843702,
+   "alias_of_eval_key": null,
+   "candidate_key": "59757776a2da3ffeb369b361520faa715a159976c3b98437b6be1d863278b8db",
+   "committed_campaign_specs_holding_this_eval_key": [],
+   "disposition": "evaluate",
+   "eval_key": "c011496da24c46701b04c476728650f9a027be0b09b339b926ac07d2fb4c13e0",
+   "label": "hist_inc_N_2x",
+   "lattice_label": "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+   "model": "N",
+   "seed": "hist_inc"
+  }
+ ],
+ "memory_preflight_informative": {
+  "1": {
+   "available_gib": 18.184280395507812,
+   "concurrency": 1,
+   "hw_memsize_gib": 32.0,
+   "page_size": 16384,
+   "pages": {
+    "Anonymous pages": 723538,
+    "Pages free": 8929,
+    "Pages inactive": 916180,
+    "Pages occupied by compressor": 55548,
+    "Pages wired down": 126341
+   },
+   "pass": true,
+   "per_slot_gib": 2.75,
+   "required_gib": 2.75,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x 2.75 GiB (the S47 launcher rule)",
+   "utc": "2026-10-25T23:03:45.070096+00:00"
+  },
+  "4": {
+   "available_gib": 18.184219360351562,
+   "concurrency": 4,
+   "hw_memsize_gib": 32.0,
+   "page_size": 16384,
+   "pages": {
+    "Anonymous pages": 723542,
+    "Pages free": 8925,
+    "Pages inactive": 916182,
+    "Pages occupied by compressor": 55548,
+    "Pages wired down": 126341
+   },
+   "pass": true,
+   "per_slot_gib": 2.75,
+   "required_gib": 11.0,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x 2.75 GiB (the S47 launcher rule)",
+   "utc": "2026-10-25T23:03:45.078797+00:00"
+  }
+ },
+ "memory_preflight_non_gating": {
+  "available_gib": 18.184219360351562,
+  "concurrency": 1,
+  "hw_memsize_gib": 32.0,
+  "page_size": 16384,
+  "pages": {
+   "Anonymous pages": 723542,
+   "Pages free": 8926,
+   "Pages inactive": 916183,
+   "Pages occupied by compressor": 55548,
+   "Pages wired down": 126341
+  },
+  "pass": true,
+  "per_slot_gib": 2.75,
+  "required_gib": 2.75,
+  "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x 2.75 GiB (the S47 launcher rule)",
+  "utc": "2026-10-25T23:03:45.061205+00:00"
+ },
+ "objective_convention": "Q(x) = certified gross_operational_cost (contracted interface settlement excluded); F(x) = I(x) + Q(x); salvage and net recourse recorded by the harness, excluded from F (no objective value is computed by this dry run)",
+ "pins": {
+  "git_head_at_pin": "7cf88b15a3191317ae6c0808356bc02aa4ec5981",
+  "imported_repo_modules_sha256": {
+   "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+   "admm_parameters.py": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+   "admm_persistent_workers.py": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+   "benders_parameters.py": "f74521a4aa4df1bd877b97887c207db98cb7a3b28d541840a41d21fd3c0c7cf7",
+   "branch.py": "f85525f4984ef6e29263b527652abdd1d173558410f06a1bc812f5d65d6adb79",
+   "centralized_coordination.py": "04d2b549ff6f15decae30514606dbef2cb504c687fcc37ffc0fab75867c6eba9",
+   "definitions.py": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+   "energy_storage.py": "a3a06c5d037ba000514e2e1a1138b2acd9c54c1ee728641cd5a2ec1f965aec11",
+   "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+   "generator.py": "4727ff02f7847690cd7a9723d997f88e80f98174b21511881123a038868cb72b",
+   "helper_functions.py": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+   "hierarchical_coordination.py": "7bf34f4ac88e472f23c82dace21065b9ad867fddf8cb2dde7d2de810c05797c4",
+   "load.py": "ac603d6d9e9489cd67f3372cf46b0e365ae604440722c6209d2bf1d749fa7a69",
+   "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+   "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+   "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+   "network_parameters.py": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92",
+   "node.py": "d5f11f15b732469203a3f7cf8268e95353ae1a9d94ff3f2315d6ec5e2de86725",
+   "p510_oracle.py": "6575217fcfcae5b19925306c7181cb4f1d67a2d066e99238a3f82800696d3c8f",
+   "p511_1_selfconsistent_t0.py": "98bb8af9bc7ef8e5f96e66d9ec31ea495e810ecf50ba9605c97437eccc1ed0d2",
+   "p512_a_cold_rescaled_convergence.py": "79989a4aec49e17d7b00e4b162032cf4b925f668ee509af002aa6a1722b1ffb9",
+   "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+   "p514_l_capacity_ladder.py": "011acfebc6af8bd956d8ae2996401be5c04c6ab32a7e17cecf51258c7796c5e4",
+   "p514_n_instrumented_cstar.py": "62df39d41fec0ee48b320f6ade9eb1be4132203dcdbd100b90d1fc545d1d43c2",
+   "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+   "p515_s37_evaluate.py": "3c496cca4a2c0fc0137b490aba578027b881cbaa978f92608a81ed6256a50157",
+   "p515_s38_evaluate.py": "c3784844552e64e3856935d4086680ee6998d9610dbce06fd1cf3ccf562326fc",
+   "p515_s39_evaluate.py": "2dd5b31f29aadb84dfcaf7b9e112fdda570bf20f78154b19d49914ba3a8a28c4",
+   "p515_s44_campaign_harness.py": "c34ebdc5463a1fe0fd6398c6acad4dcfb61dbfbd142ef3de517ca517168d77be",
+   "p515_s47_phase_b_record.py": "97f573e52fb574836a72dce8c61b3d5c6b8919aa509e0ffbc04a1a6473ed6c62",
+   "p515_s49_flex_ladder_campaign.py": "5183831e7804752e91488aff0c419eb871dbfec6a3626c87f511b53a232ebcc5",
+   "p515_s50_marginal_campaign.py": "0ec4e9e0dd0844d65927a2ede8835e351fe315739e1dc261b2de0b4c7b3c6685",
+   "p515_s51_f2_ladder_campaign.py": "f64e9c7b44d6fd7044b4db417a0f56a6141f8a2de1824ca9f90041c1f1b18369",
+   "p515_s51_f2_phase_b.py": "87ab3b2d23729d1fa10fe8c4bae0cec7d8daf0644f1cb8e6c314b441dcd13b29",
+   "p515_s53_f2_certificate.py": "59f75ce46b42f41053478f8ea50e495555259ef6b92b91766aeda1e013d21df6",
+   "p515_s55_e1_launcher.py": "b0841b090c2c7deaf065c68f35d6bd2bf05e5fc9ef9faa966200ad3c8d0d8773",
+   "p515_s55_w183g_b_e1_v2_dryrun.py": "72905f64f2370f1414e3f273357064a056c79f9ee7f300709ffc6913ae5186ad",
+   "p54r_provenance.py": "d09835677d4323cd3bda49384ff61b48bf94d2891e46473200db2ca068232240",
+   "p56a_candidates.py": "ab513adfac26d309ea3065a85ec8111a10f87bdfe59787be842efbc011c29a74",
+   "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+   "p56b_candidates.py": "e6dba4c6dc31db923a96d0015d7e7de5ad5560187be8b7227e4d3bf632a7ab7c",
+   "p56b_policy.py": "d9d03eaafb7d979da7f524e74a7db8bb42db168f4dfed0e3344590b9d664036c",
+   "p57_eval.py": "f98fad1ff5b30bc8edd00831311b919c1924ce9e01469a78dcdd05ed550f2e2d",
+   "p57_fingerprint.py": "0820f3eef365f083047e5e80dbcbc9646e5dbd9808c45e5aaf4f56e6649d3d97",
+   "p58_eval.py": "8a34bfd5ca466de70355f721edc2dd8315a4f85ce71d304d82df9e2403cb7a4a",
+   "p58_rescale.py": "2c9d4f2a7125d4103da0d9cc7bba6d600bf97a3f03805d32955738d71b537cf0",
+   "p59_rho.py": "12d66b48fc473dd809638ea56ad470c5e9dfcaa5dc08be37f8af0bbfb17c159b",
+   "planning_parameters.py": "40297471cba1b0281899e7835f272f7a5df4f5e353b6d97838e5a4554c93adf9",
+   "shared_energy_storage.py": "d45c72d0db9a3743f3c26765f124ba7fbec44733ecb0d2d28b83b7e6a451f088",
+   "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+   "shared_energy_storage_parameters.py": "5fe0c4fb876a9c2f1e506e982f2a120c320a3fd4198b870f877d9a310cd390bb",
+   "shared_ess_price_taker.py": "9a55c951530c7223ffc436a0ae86339707f1d12ec96ca03bd23f77442ffc8b9c",
+   "shared_resources_planning.py": "ade9c843bc7c5b6514ab91ecc54f327330a5249709766699ff2f50c8288473d6",
+   "solver_parameters.py": "2801ef16853d7e63752d646c4c8a789a17a6731959060112c48f9457074c8b65"
+  },
+  "inputs": {
+   "definition": "every tracked file under data/SRP1 outside Results/ and Diagrams/",
+   "sha256": {
+    "data/SRP1/MarketData/SRP1_market_data.xlsx": "f8da8b9a97dbe066f67af5a5f873a9a48ab4666af15020027251840e78a94578",
+    "data/SRP1/SRP1.json": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+    "data/SRP1/SRP1_params.json": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+    "data/SRP1/SharedESS/SRP1_ESS.xlsx": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+    "data/SRP1/SharedESS/SRP1_ESS_Params.json": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+    "data/SRP1/case33_1/case33_1_2025.json": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db",
+    "data/SRP1/case33_1/case33_1_2026.json": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db",
+    "data/SRP1/case33_1/case33_1_2027.json": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db",
+    "data/SRP1/case33_1/case33_1_2028.json": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db",
+    "data/SRP1/case33_1/case33_1_2029.json": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db",
+    "data/SRP1/case33_1/case33_1_2030.json": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e",
+    "data/SRP1/case33_1/case33_1_2031.json": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e",
+    "data/SRP1/case33_1/case33_1_2032.json": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e",
+    "data/SRP1/case33_1/case33_1_2033.json": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e",
+    "data/SRP1/case33_1/case33_1_2034.json": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e",
+    "data/SRP1/case33_1/case33_1_2035.json": "674b2d00809d93afc1c3443d525c899b939f357806282f735d3821bc6d094185",
+    "data/SRP1/case33_1/case33_1_2036.json": "674b2d00809d93afc1c3443d525c899b939f357806282f735d3821bc6d094185",
+    "data/SRP1/case33_1/case33_1_2037.json": "674b2d00809d93afc1c3443d525c899b939f357806282f735d3821bc6d094185",
+    "data/SRP1/case33_1/case33_1_2038.json": "674b2d00809d93afc1c3443d525c899b939f357806282f735d3821bc6d094185",
+    "data/SRP1/case33_1/case33_1_2039.json": "674b2d00809d93afc1c3443d525c899b939f357806282f735d3821bc6d094185",
+    "data/SRP1/case33_1/case33_1_2040.json": "ed84c3da5181fc07a4c1248ace5542b44a8231975ebfd6c57dc40d337b8b1779",
+    "data/SRP1/case33_1/case33_1_2045.json": "73953e2b2f4805120dba794357377e7555490449091cc6a51d85f55b57bf2e61",
+    "data/SRP1/case33_1/case33_1_operational_data.xlsx": "e4ddc6d95cfd6237bb486e2ffca9c42e0efbd30a8b211eca5357502619dccc43",
+    "data/SRP1/case33_1/case33_1_params.json": "8e9e5a536fd1ef2bca5694274a68795d1099884ef23f2134e7db7d3a58c80b8e",
+    "data/SRP1/case33_2/case33_2_2025.json": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8",
+    "data/SRP1/case33_2/case33_2_2026.json": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8",
+    "data/SRP1/case33_2/case33_2_2027.json": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8",
+    "data/SRP1/case33_2/case33_2_2028.json": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8",
+    "data/SRP1/case33_2/case33_2_2029.json": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8",
+    "data/SRP1/case33_2/case33_2_2030.json": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f",
+    "data/SRP1/case33_2/case33_2_2031.json": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f",
+    "data/SRP1/case33_2/case33_2_2032.json": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f",
+    "data/SRP1/case33_2/case33_2_2033.json": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f",
+    "data/SRP1/case33_2/case33_2_2034.json": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f",
+    "data/SRP1/case33_2/case33_2_2035.json": "6888045f33a07f33a515db369dafbca0854f0adb2bdfacdf996158b224185047",
+    "data/SRP1/case33_2/case33_2_2036.json": "6888045f33a07f33a515db369dafbca0854f0adb2bdfacdf996158b224185047",
+    "data/SRP1/case33_2/case33_2_2037.json": "6888045f33a07f33a515db369dafbca0854f0adb2bdfacdf996158b224185047",
+    "data/SRP1/case33_2/case33_2_2038.json": "6888045f33a07f33a515db369dafbca0854f0adb2bdfacdf996158b224185047",
+    "data/SRP1/case33_2/case33_2_2039.json": "6888045f33a07f33a515db369dafbca0854f0adb2bdfacdf996158b224185047",
+    "data/SRP1/case33_2/case33_2_2040.json": "fde37d6b7ccdf6471d41dbc9fd18aa0c15f7c41c54cadd6555332d37a9f2eaef",
+    "data/SRP1/case33_2/case33_2_2045.json": "566368722ec5dcebd2d74a4e966e161f483e111ff4091ac3799f693d0eae43f7",
+    "data/SRP1/case33_2/case33_2_operational_data.xlsx": "44c8893a331899b1668f5af37228eaaf3bbd7e05fa13500f9b78345a15fcd720",
+    "data/SRP1/case33_2/case33_2_params.json": "31b5fedf87b96724dc5676566fd87f1c21dc02ecfb8d2bd9fdf280a9b7be35ff",
+    "data/SRP1/case33_3/case33_3_2025.json": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af",
+    "data/SRP1/case33_3/case33_3_2026.json": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af",
+    "data/SRP1/case33_3/case33_3_2027.json": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af",
+    "data/SRP1/case33_3/case33_3_2028.json": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af",
+    "data/SRP1/case33_3/case33_3_2029.json": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af",
+    "data/SRP1/case33_3/case33_3_2030.json": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b",
+    "data/SRP1/case33_3/case33_3_2031.json": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b",
+    "data/SRP1/case33_3/case33_3_2032.json": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b",
+    "data/SRP1/case33_3/case33_3_2033.json": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b",
+    "data/SRP1/case33_3/case33_3_2034.json": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b",
+    "data/SRP1/case33_3/case33_3_2035.json": "f73ae82b1b240a8d4c41775e17cde951692e37e0f79c557e896d01f6d299da60",
+    "data/SRP1/case33_3/case33_3_2036.json": "f73ae82b1b240a8d4c41775e17cde951692e37e0f79c557e896d01f6d299da60",
+    "data/SRP1/case33_3/case33_3_2037.json": "f73ae82b1b240a8d4c41775e17cde951692e37e0f79c557e896d01f6d299da60",
+    "data/SRP1/case33_3/case33_3_2038.json": "f73ae82b1b240a8d4c41775e17cde951692e37e0f79c557e896d01f6d299da60",
+    "data/SRP1/case33_3/case33_3_2039.json": "f73ae82b1b240a8d4c41775e17cde951692e37e0f79c557e896d01f6d299da60",
+    "data/SRP1/case33_3/case33_3_2040.json": "4d662474e8aa8ea49670e3f9f23baf592864713e51b2c65f3a66bef251238413",
+    "data/SRP1/case33_3/case33_3_2045.json": "0f817788ab8a6558048f3fc81aceee59de69dca04e3ce23c2ef38c898537a289",
+    "data/SRP1/case33_3/case33_3_operational_data.xlsx": "866bcfc7afb24ee9a06277e550acc5a2d73549e81877cc7fc1480f7e5ecd8f45",
+    "data/SRP1/case33_3/case33_3_params.json": "a19bd5b9d18a26deff44dc62a351f2e6c193012c3f7075d12cade4f230760c49",
+    "data/SRP1/case9/case9_2025.json": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f",
+    "data/SRP1/case9/case9_2026.json": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f",
+    "data/SRP1/case9/case9_2027.json": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f",
+    "data/SRP1/case9/case9_2028.json": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f",
+    "data/SRP1/case9/case9_2029.json": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f",
+    "data/SRP1/case9/case9_2030.json": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d",
+    "data/SRP1/case9/case9_2031.json": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d",
+    "data/SRP1/case9/case9_2032.json": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d",
+    "data/SRP1/case9/case9_2033.json": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d",
+    "data/SRP1/case9/case9_2034.json": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d",
+    "data/SRP1/case9/case9_2035.json": "14f53b046f62a56846b4249bebaad526dd8f69c83c79efd602436a9c48c91e0b",
+    "data/SRP1/case9/case9_2036.json": "14f53b046f62a56846b4249bebaad526dd8f69c83c79efd602436a9c48c91e0b",
+    "data/SRP1/case9/case9_2037.json": "14f53b046f62a56846b4249bebaad526dd8f69c83c79efd602436a9c48c91e0b",
+    "data/SRP1/case9/case9_2038.json": "14f53b046f62a56846b4249bebaad526dd8f69c83c79efd602436a9c48c91e0b",
+    "data/SRP1/case9/case9_2039.json": "14f53b046f62a56846b4249bebaad526dd8f69c83c79efd602436a9c48c91e0b",
+    "data/SRP1/case9/case9_2040.json": "841280ca72d5e081ab188c4b58061f0b77d7f10b2e6d6d32f2cae3f5f63dcb71",
+    "data/SRP1/case9/case9_2045.json": "2f0d7d6f946f52c3f42796be8e583480e400990ebbbe1a06d6b253c025885976",
+    "data/SRP1/case9/case9_operational_data.xlsx": "5eab94aa6eb6e661554db947cc2e3ff7d761350de569f8a1f36c6c13d418d6bb",
+    "data/SRP1/case9/case9_params.json": "f3eff0502c606a9076af19969ec3705c2e6204fa4d9172a218345e986dbbf4ab"
+   }
+  },
+  "named_inputs": {
+   "case_file": {
+    "path": "data/SRP1/SRP1_params.json",
+    "sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b"
+   },
+   "cost_file": {
+    "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+    "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6"
+   },
+   "ess_params_file": {
+    "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+   },
+   "network_params_files": [
+    {
+     "path": "data/SRP1/case9/case9_params.json",
+     "sha256": "f3eff0502c606a9076af19969ec3705c2e6204fa4d9172a218345e986dbbf4ab"
+    },
+    {
+     "path": "data/SRP1/case33_1/case33_1_params.json",
+     "sha256": "8e9e5a536fd1ef2bca5694274a68795d1099884ef23f2134e7db7d3a58c80b8e"
+    },
+    {
+     "path": "data/SRP1/case33_2/case33_2_params.json",
+     "sha256": "31b5fedf87b96724dc5676566fd87f1c21dc02ecfb8d2bd9fdf280a9b7be35ff"
+    },
+    {
+     "path": "data/SRP1/case33_3/case33_3_params.json",
+     "sha256": "a19bd5b9d18a26deff44dc62a351f2e6c193012c3f7075d12cade4f230760c49"
+    }
+   ]
+  },
+  "production": {
+   "definition": "tracked root-level *.py not matching ^p\\d (the W182f / W183-0 definition)",
+   "head": "6f43479ed8ece7a4a5878942ca38952ce1cae1bc",
+   "modules_sha256": {
+    "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+    "admm_parameters.py": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+    "admm_persistent_workers.py": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+    "audit_p3_snapshots.py": "b8649c27a38a741154cb8cc3d14aa02a5ce91a883bbf50e24782237defdf6f6e",
+    "benders_parameters.py": "f74521a4aa4df1bd877b97887c207db98cb7a3b28d541840a41d21fd3c0c7cf7",
+    "branch.py": "f85525f4984ef6e29263b527652abdd1d173558410f06a1bc812f5d65d6adb79",
+    "centralized_coordination.py": "04d2b549ff6f15decae30514606dbef2cb504c687fcc37ffc0fab75867c6eba9",
+    "convex_oracle.py": "a88e255571b836e135ee015a23598c4cc4c60a96872a972ea91cf391e1d42c6f",
+    "debug.py": "9de612d4d0f00ae20460cd206a767779b516a54ec8528d68fb625f5ec44bb1f1",
+    "definitions.py": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+    "energy_storage.py": "a3a06c5d037ba000514e2e1a1138b2acd9c54c1ee728641cd5a2ec1f965aec11",
+    "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+    "generator.py": "4727ff02f7847690cd7a9723d997f88e80f98174b21511881123a038868cb72b",
+    "helper_functions.py": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+    "hierarchical_coordination.py": "7bf34f4ac88e472f23c82dace21065b9ad867fddf8cb2dde7d2de810c05797c4",
+    "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+    "load.py": "ac603d6d9e9489cd67f3372cf46b0e365ae604440722c6209d2bf1d749fa7a69",
+    "main.py": "d7de3a7a383220082f821dd30d396f897a85df5ef193be6c12ac1f7b3367ab75",
+    "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+    "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+    "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+    "network_parameters.py": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92",
+    "node.py": "d5f11f15b732469203a3f7cf8268e95353ae1a9d94ff3f2315d6ec5e2de86725",
+    "planning_parameters.py": "40297471cba1b0281899e7835f272f7a5df4f5e353b6d97838e5a4554c93adf9",
+    "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+    "settling_criterion_v2.py": "3db13b0eb7a093f49a7ff014a3c46a5aa013b86da5e5d78c3a19daba476af59e",
+    "settling_criterion_v3.py": "0d78b9228381b9d4af3492c7712f9892d2f012d00e5023407962ff3619b5e965",
+    "settling_criterion_v4.py": "077561ceefa704a0c5512d45d17865609c6775e5ad18332a990ce3f1bb747775",
+    "settling_criterion_v5.py": "5ea29fb303c5f9ac1e6c2fcb869b7c6d044d2d8738298dee67093d70086a976f",
+    "settling_criterion_v6.py": "53f477118d51f5fd843190c0da920f1647618ef41f6a1973988653b10eb66e2d",
+    "shared_energy_storage.py": "d45c72d0db9a3743f3c26765f124ba7fbec44733ecb0d2d28b83b7e6a451f088",
+    "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+    "shared_energy_storage_parameters.py": "5fe0c4fb876a9c2f1e506e982f2a120c320a3fd4198b870f877d9a310cd390bb",
+    "shared_ess_price_taker.py": "9a55c951530c7223ffc436a0ae86339707f1d12ec96ca03bd23f77442ffc8b9c",
+    "shared_resources_planning.py": "ade9c843bc7c5b6514ab91ecc54f327330a5249709766699ff2f50c8288473d6",
+    "solver_parameters.py": "2801ef16853d7e63752d646c4c8a789a17a6731959060112c48f9457074c8b65",
+    "uncoordinated_benchmark.py": "45d1c09db9b687040d57c8b01c1d092f3b53aa120f0e3229d998c435d261e31a",
+    "validate_vmag_refactor.py": "55022d106a18fe15d794d9691888b1f2584c95a563e06b97741b6cd612306512"
+   }
+  },
+  "run_files_sha256": {
+   "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+   "p515_s44_campaign_harness.py": "c34ebdc5463a1fe0fd6398c6acad4dcfb61dbfbd142ef3de517ca517168d77be",
+   "p515_s55_e1_launcher.py": "b0841b090c2c7deaf065c68f35d6bd2bf05e5fc9ef9faa966200ad3c8d0d8773",
+   "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+   "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+   "settling_criterion_v2.py": "3db13b0eb7a093f49a7ff014a3c46a5aa013b86da5e5d78c3a19daba476af59e",
+   "settling_criterion_v3.py": "0d78b9228381b9d4af3492c7712f9892d2f012d00e5023407962ff3619b5e965",
+   "settling_criterion_v4.py": "077561ceefa704a0c5512d45d17865609c6775e5ad18332a990ce3f1bb747775",
+   "settling_criterion_v5.py": "5ea29fb303c5f9ac1e6c2fcb869b7c6d044d2d8738298dee67093d70086a976f",
+   "settling_criterion_v6.py": "53f477118d51f5fd843190c0da920f1647618ef41f6a1973988653b10eb66e2d"
+  },
+  "search_tables": {
+   "investment_cost_w2": {
+    "path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+    "sha256": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b"
+   },
+   "phase_a_tables": {
+    "path": "data/SRP1/Results/P515S45/phase_a_tables/phase_a_tables.json",
+    "sha256": "a2b78541b5c50ad2a185ca3eb3d0f1b38bb388c4866c45628a984c407b4a3995"
+   }
+  },
+  "uncommitted_changes": [],
+  "untracked": []
+ },
+ "preconditions_reported": {
+  "campaign_lock_present": false,
+  "check_campaign_preconditions_on_a_new_scratch_root": [],
+  "own_launcher_processes_alive": []
+ },
+ "prediction": {
+  "held": true,
+  "observed_distinct_keys_to_evaluate": 7,
+  "predicted_distinct_keys_to_evaluate": 7,
+  "source": "Addendum 83 W183 predictions: \"the E1 key dry run yields 7 distinct seed keys\""
+ },
+ "repo_modules_imported_sha256_end": {
+  "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+  "admm_parameters.py": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+  "admm_persistent_workers.py": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+  "benders_parameters.py": "f74521a4aa4df1bd877b97887c207db98cb7a3b28d541840a41d21fd3c0c7cf7",
+  "branch.py": "f85525f4984ef6e29263b527652abdd1d173558410f06a1bc812f5d65d6adb79",
+  "centralized_coordination.py": "04d2b549ff6f15decae30514606dbef2cb504c687fcc37ffc0fab75867c6eba9",
+  "definitions.py": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+  "energy_storage.py": "a3a06c5d037ba000514e2e1a1138b2acd9c54c1ee728641cd5a2ec1f965aec11",
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "generator.py": "4727ff02f7847690cd7a9723d997f88e80f98174b21511881123a038868cb72b",
+  "helper_functions.py": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+  "hierarchical_coordination.py": "7bf34f4ac88e472f23c82dace21065b9ad867fddf8cb2dde7d2de810c05797c4",
+  "load.py": "ac603d6d9e9489cd67f3372cf46b0e365ae604440722c6209d2bf1d749fa7a69",
+  "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+  "network_parameters.py": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92",
+  "node.py": "d5f11f15b732469203a3f7cf8268e95353ae1a9d94ff3f2315d6ec5e2de86725",
+  "p510_oracle.py": "6575217fcfcae5b19925306c7181cb4f1d67a2d066e99238a3f82800696d3c8f",
+  "p511_1_selfconsistent_t0.py": "98bb8af9bc7ef8e5f96e66d9ec31ea495e810ecf50ba9605c97437eccc1ed0d2",
+  "p512_a_cold_rescaled_convergence.py": "79989a4aec49e17d7b00e4b162032cf4b925f668ee509af002aa6a1722b1ffb9",
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+  "p514_l_capacity_ladder.py": "011acfebc6af8bd956d8ae2996401be5c04c6ab32a7e17cecf51258c7796c5e4",
+  "p514_n_instrumented_cstar.py": "62df39d41fec0ee48b320f6ade9eb1be4132203dcdbd100b90d1fc545d1d43c2",
+  "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+  "p515_s37_evaluate.py": "3c496cca4a2c0fc0137b490aba578027b881cbaa978f92608a81ed6256a50157",
+  "p515_s38_evaluate.py": "c3784844552e64e3856935d4086680ee6998d9610dbce06fd1cf3ccf562326fc",
+  "p515_s39_evaluate.py": "2dd5b31f29aadb84dfcaf7b9e112fdda570bf20f78154b19d49914ba3a8a28c4",
+  "p515_s44_campaign_harness.py": "c34ebdc5463a1fe0fd6398c6acad4dcfb61dbfbd142ef3de517ca517168d77be",
+  "p515_s47_phase_b_record.py": "97f573e52fb574836a72dce8c61b3d5c6b8919aa509e0ffbc04a1a6473ed6c62",
+  "p515_s49_flex_ladder_campaign.py": "5183831e7804752e91488aff0c419eb871dbfec6a3626c87f511b53a232ebcc5",
+  "p515_s50_marginal_campaign.py": "0ec4e9e0dd0844d65927a2ede8835e351fe315739e1dc261b2de0b4c7b3c6685",
+  "p515_s51_f2_ladder_campaign.py": "f64e9c7b44d6fd7044b4db417a0f56a6141f8a2de1824ca9f90041c1f1b18369",
+  "p515_s51_f2_phase_b.py": "87ab3b2d23729d1fa10fe8c4bae0cec7d8daf0644f1cb8e6c314b441dcd13b29",
+  "p515_s53_f2_certificate.py": "59f75ce46b42f41053478f8ea50e495555259ef6b92b91766aeda1e013d21df6",
+  "p515_s53_w101_settling_continuation_hooks.py": "05004cf8b475c940ef1d30a225bcad20e257f02c0d34bb5034ee4975d6625f6b",
+  "p515_s53_w105_settling_extension_hooks.py": "1ff61ce96dc25e4ccac3b864c834c54edf2d382525bddd9adce9af71bba84f05",
+  "p515_s53_w118_resettle_hooks.py": "081066cbb4e651517c9dedbb6a51a96d85305fa4710c50d7e9dc67fdc3f06dd7",
+  "p515_s53_w132_resettle_v3_hooks.py": "f0749183b990b5be8afbed26b89da75b7a7e8df45ca46fcef15165ba94b6f9fe",
+  "p515_s53_w135_resettle_ext_hooks.py": "a31ec720d10831ab74a965189b6e3bf04fea8b5c0cc2e654d7bd1a9f0dd8cf29",
+  "p515_s53_w137_resettle_v4_hooks.py": "dd53352897020a51f250e82c5ac90728ce940c507c1baead4d7a96c7e9a42dfc",
+  "p515_s53_w139_resettle_v5_hooks.py": "a46ad444930f66489e456cc2f9388ed97fbbf7465b808f7cbf63087761021576",
+  "p515_s53_w142_resettle_ext_v6_hooks.py": "a0fe14d3c7f532d113af1eff9354502430b14f73374cee22009c7c185eb5d963",
+  "p515_s53_w142_resettle_v6_hooks.py": "19631fb246a4fe81d7a20b3915e38b362a174656ab7403416325057c0925b38e",
+  "p515_s53_w155_a64_hooks.py": "c46f94c84fb10547e69b6ed1ff8d1f3075526f8cab093699be04638d89129685",
+  "p515_s55_e1_launcher.py": "b0841b090c2c7deaf065c68f35d6bd2bf05e5fc9ef9faa966200ad3c8d0d8773",
+  "p515_s55_w183g_b_e1_v2_dryrun.py": "72905f64f2370f1414e3f273357064a056c79f9ee7f300709ffc6913ae5186ad",
+  "p54r_provenance.py": "d09835677d4323cd3bda49384ff61b48bf94d2891e46473200db2ca068232240",
+  "p56a_candidates.py": "ab513adfac26d309ea3065a85ec8111a10f87bdfe59787be842efbc011c29a74",
+  "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+  "p56b_candidates.py": "e6dba4c6dc31db923a96d0015d7e7de5ad5560187be8b7227e4d3bf632a7ab7c",
+  "p56b_policy.py": "d9d03eaafb7d979da7f524e74a7db8bb42db168f4dfed0e3344590b9d664036c",
+  "p57_eval.py": "f98fad1ff5b30bc8edd00831311b919c1924ce9e01469a78dcdd05ed550f2e2d",
+  "p57_fingerprint.py": "0820f3eef365f083047e5e80dbcbc9646e5dbd9808c45e5aaf4f56e6649d3d97",
+  "p58_eval.py": "8a34bfd5ca466de70355f721edc2dd8315a4f85ce71d304d82df9e2403cb7a4a",
+  "p58_rescale.py": "2c9d4f2a7125d4103da0d9cc7bba6d600bf97a3f03805d32955738d71b537cf0",
+  "p59_rho.py": "12d66b48fc473dd809638ea56ad470c5e9dfcaa5dc08be37f8af0bbfb17c159b",
+  "planning_parameters.py": "40297471cba1b0281899e7835f272f7a5df4f5e353b6d97838e5a4554c93adf9",
+  "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+  "settling_criterion_v2.py": "3db13b0eb7a093f49a7ff014a3c46a5aa013b86da5e5d78c3a19daba476af59e",
+  "settling_criterion_v3.py": "0d78b9228381b9d4af3492c7712f9892d2f012d00e5023407962ff3619b5e965",
+  "settling_criterion_v4.py": "077561ceefa704a0c5512d45d17865609c6775e5ad18332a990ce3f1bb747775",
+  "settling_criterion_v5.py": "5ea29fb303c5f9ac1e6c2fcb869b7c6d044d2d8738298dee67093d70086a976f",
+  "settling_criterion_v6.py": "53f477118d51f5fd843190c0da920f1647618ef41f6a1973988653b10eb66e2d",
+  "shared_energy_storage.py": "d45c72d0db9a3743f3c26765f124ba7fbec44733ecb0d2d28b83b7e6a451f088",
+  "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+  "shared_energy_storage_parameters.py": "5fe0c4fb876a9c2f1e506e982f2a120c320a3fd4198b870f877d9a310cd390bb",
+  "shared_ess_price_taker.py": "9a55c951530c7223ffc436a0ae86339707f1d12ec96ca03bd23f77442ffc8b9c",
+  "shared_resources_planning.py": "ade9c843bc7c5b6514ab91ecc54f327330a5249709766699ff2f50c8288473d6",
+  "solver_parameters.py": "2801ef16853d7e63752d646c4c8a789a17a6731959060112c48f9457074c8b65"
+ },
+ "root": "data/SRP1/Results/P515S55/w183g_b_e1_v2_dryrun/launcher_dry_run",
+ "root_inventory_at_start": {
+  "exists": true,
+  "launch_logs": [],
+  "non_log_entries": [],
+  "other": [],
+  "phases": {
+   "search_A": {
+    "exists": false
+   },
+   "search_N": {
+    "exists": false
+   },
+   "seeds": {
+    "exists": false
+   }
+  },
+  "root": "data/SRP1/Results/P515S55/w183g_b_e1_v2_dryrun/launcher_dry_run"
+ },
+ "rule_eleven": {
+  "checks": {
+   "ageing_trajectory_terminal": true,
+   "barrier_stop_rule_fires": true,
+   "budget_rule_refuses_poll": true,
+   "candidate_record_fields": true,
+   "e1_loop_advance_ran_from_a_storage_incumbent": true,
+   "e1_loop_advance_rule_fields": true,
+   "e1_loop_barrier_stop_rule_fires": true,
+   "e1_loop_budget_rule_refuses_poll": true,
+   "e1_loop_candidate_record_fields": true,
+   "e1_loop_poll_failure_certificate_fields": true,
+   "e1_loop_poll_record_fields": true,
+   "e1_loop_skipped_index_fields": true,
+   "e1_point_record_fields": true,
+   "ess_ageing_readback_terminal": true,
+   "flex_price_readback_terminal": true,
+   "model_variant_readback_terminal": true,
+   "parent_barrier_record_for_missing": true,
+   "per_cycle_trajectory_written": true,
+   "poll_failure_certificate_fields": true,
+   "poll_record_fields": true,
+   "record_Q_gross": true,
+   "record_bar": true,
+   "record_candidate_hash": true,
+   "record_cycles_and_certification_cycle": true,
+   "record_spec_hash": true,
+   "record_status": true,
+   "record_stopping_ratio_rule_ten": true,
+   "record_storage_per_node": true,
+   "record_wall_and_rss": true,
+   "snap_record_fields": true,
+   "storage_per_node_E_av_terminal": true,
+   "storage_per_node_soh_terminal": true
+  },
+  "harness_record_capture_checklist": {
+   "component_levels_recourse_key_interface_settlement_total": true,
+   "esso_capture_attr_es_avg_ch_dch_per_unit": true,
+   "esso_capture_attr_es_e_rated_per_unit": true,
+   "esso_capture_attr_es_soh_per_unit_cumul": true,
+   "evaluator_fn__certification_from_trajectory": true,
+   "evaluator_fn__first_pass_cycle": true,
+   "evaluator_fn__terminal_ratios": true,
+   "harness_fn__derive_stopped_by_from_trajectory": true,
+   "harness_fn__identify_soh_floor_rows": true,
+   "harness_fn__s35ref_terminal_floor_and_efc": true,
+   "harness_fn_run_admm_arm": true,
+   "harness_fn_s38_pf_capture_hooks": true,
+   "harness_fn_s39_exempt_until_capture_hooks": true,
+   "harness_fn_write_boyd_terminal_s35ref": true,
+   "production_state_has_peak_rss": true,
+   "run_admm_arm_accepts_investment_map": true,
+   "run_admm_arm_post_run_hook_gets_state": true,
+   "trajectory_field_boyd_all_pass": true,
+   "trajectory_field_boyd_ess_channel_pass": true,
+   "trajectory_field_boyd_ess_dual_ratio": true,
+   "trajectory_field_boyd_ess_primal_ratio": true,
+   "trajectory_field_boyd_pf_channel_pass": true,
+   "trajectory_field_boyd_pf_dual_ratio": true,
+   "trajectory_field_boyd_pf_primal_ratio": true,
+   "trajectory_field_boyd_stop": true,
+   "trajectory_field_boyd_v_channel_pass": true,
+   "trajectory_field_boyd_v_dual_ratio": true,
+   "trajectory_field_boyd_v_primal_ratio": true,
+   "trajectory_field_consecutive_converged_cycles": true,
+   "trajectory_field_cycle": true,
+   "trajectory_field_cycle_convergence": true,
+   "trajectory_field_efc_per_day_max": true,
+   "trajectory_field_gross_operational_cost": true,
+   "trajectory_field_local_solves_ok": true,
+   "trajectory_field_objective_change_abs": true,
+   "trajectory_field_objective_change_ratio": true,
+   "trajectory_field_objective_tolerance": true,
+   "trajectory_field_recourse": true,
+   "trajectory_field_rho_ess_action": true,
+   "trajectory_field_rho_ess_after": true,
+   "trajectory_field_rho_freeze_active": true,
+   "trajectory_field_rho_pf_action": true,
+   "trajectory_field_rho_pf_after": true,
+   "trajectory_field_rho_v_action": true,
+   "trajectory_field_rho_v_after": true,
+   "trajectory_field_terminal_salvage_value": true
+  },
+  "point_fields": [
+   "label",
+   "seed",
+   "model",
+   "status",
+   "eval_key",
+   "candidate_key",
+   "candidate_canonical",
+   "certified_cost_gross_settlement_excluded",
+   "bar",
+   "barrier_cause",
+   "cycles_run",
+   "certification_cycle",
+   "rule_ten_terminal_step_over_threshold",
+   "flex_price_multiplier",
+   "flex_price_readback_all_match",
+   "model_variant",
+   "model_readback_all_match",
+   "storage_per_node",
+   "wall_time_s",
+   "peak_rss",
+   "eval_dir",
+   "per_cycle_record",
+   "exit_code",
+   "git_head_at_record"
+  ]
+ },
+ "schema": "p515_s55_e1_launcher_dryrun_v2",
+ "scratch_removed": true,
+ "search_tables": {
+  "I_x_cross_check_vs_W2": {
+   "max_abs_diff_eur": 2.3283064365386963e-10,
+   "n": 105,
+   "ok": true,
+   "worst_label": "n9_4h_e5_y2030"
+  },
+  "degradation_clause": {
+   "min_unit_step_cost_eur": 39901.733134216716,
+   "note": "the year coordinate has no fixed step cost (it scales with the capacity moved); its smallest unit move on the domain is recorded separately as min_year_step_cost_eur",
+   "sigma_Q_eur": 18449.663947025518,
+   "sigma_Q_exceeds_one_step": false,
+   "triggered": false,
+   "two_sigma_Q_below_min_step": true,
+   "unit_step_costs_eur": {
+    "E_2025": 126938.83871929655,
+    "E_2030": 94285.99965563012,
+    "E_2035": 79043.89110756524,
+    "P_2025": 64079.331064965416,
+    "P_2030": 47596.02220786583,
+    "P_2035": 39901.733134216716
+   }
+  },
+  "investment_cost_w2_sha256": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+  "phase_a_tables_sha256": "a2b78541b5c50ad2a185ca3eb3d0f1b38bb388c4866c45628a984c407b4a3995",
+  "sigma_Q": {
+   "n_fit_points": 16,
+   "note": "measured under the C3 calibration (Phase A A3 fit, Addendum 28 \"sigma_Q ~ 10-18k\"); the oracle configuration is unchanged; not re-measured under the baseline",
+   "residual_rms_eur": 10285.394012489985,
+   "sigma_Q_eur": 18449.663947025518,
+   "source": {
+    "commit": "c1b64278",
+    "field": "T3.residual_max_abs_eur (sigma_Q; T3.residual_rms_eur recorded beside it)",
+    "path": "data/SRP1/Results/P515S45/phase_a_tables/phase_a_tables.json",
+    "sha256": "a2b78541b5c50ad2a185ca3eb3d0f1b38bb388c4866c45628a984c407b4a3995"
+   }
+  }
+ },
+ "seed_key_summary": {
+  "alias": {
+   "I_x_eur": 0.0,
+   "alias_of": {
+    "eval_key": "5f6b784127e0eb2bd6fac06206f4329752a6b56b81247bafdbc660f5222c3a4a",
+    "label": "x0_A_2x"
+   },
+   "budget_feasible": true,
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "disposition": "alias",
+   "eval_key": "c15eea6214da5f31653345d3a2591e90aac3e9e8105c4699579abea800b31289",
+   "flex_price_multiplier": 2.0,
+   "label": "x0_N_2x",
+   "lattice_label": "x0",
+   "model": "N",
+   "model_variant": {
+    "ageing_enabled": false,
+    "available_energy_soh_point": "end",
+    "calendar_retention_per_year": 1.0,
+    "eol_retention_r": 0.5
+   },
+   "seed": "x0",
+   "seed_text": "x = 0 (no storage)",
+   "z": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "keys_to_evaluate": [
+   "5f6b784127e0eb2bd6fac06206f4329752a6b56b81247bafdbc660f5222c3a4a",
+   "bde9355eba3e09296aba8519573f6c256df68e06c87a33fc315cfd382c3eab03",
+   "057f9a6f427ac78e23e6e912af51d651633c469eb3336b71ee3f6f952d1cbe64",
+   "933a529742ce7b625a323337231756510f107200b8db94c208fffa40e0cfc15c",
+   "e9f793f691d22c626ab8f3209feb5ed3ba2c1b07d45c15cd9c549c4960740439",
+   "c4dea62e18c62f41df3af31a520a383697810613380356014c894f57f39fea36",
+   "c011496da24c46701b04c476728650f9a027be0b09b339b926ac07d2fb4c13e0"
+  ],
+  "n_aliases": 1,
+  "n_distinct_keys_to_evaluate": 7,
+  "n_keys_to_evaluate": 7
+ },
+ "stage": "P5.15 Addendum 83 ruling 3 (i)/(v)/(vi), W183b -- E1: matched degradation-aware (A) and degradation-neutral (N) variant-B searches at flexibility price x 2 on the final code (STEP7 plan section 5)",
+ "started_utc": "2026-10-25T23:03:41.718694+00:00",
+ "wall_clock_s": 8.179588794708252,
+ "would_be_seeds_spec": {
+  "content": {
+   "authority": [
+    "PLANNER_BRIEF_2026-09-13.md Addendum 83 rulings 3 (i), (v), (vi) and 6; campaign spec v1; W183 order item W183b",
+    "PLANNER_BRIEF_2026-09-13.md Addendum 82 v2 ruling 1 (E1); Addendum 70 ruling 6 (variant B)",
+    "STEP7_SIMULATION_PLAN_2026-10-25.md sections 5.1, 5.2, 11",
+    "P5_15_W182E_CODE_PATHS.md (Blocked 1: no committed search launcher accepts a model variant)",
+    "P5_15_W183_0_NL_REFERENCE.md (G0 at x = 0; unit_N_1x key = the ext-v6 e_no_ageing base key)",
+    "PLANNER_BRIEF_2026-09-13.md Addendum 85 ruling 2 (E1 poll rule B+), ruling 3 (A7 confirmed), ruling 4 (i), (iv) (k0 = 0; the 4-slot batch seeds and the roots); W183g order item (b) -- launcher v2"
+   ],
+   "bar_window_cycles": 10,
+   "campaign_id": "s55_launcher_dry_run_seeds",
+   "candidates": [
+    {
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.0,
+        0.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "eval_dir": "5f6b784127e0eb2b_x0_a_2x",
+     "eval_key": "5f6b784127e0eb2bd6fac06206f4329752a6b56b81247bafdbc660f5222c3a4a",
+     "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+     "flex_price_multiplier": 2.0,
+     "key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "label": "x0_A_2x",
+     "overrides": {},
+     "post_certification": null,
+     "working_dir_ids": {
+      "precheck": "p515s44_s55_launcher_dry_run_seeds_5f6b784127e0eb2b_precheck",
+      "run": "p515s44_s55_launcher_dry_run_seeds_5f6b784127e0eb2b_run"
+     }
+    },
+    {
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.25,
+        1.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "eval_dir": "bde9355eba3e0929_unit_a_2x",
+     "eval_key": "bde9355eba3e09296aba8519573f6c256df68e06c87a33fc315cfd382c3eab03",
+     "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+     "flex_price_multiplier": 2.0,
+     "key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+     "label": "unit_A_2x",
+     "overrides": {},
+     "post_certification": null,
+     "working_dir_ids": {
+      "precheck": "p515s44_s55_launcher_dry_run_seeds_bde9355eba3e0929_precheck",
+      "run": "p515s44_s55_launcher_dry_run_seeds_bde9355eba3e0929_run"
+     }
+    },
+    {
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.25,
+        1.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "eval_dir": "057f9a6f427ac78e_unit_n_2x",
+     "eval_key": "057f9a6f427ac78e23e6e912af51d651633c469eb3336b71ee3f6f952d1cbe64",
+     "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+     "flex_price_multiplier": 2.0,
+     "key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+     "label": "unit_N_2x",
+     "model_variant": {
+      "ageing_enabled": false,
+      "available_energy_soh_point": "end",
+      "calendar_retention_per_year": 1.0,
+      "eol_retention_r": 0.5
+     },
+     "model_variant_label": "MODEL VARIANT \u2014 not the baseline",
+     "overrides": {},
+     "post_certification": null,
+     "working_dir_ids": {
+      "precheck": "p515s44_s55_launcher_dry_run_seeds_057f9a6f427ac78e_precheck",
+      "run": "p515s44_s55_launcher_dry_run_seeds_057f9a6f427ac78e_run"
+     }
+    },
+    {
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.5,
+        2.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "eval_dir": "933a529742ce7b62_n7_05_2_a_2x",
+     "eval_key": "933a529742ce7b625a323337231756510f107200b8db94c208fffa40e0cfc15c",
+     "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+     "flex_price_multiplier": 2.0,
+     "key": "cc4eb5df385852e67c612ab21d74526d90a2c66f5c7c934889ce4f67731c4ffe",
+     "label": "n7_05_2_A_2x",
+     "overrides": {},
+     "post_certification": null,
+     "working_dir_ids": {
+      "precheck": "p515s44_s55_launcher_dry_run_seeds_933a529742ce7b62_precheck",
+      "run": "p515s44_s55_launcher_dry_run_seeds_933a529742ce7b62_run"
+     }
+    },
+    {
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.5,
+        2.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "eval_dir": "e9f793f691d22c62_n7_05_2_n_2x",
+     "eval_key": "e9f793f691d22c626ab8f3209feb5ed3ba2c1b07d45c15cd9c549c4960740439",
+     "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+     "flex_price_multiplier": 2.0,
+     "key": "cc4eb5df385852e67c612ab21d74526d90a2c66f5c7c934889ce4f67731c4ffe",
+     "label": "n7_05_2_N_2x",
+     "model_variant": {
+      "ageing_enabled": false,
+      "available_energy_soh_point": "end",
+      "calendar_retention_per_year": 1.0,
+      "eol_retention_r": 0.5
+     },
+     "model_variant_label": "MODEL VARIANT \u2014 not the baseline",
+     "overrides": {},
+     "post_certification": null,
+     "working_dir_ids": {
+      "precheck": "p515s44_s55_launcher_dry_run_seeds_e9f793f691d22c62_precheck",
+      "run": "p515s44_s55_launcher_dry_run_seeds_e9f793f691d22c62_run"
+     }
+    },
+    {
+     "canonical": {
+      "investment_year": 2030,
+      "nodes": {
+       "5": [
+        0.25,
+        0.5
+       ],
+       "7": [
+        1.0,
+        3.5
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "eval_dir": "c4dea62e18c62f41_hist_inc_a_2x",
+     "eval_key": "c4dea62e18c62f41df3af31a520a383697810613380356014c894f57f39fea36",
+     "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+     "flex_price_multiplier": 2.0,
+     "key": "59757776a2da3ffeb369b361520faa715a159976c3b98437b6be1d863278b8db",
+     "label": "hist_inc_A_2x",
+     "overrides": {},
+     "post_certification": null,
+     "working_dir_ids": {
+      "precheck": "p515s44_s55_launcher_dry_run_seeds_c4dea62e18c62f41_precheck",
+      "run": "p515s44_s55_launcher_dry_run_seeds_c4dea62e18c62f41_run"
+     }
+    },
+    {
+     "canonical": {
+      "investment_year": 2030,
+      "nodes": {
+       "5": [
+        0.25,
+        0.5
+       ],
+       "7": [
+        1.0,
+        3.5
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "effective_anderson_acceleration": {
+      "enabled": true,
+      "memory": 5,
+      "regularization": 1e-10,
+      "reject_policy": "keep_memory"
+     },
+     "eval_dir": "c011496da24c4670_hist_inc_n_2x",
+     "eval_key": "c011496da24c46701b04c476728650f9a027be0b09b339b926ac07d2fb4c13e0",
+     "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+     "flex_price_multiplier": 2.0,
+     "key": "59757776a2da3ffeb369b361520faa715a159976c3b98437b6be1d863278b8db",
+     "label": "hist_inc_N_2x",
+     "model_variant": {
+      "ageing_enabled": false,
+      "available_energy_soh_point": "end",
+      "calendar_retention_per_year": 1.0,
+      "eol_retention_r": 0.5
+     },
+     "model_variant_label": "MODEL VARIANT \u2014 not the baseline",
+     "overrides": {},
+     "post_certification": null,
+     "working_dir_ids": {
+      "precheck": "p515s44_s55_launcher_dry_run_seeds_c011496da24c4670_precheck",
+      "run": "p515s44_s55_launcher_dry_run_seeds_c011496da24c4670_run"
+     }
+    }
+   ],
+   "cap": 500,
+   "concurrency": 1,
+   "configuration": {
+    "apply_rho": false,
+    "arm_label": "s39_D",
+    "case_file": "data/SRP1/SRP1_params.json",
+    "case_file_anderson_acceleration": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+    "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+    "convergence_depth_tail": {
+     "compl_inf_tol": 1e-06,
+     "enabled": true
+    },
+    "ess_ageing_baseline": {
+     "calendar_life_years": 15,
+     "calendar_retention_per_year": 0.985,
+     "calibration": {
+      "cycles_n": 10000,
+      "eol_retention_r": 0.8,
+      "reference_dod_d": 0.8,
+      "status": "ACTIVE"
+     },
+     "cycle_life_nominal": 10000,
+     "depth_of_discharge_nominal": 0.8,
+     "minimum_soh": 0.7
+    },
+    "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+    "ess_params_file": {
+     "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+     "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+     "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+    },
+    "full_diagnostics_in_rows": true,
+    "name": "E1 SRP1 SEARCH (W183b, Addendum 83) -- the current production configuration as the W142 extension v6 declares it: the case file (AA keep_memory declared), the ESS ageing baseline BASELINE (C2 + phi_cal 0.985 + soh_min 0.70) declared (minimum SoH 0.70, NOT overridden), the convergence-depth tight tail DECLARED ENABLED (compl_inf_tol 1e-6); NO re-settling / continuation declaration: production exit (10 consecutive passing cycles, cap 500); flexibility price x 2 on every entry",
+    "note": "every entry declares flex_price_multiplier 2.0 (keyed; FLEX PRICE label) and its ageing model: N = model_variant no_ageing (keyed; MODEL VARIANT label at spec and entry level), A = the declared baseline (no model_variant); rho0_scale and nrf_option never declared; no post-certification; the W142 ext-v6 block minus settling_resettle",
+    "overrides": {}
+   },
+   "extra": {
+    "aliases": [
+     {
+      "alias_eval_key": "c15eea6214da5f31653345d3a2591e90aac3e9e8105c4699579abea800b31289",
+      "alias_label": "x0_N_2x",
+      "g0_accepted": true,
+      "g0_artifact_path": "data/SRP1/Results/P515S55/w183_nl_post_w183c_off/w183_nl_digest.json.gz",
+      "g0_artifact_sha256": "ca195bd38fe2384493012dcf7127a36a8923d8a5029c2c821b5bb0f47f57ab6a",
+      "g0_checks": {
+       "artifact_all_ok": true,
+       "artifact_configuration_equals_launcher": true,
+       "artifact_guard_zero_solves": true,
+       "artifact_model_N_equals_launcher": true,
+       "artifact_x0_A_2x_key_equals_alias_target": true,
+       "artifact_x0_N_2x_key_equals_alias_key": true,
+       "exists": true,
+       "git_tracked_and_clean": true,
+       "sha256_equals_pin": true,
+       "x0_A_vs_N_2x_esso_nl_all_four_files_identical_every_node": true,
+       "x0_A_vs_N_2x_esso_nl_plain_identical_every_node": true,
+       "x0_A_vs_N_2x_network_nl_identical_parallel": true,
+       "x0_A_vs_N_2x_network_nl_identical_sequential": true
+      },
+      "justification": "G0",
+      "reuse_of": "5f6b784127e0eb2bd6fac06206f4329752a6b56b81247bafdbc660f5222c3a4a",
+      "reuse_of_label": "x0_A_2x",
+      "rule": "x = 0 is evaluated once, under A; its N seed reuses that evaluation by the G0 identity (the model IPOPT receives at x = 0 is byte-identical under A and N); never written as an evaluation"
+     }
+    ],
+    "campaign_script": "p515_s55_e1_launcher.py",
+    "campaign_script_sha256": "b0841b090c2c7deaf065c68f35d6bd2bf05e5fc9ef9faa966200ad3c8d0d8773",
+    "concurrency": {
+     "declared": 1,
+     "gating_at": "--run",
+     "memory_per_slot_gib": 2.75,
+     "memory_preflight_at_freeze_non_gating": {
+      "available_gib": 18.184219360351562,
+      "concurrency": 1,
+      "hw_memsize_gib": 32.0,
+      "page_size": 16384,
+      "pages": {
+       "Anonymous pages": 723542,
+       "Pages free": 8926,
+       "Pages inactive": 916183,
+       "Pages occupied by compressor": 55548,
+       "Pages wired down": 126341
+      },
+      "pass": true,
+      "per_slot_gib": 2.75,
+      "required_gib": 2.75,
+      "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x 2.75 GiB (the S47 launcher rule)",
+      "utc": "2026-10-25T23:03:45.061205+00:00"
+     },
+     "memory_rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x 2.75 GiB (the S47 launcher rule)"
+    },
+    "declared_root_of_this_spec": null,
+    "declared_roots": {
+     "data/SRP1/Results/P515S55/e1_2x": {
+      "concurrency": "declared per phase at --freeze; 4 slots for the search batches only if the 4-slot batch gate is bitwise (ruling 4 iv), otherwise 1",
+      "cross": "owned by the fixed-plan launcher (Addendum 85 ruling 4 (vi), (xi)); created after both searches; never created or read by this launcher",
+      "phases": [
+       "seeds",
+       "search_N",
+       "search_A",
+       "cross"
+      ],
+      "phases_of_this_launcher": [
+       "seeds",
+       "search_N",
+       "search_A"
+      ],
+      "role": "the E1 root: seeds, both searches, then the cross-evaluations",
+      "seeds": "all seven (no --seeds subset)"
+     },
+     "data/SRP1/Results/P515S55/e1_2x_batch4": {
+      "concurrency": 4,
+      "never_seeds_an_arm": "the cache is root-scoped (load_seed_cache reads only <root>/campaign_s55_<root>_seeds) and no search phase is accepted in this root",
+      "phases": [
+       "seeds"
+      ],
+      "phases_of_this_launcher": [
+       "seeds"
+      ],
+      "role": "the 4-slot batch gate (ruling 4 iv): the four node-7 seed evaluations as ONE batch, compared with the serial records of P515S55/e1_2x on PER_CYCLE_TRAJECTORY_FIELDS (W101/W142 replay method; the comparison script is not part of this launcher), peak RSS recorded",
+      "seeds": [
+       "unit_A_2x",
+       "unit_N_2x",
+       "n7_05_2_A_2x",
+       "n7_05_2_N_2x"
+      ]
+     }
+    },
+    "dry_run_scratch_freeze": true,
+    "e1_root": "data/SRP1/Results/P515S55/w183g_b_e1_v2_dryrun/launcher_dry_run",
+    "flex_price_multiplier": 2.0,
+    "g0": {
+     "accepted": true,
+     "artifact_eval_keys": {
+      "x0_A_2x": "5f6b784127e0eb2bd6fac06206f4329752a6b56b81247bafdbc660f5222c3a4a",
+      "x0_N_2x": "c15eea6214da5f31653345d3a2591e90aac3e9e8105c4699579abea800b31289"
+     },
+     "artifact_production": {
+      "current_production_head": "6f43479ed8ece7a4a5878942ca38952ce1cae1bc",
+      "equals_current_production": true,
+      "expected_commit": "6f43479ed8ece7a4a5878942ca38952ce1cae1bc",
+      "git_head_at_run": "6f43479ed8ece7a4a5878942ca38952ce1cae1bc",
+      "modules_differing_from_current": []
+     },
+     "checks": {
+      "artifact_all_ok": true,
+      "artifact_configuration_equals_launcher": true,
+      "artifact_guard_zero_solves": true,
+      "artifact_model_N_equals_launcher": true,
+      "artifact_x0_A_2x_key_equals_alias_target": true,
+      "artifact_x0_N_2x_key_equals_alias_key": true,
+      "exists": true,
+      "git_tracked_and_clean": true,
+      "sha256_equals_pin": true,
+      "x0_A_vs_N_2x_esso_nl_all_four_files_identical_every_node": true,
+      "x0_A_vs_N_2x_esso_nl_plain_identical_every_node": true,
+      "x0_A_vs_N_2x_network_nl_identical_parallel": true,
+      "x0_A_vs_N_2x_network_nl_identical_sequential": true
+     },
+     "differing_esso_rows_every_index_inactive": {
+      "ESSO|node5": {
+       "Constraint:energy_storage_capacity_degradation": true
+      },
+      "ESSO|node7": {
+       "Constraint:energy_storage_capacity_degradation": true
+      },
+      "ESSO|node9": {
+       "Constraint:energy_storage_capacity_degradation": true
+      }
+     },
+     "exists": true,
+     "git_clean": true,
+     "git_tracked": true,
+     "path": "data/SRP1/Results/P515S55/w183_nl_post_w183c_off/w183_nl_digest.json.gz",
+     "require_current_production": false,
+     "sha256_on_disk": "ca195bd38fe2384493012dcf7127a36a8923d8a5029c2c821b5bb0f47f57ab6a",
+     "sha256_pinned": "ca195bd38fe2384493012dcf7127a36a8923d8a5029c2c821b5bb0f47f57ab6a"
+    },
+    "models": {
+     "A": {
+      "model_variant": null,
+      "text": "baseline ageing: the declared ESS ageing baseline (C2 + phi_cal 0.985 + soh_min 0.70); model_variant ABSENT (absent = the baseline in the harness; the key space of every committed A cell is kept)"
+     },
+     "N": {
+      "model_variant": {
+       "ageing_enabled": false,
+       "available_energy_soh_point": "end",
+       "calendar_retention_per_year": 1.0,
+       "eol_retention_r": 0.5
+      },
+      "text": "no ageing: model_variant {ageing_enabled False, available_energy_soh_point end, calendar_retention_per_year 1.0, eol_retention_r 0.50} -- the T8 / ext-v3 e_no_ageing declaration (Addendum 83 ruling 3 i)"
+     }
+    },
+    "objective_convention": "Q(x) = certified gross_operational_cost (contracted interface settlement excluded); F(x) = I(x) + Q(x); salvage and net recourse recorded by the harness, excluded from F",
+    "options_never_declared": [
+     "rho0_scale",
+     "nrf_option",
+     "certification_continuation",
+     "settling_continuation",
+     "settling_extension",
+     "settling_resettle"
+    ],
+    "phase": "seeds",
+    "pins": {
+     "git_head_at_pin": "7cf88b15a3191317ae6c0808356bc02aa4ec5981",
+     "imported_repo_modules_sha256": {
+      "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+      "admm_parameters.py": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+      "admm_persistent_workers.py": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+      "benders_parameters.py": "f74521a4aa4df1bd877b97887c207db98cb7a3b28d541840a41d21fd3c0c7cf7",
+      "branch.py": "f85525f4984ef6e29263b527652abdd1d173558410f06a1bc812f5d65d6adb79",
+      "centralized_coordination.py": "04d2b549ff6f15decae30514606dbef2cb504c687fcc37ffc0fab75867c6eba9",
+      "definitions.py": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+      "energy_storage.py": "a3a06c5d037ba000514e2e1a1138b2acd9c54c1ee728641cd5a2ec1f965aec11",
+      "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+      "generator.py": "4727ff02f7847690cd7a9723d997f88e80f98174b21511881123a038868cb72b",
+      "helper_functions.py": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+      "hierarchical_coordination.py": "7bf34f4ac88e472f23c82dace21065b9ad867fddf8cb2dde7d2de810c05797c4",
+      "load.py": "ac603d6d9e9489cd67f3372cf46b0e365ae604440722c6209d2bf1d749fa7a69",
+      "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+      "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+      "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+      "network_parameters.py": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92",
+      "node.py": "d5f11f15b732469203a3f7cf8268e95353ae1a9d94ff3f2315d6ec5e2de86725",
+      "p510_oracle.py": "6575217fcfcae5b19925306c7181cb4f1d67a2d066e99238a3f82800696d3c8f",
+      "p511_1_selfconsistent_t0.py": "98bb8af9bc7ef8e5f96e66d9ec31ea495e810ecf50ba9605c97437eccc1ed0d2",
+      "p512_a_cold_rescaled_convergence.py": "79989a4aec49e17d7b00e4b162032cf4b925f668ee509af002aa6a1722b1ffb9",
+      "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+      "p514_l_capacity_ladder.py": "011acfebc6af8bd956d8ae2996401be5c04c6ab32a7e17cecf51258c7796c5e4",
+      "p514_n_instrumented_cstar.py": "62df39d41fec0ee48b320f6ade9eb1be4132203dcdbd100b90d1fc545d1d43c2",
+      "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+      "p515_s37_evaluate.py": "3c496cca4a2c0fc0137b490aba578027b881cbaa978f92608a81ed6256a50157",
+      "p515_s38_evaluate.py": "c3784844552e64e3856935d4086680ee6998d9610dbce06fd1cf3ccf562326fc",
+      "p515_s39_evaluate.py": "2dd5b31f29aadb84dfcaf7b9e112fdda570bf20f78154b19d49914ba3a8a28c4",
+      "p515_s44_campaign_harness.py": "c34ebdc5463a1fe0fd6398c6acad4dcfb61dbfbd142ef3de517ca517168d77be",
+      "p515_s47_phase_b_record.py": "97f573e52fb574836a72dce8c61b3d5c6b8919aa509e0ffbc04a1a6473ed6c62",
+      "p515_s49_flex_ladder_campaign.py": "5183831e7804752e91488aff0c419eb871dbfec6a3626c87f511b53a232ebcc5",
+      "p515_s50_marginal_campaign.py": "0ec4e9e0dd0844d65927a2ede8835e351fe315739e1dc261b2de0b4c7b3c6685",
+      "p515_s51_f2_ladder_campaign.py": "f64e9c7b44d6fd7044b4db417a0f56a6141f8a2de1824ca9f90041c1f1b18369",
+      "p515_s51_f2_phase_b.py": "87ab3b2d23729d1fa10fe8c4bae0cec7d8daf0644f1cb8e6c314b441dcd13b29",
+      "p515_s53_f2_certificate.py": "59f75ce46b42f41053478f8ea50e495555259ef6b92b91766aeda1e013d21df6",
+      "p515_s55_e1_launcher.py": "b0841b090c2c7deaf065c68f35d6bd2bf05e5fc9ef9faa966200ad3c8d0d8773",
+      "p515_s55_w183g_b_e1_v2_dryrun.py": "72905f64f2370f1414e3f273357064a056c79f9ee7f300709ffc6913ae5186ad",
+      "p54r_provenance.py": "d09835677d4323cd3bda49384ff61b48bf94d2891e46473200db2ca068232240",
+      "p56a_candidates.py": "ab513adfac26d309ea3065a85ec8111a10f87bdfe59787be842efbc011c29a74",
+      "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+      "p56b_candidates.py": "e6dba4c6dc31db923a96d0015d7e7de5ad5560187be8b7227e4d3bf632a7ab7c",
+      "p56b_policy.py": "d9d03eaafb7d979da7f524e74a7db8bb42db168f4dfed0e3344590b9d664036c",
+      "p57_eval.py": "f98fad1ff5b30bc8edd00831311b919c1924ce9e01469a78dcdd05ed550f2e2d",
+      "p57_fingerprint.py": "0820f3eef365f083047e5e80dbcbc9646e5dbd9808c45e5aaf4f56e6649d3d97",
+      "p58_eval.py": "8a34bfd5ca466de70355f721edc2dd8315a4f85ce71d304d82df9e2403cb7a4a",
+      "p58_rescale.py": "2c9d4f2a7125d4103da0d9cc7bba6d600bf97a3f03805d32955738d71b537cf0",
+      "p59_rho.py": "12d66b48fc473dd809638ea56ad470c5e9dfcaa5dc08be37f8af0bbfb17c159b",
+      "planning_parameters.py": "40297471cba1b0281899e7835f272f7a5df4f5e353b6d97838e5a4554c93adf9",
+      "shared_energy_storage.py": "d45c72d0db9a3743f3c26765f124ba7fbec44733ecb0d2d28b83b7e6a451f088",
+      "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+      "shared_energy_storage_parameters.py": "5fe0c4fb876a9c2f1e506e982f2a120c320a3fd4198b870f877d9a310cd390bb",
+      "shared_ess_price_taker.py": "9a55c951530c7223ffc436a0ae86339707f1d12ec96ca03bd23f77442ffc8b9c",
+      "shared_resources_planning.py": "ade9c843bc7c5b6514ab91ecc54f327330a5249709766699ff2f50c8288473d6",
+      "solver_parameters.py": "2801ef16853d7e63752d646c4c8a789a17a6731959060112c48f9457074c8b65"
+     },
+     "inputs": {
+      "definition": "every tracked file under data/SRP1 outside Results/ and Diagrams/",
+      "sha256": {
+       "data/SRP1/MarketData/SRP1_market_data.xlsx": "f8da8b9a97dbe066f67af5a5f873a9a48ab4666af15020027251840e78a94578",
+       "data/SRP1/SRP1.json": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+       "data/SRP1/SRP1_params.json": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+       "data/SRP1/SharedESS/SRP1_ESS.xlsx": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+       "data/SRP1/SharedESS/SRP1_ESS_Params.json": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+       "data/SRP1/case33_1/case33_1_2025.json": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db",
+       "data/SRP1/case33_1/case33_1_2026.json": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db",
+       "data/SRP1/case33_1/case33_1_2027.json": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db",
+       "data/SRP1/case33_1/case33_1_2028.json": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db",
+       "data/SRP1/case33_1/case33_1_2029.json": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db",
+       "data/SRP1/case33_1/case33_1_2030.json": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e",
+       "data/SRP1/case33_1/case33_1_2031.json": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e",
+       "data/SRP1/case33_1/case33_1_2032.json": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e",
+       "data/SRP1/case33_1/case33_1_2033.json": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e",
+       "data/SRP1/case33_1/case33_1_2034.json": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e",
+       "data/SRP1/case33_1/case33_1_2035.json": "674b2d00809d93afc1c3443d525c899b939f357806282f735d3821bc6d094185",
+       "data/SRP1/case33_1/case33_1_2036.json": "674b2d00809d93afc1c3443d525c899b939f357806282f735d3821bc6d094185",
+       "data/SRP1/case33_1/case33_1_2037.json": "674b2d00809d93afc1c3443d525c899b939f357806282f735d3821bc6d094185",
+       "data/SRP1/case33_1/case33_1_2038.json": "674b2d00809d93afc1c3443d525c899b939f357806282f735d3821bc6d094185",
+       "data/SRP1/case33_1/case33_1_2039.json": "674b2d00809d93afc1c3443d525c899b939f357806282f735d3821bc6d094185",
+       "data/SRP1/case33_1/case33_1_2040.json": "ed84c3da5181fc07a4c1248ace5542b44a8231975ebfd6c57dc40d337b8b1779",
+       "data/SRP1/case33_1/case33_1_2045.json": "73953e2b2f4805120dba794357377e7555490449091cc6a51d85f55b57bf2e61",
+       "data/SRP1/case33_1/case33_1_operational_data.xlsx": "e4ddc6d95cfd6237bb486e2ffca9c42e0efbd30a8b211eca5357502619dccc43",
+       "data/SRP1/case33_1/case33_1_params.json": "8e9e5a536fd1ef2bca5694274a68795d1099884ef23f2134e7db7d3a58c80b8e",
+       "data/SRP1/case33_2/case33_2_2025.json": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8",
+       "data/SRP1/case33_2/case33_2_2026.json": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8",
+       "data/SRP1/case33_2/case33_2_2027.json": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8",
+       "data/SRP1/case33_2/case33_2_2028.json": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8",
+       "data/SRP1/case33_2/case33_2_2029.json": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8",
+       "data/SRP1/case33_2/case33_2_2030.json": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f",
+       "data/SRP1/case33_2/case33_2_2031.json": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f",
+       "data/SRP1/case33_2/case33_2_2032.json": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f",
+       "data/SRP1/case33_2/case33_2_2033.json": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f",
+       "data/SRP1/case33_2/case33_2_2034.json": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f",
+       "data/SRP1/case33_2/case33_2_2035.json": "6888045f33a07f33a515db369dafbca0854f0adb2bdfacdf996158b224185047",
+       "data/SRP1/case33_2/case33_2_2036.json": "6888045f33a07f33a515db369dafbca0854f0adb2bdfacdf996158b224185047",
+       "data/SRP1/case33_2/case33_2_2037.json": "6888045f33a07f33a515db369dafbca0854f0adb2bdfacdf996158b224185047",
+       "data/SRP1/case33_2/case33_2_2038.json": "6888045f33a07f33a515db369dafbca0854f0adb2bdfacdf996158b224185047",
+       "data/SRP1/case33_2/case33_2_2039.json": "6888045f33a07f33a515db369dafbca0854f0adb2bdfacdf996158b224185047",
+       "data/SRP1/case33_2/case33_2_2040.json": "fde37d6b7ccdf6471d41dbc9fd18aa0c15f7c41c54cadd6555332d37a9f2eaef",
+       "data/SRP1/case33_2/case33_2_2045.json": "566368722ec5dcebd2d74a4e966e161f483e111ff4091ac3799f693d0eae43f7",
+       "data/SRP1/case33_2/case33_2_operational_data.xlsx": "44c8893a331899b1668f5af37228eaaf3bbd7e05fa13500f9b78345a15fcd720",
+       "data/SRP1/case33_2/case33_2_params.json": "31b5fedf87b96724dc5676566fd87f1c21dc02ecfb8d2bd9fdf280a9b7be35ff",
+       "data/SRP1/case33_3/case33_3_2025.json": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af",
+       "data/SRP1/case33_3/case33_3_2026.json": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af",
+       "data/SRP1/case33_3/case33_3_2027.json": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af",
+       "data/SRP1/case33_3/case33_3_2028.json": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af",
+       "data/SRP1/case33_3/case33_3_2029.json": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af",
+       "data/SRP1/case33_3/case33_3_2030.json": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b",
+       "data/SRP1/case33_3/case33_3_2031.json": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b",
+       "data/SRP1/case33_3/case33_3_2032.json": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b",
+       "data/SRP1/case33_3/case33_3_2033.json": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b",
+       "data/SRP1/case33_3/case33_3_2034.json": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b",
+       "data/SRP1/case33_3/case33_3_2035.json": "f73ae82b1b240a8d4c41775e17cde951692e37e0f79c557e896d01f6d299da60",
+       "data/SRP1/case33_3/case33_3_2036.json": "f73ae82b1b240a8d4c41775e17cde951692e37e0f79c557e896d01f6d299da60",
+       "data/SRP1/case33_3/case33_3_2037.json": "f73ae82b1b240a8d4c41775e17cde951692e37e0f79c557e896d01f6d299da60",
+       "data/SRP1/case33_3/case33_3_2038.json": "f73ae82b1b240a8d4c41775e17cde951692e37e0f79c557e896d01f6d299da60",
+       "data/SRP1/case33_3/case33_3_2039.json": "f73ae82b1b240a8d4c41775e17cde951692e37e0f79c557e896d01f6d299da60",
+       "data/SRP1/case33_3/case33_3_2040.json": "4d662474e8aa8ea49670e3f9f23baf592864713e51b2c65f3a66bef251238413",
+       "data/SRP1/case33_3/case33_3_2045.json": "0f817788ab8a6558048f3fc81aceee59de69dca04e3ce23c2ef38c898537a289",
+       "data/SRP1/case33_3/case33_3_operational_data.xlsx": "866bcfc7afb24ee9a06277e550acc5a2d73549e81877cc7fc1480f7e5ecd8f45",
+       "data/SRP1/case33_3/case33_3_params.json": "a19bd5b9d18a26deff44dc62a351f2e6c193012c3f7075d12cade4f230760c49",
+       "data/SRP1/case9/case9_2025.json": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f",
+       "data/SRP1/case9/case9_2026.json": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f",
+       "data/SRP1/case9/case9_2027.json": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f",
+       "data/SRP1/case9/case9_2028.json": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f",
+       "data/SRP1/case9/case9_2029.json": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f",
+       "data/SRP1/case9/case9_2030.json": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d",
+       "data/SRP1/case9/case9_2031.json": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d",
+       "data/SRP1/case9/case9_2032.json": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d",
+       "data/SRP1/case9/case9_2033.json": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d",
+       "data/SRP1/case9/case9_2034.json": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d",
+       "data/SRP1/case9/case9_2035.json": "14f53b046f62a56846b4249bebaad526dd8f69c83c79efd602436a9c48c91e0b",
+       "data/SRP1/case9/case9_2036.json": "14f53b046f62a56846b4249bebaad526dd8f69c83c79efd602436a9c48c91e0b",
+       "data/SRP1/case9/case9_2037.json": "14f53b046f62a56846b4249bebaad526dd8f69c83c79efd602436a9c48c91e0b",
+       "data/SRP1/case9/case9_2038.json": "14f53b046f62a56846b4249bebaad526dd8f69c83c79efd602436a9c48c91e0b",
+       "data/SRP1/case9/case9_2039.json": "14f53b046f62a56846b4249bebaad526dd8f69c83c79efd602436a9c48c91e0b",
+       "data/SRP1/case9/case9_2040.json": "841280ca72d5e081ab188c4b58061f0b77d7f10b2e6d6d32f2cae3f5f63dcb71",
+       "data/SRP1/case9/case9_2045.json": "2f0d7d6f946f52c3f42796be8e583480e400990ebbbe1a06d6b253c025885976",
+       "data/SRP1/case9/case9_operational_data.xlsx": "5eab94aa6eb6e661554db947cc2e3ff7d761350de569f8a1f36c6c13d418d6bb",
+       "data/SRP1/case9/case9_params.json": "f3eff0502c606a9076af19969ec3705c2e6204fa4d9172a218345e986dbbf4ab"
+      }
+     },
+     "named_inputs": {
+      "case_file": {
+       "path": "data/SRP1/SRP1_params.json",
+       "sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b"
+      },
+      "cost_file": {
+       "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+       "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6"
+      },
+      "ess_params_file": {
+       "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+       "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+      },
+      "network_params_files": [
+       {
+        "path": "data/SRP1/case9/case9_params.json",
+        "sha256": "f3eff0502c606a9076af19969ec3705c2e6204fa4d9172a218345e986dbbf4ab"
+       },
+       {
+        "path": "data/SRP1/case33_1/case33_1_params.json",
+        "sha256": "8e9e5a536fd1ef2bca5694274a68795d1099884ef23f2134e7db7d3a58c80b8e"
+       },
+       {
+        "path": "data/SRP1/case33_2/case33_2_params.json",
+        "sha256": "31b5fedf87b96724dc5676566fd87f1c21dc02ecfb8d2bd9fdf280a9b7be35ff"
+       },
+       {
+        "path": "data/SRP1/case33_3/case33_3_params.json",
+        "sha256": "a19bd5b9d18a26deff44dc62a351f2e6c193012c3f7075d12cade4f230760c49"
+       }
+      ]
+     },
+     "production": {
+      "definition": "tracked root-level *.py not matching ^p\\d (the W182f / W183-0 definition)",
+      "head": "6f43479ed8ece7a4a5878942ca38952ce1cae1bc",
+      "modules_sha256": {
+       "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+       "admm_parameters.py": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+       "admm_persistent_workers.py": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+       "audit_p3_snapshots.py": "b8649c27a38a741154cb8cc3d14aa02a5ce91a883bbf50e24782237defdf6f6e",
+       "benders_parameters.py": "f74521a4aa4df1bd877b97887c207db98cb7a3b28d541840a41d21fd3c0c7cf7",
+       "branch.py": "f85525f4984ef6e29263b527652abdd1d173558410f06a1bc812f5d65d6adb79",
+       "centralized_coordination.py": "04d2b549ff6f15decae30514606dbef2cb504c687fcc37ffc0fab75867c6eba9",
+       "convex_oracle.py": "a88e255571b836e135ee015a23598c4cc4c60a96872a972ea91cf391e1d42c6f",
+       "debug.py": "9de612d4d0f00ae20460cd206a767779b516a54ec8528d68fb625f5ec44bb1f1",
+       "definitions.py": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+       "energy_storage.py": "a3a06c5d037ba000514e2e1a1138b2acd9c54c1ee728641cd5a2ec1f965aec11",
+       "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+       "generator.py": "4727ff02f7847690cd7a9723d997f88e80f98174b21511881123a038868cb72b",
+       "helper_functions.py": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+       "hierarchical_coordination.py": "7bf34f4ac88e472f23c82dace21065b9ad867fddf8cb2dde7d2de810c05797c4",
+       "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+       "load.py": "ac603d6d9e9489cd67f3372cf46b0e365ae604440722c6209d2bf1d749fa7a69",
+       "main.py": "d7de3a7a383220082f821dd30d396f897a85df5ef193be6c12ac1f7b3367ab75",
+       "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+       "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+       "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+       "network_parameters.py": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92",
+       "node.py": "d5f11f15b732469203a3f7cf8268e95353ae1a9d94ff3f2315d6ec5e2de86725",
+       "planning_parameters.py": "40297471cba1b0281899e7835f272f7a5df4f5e353b6d97838e5a4554c93adf9",
+       "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+       "settling_criterion_v2.py": "3db13b0eb7a093f49a7ff014a3c46a5aa013b86da5e5d78c3a19daba476af59e",
+       "settling_criterion_v3.py": "0d78b9228381b9d4af3492c7712f9892d2f012d00e5023407962ff3619b5e965",
+       "settling_criterion_v4.py": "077561ceefa704a0c5512d45d17865609c6775e5ad18332a990ce3f1bb747775",
+       "settling_criterion_v5.py": "5ea29fb303c5f9ac1e6c2fcb869b7c6d044d2d8738298dee67093d70086a976f",
+       "settling_criterion_v6.py": "53f477118d51f5fd843190c0da920f1647618ef41f6a1973988653b10eb66e2d",
+       "shared_energy_storage.py": "d45c72d0db9a3743f3c26765f124ba7fbec44733ecb0d2d28b83b7e6a451f088",
+       "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+       "shared_energy_storage_parameters.py": "5fe0c4fb876a9c2f1e506e982f2a120c320a3fd4198b870f877d9a310cd390bb",
+       "shared_ess_price_taker.py": "9a55c951530c7223ffc436a0ae86339707f1d12ec96ca03bd23f77442ffc8b9c",
+       "shared_resources_planning.py": "ade9c843bc7c5b6514ab91ecc54f327330a5249709766699ff2f50c8288473d6",
+       "solver_parameters.py": "2801ef16853d7e63752d646c4c8a789a17a6731959060112c48f9457074c8b65",
+       "uncoordinated_benchmark.py": "45d1c09db9b687040d57c8b01c1d092f3b53aa120f0e3229d998c435d261e31a",
+       "validate_vmag_refactor.py": "55022d106a18fe15d794d9691888b1f2584c95a563e06b97741b6cd612306512"
+      }
+     },
+     "run_files_sha256": {
+      "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+      "p515_s44_campaign_harness.py": "c34ebdc5463a1fe0fd6398c6acad4dcfb61dbfbd142ef3de517ca517168d77be",
+      "p515_s55_e1_launcher.py": "b0841b090c2c7deaf065c68f35d6bd2bf05e5fc9ef9faa966200ad3c8d0d8773",
+      "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+      "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+      "settling_criterion_v2.py": "3db13b0eb7a093f49a7ff014a3c46a5aa013b86da5e5d78c3a19daba476af59e",
+      "settling_criterion_v3.py": "0d78b9228381b9d4af3492c7712f9892d2f012d00e5023407962ff3619b5e965",
+      "settling_criterion_v4.py": "077561ceefa704a0c5512d45d17865609c6775e5ad18332a990ce3f1bb747775",
+      "settling_criterion_v5.py": "5ea29fb303c5f9ac1e6c2fcb869b7c6d044d2d8738298dee67093d70086a976f",
+      "settling_criterion_v6.py": "53f477118d51f5fd843190c0da920f1647618ef41f6a1973988653b10eb66e2d"
+     },
+     "search_tables": {
+      "investment_cost_w2": {
+       "path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+       "sha256": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b"
+      },
+      "phase_a_tables": {
+       "path": "data/SRP1/Results/P515S45/phase_a_tables/phase_a_tables.json",
+       "sha256": "a2b78541b5c50ad2a185ca3eb3d0f1b38bb388c4866c45628a984c407b4a3995"
+      }
+     },
+     "uncommitted_changes": [],
+     "untracked": []
+    },
+    "poll_design": {
+     "advance_window": 10,
+     "b_plus_rule": "E1 POLL RULE B+ (PLANNER_BRIEF_2026-09-13.md Addendum 85 ruling 2; declared before any E1 solve; identical in both arms and at every poll): when fewer than n + 1 = 8 distinct feasible poll points remain after rounding and snapping, (i) if the completion of the incumbent has <= 30 feasible points it is used, as frozen; (ii) if it has more than 30, the Halton index advances by one and the 2n directions are re-drawn, rounded and snapped, at most 10 consecutive indices (the refused index included), and the first index with at least n + 1 distinct feasible poll points is polled -- the skipped indices and their snap tables are written into the poll record (halton_indices_skipped, advance_rule); skipped indices are not launched polls; (iii) if no index in the window yields n + 1 points, STOP_FOR_REVIEW_completion_cap as frozen (the terminating record is the record of the first examined index, with the further examined indices listed in halton_indices_skipped). Everything else is the frozen variant B of Addendum 39 ruling 1 / spec v23: 2n = 14 OrthoMADS directions, the rounding, SNAP_RULE, Delta = 1 at every poll, acceptance of a poll point only above max{bar_x + bar_inc, sigma_Q = 18,449.66 EUR}, the A7 barrier rule (2 new barrier evaluations in one poll or 3 overall: stop for review), <= 30 new evaluations per arm, <= 10 launched polls, the Halton index continuing from the last polled index + 1; k0 = 0 (t = 17) in both arms. The rule reads the snap table only (no objective value).",
+     "barrier_stop_overall": 3,
+     "barrier_stop_per_poll": 2,
+     "certificate_statement": "POLL FAILURE AT UNIT MESH over the recorded poll set: every point of the final poll set (the 2n rounded directions after snapping, plus the completion when it was triggered) was evaluated or read from the cache and none is a determinate improvement (F(inc) - F(x) > max(bar_x + bar_inc, sigma_Q)); indeterminate points are listed unresolved; barrier points are F = +inf. SCOPE, recorded in the certificate itself (`scope`): the claim is \"poll failure over the recorded poll set at unit mesh\"; it is a positive-spanning-set certificate ONLY if the poll displacement set positively spans R^7 (rank and an LP test, recorded for the poll set and for the full feasible box, never assumed); unless the completion was triggered it is NOT the full-box certificate of ruling A2; whether the incumbent is interior (every signed unit step inc +- e_i feasible) is recorded with the nodes at the lower bound and the budget slack; every feasible box neighbour outside the poll set is listed by identity -- those in the cache with F, F(x) - F(inc), the resolution and a SYMMETRIC class (better: F(inc) - F(x) > res; worse: F(x) - F(inc) > res; otherwise INDETERMINATE), at zero evaluation cost; those not in the cache as not evaluated. The certificate does NOT hold if any cached box neighbour is determinately better than the incumbent.",
+     "completion_cap": 30,
+     "delta": 1,
+     "halton_k0": 0,
+     "incumbent_rule": "the best production-exit F among the budget-feasible, certified seeds of the arm (x = 0 under N through the G0 alias), ties: the lower I(x), then the label",
+     "iteration_rule_as_applied": "on success the next poll is again a unit poll (Delta = 1); the Halton index starts at k = 0 (t = 17) for EACH arm and continues from the last POLLED index + 1 (B+: indices skipped by the advance are not launched polls); at most 30 NEW evaluations per arm (seeds counted separately); a poll whose new evaluations would exceed what remains is not launched (evaluation_budget_exhausted); at most 10 launched polls (max_polls_reached)",
+     "max_polls": 10,
+     "min_feasible_poll_points": 8,
+     "module": "p515_s55_e1_launcher.run_continuation_e1 (a copy of p515_s53_f2_certificate.run_continuation with the B+ advance inserted before the completion-cap refusal); p515_s53_f2_certificate.build_poll and _certificate by reference, unchanged",
+     "n_directions": 14,
+     "n_max_new_evaluations": 30,
+     "poll_rule": "at unit mesh (Delta = 1; EVERY poll of this continuation) the poll set is: (1) the 2n = 14 OrthoMADS directions +h_j and -h_j, h_j the columns of H = I - 2 v v^T with v = (2 u_t - 1)/||2 u_t - 1||, u_t the Halton point (bases = the first 7 primes) of index t = 17 + k, each rounded to the lattice as d = round_half_away(h / ||h||_inf) (PB.project_direction at Delta = 1); (2) every rounded point inc + d that is INFEASIBLE is SNAPPED (SNAP_RULE); (3) the COMPLETION -- every bound-, rule- and budget-feasible canonical lattice point within l_inf distance 1 of the incumbent (PB.Lattice.completion) -- is added ONLY IF FEWER THAN n + 1 = 8 DISTINCT feasible poll points remain after snapping (counted as distinct canonical points != the incumbent, i.e. the cache-hit plus new-evaluation candidates); the completion cap of 30 applies to it and REFUSES the poll (STOP_FOR_REVIEW_completion_cap), never truncates; the cap is checked before the evaluation budget. Full poll, batches of <= 5, cache hits never re-evaluated, duplicate eval keys dropped.",
+     "resolution_rule": "a polled x improves the incumbent iff F(inc) - F(x) > max(bar(x) + bar(inc), sigma_Q); 0 < F(inc) - F(x) <= that resolution is INDETERMINATE and not accepted; bar = record max gross step over the last 10 cycles; a missing bar makes the resolution +inf",
+     "snap_rule": "an infeasible rounded point r = inc + d is replaced by the NEAREST point of the SNAP SET = every feasible canonical lattice point z != inc with ||z - inc||_inf <= 1 (the unit frame of the incumbent, PB.Lattice.neighbourhood -- the same set as the completion). NEAREST = lexicographic minimum of (1) ||z - r||_1, (2) ||z - r||_inf, (3) ||z - inc||_1, (4) the SAME INVESTMENT YEAR AS THE INCUMBENT first (a point without storage has no active year and counts as a different year; level inserted by the W50 Planner ruling 1), (5) I(z) (lower first), (6) the lattice label (string order). Distances are in lattice units over the 7 coordinates (zP5, zE5, zP7, zE7, zP9, zE9, zY); the year coordinate is counted only when z holds storage (it is inactive otherwise, STEP4 5.4). If the snap set is empty the direction is recorded 'no feasible snap' and contributes no poll point (extreme barrier, not evaluated). Recorded for EVERY direction: the rounded point, whether it is feasible or the reasons it is not, the snapped point or 'no feasible snap', the snap distances, every point tied at the minimum l1 distance and the tie-break level that decided.",
+     "stop_rule": "STOP_FOR_REVIEW (no further batch) if >= 2 NEW barrier evaluations in one poll or >= 3 overall (STEP4 2.4 \"a run of barrier points in a region stops the campaign for review\"; a1a stop-rule thresholds)",
+     "variant": "B+ (Addendum 85 ruling 2) over variant B (Addendum 70 ruling 6; plan 5.1)"
+    },
+    "post_certification": "none (production exit; as the Phase B searches)",
+    "rule_eleven_asserted_before_freeze": {
+     "ageing_trajectory_terminal": true,
+     "barrier_stop_rule_fires": true,
+     "budget_rule_refuses_poll": true,
+     "candidate_record_fields": true,
+     "e1_loop_advance_ran_from_a_storage_incumbent": true,
+     "e1_loop_advance_rule_fields": true,
+     "e1_loop_barrier_stop_rule_fires": true,
+     "e1_loop_budget_rule_refuses_poll": true,
+     "e1_loop_candidate_record_fields": true,
+     "e1_loop_poll_failure_certificate_fields": true,
+     "e1_loop_poll_record_fields": true,
+     "e1_loop_skipped_index_fields": true,
+     "e1_point_record_fields": true,
+     "ess_ageing_readback_terminal": true,
+     "flex_price_readback_terminal": true,
+     "model_variant_readback_terminal": true,
+     "parent_barrier_record_for_missing": true,
+     "per_cycle_trajectory_written": true,
+     "poll_failure_certificate_fields": true,
+     "poll_record_fields": true,
+     "record_Q_gross": true,
+     "record_bar": true,
+     "record_candidate_hash": true,
+     "record_cycles_and_certification_cycle": true,
+     "record_spec_hash": true,
+     "record_status": true,
+     "record_stopping_ratio_rule_ten": true,
+     "record_storage_per_node": true,
+     "record_wall_and_rss": true,
+     "snap_record_fields": true,
+     "storage_per_node_E_av_terminal": true,
+     "storage_per_node_soh_terminal": true
+    },
+    "search_tables": {
+     "I_x_cross_check_vs_W2": {
+      "max_abs_diff_eur": 2.3283064365386963e-10,
+      "n": 105,
+      "ok": true,
+      "worst_label": "n9_4h_e5_y2030"
+     },
+     "degradation_clause": {
+      "min_unit_step_cost_eur": 39901.733134216716,
+      "note": "the year coordinate has no fixed step cost (it scales with the capacity moved); its smallest unit move on the domain is recorded separately as min_year_step_cost_eur",
+      "sigma_Q_eur": 18449.663947025518,
+      "sigma_Q_exceeds_one_step": false,
+      "triggered": false,
+      "two_sigma_Q_below_min_step": true,
+      "unit_step_costs_eur": {
+       "E_2025": 126938.83871929655,
+       "E_2030": 94285.99965563012,
+       "E_2035": 79043.89110756524,
+       "P_2025": 64079.331064965416,
+       "P_2030": 47596.02220786583,
+       "P_2035": 39901.733134216716
+      }
+     },
+     "sigma_Q": {
+      "n_fit_points": 16,
+      "note": "measured under the C3 calibration (Phase A A3 fit, Addendum 28 \"sigma_Q ~ 10-18k\"); the oracle configuration is unchanged; not re-measured under the baseline",
+      "residual_rms_eur": 10285.394012489985,
+      "sigma_Q_eur": 18449.663947025518,
+      "source": {
+       "commit": "c1b64278",
+       "field": "T3.residual_max_abs_eur (sigma_Q; T3.residual_rms_eur recorded beside it)",
+       "path": "data/SRP1/Results/P515S45/phase_a_tables/phase_a_tables.json",
+       "sha256": "a2b78541b5c50ad2a185ca3eb3d0f1b38bb388c4866c45628a984c407b4a3995"
+      }
+     }
+    },
+    "seed_plan": [
+     {
+      "I_x_eur": 0.0,
+      "alias_of_eval_key": null,
+      "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+      "disposition": "evaluate",
+      "eval_key": "5f6b784127e0eb2bd6fac06206f4329752a6b56b81247bafdbc660f5222c3a4a",
+      "label": "x0_A_2x",
+      "lattice_label": "x0",
+      "model": "A",
+      "seed": "x0"
+     },
+     {
+      "I_x_eur": 0.0,
+      "alias_of_eval_key": "5f6b784127e0eb2bd6fac06206f4329752a6b56b81247bafdbc660f5222c3a4a",
+      "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+      "disposition": "alias",
+      "eval_key": "c15eea6214da5f31653345d3a2591e90aac3e9e8105c4699579abea800b31289",
+      "label": "x0_N_2x",
+      "lattice_label": "x0",
+      "model": "N",
+      "seed": "x0"
+     },
+     {
+      "I_x_eur": 317957.0085035585,
+      "alias_of_eval_key": null,
+      "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+      "disposition": "evaluate",
+      "eval_key": "bde9355eba3e09296aba8519573f6c256df68e06c87a33fc315cfd382c3eab03",
+      "label": "unit_A_2x",
+      "lattice_label": "y2025__n7_p0.25_e1",
+      "model": "A",
+      "seed": "unit"
+     },
+     {
+      "I_x_eur": 317957.0085035585,
+      "alias_of_eval_key": null,
+      "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+      "disposition": "evaluate",
+      "eval_key": "057f9a6f427ac78e23e6e912af51d651633c469eb3336b71ee3f6f952d1cbe64",
+      "label": "unit_N_2x",
+      "lattice_label": "y2025__n7_p0.25_e1",
+      "model": "N",
+      "seed": "unit"
+     },
+     {
+      "I_x_eur": 635914.017007117,
+      "alias_of_eval_key": null,
+      "candidate_key": "cc4eb5df385852e67c612ab21d74526d90a2c66f5c7c934889ce4f67731c4ffe",
+      "disposition": "evaluate",
+      "eval_key": "933a529742ce7b625a323337231756510f107200b8db94c208fffa40e0cfc15c",
+      "label": "n7_05_2_A_2x",
+      "lattice_label": "y2025__n7_p0.5_e2",
+      "model": "A",
+      "seed": "n7_05_2"
+     },
+     {
+      "I_x_eur": 635914.017007117,
+      "alias_of_eval_key": null,
+      "candidate_key": "cc4eb5df385852e67c612ab21d74526d90a2c66f5c7c934889ce4f67731c4ffe",
+      "disposition": "evaluate",
+      "eval_key": "e9f793f691d22c626ab8f3209feb5ed3ba2c1b07d45c15cd9c549c4960740439",
+      "label": "n7_05_2_N_2x",
+      "lattice_label": "y2025__n7_p0.5_e2",
+      "model": "N",
+      "seed": "n7_05_2"
+     },
+     {
+      "I_x_eur": 992268.1082843702,
+      "alias_of_eval_key": null,
+      "candidate_key": "59757776a2da3ffeb369b361520faa715a159976c3b98437b6be1d863278b8db",
+      "disposition": "evaluate",
+      "eval_key": "c4dea62e18c62f41df3af31a520a383697810613380356014c894f57f39fea36",
+      "label": "hist_inc_A_2x",
+      "lattice_label": "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+      "model": "A",
+      "seed": "hist_inc"
+     },
+     {
+      "I_x_eur": 992268.1082843702,
+      "alias_of_eval_key": null,
+      "candidate_key": "59757776a2da3ffeb369b361520faa715a159976c3b98437b6be1d863278b8db",
+      "disposition": "evaluate",
+      "eval_key": "c011496da24c46701b04c476728650f9a027be0b09b339b926ac07d2fb4c13e0",
+      "label": "hist_inc_N_2x",
+      "lattice_label": "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+      "model": "N",
+      "seed": "hist_inc"
+     }
+    ],
+    "seeds": [
+     {
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.0,
+        0.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      },
+      "seed": "x0",
+      "text": "x = 0 (no storage)",
+      "year": 2025,
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     {
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.25,
+        1.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      },
+      "seed": "unit",
+      "text": "the reference unit: node 7 0.25 MVA / 1 MWh, 2025",
+      "year": 2025,
+      "z": [
+       0,
+       0,
+       1,
+       2,
+       0,
+       0,
+       0
+      ]
+     },
+     {
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.5,
+        2.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      },
+      "seed": "n7_05_2",
+      "text": "node 7 0.5 MVA / 2 MWh, 2025",
+      "year": 2025,
+      "z": [
+       0,
+       0,
+       2,
+       4,
+       0,
+       0,
+       0
+      ]
+     },
+     {
+      "nodes": {
+       "5": [
+        0.25,
+        0.5
+       ],
+       "7": [
+        1.0,
+        3.5
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      },
+      "seed": "hist_inc",
+      "text": "the historical 2x incumbent ref:5ca4f86c (2030; node 5 0.25/0.5 + node 7 1/3.5; E.21 row 40)",
+      "year": 2030,
+      "z": [
+       1,
+       1,
+       4,
+       7,
+       0,
+       0,
+       1
+      ]
+     }
+    ],
+    "stage": "P5.15 Addendum 83 ruling 3 (i)/(v)/(vi), W183b -- E1: matched degradation-aware (A) and degradation-neutral (N) variant-B searches at flexibility price x 2 on the final code (STEP7 plan section 5)"
+   },
+   "flex_price_label": "MODEL VARIANT \u2014 flexibility price \u00d7 m",
+   "frozen_utc": "2026-10-25T23:03:45.249707+00:00",
+   "git_head": "7cf88b15a3191317ae6c0808356bc02aa4ec5981",
+   "harness": {
+    "path": "p515_s44_campaign_harness.py",
+    "sha256": "c34ebdc5463a1fe0fd6398c6acad4dcfb61dbfbd142ef3de517ca517168d77be"
+   },
+   "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+   "model_variant_label": "MODEL VARIANT \u2014 not the baseline",
+   "nlp_solver_path_env": {
+    "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+    "source": "environment"
+   },
+   "required_consecutive_cycles": 10,
+   "schema": "p515_s44_campaign_spec_v2",
+   "thread_caps": {
+    "MKL_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+   }
+  },
+  "frozen_in_scratch_by": "p515_s44_campaign_harness.freeze_campaign_spec",
+  "note": "not written into the repository under a campaign_spec_* name (a dry-run spec must not enter the committed key space); its content is embedded",
+  "scratch_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/29148893-7f64-448e-bb3c-36e0ff121aae/scratchpad/w183g_b_gate_scratch/campaign_s55_launcher_dry_run_seeds/campaign_spec_s55_launcher_dry_run_seeds_6b93249a.json",
+  "sha256": "6b93249a14fd330d139d39af0d095ec457e117d1f614ad4af3b3dae7253c2ad0"
+ }
+}

@@ -1,0 +1,2260 @@
+"""P5.15 S56 cohort follow-up -- tests T1-T10 of the production change authorized 2026-11-23 (TASKS.md, "Expert rulings
+on the handback", items 3-4; "Expert review of plan v4 ..." item 3; the "Order" list; S56_PLAN_v4_1.md sections 2 and 7
+row 4c; S56_DECOMPOSITION_NOTE.md D1-D4).
+
+THE CHANGE UNDER TEST (working tree at launch; committed only after the run, as 8c9fd6ec was after
+`p515_s56_cohort_esso_tests.py`):
+  shared_energy_storage_parameters.py  key value 'independent_units_all_node_years' (the single-cohort A/B option)
+  shared_energy_storage_data.py        per-cohort complementarity + sum rows; exact per-cohort closure (closure-slack
+                                       Vars unwired); efficiency-equality gate; activation threshold 1 under the
+                                       option; `shared_ess_active_cohort_counts`, `shared_ess_network_gross_flow_node_years`
+  model_construction_helpers.py        per-unit gross-flow attribute; `sess_comp` deactivated by
+                                       `configure_shared_ess_operational_state` when it is True; closure-slack gate
+                                       function `shared_ess_network_closure_slack_max` (not wired)
+  network_data.py                      the attribute copied from the synced flags at the candidate update
+  shared_resources_planning.py         `_sync_shared_ess_cohort_gross_flow` at the top of `_run_operational_planning`
+                                       (and in the no-coordination benchmark)
+
+TREES (as `p515_s56_cohort_esso_tests.py`): `before` = `git archive <BASE>` of every tracked root-level *.py + tracked
+data/SRP1 inputs (Results excluded); `after` = the same + the five production files overlaid from the working tree
+(sha256 recorded). The five-block 3 x 3 case file is copied from BASE into each tree. One child process per job.
+
+CHILDREN AND GUARDS. `SolveProfileGuard` installed before any project import in every process:
+  parent, build, fixtures and zero children: permitted=() and verified at exactly 0 solves;
+  solve children: permitted=(('shared_energy_storage_data.py', '_run_solver_attempt'),), verified at EXACTLY the
+  spec's declared count for that tree (spec['solves'][tag]['declared_count']); a recovery retry fails it, loudly.
+
+JOBS:
+  build  (before, before_rerun, after)  T1: ESSO NL (as 8c9fd6ec's T-i) and network NL of the production
+                                        initialisation (`_run_operational_planning` with every optimize stubbed: the
+                                        zero-solve early return of a failed initialisation hands back all models).
+  fixtures (before, after)              T2: every declared preserved fixture unpickled under both trees' modules
+                                        (paths read from the MAIN checkout, read-only).
+  zero   (after)                        T2 (hasattr, retained branch), T3, T4, T5, T6, T7, T10.
+  solves (before: 2, after: 11)         T8, T9 (ESSO only, node 7; millisecond solves).
+
+OUTPUT (write-once): `--out` must NOT exist. Launch (attached, alone, both streams captured; spec + script committed
+first as BASE):
+  /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s56_cohort_followup_tests.py \\
+      --spec data/SRP1/Results/P515S56/frozen_cohort_followup_spec_v1_<h>.json \\
+      --out data/SRP1/Results/P515S56/cohort_followup_v1/run --scratch <scratchpad>/cohort_followup_v1 \\
+      --base-commit <BASE> \\
+      > data/SRP1/Results/P515S56/cohort_followup_v1/run_launch_stdout.log \\
+      2> data/SRP1/Results/P515S56/cohort_followup_v1/run_launch_stderr.log
+then  ... p515_s56_cohort_followup_tests.py --manifest --out data/SRP1/Results/P515S56/cohort_followup_v1/run
+(the sibling cohort_followup_v1/partial_audit/ holds the audit of the interrupted Worker's edits).
+"""
+import os
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+CHILD = '--child' in sys.argv
+CHILD_KIND = sys.argv[sys.argv.index('--child') + 1] if CHILD else None
+if CHILD:  # the tree this file was exported into is the ONLY project source on sys.path
+    sys.path[:] = [HERE] + [p for p in sys.path[1:] if os.path.abspath(p or '.') != HERE]
+elif HERE not in sys.path:
+    sys.path.insert(0, HERE)
+
+from p513_solve_profile_guard import SolveProfileGuard  # noqa: E402
+
+SOLVE_SITE = ('shared_energy_storage_data.py', '_run_solver_attempt')
+GUARD = SolveProfileGuard(permitted=(SOLVE_SITE,) if CHILD_KIND == 'solves' else (),
+                          label=f"P5.15 S56 cohort follow-up tests ({CHILD_KIND or 'parent'})").install()
+
+import argparse  # noqa: E402
+import ast  # noqa: E402
+import difflib  # noqa: E402
+import gzip  # noqa: E402
+import hashlib  # noqa: E402
+import io  # noqa: E402
+import json  # noqa: E402
+import pickle  # noqa: E402
+import random  # noqa: E402
+import re  # noqa: E402
+import shutil  # noqa: E402
+import subprocess  # noqa: E402
+import time  # noqa: E402
+import traceback  # noqa: E402
+from contextlib import redirect_stdout  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
+
+SCHEMA = 'p515_s56_cohort_followup_tests_v1'
+SCRIPT = 'p515_s56_cohort_followup_tests.py'
+DIAG = 'p515_s56_cohort_diagnostics.py'
+PROD_FILES = ('shared_energy_storage_parameters.py', 'shared_energy_storage_data.py', 'model_construction_helpers.py',
+              'network_data.py', 'shared_resources_planning.py')
+# one marker per production file: absent at BASE, present in the overlay (provenance check)
+PROD_MARKERS = {'shared_energy_storage_parameters.py': 'independent_units_all_node_years',
+                'shared_energy_storage_data.py': 'energy_storage_cohort_complementarity',
+                'model_construction_helpers.py': 'SHARED_ESS_COHORT_GROSS_FLOW_ATTRIBUTE',
+                'network_data.py': 'SHARED_ESS_COHORT_GROSS_FLOW_DATA_ATTRIBUTE',
+                'shared_resources_planning.py': '_sync_shared_ess_cohort_gross_flow'}
+KEY = 'cohort_formulation'
+INDEP = 'independent_units'
+INDEP_ALL = 'independent_units_all_node_years'
+LEGACY = 'legacy_h3'
+PY = '/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python'
+W183C = 'p515_s53_w183c_nrf_gates.py'
+FROZEN_SMOPF_DIR = os.path.join('data', 'SRP1', 'Results', 'FrozenSMOPF')
+NL_FILES = ('plain', 'sym', 'row', 'col')
+NET_NL_FILES = ('sym', 'row', 'col')
+ESSO_NEW_ROW_FAMILIES = ('energy_storage_cohort_soc', 'energy_storage_cohort_soc_window', 'energy_storage_cohort_soc_final',
+                         'energy_storage_cohort_converter', 'energy_storage_cohort_sum_limit',
+                         'energy_storage_cohort_complementarity', 'energy_storage_operation_agg_q')
+ESSO_NEW_VAR_FAMILIES = ('es_soc_per_unit', 'es_q_per_unit', 'slack_es_qnet_up', 'slack_es_qnet_down')
+ESSO_UNWIRED_VAR_FAMILIES = ('slack_es_soc_final_per_unit_up', 'slack_es_soc_final_per_unit_down')
+NET_RETIRED_COMPONENTS = ('sess_phi_limit_lower', 'sess_phi_limit_upper', 'sess_s_sensitivities', 'sess_e_sensitivities',
+                          'shared_es_s_rated', 'shared_es_e_rated')
+RETAINED_SYMBOLS = {'model_construction_helpers': ('sess_phi_limits_lower', 'sess_phi_limits_upper', 'sess_s_sensitivities',
+                                                   'sess_e_sensitivities', 'sess_comp_rule', 'sess_soc_final_rule'),
+                    'shared_energy_storage_data': ('_configure_esso_cohort_pnet_share_rows', '_add_esso_cohort_constraint',
+                                                   '_configure_esso_cohort_units_rows', '_build_esso_cohort_units_rows')}
+
+
+def _utc():
+    return datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+
+def _log(msg):
+    print(f'[followup {datetime.now(timezone.utc).strftime("%H:%M:%S")}] {msg}', flush=True)
+
+
+def _sha_bytes(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def _sha_file(path):
+    with open(path, 'rb') as handle:
+        return _sha_bytes(handle.read())
+
+
+def _dump(obj, path):
+    import gate_result_io as GRIO
+    with open(path, 'x') as handle:
+        handle.write(GRIO.dumps(obj, indent=1, sort_keys=True))
+
+
+# ======================================================================================================================
+#  CHILD helpers (shared with p515_s56_cohort_esso_tests.py by copy: the stage-script convention)
+# ======================================================================================================================
+def _assert_modules_from_tree(mods):
+    files = {m.__name__: os.path.abspath(m.__file__) for m in mods}
+    bad = {k: v for k, v in files.items() if not v.startswith(HERE + os.sep)}
+    if bad:
+        raise SystemExit(f'refusing: modules not loaded from the tree {HERE}: {bad}')
+    return files
+
+
+def _read_planning(case_name, side):
+    from shared_resources_planning import SharedResourcesPlanning
+    for sub in ('Diagrams', os.path.join('Results', 'Logs')):
+        os.makedirs(os.path.join(side, sub))
+    planning = SharedResourcesPlanning(os.path.join(HERE, 'data', 'SRP1'), case_name)
+    planning.diagrams_dir = os.path.join(side, 'Diagrams')
+    planning.results_dir = os.path.join(side, 'Results')
+    planning.logs_dir = os.path.join(side, 'Results', 'Logs')
+    stream = io.StringIO()
+    t0 = time.time()
+    with redirect_stdout(stream):
+        planning.read_planning_problem()
+    planning.shared_ess_data.logs_dir = planning.logs_dir
+    info = {'read_s': time.time() - t0,
+            'scenario_checksum': (planning.scenario_metadata or {}).get('combined_scenario_checksum'),
+            'parallel_execution_as_read': planning.parallel_execution,
+            'shared_ess_initialization': getattr(planning.params.admm, 'shared_ess_initialization', None)}
+    # the stubbed initialisation sets `optimize` on the network objects; a process pool would pickle them
+    planning.parallel_execution = False
+    return planning, info
+
+
+def _candidate(planning, plan):
+    import shared_resources_planning as srp
+    cand = planning.get_initial_candidate_solution()
+    for node, year, s, e in plan:
+        cand['investment'][node][year]['s'] = s
+        cand['investment'][node][year]['e'] = e
+    srp._rebuild_candidate_total_capacities(planning, cand)
+    return cand
+
+
+def _plan_hash(plan):
+    return _sha_bytes(json.dumps(sorted([list(x) for x in plan])).encode())[:16]
+
+
+def _write_nl(model, nl_dir, stem):
+    paths = {'plain': os.path.join(nl_dir, f'{stem}.nl'), 'sym': os.path.join(nl_dir, f'{stem}.sym.nl'),
+             'row': os.path.join(nl_dir, f'{stem}.sym.row'), 'col': os.path.join(nl_dir, f'{stem}.sym.col')}
+    model.write(paths['plain'], format='nl', io_options={'symbolic_solver_labels': False})
+    model.write(paths['sym'], format='nl', io_options={'symbolic_solver_labels': True})
+    return {k: {'path': v, 'sha256': _sha_file(v), 'bytes': os.path.getsize(v)} for k, v in paths.items()}
+
+
+def _write_network_nl(block, nl_dir, stem, keep):
+    """Labelled NL of one network block (.nl + .row + .col); hashed; files removed unless `keep` (size: a five-block
+    DSO block is tens of MB)."""
+    paths = {'sym': os.path.join(nl_dir, f'{stem}.sym.nl'), 'row': os.path.join(nl_dir, f'{stem}.sym.row'),
+             'col': os.path.join(nl_dir, f'{stem}.sym.col')}
+    block.write(paths['sym'], format='nl', io_options={'symbolic_solver_labels': True})
+    out = {k: {'path': v, 'sha256': _sha_file(v), 'bytes': os.path.getsize(v), 'kept': bool(keep)}
+           for k, v in paths.items()}
+    if not keep:
+        for v in paths.values():
+            os.remove(v)
+    else:
+        os.remove(paths['sym'])  # the rows/cols are what a difference is read from; the .nl is hashed
+        out['sym']['kept'] = False
+    return out
+
+
+def _set_mode(sed, mode):
+    if mode is None:
+        return '<as read>'
+    sed.params.cohort_formulation = mode
+    return mode
+
+
+def _restore_mode(sed, saved_mode):
+    if saved_mode == '<absent>':
+        sed.params.__dict__.pop(KEY, None)
+    else:
+        sed.params.cohort_formulation = saved_mode
+
+
+def _build_cell(planning, plan, in_objective, mode, nl_dir, cell):
+    """ESSO NL of one plan (as 8c9fd6ec's T-i `_build_cell`): `create_shared_energy_storage_model` with the instance's
+    `optimize` stubbed, then `update_shared_energy_storage_model_to_admm` with production al-scale and sigma (ADMM
+    request / dual Params set to 0.0)."""
+    import shared_resources_planning as srp
+    sed = planning.shared_ess_data
+    sv = sed.params.salvage_value
+    saved_obj = sv.in_objective
+    saved_mode = sed.params.__dict__.get(KEY, '<absent>')
+    sv.in_objective = in_objective
+    out = {'init': {}, 'admm': {}, 'stub_calls': 0, 'mode': _set_mode(sed, mode), 'plan': plan,
+           'plan_hash': _plan_hash(plan)}
+    try:
+        cand = _candidate(planning, plan)
+        consensus_vars, _dual = srp.create_admm_variables(planning)
+
+        def stub(models, *a, **k):
+            out['stub_calls'] += 1
+            for node_id, model in models.items():
+                out['init'][str(node_id)] = _write_nl(model, nl_dir, f'{cell}__init__n{node_id}')
+            return {n: None for n in models}
+
+        sed.optimize = stub
+        try:
+            with redirect_stdout(io.StringIO()):
+                esso, _res = srp.create_shared_energy_storage_model(sed, consensus_vars, cand['investment'])
+        finally:
+            sed.__dict__.pop('optimize', None)
+        admm = planning.params.admm
+        sigma = admm.objective_scale
+        with redirect_stdout(io.StringIO()):
+            a_scale, applied = srp._resolve_esso_al_scale(planning, admm, sigma)
+        srp.update_shared_energy_storage_model_to_admm(planning, esso, admm, al_scale_esso=a_scale, objective_scale=sigma)
+        for node_id, model in esso.items():
+            for name in ('p_req', 'q_req', 'dual_p_req', 'dual_q_req'):
+                comp = getattr(model, name)
+                for idx in comp.index_set():
+                    comp[idx] = 0.0
+            out['admm'][str(node_id)] = _write_nl(model, nl_dir, f'{cell}__admm__n{node_id}')
+            out.setdefault('has_registry', {})[str(node_id)] = hasattr(model, '_esso_cohort_units_rows')
+            out.setdefault('multi_years', {})[str(node_id)] = getattr(model, '_esso_cohort_units_multi_years', None)
+    finally:
+        sv.in_objective = saved_obj
+        _restore_mode(sed, saved_mode)
+    return out
+
+
+def _build_direct(planning, plan, mode):
+    """build_subproblem + update_model_with_candidate_solution (the first two steps of
+    `create_shared_energy_storage_model`); returns the node models."""
+    sed = planning.shared_ess_data
+    _set_mode(sed, mode)
+    cand = _candidate(planning, plan)
+    sed.update_data_with_candidate_solution(cand['investment'])
+    models = sed.build_subproblem()
+    sed.update_model_with_candidate_solution(models, cand['investment'])
+    return models, cand
+
+
+def _init_stubbed(planning, plan, mode):
+    """The production initialisation, zero-solve: `shared_resources_planning._run_operational_planning(planning, cand)`
+    with `optimize` stubbed on the transmission network, every distribution network and the ESSO (each returns
+    'no result'). `_admm_local_solves_succeeded` is then False and the function returns its failed-initialisation
+    state, which carries every model exactly as built (networks: build_model, the candidate update -- call sites
+    7/8 of `configure_shared_ess_operational_state` -- and the create_* re-configuration -- call sites 1-3)."""
+    import shared_resources_planning as srp
+    sed = planning.shared_ess_data
+    tn = planning.transmission_network
+    saved_mode = sed.params.__dict__.get(KEY, '<absent>')
+    calls = {'tso': 0, 'dso': 0, 'esso': 0}
+
+    def net_stub(kind, network):
+        def stub(model, *a, **k):
+            calls[kind] += 1
+            return {y: {d: None for d in network.days} for y in network.years}
+        return stub
+
+    def esso_stub(models, *a, **k):
+        calls['esso'] += 1
+        return {n: None for n in models}
+
+    _set_mode(sed, mode)
+    cand = _candidate(planning, plan)
+    tn.optimize = net_stub('tso', tn)
+    for dn in planning.distribution_networks.values():
+        dn.optimize = net_stub('dso', dn)
+    sed.optimize = esso_stub
+    try:
+        with redirect_stdout(io.StringIO()):
+            out = srp._run_operational_planning(planning, cand)
+    finally:
+        tn.__dict__.pop('optimize', None)
+        for dn in planning.distribution_networks.values():
+            dn.__dict__.pop('optimize', None)
+        sed.__dict__.pop('optimize', None)
+        _restore_mode(sed, saved_mode)
+    state = out[-1]
+    if state.get('initialization_failed') is not True:
+        raise RuntimeError('stubbed initialisation did not take the failed-initialisation return')
+    return state['models'], cand, dict(calls)
+
+
+def _net_units(planning, kind, node_id, year, day):
+    """[(unit index, ESS node)] of a network block."""
+    if kind == 'tso':
+        net = planning.transmission_network.network[year][day]
+        return [(net.get_shared_energy_storage_idx(n), n) for n in planning.transmission_network.active_distribution_network_nodes]
+    dn = planning.distribution_networks[node_id]
+    net = dn.network[year][day]
+    return [(net.get_shared_energy_storage_idx(net.get_reference_node_id()), dn.tn_connection_nodeid)]
+
+
+def _iter_net_blocks(planning, models):
+    tn = planning.transmission_network
+    for year in tn.years:
+        for day in tn.days:
+            yield 'tso', None, year, day, models['tso'][year][day]
+    for node_id in planning.distribution_networks:
+        dn = planning.distribution_networks[node_id]
+        for year in dn.years:
+            for day in dn.days:
+                yield 'dso', node_id, year, day, models['dso'][node_id][year][day]
+
+
+def _net_block_name(kind, node_id, year, day):
+    return f'tso__{year}_{day}' if kind == 'tso' else f'dso{node_id}__{year}_{day}'
+
+
+def _net_unit_signature(block, e):
+    """Active-row count per shared-ESS operational family for unit e (the production list), plus the attribute."""
+    import model_construction_helpers as MCH
+    sig = {}
+    for name in MCH._SHARED_ESS_OPERATIONAL_CONSTRAINTS:
+        sig[name] = sum(1 for c in MCH._component_entries_for_shared_ess(getattr(block, name), e) if c.active)
+    return sig
+
+
+def _net_attribute(block):
+    flags = getattr(block, '_shared_ess_cohort_gross_flow', None)
+    return None if flags is None else {str(k): v for k, v in sorted(flags.items())}
+
+
+def _inventory(model, years):
+    """ESSO: active rows per family (and per block for the new families / aggregate circle), free new Vars."""
+    import pyomo.environ as pe
+    fam = {}
+    for con in model.component_data_objects(pe.Constraint, active=True):
+        name = con.parent_component().name
+        fam[name] = fam.get(name, 0) + 1
+    out = {'active_rows_by_family': fam}
+    reg = getattr(model, '_esso_cohort_units_rows', None)
+    if reg is not None:
+        by_year = {}
+        for (y_inv, y), rows in reg['cohort'].items():
+            for name, idx in rows:
+                if getattr(model, name)[idx].active:
+                    key = f'{name}|{years[y]}'
+                    by_year[key] = by_year.get(key, 0) + 1
+        for y, rows in reg['aggregate'].items():
+            for name, idx in rows:
+                if getattr(model, name)[idx].active:
+                    key = f'{name}|{years[y]}'
+                    by_year[key] = by_year.get(key, 0) + 1
+        out['new_rows_active_by_block'] = by_year
+        out['aggregate_circle_active_by_block'] = {
+            str(years[y]): sum(1 for idx in idxs if model.energy_storage_operation_agg[idx].active)
+            for y, idxs in reg['aggregate_circle'].items()}
+        out['n_pairs_built'] = len(reg['pairs'])
+        out['min_active_cohorts'] = reg.get('min_active_cohorts')
+    free = {}
+    for name in ESSO_NEW_VAR_FAMILIES + ESSO_UNWIRED_VAR_FAMILIES:
+        if hasattr(model, name):
+            comp = getattr(model, name)
+            free[name] = sum(1 for v in comp.values() if not v.fixed)
+    out['new_vars_free'] = free
+    out['unwired_var_families_present'] = sorted(n for n in ESSO_UNWIRED_VAR_FAMILIES if hasattr(model, n))
+    out['h3_rows_built'] = len(model.energy_storage_cohort_pnet_share_h3)
+    out['h3_rows_active'] = sum(1 for c in model.energy_storage_cohort_pnet_share_h3.values() if c.active)
+    out['multi_years'] = [years[y] for y in getattr(model, '_esso_cohort_units_multi_years', [])]
+    return out
+
+
+# ======================================================================================================================
+#  CHILD: builds (T1)
+# ======================================================================================================================
+def child_build(args):
+    spec = json.load(open(args.spec))
+    import definitions as DEFS  # noqa: F401
+    import shared_energy_storage_data as SED
+    import shared_energy_storage_parameters as SEP
+    import shared_resources_planning as SRP
+    import model_construction_helpers as MCH
+    import network_data as ND
+    mods = _assert_modules_from_tree([SED, SEP, SRP, MCH, ND])
+    tag = args.tag
+    work = args.work
+    nl_root = os.path.join(work, 'nl')
+    rec = {'schema': SCHEMA + '_child_build', 'tag': tag, 'tree': HERE, 'modules': mods, 'started_utc': _utc(),
+           'interpreter': sys.executable, 'grids': {}, 'errors': {}}
+    # 'legacy' = the key as read (absent in SRP1.json and the five-block case: the DEFAULT path); 'legacy_key' = the key
+    # set explicitly to 'legacy_h3' (after tree only; compared with the before tree's default path); 'indep' =
+    # 'independent_units' (the A/B option off).
+    modes = {'legacy': None, 'indep': INDEP}
+    if tag == 'after':
+        modes['legacy_key'] = LEGACY
+    for grid, gspec in spec['grids'].items():
+        planning, info = _read_planning(gspec['case_file'], os.path.join(work, 'side', grid))
+        sed = planning.shared_ess_data
+        info['years'] = {str(y): sed.years[y] for y in sed.years}
+        info['nodes'] = list(sed.active_distribution_network_nodes)
+        info['params_key_attr_as_read'] = sed.params.__dict__.get(KEY, '<absent>')
+        info['checksum_matches_spec'] = info['scenario_checksum'] == gspec['scenario_checksum']
+        g = rec['grids'][grid] = {'read': info, 'esso_cells': {}, 'net_cells': {}}
+        for plan_name, plan in gspec['plans'].items():
+            plan_t = [tuple(x) for x in plan]
+            for in_obj in (False, True):
+                for mode_name, mode in modes.items():
+                    cell = f'{grid}__{plan_name}__inobj{int(in_obj)}__{mode_name}'
+                    nl_dir = os.path.join(nl_root, 'esso', cell)
+                    os.makedirs(nl_dir)
+                    try:
+                        g['esso_cells'][cell] = _build_cell(planning, plan_t, in_obj, mode, nl_dir, cell)
+                    except Exception:  # noqa: BLE001 -- recorded
+                        rec['errors'][cell] = traceback.format_exc()
+            for mode_name, mode in modes.items():
+                cell = f'{grid}__{plan_name}__{mode_name}'
+                nl_dir = os.path.join(nl_root, 'net', cell)
+                os.makedirs(nl_dir)
+                keep = f'{grid}__{plan_name}' in spec['t1']['network_rowcol_kept_cells']
+                try:
+                    t0 = time.time()
+                    models, _cand, calls = _init_stubbed(planning, plan_t, mode)
+                    c = {'stub_calls': calls, 'build_s': time.time() - t0, 'blocks': {}}
+                    for kind, node_id, year, day, block in _iter_net_blocks(planning, models):
+                        name = _net_block_name(kind, node_id, year, day)
+                        c['blocks'][name] = {'nl': _write_network_nl(block, nl_dir, f'{cell}__{name}', keep),
+                                             'attribute': _net_attribute(block)}
+                    c['write_s'] = time.time() - t0 - c['build_s']
+                    g['net_cells'][cell] = c
+                    del models
+                except Exception:  # noqa: BLE001 -- recorded
+                    rec['errors'][cell] = traceback.format_exc()
+        if grid == 'srp1' and tag == 'before':
+            # T2c: an ESSO node-7 model built by the BEFORE modules under 'independent_units' (it carries the
+            # closure-slack Vars the after tree unwires), pickled for the after zero child
+            try:
+                models, _c = _build_direct(planning, [tuple(x) for x in spec['t2']['t2c_plan']], INDEP)
+                path = os.path.join(args.g3c_dir, 'esso_n7_indep_pickled_by_before.pkl')
+                with open(path, 'xb') as handle:
+                    pickle.dump(models[7], handle)
+                rec['t2c_pickle'] = {'path': path, 'sha256': _sha_file(path),
+                                     'unwired_families_present': sorted(n for n in ESSO_UNWIRED_VAR_FAMILIES
+                                                                        if hasattr(models[7], n))}
+                _restore_mode(sed, info['params_key_attr_as_read'])
+            except Exception:  # noqa: BLE001
+                rec['errors']['t2c_pickle'] = traceback.format_exc()
+        del planning
+    rec['finished_utc'] = _utc()
+    rec['guard'] = {'counts': dict(GUARD.counts), 'verify_0_failures': GUARD.verify(0)}
+    _dump(rec, os.path.join(work, f'child_build_{tag}.json'))
+    return 0
+
+
+# ======================================================================================================================
+#  CHILD: fixtures (T2)
+# ======================================================================================================================
+def child_fixtures(args):
+    import shared_energy_storage_data as SED
+    import shared_energy_storage_parameters as SEP
+    import shared_resources_planning as SRP
+    import model_construction_helpers as MCH
+    import network_data as ND
+    mods = _assert_modules_from_tree([SED, SEP, SRP, MCH, ND])
+    declared = json.load(open(args.fixture_list))
+    counter = {'load': 0}
+    real_load = pickle.load
+
+    def counted_load(handle, *a, **k):
+        counter['load'] += 1
+        return real_load(handle, *a, **k)
+
+    pickle.load = counted_load
+    results = {}
+    for rel in declared:
+        path = os.path.join(args.repo, rel)
+        if not os.path.isfile(path):
+            results[rel] = {'outcome': 'ABSENT'}
+            continue
+        try:
+            with open(path, 'rb') as handle:
+                obj = pickle.load(handle)
+            results[rel] = {'outcome': 'ok', 'type': type(obj).__name__, 'sha256': _sha_file(path)}
+            del obj
+        except Exception as error:  # noqa: BLE001 -- recorded per path
+            msg = re.sub(r" from '[^']*'", " from '<module file>'", f'{type(error).__name__}: {error}')
+            results[rel] = {'outcome': msg, 'sha256': _sha_file(path)}
+    pickle.load = real_load
+    n_present = sum(1 for r in results.values() if r['outcome'] != 'ABSENT')
+    rec = {'schema': SCHEMA + '_child_fixtures', 'tag': args.tag, 'tree': HERE, 'modules': mods, 'repo': args.repo,
+           'n_declared': len(declared), 'n_present': n_present, 'n_loads': counter['load'], 'results': results,
+           'retained_symbols': {m: {s: hasattr(sys.modules[m], s) for s in syms} for m, syms in RETAINED_SYMBOLS.items()},
+           'guard': {'counts': dict(GUARD.counts), 'verify_0_failures': GUARD.verify(0)}}
+    _dump(rec, os.path.join(args.work, f'child_fixtures_{args.tag}.json'))
+    return 0
+
+
+# ======================================================================================================================
+#  CHILD: zero-solve tests on the after tree (T2 hasattr + retained branch, T3, T4, T5, T6, T7, T10)
+# ======================================================================================================================
+def _row_violation(con):
+    import pyomo.environ as pe
+    body = pe.value(con.body)
+    v = 0.0
+    if con.has_lb():
+        v = max(v, pe.value(con.lower) - body)
+    if con.has_ub():
+        v = max(v, body - pe.value(con.upper))
+    return v
+
+
+def _net_rows_violation(block, e, include_comp_value=False):
+    """Max violation over the unit's ACTIVE rows of the production shared-ESS operational families; per family."""
+    import model_construction_helpers as MCH
+    per = {}
+    for name in MCH._SHARED_ESS_OPERATIONAL_CONSTRAINTS:
+        vals = [_row_violation(c) for c in MCH._component_entries_for_shared_ess(getattr(block, name), e) if c.active]
+        per[name] = {'n_active': len(vals), 'max_violation': max(vals) if vals else None}
+    out = {'per_family': per, 'max_violation': max((v['max_violation'] for v in per.values()
+                                                     if v['max_violation'] is not None), default=None)}
+    if include_comp_value:
+        # sess_comp evaluated whatever its activity (what the net-forcing row would say about this point)
+        out['sess_comp_if_active_max_violation'] = max(
+            _row_violation(c) for c in MCH._component_entries_for_shared_ess(block.sess_comp, e))
+    return out
+
+
+def _cohort_schedule(rng, s_c, e_c, eta_ch, eta_dch, n_p, dt):
+    """One per-cohort-feasible day for a cohort (MW / MWh): a closed stored-energy walk from INIT*E inside the 0.1-0.9
+    window, each increment within the cohort's power rating in its own direction, exact per-cohort complementarity
+    (charge or discharge in a period, never both), q inside the cohort's circle. Returns pch, pdch, q, soc lists."""
+    from definitions import ENERGY_STORAGE_RELATIVE_INIT_SOC as INIT
+    u = [rng.uniform(-1.0, 1.0) for _ in range(n_p)]
+    idle = [rng.random() < 0.25 for _ in range(n_p)]
+    u = [0.0 if z else x for x, z in zip(u, idle)]
+    mean = sum(u) / n_p
+    u = [x - mean for x in u]
+    u[-1] = -sum(u[:-1])  # exact zero sum in floating point up to one rounding
+    bound = min(eta_ch * s_c, s_c / eta_dch) * dt * rng.uniform(0.5, 1.0)
+    k = bound / max(abs(x) for x in u)
+    cum, peak = 0.0, 0.0
+    for x in u:
+        cum += x
+        peak = max(peak, abs(cum))
+    k = min(k, (0.4 * e_c * rng.uniform(0.5, 1.0)) / (peak if peak > 0 else 1.0))
+    delta = [k * x for x in u]
+    pch = [max(x, 0.0) / (eta_ch * dt) for x in delta]
+    pdch = [max(-x, 0.0) * eta_dch / dt for x in delta]
+    q = []
+    for a, b in zip(pch, pdch):
+        room = max(0.0, s_c * s_c - (a - b) ** 2) ** 0.5
+        q.append(rng.uniform(-1.0, 1.0) * room * 0.999)
+    soc, e = [], INIT * e_c
+    for a, b in zip(pch, pdch):
+        e = e + (eta_ch * a * dt - b * dt / eta_dch)
+        soc.append(e)
+    return {'pch': pch, 'pdch': pdch, 'q': q, 'soc': soc}
+
+
+def _set_net_point(block, e, base, pch, pdch, q, soc, slack_up=0.0, slack_down=0.0):
+    """Network unit e of a block at a given point (MW / MVAr / MWh in, p.u. set). Scenario-free (na) entries only:
+    every shared-ESS row references the na scenario."""
+    import pyomo.environ as pe
+    import model_construction_helpers as MCH
+    s_m0, s_o0 = MCH.sess_na_scenario(block)
+    s_pu = pe.value(block.shared_es_s_rated_fixed[e])
+    for p in block.periods:
+        block.shared_es_pch[e, s_m0, s_o0, p].set_value(pch[p] / base, skip_validation=True)
+        block.shared_es_pdch[e, s_m0, s_o0, p].set_value(pdch[p] / base, skip_validation=True)
+        block.shared_es_pch_hat[e, s_m0, s_o0, p].set_value((pch[p] / base) / s_pu, skip_validation=True)
+        block.shared_es_pdch_hat[e, s_m0, s_o0, p].set_value((pdch[p] / base) / s_pu, skip_validation=True)
+        block.shared_es_pnet[e, s_m0, s_o0, p].set_value(pch[p] / base - pdch[p] / base, skip_validation=True)
+        block.shared_es_qnet[e, s_m0, s_o0, p].set_value(q[p] / base, skip_validation=True)
+        block.shared_es_soc[e, s_m0, s_o0, p].set_value(soc[p] / base, skip_validation=True)
+    if hasattr(block, 'slack_shared_es_soc_final_up'):
+        block.slack_shared_es_soc_final_up[e, s_m0, s_o0].set_value(slack_up / base, skip_validation=True)
+        block.slack_shared_es_soc_final_down[e, s_m0, s_o0].set_value(slack_down / base, skip_validation=True)
+
+
+def _set_esso_point(m, y, d, cohorts):
+    """ESSO cohort Vars of block y, day d at given per-cohort values (MW / MWh)."""
+    for c, v in cohorts.items():
+        m.es_e_available_per_unit[c, y].set_value(v['E'], skip_validation=True)
+        m.es_s_rated_per_unit[c, y].set_value(v['s'], skip_validation=True)
+        for p in m.periods:
+            m.es_pch_per_unit[c, y, d, p].set_value(v['pch'][p], skip_validation=True)
+            m.es_pdch_per_unit[c, y, d, p].set_value(v['pdch'][p], skip_validation=True)
+            m.es_q_per_unit[c, y, d, p].set_value(v['q'][p], skip_validation=True)
+            m.es_soc_per_unit[c, y, d, p].set_value(v['soc'][p], skip_validation=True)
+
+
+def _esso_cohort_rows_violation(m, y, d, cohorts):
+    """Max violation of the ACTIVE arrangement-A rows of the cohorts at (y, d). The registry lists a pair's rows
+    day-major (`_build_esso_cohort_units_rows`: per period SoC, window lower, window upper, converter, sum,
+    complementarity; then the day's closure), so day d is the d-th equal slice; other days are not evaluated."""
+    reg = m._esso_cohort_units_rows
+    n_days = len(m.days)
+    per = {}
+    for c in cohorts:
+        rows = reg['cohort'][(c, y)]
+        if len(rows) % n_days:
+            raise RuntimeError(f'registry rows of pair {(c, y)} not a whole number of days')
+        per_day = len(rows) // n_days
+        if per_day != 6 * len(m.periods) + 1:
+            raise RuntimeError(f'unexpected rows per day {per_day} for pair {(c, y)}')
+        for name, idx in rows[d * per_day:(d + 1) * per_day]:
+            row = getattr(m, name)[idx]
+            if not row.active:
+                continue
+            per.setdefault(name, []).append((idx, _row_violation(row)))
+    return per
+
+
+def _aggregate(cohorts, n_p):
+    C = [sum(v['pch'][p] for v in cohorts.values()) for p in range(n_p)]
+    D = [sum(v['pdch'][p] for v in cohorts.values()) for p in range(n_p)]
+    Q = [sum(v['q'][p] for v in cohorts.values()) for p in range(n_p)]
+    S = [sum(v['soc'][p] for v in cohorts.values()) for p in range(n_p)]
+    X = [min(a, b) for a, b in zip(C, D)]
+    return C, D, Q, S, X
+
+
+def _net_form(C, D, e_total, eta_ch, eta_dch, dt):
+    """Net-form network point (what `sess_comp` forces): pch = P+, pdch = P-, SoC by the network recursion from
+    INIT * E; returns pch, pdch, soc and the closure residual soc_T - INIT * E (MWh)."""
+    from definitions import ENERGY_STORAGE_RELATIVE_INIT_SOC as INIT
+    P = [a - b for a, b in zip(C, D)]
+    pch = [max(x, 0.0) for x in P]
+    pdch = [max(-x, 0.0) for x in P]
+    soc, e = [], INIT * e_total
+    for a, b in zip(pch, pdch):
+        e = e + (eta_ch * a * dt - b * dt / eta_dch)
+        soc.append(e)
+    return pch, pdch, soc, soc[-1] - INIT * e_total
+
+
+def child_zero(args):
+    spec = json.load(open(args.spec))
+    import pyomo.environ as pe
+    import shared_energy_storage_data as SED
+    import shared_energy_storage_parameters as SEP
+    import shared_resources_planning as SRP
+    import model_construction_helpers as MCH
+    import network_data as ND
+    from definitions import ENERGY_STORAGE_RELATIVE_INIT_SOC as INIT
+    mods = _assert_modules_from_tree([SED, SEP, SRP, MCH, ND])
+    work = args.work
+    rec = {'schema': SCHEMA + '_child_zero', 'tree': HERE, 'modules': mods, 'started_utc': _utc(), 'tests': {},
+           'errors': {}, 'stub_calls': {}}
+
+    def run(name, fn):
+        try:
+            rec['tests'][name] = fn()
+        except Exception:  # noqa: BLE001 -- recorded, never hidden
+            rec['errors'][name] = traceback.format_exc()
+            print(rec['errors'][name], file=sys.stderr, flush=True)
+
+    planning, info = _read_planning('SRP1.json', os.path.join(work, 'side_srp1'))
+    rec['read_srp1'] = info
+    sed = planning.shared_ess_data
+    years = list(sed.years)
+    as_read = sed.params.__dict__.get(KEY, '<absent>')
+    tn = planning.transmission_network
+    keep = {}
+
+    # ---------------------------------------------------------------- T2: hasattr on fresh builds, retained branch
+    def t2():
+        out = {}
+        plan = [tuple(x) for x in spec['t3']['plan']]
+        for mode_name, mode in (('indep', INDEP), ('legacy', LEGACY), ('indep_all', INDEP_ALL)):
+            models, _c = _build_direct(planning, plan, mode)
+            m = models[7]
+            out[f'esso_{mode_name}'] = {
+                'unwired_closure_slack_families_present': sorted(n for n in ESSO_UNWIRED_VAR_FAMILIES if hasattr(m, n)),
+                'new_row_families_present': sorted(n for n in ESSO_NEW_ROW_FAMILIES if hasattr(m, n)),
+                'has_registry': hasattr(m, '_esso_cohort_units_rows')}
+        _restore_mode(sed, as_read)
+        models, _c, calls = _init_stubbed(planning, plan, INDEP)
+        rec['stub_calls']['t2'] = calls
+        present = {}
+        for kind, node_id, year, day, block in _iter_net_blocks(planning, models):
+            for n in NET_RETIRED_COMPONENTS:
+                if hasattr(block, n):
+                    present.setdefault(n, []).append(_net_block_name(kind, node_id, year, day))
+        out['network_retired_components_present'] = present
+        out['retained_symbols'] = {m: {s: hasattr(sys.modules[m], s) for s in syms} for m, syms in RETAINED_SYMBOLS.items()}
+        # retained branch: a model built by the BEFORE modules under 'independent_units' (closure-slack Vars present)
+        # updated by the AFTER modules
+        path = os.path.join(args.g3c_dir, 'esso_n7_indep_pickled_by_before.pkl')
+        with open(path, 'rb') as handle:
+            old = pickle.load(handle)
+        r = {'pickle_sha256': _sha_file(path),
+             'unwired_families_present_after_unpickle': sorted(n for n in ESSO_UNWIRED_VAR_FAMILIES if hasattr(old, n))}
+        sed.params.cohort_formulation = INDEP
+        try:
+            cand = _candidate(planning, [tuple(x) for x in spec['t2']['t2c_plan']])
+            SED._update_model_with_candidate_solution(sed, {7: old}, cand['investment'])
+            r['update_raised'] = None
+        except Exception:  # noqa: BLE001
+            r['update_raised'] = traceback.format_exc()
+        finally:
+            _restore_mode(sed, as_read)
+        ubs = {}
+        if hasattr(old, 'slack_es_soc_final_per_unit_up'):
+            for (y_inv, y) in old._esso_cohort_units_rows['pairs']:
+                v = old.slack_es_soc_final_per_unit_up[y_inv, y, 0]
+                ubs[f'{years[y_inv]}|{years[y]}'] = {'ub': v.ub, 'fixed': v.fixed}
+        r['closure_slack_day0_state_after_update'] = ubs
+        r['multi_years_after_update'] = [years[y] for y in getattr(old, '_esso_cohort_units_multi_years', [])]
+        out['retained_branch_before_pickled_model'] = r
+        return out
+
+    run('t2', t2)
+
+    # ---------------------------------------------------------------- T3: row inventory, 2025 + 2030 (srp1)
+    def t3_grid(pl, plan, label, keep_models):
+        s = pl.shared_ess_data
+        yrs = list(s.years)
+        as_read_g = s.params.__dict__.get(KEY, '<absent>')
+        out = {'params_key_attr_as_read': as_read_g}
+        for mode_name, mode in (('indep', INDEP), ('legacy', LEGACY)):
+            models_e, _c = _build_direct(pl, plan, mode)
+            inv = _inventory(models_e[7], yrs)
+            _restore_mode(s, as_read_g)
+            models, cand, calls = _init_stubbed(pl, plan, mode)
+            rec['stub_calls'][f't3_{label}_{mode_name}'] = calls
+            net = {}
+            for kind, node_id, year, day, block in _iter_net_blocks(pl, models):
+                bname = _net_block_name(kind, node_id, year, day)
+                units = {}
+                for e, ess_node in _net_units(pl, kind, node_id, year, day):
+                    sig = _net_unit_signature(block, e)
+                    # call sites 4-6 re-configure every cycle with the block's capacity Params: re-run that call and
+                    # compare the active-row signature (zero-solve idempotence)
+                    MCH.configure_shared_ess_operational_state(block, e, pe.value(block.shared_es_s_rated_fixed[e]),
+                                                               pe.value(block.shared_es_e_rated_fixed[e]))
+                    sig2 = _net_unit_signature(block, e)
+                    units[str(ess_node)] = {'unit': e, 'signature': sig, 'reconfigure_same': sig == sig2,
+                                            'gross_flow': MCH.shared_ess_cohort_gross_flow(block, e)}
+                net[bname] = {'units': units, 'attribute': _net_attribute(block)}
+            esso_flags = SED.shared_ess_network_gross_flow_node_years(s, cand['investment']) if mode == INDEP else None
+            out[mode_name] = {'esso_inventory': inv, 'network': net, 'synced_flags': (
+                None if esso_flags is None else {str(n): {str(y): v for y, v in f.items()} for n, f in esso_flags.items()}),
+                'network_data_attribute_present': {
+                    'tso': hasattr(pl.transmission_network, ND.SHARED_ESS_COHORT_GROSS_FLOW_DATA_ATTRIBUTE),
+                    **{f'dso{n}': hasattr(dn, ND.SHARED_ESS_COHORT_GROSS_FLOW_DATA_ATTRIBUTE)
+                       for n, dn in pl.distribution_networks.items()}}}
+            if keep_models:
+                keep[mode_name] = {'net': models, 'esso': models_e, 'cand': cand}
+            else:
+                del models
+        return out
+
+    run('t3_srp1', lambda: t3_grid(planning, [tuple(x) for x in spec['t3']['plan']], 'srp1', True))
+
+    # ---------------------------------------------------------------- T4, T5, T6: aggregation (srp1, 2030 block)
+    agg = spec['t4']
+    y_label, d_label = agg['block'], agg['day']
+    y_idx = years.index(y_label)
+    d_idx = list(sed.days).index(d_label)
+    n_p = sed.num_instants
+    dt = MCH.period_duration_hours(keep['indep']['esso'][7]) if 'indep' in keep else 1.0
+    idx7 = sed.get_shared_energy_storage_idx(7)
+    eta = {c: (sed.shared_energy_storages[years[c]][idx7].eff_ch, sed.shared_energy_storages[years[c]][idx7].eff_dch)
+           for c in range(len(years))}
+
+    def blocks_for(mode_name):
+        models = keep[mode_name]['net']
+        out = []
+        tb = models['tso'][y_label][d_label]
+        e_t = tn.network[y_label][d_label].get_shared_energy_storage_idx(7)
+        out.append(('tso', tb, e_t, tn.network[y_label][d_label]))
+        dn = planning.distribution_networks[7]
+        db = models['dso'][7][y_label][d_label]
+        net = dn.network[y_label][d_label]
+        out.append(('dso7', db, net.get_shared_energy_storage_idx(net.get_reference_node_id()), net))
+        return out
+
+    def cohort_set(kind):
+        """The two cohorts of the plan in the 2030 block: s (MVA) and E (MWh) for the samples ('calendar': calendar-
+        only end-of-block E; 'rated': the rated E, as the circulation example)."""
+        out = {}
+        for (_n, yi, s_c, e_c) in [tuple(x) for x in spec['t3']['plan']]:
+            c = years.index(yi)
+            if kind == 'calendar':
+                ses = sed.shared_energy_storages[yi][idx7]
+                kk = years.index(y_label) - c + 1
+                e_c = e_c * ses.phi_cal ** (sed.years[yi] * kk)
+            out[c] = {'s': s_c, 'E': e_c}
+        return out
+
+    def configure_blocks(blocks, s_total, e_total):
+        for _k, block, e, net in blocks:
+            MCH.configure_shared_ess_operational_state(block, e, s_total / net.baseMVA, e_total / net.baseMVA)
+
+    def t4_t5():
+        rng = random.Random(agg['seed'])
+        cs = cohort_set('calendar')
+        s_total = sum(v['s'] for v in cs.values())
+        e_total = sum(v['E'] for v in cs.values())
+        b_ind = blocks_for('indep')
+        b_leg = blocks_for('legacy')
+        configure_blocks(b_ind, s_total, e_total)
+        configure_blocks(b_leg, s_total, e_total)
+        m = keep['indep']['esso'][7]
+        etas = {eta[c] for c in cs}
+        res = {'cohorts': {str(years[c]): v for c, v in cs.items()}, 'n_samples': agg['n_samples'],
+               'efficiencies': sorted(etas), 'network_efficiencies': {}, 'samples': []}
+        for kind, block, e, net in b_ind:
+            res['network_efficiencies'][kind] = [net.shared_energy_storages[e].eff_ch, net.shared_energy_storages[e].eff_dch]
+            res.setdefault('sess_comp_active_indep', {})[kind] = sum(
+                1 for c in MCH._component_entries_for_shared_ess(block.sess_comp, e) if c.active)
+        for kind, block, e, net in b_leg:
+            res.setdefault('sess_comp_active_legacy', {})[kind] = sum(
+                1 for c in MCH._component_entries_for_shared_ess(block.sess_comp, e) if c.active)
+        worst = {'t4_net': 0.0, 't4_esso': 0.0, 't5_closure_minus_lambda_x': 0.0}
+        n_with_transfer = 0
+        for i in range(agg['n_samples']):
+            cohorts = {}
+            for c, v in cs.items():
+                sch = _cohort_schedule(rng, v['s'], v['E'], eta[c][0], eta[c][1], n_p, dt)
+                cohorts[c] = {**sch, 's': v['s'], 'E': v['E']}
+            C, D, Q, S, X = _aggregate(cohorts, n_p)
+            x_mwh = sum(X) * dt
+            n_with_transfer += x_mwh > 1e-9
+            # ESSO validity of the sample (per-cohort rows of the production ESSO, active under independent_units)
+            _set_esso_point(m, y_idx, d_idx, cohorts)
+            ev = _esso_cohort_rows_violation(m, y_idx, d_idx, cohorts)
+            esso_max = max((v for rows in ev.values() for (_i, v) in rows), default=None)
+            sample = {'i': i, 'transfer_mwh': x_mwh, 'esso_cohort_rows_max_violation': esso_max,
+                      'esso_cohort_rows_checked': {k: len(v) for k, v in ev.items()},
+                      'per_cohort_closure_residual_mwh': {str(years[c]): v['soc'][-1] - INIT * v['E']
+                                                          for c, v in cohorts.items()}}
+            for kind, block, e, net in b_ind:  # T4: gross map, sess_comp off (independent_units build)
+                _set_net_point(block, e, net.baseMVA, C, D, Q, S)
+                r = _net_rows_violation(block, e, include_comp_value=True)
+                sample[f't4_{kind}'] = {'max_violation': r['max_violation'],
+                                        'per_family_max': {k: v['max_violation'] for k, v in r['per_family'].items()},
+                                        'sess_comp_if_active_max_violation': r['sess_comp_if_active_max_violation']}
+                worst['t4_net'] = max(worst['t4_net'], r['max_violation'])
+            for kind, block, e, net in b_leg:  # T5: net form, sess_comp on (legacy build)
+                eta_ch, eta_dch = net.shared_energy_storages[e].eff_ch, net.shared_energy_storages[e].eff_dch
+                lam = 1.0 / eta_dch - eta_ch
+                pch, pdch, soc, resid = _net_form(C, D, e_total, eta_ch, eta_dch, dt)
+                # soc_T == INIT*E + up - down: the slack that covers the residual
+                _set_net_point(block, e, net.baseMVA, pch, pdch, Q, soc, slack_up=max(resid, 0.0),
+                               slack_down=max(-resid, 0.0))
+                r = _net_rows_violation(block, e)
+                sample[f't5_{kind}'] = {'closure_residual_mwh': resid, 'lambda': lam, 'lambda_x_mwh': lam * x_mwh,
+                                        'closure_minus_lambda_x_mwh': resid - lam * x_mwh,
+                                        'rows_max_violation_with_slack_covering_residual': r['max_violation'],
+                                        'per_family_max': {k: v['max_violation'] for k, v in r['per_family'].items()},
+                                        'slack_needed_over_bound': resid / (0.05 * e_total) if e_total else None}
+                worst['t5_closure_minus_lambda_x'] = max(worst['t5_closure_minus_lambda_x'], abs(resid - lam * x_mwh))
+            worst['t4_esso'] = max(worst['t4_esso'], esso_max or 0.0)
+            res['samples'].append(sample)
+        res['worst'] = worst
+        res['n_samples_with_transfer'] = n_with_transfer
+        res['transfer_mwh_range'] = [min(s['transfer_mwh'] for s in res['samples']),
+                                     max(s['transfer_mwh'] for s in res['samples'])]
+        return res
+
+    def t6():
+        ex = spec['t6']
+        cs = cohort_set('rated')
+        s_total = sum(v['s'] for v in cs.values())
+        e_total = sum(v['E'] for v in cs.values())
+        b_ind = blocks_for('indep')
+        b_leg = blocks_for('legacy')
+        configure_blocks(b_ind, s_total, e_total)
+        configure_blocks(b_leg, s_total, e_total)
+        a, b = years.index(ex['cohort_a']), years.index(ex['cohort_b'])
+        eta_ch, eta_dch = eta[a]
+        h1 = ex['hour1_mw']
+        cohorts = {}
+        for c in (a, b):
+            v = cs[c]
+            pch, pdch, q = [0.0] * n_p, [0.0] * n_p, [0.0] * n_p
+            cohorts[c] = {'pch': pch, 'pdch': pdch, 'q': q, 's': v['s'], 'E': v['E']}
+        # hour 1 (period 0): A discharges h1, B charges h1; hour 2 (period 1): B discharges h1*eta_ch*eta_dch,
+        # A charges h1/(eta_ch*eta_dch): both cohorts return EXACTLY to their initial energy
+        cohorts[a]['pdch'][0] = h1
+        cohorts[b]['pch'][0] = h1
+        cohorts[b]['pdch'][1] = h1 * eta_ch * eta_dch
+        cohorts[a]['pch'][1] = h1 / (eta_ch * eta_dch)
+        for c in (a, b):
+            e = INIT * cohorts[c]['E']
+            soc = []
+            for p in range(n_p):
+                e = e + (eta[c][0] * cohorts[c]['pch'][p] * dt - cohorts[c]['pdch'][p] * dt / eta[c][1])
+                soc.append(e)
+            cohorts[c]['soc'] = soc
+        C, D, Q, S, X = _aggregate(cohorts, n_p)
+        lam = 1.0 / eta_dch - eta_ch
+        out = {'schedule_mw': {str(years[c]): {'pch_p0_p1': v['pch'][:2], 'pdch_p0_p1': v['pdch'][:2]}
+                               for c, v in cohorts.items()},
+               'P_mw_hours_1_2': [C[0] - D[0], C[1] - D[1]], 'P_mw_other_hours_max_abs': max(abs(C[p] - D[p]) for p in range(2, n_p)),
+               'X_mwh': sum(X) * dt, 'lambda': lam, 'loss_lambda_x_mwh': lam * sum(X) * dt,
+               'grid_energy_mwh': sum(C[p] - D[p] for p in range(n_p)) * dt,
+               'per_cohort_closure_residual_mwh': {str(years[c]): v['soc'][-1] - INIT * v['E'] for c, v in cohorts.items()},
+               'per_cohort_min_window_margin_mwh': {str(years[c]): min(min(x - 0.1 * v['E'], 0.9 * v['E'] - x) for x in v['soc'])
+                                                    for c, v in cohorts.items()}}
+        m = keep['indep']['esso'][7]
+        _set_esso_point(m, y_idx, d_idx, cohorts)
+        ev = _esso_cohort_rows_violation(m, y_idx, d_idx, cohorts)
+        out['esso_cohort_rows_max_violation'] = max((v for rows in ev.values() for (_i, v) in rows), default=None)
+        for kind, block, e, net in b_ind:
+            _set_net_point(block, e, net.baseMVA, C, D, Q, S)
+            r = _net_rows_violation(block, e, include_comp_value=True)
+            gate = MCH.shared_ess_network_closure_slack_max(block, s_base=net.baseMVA)
+            out[f'gross_{kind}'] = {'rows_max_violation_closure_slack_0': r['max_violation'],
+                                    'per_family_max': {k: v['max_violation'] for k, v in r['per_family'].items()},
+                                    'sess_comp_if_active_max_violation': r['sess_comp_if_active_max_violation'],
+                                    'closure_slack_gate': gate}
+        for kind, block, e, net in b_leg:
+            n_eta_ch, n_eta_dch = net.shared_energy_storages[e].eff_ch, net.shared_energy_storages[e].eff_dch
+            pch, pdch, soc, resid = _net_form(C, D, e_total, n_eta_ch, n_eta_dch, dt)
+            _set_net_point(block, e, net.baseMVA, pch, pdch, Q, soc, slack_up=max(resid, 0.0),
+                           slack_down=max(-resid, 0.0))
+            r = _net_rows_violation(block, e)
+            gate = MCH.shared_ess_network_closure_slack_max(block, s_base=net.baseMVA)
+            out[f'legacy_{kind}'] = {'closure_residual_mwh': resid,
+                                     'rows_max_violation_with_slack_covering_residual': r['max_violation'],
+                                     'per_family_max': {k: v['max_violation'] for k, v in r['per_family'].items()},
+                                     'closure_slack_gate': gate,
+                                     'slack_bound_mwh': (0.05 * e_total + 1e-5 * net.baseMVA)}
+        return out
+
+    if 'indep' in keep and 'legacy' in keep:
+        run('t4_t5', t4_t5)
+        run('t6', t6)
+    else:
+        rec['errors']['t4_t5_t6'] = 'T3 models missing; see t3_srp1'
+    keep.clear()
+
+    # ---------------------------------------------------------------- T7: efficiency-equality gate
+    def t7():
+        out = {}
+        plan = [tuple(x) for x in spec['t3']['plan']]
+        yr = spec['t7']['perturbed_year']
+        ses = sed.shared_energy_storages[yr][idx7]
+        for attr in ('eff_ch', 'eff_dch'):
+            saved = getattr(ses, attr)
+            setattr(ses, attr, saved + spec['t7']['perturbation'])
+            try:
+                for mode_name, mode in (('indep', INDEP), ('indep_all', INDEP_ALL), ('legacy', LEGACY)):
+                    try:
+                        _build_direct(planning, plan, mode)
+                        out[f'{attr}__{mode_name}'] = {'raised': False}
+                    except ValueError as error:
+                        out[f'{attr}__{mode_name}'] = {'raised': True, 'error': str(error)}
+            finally:
+                setattr(ses, attr, saved)
+                _restore_mode(sed, as_read)
+        try:
+            _build_direct(planning, plan, INDEP)
+            out['restored__indep'] = {'raised': False}
+        except ValueError as error:
+            out['restored__indep'] = {'raised': True, 'error': str(error)}
+        _restore_mode(sed, as_read)
+        return out
+
+    run('t7', t7)
+
+    # ---------------------------------------------------------------- T10: single-cohort activation option
+    def t10():
+        out = {}
+        for plan_name, plan in spec['t10']['plans'].items():
+            plan_t = [tuple(x) for x in plan]
+            for mode_name, mode in (('indep_all', INDEP_ALL), ('indep', INDEP)):
+                models_e, _c = _build_direct(planning, plan_t, mode)
+                inv = _inventory(models_e[7], years)
+                _restore_mode(sed, as_read)
+                models, cand, calls = _init_stubbed(planning, plan_t, mode)
+                rec['stub_calls'][f't10_{plan_name}_{mode_name}'] = calls
+                comp = {}
+                attrs = {}
+                for kind, node_id, year, day, block in _iter_net_blocks(planning, models):
+                    if kind == 'dso' and node_id != 7:
+                        continue
+                    for e, ess_node in _net_units(planning, kind, node_id, year, day):
+                        if ess_node != 7:
+                            continue
+                        comp[_net_block_name(kind, node_id, year, day)] = _net_unit_signature(block, e)['sess_comp']
+                    attrs[_net_block_name(kind, node_id, year, day)] = _net_attribute(block)
+                out[f'{plan_name}__{mode_name}'] = {'esso_inventory': inv, 'network_sess_comp_node7': comp,
+                                                    'network_attributes': attrs}
+                del models
+        return out
+
+    run('t10', t10)
+    del planning
+
+    # ---------------------------------------------------------------- T3 five-block variant
+    def t3_five():
+        g = spec['grids']['fiveblock_3x3']
+        pl, inf = _read_planning(g['case_file'], os.path.join(work, 'side_five'))
+        rec['read_fiveblock'] = inf
+        out = t3_grid(pl, [tuple(x) for x in spec['t3']['fiveblock_plan']], 'five', False)
+        return out
+
+    run('t3_five', t3_five)
+    rec['finished_utc'] = _utc()
+    rec['guard'] = {'counts': dict(GUARD.counts), 'verify_0_failures': GUARD.verify(0)}
+    _dump(rec, os.path.join(work, 'child_zero.json'))
+    return 0
+
+
+# ======================================================================================================================
+#  CHILD: solves (T8, T9)
+# ======================================================================================================================
+def _phase_profile(phases, rate, start_p, n_periods):
+    prof = {}
+    p = start_p
+    for sign, energy in phases:
+        remaining = energy
+        while remaining > 1e-15:
+            step = min(rate, remaining)
+            if p >= n_periods:
+                raise ValueError('phase profile does not fit in the day')
+            prof[p] = sign * step
+            remaining -= step
+            p += 1
+    return prof
+
+
+def _calendar_e(sed, node, year_inv, e_rated, year):
+    years = list(sed.years)
+    idx = sed.get_shared_energy_storage_idx(node)
+    ses = sed.shared_energy_storages[year_inv][idx]
+    n = sed.years[year_inv]
+    k = years.index(year) - years.index(year_inv) + 1
+    return e_rated * ses.phi_cal ** (n * k)
+
+
+def _result_record(res):
+    if res is None:
+        return {'result': None}
+    try:
+        from helper_functions import solver_result_succeeded
+        return {'status': str(res.solver.status), 'termination': str(res.solver.termination_condition),
+                'message': str(getattr(res.solver, 'message', '')),
+                'succeeded': bool(solver_result_succeeded(res))}
+    except Exception:  # noqa: BLE001
+        return {'result_repr': repr(res)[:500]}
+
+
+def _typed_flags(node, path, converted):
+    if isinstance(node, dict):
+        return {k: _typed_flags(v, f'{path}.{k}', converted) for k, v in node.items()}
+    if isinstance(node, (list, tuple)):
+        return [_typed_flags(v, f'{path}[{i}]', converted) for i, v in enumerate(node)]
+    if isinstance(node, str) and node.strip().lower() in ('true', 'false'):
+        converted.append(path)
+        return node.strip().lower() == 'true'
+    return node
+
+
+def _cohort_row_activity(m):
+    """Complementarity-row activity (max (pch/S)(pdch/S) over ACTIVE rows, vs the tolerance) and the minimum sum-row
+    margin s - (pch + pdch) over active rows; None where the rows do not exist (the before tree)."""
+    import pyomo.environ as pe
+    out = {}
+    if hasattr(m, 'energy_storage_cohort_complementarity'):
+        vals = [pe.value(c.body) for c in m.energy_storage_cohort_complementarity.values() if c.active]
+        out['complementarity_rows_active'] = len(vals)
+        out['complementarity_body_max'] = max(vals) if vals else None
+        out['complementarity_tolerance'] = pe.value(next(iter(m.energy_storage_cohort_complementarity.values())).upper) \
+            if len(m.energy_storage_cohort_complementarity) else None
+    if hasattr(m, 'energy_storage_cohort_sum_limit'):
+        margins = [-(pe.value(c.body) - pe.value(c.upper)) for c in m.energy_storage_cohort_sum_limit.values() if c.active]
+        out['sum_rows_active'] = len(margins)
+        out['sum_row_margin_min_mw'] = min(margins) if margins else None
+    return out
+
+
+def child_solves(args):
+    spec = json.load(open(args.spec))
+    import pyomo.environ as pe
+    import shared_energy_storage_data as SED
+    import shared_energy_storage_parameters as SEP
+    import shared_resources_planning as SRP
+    import model_construction_helpers as MCH
+    import p515_s56_cohort_diagnostics as DG
+    from helper_functions import fix_or_set
+    mods = _assert_modules_from_tree([SED, SEP, SRP, MCH, DG])
+    work = args.work
+    tag = args.tag
+    sspec = spec['solves']
+    tspec = sspec[tag]
+    rec = {'schema': SCHEMA + '_child_solves', 'tag': tag, 'tree': HERE, 'modules': mods, 'started_utc': _utc(),
+           'interpreter': sys.executable, 'nlp_solver_path_env': os.environ.get('NLP_SOLVER_PATH'),
+           'tests': {}, 'errors': {}, 'solve_log': []}
+    planning, info = _read_planning('SRP1.json', os.path.join(work, 'side'))
+    sed = planning.shared_ess_data
+    as_read = sed.params.__dict__.get(KEY, '<absent>')
+    rec['read'] = info
+    rec['read']['checksum_matches_spec'] = info['scenario_checksum'] == spec['grids']['srp1']['scenario_checksum']
+    node = sspec['node']
+    sed.active_distribution_network_nodes = [node]
+    sed.logs_dir = os.path.join(work, 'ipopt_logs')
+    os.makedirs(sed.logs_dir)
+    years = list(sed.years)
+    days = list(sed.days)
+    n_p = sed.num_instants
+    idx = sed.get_shared_energy_storage_idx(node)
+    rec['efficiencies'] = {str(y): [sed.shared_energy_storages[y][idx].eff_ch, sed.shared_energy_storages[y][idx].eff_dch]
+                           for y in years}
+    rec['solver_options'] = {'solver_params': {k: (v if isinstance(v, (bool, int, float, type(None), dict, list)) else str(v))
+                                               for k, v in vars(sed.params.solver_params).items()},
+                             'esso_overrides': dict(SED.ESSO_TOL_OVERRIDES)}
+    counter = {'cycle': 0}
+
+    def solve(models, label, from_warm_start=False):
+        counter['cycle'] += 1
+        cyc = counter['cycle']
+        n_before = GUARD.counts['permitted_solve']
+        t0 = time.time()
+        stream = io.StringIO()
+        with redirect_stdout(stream):
+            res = sed.optimize(models, from_warm_start=from_warm_start, cycle=cyc)
+        entry = {'label': label, 'cycle_stamp': cyc, 'wall_s': time.time() - t0,
+                 'solves_this_call': GUARD.counts['permitted_solve'] - n_before, **_result_record(res[node]),
+                 'stdout_tail': stream.getvalue()[-1500:]}
+        diag = list(getattr(sed, 'esso_complementarity_diagnostics', []) or [])
+        if diag:
+            entry['complementarity_diagnostics_last'] = diag[-1]
+        rec['solve_log'].append(entry)
+        return entry
+
+    def init_models(plan, mode):
+        models, cand = _build_direct(planning, [tuple(x) for x in plan], mode)
+        m = models[node]
+        for y in m.years:
+            for d in m.days:
+                for p in m.periods:
+                    fix_or_set(m.es_pnet[y, d, p], 0.0)
+                    fix_or_set(m.es_qnet[y, d, p], 0.0)
+        return models, m
+
+    def apply_request(m, y, d, fixed, free):
+        for p, val in fixed.items():
+            fix_or_set(m.es_pnet[y, d, p], val)
+        for p in free:
+            m.es_pnet[y, d, p].unfix()
+
+    def values_at(m, y, d, p):
+        out = {'es_pnet': pe.value(m.es_pnet[y, d, p]), 'es_qnet': pe.value(m.es_qnet[y, d, p]),
+               'agg_net': sum(pe.value(m.es_pch_per_unit[c, y, d, p] - m.es_pdch_per_unit[c, y, d, p])
+                              for c in DG.active_cohorts(m, y)),
+               'per_cohort_net': {str(years[c]): pe.value(m.es_pch_per_unit[c, y, d, p] - m.es_pdch_per_unit[c, y, d, p])
+                                  for c in DG.active_cohorts(m, y)}}
+        out.update(DG.slack_at(m, y, d, p))
+        return out
+
+    def objective_record(m):
+        out = {'objective': pe.value(m.objective) if m.objective.active else None,
+               'feasibility_penalty': pe.value(m.feasibility_penalty)}
+        if hasattr(m, 'admm_objective'):
+            out['admm_objective'] = pe.value(m.admm_objective)
+        return out
+
+    def within_summary(rep):
+        per = {}
+        for bd_key, bd in rep['block_day'].items():
+            for c, r in bd['per_cohort'].items():
+                per.setdefault(str(years[int(c)]), []).append((bd_key, r['within_cohort_simultaneity_mwh'],
+                                                               r['within_cohort_simultaneity_max_mw']))
+        return {c: {'max_mwh_per_day': max(v[1] for v in rows), 'argmax_block_day': max(rows, key=lambda v: v[1])[0],
+                    'max_mw': max(v[2] for v in rows)} for c, rows in per.items()}
+
+    def run(name, fn):
+        try:
+            rec['tests'][name] = fn()
+        except Exception:  # noqa: BLE001
+            rec['errors'][name] = traceback.format_exc()
+            print(rec['errors'][name], file=sys.stderr, flush=True)
+
+    tii = sspec['t_ii']
+
+    def t_ii_a(mode):
+        def fn():
+            y = years.index(tii['block'])
+            d = days.index(tii['day'])
+            models, m = init_models(tii['plan'], mode)
+            p0 = tii['a']['discharge_period']
+            apply_request(m, y, d, {p0: tii['a']['request_mw']}, [p for p in m.periods if p != p0])
+            entry = solve(models, f't_ii_a_{mode}')
+            at = values_at(m, y, d, p0)
+            rep = DG.node_report(m, sed, node, blocks=[(y, d)])
+            out = {'mode': mode, 'solve': entry, 'at_period': at, 'delivered_mw': -at['agg_net'],
+                   'p_slack_mw': at['p_up'] + at['p_down'], **objective_record(m), 'detectors': rep,
+                   'within': within_summary(rep), 'rows': _cohort_row_activity(m)}
+            hand = 0.0
+            for c in DG.active_cohorts(m, y):
+                eta_dch = sed.shared_energy_storages[years[c]][idx].eff_dch
+                hand += min(pe.value(m.es_s_rated_per_unit[c, y]),
+                            (0.5 - 0.1) * pe.value(m.es_e_available_per_unit[c, y]) * eta_dch)
+            out['hand_formula_on_solved_e_av_mw'] = hand
+            return out
+        return fn
+
+    def t_ii_b():
+        y = years.index(tii['block'])
+        d = days.index(tii['day'])
+        models, m = init_models(tii['plan'], INDEP)
+        pk = tii['b']['discharge_period']
+        apply_request(m, y, d, {pk: tii['b']['request_mw']}, [p for p in m.periods if p != pk])
+        entry = solve(models, 't_ii_b')
+        at = values_at(m, y, d, pk)
+        rep = DG.node_report(m, sed, node, blocks=[(y, d)])
+        bd = rep['block_day'][f'{tii["block"]}|{tii["day"]}']
+        c2 = str(years.index(tii['b']['precharged_cohort']))
+        soc = bd['per_cohort'][c2]['soc_mwh']
+        e_av = bd['per_cohort'][c2]['e_available_mwh']
+        eta_dch = sed.shared_energy_storages[tii['b']['precharged_cohort']][idx].eff_dch
+        s_c = bd['per_cohort'][c2]['s_rated_mva']
+        return {'solve': entry, 'at_period': at, 'delivered_mw': -at['agg_net'], 'p_slack_mw': at['p_up'] + at['p_down'],
+                **objective_record(m), 'detectors': rep, 'within': within_summary(rep), 'rows': _cohort_row_activity(m),
+                'precharged_cohort_stored_rise_before_peak_mwh': soc[pk - 1] - 0.5 * e_av,
+                'precharged_cohort_min_rise_needed_mwh': max(0.0, s_c / eta_dch - (0.5 - 0.1) * e_av),
+                'precharged_cohort_window_headroom_mwh': (0.9 - 0.5) * e_av}
+
+    tiii = sspec['t_iii']
+
+    def t_iii(mode):
+        def fn():
+            y = years.index(tiii['block'])
+            d = days.index(tiii['day'])
+            plan = [tuple(x) for x in tiii['plan']]
+            e_cal = sum(_calendar_e(sed, node, yi, e, tiii['block']) for (_n, yi, _s, e) in plan)
+            etas = {(sed.shared_energy_storages[yi][idx].eff_ch, sed.shared_energy_storages[yi][idx].eff_dch)
+                    for (_n, yi, _s, _e) in plan}
+            if len(etas) != 1:
+                raise ValueError(f'T-iii assumes common efficiencies, got {etas}')
+            eta_ch, eta_dch = etas.pop()
+            swing = (0.5 - 0.1) * tiii['fraction_f'] * e_cal
+            prof = _phase_profile([(-1, swing * eta_dch), (+1, 2 * swing / eta_ch), (-1, swing * eta_dch)],
+                                  tiii['rate_mw'], tiii['start_period'], n_p)
+            models, m = init_models(tiii['plan'], mode)
+            fixed = {p: prof.get(p, 0.0) for p in m.periods}
+            apply_request(m, y, d, fixed, [])
+            entry = solve(models, f't_iii_{mode}')
+            rep = DG.node_report(m, sed, node, blocks=[(y, d)])
+            bd = rep['block_day'][f'{tiii["block"]}|{tiii["day"]}']
+            return {'mode': mode, 'solve': entry, 'calendar_sum_e_mwh': e_cal, 'swing_stored_mwh': swing,
+                    **objective_record(m), 'detectors': rep, 'within': within_summary(rep),
+                    'rows': _cohort_row_activity(m),
+                    'per_cohort_window_fraction': {c: [r['window_fraction_min'], r['window_fraction_max']]
+                                                   for c, r in bd['per_cohort'].items()},
+                    'p_slack_max_mw_block_day': max(DG.slack_at(m, y, d, p)['p_up'] + DG.slack_at(m, y, d, p)['p_down']
+                                                    for p in m.periods)}
+        return fn
+
+    tiv = sspec['t_iv']
+
+    def t_iv(kind):
+        def fn():
+            y = years.index(tiv['block'])
+            d = days.index(tiv['day'])
+            plan = [tuple(x) for x in tiv['plan']]
+            (_n1, ya, sa, ea), (_n2, yb, sb, eb) = plan
+            ea_cal = _calendar_e(sed, node, ya, ea, tiv['block'])
+            eb_cal = _calendar_e(sed, node, yb, eb, tiv['block'])
+            eta_ch = sed.shared_energy_storages[yb][idx].eff_ch
+            eta_dch = sed.shared_energy_storages[ya][idx].eff_dch
+            no_transfer_max = min(sa, 0.4 * ea_cal * eta_dch) + min(sb, 0.4 * eb_cal * eta_dch)
+            spare_a = 0.4 * ea_cal - sa / eta_dch
+            gain_b = max(0.0, spare_a) * eta_dch * eta_ch
+            with_transfer_max = min(sa, 0.4 * ea_cal * eta_dch) + min(sb, (0.4 * eb_cal + gain_b) * eta_dch)
+            peak = 0.5 * (no_transfer_max + with_transfer_max)
+            models, m = init_models(tiv['plan'], INDEP)
+            pk = tiv['peak_period']
+            if kind == 'peak':
+                fixed = {p: 0.0 for p in m.periods if p < pk}
+                fixed[pk] = -peak
+                free = [p for p in m.periods if p > pk]
+            else:
+                fixed = {p: 0.0 for p in m.periods}
+                free = []
+            apply_request(m, y, d, fixed, free)
+            entry = solve(models, f't_iv_{kind}')
+            rep = DG.node_report(m, sed, node, blocks=[(y, d)])
+            bd = rep['block_day'][f'{tiv["block"]}|{tiv["day"]}']
+            out = {'kind': kind, 'solve': entry, 'zero_solve_bounds': {
+                       'no_transfer_max_mw': no_transfer_max, 'with_transfer_max_mw': with_transfer_max, 'peak_mw': peak},
+                   **objective_record(m), 'detectors': rep, 'within': within_summary(rep),
+                   'rows': _cohort_row_activity(m),
+                   'inter_cohort_gross_transfer_mwh': bd['inter_cohort_gross_transfer_mwh'],
+                   'conversion_loss_mwh': bd['conversion_loss_mwh'],
+                   'within_cohort_simultaneity_mwh': {c: r['within_cohort_simultaneity_mwh']
+                                                      for c, r in bd['per_cohort'].items()},
+                   'closure_residual_mwh': {c: r['closure_residual_mwh'] for c, r in bd['per_cohort'].items()},
+                   'energy_accounting': bd['energy_accounting'],
+                   's_aggregate_mva': sum(r['s_rated_mva'] for r in bd['per_cohort'].values())}
+            if kind == 'peak':
+                out['at_peak'] = values_at(m, y, d, pk)
+                out['p_slack_at_peak_mw'] = out['at_peak']['p_up'] + out['at_peak']['p_down']
+                out['no_transfer_slack_bound_mw'] = peak - no_transfer_max
+            return out
+        return fn
+
+    tv = sspec['t_v']
+
+    def t_v(tv_on, start, plan_key='plan'):
+        def fn():
+            sv = sed.params.salvage_value
+            saved_obj = sv.in_objective
+            sv.in_objective = tv_on
+            sed.params.cohort_formulation = INDEP
+            try:
+                cand = _candidate(planning, [tuple(x) for x in tv[plan_key]])
+                consensus_vars, _dual = SRP.create_admm_variables(planning)
+                stub_calls = {'n': 0}
+
+                def stub(models, *a, **k):
+                    stub_calls['n'] += 1
+                    return {n: None for n in models}
+
+                sed.optimize = stub
+                try:
+                    with redirect_stdout(io.StringIO()):
+                        esso, _r = SRP.create_shared_energy_storage_model(sed, consensus_vars, cand['investment'])
+                finally:
+                    sed.__dict__.pop('optimize', None)
+                admm = planning.params.admm
+                sigma = admm.objective_scale
+                with redirect_stdout(io.StringIO()):
+                    a_scale, applied = SRP._resolve_esso_al_scale(planning, admm, sigma)
+                SRP.update_shared_energy_storage_model_to_admm(planning, esso, admm, al_scale_esso=a_scale,
+                                                              objective_scale=sigma)
+            finally:
+                sv.in_objective = saved_obj
+            m = esso[node]
+            prof = {int(k): v for k, v in tv['p_req_profile_mw'].items()}
+            for y in m.years:
+                for d in m.days:
+                    for p in m.periods:
+                        m.p_req[y, d, p] = prof.get(p, 0.0)
+                        m.q_req[y, d, p] = 0.0
+                        m.dual_p_req[y, d, p] = 0.0
+                        m.dual_q_req[y, d, p] = 0.0
+            kappa = pe.value(m.salvage_objective_kappa) if hasattr(m, 'salvage_objective_kappa') else None
+            if start in ('oldest', 'newest'):
+                for y in m.years:
+                    act = DG.active_cohorts(m, y)
+                    if len(act) < 2:
+                        continue
+                    pick = min(act) if start == 'oldest' else max(act)
+                    for d in m.days:
+                        for p in m.periods:
+                            r = prof.get(p, 0.0)
+                            for c in act:
+                                m.es_pch_per_unit[c, y, d, p].set_value(max(r, 0.0) if c == pick else 0.0)
+                                m.es_pdch_per_unit[c, y, d, p].set_value(max(-r, 0.0) if c == pick else 0.0)
+                            m.es_pnet[y, d, p].set_value(r)
+            entry = solve(esso, f't_v_tv{int(tv_on)}_{start}_{plan_key}')
+            rep = DG.node_report(m, sed, node)
+            thr = {key: v['avg_throughput_mwh_per_day'] for key, v in rep['degradation'].items()}
+            return {'tv_on': tv_on, 'start': start, 'plan_key': plan_key, 'kappa': kappa,
+                    'al_scale': {'value': a_scale, 'applied': applied}, 'sigma': sigma, 'stub_calls': stub_calls['n'],
+                    'solve': entry, 'admm_objective': pe.value(m.admm_objective),
+                    'feasibility_penalty': pe.value(m.feasibility_penalty),
+                    'salvage_credit_obj': pe.value(m.salvage_credit_obj) if hasattr(m, 'salvage_credit_obj') else None,
+                    'detectors': rep, 'within': within_summary(rep), 'rows': _cohort_row_activity(m),
+                    'per_cohort_throughput_mwh_per_day': thr,
+                    'D_max_abs_diff': max(v['abs_diff'] for v in rep['degradation'].values()),
+                    'tracking_max_abs_mw': max(abs(pe.value(m.es_pnet[y, d, p]) - prof.get(p, 0.0))
+                                               for y in m.years for d in m.days for p in m.periods)}
+        return fn
+
+    registry = {'t_ii_a_indep': t_ii_a(INDEP), 't_ii_a_legacy': t_ii_a(LEGACY), 't_ii_b': t_ii_b,
+                't_iii_indep': t_iii(INDEP), 't_iii_legacy': t_iii(LEGACY),
+                't_iv_peak': t_iv('peak'), 't_iv_control': t_iv('control'),
+                't_v_tv_on': t_v(True, 'as_built'), 't_v_tv_off_oldest': t_v(False, 'oldest'),
+                't_v_tv_off_newest': t_v(False, 'newest'),
+                't8b_two_cohort': t_v(True, 'as_built', 'plan_two_cohort')}
+    order = tspec['order']
+    unknown = [n for n in order if n not in registry]
+    if unknown:
+        raise SystemExit(f'refusing: unknown solve tests in the spec: {unknown}')
+    for name in order:
+        _log(f'solve test {name} ({tag})')
+        run(name, registry[name])
+    _restore_mode(sed, as_read)
+    rec['finished_utc'] = _utc()
+    declared = tspec['declared_count']
+    rec['guard'] = {'counts': dict(GUARD.counts), 'permitted_sites': dict(GUARD.permitted_sites),
+                    'declared': declared, 'verify_failures': GUARD.verify(declared)}
+    converted = []
+    rec = _typed_flags(rec, '$', converted)
+    rec['string_flags_converted_to_bool'] = converted
+    _dump(rec, os.path.join(work, f'child_solves_{tag}.json'))
+    return 0
+
+
+# ======================================================================================================================
+#  PARENT
+# ======================================================================================================================
+def _git(*a, check=True):
+    return subprocess.run(['git', *a], cwd=HERE, capture_output=True, text=True, check=check).stdout
+
+
+def _git_bytes(*a):
+    return subprocess.run(['git', *a], cwd=HERE, capture_output=True, check=True).stdout
+
+
+def _refuse_concurrent():
+    ps = subprocess.run(['ps', '-axo', 'pid=,command='], capture_output=True, text=True).stdout.splitlines()
+    others = []
+    for line in ps:
+        parts = line.strip().split()
+        if len(parts) < 3 or parts[0] == str(os.getpid()):
+            continue
+        if 'python' in os.path.basename(parts[1]) and any(os.path.basename(p) == SCRIPT for p in parts[2:]):
+            if '--child' not in parts:
+                others.append(line)
+    if others:
+        raise SystemExit(f'refusing: another copy is running: {others}')
+
+
+def _named_fixtures_from_w183c(base):
+    src = _git('show', f'{base}:{W183C}')
+    for node in ast.parse(src).body:
+        if isinstance(node, ast.Assign) and any(getattr(t, 'id', None) == 'NAMED_FIXTURES' for t in node.targets):
+            return ast.literal_eval(node.value)
+    raise SystemExit('refusing: NAMED_FIXTURES not found in W183c source')
+
+
+def _declare_fixtures(base, fixture_repo):
+    """As 8c9fd6ec's G3 (git-tracked *.pkl + W183c NAMED_FIXTURES + FrozenSMOPF/** glob), the glob taken in the MAIN
+    checkout (the worktree carries no untracked fixture)."""
+    tracked = [p for p in _git('ls-files', '--', '*.pkl').splitlines() if p]
+    named = _named_fixtures_from_w183c(base)
+    globbed = []
+    for root, _dirs, files in os.walk(os.path.join(fixture_repo, FROZEN_SMOPF_DIR)):
+        for f in sorted(files):
+            if f.endswith('.pkl'):
+                globbed.append(os.path.relpath(os.path.join(root, f), fixture_repo))
+    by = {}
+    for rel in tracked:
+        by.setdefault(rel, []).append('git ls-files *.pkl')
+    for rel, checks in named.items():
+        by.setdefault(rel, []).append('W183c NAMED_FIXTURES: ' + ', '.join(checks))
+    for rel in globbed:
+        by.setdefault(rel, []).append('FrozenSMOPF/** glob (main checkout)')
+    return dict(sorted(by.items()))
+
+
+def _export(base, dest, overlay=None):
+    os.makedirs(dest)
+    listing = [p for p in _git('ls-tree', '-r', '--name-only', base).splitlines()
+               if (p.endswith('.py') and '/' not in p)
+               or (p.startswith('data/SRP1/') and not p.startswith('data/SRP1/Results/'))]
+    tar = dest.rstrip('/') + '.tar'
+    subprocess.run(['git', 'archive', '-o', tar, base, '--', *listing], cwd=HERE, check=True)
+    subprocess.run(['tar', '-x', '-f', tar, '-C', dest], check=True)
+    os.remove(tar)
+    overlaid = {}
+    for rel in overlay or ():
+        shutil.copyfile(os.path.join(HERE, rel), os.path.join(dest, rel))
+        overlaid[rel] = _sha_file(os.path.join(dest, rel))
+    return {'n_files': len(listing), 'overlay_sha256': overlaid,
+            'prod_sha256': {rel: _sha_file(os.path.join(dest, rel)) for rel in PROD_FILES + (DIAG, SCRIPT)
+                            if os.path.isfile(os.path.join(dest, rel))}}
+
+
+def _run_child(tree, extra, log_stem, out, env):
+    cmd = [PY, '-u', os.path.join(tree, SCRIPT), '--child', *extra]
+    with open(os.path.join(out, f'{log_stem}_stdout.log'), 'x') as so, \
+            open(os.path.join(out, f'{log_stem}_stderr.log'), 'x') as se:
+        rc = subprocess.run(cmd, cwd=tree, stdout=so, stderr=se, env=env).returncode
+    _log(f'child {log_stem}: rc {rc}')
+    return rc
+
+
+def _read_text(path):
+    with open(path) as handle:
+        return handle.read().splitlines()
+
+
+def _gzip_tree(src_root, dst_root):
+    inventory = {}
+    for root, _d, files in os.walk(src_root):
+        for f in sorted(files):
+            src = os.path.join(root, f)
+            rel = os.path.relpath(src, src_root)
+            dst = os.path.join(dst_root, rel + '.gz')
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            with open(src, 'rb') as handle:
+                data = handle.read()
+            with open(dst, 'xb') as raw:
+                with gzip.GzipFile(fileobj=raw, mode='wb', mtime=0, filename='') as gz:
+                    gz.write(data)
+            inventory[rel] = _sha_bytes(data)
+    return inventory
+
+
+def _check(pred, value):
+    op = pred['op']
+    if value is None:
+        return False
+    if op == 'le':
+        return value <= pred['value']
+    if op == 'ge':
+        return value >= pred['value']
+    if op == 'lt':
+        return value < pred['value']
+    if op == 'gt':
+        return value > pred['value']
+    if op == 'eq':
+        return value == pred['value']
+    if op == 'within':
+        return abs(value - pred['value']) <= pred['tol']
+    if op == 'true':
+        return value is True
+    raise ValueError(op)
+
+
+def _load_child(path):
+    if not os.path.isfile(path):
+        return None
+    try:
+        with open(path) as handle:
+            return json.load(handle)
+    except ValueError:
+        return None
+
+
+# ---------------------------------------------------------------------------------------------------------------- T1
+def _esso_nl(child, mode_name):
+    out = {}
+    for grid, g in child['grids'].items():
+        for cell, c in g['esso_cells'].items():
+            if not cell.endswith(f'__{mode_name}'):
+                continue
+            base = cell[: -len(f'__{mode_name}')]
+            for stage in ('init', 'admm'):
+                for node, files in c[stage].items():
+                    out[(base, stage, node)] = {f: files[f]['sha256'] for f in NL_FILES}
+    return out
+
+
+def _net_nl(child, mode_name):
+    out = {}
+    for grid, g in child['grids'].items():
+        for cell, c in g['net_cells'].items():
+            if not cell.endswith(f'__{mode_name}'):
+                continue
+            base = cell[: -len(f'__{mode_name}')]
+            for bname, b in c['blocks'].items():
+                out[(base, bname)] = {f: b['nl'][f]['sha256'] for f in NET_NL_FILES}
+    return out
+
+
+def _bitwise(a, b, keep=None):
+    keys = sorted(k for k in set(a) | set(b) if keep is None or keep(k))
+    per, missing = {}, []
+    for k in keys:
+        if k not in a or k not in b:
+            missing.append('|'.join(k))
+            continue
+        per['|'.join(k)] = all(a[k][f] == b[k][f] for f in a[k])
+    return {'n_compared': len(per), 'missing': missing, 'n_identical': sum(per.values()),
+            'differing': sorted(k for k, v in per.items() if not v),
+            'pass': bool(per) and not missing and all(per.values())}
+
+
+def _plan_of(key):
+    return key[0].split('__')[1]
+
+
+def _evaluate(spec, children, fx, zero, solves, works):
+    g = {}
+    after = children['after']
+    g['children'] = {t: {'guard_zero': (c['guard']['counts'].get('blocked_solve', 0) == 0
+                                        and c['guard']['counts'].get('permitted_solve', 0) == 0
+                                        and not c['guard']['verify_0_failures']),
+                         'modules_from_tree': all(v.startswith(c['tree']) for v in c['modules'].values()),
+                         'checksums': {gr: v['read']['checksum_matches_spec'] for gr, v in c['grids'].items()},
+                         'esso_stub_calls_all_1': all(v['stub_calls'] == 1 for gr in c['grids'].values()
+                                                      for v in gr['esso_cells'].values()),
+                         'net_stub_calls': sorted({json.dumps(v['stub_calls'], sort_keys=True)
+                                                   for gr in c['grids'].values() for v in gr['net_cells'].values()}),
+                         'errors': sorted(c['errors'])}
+                     for t, c in children.items() if c}
+    g['children_ok'] = all(c is not None for c in children.values()) and all(
+        v['guard_zero'] and v['modules_from_tree'] and all(v['checksums'].values()) and v['esso_stub_calls_all_1']
+        and not v['errors'] for v in g['children'].values())
+    single = set(spec['t1']['single_cohort_plans'])
+    # T1 ESSO
+    b_leg, a_leg = _esso_nl(children['before'], 'legacy'), _esso_nl(after, 'legacy')
+    b_ind, a_ind = _esso_nl(children['before'], 'indep'), _esso_nl(after, 'indep')
+    t1 = {}
+    t1['esso_legacy_before_vs_after'] = _bitwise(b_leg, a_leg)
+    t1['esso_legacy_determinism'] = _bitwise(b_leg, _esso_nl(children['before_rerun'], 'legacy'))
+    t1['esso_legacy_key_after_vs_default_before'] = _bitwise(b_leg, _esso_nl(after, 'legacy_key'))
+    t1['esso_indep_before_vs_after_single'] = _bitwise(b_ind, a_ind, keep=lambda k: _plan_of(k) in single)
+    t1['esso_indep_vs_legacy_after_single'] = _bitwise(a_ind, a_leg, keep=lambda k: _plan_of(k) in single)
+    t1['esso_indep_before_vs_after_multi_informational'] = _bitwise(b_ind, a_ind, keep=lambda k: _plan_of(k) not in single)
+    # T1 network
+    nb_leg, na_leg = _net_nl(children['before'], 'legacy'), _net_nl(after, 'legacy')
+    nb_ind, na_ind = _net_nl(children['before'], 'indep'), _net_nl(after, 'indep')
+    t1['network_legacy_before_vs_after'] = _bitwise(nb_leg, na_leg)
+    t1['network_legacy_determinism'] = _bitwise(nb_leg, _net_nl(children['before_rerun'], 'legacy'))
+    t1['network_legacy_key_after_vs_default_before'] = _bitwise(nb_leg, _net_nl(after, 'legacy_key'))
+    t1['network_indep_before_vs_after_single'] = _bitwise(nb_ind, na_ind, keep=lambda k: _plan_of(k) in single)
+    t1['network_indep_vs_legacy_after_single'] = _bitwise(na_ind, na_leg, keep=lambda k: _plan_of(k) in single)
+    multi = _bitwise(nb_ind, na_ind, keep=lambda k: _plan_of(k) not in single)
+    # the multi-cohort network difference, read from the kept row files: rows only in before / only in after
+    rowdiff = {}
+    for key in multi['differing']:
+        base_cell, bname = key.split('|')
+        rows = {}
+        for tag in ('before', 'after'):
+            path = os.path.join(works[tag], 'nl', 'net', base_cell + '__indep', f'{base_cell}__indep__{bname}.sym.row')
+            rows[tag] = set(_read_text(path)) if os.path.isfile(path) else None
+        if rows['before'] is None or rows['after'] is None:
+            rowdiff[key] = 'row files not kept'
+            continue
+        only_b = sorted(rows['before'] - rows['after'])
+        only_a = sorted(rows['after'] - rows['before'])
+        rowdiff[key] = {'only_before': only_b, 'only_after': only_a, 'n_only_before': len(only_b),
+                        'n_only_after': len(only_a),
+                        'only_before_all_sess_comp': all(r.startswith('sess_comp[') for r in only_b)}
+    multi['row_differences'] = rowdiff
+    t1['network_indep_before_vs_after_multi'] = multi
+    pr = spec['t1']['predictions']
+    t1['counts'] = {k: t1[k]['n_compared'] for k in t1 if isinstance(t1[k], dict) and 'n_compared' in t1[k]}
+    held = {}
+    for k, n in pr['counts'].items():
+        held[k] = t1[k]['pass'] and t1[k]['n_compared'] == n
+    t1['held'] = held
+    exp_diff = sorted(spec['t3']['predictions']['network_nl_multi_differs_only_blocks'])
+    t1['multi_differs_only_expected_blocks'] = (sorted(k.split('|')[1] for k in multi['differing']
+                                                       if k.startswith('srp1__p2025_2030')) == exp_diff)
+    t1['multi_row_difference_exactly_sess_comp'] = bool(rowdiff) and all(
+        isinstance(v, dict) and v['only_before_all_sess_comp'] and v['n_only_after'] == 0
+        and v['n_only_before'] == spec['t3']['predictions']['network_sess_comp_rows_per_block'] for v in rowdiff.values())
+    t1['pass'] = all(held.values())
+    g['T1'] = t1
+    # T2 fixtures
+    fb, fa = fx['before'], fx['after']
+    t2 = {}
+    if fb and fa:
+        newly_failing = sorted(p for p in fb['results'] if fb['results'][p]['outcome'] == 'ok'
+                               and fa['results'][p]['outcome'] != 'ok')
+        differ = sorted(p for p in fb['results'] if fb['results'][p]['outcome'] != fa['results'][p]['outcome'])
+        counts = {t: {} for t in ('before', 'after')}
+        for t, r in (('before', fb), ('after', fa)):
+            for v in r['results'].values():
+                k = v['outcome'] if v['outcome'] in ('ok', 'ABSENT') else 'error: ' + v['outcome'][:100]
+                counts[t][k] = counts[t].get(k, 0) + 1
+        t2['fixtures'] = {'n_declared': fb['n_declared'], 'n_present': [fb['n_present'], fa['n_present']],
+                          'n_loads': [fb['n_loads'], fa['n_loads']], 'outcome_counts': counts,
+                          'newly_failing': newly_failing, 'outcome_differs': differ,
+                          'retained_symbols_after': fa['retained_symbols'],
+                          'pass': (not newly_failing and not differ and fb['n_loads'] == fb['n_present']
+                                   and fa['n_loads'] == fa['n_present'] and not fb['guard']['verify_0_failures']
+                                   and not fa['guard']['verify_0_failures']
+                                   and counts['after'].get('ok') == fa['n_present'])}
+    zt = (zero or {}).get('tests', {})
+    if 't2' in zt:
+        z2 = zt['t2']
+        t2['hasattr'] = z2
+        t2['hasattr_pass'] = (z2['esso_indep']['unwired_closure_slack_families_present'] == []
+                              and z2['esso_indep_all']['unwired_closure_slack_families_present'] == []
+                              and z2['esso_legacy']['new_row_families_present'] == []
+                              and z2['esso_legacy']['unwired_closure_slack_families_present'] == []
+                              and z2['network_retired_components_present'] == {}
+                              and all(all(v.values()) for v in z2['retained_symbols'].values())
+                              and z2['retained_branch_before_pickled_model']['update_raised'] is None)
+    t2['pass'] = bool(t2.get('fixtures', {}).get('pass')) and bool(t2.get('hasattr_pass'))
+    g['T2'] = t2
+    # zero-solve tests
+    if zero is not None:
+        g['zero_child'] = {'guard': zero['guard'], 'errors': sorted(zero['errors']), 'stub_calls': zero['stub_calls']}
+        g['T3'] = _eval_t3(spec, zt)
+        g['T4_T5'] = _eval_t4_t5(spec, zt.get('t4_t5'))
+        g['T6'] = _eval_t6(spec, zt.get('t6'))
+        g['T7'] = _eval_t7(spec, zt.get('t7'))
+        g['T10'] = _eval_t10(spec, zt.get('t10'))
+    if solves:
+        g['T8_T9'] = _eval_solves(spec, solves)
+    return g
+
+
+def _t3_measure(t3g, plan_years, comp_family='sess_comp'):
+    """Per mode: active count of a family on the node-7 unit per network block, other units' totals, families other
+    than sess_comp equal between modes, reconfigure idempotence, attribute True set."""
+    out = {}
+    for mode_name in ('indep', 'legacy'):
+        net = t3g[mode_name]['network']
+        n7 = {}
+        others = 0
+        recon = True
+        flags_true = []
+        for bname, b in net.items():
+            for ess_node, u in b['units'].items():
+                recon = recon and u['reconfigure_same']
+                if u['gross_flow']:
+                    flags_true.append(f'{bname}|{ess_node}')
+                if ess_node == '7':
+                    n7[bname] = u['signature'][comp_family]
+                else:
+                    others += u['signature'][comp_family]
+        by_year = {}
+        for bname, n in n7.items():
+            yr = bname.split('__')[1].split('_')[0]
+            by_year.setdefault(yr, set()).add(n)
+        out[mode_name] = {'node7_by_year': {y: sorted(v) for y, v in sorted(by_year.items())},
+                          'other_units_total': others, 'reconfigure_same_all': recon,
+                          'gross_flow_true_units': sorted(flags_true)}
+    same_other = True
+    diff_list = []
+    for bname, b in t3g['indep']['network'].items():
+        for ess_node, u in b['units'].items():
+            lu = t3g['legacy']['network'][bname]['units'][ess_node]
+            for fam, n in u['signature'].items():
+                if fam == comp_family:
+                    continue
+                if n != lu['signature'][fam]:
+                    same_other = False
+                    diff_list.append(f'{bname}|{ess_node}|{fam}')
+    out['other_families_equal_indep_vs_legacy'] = same_other
+    out['other_families_differences'] = diff_list
+    return out
+
+
+def _eval_t3(spec, zt):
+    pr = spec['t3']['predictions']
+    res = {}
+    if 't3_srp1' in zt:
+        t = zt['t3_srp1']
+        m = _t3_measure(t, None)
+        inv = t['indep']['esso_inventory']
+        fam = inv['active_rows_by_family']
+        nb = inv.get('new_rows_active_by_block', {})
+        measured = {
+            'network_sess_comp_node7_by_year_indep': m['indep']['node7_by_year'],
+            'network_sess_comp_node7_by_year_legacy': m['legacy']['node7_by_year'],
+            'network_sess_comp_other_units_total_indep': m['indep']['other_units_total'],
+            'network_other_families_equal_indep_vs_legacy': m['other_families_equal_indep_vs_legacy'],
+            'network_reconfigure_idempotent': m['indep']['reconfigure_same_all'] and m['legacy']['reconfigure_same_all'],
+            'network_gross_flow_true_units_indep': m['indep']['gross_flow_true_units'],
+            'network_gross_flow_true_units_legacy': m['legacy']['gross_flow_true_units'],
+            'esso_complementarity_rows_by_block': {y: nb.get(f'energy_storage_cohort_complementarity|{y}', 0)
+                                                   for y in ('2025', '2030', '2035')},
+            'esso_sum_rows_by_block': {y: nb.get(f'energy_storage_cohort_sum_limit|{y}', 0)
+                                       for y in ('2025', '2030', '2035')},
+            'esso_soc_rows': fam.get('energy_storage_cohort_soc'), 'esso_window_rows': fam.get('energy_storage_cohort_soc_window'),
+            'esso_closure_rows': fam.get('energy_storage_cohort_soc_final'),
+            'esso_converter_rows': fam.get('energy_storage_cohort_converter'),
+            'esso_q_rows': fam.get('energy_storage_operation_agg_q'),
+            'esso_aggregate_circle_active_by_block': inv.get('aggregate_circle_active_by_block'),
+            'esso_new_vars_free': inv.get('new_vars_free'),
+            'esso_unwired_var_families_present': inv.get('unwired_var_families_present'),
+            'esso_legacy_new_rows_active': {k: v for k, v in t['legacy']['esso_inventory']['active_rows_by_family'].items()
+                                            if k in ESSO_NEW_ROW_FAMILIES},
+            'esso_legacy_h3_rows_active': t['legacy']['esso_inventory']['h3_rows_active'],
+        }
+        res['srp1'] = {'measured': measured, 'detail': m,
+                       'held': {k: measured.get(k) == v for k, v in pr['srp1'].items()}}
+    if 't3_five' in zt:
+        t = zt['t3_five']
+        m = _t3_measure(t, None)
+        nb = t['indep']['esso_inventory'].get('new_rows_active_by_block', {})
+        yrs = sorted({k.split('|')[1] for k in nb} | set(pr['fiveblock']['esso_complementarity_rows_by_block']))
+        measured = {
+            'network_sess_comp_node7_by_year_indep': m['indep']['node7_by_year'],
+            'network_sess_comp_node7_by_year_legacy': m['legacy']['node7_by_year'],
+            'network_sess_comp_other_units_total_indep': m['indep']['other_units_total'],
+            'network_other_families_equal_indep_vs_legacy': m['other_families_equal_indep_vs_legacy'],
+            'network_reconfigure_idempotent': m['indep']['reconfigure_same_all'] and m['legacy']['reconfigure_same_all'],
+            'esso_complementarity_rows_by_block': {y: nb.get(f'energy_storage_cohort_complementarity|{y}', 0) for y in yrs},
+            'esso_sum_rows_by_block': {y: nb.get(f'energy_storage_cohort_sum_limit|{y}', 0) for y in yrs},
+        }
+        res['fiveblock'] = {'measured': measured, 'detail': m,
+                            'held': {k: measured.get(k) == v for k, v in pr['fiveblock'].items()}}
+    res['pass'] = all(all(r['held'].values()) for r in res.values() if isinstance(r, dict) and 'held' in r) and \
+        set(res) >= {'srp1', 'fiveblock'}
+    return res
+
+
+def _eval_t4_t5(spec, t):
+    if t is None:
+        return {'pass': False, 'error': 'not run'}
+    pr = spec['t4']['predictions']
+    w = t['worst']
+    out = {'worst': w, 'n_samples': t['n_samples'], 'n_samples_with_transfer': t['n_samples_with_transfer'],
+           'transfer_mwh_range': t['transfer_mwh_range'], 'efficiencies': t['efficiencies'],
+           'network_efficiencies': t['network_efficiencies'],
+           'sess_comp_active_indep': t['sess_comp_active_indep'], 'sess_comp_active_legacy': t['sess_comp_active_legacy']}
+    comp_viol = [s[f't4_{k}']['sess_comp_if_active_max_violation'] for s in t['samples'] for k in ('tso', 'dso7')]
+    out['t4_sess_comp_would_be_violated_max'] = max(comp_viol)
+    t5_win = [s[f't5_{k}']['per_family_max'].get('sess_soc_limit_upper') or 0.0 for s in t['samples'] for k in ('tso', 'dso7')]
+    out['t5_net_form_window_upper_violation_max_pu'] = max(t5_win)
+    out['predictions'] = {
+        'T4_network_violation': {'prediction': pr['T4_network_violation'], 'measured': w['t4_net'],
+                                 'held': _check(pr['T4_network_violation'], w['t4_net'])},
+        'T4_samples_per_cohort_feasible': {'prediction': pr['T4_samples_per_cohort_feasible'], 'measured': w['t4_esso'],
+                                           'held': _check(pr['T4_samples_per_cohort_feasible'], w['t4_esso'])},
+        'T4_samples_with_transfer_fraction': {'prediction': pr['T4_samples_with_transfer_fraction'],
+                                              'measured': t['n_samples_with_transfer'] / t['n_samples'],
+                                              'held': _check(pr['T4_samples_with_transfer_fraction'],
+                                                             t['n_samples_with_transfer'] / t['n_samples'])},
+        'T5_closure_residual_minus_lambda_x': {'prediction': pr['T5_closure_residual_minus_lambda_x'],
+                                               'measured': w['t5_closure_minus_lambda_x'],
+                                               'held': _check(pr['T5_closure_residual_minus_lambda_x'],
+                                                              w['t5_closure_minus_lambda_x'])},
+        'T4_sess_comp_off_in_indep_block': {'prediction': {'op': 'eq', 'value': 0},
+                                            'measured': max(t['sess_comp_active_indep'].values()),
+                                            'held': max(t['sess_comp_active_indep'].values()) == 0},
+        'T5_sess_comp_on_in_legacy_block': {'prediction': {'op': 'eq', 'value': 24},
+                                            'measured': min(t['sess_comp_active_legacy'].values()),
+                                            'held': min(t['sess_comp_active_legacy'].values()) == 24}}
+    out['pass'] = all(v['held'] for v in out['predictions'].values())
+    return out
+
+
+def _eval_t6(spec, t):
+    if t is None:
+        return {'pass': False, 'error': 'not run'}
+    pr = spec['t6']['predictions']
+    P = {}
+
+    def put(name, value):
+        P[name] = {'prediction': pr[name], 'measured': value, 'held': _check(pr[name], value)}
+
+    put('P_hour1_mw', t['P_mw_hours_1_2'][0])
+    put('P_hour2_mw', t['P_mw_hours_1_2'][1])
+    put('P_other_hours_max_abs_mw', t['P_mw_other_hours_max_abs'])
+    put('X_mwh', t['X_mwh'])
+    put('loss_mwh', t['loss_lambda_x_mwh'])
+    put('per_cohort_closure_residual_max_abs_mwh', max(abs(v) for v in t['per_cohort_closure_residual_mwh'].values()))
+    put('esso_cohort_rows_max_violation', t['esso_cohort_rows_max_violation'])
+    for k in ('tso', 'dso7'):
+        put(f'network_a_slack0_violation_{k}', t[f'gross_{k}']['rows_max_violation_closure_slack_0'])
+        put(f'network_a_gate_slack_mwh_{k}', t[f'gross_{k}']['closure_slack_gate']['max_mwh'])
+        put(f'legacy_closure_slack_needed_mwh_{k}', t[f'legacy_{k}']['closure_residual_mwh'])
+        put(f'legacy_gate_slack_mwh_{k}', t[f'legacy_{k}']['closure_slack_gate']['max_mwh'])
+        put(f'legacy_rows_violation_with_slack_{k}', t[f'legacy_{k}']['rows_max_violation_with_slack_covering_residual'])
+    return {'predictions': P, 'detail': t, 'pass': all(v['held'] for v in P.values())}
+
+
+def _eval_t7(spec, t):
+    if t is None:
+        return {'pass': False, 'error': 'not run'}
+    exp = {k: v for k, v in spec['t7']['predictions'].items() if isinstance(v, bool)}  # text fields skipped
+    held = {k: (t.get(k, {}).get('raised') is v) for k, v in exp.items()}
+    return {'measured': t, 'held': held, 'pass': all(held.values())}
+
+
+def _eval_t10(spec, t):
+    if t is None:
+        return {'pass': False, 'error': 'not run'}
+    pr = spec['t10']['predictions']
+    measured = {}
+    for key, v in t.items():
+        inv = v['esso_inventory']
+        fam = inv['active_rows_by_family']
+        measured[key] = {
+            'esso_rows': {f: fam.get(f, 0) for f in ESSO_NEW_ROW_FAMILIES},
+            'esso_aggregate_circle_active_by_block': inv.get('aggregate_circle_active_by_block'),
+            'esso_rows_active_years': inv.get('multi_years'),
+            'esso_new_vars_free': inv.get('new_vars_free'),
+            'network_sess_comp_node7_set': sorted(set(v['network_sess_comp_node7'].values())),
+            'network_any_true_flag': any(a is not None and any(x is True for x in a.values())
+                                         for a in v['network_attributes'].values())}
+    held = {}
+    for key, exp in pr.items():
+        if not isinstance(exp, dict):  # text fields (verbatim task, rules) carry no checked value
+            continue
+        for k, val in exp.items():
+            held[f'{key}|{k}'] = measured.get(key, {}).get(k) == val
+    return {'measured': measured, 'held': held, 'pass': all(held.values())}
+
+
+def _eval_solves(spec, solves):
+    sp = spec['solves']
+    v2 = json.load(open(os.path.join(HERE, sp['t9']['v2_child_solves'])))['tests']
+    out = {}
+    for tag, s in solves.items():
+        if s is None:
+            out[tag] = {'error': 'no record'}
+            continue
+        out[tag] = {'guard': s['guard'], 'guard_exact': not s['guard']['verify_failures'], 'errors': sorted(s['errors']),
+                    'succeeded': {n: s['tests'].get(n, {}).get('solve', {}).get('succeeded') for n in sp[tag]['order']}}
+    a = (solves.get('after') or {}).get('tests', {})
+    b = (solves.get('before') or {}).get('tests', {})
+    pr = sp['predictions']
+    P = {}
+
+    def put(name, pred, value, extra=None):
+        P[name] = {'prediction': pred, 'measured': value, 'held': _check(pred, value), **(extra or {})}
+
+    # T8: the H_B case under the final rows (after), the reproduction of the before value (before tree), the
+    # two-cohort variant (both trees; informational)
+    if 't_v_tv_on' in a:
+        w = a['t_v_tv_on']['within']
+        put('T8_within_cohort_L_max_mwh_per_day_after', pr['T8_within_cohort_L_max_mwh_per_day_after'],
+            max(v['max_mwh_per_day'] for v in w.values()), {'per_cohort': w, 'rows': a['t_v_tv_on']['rows']})
+    if 't_v_tv_on' in b:
+        w = b['t_v_tv_on']['within']
+        put('T8_before_reproduces_v2_L', pr['T8_before_reproduces_v2_L'], max(v['max_mwh_per_day'] for v in w.values()),
+            {'per_cohort': w})
+    if 't8b_two_cohort' in a:
+        w = a['t8b_two_cohort']['within']
+        put('T8b_two_cohort_L_max_after', pr['T8b_two_cohort_L_max_after'], max(v['max_mwh_per_day'] for v in w.values()),
+            {'per_cohort': w, 'rows': a['t8b_two_cohort']['rows']})
+    if 't8b_two_cohort' in b:
+        w = b['t8b_two_cohort']['within']
+        P['T8b_two_cohort_L_max_before_informational'] = {'measured': max(v['max_mwh_per_day'] for v in w.values()),
+                                                         'per_cohort': w, 'held': None}
+    # T9: every v2 quantity against its v2 value
+    comp = {}
+    for name, fields in sp['t9']['quantities'].items():
+        if name not in a or name not in v2:
+            comp[name] = {'error': 'missing'}
+            continue
+        for field in fields:
+            new = _dig(a[name], field)
+            old = _dig(v2[name], field)
+            if isinstance(new, (int, float)) and isinstance(old, (int, float)):
+                d = abs(new - old)
+                tol = max(sp['t9']['unchanged_abs'], sp['t9']['unchanged_rel'] * abs(old))
+                comp[f'{name}.{field}'] = {'v2': old, 'new': new, 'abs_diff': d, 'tol': tol, 'changed': d > tol}
+            else:
+                comp[f'{name}.{field}'] = {'v2': old, 'new': new, 'changed': new != old}
+    exp_changed = set(sp['t9']['predicted_changed'])
+    out['T9_comparison'] = comp
+    changed = sorted(k for k, v in comp.items() if v.get('changed'))
+    out['T9_changed'] = changed
+    out['T9_changed_as_predicted'] = sorted(set(changed) & exp_changed)
+    out['T9_changed_not_predicted'] = sorted(set(changed) - exp_changed)
+    out['T9_predicted_changed_but_unchanged'] = sorted(exp_changed - set(changed))
+    # the v2 predictions re-applied to the new values (frozen ops/values of spec v2)
+    v2p = sp['t9']['v2_predictions']
+    reapplied = {}
+    if 't_ii_a_indep' in a:
+        reapplied['t_ii_a_indep_delivered'] = _check(v2p['t_ii_a_indep_delivered'], a['t_ii_a_indep']['delivered_mw'])
+        reapplied['t_ii_a_indep_slack'] = _check(v2p['t_ii_a_indep_slack'], a['t_ii_a_indep']['p_slack_mw'])
+    if 't_ii_a_legacy' in a:
+        reapplied['t_ii_a_legacy_delivered'] = _check(v2p['t_ii_a_legacy_delivered'], a['t_ii_a_legacy']['delivered_mw'])
+    if 't_ii_b' in a:
+        reapplied['t_ii_b_slack'] = _check(v2p['t_ii_b_slack'], a['t_ii_b']['p_slack_mw'])
+        reapplied['t_ii_b_precharge_at_least_needed'] = _check(v2p['t_ii_b_precharge_at_least_needed'],
+                                                        a['t_ii_b']['precharged_cohort_stored_rise_before_peak_mwh']
+                                                        - a['t_ii_b']['precharged_cohort_min_rise_needed_mwh'])
+    if 't_iii_indep' in a:
+        smm = a['t_iii_indep']['detectors']['summary_multi_cohort']
+        reapplied['t_iii_indep_window_margin'] = _check(v2p['t_iii_indep_window_margin'], smm['window_margin_min_mwh'])
+        reapplied['t_iii_indep_p_slack'] = _check(v2p['t_iii_indep_p_slack'], a['t_iii_indep']['p_slack_max_mw_block_day'])
+    if 't_iii_legacy' in a:
+        fr = a['t_iii_legacy']['per_cohort_window_fraction']
+        oldest = min(fr, key=int)
+        reapplied['t_iii_legacy_old_cohort_min_fraction'] = _check(v2p['t_iii_legacy_old_cohort_min_fraction'], fr[oldest][0])
+        reapplied['t_iii_legacy_old_cohort_max_fraction'] = _check(v2p['t_iii_legacy_old_cohort_max_fraction'], fr[oldest][1])
+    if 't_iv_peak' in a:
+        x = a['t_iv_peak']
+        reapplied['t_iv_peak_slack'] = _check(v2p['t_iv_peak_slack'], x['p_slack_at_peak_mw'])
+        reapplied['t_iv_peak_transfer_positive'] = _check(v2p['t_iv_peak_transfer_positive'], x['inter_cohort_gross_transfer_mwh'])
+        reapplied['t_iv_peak_within_cohort'] = _check(v2p['t_iv_peak_within_cohort'], max(x['within_cohort_simultaneity_mwh'].values()))
+        reapplied['t_iv_peak_closure'] = _check(v2p['t_iv_peak_closure'], max(abs(v) for v in x['closure_residual_mwh'].values()))
+        reapplied['t_iv_peak_energy_accounting'] = _check(v2p['t_iv_peak_energy_accounting'],
+                                                   abs(x['energy_accounting']['residual_mwh']))
+    if 't_iv_control' in a:
+        x = a['t_iv_control']
+        reapplied['t_iv_control_transfer_over_s'] = _check(v2p['t_iv_control_transfer_over_s'],
+                                                    x['inter_cohort_gross_transfer_mwh'] / x['s_aggregate_mva'])
+    if 't_v_tv_on' in a:
+        x = a['t_v_tv_on']
+        reapplied['t_v_tv_on_kappa_positive'] = _check(v2p['t_v_tv_on_kappa_positive'], x['kappa'])
+        reapplied['t_v_tv_on_D_from_own_throughput'] = _check(v2p['t_v_D_from_own_throughput'], x['D_max_abs_diff'])
+    if 't_v_tv_off_oldest' in a and 't_v_tv_off_newest' in a:
+        x1, x2 = a['t_v_tv_off_oldest'], a['t_v_tv_off_newest']
+        reapplied['t_v_tv_off_oldest_D_from_own_throughput'] = _check(v2p['t_v_D_from_own_throughput'], x1['D_max_abs_diff'])
+        reapplied['t_v_tv_off_newest_D_from_own_throughput'] = _check(v2p['t_v_D_from_own_throughput'], x2['D_max_abs_diff'])
+        reapplied['t_v_tv_off_objective_agreement'] = _check(v2p['t_v_tv_off_objective_agreement_rel'],
+                                                      abs(x1['admm_objective'] - x2['admm_objective'])
+                                                      / max(1.0, abs(x1['admm_objective'])))
+    out['T9_v2_predictions_reapplied'] = reapplied
+    out['T8_predictions'] = P
+    out['all_solves_succeeded'] = all(all(v is True for v in o.get('succeeded', {}).values()) for o in out.values()
+                                      if isinstance(o, dict) and 'succeeded' in o)
+    return out
+
+
+def _dig(obj, path):
+    for part in path.split('.'):
+        if isinstance(obj, dict) and part in obj:
+            obj = obj[part]
+        else:
+            return None
+    return obj
+
+
+def parent(args):
+    t_start = time.time()
+    spec_path = os.path.abspath(args.spec)
+    spec_bytes = open(spec_path, 'rb').read()
+    spec = json.loads(spec_bytes)
+    m = re.search(r'_v(\d+)_([0-9a-f]{8})\.json$', spec_path)
+    if not m or _sha_bytes(spec_bytes)[:8] != m.group(2):
+        raise SystemExit(f'refusing: spec filename hash does not match its content ({spec_path})')
+    out = os.path.abspath(args.out)
+    if os.path.exists(out):
+        raise SystemExit(f'refusing: {out} exists')
+    if args.rehearsal and out.startswith(HERE + os.sep):
+        raise SystemExit('refusing: a rehearsal writes outside the repository only')
+    scratch = os.path.abspath(args.scratch)
+    if os.path.exists(scratch) or scratch.startswith(HERE + os.sep):
+        raise SystemExit(f'refusing: scratch {scratch} exists or lies inside the repository')
+    fixture_repo = os.path.abspath(spec['t2']['fixture_repo'])
+    if fixture_repo == HERE:
+        raise SystemExit('refusing: the fixture repository must be the main checkout, read-only')
+    _refuse_concurrent()
+    base = _git('rev-parse', args.base_commit).strip()
+    checks = {}
+    spec_rel = os.path.relpath(spec_path, HERE)
+    if args.rehearsal:
+        checks['REHEARSAL_script_and_spec_not_checked_at_base'] = True
+    else:
+        checks['script_at_base_equals_running'] = (_sha_bytes(_git_bytes('show', f'{base}:{SCRIPT}'))
+                                                   == _sha_file(os.path.join(HERE, SCRIPT)))
+        checks['diag_at_base_equals_working'] = (_sha_bytes(_git_bytes('show', f'{base}:{DIAG}'))
+                                                 == _sha_file(os.path.join(HERE, DIAG)))
+        checks['spec_at_base_equals_file'] = (_sha_bytes(_git_bytes('show', f'{base}:{spec_rel}'))
+                                              == _sha_bytes(spec_bytes))
+    base_prod = {rel: _git_bytes('show', f'{base}:{rel}') for rel in PROD_FILES}
+    work_prod = {rel: open(os.path.join(HERE, rel), 'rb').read() for rel in PROD_FILES}
+    checks['base_prod_files_lack_markers'] = all(PROD_MARKERS[r].encode() not in base_prod[r] for r in PROD_FILES)
+    checks['overlay_files_carry_markers'] = all(PROD_MARKERS[r].encode() in work_prod[r] for r in PROD_FILES)
+    checks['base_prod_equals_spec_base_prod'] = all(
+        _sha_bytes(base_prod[r]) == spec['trees']['base_prod_sha256'][r] for r in PROD_FILES)
+    # no committed INPUT json (case / parameter files) mentions the key. Evidence under data/<case>/Results/ is excluded
+    # by scope: the committed cohort_esso_v1/v2 records and specs name the key (they test it), and this run's own spec
+    # sits there too (CLAUDE.md: a pre-run scan of committed artefacts excludes the run's own). Matches listed.
+    json_hits = [line.split(':', 1)[1] for line in
+                 _git('grep', '-l', KEY, base, '--', '*.json', check=False).splitlines() if line.strip()]
+    evidence = re.compile(r'^data/[^/]+/Results/')
+    checks['no_committed_input_json_sets_key'] = not [h for h in json_hits if not evidence.match(h)]
+    checks['committed_json_naming_key_evidence_excluded'] = sorted(json_hits) or True
+    inst_bytes = _git_bytes('show', f"{base}:{spec['grids']['fiveblock_3x3']['source_case_rel']}")
+    checks['fiveblock_case_sha256_matches_spec'] = (_sha_bytes(inst_bytes)
+                                                    == spec['grids']['fiveblock_3x3']['source_case_sha256'])
+    v2_rel = spec['solves']['t9']['v2_child_solves']
+    checks['v2_child_solves_sha256_matches_spec'] = _sha_file(os.path.join(HERE, v2_rel)) == spec['solves']['t9']['v2_child_solves_sha256']
+    failed = [k for k, v in checks.items() if not v]
+    if failed:
+        raise SystemExit(f'refusing: provenance checks failed: {failed}')
+    os.makedirs(out)
+    os.makedirs(scratch)
+    _log(f'base {base}; out {out}; scratch {scratch}')
+    diff_text = {rel: ''.join(difflib.unified_diff(base_prod[rel].decode().splitlines(True),
+                                                   work_prod[rel].decode().splitlines(True),
+                                                   f'{base[:8]}:{rel}', f'overlay:{rel}')) for rel in PROD_FILES}
+    trees = {}
+    for tag, overlay in (('before', None), ('after', PROD_FILES)):
+        tree = os.path.join(scratch, f'tree_{tag}')
+        trees[tag] = {'path': tree, **_export(base, tree, overlay)}
+        if args.rehearsal:
+            for f in (SCRIPT, DIAG):
+                shutil.copyfile(os.path.join(HERE, f), os.path.join(tree, f))
+        with open(os.path.join(tree, 'data', 'SRP1', spec['grids']['fiveblock_3x3']['case_file']), 'xb') as handle:
+            handle.write(inst_bytes)
+    checks['after_overlay_equals_working_tree_at_launch'] = all(
+        trees['after']['overlay_sha256'][rel] == _sha_bytes(work_prod[rel]) for rel in PROD_FILES)
+    checks['before_prod_equals_base'] = all(
+        trees['before']['prod_sha256'][rel] == _sha_bytes(base_prod[rel]) for rel in PROD_FILES)
+    env = dict(os.environ)
+    env.update({'NLP_SOLVER_PATH': spec['environment']['NLP_SOLVER_PATH'],
+                'LP_SOLVER_PATH': spec['environment']['LP_SOLVER_PATH']})
+    spec_copy = os.path.join(scratch, 'spec.json')
+    shutil.copyfile(spec_path, spec_copy)
+    g3c_dir = os.path.join(scratch, 'g3c')
+    os.makedirs(g3c_dir)
+    fixtures = _declare_fixtures(base, fixture_repo)
+    _dump({'n': len(fixtures), 'fixture_repo': fixture_repo, 'fixtures': fixtures},
+          os.path.join(out, 'fixtures_declared.json'))
+    flist_scratch = os.path.join(scratch, 'fixtures_list.json')
+    with open(flist_scratch, 'x') as handle:
+        json.dump(sorted(fixtures), handle)
+    rc, works = {}, {}
+    for tag, tree_tag in (('before', 'before'), ('before_rerun', 'before'), ('after', 'after')):
+        works[tag] = os.path.join(scratch, f'work_{tag}')
+        os.makedirs(works[tag])
+        rc[f'build_{tag}'] = _run_child(trees[tree_tag]['path'],
+                                        ['build', '--tag', tag, '--spec', spec_copy, '--work', works[tag],
+                                         '--g3c-dir', g3c_dir], f'child_build_{tag}', out, env)
+    for tag in ('before', 'after'):
+        w = os.path.join(scratch, f'work_fixtures_{tag}')
+        os.makedirs(w)
+        works[f'fixtures_{tag}'] = w
+        rc[f'fixtures_{tag}'] = _run_child(trees[tag]['path'],
+                                           ['fixtures', '--tag', tag, '--work', w, '--fixture-list', flist_scratch,
+                                            '--repo', fixture_repo], f'child_fixtures_{tag}', out, env)
+    works['zero'] = os.path.join(scratch, 'work_zero')
+    os.makedirs(works['zero'])
+    rc['zero'] = _run_child(trees['after']['path'], ['zero', '--spec', spec_copy, '--work', works['zero'],
+                                                     '--g3c-dir', g3c_dir], 'child_zero', out, env)
+    children = {tag: _load_child(os.path.join(works[tag], f'child_build_{tag}.json'))
+                for tag in ('before', 'before_rerun', 'after')}
+    fx = {tag: _load_child(os.path.join(works[f'fixtures_{tag}'], f'child_fixtures_{tag}.json'))
+          for tag in ('before', 'after')}
+    zero = _load_child(os.path.join(works['zero'], 'child_zero.json'))
+    result = {'schema': SCHEMA, 'script': SCRIPT, 'rehearsal': bool(args.rehearsal), 'spec': spec_rel,
+              'spec_sha256': _sha_bytes(spec_bytes), 'base_commit': base,
+              'git_head_at_launch': _git('rev-parse', 'HEAD').strip(),
+              'started_utc': datetime.fromtimestamp(t_start, timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+              'interpreter': sys.executable, 'provenance_checks': checks, 'diff_under_test': diff_text,
+              'trees': trees, 'child_returncodes': rc, 'gates': {}, 'errors': {}}
+    gates = {}
+    try:
+        gates = _evaluate(spec, children, fx, zero, None, works)
+    except Exception:  # noqa: BLE001
+        result['errors']['zero_solve_analysis'] = traceback.format_exc()
+        print(result['errors']['zero_solve_analysis'], file=sys.stderr, flush=True)
+    t1 = gates.get('T1') or {}
+    held = t1.get('held') or {}
+    # the solve children run only when the zero-solve production-safety gates hold (legacy ESSO + network bitwise,
+    # their determinism controls, children ok, fixtures) and never in a rehearsal
+    pre = (gates.get('children_ok') is True
+           and all(held.get(k) is True for k in ('esso_legacy_before_vs_after', 'esso_legacy_determinism',
+                                                 'network_legacy_before_vs_after', 'network_legacy_determinism'))
+           and bool((gates.get('T2') or {}).get('fixtures', {}).get('pass')))
+    result['solves_launched'] = bool(pre and not args.rehearsal)
+    solves = {}
+    if result['solves_launched']:
+        for tag in ('before', 'after'):
+            works[f'solves_{tag}'] = os.path.join(scratch, f'work_solves_{tag}')
+            os.makedirs(works[f'solves_{tag}'])
+            rc[f'solves_{tag}'] = _run_child(trees[tag]['path'], ['solves', '--tag', tag, '--spec', spec_copy,
+                                                                  '--work', works[f'solves_{tag}']],
+                                             f'child_solves_{tag}', out, env)
+            solves[tag] = _load_child(os.path.join(works[f'solves_{tag}'], f'child_solves_{tag}.json'))
+            if solves[tag] is None:
+                result['errors'][f'solves_{tag}'] = f'the {tag} solve child wrote no record; see its stderr log'
+            logs = os.path.join(works[f'solves_{tag}'], 'ipopt_logs')
+            if os.path.isdir(logs):
+                result.setdefault('ipopt_logs_sha256', {})[tag] = _gzip_tree(logs, os.path.join(out, 'ipopt_logs', tag))
+        try:
+            gates['T8_T9'] = _eval_solves(spec, solves)
+        except Exception:  # noqa: BLE001
+            result['errors']['solve_analysis'] = traceback.format_exc()
+            print(result['errors']['solve_analysis'], file=sys.stderr, flush=True)
+    result['gates'] = gates
+    verdict = {'children_ok': gates.get('children_ok') is True}
+    for k in ('T1', 'T2', 'T3', 'T4_T5', 'T6', 'T7', 'T10'):
+        verdict[k] = bool(isinstance(gates.get(k), dict) and gates[k].get('pass') is True)
+    result['verdict'] = verdict
+    for tag, w in works.items():
+        for f in sorted(os.listdir(w)):
+            if f.startswith('child_') and f.endswith('.json'):
+                shutil.copyfile(os.path.join(w, f), os.path.join(out, f))
+        if os.path.isdir(os.path.join(w, 'nl')):
+            result.setdefault('nl_inventory_sha256_uncompressed', {})[tag] = _gzip_tree(
+                os.path.join(w, 'nl'), os.path.join(out, 'nl', tag))
+    result['guard'] = {'counts': dict(GUARD.counts), 'verify_0_failures': GUARD.verify(0)}
+    result['finished_utc'] = _utc()
+    result['wall_s'] = time.time() - t_start
+    _dump(result, os.path.join(out, 'cohort_followup_tests.json'))
+    _log(f"verdict {verdict}; solves launched {result['solves_launched']}; errors {sorted(result['errors'])}; "
+         f"guard {dict(GUARD.counts)}")
+    if 'T8_T9' in gates:
+        s = gates['T8_T9']
+        for tag in ('before', 'after'):
+            if tag in s:
+                _log(f"solves {tag}: guard exact {s[tag].get('guard_exact')}; errors {s[tag].get('errors')}")
+        for k, v in s['T8_predictions'].items():
+            _log(f"  {k}: held {v['held']} measured {v['measured']}")
+        _log(f"  T9 changed {s['T9_changed']}")
+    return 0 if all(verdict.values()) and not result['errors'] else 1
+
+
+def manifest(args):
+    import gate_result_io as GRIO
+    out = os.path.abspath(args.out)
+    target = os.path.join(out, 'manifest_sha256.json')
+    if os.path.exists(target):
+        raise SystemExit(f'refusing to overwrite {target}')
+    files = {}
+    for root, _dirs, names in os.walk(out):
+        for name in sorted(names):
+            path = os.path.join(root, name)
+            files[os.path.relpath(path, HERE)] = _sha_file(path)
+    parent_dir = os.path.dirname(out)
+    for name in sorted(os.listdir(parent_dir)):
+        if name.startswith(os.path.basename(out) + '_launch'):
+            files[os.path.relpath(os.path.join(parent_dir, name), HERE)] = _sha_file(os.path.join(parent_dir, name))
+    for f in (SCRIPT, DIAG) + PROD_FILES:
+        files[f] = _sha_file(os.path.join(HERE, f))
+    with open(target, 'x') as handle:
+        handle.write(GRIO.dumps({'schema': SCHEMA + '_manifest', 'utc': _utc(), 'files': files}, indent=1,
+                                sort_keys=True))
+    print(f'manifest: {len(files)} files -> {target}')
+    return 0
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--child', choices=('build', 'fixtures', 'zero', 'solves'))
+    ap.add_argument('--manifest', action='store_true')
+    ap.add_argument('--spec')
+    ap.add_argument('--out')
+    ap.add_argument('--scratch')
+    ap.add_argument('--base-commit')
+    ap.add_argument('--tag')
+    ap.add_argument('--work')
+    ap.add_argument('--g3c-dir')
+    ap.add_argument('--fixture-list')
+    ap.add_argument('--repo')
+    ap.add_argument('--rehearsal', action='store_true')
+    args = ap.parse_args()
+    if args.manifest:
+        return manifest(args)
+    if args.child == 'build':
+        return child_build(args)
+    if args.child == 'fixtures':
+        return child_fixtures(args)
+    if args.child == 'zero':
+        return child_zero(args)
+    if args.child == 'solves':
+        return child_solves(args)
+    return parent(args)
+
+
+if __name__ == '__main__':
+    sys.exit(main())

@@ -1,0 +1,30 @@
+  alpha          rms n5/n7/n9 (MW)      E|d|   E|d|mkt    Sum wd2     market      oper   mkt%        cov    charge  rule10  source
+      0          10.73/17.27/13.11  2193.928  2072.974  34661.274  31446.414  3214.860   90.7   -6989.70      0.00  4858.3  alpha_sweep_r1:alpha_0.0
+        redistribution (MWh): flex_down 718.59, flex_up 900.34, curt_res 515.27
+   0.25          2.089/2.477/2.483   151.178    67.633    705.355    221.306   484.049   31.4    -215.19   5051.84  4894.7  alpha_sweep_r1:alpha_0.25
+        redistribution (MWh): flex_down 109.47, flex_up 141.08, curt_res 191.72
+    0.5           1.23/3.385/2.546   101.989    36.634    622.201    123.394   498.807   19.8    -102.28   5501.18  4891.4  alpha_sweep_r1:alpha_0.5
+        redistribution (MWh): flex_down 107.91, flex_up 119.77, curt_res 232.94
+      1          0.136/3.617/3.116    85.219    24.560    773.052    106.906   666.146   13.8     -49.92   7458.13  4908.0  alpha_sweep_r2:alpha_1.0
+        redistribution (MWh): flex_down 110.13, flex_up 127.92, curt_res 251.15
+   1000 7.093e-11/8.356e-10/2.275e-11     0.000     0.000      0.000      0.000     0.000    0.1      -0.00   -113.37  5014.0  limit_r1:large
+alpha*_agg: 1000.0 bracket [1.0, 1000.0] (agg_tol 0.0288 MW^2 h); monotone non-increasing: False
+   0 -> 0.25: 34661.2739 -> 705.3553 
+   0.25 -> 0.5: 705.3553 -> 622.2013 
+   0.5 -> 1: 622.2013 -> 773.0518 NON-MONOTONE
+   1 -> 1000: 773.0518 -> 0.0000 
+alpha_arb,t over all DSO (block, hour): min 0.0003 max 0.6679
+hour test alpha=0.0: market dd/dh/hd/hh = 203/85/0/0 agree 0.705; market |d| in pred-hold hours 0.000 MWh, in pred-dev 2072.974; alpha0-subset n=203 agree 1.0
+hour test alpha=0.25: market dd/dh/hd/hh = 9/12/40/227 agree 0.819; market |d| in pred-hold hours 36.306 MWh, in pred-dev 31.327; alpha0-subset n=203 agree 0.8226600985221675
+hour test alpha=0.5: market dd/dh/hd/hh = 2/1/27/258 agree 0.903; market |d| in pred-hold hours 27.101 MWh, in pred-dev 9.532; alpha0-subset n=203 agree 0.916256157635468
+hour test alpha=1.0: market dd/dh/hd/hh = 0/0/22/266 agree 0.924; market |d| in pred-hold hours 24.560 MWh, in pred-dev 0.000; alpha0-subset n=203 agree 0.9507389162561576
+hour test alpha=1000.0: market dd/dh/hd/hh = 0/0/0/288 agree 1.000; market |d| in pred-hold hours 0.000 MWh, in pred-dev 0.000; alpha0-subset n=203 agree 1.0
+checks alpha_sweep_r1:alpha_0.0: {'rms_identity_max_rel': 9.434003107586464e-16, 'mechanism_d_max_abs_diff_mw': 1.4210854715202004e-14, 'covariance_vs_captured_settlement_max_abs': 3.75734998669941e-11, 'E_d_signed_max_abs_mwh': 1.6653345369377348e-14, 'market_plus_operation_identity_max_abs': 1.5631940186722204e-12}
+checks alpha_sweep_r1:alpha_0.25: {'rms_identity_max_rel': 8.549485203678615e-16, 'mechanism_d_max_abs_diff_mw': 1.3766765505351941e-14, 'covariance_vs_captured_settlement_max_abs': 2.9603874907024874e-11, 'E_d_signed_max_abs_mwh': 1.006972283335017e-11, 'market_plus_operation_identity_max_abs': 4.263256414560601e-14}
+checks alpha_sweep_r1:alpha_0.5: {'rms_identity_max_rel': 7.948925763302219e-16, 'mechanism_d_max_abs_diff_mw': 1.4210854715202004e-14, 'covariance_vs_captured_settlement_max_abs': 6.358899518055239e-11, 'E_d_signed_max_abs_mwh': 2.220446049250313e-14, 'market_plus_operation_identity_max_abs': 5.684341886080802e-14}
+checks limit_r1:pilot: {'rms_identity_max_rel': 7.948925763302219e-16, 'mechanism_d_max_abs_diff_mw': None, 'covariance_vs_captured_settlement_max_abs': None, 'E_d_signed_max_abs_mwh': 2.220446049250313e-14, 'market_plus_operation_identity_max_abs': 5.684341886080802e-14}
+checks alpha_sweep_r2:alpha_1.0: {'rms_identity_max_rel': 9.281063807900356e-16, 'mechanism_d_max_abs_diff_mw': 1.3766765505351941e-14, 'covariance_vs_captured_settlement_max_abs': 6.182138588862645e-11, 'E_d_signed_max_abs_mwh': 2.525757381022231e-13, 'market_plus_operation_identity_max_abs': 5.684341886080802e-14}
+checks limit_r1:large: {'rms_identity_max_rel': 2.2489315552873137e-16, 'mechanism_d_max_abs_diff_mw': None, 'covariance_vs_captured_settlement_max_abs': None, 'E_d_signed_max_abs_mwh': 1.3877787807814457e-14, 'market_plus_operation_identity_max_abs': 3.0814879110195774e-33}
+duplicates: [{'alpha': 0.5, 'first': 'alpha_sweep_r1:alpha_0.5', 'second': 'limit_r1:pilot', 'sum_omega_d2_bitwise_equal': True}]
+check failures: []
+guard: {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} verify []

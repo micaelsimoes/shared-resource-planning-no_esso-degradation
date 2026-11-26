@@ -1,0 +1,70 @@
+19:53:48 OK   [T1] classify_settled boundaries (12 cases)
+19:53:48 OK   [T1] classify_settled refuses mixed depth and a non-usable incumbent
+19:53:48 OK   [T1] efficiency rule: 11/22 (= 1/2) -> exit_then_confirm; 12/22 -> settled_direct; uncertified rows stay in the denominator
+19:53:48 OK   [T1] table row: |dF_exit| = e_EV in band, e_EV + 0.01 out; class by classify_exit with e = max(e_EV, bar sum)
+19:53:48 OK   [T1] candidates: best, then the next distinct in node AND year (same node and same year passed over); only confirm-candidate rows; fewer logged
+19:53:48 OK   [T1] ladder: best duration 4 h; node-years (7, 2025), (9, 2030); 1.0 MVA x 4 MWh in 2025 skipped (budget); 3 plans
+19:53:48 OK   [T1] the comparison is not vacuous: the policy at 6b1d98b2 differs from the working-tree policy
+19:53:48 OK   [T1] default search path (no poll_depth / poll_only): state and terminal report byte-identical to the policy at 6b1d98b2 (a39919ed1620) on 6 synthetic searches
+19:53:48 OK   [T1] the landscape comparison is not vacuous: the driver at 6b1d98b2 differs from the working tree
+19:53:49 OK   [T1] the plain synthetic landscape (no knobs) byte-identical to 6b1d98b2's on 382 plans x 2 depths
+19:53:49 OK   [T1] phase capture-path checklist (rule eleven) holds on the committed harness
+19:54:00 OK   [T2] whole phase (exit-then-confirm) through the launch CLI: freeze 0, codes 4...4, 0
+19:54:00 OK   [T2] final state == results state == the in-process phase (byte-equal)
+19:54:00 OK   [T2] every launch is one block of <= 5 evaluations at one depth; stages run in order
+19:54:00 OK   [T2] the phase ran every stage: 18 screen rows + ladder rows in the table, efficiency branch exit_then_confirm, 2 candidates distinct in node and year, both polled completely, best start from the pool, a search with >= 1 move ending complete_poll_no_accepted_candidate
+19:54:00 OK   [T2] spec v2: the efficiency record carries the not-worse measure, the per-class counts and the v1 band measure (information only); each candidate's exit-view check is recorded, equal, mode stop
+19:54:00 OK   [T2] count identities hold in the candidate polls and the search
+19:54:00 OK   [T2] the cached pool members (x0, unit, staged: the pilot records in the real phase) are never requested; the unit's screen row is served from the cache
+19:54:00 OK   [T2] hours: cumulative = sum of the launch records' accounted walls; every launch passed the ceiling check before it ran
+19:54:10 OK   [T3] settled-direct branch: exit 0; final state byte-equal to in process
+19:54:11 OK   [T3] every launch is one block of <= 5 evaluations at one depth; stages run in order
+19:54:11 OK   [T3] efficiency fraction > 1/2 -> settled_direct; every candidate-poll and search evaluation at settled depth; polls classified on settled values; the search moved; count identities hold
+19:54:12 OK   [T4] the ceiling stops with exit 6 before the first block that would cross it; nothing launched; the record's arithmetic (cumulative = sum of launch walls; projected = max(frozen, measured same depth)); a re-issue stops again (6), no new launch
+19:54:14 OK   [T5] harness_error_screen: exit 5, termination harness_error at stage screen; results written; byte-equal to in process
+19:54:16 OK   [T5] offset_candidate_confirmation: exit 5, termination stop_for_review_offset at stage candidate_confirmation; results written; byte-equal to in process
+19:54:20 OK   [T5] offset_search_confirmation: exit 5, termination stop_for_review_offset at stage search; results written; byte-equal to in process
+19:54:22 OK   [T5] not_settled_trigger: exit 5, termination stop_for_review_not_settled at stage candidate_polls; results written; byte-equal to in process
+19:54:23 OK   [T5] start_not_certified: exit 5, termination start_incumbent_not_certified at stage screen; results written; byte-equal to in process
+19:54:25 OK   [T5] exit_view_mismatch_candidate: exit 5, termination exit_view_mismatch at stage candidate_confirmation; results written; byte-equal to in process
+19:54:35 OK   [T6] kill at after_lock (launch 1, stage screen) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over
+19:54:46 OK   [T6] kill at after_launch_dir (launch 2, stage screen) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over
+19:54:56 OK   [T6] kill at during_evaluate (launch 5, stage ladder) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over
+19:55:06 OK   [T6] kill at after_evaluate (launch 6, stage candidate_confirmation) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over
+19:55:16 OK   [T6] kill at after_launch_record (launch 7, stage candidate_polls) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over
+19:55:26 OK   [T6] kill at after_manifest (launch 15, stage search) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over
+19:55:35 OK   [T6] kill at after_state_view (launch 17, stage search) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over
+19:55:46 OK   [T6] kill at after_results (launch 31, stage search) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over
+19:55:56 OK   [T7] the author's command (exact text, scratch --lock-path): prints every exit code, 4...4 then 0, stops; one stdout/stderr log pair per invocation (empty stderr); final state byte-equal to in process
+19:55:56 OK   [T7] the command re-issued on the finished phase: one invocation, exit 0, the next log number
+19:59:20 OK   [T8] stub children (harness evaluate, stub mode): freeze (collision scan clean) and the whole phase, exit 0; final state byte-equal to the in-process synthetic phase
+19:59:20 OK   [T8] each stub launch froze one harness spec whose keys recompute (replay verified every launch)
+19:59:21 OK   [T9] refused (exit 2): real freeze without predictions; synthetic phase not test-only; --preflight-only on a synthetic phase
+19:59:22 OK   [T9] a tampered evaluation record: the replay refuses (exit 2), nothing written; restored -> proceeds (4); re-freezing an existing root refused (write-once)
+19:59:22 OK   [T10] efficiency (P1): numerator = confirm_candidate + unresolved; per-class counts recorded; uncertified in the denominator only; 11/22 -> exit_then_confirm
+19:59:22 OK   [T10] efficiency (P1): 12/22 not worse -> settled_direct (strict > 1/2, exact rational)
+19:59:22 OK   [T10] the v1 band measure is information only: 14/22 not worse with 0 in band -> settled_direct (v1 would give exit_then_confirm); 3/22 not worse with 12 in band -> exit_then_confirm (v1 would give settled_direct)
+19:59:22 OK   [T10] an unknown row class is refused (no silent bucket)
+19:59:22 OK   [T10] a row at dF_exit = -20,000 EUR is confirm_candidate (counts as not worse) and outside the band
+19:59:22 OK   [T11] exit-view check (R4) is bitwise: equal -> equal; one ulp in F or bar, read_cycle + 1, read_cycle as a float, an absent exit_view -> mismatch naming the field
+19:59:23 OK   [T11] in the phase: a mismatch stops exit_view_mismatch at candidate_confirmation (either candidate, any field, an absent view); a first-in-order harness_error precedes it; it precedes the offset stop (the offset alone still stops); mode record records the mismatch and the phase completes
+19:59:23 OK   [T11] an unknown exit_view_check mode is refused
+19:59:36 OK   [T12] a declared, verified un-launched predecessor (spec + freeze logs; .DS_Store ignored) is excluded: the scan passes, 1 file excluded; the same root undeclared: the scan refuses, naming its spec
+20:00:02 OK   [T12] the scan refuses when the declared predecessor has launches (launches/), an eval dir, a state view or a launch log (re-verified at the scan); a wrong declared sha is refused
+20:00:31 OK   [T12] REAL artefacts (tracked specs; own root = the real v2 root): the real v2 configuration with v1 (de4e947e) declared un-launched -> scan passes, v1's spec excluded (and v2's own spec, if tracked, as the own root); v1 undeclared -> the scan refuses, naming v1's spec and nothing else
+20:00:31 OK   [T12] the real v2 spec built in process: v1 recorded as un-launched predecessor (files = spec + 2 freeze logs), cache-root key audit ok, pilot exit views on, exit-view check mode stop
+20:04:04 OK   [T13] continuation after exit 6 (stubs): predecessor stops 6; the continuation (raised ceiling 1000, note) freezes with it as cache root and runs to exit 0; its decisions equal the uninterrupted stub phase's (T8); predecessor + continuation requests = T8's requests, disjoint
+20:04:04 OK   [T13] the continuation carries the predecessor's measured hours into its ceiling (carried_h = predecessor cumulative; every launch's ceiling check includes it); its spec records the predecessor (sha, launches, stop exit 6) and serves no exit view from it
+20:07:53 OK   [T13] continuation after exit 5 (exit_view_mismatch, stubs): predecessor stops 5 at candidate_confirmation; the continuation with --no-pilot-exit-views first runs x0 at exit depth, records the mismatch (mode record) and completes (exit 0)
+20:08:01 OK   [T13] continuation refusals: an incomplete predecessor launch, a completed (phase_complete) predecessor, a wrong sha, a synthetic oracle, a raised ceiling or --no-pilot-exit-views without a continuation, an un-launched root declared as continuation
+20:08:08 OK   [T13] a continuation whose predecessor gained a launch after the freeze refuses every launch (exit 2), nothing written
+20:08:08 OK   [T14] code drift: --phase-run and --preflight-only refuse (exit 2) naming the file, nothing written, no lock left; the same spec without drift launches (exit 4)
+20:08:08 OK   [T14] code_drift lists exactly the altered file
+20:08:18 OK   [T15] .DS_Store planted at the top level, in launches/, in a launch dir and in its evals/: the next launch runs (4) and its manifest lists none; a killed launch holding only .DS_Store files is moved aside with 0 killed evaluations; the phase completes with the state of T2 (byte-equal)
+20:08:18 OK   [T15] files_under ignores .DS_Store; a root holding only .DS_Store can be frozen
+20:08:18 OK   [T16] s56_phase_check.py: all-pass record -> 0 (walls 0.7 and 1.6 h inclusive); uncertified, read_cycle 300, a guard false, no guards, wall 0.69 / 1.61 h -> 1 with FAIL; no manifest or no record -> 2
+20:08:28 OK   [T16] first-block hold: the single invocation runs launch 001 (exit 4, logs launch_001_*), a second issue refuses to overwrite them; the loop then starts at 002 and runs to exit 0, state byte-equal to in process
+20:08:28 OK   [T16] no author command line (single, loop, check) for the real v2 root contains the harness hazard string
+20:08:28 OK   [guards] SolveProfileGuard(permitted=()) verify(0) == []
+20:08:28 OK   [guards] pickle load/loads 0
+20:08:29 checks 69/69 ok; wall 881 s; failed []

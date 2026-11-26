@@ -1,0 +1,11 @@
+{
+ "stage": "P5.15 Addendum 20 (s38 preparation worker task) -- zero-solve check evidence manifest",
+ "entries": {
+  "zero_solve_checks.json": {
+   "sha256": "3fbb7e10d02a1476fcb77c2bedef3f7914ba7c389d4cf25f23c2e71e2e97c962",
+   "bytes": 4074,
+   "committed": true
+  }
+ },
+ "note": "p515_s38_zero_solve_checks.py builds every synthetic/probe ADMM-ready state in memory only (via p515_s32_zero_solve_checks._build_admm_ready_state/_reset_rho, p515_s37_zero_solve_checks._run_trajectory/_synthetic_boyd_sequence/_reset_gamma_tied, and p515_g_g1_g4_admm_gates._s38_build_probe_tso_model/s38_pf_capture_hooks) and writes check (iv)'s required sidecar files to a genuine system temp directory (tempfile.mkdtemp), never under data/ -- there is no companion fixture in this directory to hash-record."
+}

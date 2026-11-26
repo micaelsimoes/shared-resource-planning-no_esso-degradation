@@ -1,0 +1,284 @@
+{
+ "c1_child_source": {
+  "deleted": [],
+  "inserted": [
+   "        progress['s56_cycle_capture_checklist'] = holder['s56_cycle_capture_checklist']",
+   "    # S56 step 4 preparation: the pinned-arm capture, only for an option-off entry declaring the key True (refused on a",
+   "    # coupled entry); its capture path is asserted here, before any solve (rule eleven). Absent / False: nothing.",
+   "    s56_capture_arm = s56_cycle_capture_arm(coupling_on, validate_s56_cycle_capture_pinned(",
+   "        entry.get(S56_CYCLE_CAPTURE_PINNED_KEY)))",
+   "    if s56_capture_arm == S56_CAPTURE_ARM_PINNED:",
+   "        holder['s56_cycle_capture_checklist'] = assert_s56_cycle_capture_path(arm=S56_CAPTURE_ARM_PINNED)",
+   "    if s56_capture_arm == S56_CAPTURE_ARM_PINNED:  # S56 step 4 preparation: option off with the key only",
+   "        s56_cycle_cm = s56_cycle_capture_hooks(eval_dir, holder, arm=S56_CAPTURE_ARM_PINNED)",
+   "    # S56 step 4 preparation: empty unless the entry declares the key (so every other record keeps its format)",
+   "    variant_extra.update(s56_cycle_capture_pinned_record_fields(entry, holder, s56_capture_arm))"
+  ],
+  "n_lines_post": 584,
+  "n_lines_pre": 573,
+  "unified_diff": [
+   "--- pre:_child_real",
+   "+++ post:_child_real",
+   "@@ -85,2 +85,9 @@",
+   "         holder['s56_cycle_capture_checklist'] = assert_s56_cycle_capture_path()",
+   "+        progress['s56_cycle_capture_checklist'] = holder['s56_cycle_capture_checklist']",
+   "+    # S56 step 4 preparation: the pinned-arm capture, only for an option-off entry declaring the key True (refused on a",
+   "+    # coupled entry); its capture path is asserted here, before any solve (rule eleven). Absent / False: nothing.",
+   "+    s56_capture_arm = s56_cycle_capture_arm(coupling_on, validate_s56_cycle_capture_pinned(",
+   "+        entry.get(S56_CYCLE_CAPTURE_PINNED_KEY)))",
+   "+    if s56_capture_arm == S56_CAPTURE_ARM_PINNED:",
+   "+        holder['s56_cycle_capture_checklist'] = assert_s56_cycle_capture_path(arm=S56_CAPTURE_ARM_PINNED)",
+   "         progress['s56_cycle_capture_checklist'] = holder['s56_cycle_capture_checklist']",
+   "@@ -344,2 +351,4 @@",
+   "     s56_cycle_cm = s56_cycle_capture_hooks(eval_dir, holder) if coupling_on else nullcontext()",
+   "+    if s56_capture_arm == S56_CAPTURE_ARM_PINNED:  # S56 step 4 preparation: option off with the key only",
+   "+        s56_cycle_cm = s56_cycle_capture_hooks(eval_dir, holder, arm=S56_CAPTURE_ARM_PINNED)",
+   "     with continuation_cm, \\",
+   "@@ -502,2 +511,4 @@",
+   "         })",
+   "+    # S56 step 4 preparation: empty unless the entry declares the key (so every other record keeps its format)",
+   "+    variant_extra.update(s56_cycle_capture_pinned_record_fields(entry, holder, s56_capture_arm))",
+   "     record = build_evaluation_record("
+  ]
+ },
+ "c2": {
+  "key_on_coupled_refusal": "s56_cycle_capture_pinned True is for option-off entries only; this entry declares the per-scenario coupling (its coupled capture is installed regardless)",
+  "off_explicit_default_coupling": {
+   "capture_arm": null,
+   "coupling_on": false,
+   "pinned_key": null,
+   "pinned_record_fields": {}
+  },
+  "off_no_options": {
+   "capture_arm": null,
+   "coupling_on": false,
+   "pinned_key": null,
+   "pinned_record_fields": {}
+  },
+  "v1": {
+   "capture_arm": "coupled",
+   "coupling_on": true,
+   "pinned_key": null,
+   "pinned_record_fields": {}
+  },
+  "v2": {
+   "capture_arm": "coupled",
+   "coupling_on": true,
+   "pinned_key": null,
+   "pinned_record_fields": {}
+  }
+ },
+ "c3": {
+  "differences": [],
+  "differences_explicit_default_coupling": [],
+  "identical_pre_post": true,
+  "key_on_coupled_refused_at_freeze": "s56_cycle_capture_pinned True is for option-off entries only; this entry declares the per-scenario coupling (its coupled capture is installed regardless)",
+  "with_key": {
+   "x0_off": {
+    "entry_otherwise_identical": true,
+    "entry_records_key": true,
+    "eval_key_equals_no_key": true
+   },
+   "x0_off_aa": {
+    "entry_otherwise_identical": true,
+    "entry_records_key": true,
+    "eval_key_equals_no_key": true
+   }
+  }
+ },
+ "c4": {
+  "srp1_x0": {
+   "differ": [],
+   "files_pre": [
+    "ess_stride.jsonl",
+    "exempt.jsonl",
+    "floor.jsonl",
+    "interface_duals_per_cycle.jsonl",
+    "pf_stride.jsonl",
+    "recourse_jump.jsonl"
+   ],
+   "identical_after_volatile": [
+    "interface_duals_per_cycle.jsonl"
+   ],
+   "raw_byte_identical": [
+    "ess_stride.jsonl",
+    "exempt.jsonl",
+    "floor.jsonl",
+    "pf_stride.jsonl",
+    "recourse_jump.jsonl"
+   ],
+   "same_file_set": true
+  },
+  "srp1_x0_on": {
+   "differ": [],
+   "files_pre": [
+    "ess_stride.jsonl",
+    "exempt.jsonl",
+    "floor.jsonl",
+    "interface_duals_per_cycle.jsonl",
+    "pf_stride.jsonl",
+    "recourse_jump.jsonl"
+   ],
+   "identical_after_volatile": [
+    "interface_duals_per_cycle.jsonl"
+   ],
+   "raw_byte_identical": [
+    "ess_stride.jsonl",
+    "exempt.jsonl",
+    "floor.jsonl",
+    "pf_stride.jsonl",
+    "recourse_jump.jsonl"
+   ],
+   "same_file_set": true
+  },
+  "srp1grid_x0_a05": {
+   "differ": [],
+   "files_pre": [
+    "activation_readback.json",
+    "ess_stride.jsonl",
+    "exempt.jsonl",
+    "floor.jsonl",
+    "initialisation_identity.json",
+    "interface_duals_per_cycle.jsonl",
+    "per_cycle_response.jsonl",
+    "pf_stride.jsonl",
+    "recourse_jump.jsonl"
+   ],
+   "identical_after_volatile": [
+    "initialisation_identity.json",
+    "interface_duals_per_cycle.jsonl",
+    "per_cycle_response.jsonl"
+   ],
+   "raw_byte_identical": [
+    "activation_readback.json",
+    "ess_stride.jsonl",
+    "exempt.jsonl",
+    "floor.jsonl",
+    "pf_stride.jsonl",
+    "recourse_jump.jsonl"
+   ],
+   "same_file_set": true
+  },
+  "srp1grid_x0_a05_on_v1_noq": {
+   "differ": [],
+   "files_pre": [
+    "activation_readback.json",
+    "ess_stride.jsonl",
+    "exempt.jsonl",
+    "floor.jsonl",
+    "initialisation_identity.json",
+    "interface_duals_per_cycle.jsonl",
+    "per_cycle_response.jsonl",
+    "pf_stride.jsonl",
+    "recourse_jump.jsonl"
+   ],
+   "identical_after_volatile": [
+    "initialisation_identity.json",
+    "interface_duals_per_cycle.jsonl",
+    "per_cycle_response.jsonl"
+   ],
+   "raw_byte_identical": [
+    "activation_readback.json",
+    "ess_stride.jsonl",
+    "exempt.jsonl",
+    "floor.jsonl",
+    "pf_stride.jsonl",
+    "recourse_jump.jsonl"
+   ],
+   "same_file_set": true
+  }
+ },
+ "c4_volatile_keys": [
+  "capture_s",
+  "cycle_wall_s",
+  "response_capture_s",
+  "rss_bytes",
+  "ru_maxrss_bytes"
+ ],
+ "checks": {
+  "c1:no_line_of_the_child_deleted": true,
+  "c2:key_refused_on_a_coupled_entry": true,
+  "c2:off_explicit_default_coupling:arm_as_before": true,
+  "c2:off_explicit_default_coupling:no_pinned_capture_selected": true,
+  "c2:off_explicit_default_coupling:no_record_field_added": true,
+  "c2:off_no_options:arm_as_before": true,
+  "c2:off_no_options:no_pinned_capture_selected": true,
+  "c2:off_no_options:no_record_field_added": true,
+  "c2:v1:arm_as_before": true,
+  "c2:v1:no_pinned_capture_selected": true,
+  "c2:v1:no_record_field_added": true,
+  "c2:v2:arm_as_before": true,
+  "c2:v2:no_pinned_capture_selected": true,
+  "c2:v2:no_record_field_added": true,
+  "c3:key_on_coupled_refused_at_freeze": true,
+  "c3:spec_identical_pre_post_without_key": true,
+  "c3:x0_off:key_recorded_eval_key_unchanged_entry_otherwise_identical": true,
+  "c3:x0_off_aa:key_recorded_eval_key_unchanged_entry_otherwise_identical": true,
+  "c4:srp1_x0:same_file_set_and_identical": true,
+  "c4:srp1_x0_on:same_file_set_and_identical": true,
+  "c4:srp1grid_x0_a05:same_file_set_and_identical": true,
+  "c4:srp1grid_x0_a05_on_v1_noq:same_file_set_and_identical": true
+ },
+ "error": null,
+ "guard": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "failures": [],
+  "pickle": {
+   "load": 0,
+   "loads": 0,
+   "permitted_paths": null,
+   "refused_load": 0
+  },
+  "verified_zero": true
+ },
+ "holds": true,
+ "post_sha256": "450bf677096fbee4c95d5db3b29181b75137b250a6b3df764813775714067c7d",
+ "pre_rev": "98b7f597",
+ "pre_sha256": "16031daa1e623f1442d5c32723908bddcde1f113afa130e1f9c20ea2a22a8ae9",
+ "provenance": {
+  "git_head": "28143ef2dc3ba239a00033ee8669c5234b60a854",
+  "git_status_porcelain": " M p515_s44_campaign_harness.py\n",
+  "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "nlp_solver_path_env": "/usr/local/bin/ipopt",
+  "sha256": {
+   "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+   "admm_parameters.py": "8e9e69e58f120270f68139a83737f33662ae2c710982ab2e0d59a3699f46ec13",
+   "admm_persistent_workers.py": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+   "data/SRP1/SRP1.json": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+   "data/SRP1/SRP1_params.json": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "data/SRP1/SharedESS/SRP1_ESS_Params.json": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+   "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+   "interface_dual_capture.py": "d98b566f09f4f77867be0a812636c732183399f39803320b6b51587e80dd37fd",
+   "model_construction_helpers.py": "51ae3bcf4173b9ae60bda8d1f398288cfae57d9a5f8e5e151ed50737f3927c1a",
+   "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+   "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+   "network_parameters.py": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92",
+   "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+   "p514_n_instrumented_cstar.py": "62df39d41fec0ee48b320f6ade9eb1be4132203dcdbd100b90d1fc545d1d43c2",
+   "p515_g_g1_g4_admm_gates.py": "67401731268cab293f97d1d5a197b933839be516dfe4811f85b2e7002247feaf",
+   "p515_s39_evaluate.py": "2dd5b31f29aadb84dfcaf7b9e112fdda570bf20f78154b19d49914ba3a8a28c4",
+   "p515_s40_clone_capture_preflight.py": "30e33d0a7803c2a958bbf7da617dba277a8fe15888078e37aa451feba09a3652",
+   "p515_s40_cost_decomposition.py": "2fb70a404ca7b41969fc84908e564acc8d1c1fbd68c3e7ffb5dcdd19877222ad",
+   "p515_s40_polish_gap.py": "026a4d80037e9d03fbb8505986ab5a74a0b1eb08fc9c5b4ebf5494dce4556cf4",
+   "p515_s41_hull_polish.py": "e76c5921ecd1057dceb8fa8e097e960247a51d3e09f13d78ae95dec727385d5d",
+   "p515_s42_exact_fix_rerun.py": "de83af2ff01c48861995d70314a6565cf3e4c6ab8c2b32fc748fdc829c9e930a",
+   "p515_s43_aa_flagoff_gate.py": "22ef58b84bdd109d39e2cbf78d2e69e7302ccd0aadae2c90dcb9f6341d9472d3",
+   "p515_s43_aa_run.py": "34fd36a469d92186b6f982a529f9f8c68d6bd9d73157a4f75698c71597073aa8",
+   "p515_s44_campaign_harness.py": "450bf677096fbee4c95d5db3b29181b75137b250a6b3df764813775714067c7d",
+   "p515_s53_w118_resettle_hooks.py": "1df97eb48976aa88a96ac8f81a07cce776630cb64bda01a4da30a8ec9f60e81e",
+   "p515_s56_coupling_gates.py": "b46faf10bd2ffa0072061d6c19829bbcd08083c7b9ada9bb3fb38dc7ea61b3fb",
+   "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+   "shared_energy_storage_data.py": "f6bde5a69edeebd1ea3e0c34adda13cfac0f15dbf8290078ca3eca6a032dba03",
+   "shared_energy_storage_parameters.py": "ee68b5b65ea4f2d07f0e03d397b956d8ad992ee66e9a46e24a5e7b223d961c54",
+   "shared_resources_planning.py": "7213f1bfc15a5ebaf29919f6a227208b94ad147dc31de70ccb6551fb0c8d94d7"
+  },
+  "utc": "2026-11-23T14:31:59.969198+00:00"
+ },
+ "schema": "p515_s56_step4_capture_check_v1_nokey",
+ "utc": "2026-11-23T14:31:59.932227+00:00"
+}

@@ -1,0 +1,206 @@
+{
+ "authority": "Planner task (2x phase build, 2026-11-24): Q1-Q6 as given; operational evaluation, thresholds and derived numbers by the Worker",
+ "derived_from_existing_data": {
+  "K_EV": 300,
+  "block_projection_inputs": {
+   "K_EV_frozen_rule": 175,
+   "child_walls_to_300_h": [
+    2.3641764680544535,
+    2.5265590555800332,
+    2.624462284180853,
+    2.387246166401439,
+    2.55884320696195,
+    2.1352816763851377,
+    2.2915958519114388
+   ],
+   "e_EV": 17494.04935669899,
+   "formula": "exit block = kappa psi t_exit; settled block = kappa psi t_300 (t_300 = mean pilot child wall to K = 300); the design count formula per block, kappa and psi as measured",
+   "kappa": 1.18,
+   "pilot_launch_walls_h": [
+    2.626724124153455,
+    2.293328847951359
+   ],
+   "projection_h": {
+    "exit": 1.292401447922688,
+    "settled": 3.0935732228831774
+   },
+   "psi": 1.0866607399429278,
+   "source": {
+    "pilot_result": "data/SRP1/Results/P515S56/pilot_ev_v1_result_r2/pilot_result.json",
+    "pilot_result_sha256": "c49ac8a0ab59c1f2a4cb813e8389ce0831c43a14881e9fd61b572ca007330561",
+    "pilot_root": "data/SRP1/Results/P515S56/pilot_ev_v1"
+   },
+   "t_300_h": 2.4125949584964723,
+   "t_exit_h": 1.0079092987189218
+  },
+  "e_EV": 17494.04935669899,
+  "memory_per_slot_gib": 3.29,
+  "note": "numbers derived from committed records before the phase; they inform the predictions, they are not predictions themselves",
+  "pilot_records_used_as_cache": {
+   "staged_i1": {
+    "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/dddc5b8382a39c0a_staged_i1",
+    "exit_view": {
+     "F": 811976794.7754139,
+     "bar": 2490.025410294533,
+     "read_cycle": 127,
+     "status": "certified"
+    },
+    "settled": {
+     "F": 811973592.5728054,
+     "V": {
+      "A": 106.52010264288171,
+      "G": 7.843248981262816,
+      "PR": 82.04514021543201,
+      "S": 171.65184140205383
+     },
+     "gates_pass": true,
+     "status": "settled"
+    }
+   },
+   "unit_i1": {
+    "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/fe40736832cfbdba_unit_i1",
+    "exit_view": {
+     "F": 811988275.9168296,
+     "bar": 1406.105488538742,
+     "read_cycle": 126,
+     "status": "certified"
+    },
+    "settled": {
+     "F": 811985758.8407468,
+     "V": {
+      "A": 37.23688697312439,
+      "G": 3.5891097373047094,
+      "PR": 19.66435223046829,
+      "S": 17.324256658554077
+     },
+     "gates_pass": true,
+     "status": "settled"
+    }
+   },
+   "x0_i1": {
+    "eval_dir": "data/SRP1/Results/P515S56/pilot_ev_v1/launches/launch_001/evals/142a02890a1d630f_x0_i1",
+    "exit_view": {
+     "F": 812009208.7128427,
+     "bar": 4271.357581973076,
+     "read_cycle": 120,
+     "status": "certified"
+    },
+    "settled": {
+     "F": 812007610.4495497,
+     "V": {
+      "A": 33.342079917744186,
+      "G": 0.0,
+      "PR": 5.4578185077570165,
+      "S": 13.453319787979126
+     },
+     "gates_pass": true,
+     "status": "settled"
+    }
+   }
+  },
+  "pilot_unit_minus_x0_dF_exit_9_pairs": [
+   -20932.796013116837,
+   -15703.89777982235,
+   -26610.671310544014,
+   -19385.115935325623,
+   -14156.217702031136,
+   -25062.9912327528,
+   -17624.354346752167,
+   -12395.45611345768,
+   -23302.229644179344
+  ],
+  "projected_hours_cases": {
+   "exit_then_confirm|cand_large|search_high": 147.5,
+   "exit_then_confirm|cand_large|search_low": 32.8,
+   "exit_then_confirm|cand_large|search_mid": 46.0,
+   "exit_then_confirm|cand_small|search_high": 147.5,
+   "exit_then_confirm|cand_small|search_low": 32.8,
+   "exit_then_confirm|cand_small|search_mid": 46.0,
+   "settled_direct|cand_large|search_high": 250.9,
+   "settled_direct|cand_large|search_low": 65.2,
+   "settled_direct|cand_large|search_mid": 74.5,
+   "settled_direct|cand_small|search_high": 250.9,
+   "settled_direct|cand_small|search_low": 65.2,
+   "settled_direct|cand_small|search_mid": 74.5
+  },
+  "screen_investment_cost_eur": {
+   "n5_y2025_p0.25_e0.5": 191018.169784262,
+   "n5_y2025_p0.25_e1": 317957.0085035586,
+   "n5_y2030_p0.25_e0.5": 141882.02186349593,
+   "n5_y2030_p0.25_e1": 236168.02151912605,
+   "n5_y2035_p0.25_e0.5": 118945.62424178196,
+   "n5_y2035_p0.25_e1": 197989.5153493472,
+   "n7_y2025_p0.25_e0.5": 191018.169784262,
+   "n7_y2025_p0.25_e1": 317957.0085035586,
+   "n7_y2030_p0.25_e0.5": 141882.02186349593,
+   "n7_y2030_p0.25_e1": 236168.02151912605,
+   "n7_y2035_p0.25_e0.5": 118945.62424178196,
+   "n7_y2035_p0.25_e1": 197989.5153493472,
+   "n9_y2025_p0.25_e0.5": 191018.169784262,
+   "n9_y2025_p0.25_e1": 317957.0085035586,
+   "n9_y2030_p0.25_e0.5": 141882.02186349593,
+   "n9_y2030_p0.25_e1": 236168.02151912605,
+   "n9_y2035_p0.25_e0.5": 118945.62424178196,
+   "n9_y2035_p0.25_e1": 197989.5153493472
+  }
+ },
+ "objective_convention": "F = I(x) + gross_operational_cost - TV credit, EUR of total discounted planning cost (cost-breakdown schema v2); gross settlement-excluded; dF_exit = F_exit(x) - F_exit(x0), x0 read as the exit view of the pilot x0_i1 record",
+ "predictions": {
+  "Q1": {
+   "basis": "the pilot reference unit (n7 2025 0.25/1, the most expensive screen plan, I = 317,957 EUR): unit_i1 - x0_i1 dF_exit = -20,933 EUR; over the 9 initialisation pairs dF_exit -12,395 to -26,611 EUR, settled -21.9 to -22.2 kEUR (P5_15_S56_PILOT_REPORT.md section 5). Only this one screen plan has been evaluated; the other 17 are untested node-years and durations.",
+   "evaluated_as": "phase_results.json report.marginal_value_table.rows with source == \"screen\" (18 rows, the reference unit's row served from its pilot exit view): status == \"certified\" and dF_exit < 0 on all 18 (an uncertified screen row counts as not holding: it has no F_exit). prediction_inputs.Q1 carries the counts. RECORDED, NOT PREDICTED: the number of screen rows with dF_exit < -R (R = 10,000 EUR) = prediction_inputs.Q1.screen_dF_exit_below_minus_R",
+   "on_failure": "recorded with the failing plans named. The driver reads no prediction, so the phase continues past the screen; whether a Q1 failure is a sign failure that stops the campaign (CLAUDE.md stopping conditions) is raised to the Planner before the launch (report, Blocked on Planner).",
+   "statement": "every screen plan (a single 0.25 MVA unit: 3 nodes x 3 years x 2 durations = 18) has F_exit below x0's F_exit at 2x",
+   "threshold": {
+    "dF_exit_lt": 0.0,
+    "rows": 18
+   }
+  },
+  "Q2": {
+   "basis": "pilot 7/7 runs to 300 cycles with 0 local-solve failures and exit 0; step 4 main 4,974 solves, 0 failures; gate F 10/10 children exit 0",
+   "evaluated_as": "phase_results.json prediction_inputs.Q2: harness_error_summaries == 0 (every summary the phase read, cache included) and local_solve_failures_total == 0 (sum of evaluation_record.local_solve_failures over every evaluation the phase launched)",
+   "on_failure": "a harness_error already stops the phase for review (exit 5, by construction); a local-solve failure is recorded with the run named (the run is then not certified / not settled and is listed as such, never \"worse\")",
+   "statement": "0 harness_error and 0 local-solve failures over the phase",
+   "threshold": {
+    "harness_error": 0,
+    "local_solve_failures": 0
+   }
+  },
+  "Q3": {
+   "basis": "the pool holds the pilot settled records x0_i1 F(300) = 812,007,610.45, unit_i1 811,985,758.84, staged_i1 811,973,592.57 EUR (all settled, all gates pass); x0 is the highest by 21.9 / 34.0 kEUR, so Q3 fails only if neither the unit, the staged plan nor a confirmed candidate is eligible (settled, gate-passing)",
+   "evaluated_as": "phase_results.json report.pool.chosen_label != \"x0\" (prediction_inputs.Q3.best_start_is_x0 is false)",
+   "on_failure": "recorded; the search then starts from x0 (the rule as frozen)",
+   "statement": "the best start is not x0",
+   "threshold": {
+    "best_start_label_ne": "x0"
+   }
+  },
+  "Q4": {
+   "basis": "PROJECTED (spec projected_hours; per block exit 1.292 h, settled 3.094 h): exit-then-confirm 32.8 h (no move) to 46.0 h (3 moves, improvers in the first block); settled-direct 65.2 to 74.5 h; the 6-move late-improver case projects 147.5 / 250.9 h and would hit the ceiling",
+   "evaluated_as": "the author's loop ends with exit 0 (phase_results.json report.termination.reason == \"phase_complete\") and phase_results.json hours.cumulative_h <= 120",
+   "on_failure": "a ceiling stop (exit 6) is recorded with its hours summary and goes to the author (his decision); a review stop (exit 5) goes to the Planner with its reason",
+   "statement": "the search terminates (exit 0) inside the 120 h ceiling",
+   "threshold": {
+    "cumulative_h_max": 120.0,
+    "exit": 0
+   }
+  },
+  "Q5": {
+   "basis": "pilot peak 2.77-2.86 GiB over 300 cycles (staged plan 2.85, unit 2.81-2.86); 3.29 = 2.86 x 1.15 (Planner decision). Search plans may carry more cohorts than any pilot plan",
+   "evaluated_as": "phase_results.json prediction_inputs.Q5.peak_child_rss_gib = max over every evaluation the phase launched of evaluation_record.peak_rss.child_python_process_ru_maxrss / 2^30 <= 3.29",
+   "on_failure": "recorded with the run named; the per-slot memory figure is re-derived before any further phase",
+   "statement": "peak child RSS <= 3.29 GiB",
+   "threshold": {
+    "peak_child_rss_gib_max": 3.29
+   }
+  },
+  "Q6": {
+   "basis": "author-approved efficiency rule (TASKS.md 2026-11-24): > 1/2 of the screen and ladder rows inside +- e_EV of x0's exit F -> settled-direct",
+   "evaluated_as": "phase_results.json report.efficiency holds n_in_band, n_rows, the exact fraction, the branch taken and the rule (prediction_inputs.Q6)",
+   "on_failure": "a missing record is a harness defect: stop for the Planner",
+   "statement": "the efficiency fraction is recorded (no direction predicted)",
+   "threshold": null
+  }
+ },
+ "schema": "p515_s56_phase_predictions_v1"
+}

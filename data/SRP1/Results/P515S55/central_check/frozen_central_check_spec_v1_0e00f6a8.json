@@ -1,0 +1,117 @@
+{
+ "authority": [
+  "Expert handback \"centralised single-day check (feasibility first)\", 2026-11-16",
+  "Author/Expert GO 2026-11-16: (1) demand band option (a): fix all loads at demand; (2) IPOPT tol 1e-5, compl_inf_tol 1e-6, MA97, recovery tier off, one attempt per run; (3) a second solve per day warm-started from the coordinated solution; the default-start solve is the primary result",
+  "Author reopened the numbers freeze for these values only",
+  "Feasibility: P5_15_CENTRAL_CHECK_FEASIBILITY_REPORT.md (probe 21eb51b2); Advisor design review 2026-11-16"
+ ],
+ "budget": "expected well under 1 h; launch by 2026-11-17",
+ "comparator": {
+  "cell": "ref:7aa017f0 (x = 0, W101 d110bd1a, k* 181)",
+  "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/component_levels_terminal.json",
+  "quantity": "per day, sum over the TSO and three DSO blocks of unweighted generation_cost + flexibility_cost_internal (EUR)",
+  "values_eur": {
+   "Autumn": 169308.5369,
+   "Spring": 139122.4056,
+   "Summer": 180444.1676,
+   "Winter": 182644.28
+  }
+ },
+ "failure_policy": "every day reported, including failures; no re-run, no tuning, no other settings",
+ "guards": {
+  "SolveProfileGuard": "permitted call site p515_s55_central_check.py:_solve_one; exactly 8 solves and 8 executions (0 if refused before any solve)",
+  "lock": "single instance",
+  "output": "data/SRP1/Results/P515S55/central_check/run_v1 (must not exist)",
+  "pickle": "allow-list: exactly one load of the pinned certified_models.pkl",
+  "run": "attached, stdout and stderr captured"
+ },
+ "harness": "p515_s55_central_check.py",
+ "instance": {
+  "case": "SRP1",
+  "configuration": "single scenario",
+  "days": [
+   "Spring",
+   "Summer",
+   "Autumn",
+   "Winter"
+  ],
+  "no_other_days_no_selection_after_the_fact": true,
+  "plan": "x = 0 (no storage)",
+  "year": 2025
+ },
+ "interpretation_declared_before_launch": {
+  "C_primary < C_coord - 3 bars": "the centralised solve found a cheaper operating point; reported with the warm solve, which distinguishes a coordination gap (warm also lower) from a different local optimum (warm at C_coord)",
+  "C_primary > C_coord + 3 bars": "the default start reached a worse local point; coordination not worse than the centralised solve on that day",
+  "headline": "the primary (default-start) solve is the centralised value",
+  "|C_primary - C_coord| <= 3 bars": "the same operating point within resolution"
+ },
+ "model": {
+  "known_relaxation": "the DN reference generators are dropped by the merge, so their P/Q limits (+/-250.001, +/-100.001, +/-250.001 MW at DN 5, 7, 9) are absent; the DN substation transformer branch ratings remain. Reported: hours where the centralised interface lies outside those limits",
+  "loads": "every pc, qc Var fixed at load.pd / load.qd (ruling 1)",
+  "merge": "centralized_coordination.combine_networks(TN, DNs), day network, Network.build_model(params)",
+  "objective_alignment": "every scalar mutable Param of the merged model set to the value carried by the coordinated certified models (refuse if they disagree); observed in the trial: penalty_gen_curtailment 1.0 -> 0.0, penalty_shared_ess_usage 0.1 -> 0.0 (the values the ADMM path sets); excluded: interface_settlement_weight (no interface in the merged model, settlement identically 0). Implements the handback clause: objective = the same cost components as the reported Q"
+ },
+ "pre_solve_gates": {
+  "also": [
+   "pickled models aligned with the networks read (sizes, DSO demand bitwise)",
+   "no Param conflict among the coordinated models",
+   "every free Var used by an active constraint or the objective is set by the mapping"
+  ],
+  "applies_to": "all four days, evaluated before the first solve; any failure refuses the run with zero solves",
+  "mapped_cost_abs_eur": 0.01,
+  "mapped_max_violation": 0.001,
+  "trial_values_2026_11_16": "mapped cost - comparator <= 9e-11 EUR; max violation 1.0e-4 to 3.2e-4 (node_balance_p / pij_def at the interface: the consensus residual)"
+ },
+ "predecessor": null,
+ "predictions": {
+  "P1": "primary: IPOPT exit \"Optimal Solution Found\" on 4/4 days (\"Solved To Acceptable Level\" counts as a failure)",
+  "P2": "warm: \"Optimal Solution Found\" and |C_warm - C_coord| <= 1e-4 x C_coord on 4/4 days",
+  "P3": "same basin from the default start: |C_primary - C_warm| <= 1e-4 x C_coord on 4/4 days",
+  "P4": "expectation (sign): C_warm <= C_coord + 3 bars (= 3 x bar_rel x C_coord) on 4/4 days; a failure means the warm solve left the coordinated neighbourhood for a different local point (IPOPT is not monotone from a feasible start), not a coordination defect",
+  "P5": "warm: max over hours of |P_int,centralised - P_int,coordinated DSO side| <= 0.1 MW per DN, read against the coordinated TSO-DSO mismatch; a P5 failure with P2 holding reads as a flat optimum (flexibility ties across equal-price hours), not an error. No prediction on Q"
+ },
+ "reported": {
+  "C": "value(total_gen_cost) + value(total_flex_cost) (TN generation + DN flexibility, EUR/day)",
+  "aggregate": "sum over the four days of C and C_coord (unweighted)",
+  "beside": "total_slack_penalties and the full merged objective, against the coordinated detector terms and Q-day",
+  "per_day_and_start": [
+   "termination condition and IPOPT exit text",
+   "iterations",
+   "wall time",
+   "C, C - C_coord in EUR, %, and in bars",
+   "max constraint violation after the solve",
+   "hour-by-hour interface P, Q, V per DN against the coordinated TSO and DSO sides",
+   "hours outside the dropped reference-generator limits"
+  ]
+ },
+ "resolution": {
+  "bar_eur_per_day": {
+   "Autumn": 1.0898872949392509,
+   "Spring": 0.8955705665000362,
+   "Summer": 1.1615705227509339,
+   "Winter": 1.1757332731715733
+  },
+  "bar_rel_of_C": 6.437284940823624e-06,
+  "definition": "band of the coordinated certification (4,209.17 EUR) / Q (653,873,702.19 EUR), applied per day as a fraction of C_coord -- scaled, not measured per day"
+ },
+ "solver": {
+  "attempts_per_run": 1,
+  "call": "Network.run_smopf(model, params, from_warm_start=False) for both starts",
+  "executable": "/usr/local/bin/ipopt (NLP_SOLVER_PATH)",
+  "inherited_unchanged": "every other TSO option: acceptable_tol 1e-4, acceptable_iter 5, bound_push 1e-6, bound_frac 1e-6, slack_bound_push 1e-6, slack_bound_frac 1e-6, file_print_level 6, output_file; production pins fixed_variable_treatment and max_iter 500",
+  "logs": "<out>/logs/primary and <out>/logs/warm",
+  "option_overrides": {
+   "compl_inf_tol": 1e-06,
+   "linear_solver": "ma97",
+   "tol": 1e-05
+  },
+  "recovery_enabled": false,
+  "recovery_tier2_enabled": false
+ },
+ "stage": "P5.15 S55 centralised single-day check, Step 2 (frozen spec v1)",
+ "starts": {
+  "primary": "the model's own initial values (production initialisers); THE centralised result",
+  "warm": "a separately built merged model whose free primal Vars are set from the coordinated certified models of that day (eval d110bd1a, certified_models.pkl sha256 99ab1070..., one guarded load); DN e, f rotated by the coordinated TSO voltage angle at the interface bus (each DSO model measures angles from its own reference bus); no duals; same options"
+ },
+ "version": 1
+}

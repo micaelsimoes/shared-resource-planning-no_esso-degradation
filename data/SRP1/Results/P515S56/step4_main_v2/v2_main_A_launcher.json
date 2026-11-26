@@ -1,0 +1,352 @@
+{
+ "schema": "p515_s56_step4_main_launcher_v1",
+ "phase": "main",
+ "instance": "A",
+ "arms": [
+  "V1",
+  "V2",
+  "pinned_aa_off",
+  "pinned_aa_on"
+ ],
+ "utc_start": "2026-11-23T16:18:17.132061+00:00",
+ "pid": 99377,
+ "spec": {
+  "path": "data/SRP1/Results/P515S56/step4_main_v2/frozen_step4_main_spec_v2_7ca210fb.json",
+  "sha256": "7ca210fbcd645cc3f3d46554ce7efbdbf2abcedcd183aa825a8eaf160794ccb0"
+ },
+ "script": "p515_s56_step4_main.py",
+ "script_sha256": "e93c709da862e77bc11551014466a26fd5a2286aba42815d651a183c40efcf78",
+ "git_head": "765c2e5c05826425cea91917cd3009f376eb4322",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "nlp_solver_path": "/usr/local/bin/ipopt",
+ "refusals": [],
+ "error": null,
+ "capture_path_checklist": {
+  "per_cycle_fields_priced_residual_and_both_q": true,
+  "per_cycle_trajectory_gross": true,
+  "per_cycle_response_wall_and_dso_deviation": true,
+  "s56_capture_fields": true,
+  "s56_capture_per_agent_settlement_parts": true,
+  "s56_capture_assertion_exists": true,
+  "deviation_duals_recorded": true,
+  "record_fields": true,
+  "init_identity_grouping": true,
+  "multiscenario_block_recourse_and_probabilities": true,
+  "interface_anchor_in_s31c_detail": true,
+  "pc_fixed_once_at_tso_creation": true,
+  "voltage_pin_zero_when_absent": true,
+  "s31c_detail_written_with_reporting_detail": true,
+  "pinned_capture_key": true,
+  "pinned_capture_key_not_in_eval_key": true,
+  "pinned_capture_fields": true,
+  "coupled_capture_fields": true,
+  "q_primary_per_arm": true,
+  "pinned_record_fields": true,
+  "tail_per_round_records": true,
+  "idc_metadata_scale_rating_base": true,
+  "idc_deviation_dual_fields": true,
+  "per_cycle_scenario_mismatch_fields": true,
+  "per_cycle_boyd_ratios": true,
+  "record_rule_ten_and_failures": true,
+  "production_deviation_mismatch_conversion": true
+ },
+ "campaign": {
+  "root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A",
+  "spec": {
+   "path": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/campaign_spec_s56s4main_v2_main_a_a504ecb8.json",
+   "sha256": "a504ecb84d81642f556514f69b7895749f709ea08522a2809fec8d02401b35fb"
+  },
+  "entries": [
+   {
+    "label": "x0_V1_main",
+    "eval_key": "a918ba210411acece96b1c22bb4f948e603d3a77c789c454ca306d895e9913eb",
+    "eval_dir": "a918ba210411acec_x0_v1_main"
+   },
+   {
+    "label": "x0_V2_main",
+    "eval_key": "8074c395fce45fae4cba863cd2adb554ecdcb5ff0f5993e2cb1fe03eaa973ddc",
+    "eval_dir": "8074c395fce45fae_x0_v2_main"
+   },
+   {
+    "label": "x0_pinned_aa_off_main",
+    "eval_key": "f7d156742d1bf95219e96e60912ed7006a7710ca6653c0a9444e6d476a448939",
+    "eval_dir": "f7d156742d1bf952_x0_pinned_aa_off_main"
+   },
+   {
+    "label": "x0_pinned_aa_on_main",
+    "eval_key": "fdce6f826d2f6621a293b70d603694f338bfe322a5dedbff616944ba5c5362d3",
+    "eval_dir": "fdce6f826d2f6621_x0_pinned_aa_on_main"
+   }
+  ]
+ },
+ "init_identity_seeded": [
+  {
+   "from_smoke_arm": "V1",
+   "file": "a918ba210411acec_x0_v1.json",
+   "sha256_src": "730d4317d57d75b9b04cd7b437b27e7b27c82b574f6a938ac2ae0272635c6e83",
+   "sha256_dst": "730d4317d57d75b9b04cd7b437b27e7b27c82b574f6a938ac2ae0272635c6e83"
+  },
+  {
+   "from_smoke_arm": "V2",
+   "file": "8074c395fce45fae_x0_v2.json",
+   "sha256_src": "18c501d7cd30d5e761f182240a09e44289c815c35e02079dd570a2237527ae48",
+   "sha256_dst": "18c501d7cd30d5e761f182240a09e44289c815c35e02079dd570a2237527ae48"
+  },
+  {
+   "from_smoke_arm": "pinned_aa_off",
+   "file": "f7d156742d1bf952_x0_pinned_aa_off.json",
+   "sha256_src": "2b40b1b46f766b32545e1a36924592ac64bcf9835b0117e0c345b944fb3f6272",
+   "sha256_dst": "2b40b1b46f766b32545e1a36924592ac64bcf9835b0117e0c345b944fb3f6272"
+  },
+  {
+   "from_smoke_arm": "pinned_aa_on",
+   "file": "fdce6f826d2f6621_x0_pinned_aa_on.json",
+   "sha256_src": "f9785e1cf9a285cc3562ba78611602db5e336426e254e68ae47f0229e7d22ddd",
+   "sha256_dst": "f9785e1cf9a285cc3562ba78611602db5e336426e254e68ae47f0229e7d22ddd"
+  }
+ ],
+ "batch_info": {
+  "max_concurrent_observed": 4,
+  "timeline": [
+   {
+    "event": "start",
+    "label": "x0_V1_main",
+    "pid": 99406,
+    "t": 1795450698.288128
+   },
+   {
+    "event": "start",
+    "label": "x0_V2_main",
+    "pid": 99407,
+    "t": 1795450698.2910469
+   },
+   {
+    "event": "start",
+    "label": "x0_pinned_aa_off_main",
+    "pid": 99408,
+    "t": 1795450698.293965
+   },
+   {
+    "event": "start",
+    "label": "x0_pinned_aa_on_main",
+    "pid": 99409,
+    "t": 1795450698.297441
+   },
+   {
+    "event": "end",
+    "label": "x0_pinned_aa_on_main",
+    "pid": 99409,
+    "t": 1795451539.3193998,
+    "exit_code": 0
+   },
+   {
+    "event": "end",
+    "label": "x0_V2_main",
+    "pid": 99407,
+    "t": 1795451644.42502,
+    "exit_code": 0
+   },
+   {
+    "event": "end",
+    "label": "x0_pinned_aa_off_main",
+    "pid": 99408,
+    "t": 1795451694.468959,
+    "exit_code": 0
+   },
+   {
+    "event": "end",
+    "label": "x0_V1_main",
+    "pid": 99406,
+    "t": 1795451744.5293922,
+    "exit_code": 0
+   }
+  ]
+ },
+ "lock_released": true,
+ "results": [
+  {
+   "arm": "V1",
+   "status": "certified",
+   "cycles_run": 46,
+   "exit_code": 0,
+   "wall_s_parent_view": 1046.2412643432617,
+   "solve_profile": {
+    "observed": {
+     "permitted_solve": 329,
+     "permitted_exec": 329,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "identity_holds": true,
+    "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+    "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+    "n_dso": 3,
+    "n_years": 1,
+    "n_days": 1,
+    "n_esso_nodes": 3,
+    "solves_per_cycle": 7,
+    "rounds": 47,
+    "rounds_note": "one initialization round + cycles_run ADMM cycles",
+    "base_solves": 329,
+    "retry_solves_credited": 0,
+    "reconciliation_supported": true,
+    "expected_solves": 329,
+    "recovered_only_identity": {
+     "expected": 329,
+     "holds": true,
+     "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+    }
+   },
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 2693349376,
+    "production_state_peak_rss_ru_maxrss": 2674442240,
+    "solver_subprocesses_max_ru_maxrss": 366903296,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/a918ba210411acec_x0_v1_main"
+  },
+  {
+   "arm": "V2",
+   "status": "certified",
+   "cycles_run": 40,
+   "exit_code": 0,
+   "wall_s_parent_view": 946.1339731216431,
+   "solve_profile": {
+    "observed": {
+     "permitted_solve": 287,
+     "permitted_exec": 287,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "identity_holds": true,
+    "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+    "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+    "n_dso": 3,
+    "n_years": 1,
+    "n_days": 1,
+    "n_esso_nodes": 3,
+    "solves_per_cycle": 7,
+    "rounds": 41,
+    "rounds_note": "one initialization round + cycles_run ADMM cycles",
+    "base_solves": 287,
+    "retry_solves_credited": 0,
+    "reconciliation_supported": true,
+    "expected_solves": 287,
+    "recovered_only_identity": {
+     "expected": 287,
+     "holds": true,
+     "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+    }
+   },
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 2720907264,
+    "production_state_peak_rss_ru_maxrss": 2702098432,
+    "solver_subprocesses_max_ru_maxrss": 396967936,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/8074c395fce45fae_x0_v2_main"
+  },
+  {
+   "arm": "pinned_aa_off",
+   "status": "certified",
+   "cycles_run": 44,
+   "exit_code": 0,
+   "wall_s_parent_view": 996.1749939918518,
+   "solve_profile": {
+    "observed": {
+     "permitted_solve": 315,
+     "permitted_exec": 315,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "identity_holds": true,
+    "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+    "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+    "n_dso": 3,
+    "n_years": 1,
+    "n_days": 1,
+    "n_esso_nodes": 3,
+    "solves_per_cycle": 7,
+    "rounds": 45,
+    "rounds_note": "one initialization round + cycles_run ADMM cycles",
+    "base_solves": 315,
+    "retry_solves_credited": 0,
+    "reconciliation_supported": true,
+    "expected_solves": 315,
+    "recovered_only_identity": {
+     "expected": 315,
+     "holds": true,
+     "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+    }
+   },
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 2857975808,
+    "production_state_peak_rss_ru_maxrss": 2786410496,
+    "solver_subprocesses_max_ru_maxrss": 366215168,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/f7d156742d1bf952_x0_pinned_aa_off_main"
+  },
+  {
+   "arm": "pinned_aa_on",
+   "status": "certified",
+   "cycles_run": 36,
+   "exit_code": 0,
+   "wall_s_parent_view": 841.0219588279724,
+   "solve_profile": {
+    "observed": {
+     "permitted_solve": 259,
+     "permitted_exec": 259,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "identity_holds": true,
+    "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+    "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+    "n_dso": 3,
+    "n_years": 1,
+    "n_days": 1,
+    "n_esso_nodes": 3,
+    "solves_per_cycle": 7,
+    "rounds": 37,
+    "rounds_note": "one initialization round + cycles_run ADMM cycles",
+    "base_solves": 259,
+    "retry_solves_credited": 0,
+    "reconciliation_supported": true,
+    "expected_solves": 259,
+    "recovered_only_identity": {
+     "expected": 259,
+     "holds": true,
+     "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+    }
+   },
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 2680373248,
+    "production_state_peak_rss_ru_maxrss": 2662563840,
+    "solver_subprocesses_max_ru_maxrss": 373571584,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_A/evals/fdce6f826d2f6621_x0_pinned_aa_on_main"
+  }
+ ],
+ "result_summary": {
+  "all_exit_0": true,
+  "n_records": 4
+ },
+ "guard": {
+  "label": "P5.15 S56 step 4 main launcher (this process never solves)",
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "wall_s": 1047.3991208076477,
+ "utc_end": "2026-11-23T16:35:44.530903+00:00"
+}

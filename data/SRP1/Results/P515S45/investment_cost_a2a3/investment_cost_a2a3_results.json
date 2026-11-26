@@ -1,0 +1,5941 @@
+{
+ "stage": "P5.15 Addendum 27 W16 -- I(x) for the A2 presence design and the A3 resolution points, plus a first sigma_Q estimate from the existing ladders (zero solves)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 27 (Phase A, A2-A3); Planner task W16",
+  "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json (A2, A3, master_constraints, cost_file)",
+  "STEP4_DFO_METHOD.md 4.3 (sigma_Q definition; provisional 1.1e-4)",
+  "p515_s45_investment_cost_recompute.py (W2): the I(x) production path reused by import",
+  "p515_s45_a1_campaign.py (W15, fbb1296f): the frozen selection rules and the a2 point builder"
+ ],
+ "started_utc": "2026-09-20T21:17:52.690198+00:00",
+ "wall_clock_s": 12.486331224441528,
+ "git_HEAD": "fcffdb35e0694e2788662a5bda45ba0cb739152b",
+ "script_sha256": "ca6bd80f2bf9a9c8f1448a3fc7a87de39a63b158de44376f72454293a238c4e7",
+ "additive_not_in_place": {
+  "predecessor": {
+   "path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+   "sha256": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+   "commit": "9e623dd304837f2632964f47130d0860c1f016ca",
+   "produced_by": "p515_s45_investment_cost_recompute.py (task W2)",
+   "covers": "x = 0, the reference plans (paper plan, C*, lattice plan, lattice C*, 2 x C*, node7_empty) and the SINGLE-NODE ladders at 2025 / 2030 / 2035",
+   "sha256_before_run": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+   "sha256_after_run": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+   "unchanged": true,
+   "git_state": {
+    "git_tracked": true,
+    "git_clean": true
+   }
+  },
+  "this_table": {
+   "path": "data/SRP1/Results/P515S45/investment_cost_a2a3/investment_cost_a2a3_results.json",
+   "relation": "SECOND, ADDITIVE I(x) table; the predecessor is neither modified nor superseded. Candidates present in the predecessor keep the predecessor's value (reused, authoritative); the recomputation is a cross-check."
+  }
+ },
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": [],
+  "nested_a1_campaign_guard_counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "nested_a1_campaign_verify_0_failures": [],
+  "note": "p515_s45_a1_campaign installs a second zero-permit guard at import; it wraps this one, so any solve would raise from the outer guard first. Both are verified at exactly 0."
+ },
+ "concurrency": {
+  "checked_with": "ps -axo pid=,command=",
+  "rule": "refuse while any other p5* python process is alive",
+  "shared_helper": "p515_s44_addendum26_confirmations._preflight_no_concurrent_harness (same rule; not called directly because it matches the launching shell's own command line, which contains this script's path)",
+  "self_and_ancestor_pids_excluded": [
+   1,
+   4491,
+   4494,
+   28323,
+   28430,
+   28431
+  ],
+  "other_p5_harness_processes": []
+ },
+ "spec": {
+  "path": "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json",
+  "sha256": "5feefd7b642fc3d480156ad5e52ed6e1cf9d6698cfd40dbb33389bab6e6229fe"
+ },
+ "cost_files": {
+  "in_force_corrected": {
+   "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+   "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "bytes": 25525,
+   "read_by": "production case read (p56a_oracle.load_baseline), file as on disk"
+  },
+  "superseded": {
+   "git_rev": "2cada62b~1:data/SRP1/SharedESS/SRP1_ESS.xlsx",
+   "sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "bytes": 25590,
+   "note": "recorded for provenance only; NOT evaluated here (W2's table holds I_old)"
+  }
+ },
+ "conventions": {
+  "objective": "Q(x) = certified_cost_gross_settlement_excluded (GROSS operational cost, settlement-excluded); F(x) = I(x) + Q(x); terminal_salvage_value and net_operational_recourse are reported by the campaigns and are EXCLUDED from F.",
+  "budget": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+ },
+ "master_facts": {
+  "budget_eur": 1000000.0,
+  "max_capacity_mwh": 5.0,
+  "duration_bounds_h": [
+   2.0,
+   4.0
+  ],
+  "lattice_P_step_mva": 0.25,
+  "lattice_E_step_mwh": 0.5,
+  "I_x_path": "model.investment_cost of the production Benders master (shared_ess_data.build_master_problem), candidate loaded with load_candidate_solution_into_master_model, evaluated with pe.value; reused by import from p515_s45_investment_cost_recompute._evaluate_all (task W2)",
+  "cross_check": "p56a_oracle.investment_cost (independent transcription)",
+  "split_method": "pyomo.repn.generate_standard_repn(model.investment_cost.expr, compute_values=True); terms grouped by parent Var es_s_investment (power) / es_e_investment (energy)",
+  "max_abs_diff_master_vs_p56a_eur": 9.313225746154785e-10,
+  "max_abs_diff_power_plus_energy_vs_master_eur": 2.3283064365386963e-10
+ },
+ "lattice_step_costs": {
+  "note": "lattice step cost of I(x) at 2025, from the unit costs in force (derived from the linear power/energy split of the candidates evaluated here)",
+  "per_mva_2025_eur": 256317.32425986166,
+  "per_mwh_2025_eur": 253877.6774385931,
+  "derived_from": "56b9730bfb7b78c75e0af96f2e6a21c169d84b451e23187f1a8736654a48600f",
+  "cost_of_one_lattice_P_step_0.25_mva_eur": 64079.331064965416,
+  "cost_of_one_lattice_E_step_0.5_mwh_eur": 126938.83871929655
+ },
+ "prior_results_pinned": [
+  {
+   "stage": "a0",
+   "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_results.json",
+   "exists": true,
+   "sha256": "423678b98c0ca9a26dbc76a1b46a5e36a51c8ccccc0459253020bfe1061653b4",
+   "git_tracked": true,
+   "git_clean": true,
+   "stop_for_review": false,
+   "n_points": 8
+  },
+  {
+   "stage": "a1a",
+   "path": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+   "exists": true,
+   "sha256": "b6e9adce6fe33878082ce78a92c719c39c674c72b80930eb02b36d2d2c576aec",
+   "git_tracked": true,
+   "git_clean": true,
+   "stop_for_review": false,
+   "n_points": 30
+  },
+  {
+   "stage": "a1b",
+   "path": "data/SRP1/Results/P515S45/campaign_s45_a1b/campaign_results.json",
+   "exists": true,
+   "sha256": "3a2b77cd4eaee0f91dd369721fafb7ca5ac985f0fa203a8d6aa147bed32507af",
+   "git_tracked": true,
+   "git_clean": true,
+   "stop_for_review": false,
+   "n_points": 20
+  }
+ ],
+ "A2_presence_design": {
+  "provenance": {
+   "rule": "spec v15 A2: \"the best single-node setting per node combined in a 2^|N| presence design (4 new points) ... C* rounded to the lattice (1.0 MVA / 4.0 MWh at all nodes) - 1 point\". The 4 new points are the subsets with at least two nodes: the empty set is A0's x0 and the three singletons are a1a points.",
+   "best_setting_per_node": {
+    "5": {
+     "node": 5,
+     "P_mva": 0.25,
+     "E_mwh": 1.0,
+     "duration_h": 4.0,
+     "investment_year": 2025,
+     "label": "n5_4h_e1",
+     "F_eur": 653932675.042919,
+     "I_x_eur": 317957.0085035586,
+     "Q_gross_eur": 653614718.0344155,
+     "evidence": {
+      "rule": "A2 best setting for node 5 = argmin F within node 5's a1a ladder; ties -> lower I(x)",
+      "n_certified_inputs": 10,
+      "n_inputs_seen": 10,
+      "non_certified_inputs": [],
+      "selected": "n5_4h_e1",
+      "selected_candidate_key": "1821665996ec6edb3492c4e914352e8a47bcc764c8bea1ca82639ab24570ef85",
+      "tie_on_F": [],
+      "tie_on_F_and_I_broken_by_label": [],
+      "inputs": [
+       {
+        "label": "n5_4h_e1",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "1821665996ec6edb3492c4e914352e8a47bcc764c8bea1ca82639ab24570ef85",
+        "investment_year": 2025,
+        "nodes": {
+         "5": [
+          0.25,
+          1.0
+         ]
+        },
+        "I_x_eur": 317957.0085035586,
+        "Q_gross_eur": 653614718.0344155,
+        "F_eur": 653932675.042919
+       },
+       {
+        "label": "n5_2h_e1",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "2a1302016f89621c85fb641fcdf48f7b3195c6b584106f5ea1f084dbf176827d",
+        "investment_year": 2025,
+        "nodes": {
+         "5": [
+          0.5,
+          1.0
+         ]
+        },
+        "I_x_eur": 382036.339568524,
+        "Q_gross_eur": 653587843.3094332,
+        "F_eur": 653969879.6490017
+       },
+       {
+        "label": "n5_4h_e2",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "3eed1a1ec1a77fe3860fdcce21ce6b7f5f911d0973a9402656bceb2b0ba368cd",
+        "investment_year": 2025,
+        "nodes": {
+         "5": [
+          0.5,
+          2.0
+         ]
+        },
+        "I_x_eur": 635914.0170071172,
+        "Q_gross_eur": 653337271.4641526,
+        "F_eur": 653973185.4811597
+       },
+       {
+        "label": "n5_4h_e3",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "32acd70c1b795e3413f9a36215d4f58fe825ad89fce8a205819e8ea2ec2b11aa",
+        "investment_year": 2025,
+        "nodes": {
+         "5": [
+          0.75,
+          3.0
+         ]
+        },
+        "I_x_eur": 953871.0255106756,
+        "Q_gross_eur": 653109230.433311,
+        "F_eur": 654063101.4588217
+       },
+       {
+        "label": "n5_2h_e2",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "5097b0c6b14ee8d5b8b8471e528d16fe16389b1444683c774d90de530696044a",
+        "investment_year": 2025,
+        "nodes": {
+         "5": [
+          1.0,
+          2.0
+         ]
+        },
+        "I_x_eur": 764072.679137048,
+        "Q_gross_eur": 653310380.4847403,
+        "F_eur": 654074453.1638772
+       },
+       {
+        "label": "n5_4h_e4",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "f92d165248fe348bfd2043df12a7e29d0dd07e4c302bebe369ec1947f4c5ac77",
+        "investment_year": 2025,
+        "nodes": {
+         "5": [
+          1.0,
+          4.0
+         ]
+        },
+        "I_x_eur": 1271828.0340142343,
+        "Q_gross_eur": 652853134.6114208,
+        "F_eur": 654124962.645435
+       },
+       {
+        "label": "n5_4h_e5",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "f0bfdf1c8adb7c398dd5fd9803cfaf012257959345b74678591ffe5106d01c8f",
+        "investment_year": 2025,
+        "nodes": {
+         "5": [
+          1.25,
+          5.0
+         ]
+        },
+        "I_x_eur": 1589785.0425177924,
+        "Q_gross_eur": 652608641.7326849,
+        "F_eur": 654198426.7752026
+       },
+       {
+        "label": "n5_2h_e3",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "bb375de471aaf4b7480243d4f43d55c7ff52c5366ef1ca60d62af1d6367e9764",
+        "investment_year": 2025,
+        "nodes": {
+         "5": [
+          1.5,
+          3.0
+         ]
+        },
+        "I_x_eur": 1146109.018705572,
+        "Q_gross_eur": 653076367.4373538,
+        "F_eur": 654222476.4560595
+       },
+       {
+        "label": "n5_2h_e4",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "f20fb813dfef7d635d95bf970070cbf2aec08e4b392ac7624a472ac225168a8d",
+        "investment_year": 2025,
+        "nodes": {
+         "5": [
+          2.0,
+          4.0
+         ]
+        },
+        "I_x_eur": 1528145.358274096,
+        "Q_gross_eur": 652796655.5654054,
+        "F_eur": 654324800.9236795
+       },
+       {
+        "label": "n5_2h_e5",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "302735fb198422fe5e9155350f0c4635458b6adfc51e7383b6419560ecb51f88",
+        "investment_year": 2025,
+        "nodes": {
+         "5": [
+          2.5,
+          5.0
+         ]
+        },
+        "I_x_eur": 1910181.6978426196,
+        "Q_gross_eur": 652564046.8559694,
+        "F_eur": 654474228.553812
+       }
+      ]
+     }
+    },
+    "7": {
+     "node": 7,
+     "P_mva": 0.25,
+     "E_mwh": 1.0,
+     "duration_h": 4.0,
+     "investment_year": 2025,
+     "label": "n7_4h_e1",
+     "F_eur": 653915610.7320029,
+     "I_x_eur": 317957.0085035586,
+     "Q_gross_eur": 653597653.7234993,
+     "evidence": {
+      "rule": "A2 best setting for node 7 = argmin F within node 7's a1a ladder; ties -> lower I(x)",
+      "n_certified_inputs": 10,
+      "n_inputs_seen": 10,
+      "non_certified_inputs": [],
+      "selected": "n7_4h_e1",
+      "selected_candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+      "tie_on_F": [],
+      "tie_on_F_and_I_broken_by_label": [],
+      "inputs": [
+       {
+        "label": "n7_4h_e1",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+        "investment_year": 2025,
+        "nodes": {
+         "7": [
+          0.25,
+          1.0
+         ]
+        },
+        "I_x_eur": 317957.0085035586,
+        "Q_gross_eur": 653597653.7234993,
+        "F_eur": 653915610.7320029
+       },
+       {
+        "label": "n7_2h_e1",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "3993aebc641d4dadd34f6c27ac7061fb620724dd9eb8ca0e368ce3e70d578489",
+        "investment_year": 2025,
+        "nodes": {
+         "7": [
+          0.5,
+          1.0
+         ]
+        },
+        "I_x_eur": 382036.339568524,
+        "Q_gross_eur": 653598722.5512207,
+        "F_eur": 653980758.8907892
+       },
+       {
+        "label": "n7_4h_e2",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "cc4eb5df385852e67c612ab21d74526d90a2c66f5c7c934889ce4f67731c4ffe",
+        "investment_year": 2025,
+        "nodes": {
+         "7": [
+          0.5,
+          2.0
+         ]
+        },
+        "I_x_eur": 635914.0170071172,
+        "Q_gross_eur": 653372839.7001317,
+        "F_eur": 654008753.7171388
+       },
+       {
+        "label": "n7_4h_e3",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "fb21d822e145ba68c8c65c3fbb9793ddfcb038df172f0f2f08956998c8d81aac",
+        "investment_year": 2025,
+        "nodes": {
+         "7": [
+          0.75,
+          3.0
+         ]
+        },
+        "I_x_eur": 953871.0255106756,
+        "Q_gross_eur": 653123596.7996123,
+        "F_eur": 654077467.825123
+       },
+       {
+        "label": "n7_2h_e2",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "423e5a7f623eb10621b4930e7dfe4874a962e9d3a2ad33b188b2bdef74711c5d",
+        "investment_year": 2025,
+        "nodes": {
+         "7": [
+          1.0,
+          2.0
+         ]
+        },
+        "I_x_eur": 764072.679137048,
+        "Q_gross_eur": 653325523.0600035,
+        "F_eur": 654089595.7391405
+       },
+       {
+        "label": "n7_4h_e4",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "11725e45371a0c7fbd6553b61784bdcd628dedbceb4df0547b11ff2538c32321",
+        "investment_year": 2025,
+        "nodes": {
+         "7": [
+          1.0,
+          4.0
+         ]
+        },
+        "I_x_eur": 1271828.0340142343,
+        "Q_gross_eur": 652873847.3082701,
+        "F_eur": 654145675.3422843
+       },
+       {
+        "label": "n7_4h_e5",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "cab98853bb31f72fbdfc273a6d84b2ba8edbf5d451ec1cebb2529a1c6aaaf823",
+        "investment_year": 2025,
+        "nodes": {
+         "7": [
+          1.25,
+          5.0
+         ]
+        },
+        "I_x_eur": 1589785.0425177924,
+        "Q_gross_eur": 652650749.0643446,
+        "F_eur": 654240534.1068624
+       },
+       {
+        "label": "n7_2h_e3",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "2cd1de8249cfca8da7573d91c62f9ade6c603ba78a0c53558a1b128c04e62292",
+        "investment_year": 2025,
+        "nodes": {
+         "7": [
+          1.5,
+          3.0
+         ]
+        },
+        "I_x_eur": 1146109.018705572,
+        "Q_gross_eur": 653099300.5928335,
+        "F_eur": 654245409.6115391
+       },
+       {
+        "label": "n7_2h_e4",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "7048a00e13045688423a24099e3154de507dad90390b8a3967413dc5056f106c",
+        "investment_year": 2025,
+        "nodes": {
+         "7": [
+          2.0,
+          4.0
+         ]
+        },
+        "I_x_eur": 1528145.358274096,
+        "Q_gross_eur": 652821679.079392,
+        "F_eur": 654349824.437666
+       },
+       {
+        "label": "n7_2h_e5",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "354b38814b9c1147c2dfc0c5e93102dc165b4b0e52ab11657002f77ea1f67ca7",
+        "investment_year": 2025,
+        "nodes": {
+         "7": [
+          2.5,
+          5.0
+         ]
+        },
+        "I_x_eur": 1910181.6978426196,
+        "Q_gross_eur": 652589462.8330867,
+        "F_eur": 654499644.5309293
+       }
+      ]
+     }
+    },
+    "9": {
+     "node": 9,
+     "P_mva": 0.25,
+     "E_mwh": 1.0,
+     "duration_h": 4.0,
+     "investment_year": 2025,
+     "label": "n9_4h_e1",
+     "F_eur": 653920398.6036698,
+     "I_x_eur": 317957.0085035586,
+     "Q_gross_eur": 653602441.5951662,
+     "evidence": {
+      "rule": "A2 best setting for node 9 = argmin F within node 9's a1a ladder; ties -> lower I(x)",
+      "n_certified_inputs": 10,
+      "n_inputs_seen": 10,
+      "non_certified_inputs": [],
+      "selected": "n9_4h_e1",
+      "selected_candidate_key": "a361ac9321459482d0dc53245f7f1711cb4fe2a541f50350e2f3bad6b7588710",
+      "tie_on_F": [],
+      "tie_on_F_and_I_broken_by_label": [],
+      "inputs": [
+       {
+        "label": "n9_4h_e1",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "a361ac9321459482d0dc53245f7f1711cb4fe2a541f50350e2f3bad6b7588710",
+        "investment_year": 2025,
+        "nodes": {
+         "9": [
+          0.25,
+          1.0
+         ]
+        },
+        "I_x_eur": 317957.0085035586,
+        "Q_gross_eur": 653602441.5951662,
+        "F_eur": 653920398.6036698
+       },
+       {
+        "label": "n9_2h_e1",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "75271798795beebe10bee15fc5e4f8f9bdc8758dbbb8dd0f46c8890381edf547",
+        "investment_year": 2025,
+        "nodes": {
+         "9": [
+          0.5,
+          1.0
+         ]
+        },
+        "I_x_eur": 382036.339568524,
+        "Q_gross_eur": 653590205.4983026,
+        "F_eur": 653972241.8378711
+       },
+       {
+        "label": "n9_4h_e2",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "6ed97c64f357dbdca7169367a85822e33fb5e410485884cbdd60ee5e896f8fca",
+        "investment_year": 2025,
+        "nodes": {
+         "9": [
+          0.5,
+          2.0
+         ]
+        },
+        "I_x_eur": 635914.0170071172,
+        "Q_gross_eur": 653402723.8984206,
+        "F_eur": 654038637.9154277
+       },
+       {
+        "label": "n9_2h_e2",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "46628fb108a5ab88af50d491cf7032a6bb2504c7a662a92310e1986419d3bc14",
+        "investment_year": 2025,
+        "nodes": {
+         "9": [
+          1.0,
+          2.0
+         ]
+        },
+        "I_x_eur": 764072.679137048,
+        "Q_gross_eur": 653307646.9815872,
+        "F_eur": 654071719.6607242
+       },
+       {
+        "label": "n9_4h_e3",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "ace7403b9b2710a9fa901a1a31d5e0bc7a3a78672c82718a350f9b9f1f35c0ca",
+        "investment_year": 2025,
+        "nodes": {
+         "9": [
+          0.75,
+          3.0
+         ]
+        },
+        "I_x_eur": 953871.0255106756,
+        "Q_gross_eur": 653127641.0571632,
+        "F_eur": 654081512.0826739
+       },
+       {
+        "label": "n9_4h_e4",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "466fb2a6c3b18620c21687c3964206013cc31549205cdaa60e226a2ea97e9d38",
+        "investment_year": 2025,
+        "nodes": {
+         "9": [
+          1.0,
+          4.0
+         ]
+        },
+        "I_x_eur": 1271828.0340142343,
+        "Q_gross_eur": 652852486.3826941,
+        "F_eur": 654124314.4167084
+       },
+       {
+        "label": "n9_2h_e3",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "dd970259278dd74247b29d9beca6bfc109a215d4c8e397c2729c57853c9c533e",
+        "investment_year": 2025,
+        "nodes": {
+         "9": [
+          1.5,
+          3.0
+         ]
+        },
+        "I_x_eur": 1146109.018705572,
+        "Q_gross_eur": 653082632.866926,
+        "F_eur": 654228741.8856316
+       },
+       {
+        "label": "n9_4h_e5",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "b2e9d339a0f7cd252995c7653856af74e8dd6c42c2f0d7880a7f8c719611e0bf",
+        "investment_year": 2025,
+        "nodes": {
+         "9": [
+          1.25,
+          5.0
+         ]
+        },
+        "I_x_eur": 1589785.0425177924,
+        "Q_gross_eur": 652639190.6022797,
+        "F_eur": 654228975.6447974
+       },
+       {
+        "label": "n9_2h_e4",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "30d0f10d376bc8eca985ccb1cf218ce31b33c3a6a38eedfde0b77a726c6179f9",
+        "investment_year": 2025,
+        "nodes": {
+         "9": [
+          2.0,
+          4.0
+         ]
+        },
+        "I_x_eur": 1528145.358274096,
+        "Q_gross_eur": 652804572.325414,
+        "F_eur": 654332717.683688
+       },
+       {
+        "label": "n9_2h_e5",
+        "stage": "a1a",
+        "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+        "candidate_key": "a2a2bd2b7e9d2437c179e9ca409a78128ee0623cf2eefb09dafc2d8cc2b2cfbf",
+        "investment_year": 2025,
+        "nodes": {
+         "9": [
+          2.5,
+          5.0
+         ]
+        },
+        "I_x_eur": 1910181.6978426196,
+        "Q_gross_eur": 652566422.1858051,
+        "F_eur": 654476603.8836477
+       }
+      ]
+     }
+    }
+   },
+   "subsets": [
+    [
+     5,
+     7
+    ],
+    [
+     5,
+     9
+    ],
+    [
+     7,
+     9
+    ],
+    [
+     5,
+     7,
+     9
+    ]
+   ],
+   "staging": "STAGING IS NOT AVAILABLE in this campaign: the canonical candidate form carries exactly ONE investment year (p515_s44_campaign_harness.canonical_candidate; multi-cohort candidates were explicitly out of scope of the year support added by W14, 85c147fa). Spec v15 A2 names 2 staging points (\"half the best capacity in y1 plus half in y2\" and \"the full capacity in y2 alone\"); the first needs two cohorts at one node and cannot be specified here, and neither is included in stage a2. A staged point is REFUSED rather than mis-specified as a single-cohort point.",
+   "staging_points_in_spec_v15_not_included": [
+    "half the best capacity in y1 + half in y2 (two cohorts)",
+    "the full best capacity in y2 alone"
+   ],
+   "lattice_c_star": "1.0 MVA / 4.0 MWh at nodes 5, 7, 9, investment year 2025",
+   "prior_results": [
+    {
+     "stage": "a1a",
+     "path": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+     "exists": true,
+     "sha256": "b6e9adce6fe33878082ce78a92c719c39c674c72b80930eb02b36d2d2c576aec",
+     "git_tracked": true,
+     "git_clean": true,
+     "stop_for_review": false,
+     "n_points": 30
+    },
+    {
+     "stage": "a1b",
+     "path": "data/SRP1/Results/P515S45/campaign_s45_a1b/campaign_results.json",
+     "exists": true,
+     "sha256": "3a2b77cd4eaee0f91dd369721fafb7ca5ac985f0fa203a8d6aa147bed32507af",
+     "git_tracked": true,
+     "git_clean": true,
+     "stop_for_review": false,
+     "n_points": 20
+    }
+   ],
+   "prior_stages": [
+    "a1a",
+    "a1b"
+   ]
+  },
+  "best_setting_per_node": {
+   "5": {
+    "node": 5,
+    "P_mva": 0.25,
+    "E_mwh": 1.0,
+    "duration_h": 4.0,
+    "investment_year": 2025,
+    "label": "n5_4h_e1",
+    "F_eur": 653932675.042919,
+    "I_x_eur": 317957.0085035586,
+    "Q_gross_eur": 653614718.0344155,
+    "evidence": {
+     "rule": "A2 best setting for node 5 = argmin F within node 5's a1a ladder; ties -> lower I(x)",
+     "n_certified_inputs": 10,
+     "n_inputs_seen": 10,
+     "non_certified_inputs": [],
+     "selected": "n5_4h_e1",
+     "selected_candidate_key": "1821665996ec6edb3492c4e914352e8a47bcc764c8bea1ca82639ab24570ef85",
+     "tie_on_F": [],
+     "tie_on_F_and_I_broken_by_label": [],
+     "inputs": [
+      {
+       "label": "n5_4h_e1",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "1821665996ec6edb3492c4e914352e8a47bcc764c8bea1ca82639ab24570ef85",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.25,
+         1.0
+        ]
+       },
+       "I_x_eur": 317957.0085035586,
+       "Q_gross_eur": 653614718.0344155,
+       "F_eur": 653932675.042919
+      },
+      {
+       "label": "n5_2h_e1",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "2a1302016f89621c85fb641fcdf48f7b3195c6b584106f5ea1f084dbf176827d",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.5,
+         1.0
+        ]
+       },
+       "I_x_eur": 382036.339568524,
+       "Q_gross_eur": 653587843.3094332,
+       "F_eur": 653969879.6490017
+      },
+      {
+       "label": "n5_4h_e2",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "3eed1a1ec1a77fe3860fdcce21ce6b7f5f911d0973a9402656bceb2b0ba368cd",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.5,
+         2.0
+        ]
+       },
+       "I_x_eur": 635914.0170071172,
+       "Q_gross_eur": 653337271.4641526,
+       "F_eur": 653973185.4811597
+      },
+      {
+       "label": "n5_4h_e3",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "32acd70c1b795e3413f9a36215d4f58fe825ad89fce8a205819e8ea2ec2b11aa",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.75,
+         3.0
+        ]
+       },
+       "I_x_eur": 953871.0255106756,
+       "Q_gross_eur": 653109230.433311,
+       "F_eur": 654063101.4588217
+      },
+      {
+       "label": "n5_2h_e2",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "5097b0c6b14ee8d5b8b8471e528d16fe16389b1444683c774d90de530696044a",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         1.0,
+         2.0
+        ]
+       },
+       "I_x_eur": 764072.679137048,
+       "Q_gross_eur": 653310380.4847403,
+       "F_eur": 654074453.1638772
+      },
+      {
+       "label": "n5_4h_e4",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "f92d165248fe348bfd2043df12a7e29d0dd07e4c302bebe369ec1947f4c5ac77",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         1.0,
+         4.0
+        ]
+       },
+       "I_x_eur": 1271828.0340142343,
+       "Q_gross_eur": 652853134.6114208,
+       "F_eur": 654124962.645435
+      },
+      {
+       "label": "n5_4h_e5",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "f0bfdf1c8adb7c398dd5fd9803cfaf012257959345b74678591ffe5106d01c8f",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         1.25,
+         5.0
+        ]
+       },
+       "I_x_eur": 1589785.0425177924,
+       "Q_gross_eur": 652608641.7326849,
+       "F_eur": 654198426.7752026
+      },
+      {
+       "label": "n5_2h_e3",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "bb375de471aaf4b7480243d4f43d55c7ff52c5366ef1ca60d62af1d6367e9764",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         1.5,
+         3.0
+        ]
+       },
+       "I_x_eur": 1146109.018705572,
+       "Q_gross_eur": 653076367.4373538,
+       "F_eur": 654222476.4560595
+      },
+      {
+       "label": "n5_2h_e4",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "f20fb813dfef7d635d95bf970070cbf2aec08e4b392ac7624a472ac225168a8d",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         2.0,
+         4.0
+        ]
+       },
+       "I_x_eur": 1528145.358274096,
+       "Q_gross_eur": 652796655.5654054,
+       "F_eur": 654324800.9236795
+      },
+      {
+       "label": "n5_2h_e5",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "302735fb198422fe5e9155350f0c4635458b6adfc51e7383b6419560ecb51f88",
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         2.5,
+         5.0
+        ]
+       },
+       "I_x_eur": 1910181.6978426196,
+       "Q_gross_eur": 652564046.8559694,
+       "F_eur": 654474228.553812
+      }
+     ]
+    }
+   },
+   "7": {
+    "node": 7,
+    "P_mva": 0.25,
+    "E_mwh": 1.0,
+    "duration_h": 4.0,
+    "investment_year": 2025,
+    "label": "n7_4h_e1",
+    "F_eur": 653915610.7320029,
+    "I_x_eur": 317957.0085035586,
+    "Q_gross_eur": 653597653.7234993,
+    "evidence": {
+     "rule": "A2 best setting for node 7 = argmin F within node 7's a1a ladder; ties -> lower I(x)",
+     "n_certified_inputs": 10,
+     "n_inputs_seen": 10,
+     "non_certified_inputs": [],
+     "selected": "n7_4h_e1",
+     "selected_candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+     "tie_on_F": [],
+     "tie_on_F_and_I_broken_by_label": [],
+     "inputs": [
+      {
+       "label": "n7_4h_e1",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         0.25,
+         1.0
+        ]
+       },
+       "I_x_eur": 317957.0085035586,
+       "Q_gross_eur": 653597653.7234993,
+       "F_eur": 653915610.7320029
+      },
+      {
+       "label": "n7_2h_e1",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "3993aebc641d4dadd34f6c27ac7061fb620724dd9eb8ca0e368ce3e70d578489",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         0.5,
+         1.0
+        ]
+       },
+       "I_x_eur": 382036.339568524,
+       "Q_gross_eur": 653598722.5512207,
+       "F_eur": 653980758.8907892
+      },
+      {
+       "label": "n7_4h_e2",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "cc4eb5df385852e67c612ab21d74526d90a2c66f5c7c934889ce4f67731c4ffe",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         0.5,
+         2.0
+        ]
+       },
+       "I_x_eur": 635914.0170071172,
+       "Q_gross_eur": 653372839.7001317,
+       "F_eur": 654008753.7171388
+      },
+      {
+       "label": "n7_4h_e3",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "fb21d822e145ba68c8c65c3fbb9793ddfcb038df172f0f2f08956998c8d81aac",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         0.75,
+         3.0
+        ]
+       },
+       "I_x_eur": 953871.0255106756,
+       "Q_gross_eur": 653123596.7996123,
+       "F_eur": 654077467.825123
+      },
+      {
+       "label": "n7_2h_e2",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "423e5a7f623eb10621b4930e7dfe4874a962e9d3a2ad33b188b2bdef74711c5d",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         1.0,
+         2.0
+        ]
+       },
+       "I_x_eur": 764072.679137048,
+       "Q_gross_eur": 653325523.0600035,
+       "F_eur": 654089595.7391405
+      },
+      {
+       "label": "n7_4h_e4",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "11725e45371a0c7fbd6553b61784bdcd628dedbceb4df0547b11ff2538c32321",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         1.0,
+         4.0
+        ]
+       },
+       "I_x_eur": 1271828.0340142343,
+       "Q_gross_eur": 652873847.3082701,
+       "F_eur": 654145675.3422843
+      },
+      {
+       "label": "n7_4h_e5",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "cab98853bb31f72fbdfc273a6d84b2ba8edbf5d451ec1cebb2529a1c6aaaf823",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         1.25,
+         5.0
+        ]
+       },
+       "I_x_eur": 1589785.0425177924,
+       "Q_gross_eur": 652650749.0643446,
+       "F_eur": 654240534.1068624
+      },
+      {
+       "label": "n7_2h_e3",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "2cd1de8249cfca8da7573d91c62f9ade6c603ba78a0c53558a1b128c04e62292",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         1.5,
+         3.0
+        ]
+       },
+       "I_x_eur": 1146109.018705572,
+       "Q_gross_eur": 653099300.5928335,
+       "F_eur": 654245409.6115391
+      },
+      {
+       "label": "n7_2h_e4",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "7048a00e13045688423a24099e3154de507dad90390b8a3967413dc5056f106c",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         2.0,
+         4.0
+        ]
+       },
+       "I_x_eur": 1528145.358274096,
+       "Q_gross_eur": 652821679.079392,
+       "F_eur": 654349824.437666
+      },
+      {
+       "label": "n7_2h_e5",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "354b38814b9c1147c2dfc0c5e93102dc165b4b0e52ab11657002f77ea1f67ca7",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         2.5,
+         5.0
+        ]
+       },
+       "I_x_eur": 1910181.6978426196,
+       "Q_gross_eur": 652589462.8330867,
+       "F_eur": 654499644.5309293
+      }
+     ]
+    }
+   },
+   "9": {
+    "node": 9,
+    "P_mva": 0.25,
+    "E_mwh": 1.0,
+    "duration_h": 4.0,
+    "investment_year": 2025,
+    "label": "n9_4h_e1",
+    "F_eur": 653920398.6036698,
+    "I_x_eur": 317957.0085035586,
+    "Q_gross_eur": 653602441.5951662,
+    "evidence": {
+     "rule": "A2 best setting for node 9 = argmin F within node 9's a1a ladder; ties -> lower I(x)",
+     "n_certified_inputs": 10,
+     "n_inputs_seen": 10,
+     "non_certified_inputs": [],
+     "selected": "n9_4h_e1",
+     "selected_candidate_key": "a361ac9321459482d0dc53245f7f1711cb4fe2a541f50350e2f3bad6b7588710",
+     "tie_on_F": [],
+     "tie_on_F_and_I_broken_by_label": [],
+     "inputs": [
+      {
+       "label": "n9_4h_e1",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "a361ac9321459482d0dc53245f7f1711cb4fe2a541f50350e2f3bad6b7588710",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         0.25,
+         1.0
+        ]
+       },
+       "I_x_eur": 317957.0085035586,
+       "Q_gross_eur": 653602441.5951662,
+       "F_eur": 653920398.6036698
+      },
+      {
+       "label": "n9_2h_e1",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "75271798795beebe10bee15fc5e4f8f9bdc8758dbbb8dd0f46c8890381edf547",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         0.5,
+         1.0
+        ]
+       },
+       "I_x_eur": 382036.339568524,
+       "Q_gross_eur": 653590205.4983026,
+       "F_eur": 653972241.8378711
+      },
+      {
+       "label": "n9_4h_e2",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "6ed97c64f357dbdca7169367a85822e33fb5e410485884cbdd60ee5e896f8fca",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         0.5,
+         2.0
+        ]
+       },
+       "I_x_eur": 635914.0170071172,
+       "Q_gross_eur": 653402723.8984206,
+       "F_eur": 654038637.9154277
+      },
+      {
+       "label": "n9_2h_e2",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "46628fb108a5ab88af50d491cf7032a6bb2504c7a662a92310e1986419d3bc14",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         1.0,
+         2.0
+        ]
+       },
+       "I_x_eur": 764072.679137048,
+       "Q_gross_eur": 653307646.9815872,
+       "F_eur": 654071719.6607242
+      },
+      {
+       "label": "n9_4h_e3",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "ace7403b9b2710a9fa901a1a31d5e0bc7a3a78672c82718a350f9b9f1f35c0ca",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         0.75,
+         3.0
+        ]
+       },
+       "I_x_eur": 953871.0255106756,
+       "Q_gross_eur": 653127641.0571632,
+       "F_eur": 654081512.0826739
+      },
+      {
+       "label": "n9_4h_e4",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "466fb2a6c3b18620c21687c3964206013cc31549205cdaa60e226a2ea97e9d38",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         1.0,
+         4.0
+        ]
+       },
+       "I_x_eur": 1271828.0340142343,
+       "Q_gross_eur": 652852486.3826941,
+       "F_eur": 654124314.4167084
+      },
+      {
+       "label": "n9_2h_e3",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "dd970259278dd74247b29d9beca6bfc109a215d4c8e397c2729c57853c9c533e",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         1.5,
+         3.0
+        ]
+       },
+       "I_x_eur": 1146109.018705572,
+       "Q_gross_eur": 653082632.866926,
+       "F_eur": 654228741.8856316
+      },
+      {
+       "label": "n9_4h_e5",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "b2e9d339a0f7cd252995c7653856af74e8dd6c42c2f0d7880a7f8c719611e0bf",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         1.25,
+         5.0
+        ]
+       },
+       "I_x_eur": 1589785.0425177924,
+       "Q_gross_eur": 652639190.6022797,
+       "F_eur": 654228975.6447974
+      },
+      {
+       "label": "n9_2h_e4",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "30d0f10d376bc8eca985ccb1cf218ce31b33c3a6a38eedfde0b77a726c6179f9",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         2.0,
+         4.0
+        ]
+       },
+       "I_x_eur": 1528145.358274096,
+       "Q_gross_eur": 652804572.325414,
+       "F_eur": 654332717.683688
+      },
+      {
+       "label": "n9_2h_e5",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "a2a2bd2b7e9d2437c179e9ca409a78128ee0623cf2eefb09dafc2d8cc2b2cfbf",
+       "investment_year": 2025,
+       "nodes": {
+        "9": [
+         2.5,
+         5.0
+        ]
+       },
+       "I_x_eur": 1910181.6978426196,
+       "Q_gross_eur": 652566422.1858051,
+       "F_eur": 654476603.8836477
+      }
+     ]
+    }
+   }
+  },
+  "points": [
+   {
+    "label": "presence_n5_n7",
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.25,
+      1.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   {
+    "label": "presence_n5_n9",
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.25,
+      1.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.25,
+      1.0
+     ]
+    }
+   },
+   {
+    "label": "presence_n7_n9",
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.25,
+      1.0
+     ]
+    }
+   },
+   {
+    "label": "presence_n5_n7_n9",
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.25,
+      1.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.25,
+      1.0
+     ]
+    }
+   },
+   {
+    "label": "lattice_c_star_p1.0_e4.0",
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      1.0,
+      4.0
+     ],
+     "7": [
+      1.0,
+      4.0
+     ],
+     "9": [
+      1.0,
+      4.0
+     ]
+    }
+   }
+  ]
+ },
+ "A3_resolution_points": {
+  "summary": {
+   "rule": "Planner task W16: every half-MWh step E in {0.5, 1.5, 2.5, 3.5, 4.5} paired with each lattice P satisfying 2 <= E/P <= 4 and E <= 5, PLUS the single-P-step neighbours (P +- 0.25) of the best node-7 2025 ladder point at fixed E; node 7 alone, investment year 2025",
+   "P_enumeration_domain_mva": [
+    0.25,
+    0.5,
+    0.75,
+    1.0,
+    1.25,
+    1.5,
+    1.75,
+    2.0,
+    2.25,
+    2.5
+   ],
+   "P_enumeration_domain_note": "P is enumerated over every multiple of 0.25 MVA from 0.25 to 2.50 -- the full lattice P range spanned by the A0/A1 ladders (0.25 MVA at E = 0.5/1.0, 2.50 MVA at E = 5.0 / 2 h). Each (P, E) is then kept or dropped against 2 <= E/P <= 4, E <= 5 MWh and the lattice, with its reason.",
+   "best_node7_2025_ladder_point": {
+    "node": 7,
+    "P_mva": 0.25,
+    "E_mwh": 1.0,
+    "duration_h": 4.0,
+    "investment_year": 2025,
+    "label": "n7_4h_e1",
+    "F_eur": 653915610.7320029,
+    "I_x_eur": 317957.0085035586,
+    "Q_gross_eur": 653597653.7234993,
+    "evidence": {
+     "rule": "A2 best setting for node 7 = argmin F within node 7's a1a ladder; ties -> lower I(x)",
+     "n_certified_inputs": 10,
+     "n_inputs_seen": 10,
+     "non_certified_inputs": [],
+     "selected": "n7_4h_e1",
+     "selected_candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+     "tie_on_F": [],
+     "tie_on_F_and_I_broken_by_label": [],
+     "inputs": [
+      {
+       "label": "n7_4h_e1",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         0.25,
+         1.0
+        ]
+       },
+       "I_x_eur": 317957.0085035586,
+       "Q_gross_eur": 653597653.7234993,
+       "F_eur": 653915610.7320029
+      },
+      {
+       "label": "n7_2h_e1",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "3993aebc641d4dadd34f6c27ac7061fb620724dd9eb8ca0e368ce3e70d578489",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         0.5,
+         1.0
+        ]
+       },
+       "I_x_eur": 382036.339568524,
+       "Q_gross_eur": 653598722.5512207,
+       "F_eur": 653980758.8907892
+      },
+      {
+       "label": "n7_4h_e2",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "cc4eb5df385852e67c612ab21d74526d90a2c66f5c7c934889ce4f67731c4ffe",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         0.5,
+         2.0
+        ]
+       },
+       "I_x_eur": 635914.0170071172,
+       "Q_gross_eur": 653372839.7001317,
+       "F_eur": 654008753.7171388
+      },
+      {
+       "label": "n7_4h_e3",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "fb21d822e145ba68c8c65c3fbb9793ddfcb038df172f0f2f08956998c8d81aac",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         0.75,
+         3.0
+        ]
+       },
+       "I_x_eur": 953871.0255106756,
+       "Q_gross_eur": 653123596.7996123,
+       "F_eur": 654077467.825123
+      },
+      {
+       "label": "n7_2h_e2",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "423e5a7f623eb10621b4930e7dfe4874a962e9d3a2ad33b188b2bdef74711c5d",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         1.0,
+         2.0
+        ]
+       },
+       "I_x_eur": 764072.679137048,
+       "Q_gross_eur": 653325523.0600035,
+       "F_eur": 654089595.7391405
+      },
+      {
+       "label": "n7_4h_e4",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "11725e45371a0c7fbd6553b61784bdcd628dedbceb4df0547b11ff2538c32321",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         1.0,
+         4.0
+        ]
+       },
+       "I_x_eur": 1271828.0340142343,
+       "Q_gross_eur": 652873847.3082701,
+       "F_eur": 654145675.3422843
+      },
+      {
+       "label": "n7_4h_e5",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "cab98853bb31f72fbdfc273a6d84b2ba8edbf5d451ec1cebb2529a1c6aaaf823",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         1.25,
+         5.0
+        ]
+       },
+       "I_x_eur": 1589785.0425177924,
+       "Q_gross_eur": 652650749.0643446,
+       "F_eur": 654240534.1068624
+      },
+      {
+       "label": "n7_2h_e3",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "2cd1de8249cfca8da7573d91c62f9ade6c603ba78a0c53558a1b128c04e62292",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         1.5,
+         3.0
+        ]
+       },
+       "I_x_eur": 1146109.018705572,
+       "Q_gross_eur": 653099300.5928335,
+       "F_eur": 654245409.6115391
+      },
+      {
+       "label": "n7_2h_e4",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "7048a00e13045688423a24099e3154de507dad90390b8a3967413dc5056f106c",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         2.0,
+         4.0
+        ]
+       },
+       "I_x_eur": 1528145.358274096,
+       "Q_gross_eur": 652821679.079392,
+       "F_eur": 654349824.437666
+      },
+      {
+       "label": "n7_2h_e5",
+       "stage": "a1a",
+       "source_results": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+       "candidate_key": "354b38814b9c1147c2dfc0c5e93102dc165b4b0e52ab11657002f77ea1f67ca7",
+       "investment_year": 2025,
+       "nodes": {
+        "7": [
+         2.5,
+         5.0
+        ]
+       },
+       "I_x_eur": 1910181.6978426196,
+       "Q_gross_eur": 652589462.8330867,
+       "F_eur": 654499644.5309293
+      }
+     ]
+    }
+   },
+   "n_proposals_considered": 52,
+   "n_new": 14,
+   "n_already_evaluated": 2,
+   "n_dropped": 36,
+   "new_labels": [
+    "res_n7_p0.5_e1.5_y2025",
+    "res_n7_p0.75_e1.5_y2025",
+    "res_n7_p0.75_e2.5_y2025",
+    "res_n7_p1_e2.5_y2025",
+    "res_n7_p1.25_e2.5_y2025",
+    "res_n7_p1_e3.5_y2025",
+    "res_n7_p1.25_e3.5_y2025",
+    "res_n7_p1.5_e3.5_y2025",
+    "res_n7_p1.75_e3.5_y2025",
+    "res_n7_p1.25_e4.5_y2025",
+    "res_n7_p1.5_e4.5_y2025",
+    "res_n7_p1.75_e4.5_y2025",
+    "res_n7_p2_e4.5_y2025",
+    "res_n7_p2.25_e4.5_y2025"
+   ],
+   "already_evaluated_labels": [
+    "res_n7_p0.25_e0.5_y2025 == a0:n7_p0.25_e0.5",
+    "res_n7_p0.5_e1_y2025 == a1a:n7_2h_e1"
+   ]
+  },
+  "proposals": [
+   {
+    "family": "half_step_E0.5",
+    "label": "res_n7_p0.25_e0.5_y2025",
+    "node": 7,
+    "P_mva": 0.25,
+    "E_mwh": 0.5,
+    "investment_year": 2025,
+    "duration_h": 2.0,
+    "candidate_key": "56b9730bfb7b78c75e0af96f2e6a21c169d84b451e23187f1a8736654a48600f",
+    "admissible": true,
+    "dropped_because": [],
+    "already_evaluated": true,
+    "already_evaluated_as": "a0:n7_p0.25_e0.5",
+    "verdict": "already_evaluated",
+    "admissible_P_interval_mva": [
+     0.125,
+     0.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E0.5",
+    "label": "res_n7_p0.5_e0.5_y2025",
+    "node": 7,
+    "P_mva": 0.5,
+    "E_mwh": 0.5,
+    "investment_year": 2025,
+    "duration_h": 1.0,
+    "candidate_key": "f6d61db3f96f9905bdcf1bc60fae105da477f489bb85a50f82826f0beac9b905",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 1 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.125,
+     0.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E0.5",
+    "label": "res_n7_p0.75_e0.5_y2025",
+    "node": 7,
+    "P_mva": 0.75,
+    "E_mwh": 0.5,
+    "investment_year": 2025,
+    "duration_h": 0.6666666666666666,
+    "candidate_key": "fdc8f785ba0f179026bfff57a5009e44ad9802adf432f28aae39064a9bbd6194",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 0.666667 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.125,
+     0.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E0.5",
+    "label": "res_n7_p1_e0.5_y2025",
+    "node": 7,
+    "P_mva": 1.0,
+    "E_mwh": 0.5,
+    "investment_year": 2025,
+    "duration_h": 0.5,
+    "candidate_key": "4156d9f6111b6b16ef723237ecf198410f144864b72c80328d35df0b9f10f488",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 0.5 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.125,
+     0.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E0.5",
+    "label": "res_n7_p1.25_e0.5_y2025",
+    "node": 7,
+    "P_mva": 1.25,
+    "E_mwh": 0.5,
+    "investment_year": 2025,
+    "duration_h": 0.4,
+    "candidate_key": "c9c30f1c9bb9a08a9b48d940c23ab2cf768bbb023f127a5f539e0450121e7b78",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 0.4 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.125,
+     0.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E0.5",
+    "label": "res_n7_p1.5_e0.5_y2025",
+    "node": 7,
+    "P_mva": 1.5,
+    "E_mwh": 0.5,
+    "investment_year": 2025,
+    "duration_h": 0.3333333333333333,
+    "candidate_key": "3adee22afaaf8cc9674879c91e75089680338f6f7d38c5dba71703151a13d329",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 0.333333 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.125,
+     0.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E0.5",
+    "label": "res_n7_p1.75_e0.5_y2025",
+    "node": 7,
+    "P_mva": 1.75,
+    "E_mwh": 0.5,
+    "investment_year": 2025,
+    "duration_h": 0.2857142857142857,
+    "candidate_key": "b461a07c8f93c5620a2bc352350a0c07f71efc48cfe06ece6c7cd4ba2dfafa30",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 0.285714 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.125,
+     0.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E0.5",
+    "label": "res_n7_p2_e0.5_y2025",
+    "node": 7,
+    "P_mva": 2.0,
+    "E_mwh": 0.5,
+    "investment_year": 2025,
+    "duration_h": 0.25,
+    "candidate_key": "ab2df2edef4be9947462f3d74a06fd853a50ab46b46ecd3426820569b503c2af",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 0.25 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.125,
+     0.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E0.5",
+    "label": "res_n7_p2.25_e0.5_y2025",
+    "node": 7,
+    "P_mva": 2.25,
+    "E_mwh": 0.5,
+    "investment_year": 2025,
+    "duration_h": 0.2222222222222222,
+    "candidate_key": "8d5cf46c70954b87a2e96b598de8747b3fb2d4f7e6a76d27a57b17083513644f",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 0.222222 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.125,
+     0.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E0.5",
+    "label": "res_n7_p2.5_e0.5_y2025",
+    "node": 7,
+    "P_mva": 2.5,
+    "E_mwh": 0.5,
+    "investment_year": 2025,
+    "duration_h": 0.2,
+    "candidate_key": "c7bbe793e421430f74bca74cd48aedaa67991104004d92310f7a8d212cf88c0f",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 0.2 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.125,
+     0.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E1.5",
+    "label": "res_n7_p0.25_e1.5_y2025",
+    "node": 7,
+    "P_mva": 0.25,
+    "E_mwh": 1.5,
+    "investment_year": 2025,
+    "duration_h": 6.0,
+    "candidate_key": "3cbff148e21102e0aa59f63d21e00acb33adeafbeb4e3148bfc9b7f750eff315",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 6 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.375,
+     0.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E1.5",
+    "label": "res_n7_p0.5_e1.5_y2025",
+    "node": 7,
+    "P_mva": 0.5,
+    "E_mwh": 1.5,
+    "investment_year": 2025,
+    "duration_h": 3.0,
+    "candidate_key": "062178ab2f3a87ff2a82dff8b572fc78ad57681e452fb35773dae745ae954a95",
+    "admissible": true,
+    "dropped_because": [],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "new",
+    "admissible_P_interval_mva": [
+     0.375,
+     0.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E1.5",
+    "label": "res_n7_p0.75_e1.5_y2025",
+    "node": 7,
+    "P_mva": 0.75,
+    "E_mwh": 1.5,
+    "investment_year": 2025,
+    "duration_h": 2.0,
+    "candidate_key": "4f135d7a623cac5f3b4a626dc5340ccda1a25f66f174ac1feff5db4915ae7f3c",
+    "admissible": true,
+    "dropped_because": [],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "new",
+    "admissible_P_interval_mva": [
+     0.375,
+     0.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E1.5",
+    "label": "res_n7_p1_e1.5_y2025",
+    "node": 7,
+    "P_mva": 1.0,
+    "E_mwh": 1.5,
+    "investment_year": 2025,
+    "duration_h": 1.5,
+    "candidate_key": "d0e1e6392e71b89ca2d0587a11a212faba1498e4b0efb58b61fabb51e6380393",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 1.5 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.375,
+     0.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E1.5",
+    "label": "res_n7_p1.25_e1.5_y2025",
+    "node": 7,
+    "P_mva": 1.25,
+    "E_mwh": 1.5,
+    "investment_year": 2025,
+    "duration_h": 1.2,
+    "candidate_key": "fe6debc7fb076e529eee64f295d6a33d0ed1913dcfe60d95a0d20c587523e9de",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 1.2 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.375,
+     0.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E1.5",
+    "label": "res_n7_p1.5_e1.5_y2025",
+    "node": 7,
+    "P_mva": 1.5,
+    "E_mwh": 1.5,
+    "investment_year": 2025,
+    "duration_h": 1.0,
+    "candidate_key": "a26c9dc705dccbba4ee208732d056c653920285f96cbd1ed6cf7ae30d57b9008",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 1 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.375,
+     0.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E1.5",
+    "label": "res_n7_p1.75_e1.5_y2025",
+    "node": 7,
+    "P_mva": 1.75,
+    "E_mwh": 1.5,
+    "investment_year": 2025,
+    "duration_h": 0.8571428571428571,
+    "candidate_key": "e349554cb8d89430bb714c204924bb99d4e5eb4cdd03bf422f3956a26cf7ddf6",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 0.857143 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.375,
+     0.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E1.5",
+    "label": "res_n7_p2_e1.5_y2025",
+    "node": 7,
+    "P_mva": 2.0,
+    "E_mwh": 1.5,
+    "investment_year": 2025,
+    "duration_h": 0.75,
+    "candidate_key": "63a7bf4df06cdd0d62e4d1e176d64af18be60e2d961910bf52429e5db018c691",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 0.75 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.375,
+     0.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E1.5",
+    "label": "res_n7_p2.25_e1.5_y2025",
+    "node": 7,
+    "P_mva": 2.25,
+    "E_mwh": 1.5,
+    "investment_year": 2025,
+    "duration_h": 0.6666666666666666,
+    "candidate_key": "4d987bf025a431d7cccc3af588df5ec210844b44a10b2887d35d1549c8fb2468",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 0.666667 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.375,
+     0.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E1.5",
+    "label": "res_n7_p2.5_e1.5_y2025",
+    "node": 7,
+    "P_mva": 2.5,
+    "E_mwh": 1.5,
+    "investment_year": 2025,
+    "duration_h": 0.6,
+    "candidate_key": "f705f527ee5948aa3e2fa12651ea328481e75fd605bcc984a8a930f6985485f9",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 0.6 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.375,
+     0.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E2.5",
+    "label": "res_n7_p0.25_e2.5_y2025",
+    "node": 7,
+    "P_mva": 0.25,
+    "E_mwh": 2.5,
+    "investment_year": 2025,
+    "duration_h": 10.0,
+    "candidate_key": "c7fa59f0229633d6adbfb3b52773dddab813d315151f8385ac65d2a7292987cd",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 10 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.625,
+     1.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E2.5",
+    "label": "res_n7_p0.5_e2.5_y2025",
+    "node": 7,
+    "P_mva": 0.5,
+    "E_mwh": 2.5,
+    "investment_year": 2025,
+    "duration_h": 5.0,
+    "candidate_key": "966df695a95679eef78a9662faf9908372315994117c8f74f63fa985a8c1bb88",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 5 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.625,
+     1.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E2.5",
+    "label": "res_n7_p0.75_e2.5_y2025",
+    "node": 7,
+    "P_mva": 0.75,
+    "E_mwh": 2.5,
+    "investment_year": 2025,
+    "duration_h": 3.3333333333333335,
+    "candidate_key": "222e4f71cc132c96d67a3e468f2e617c629e25e20a5060e4726aad36fbec7631",
+    "admissible": true,
+    "dropped_because": [],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "new",
+    "admissible_P_interval_mva": [
+     0.625,
+     1.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E2.5",
+    "label": "res_n7_p1_e2.5_y2025",
+    "node": 7,
+    "P_mva": 1.0,
+    "E_mwh": 2.5,
+    "investment_year": 2025,
+    "duration_h": 2.5,
+    "candidate_key": "3e15cb08487bf947a67c33207988087d07f09ae64b07f9464a5209197869cec7",
+    "admissible": true,
+    "dropped_because": [],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "new",
+    "admissible_P_interval_mva": [
+     0.625,
+     1.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E2.5",
+    "label": "res_n7_p1.25_e2.5_y2025",
+    "node": 7,
+    "P_mva": 1.25,
+    "E_mwh": 2.5,
+    "investment_year": 2025,
+    "duration_h": 2.0,
+    "candidate_key": "fdfe88cd4342f81a48a7c61286c438fe67652d46ccb1a6bbbbffc2e5f25acf02",
+    "admissible": true,
+    "dropped_because": [],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "new",
+    "admissible_P_interval_mva": [
+     0.625,
+     1.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E2.5",
+    "label": "res_n7_p1.5_e2.5_y2025",
+    "node": 7,
+    "P_mva": 1.5,
+    "E_mwh": 2.5,
+    "investment_year": 2025,
+    "duration_h": 1.6666666666666667,
+    "candidate_key": "b4cdeec708b74f69410a300475261368c700edc1e401888f5ba3755849c72ae6",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 1.66667 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.625,
+     1.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E2.5",
+    "label": "res_n7_p1.75_e2.5_y2025",
+    "node": 7,
+    "P_mva": 1.75,
+    "E_mwh": 2.5,
+    "investment_year": 2025,
+    "duration_h": 1.4285714285714286,
+    "candidate_key": "4d0b59b896d2a5a86a2e3d9b809dc19458c2fc7166e8473963d1d68b73dc9239",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 1.42857 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.625,
+     1.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E2.5",
+    "label": "res_n7_p2_e2.5_y2025",
+    "node": 7,
+    "P_mva": 2.0,
+    "E_mwh": 2.5,
+    "investment_year": 2025,
+    "duration_h": 1.25,
+    "candidate_key": "eddcf57d3d6bd3c7db67f2fb77d93fc3d2dba10f624763f7cfe63af29d36aa5a",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 1.25 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.625,
+     1.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E2.5",
+    "label": "res_n7_p2.25_e2.5_y2025",
+    "node": 7,
+    "P_mva": 2.25,
+    "E_mwh": 2.5,
+    "investment_year": 2025,
+    "duration_h": 1.1111111111111112,
+    "candidate_key": "b45ff0b24fdeb9b1f4e1520030009d1a78186d17cf8425448279f5c552c7c0fb",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 1.11111 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.625,
+     1.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E2.5",
+    "label": "res_n7_p2.5_e2.5_y2025",
+    "node": 7,
+    "P_mva": 2.5,
+    "E_mwh": 2.5,
+    "investment_year": 2025,
+    "duration_h": 1.0,
+    "candidate_key": "a8ca8a1a98c0853bfccce2929a1bcdffaf7db4f7f76dd99fc3723866c026f851",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 1 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.625,
+     1.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E3.5",
+    "label": "res_n7_p0.25_e3.5_y2025",
+    "node": 7,
+    "P_mva": 0.25,
+    "E_mwh": 3.5,
+    "investment_year": 2025,
+    "duration_h": 14.0,
+    "candidate_key": "f6f0c8492046a102015237538d6f807d8b7a633a0a4737cbbcdbc4d02b4ee529",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 14 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.875,
+     1.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E3.5",
+    "label": "res_n7_p0.5_e3.5_y2025",
+    "node": 7,
+    "P_mva": 0.5,
+    "E_mwh": 3.5,
+    "investment_year": 2025,
+    "duration_h": 7.0,
+    "candidate_key": "7502debe45912c49cf854d8aeec18c2ca2a96aac01268f53b4afb785f4bf5578",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 7 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.875,
+     1.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E3.5",
+    "label": "res_n7_p0.75_e3.5_y2025",
+    "node": 7,
+    "P_mva": 0.75,
+    "E_mwh": 3.5,
+    "investment_year": 2025,
+    "duration_h": 4.666666666666667,
+    "candidate_key": "abe699fcf32ab47a3edb0c0df33eca8dea214854d11435c91bdc29a1e49d22c2",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 4.66667 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.875,
+     1.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E3.5",
+    "label": "res_n7_p1_e3.5_y2025",
+    "node": 7,
+    "P_mva": 1.0,
+    "E_mwh": 3.5,
+    "investment_year": 2025,
+    "duration_h": 3.5,
+    "candidate_key": "26fd9df9d6cbebc6d6baf419210117d40c3d3d4a83f2eac2942a733ff97b1f5a",
+    "admissible": true,
+    "dropped_because": [],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "new",
+    "admissible_P_interval_mva": [
+     0.875,
+     1.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E3.5",
+    "label": "res_n7_p1.25_e3.5_y2025",
+    "node": 7,
+    "P_mva": 1.25,
+    "E_mwh": 3.5,
+    "investment_year": 2025,
+    "duration_h": 2.8,
+    "candidate_key": "b427fc258e5a19ccf38687ffb242759139ab9083af345ad9e868e90f9902965e",
+    "admissible": true,
+    "dropped_because": [],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "new",
+    "admissible_P_interval_mva": [
+     0.875,
+     1.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E3.5",
+    "label": "res_n7_p1.5_e3.5_y2025",
+    "node": 7,
+    "P_mva": 1.5,
+    "E_mwh": 3.5,
+    "investment_year": 2025,
+    "duration_h": 2.3333333333333335,
+    "candidate_key": "2b27083604eec084f24125364b4989b577293db63303a822440edc1b15c71d40",
+    "admissible": true,
+    "dropped_because": [],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "new",
+    "admissible_P_interval_mva": [
+     0.875,
+     1.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E3.5",
+    "label": "res_n7_p1.75_e3.5_y2025",
+    "node": 7,
+    "P_mva": 1.75,
+    "E_mwh": 3.5,
+    "investment_year": 2025,
+    "duration_h": 2.0,
+    "candidate_key": "8b321b9fe9b528247861a97167d92938920a0a06af88abd31cdb898b6659e1c6",
+    "admissible": true,
+    "dropped_because": [],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "new",
+    "admissible_P_interval_mva": [
+     0.875,
+     1.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E3.5",
+    "label": "res_n7_p2_e3.5_y2025",
+    "node": 7,
+    "P_mva": 2.0,
+    "E_mwh": 3.5,
+    "investment_year": 2025,
+    "duration_h": 1.75,
+    "candidate_key": "0e9b521424e694e6c6c4388fa1cbf124a35228602005c0ba799eaf583c417eb9",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 1.75 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.875,
+     1.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E3.5",
+    "label": "res_n7_p2.25_e3.5_y2025",
+    "node": 7,
+    "P_mva": 2.25,
+    "E_mwh": 3.5,
+    "investment_year": 2025,
+    "duration_h": 1.5555555555555556,
+    "candidate_key": "96c6ce17bded246a55ceb3c98f27b8091173c0d4722045c3957e32816ff25ee3",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 1.55556 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.875,
+     1.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E3.5",
+    "label": "res_n7_p2.5_e3.5_y2025",
+    "node": 7,
+    "P_mva": 2.5,
+    "E_mwh": 3.5,
+    "investment_year": 2025,
+    "duration_h": 1.4,
+    "candidate_key": "b962fd633b347bd3168769d13f47c5fe3cebb47217b77fd3b7e8836601a6a5fa",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 1.4 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     0.875,
+     1.75
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E4.5",
+    "label": "res_n7_p0.25_e4.5_y2025",
+    "node": 7,
+    "P_mva": 0.25,
+    "E_mwh": 4.5,
+    "investment_year": 2025,
+    "duration_h": 18.0,
+    "candidate_key": "e585435558643eb512008aa9a450714a5f066e6c8d581806810d9dd5b8334e35",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 18 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     1.125,
+     2.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E4.5",
+    "label": "res_n7_p0.5_e4.5_y2025",
+    "node": 7,
+    "P_mva": 0.5,
+    "E_mwh": 4.5,
+    "investment_year": 2025,
+    "duration_h": 9.0,
+    "candidate_key": "53f81a2f326242acbc8bd3322efd3ed0a2efe820b0e06872bfc1dbf9d708c3e4",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 9 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     1.125,
+     2.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E4.5",
+    "label": "res_n7_p0.75_e4.5_y2025",
+    "node": 7,
+    "P_mva": 0.75,
+    "E_mwh": 4.5,
+    "investment_year": 2025,
+    "duration_h": 6.0,
+    "candidate_key": "a0c3d316062b2bef34ba081bdf4ba9be6265d3798b7e121fb4156cf4a256c1ff",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 6 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     1.125,
+     2.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E4.5",
+    "label": "res_n7_p1_e4.5_y2025",
+    "node": 7,
+    "P_mva": 1.0,
+    "E_mwh": 4.5,
+    "investment_year": 2025,
+    "duration_h": 4.5,
+    "candidate_key": "b97c83d0035d5cf2d734c8af01dcd7b06384a8a8caf79ec56f90fc81b8afe646",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 4.5 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     1.125,
+     2.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E4.5",
+    "label": "res_n7_p1.25_e4.5_y2025",
+    "node": 7,
+    "P_mva": 1.25,
+    "E_mwh": 4.5,
+    "investment_year": 2025,
+    "duration_h": 3.6,
+    "candidate_key": "44c40574f84ca528a80775dcef21fe7ae52713216abf1179f74c148440c532ab",
+    "admissible": true,
+    "dropped_because": [],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "new",
+    "admissible_P_interval_mva": [
+     1.125,
+     2.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E4.5",
+    "label": "res_n7_p1.5_e4.5_y2025",
+    "node": 7,
+    "P_mva": 1.5,
+    "E_mwh": 4.5,
+    "investment_year": 2025,
+    "duration_h": 3.0,
+    "candidate_key": "c6938af91713e6ff81a7d60b75302d61b49b7ebe28b4d60511a1e7c20f2d686a",
+    "admissible": true,
+    "dropped_because": [],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "new",
+    "admissible_P_interval_mva": [
+     1.125,
+     2.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E4.5",
+    "label": "res_n7_p1.75_e4.5_y2025",
+    "node": 7,
+    "P_mva": 1.75,
+    "E_mwh": 4.5,
+    "investment_year": 2025,
+    "duration_h": 2.5714285714285716,
+    "candidate_key": "add3b33dbfdd42a73bcf6aadb693253796ad19f8ff3feb4e4e677814c17a6e75",
+    "admissible": true,
+    "dropped_because": [],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "new",
+    "admissible_P_interval_mva": [
+     1.125,
+     2.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E4.5",
+    "label": "res_n7_p2_e4.5_y2025",
+    "node": 7,
+    "P_mva": 2.0,
+    "E_mwh": 4.5,
+    "investment_year": 2025,
+    "duration_h": 2.25,
+    "candidate_key": "95b18224ba5de1e4630fba128fe421ab0b4a18928527c850d1f30f2f9b0291d2",
+    "admissible": true,
+    "dropped_because": [],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "new",
+    "admissible_P_interval_mva": [
+     1.125,
+     2.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E4.5",
+    "label": "res_n7_p2.25_e4.5_y2025",
+    "node": 7,
+    "P_mva": 2.25,
+    "E_mwh": 4.5,
+    "investment_year": 2025,
+    "duration_h": 2.0,
+    "candidate_key": "773240eaeaa651955c5698541a93ef6125069a5183380a15f50a3b833436ba9d",
+    "admissible": true,
+    "dropped_because": [],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "new",
+    "admissible_P_interval_mva": [
+     1.125,
+     2.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "half_step_E4.5",
+    "label": "res_n7_p2.5_e4.5_y2025",
+    "node": 7,
+    "P_mva": 2.5,
+    "E_mwh": 4.5,
+    "investment_year": 2025,
+    "duration_h": 1.8,
+    "candidate_key": "b92a97f886b31ef23280e59daa194e3e54ec10a675c763fa3058c51d71a75b6f",
+    "admissible": false,
+    "dropped_because": [
+     "duration E/P = 1.8 h outside [2, 4]"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "admissible_P_interval_mva": [
+     1.125,
+     2.25
+    ],
+    "interval_endpoints_on_lattice": [
+     false,
+     true
+    ]
+   },
+   {
+    "family": "P_step_neighbour_of_best_node7_2025",
+    "label": "res_n7_p0.5_e1_y2025",
+    "node": 7,
+    "P_mva": 0.5,
+    "E_mwh": 1.0,
+    "investment_year": 2025,
+    "duration_h": 2.0,
+    "candidate_key": "3993aebc641d4dadd34f6c27ac7061fb620724dd9eb8ca0e368ce3e70d578489",
+    "admissible": true,
+    "dropped_because": [],
+    "already_evaluated": true,
+    "already_evaluated_as": "a1a:n7_2h_e1",
+    "verdict": "already_evaluated",
+    "direction": "P_plus",
+    "from_label": "n7_4h_e1",
+    "from_P_mva": 0.25,
+    "from_E_mwh": 1.0
+   },
+   {
+    "family": "P_step_neighbour_of_best_node7_2025",
+    "label": "res_n7_p0_e1_y2025",
+    "node": 7,
+    "P_mva": 0.0,
+    "E_mwh": 1.0,
+    "investment_year": 2025,
+    "duration_h": null,
+    "candidate_key": null,
+    "admissible": false,
+    "dropped_because": [
+     "P = 0, E = 1: not both positive (production requires s == 0 <=> e == 0)"
+    ],
+    "already_evaluated": false,
+    "already_evaluated_as": null,
+    "verdict": "dropped",
+    "direction": "P_minus",
+    "from_label": "n7_4h_e1",
+    "from_P_mva": 0.25,
+    "from_E_mwh": 1.0
+   }
+  ]
+ },
+ "candidates": {
+  "presence_n5_n7": {
+   "source": "W16 (A) A2 presence design / lattice C*, built by p515_s45_a1_campaign.stage_points(\"a2\")",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.25,
+      1.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "00b96fd5cdf5545c5d8971839048cc43b5c2cb88fca71c57bf34ece59e7af248",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "5": [
+     0.25,
+     1.0
+    ],
+    "7": [
+     0.25,
+     1.0
+    ]
+   },
+   "I_new_eur": 635914.017007117,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 128158.66212993083,
+   "I_new_energy_eur": 507755.3548771862,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "5|2025": {
+     "power": 64079.331064965416,
+     "energy": 253877.6774385931,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    },
+    "7|2025": {
+     "power": 64079.331064965416,
+     "energy": 253877.6774385931,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 0.0,
+   "I_new_eur_p56a_transcription": 635914.0170071172,
+   "abs_diff_master_vs_p56a_eur": 1.1641532182693481e-10,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": 364085.98299288296,
+   "budget_slack_from_master_row_eur": 364085.98299288296,
+   "budget_feasible": true,
+   "max_energy_per_node_mwh": 1.0,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": true,
+   "first_stage_reasons": "",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "presence_n5_n9": {
+   "source": "W16 (A) A2 presence design / lattice C*, built by p515_s45_a1_campaign.stage_points(\"a2\")",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.25,
+      1.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.25,
+      1.0
+     ]
+    }
+   },
+   "candidate_key": "f9689a4b1d27fda8b1a1228d4c0102e69cfd7c5582afde5dec8ff6d6a034e2dd",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "5": [
+     0.25,
+     1.0
+    ],
+    "9": [
+     0.25,
+     1.0
+    ]
+   },
+   "I_new_eur": 635914.017007117,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 128158.66212993083,
+   "I_new_energy_eur": 507755.3548771862,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "5|2025": {
+     "power": 64079.331064965416,
+     "energy": 253877.6774385931,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    },
+    "9|2025": {
+     "power": 64079.331064965416,
+     "energy": 253877.6774385931,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 0.0,
+   "I_new_eur_p56a_transcription": 635914.0170071172,
+   "abs_diff_master_vs_p56a_eur": 1.1641532182693481e-10,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": 364085.98299288296,
+   "budget_slack_from_master_row_eur": 364085.98299288296,
+   "budget_feasible": true,
+   "max_energy_per_node_mwh": 1.0,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": true,
+   "first_stage_reasons": "",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "presence_n7_n9": {
+   "source": "W16 (A) A2 presence design / lattice C*, built by p515_s45_a1_campaign.stage_points(\"a2\")",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.25,
+      1.0
+     ]
+    }
+   },
+   "candidate_key": "85d6d95a8ef8876b5de6861d69765f5c6b28505786f0573eb0d6ec8a6c026433",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "7": [
+     0.25,
+     1.0
+    ],
+    "9": [
+     0.25,
+     1.0
+    ]
+   },
+   "I_new_eur": 635914.017007117,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 128158.66212993083,
+   "I_new_energy_eur": 507755.3548771862,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "7|2025": {
+     "power": 64079.331064965416,
+     "energy": 253877.6774385931,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    },
+    "9|2025": {
+     "power": 64079.331064965416,
+     "energy": 253877.6774385931,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 0.0,
+   "I_new_eur_p56a_transcription": 635914.0170071172,
+   "abs_diff_master_vs_p56a_eur": 1.1641532182693481e-10,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": 364085.98299288296,
+   "budget_slack_from_master_row_eur": 364085.98299288296,
+   "budget_feasible": true,
+   "max_energy_per_node_mwh": 1.0,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": true,
+   "first_stage_reasons": "",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "presence_n5_n7_n9": {
+   "source": "W16 (A) A2 presence design / lattice C*, built by p515_s45_a1_campaign.stage_points(\"a2\")",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.25,
+      1.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.25,
+      1.0
+     ]
+    }
+   },
+   "candidate_key": "6fbf40202169d482506ae4e2d7c5b8dcb9b428105f9b0413156197e87e1985e0",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "5": [
+     0.25,
+     1.0
+    ],
+    "7": [
+     0.25,
+     1.0
+    ],
+    "9": [
+     0.25,
+     1.0
+    ]
+   },
+   "I_new_eur": 953871.0255106755,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 192237.99319489626,
+   "I_new_energy_eur": 761633.0323157792,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "5|2025": {
+     "power": 64079.331064965416,
+     "energy": 253877.6774385931,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    },
+    "7|2025": {
+     "power": 64079.331064965416,
+     "energy": 253877.6774385931,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    },
+    "9|2025": {
+     "power": 64079.331064965416,
+     "energy": 253877.6774385931,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 0.0,
+   "I_new_eur_p56a_transcription": 953871.0255106757,
+   "abs_diff_master_vs_p56a_eur": 2.3283064365386963e-10,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": 46128.97448932449,
+   "budget_slack_from_master_row_eur": 46128.97448932449,
+   "budget_feasible": true,
+   "max_energy_per_node_mwh": 1.0,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": true,
+   "first_stage_reasons": "",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "lattice_c_star_p1.0_e4.0": {
+   "source": "W16 (A) A2 presence design / lattice C*, built by p515_s45_a1_campaign.stage_points(\"a2\")",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      1.0,
+      4.0
+     ],
+     "7": [
+      1.0,
+      4.0
+     ],
+     "9": [
+      1.0,
+      4.0
+     ]
+    }
+   },
+   "candidate_key": "a002e3ab10e2d7bb454503eff68b2fcfe4c5982477ee700d969b37eed8ca05cc",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "5": [
+     1.0,
+     4.0
+    ],
+    "7": [
+     1.0,
+     4.0
+    ],
+    "9": [
+     1.0,
+     4.0
+    ]
+   },
+   "I_new_eur": 3815484.102042702,
+   "I_new_eur_provenance": "REUSED from the predecessor table (candidate already covered there); the recomputation here agrees and is recorded as a cross-check",
+   "I_new_power_eur": 768951.972779585,
+   "I_new_energy_eur": 3046532.129263117,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "5|2025": {
+     "power": 256317.32425986166,
+     "energy": 1015510.7097543724,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    },
+    "7|2025": {
+     "power": 256317.32425986166,
+     "energy": 1015510.7097543724,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    },
+    "9|2025": {
+     "power": 256317.32425986166,
+     "energy": 1015510.7097543724,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 0.0,
+   "I_new_eur_p56a_transcription": 3815484.102042703,
+   "abs_diff_master_vs_p56a_eur": 9.313225746154785e-10,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": -2815484.102042702,
+   "budget_slack_from_master_row_eur": -2815484.102042702,
+   "budget_feasible": false,
+   "max_energy_per_node_mwh": 4.0,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": false,
+   "first_stage_reasons": "investment budget violated",
+   "already_evaluated_as": null,
+   "predecessor_reuse": {
+    "present_in_predecessor": true,
+    "predecessor_labels": [
+     "lattice_c_star"
+    ],
+    "predecessor_path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+    "predecessor_sha256": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "I_new_eur_frozen_AUTHORITATIVE": 3815484.102042702,
+    "predecessor_entries_agree": true,
+    "slack_new_eur_frozen": -2815484.102042702,
+    "budget_feasible_new_frozen": false,
+    "recomputed_here_crosscheck_eur": 3815484.102042702,
+    "abs_diff_recomputed_vs_frozen_eur": 0.0
+   },
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "res_n7_p0.25_e0.5_y2025": {
+   "source": "W16 (C) A3 resolution point (node 7, 2025, 0.25 MVA / 0.5 MWh lattice)",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      0.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "56b9730bfb7b78c75e0af96f2e6a21c169d84b451e23187f1a8736654a48600f",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "7": [
+     0.25,
+     0.5
+    ]
+   },
+   "I_new_eur": 191018.169784262,
+   "I_new_eur_provenance": "REUSED from the predecessor table (candidate already covered there); the recomputation here agrees and is recorded as a cross-check",
+   "I_new_power_eur": 64079.331064965416,
+   "I_new_energy_eur": 126938.83871929655,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "7|2025": {
+     "power": 64079.331064965416,
+     "energy": 126938.83871929655,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 2.9103830456733704e-11,
+   "I_new_eur_p56a_transcription": 191018.16978426196,
+   "abs_diff_master_vs_p56a_eur": 2.9103830456733704e-11,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": 808981.830215738,
+   "budget_slack_from_master_row_eur": 808981.830215738,
+   "budget_feasible": true,
+   "max_energy_per_node_mwh": 0.5,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": true,
+   "first_stage_reasons": "",
+   "already_evaluated_as": "a0:n7_p0.25_e0.5",
+   "predecessor_reuse": {
+    "present_in_predecessor": true,
+    "predecessor_labels": [
+     "n7_p0.25_e0.5"
+    ],
+    "predecessor_path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+    "predecessor_sha256": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "I_new_eur_frozen_AUTHORITATIVE": 191018.169784262,
+    "predecessor_entries_agree": true,
+    "slack_new_eur_frozen": 808981.830215738,
+    "budget_feasible_new_frozen": true,
+    "recomputed_here_crosscheck_eur": 191018.169784262,
+    "abs_diff_recomputed_vs_frozen_eur": 0.0
+   },
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "res_n7_p0.5_e1.5_y2025": {
+   "source": "W16 (C) A3 resolution point (node 7, 2025, 0.25 MVA / 0.5 MWh lattice)",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.5,
+      1.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "062178ab2f3a87ff2a82dff8b572fc78ad57681e452fb35773dae745ae954a95",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "7": [
+     0.5,
+     1.5
+    ]
+   },
+   "I_new_eur": 508975.17828782054,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 128158.66212993083,
+   "I_new_energy_eur": 380816.5161578896,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "7|2025": {
+     "power": 128158.66212993083,
+     "energy": 380816.5161578896,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 1.1641532182693481e-10,
+   "I_new_eur_p56a_transcription": 508975.17828782054,
+   "abs_diff_master_vs_p56a_eur": 0.0,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": 491024.82171217946,
+   "budget_slack_from_master_row_eur": 491024.82171217946,
+   "budget_feasible": true,
+   "max_energy_per_node_mwh": 1.5,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": true,
+   "first_stage_reasons": "",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "res_n7_p0.75_e1.5_y2025": {
+   "source": "W16 (C) A3 resolution point (node 7, 2025, 0.25 MVA / 0.5 MWh lattice)",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.75,
+      1.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "4f135d7a623cac5f3b4a626dc5340ccda1a25f66f174ac1feff5db4915ae7f3c",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "7": [
+     0.75,
+     1.5
+    ]
+   },
+   "I_new_eur": 573054.509352786,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 192237.99319489626,
+   "I_new_energy_eur": 380816.5161578896,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "7|2025": {
+     "power": 192237.99319489626,
+     "energy": 380816.5161578896,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 1.1641532182693481e-10,
+   "I_new_eur_p56a_transcription": 573054.5093527859,
+   "abs_diff_master_vs_p56a_eur": 1.1641532182693481e-10,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": 426945.490647214,
+   "budget_slack_from_master_row_eur": 426945.490647214,
+   "budget_feasible": true,
+   "max_energy_per_node_mwh": 1.5,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": true,
+   "first_stage_reasons": "",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "res_n7_p0.75_e2.5_y2025": {
+   "source": "W16 (C) A3 resolution point (node 7, 2025, 0.25 MVA / 0.5 MWh lattice)",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.75,
+      2.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "222e4f71cc132c96d67a3e468f2e617c629e25e20a5060e4726aad36fbec7631",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "7": [
+     0.75,
+     2.5
+    ]
+   },
+   "I_new_eur": 826932.186791379,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 192237.99319489626,
+   "I_new_energy_eur": 634694.1935964827,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "7|2025": {
+     "power": 192237.99319489626,
+     "energy": 634694.1935964827,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 0.0,
+   "I_new_eur_p56a_transcription": 826932.1867913791,
+   "abs_diff_master_vs_p56a_eur": 1.1641532182693481e-10,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": 173067.813208621,
+   "budget_slack_from_master_row_eur": 173067.813208621,
+   "budget_feasible": true,
+   "max_energy_per_node_mwh": 2.5,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": true,
+   "first_stage_reasons": "",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "res_n7_p1_e2.5_y2025": {
+   "source": "W16 (C) A3 resolution point (node 7, 2025, 0.25 MVA / 0.5 MWh lattice)",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      1.0,
+      2.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "3e15cb08487bf947a67c33207988087d07f09ae64b07f9464a5209197869cec7",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "7": [
+     1.0,
+     2.5
+    ]
+   },
+   "I_new_eur": 891011.5178563445,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 256317.32425986166,
+   "I_new_energy_eur": 634694.1935964827,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "7|2025": {
+     "power": 256317.32425986166,
+     "energy": 634694.1935964827,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 1.1641532182693481e-10,
+   "I_new_eur_p56a_transcription": 891011.5178563445,
+   "abs_diff_master_vs_p56a_eur": 0.0,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": 108988.48214365554,
+   "budget_slack_from_master_row_eur": 108988.48214365554,
+   "budget_feasible": true,
+   "max_energy_per_node_mwh": 2.5,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": true,
+   "first_stage_reasons": "",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "res_n7_p1.25_e2.5_y2025": {
+   "source": "W16 (C) A3 resolution point (node 7, 2025, 0.25 MVA / 0.5 MWh lattice)",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      1.25,
+      2.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "fdfe88cd4342f81a48a7c61286c438fe67652d46ccb1a6bbbbffc2e5f25acf02",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "7": [
+     1.25,
+     2.5
+    ]
+   },
+   "I_new_eur": 955090.8489213098,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 320396.65532482706,
+   "I_new_energy_eur": 634694.1935964827,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "7|2025": {
+     "power": 320396.65532482706,
+     "energy": 634694.1935964827,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 0.0,
+   "I_new_eur_p56a_transcription": 955090.8489213099,
+   "abs_diff_master_vs_p56a_eur": 1.1641532182693481e-10,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": 44909.15107869019,
+   "budget_slack_from_master_row_eur": 44909.15107869019,
+   "budget_feasible": true,
+   "max_energy_per_node_mwh": 2.5,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": true,
+   "first_stage_reasons": "",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "res_n7_p1_e3.5_y2025": {
+   "source": "W16 (C) A3 resolution point (node 7, 2025, 0.25 MVA / 0.5 MWh lattice)",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      1.0,
+      3.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "26fd9df9d6cbebc6d6baf419210117d40c3d3d4a83f2eac2942a733ff97b1f5a",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "7": [
+     1.0,
+     3.5
+    ]
+   },
+   "I_new_eur": 1144889.1952949376,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 256317.32425986166,
+   "I_new_energy_eur": 888571.8710350759,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "7|2025": {
+     "power": 256317.32425986166,
+     "energy": 888571.8710350759,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 0.0,
+   "I_new_eur_p56a_transcription": 1144889.1952949376,
+   "abs_diff_master_vs_p56a_eur": 0.0,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": -144889.19529493758,
+   "budget_slack_from_master_row_eur": -144889.19529493758,
+   "budget_feasible": false,
+   "max_energy_per_node_mwh": 3.5,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": false,
+   "first_stage_reasons": "investment budget violated",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "res_n7_p1.25_e3.5_y2025": {
+   "source": "W16 (C) A3 resolution point (node 7, 2025, 0.25 MVA / 0.5 MWh lattice)",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      1.25,
+      3.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "b427fc258e5a19ccf38687ffb242759139ab9083af345ad9e868e90f9902965e",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "7": [
+     1.25,
+     3.5
+    ]
+   },
+   "I_new_eur": 1208968.526359903,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 320396.65532482706,
+   "I_new_energy_eur": 888571.8710350759,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "7|2025": {
+     "power": 320396.65532482706,
+     "energy": 888571.8710350759,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 0.0,
+   "I_new_eur_p56a_transcription": 1208968.5263599032,
+   "abs_diff_master_vs_p56a_eur": 2.3283064365386963e-10,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": -208968.52635990293,
+   "budget_slack_from_master_row_eur": -208968.52635990293,
+   "budget_feasible": false,
+   "max_energy_per_node_mwh": 3.5,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": false,
+   "first_stage_reasons": "investment budget violated",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "res_n7_p1.5_e3.5_y2025": {
+   "source": "W16 (C) A3 resolution point (node 7, 2025, 0.25 MVA / 0.5 MWh lattice)",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      1.5,
+      3.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "2b27083604eec084f24125364b4989b577293db63303a822440edc1b15c71d40",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "7": [
+     1.5,
+     3.5
+    ]
+   },
+   "I_new_eur": 1273047.8574248685,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 384475.9863897925,
+   "I_new_energy_eur": 888571.8710350759,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "7|2025": {
+     "power": 384475.9863897925,
+     "energy": 888571.8710350759,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 2.3283064365386963e-10,
+   "I_new_eur_p56a_transcription": 1273047.8574248685,
+   "abs_diff_master_vs_p56a_eur": 0.0,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": -273047.8574248685,
+   "budget_slack_from_master_row_eur": -273047.8574248685,
+   "budget_feasible": false,
+   "max_energy_per_node_mwh": 3.5,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": false,
+   "first_stage_reasons": "investment budget violated",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "res_n7_p1.75_e3.5_y2025": {
+   "source": "W16 (C) A3 resolution point (node 7, 2025, 0.25 MVA / 0.5 MWh lattice)",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      1.75,
+      3.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "8b321b9fe9b528247861a97167d92938920a0a06af88abd31cdb898b6659e1c6",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "7": [
+     1.75,
+     3.5
+    ]
+   },
+   "I_new_eur": 1337127.1884898338,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 448555.3174547579,
+   "I_new_energy_eur": 888571.8710350759,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "7|2025": {
+     "power": 448555.3174547579,
+     "energy": 888571.8710350759,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 0.0,
+   "I_new_eur_p56a_transcription": 1337127.1884898338,
+   "abs_diff_master_vs_p56a_eur": 0.0,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": -337127.18848983385,
+   "budget_slack_from_master_row_eur": -337127.18848983385,
+   "budget_feasible": false,
+   "max_energy_per_node_mwh": 3.5,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": false,
+   "first_stage_reasons": "investment budget violated",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "res_n7_p1.25_e4.5_y2025": {
+   "source": "W16 (C) A3 resolution point (node 7, 2025, 0.25 MVA / 0.5 MWh lattice)",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      1.25,
+      4.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "44c40574f84ca528a80775dcef21fe7ae52713216abf1179f74c148440c532ab",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "7": [
+     1.25,
+     4.5
+    ]
+   },
+   "I_new_eur": 1462846.2037984962,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 320396.65532482706,
+   "I_new_energy_eur": 1142449.548473669,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "7|2025": {
+     "power": 320396.65532482706,
+     "energy": 1142449.548473669,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 0.0,
+   "I_new_eur_p56a_transcription": 1462846.203798496,
+   "abs_diff_master_vs_p56a_eur": 2.3283064365386963e-10,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": -462846.20379849616,
+   "budget_slack_from_master_row_eur": -462846.20379849616,
+   "budget_feasible": false,
+   "max_energy_per_node_mwh": 4.5,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": false,
+   "first_stage_reasons": "investment budget violated",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "res_n7_p1.5_e4.5_y2025": {
+   "source": "W16 (C) A3 resolution point (node 7, 2025, 0.25 MVA / 0.5 MWh lattice)",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      1.5,
+      4.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "c6938af91713e6ff81a7d60b75302d61b49b7ebe28b4d60511a1e7c20f2d686a",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "7": [
+     1.5,
+     4.5
+    ]
+   },
+   "I_new_eur": 1526925.5348634617,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 384475.9863897925,
+   "I_new_energy_eur": 1142449.548473669,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "7|2025": {
+     "power": 384475.9863897925,
+     "energy": 1142449.548473669,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 2.3283064365386963e-10,
+   "I_new_eur_p56a_transcription": 1526925.5348634617,
+   "abs_diff_master_vs_p56a_eur": 0.0,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": -526925.5348634617,
+   "budget_slack_from_master_row_eur": -526925.5348634617,
+   "budget_feasible": false,
+   "max_energy_per_node_mwh": 4.5,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": false,
+   "first_stage_reasons": "investment budget violated",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "res_n7_p1.75_e4.5_y2025": {
+   "source": "W16 (C) A3 resolution point (node 7, 2025, 0.25 MVA / 0.5 MWh lattice)",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      1.75,
+      4.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "add3b33dbfdd42a73bcf6aadb693253796ad19f8ff3feb4e4e677814c17a6e75",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "7": [
+     1.75,
+     4.5
+    ]
+   },
+   "I_new_eur": 1591004.8659284269,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 448555.3174547579,
+   "I_new_energy_eur": 1142449.548473669,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "7|2025": {
+     "power": 448555.3174547579,
+     "energy": 1142449.548473669,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 0.0,
+   "I_new_eur_p56a_transcription": 1591004.8659284269,
+   "abs_diff_master_vs_p56a_eur": 0.0,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": -591004.8659284269,
+   "budget_slack_from_master_row_eur": -591004.8659284269,
+   "budget_feasible": false,
+   "max_energy_per_node_mwh": 4.5,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": false,
+   "first_stage_reasons": "investment budget violated",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "res_n7_p2_e4.5_y2025": {
+   "source": "W16 (C) A3 resolution point (node 7, 2025, 0.25 MVA / 0.5 MWh lattice)",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      2.0,
+      4.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "95b18224ba5de1e4630fba128fe421ab0b4a18928527c850d1f30f2f9b0291d2",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "7": [
+     2.0,
+     4.5
+    ]
+   },
+   "I_new_eur": 1655084.1969933927,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 512634.6485197233,
+   "I_new_energy_eur": 1142449.548473669,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "7|2025": {
+     "power": 512634.6485197233,
+     "energy": 1142449.548473669,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 2.3283064365386963e-10,
+   "I_new_eur_p56a_transcription": 1655084.1969933924,
+   "abs_diff_master_vs_p56a_eur": 2.3283064365386963e-10,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": -655084.1969933927,
+   "budget_slack_from_master_row_eur": -655084.1969933927,
+   "budget_feasible": false,
+   "max_energy_per_node_mwh": 4.5,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": false,
+   "first_stage_reasons": "investment budget violated",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "res_n7_p2.25_e4.5_y2025": {
+   "source": "W16 (C) A3 resolution point (node 7, 2025, 0.25 MVA / 0.5 MWh lattice)",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      2.25,
+      4.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "773240eaeaa651955c5698541a93ef6125069a5183380a15f50a3b833436ba9d",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "7": [
+     2.25,
+     4.5
+    ]
+   },
+   "I_new_eur": 1719163.5280583578,
+   "I_new_eur_provenance": "computed here (production master model.investment_cost)",
+   "I_new_power_eur": 576713.9795846888,
+   "I_new_energy_eur": 1142449.548473669,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "7|2025": {
+     "power": 576713.9795846888,
+     "energy": 1142449.548473669,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 0.0,
+   "I_new_eur_p56a_transcription": 1719163.5280583578,
+   "abs_diff_master_vs_p56a_eur": 0.0,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": -719163.5280583578,
+   "budget_slack_from_master_row_eur": -719163.5280583578,
+   "budget_feasible": false,
+   "max_energy_per_node_mwh": 4.5,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": false,
+   "first_stage_reasons": "investment budget violated",
+   "already_evaluated_as": null,
+   "predecessor_reuse": null,
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  },
+  "res_n7_p0.5_e1_y2025": {
+   "source": "W16 (C) A3 resolution point (node 7, 2025, 0.25 MVA / 0.5 MWh lattice)",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.5,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "3993aebc641d4dadd34f6c27ac7061fb620724dd9eb8ca0e368ce3e70d578489",
+   "investment_year": 2025,
+   "nodes_nonzero": {
+    "7": [
+     0.5,
+     1.0
+    ]
+   },
+   "I_new_eur": 382036.339568524,
+   "I_new_eur_provenance": "REUSED from the predecessor table (candidate already covered there); the recomputation here agrees and is recorded as a cross-check",
+   "I_new_power_eur": 128158.66212993083,
+   "I_new_energy_eur": 253877.6774385931,
+   "I_new_constant_eur": 0.0,
+   "I_by_node_year_eur": {
+    "7|2025": {
+     "power": 128158.66212993083,
+     "energy": 253877.6774385931,
+     "coef_power_eur_per_mva": 256317.32425986166,
+     "coef_energy_eur_per_mwh": 253877.6774385931
+    }
+   },
+   "abs_diff_split_sum_vs_master_eur": 5.820766091346741e-11,
+   "I_new_eur_p56a_transcription": 382036.3395685239,
+   "abs_diff_master_vs_p56a_eur": 5.820766091346741e-11,
+   "budget_eur": 1000000.0,
+   "budget_slack_B_minus_I_eur": 617963.6604314761,
+   "budget_slack_from_master_row_eur": 617963.6604314761,
+   "budget_feasible": true,
+   "max_energy_per_node_mwh": 1.0,
+   "energy_le_5_mwh_per_node": true,
+   "max_capacity_rows_violated": [],
+   "ratio_rows_violated": [],
+   "first_stage_feasible_production_check": true,
+   "first_stage_reasons": "",
+   "already_evaluated_as": "a1a:n7_2h_e1",
+   "predecessor_reuse": {
+    "present_in_predecessor": true,
+    "predecessor_labels": [
+     "n7_2h_e1"
+    ],
+    "predecessor_path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+    "predecessor_sha256": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "I_new_eur_frozen_AUTHORITATIVE": 382036.339568524,
+    "predecessor_entries_agree": true,
+    "slack_new_eur_frozen": 617963.6604314761,
+    "budget_feasible_new_frozen": true,
+    "recomputed_here_crosscheck_eur": 382036.339568524,
+    "abs_diff_recomputed_vs_frozen_eur": 0.0
+   },
+   "cost_file_new_sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "cost_file_superseded_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR, REPORTED only; the budget is NOT applied in Phase A (spec v15 master_constraints.budget)."
+  }
+ },
+ "sigma_Q_estimate": {
+  "status": "ESTIMATE from existing ladders (zero new evaluations)",
+  "formula": "For each ladder (stage, node, duration h, investment year) already evaluated, with points (E_i, Q_i), Q_i = certified_cost_gross_settlement_excluded (GROSS, settlement-excluded): fit Q by ordinary least squares (numpy.linalg.lstsq, rcond=None) on the design matrix X = [1, E, E^2] (primary; the linear basis [1, E] is reported beside it). residual_i = Q_i - Qhat_i; sigma_Q(ladder) = max_i |residual_i|; fraction = sigma_Q(ladder) / mean_i(Q_i). Campaign-level estimate = max and median of sigma_Q(ladder) over the ladders, with the same fractions. This is the operative reading of spec v15 A3 / STEP4 4.3 \"the largest non-monotone jump in Q along the ladder relative to the smooth trend\": the smooth trend is the quadratic least-squares fit and the jump is the deviation from it.",
+  "caveat": "ESTIMATE from the EXISTING 5-point ladders, not the A3 measurement. (i) 5 points and 3 fitted parameters leave 2 degrees of freedom, so the fit absorbs part of any real curvature and the residual is a LOWER bound on what a denser ladder would expose. (ii) The ladder spacing is 1 MWh; sigma_Q is meant to bound the oracle noise at the 0.5 MWh / 0.25 MVA lattice step, which no existing ladder resolves. (iii) The residual mixes oracle noise with model misspecification: a genuinely non-quadratic Q(E) inflates it.",
+  "objective_convention": "Q(x) = certified_cost_gross_settlement_excluded (GROSS operational cost, settlement-excluded); F(x) = I(x) + Q(x); terminal_salvage_value and net_operational_recourse are reported by the campaigns and are EXCLUDED from F.",
+  "n_ladders": 10,
+  "sigma_Q_max_eur": 28208.383944034576,
+  "sigma_Q_median_eur": 14374.984492063522,
+  "sigma_Q_min_eur": 5208.62533891201,
+  "sigma_Q_max_fraction": 4.318987698409996e-05,
+  "sigma_Q_median_fraction": 2.200181228848055e-05,
+  "sigma_Q_min_fraction": 7.971855816029277e-06,
+  "provisional_fraction": 0.00011,
+  "provisional_eur_at_mean_Q": 71857.4764875275,
+  "mean_Q_over_all_ladders_eur": 653249786.25025,
+  "ratio_estimate_max_over_provisional": 0.3926352453099996,
+  "ratio_estimate_median_over_provisional": 0.20001647534982317,
+  "bars": {
+   "n": 50,
+   "max_eur": 35469.37648844719,
+   "mean_eur": 10050.271199798584,
+   "min_eur": 830.5430274009705,
+   "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (the campaign harness bar, fixed on the GROSS step by W5)",
+   "sigma_Q_max_over_max_bar": 0.7952884075428389
+  },
+  "per_ladder": {
+   "a1a|n5|2h|y2025": {
+    "points": [
+     {
+      "label": "n5_2h_e1",
+      "candidate_key": "2a1302016f89621c85fb641fcdf48f7b3195c6b584106f5ea1f084dbf176827d",
+      "E_mwh": 1.0,
+      "P_mva": 0.5,
+      "Q_gross_eur": 653587843.3094332,
+      "I_x_eur": 382036.339568524,
+      "F_eur": 653969879.6490017,
+      "bar_eur": 4611.616446614265
+     },
+     {
+      "label": "n5_2h_e2",
+      "candidate_key": "5097b0c6b14ee8d5b8b8471e528d16fe16389b1444683c774d90de530696044a",
+      "E_mwh": 2.0,
+      "P_mva": 1.0,
+      "Q_gross_eur": 653310380.4847403,
+      "I_x_eur": 764072.679137048,
+      "F_eur": 654074453.1638772,
+      "bar_eur": 7961.725013256073
+     },
+     {
+      "label": "n5_2h_e3",
+      "candidate_key": "bb375de471aaf4b7480243d4f43d55c7ff52c5366ef1ca60d62af1d6367e9764",
+      "E_mwh": 3.0,
+      "P_mva": 1.5,
+      "Q_gross_eur": 653076367.4373538,
+      "I_x_eur": 1146109.018705572,
+      "F_eur": 654222476.4560595,
+      "bar_eur": 2251.4974488019943
+     },
+     {
+      "label": "n5_2h_e4",
+      "candidate_key": "f20fb813dfef7d635d95bf970070cbf2aec08e4b392ac7624a472ac225168a8d",
+      "E_mwh": 4.0,
+      "P_mva": 2.0,
+      "Q_gross_eur": 652796655.5654054,
+      "I_x_eur": 1528145.358274096,
+      "F_eur": 654324800.9236795,
+      "bar_eur": 9446.56540620327
+     },
+     {
+      "label": "n5_2h_e5",
+      "candidate_key": "302735fb198422fe5e9155350f0c4635458b6adfc51e7383b6419560ecb51f88",
+      "E_mwh": 5.0,
+      "P_mva": 2.5,
+      "Q_gross_eur": 652564046.8559694,
+      "I_x_eur": 1910181.6978426196,
+      "F_eur": 654474228.553812,
+      "bar_eur": 3089.4753794670105
+     }
+    ],
+    "E_mwh": [
+     1.0,
+     2.0,
+     3.0,
+     4.0,
+     5.0
+    ],
+    "Q_gross_eur": [
+     653587843.3094332,
+     653310380.4847403,
+     653076367.4373538,
+     652796655.5654054,
+     652564046.8559694
+    ],
+    "mean_Q_eur": 653067058.7305804,
+    "monotone_decreasing_in_E": true,
+    "first_differences_eur": [
+     -277462.82469296455,
+     -234013.04738640785,
+     -279711.8719484806,
+     -232608.7094359398
+    ],
+    "second_differences_eur": [
+     43449.7773065567,
+     -45698.824562072754,
+     47103.16251254082
+    ],
+    "max_abs_second_difference_eur": 47103.16251254082,
+    "quadratic_fit": {
+     "basis": [
+      "E^0",
+      "E^1",
+      "E^2"
+     ],
+     "coefficients": [
+      653857458.781435,
+      -274992.95660555246,
+      3143.52899653535
+     ],
+     "rank": 3,
+     "n_points": 5,
+     "dof": 2,
+     "fitted": [
+      653585609.353826,
+      653320046.98421,
+      653060771.6725872,
+      652807783.4189574,
+      652561082.2233206
+     ],
+     "residuals": [
+      2233.955607175827,
+      -9666.49946975708,
+      15595.764766693115,
+      -11127.853551983833,
+      2964.6326488256454
+     ],
+     "max_abs_residual_eur": 15595.764766693115,
+     "rms_residual_eur": 9739.382113137925
+    },
+    "linear_fit": {
+     "basis": [
+      "E^0",
+      "E^1"
+     ],
+     "coefficients": [
+      653835454.078459,
+      -256131.78262627398
+     ],
+     "rank": 2,
+     "n_points": 5,
+     "dof": 3,
+     "fitted": [
+      653579322.2958328,
+      653323190.5132065,
+      653067058.7305802,
+      652810926.9479539,
+      652554795.1653277
+     ],
+     "residuals": [
+      8521.013600468636,
+      -12810.02846622467,
+      9308.706773638725,
+      -14271.382548570633,
+      9251.690641760826
+     ],
+     "max_abs_residual_eur": 14271.382548570633,
+     "rms_residual_eur": 11069.080029170776
+    },
+    "sigma_Q_eur": 15595.764766693115,
+    "sigma_Q_fraction_of_mean_Q": 2.3880801455531798e-05,
+    "sigma_Q_at_label": "n5_2h_e3",
+    "sigma_Q_at_E_mwh": 3.0,
+    "bars_eur": [
+     4611.616446614265,
+     7961.725013256073,
+     2251.4974488019943,
+     9446.56540620327,
+     3089.4753794670105
+    ],
+    "max_bar_eur": 9446.56540620327,
+    "mean_bar_eur": 5472.175938868522,
+    "sigma_Q_over_max_bar": 1.6509455125830024
+   },
+   "a1a|n5|4h|y2025": {
+    "points": [
+     {
+      "label": "n5_4h_e1",
+      "candidate_key": "1821665996ec6edb3492c4e914352e8a47bcc764c8bea1ca82639ab24570ef85",
+      "E_mwh": 1.0,
+      "P_mva": 0.25,
+      "Q_gross_eur": 653614718.0344155,
+      "I_x_eur": 317957.0085035586,
+      "F_eur": 653932675.042919,
+      "bar_eur": 3815.9751472473145
+     },
+     {
+      "label": "n5_4h_e2",
+      "candidate_key": "3eed1a1ec1a77fe3860fdcce21ce6b7f5f911d0973a9402656bceb2b0ba368cd",
+      "E_mwh": 2.0,
+      "P_mva": 0.5,
+      "Q_gross_eur": 653337271.4641526,
+      "I_x_eur": 635914.0170071172,
+      "F_eur": 653973185.4811597,
+      "bar_eur": 10862.156528949738
+     },
+     {
+      "label": "n5_4h_e3",
+      "candidate_key": "32acd70c1b795e3413f9a36215d4f58fe825ad89fce8a205819e8ea2ec2b11aa",
+      "E_mwh": 3.0,
+      "P_mva": 0.75,
+      "Q_gross_eur": 653109230.433311,
+      "I_x_eur": 953871.0255106756,
+      "F_eur": 654063101.4588217,
+      "bar_eur": 14465.89906013012
+     },
+     {
+      "label": "n5_4h_e4",
+      "candidate_key": "f92d165248fe348bfd2043df12a7e29d0dd07e4c302bebe369ec1947f4c5ac77",
+      "E_mwh": 4.0,
+      "P_mva": 1.0,
+      "Q_gross_eur": 652853134.6114208,
+      "I_x_eur": 1271828.0340142343,
+      "F_eur": 654124962.645435,
+      "bar_eur": 9987.488384723663
+     },
+     {
+      "label": "n5_4h_e5",
+      "candidate_key": "f0bfdf1c8adb7c398dd5fd9803cfaf012257959345b74678591ffe5106d01c8f",
+      "E_mwh": 5.0,
+      "P_mva": 1.25,
+      "Q_gross_eur": 652608641.7326849,
+      "I_x_eur": 1589785.0425177924,
+      "F_eur": 654198426.7752026,
+      "bar_eur": 6906.924669981003
+     }
+    ],
+    "E_mwh": [
+     1.0,
+     2.0,
+     3.0,
+     4.0,
+     5.0
+    ],
+    "Q_gross_eur": [
+     653614718.0344155,
+     653337271.4641526,
+     653109230.433311,
+     652853134.6114208,
+     652608641.7326849
+    ],
+    "mean_Q_eur": 653104599.2551969,
+    "monotone_decreasing_in_E": true,
+    "first_differences_eur": [
+     -277446.57026290894,
+     -228041.03084158897,
+     -256095.82189023495,
+     -244492.87873589993
+    ],
+    "second_differences_eur": [
+     49405.53942131996,
+     -28054.791048645973,
+     11602.943154335022
+    ],
+    "max_abs_second_difference_eur": 49405.53942131996,
+    "quadratic_fit": {
+     "basis": [
+      "E^0",
+      "E^1",
+      "E^2"
+     ],
+     "coefficients": [
+      653872412.3880574,
+      -265851.485050064,
+      2703.7565717778025
+     ],
+     "rank": 3,
+     "n_points": 5,
+     "dof": 2,
+     "fitted": [
+      653609264.659579,
+      653351524.4442443,
+      653099191.7420532,
+      652852266.5530056,
+      652610748.8771015
+     ],
+     "residuals": [
+      5453.374836444855,
+      -14252.980091691017,
+      10038.691257834435,
+      868.0584151744843,
+      -2107.1444166898727
+     ],
+     "max_abs_residual_eur": 14252.980091691017,
+     "rms_residual_eur": 8232.32219699854
+    },
+    "linear_fit": {
+     "basis": [
+      "E^0",
+      "E^1"
+     ],
+     "coefficients": [
+      653853486.0920546,
+      -249628.9456193216
+     ],
+     "rank": 2,
+     "n_points": 5,
+     "dof": 3,
+     "fitted": [
+      653603857.1464353,
+      653354228.2008159,
+      653104599.2551967,
+      652854970.3095773,
+      652605341.363958
+     ],
+     "residuals": [
+      10860.887980222702,
+      -16956.736663341522,
+      4631.178114295006,
+      -1835.69815659523,
+      3300.368726849556
+     ],
+     "max_abs_residual_eur": 16956.736663341522,
+     "rms_residual_eur": 9393.613129892834
+    },
+    "sigma_Q_eur": 14252.980091691017,
+    "sigma_Q_fraction_of_mean_Q": 2.182342630559511e-05,
+    "sigma_Q_at_label": "n5_4h_e2",
+    "sigma_Q_at_E_mwh": 2.0,
+    "bars_eur": [
+     3815.9751472473145,
+     10862.156528949738,
+     14465.89906013012,
+     9987.488384723663,
+     6906.924669981003
+    ],
+    "max_bar_eur": 14465.89906013012,
+    "mean_bar_eur": 9207.688758206368,
+    "sigma_Q_over_max_bar": 0.9852813179772605
+   },
+   "a1a|n7|2h|y2025": {
+    "points": [
+     {
+      "label": "n7_2h_e1",
+      "candidate_key": "3993aebc641d4dadd34f6c27ac7061fb620724dd9eb8ca0e368ce3e70d578489",
+      "E_mwh": 1.0,
+      "P_mva": 0.5,
+      "Q_gross_eur": 653598722.5512207,
+      "I_x_eur": 382036.339568524,
+      "F_eur": 653980758.8907892,
+      "bar_eur": 5953.059683203697
+     },
+     {
+      "label": "n7_2h_e2",
+      "candidate_key": "423e5a7f623eb10621b4930e7dfe4874a962e9d3a2ad33b188b2bdef74711c5d",
+      "E_mwh": 2.0,
+      "P_mva": 1.0,
+      "Q_gross_eur": 653325523.0600035,
+      "I_x_eur": 764072.679137048,
+      "F_eur": 654089595.7391405,
+      "bar_eur": 6800.665172219276
+     },
+     {
+      "label": "n7_2h_e3",
+      "candidate_key": "2cd1de8249cfca8da7573d91c62f9ade6c603ba78a0c53558a1b128c04e62292",
+      "E_mwh": 3.0,
+      "P_mva": 1.5,
+      "Q_gross_eur": 653099300.5928335,
+      "I_x_eur": 1146109.018705572,
+      "F_eur": 654245409.6115391,
+      "bar_eur": 2690.204809784889
+     },
+     {
+      "label": "n7_2h_e4",
+      "candidate_key": "7048a00e13045688423a24099e3154de507dad90390b8a3967413dc5056f106c",
+      "E_mwh": 4.0,
+      "P_mva": 2.0,
+      "Q_gross_eur": 652821679.079392,
+      "I_x_eur": 1528145.358274096,
+      "F_eur": 654349824.437666,
+      "bar_eur": 9999.968162178993
+     },
+     {
+      "label": "n7_2h_e5",
+      "candidate_key": "354b38814b9c1147c2dfc0c5e93102dc165b4b0e52ab11657002f77ea1f67ca7",
+      "E_mwh": 5.0,
+      "P_mva": 2.5,
+      "Q_gross_eur": 652589462.8330867,
+      "I_x_eur": 1910181.6978426196,
+      "F_eur": 654499644.5309293,
+      "bar_eur": 4721.014556288719
+     }
+    ],
+    "E_mwh": [
+     1.0,
+     2.0,
+     3.0,
+     4.0,
+     5.0
+    ],
+    "Q_gross_eur": [
+     653598722.5512207,
+     653325523.0600035,
+     653099300.5928335,
+     652821679.079392,
+     652589462.8330867
+    ],
+    "mean_Q_eur": 653086937.6233072,
+    "monotone_decreasing_in_E": true,
+    "first_differences_eur": [
+     -273199.4912171364,
+     -226222.46717000008,
+     -277621.51344156265,
+     -232216.24630522728
+    ],
+    "second_differences_eur": [
+     46977.02404713631,
+     -51399.046271562576,
+     45405.26713633537
+    ],
+    "max_abs_second_difference_eur": 51399.046271562576,
+    "quadratic_fit": {
+     "basis": [
+      "E^0",
+      "E^1",
+      "E^2"
+     ],
+     "coefficients": [
+      653858930.3701463,
+      -265336.674638462,
+      2183.3888250943837
+     ],
+     "rank": 3,
+     "n_points": 5,
+     "dof": 2,
+     "fitted": [
+      653595777.0843328,
+      653336990.5761697,
+      653082570.8456568,
+      652832517.892794,
+      652586831.7175813
+     ],
+     "residuals": [
+      2945.466887831688,
+      -11467.516166210175,
+      16729.747176766396,
+      -10838.813402056694,
+      2631.1155054569244
+     ],
+     "max_abs_residual_eur": 16729.747176766396,
+     "rms_residual_eur": 10435.19801034736
+    },
+    "linear_fit": {
+     "basis": [
+      "E^0",
+      "E^1"
+     ],
+     "coefficients": [
+      653843646.6483705,
+      -252236.34168788948
+     ],
+     "rank": 2,
+     "n_points": 5,
+     "dof": 3,
+     "fitted": [
+      653591410.3066826,
+      653339173.9649947,
+      653086937.6233069,
+      652834701.281619,
+      652582464.939931
+     ],
+     "residuals": [
+      7312.244538068771,
+      -13650.904991149902,
+      12362.969526648521,
+      -13022.202226996422,
+      6997.893155694008
+     ],
+     "max_abs_residual_eur": 13650.904991149902,
+     "rms_residual_eur": 11056.286919559001
+    },
+    "sigma_Q_eur": 16729.747176766396,
+    "sigma_Q_fraction_of_mean_Q": 2.5616416763208813e-05,
+    "sigma_Q_at_label": "n7_2h_e3",
+    "sigma_Q_at_E_mwh": 3.0,
+    "bars_eur": [
+     5953.059683203697,
+     6800.665172219276,
+     2690.204809784889,
+     9999.968162178993,
+     4721.014556288719
+    ],
+    "max_bar_eur": 9999.968162178993,
+    "mean_bar_eur": 6032.982476735115,
+    "sigma_Q_over_max_bar": 1.6729800440805587
+   },
+   "a1a|n7|4h|y2025": {
+    "points": [
+     {
+      "label": "n7_4h_e1",
+      "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+      "E_mwh": 1.0,
+      "P_mva": 0.25,
+      "Q_gross_eur": 653597653.7234993,
+      "I_x_eur": 317957.0085035586,
+      "F_eur": 653915610.7320029,
+      "bar_eur": 11340.31878066063
+     },
+     {
+      "label": "n7_4h_e2",
+      "candidate_key": "cc4eb5df385852e67c612ab21d74526d90a2c66f5c7c934889ce4f67731c4ffe",
+      "E_mwh": 2.0,
+      "P_mva": 0.5,
+      "Q_gross_eur": 653372839.7001317,
+      "I_x_eur": 635914.0170071172,
+      "F_eur": 654008753.7171388,
+      "bar_eur": 6212.0297157764435
+     },
+     {
+      "label": "n7_4h_e3",
+      "candidate_key": "fb21d822e145ba68c8c65c3fbb9793ddfcb038df172f0f2f08956998c8d81aac",
+      "E_mwh": 3.0,
+      "P_mva": 0.75,
+      "Q_gross_eur": 653123596.7996123,
+      "I_x_eur": 953871.0255106756,
+      "F_eur": 654077467.825123,
+      "bar_eur": 8423.915330410004
+     },
+     {
+      "label": "n7_4h_e4",
+      "candidate_key": "11725e45371a0c7fbd6553b61784bdcd628dedbceb4df0547b11ff2538c32321",
+      "E_mwh": 4.0,
+      "P_mva": 1.0,
+      "Q_gross_eur": 652873847.3082701,
+      "I_x_eur": 1271828.0340142343,
+      "F_eur": 654145675.3422843,
+      "bar_eur": 11330.328626990318
+     },
+     {
+      "label": "n7_4h_e5",
+      "candidate_key": "cab98853bb31f72fbdfc273a6d84b2ba8edbf5d451ec1cebb2529a1c6aaaf823",
+      "E_mwh": 5.0,
+      "P_mva": 1.25,
+      "Q_gross_eur": 652650749.0643446,
+      "I_x_eur": 1589785.0425177924,
+      "F_eur": 654240534.1068624,
+      "bar_eur": 4082.620955467224
+     }
+    ],
+    "E_mwh": [
+     1.0,
+     2.0,
+     3.0,
+     4.0,
+     5.0
+    ],
+    "Q_gross_eur": [
+     653597653.7234993,
+     653372839.7001317,
+     653123596.7996123,
+     652873847.3082701,
+     652650749.0643446
+    ],
+    "mean_Q_eur": 653123737.3191715,
+    "monotone_decreasing_in_E": true,
+    "first_differences_eur": [
+     -224814.02336764336,
+     -249242.90051937103,
+     -249749.49134218693,
+     -223098.24392545223
+    ],
+    "second_differences_eur": [
+     -24428.877151727676,
+     -506.5908228158951,
+     26651.247416734695
+    ],
+    "max_abs_second_difference_eur": 26651.247416734695,
+    "quadratic_fit": {
+     "basis": [
+      "E^0",
+      "E^1",
+      "E^2"
+     ],
+     "coefficients": [
+      653843040.3162527,
+      -240533.7287572847,
+      208.92629002574117
+     ],
+     "rank": 3,
+     "n_points": 5,
+     "dof": 2,
+     "fitted": [
+      653602715.5137855,
+      653362808.5638983,
+      653123319.466591,
+      652884248.221864,
+      652645594.8297169
+     ],
+     "residuals": [
+      -5061.790286183357,
+      10031.136233329773,
+      277.3330212831497,
+      -10400.913593888283,
+      5154.234627723694
+     ],
+     "max_abs_residual_eur": 10400.913593888283,
+     "rms_residual_eur": 7225.890489382907
+    },
+    "linear_fit": {
+     "basis": [
+      "E^0",
+      "E^1"
+     ],
+     "coefficients": [
+      653841577.8322221,
+      -239280.17101701605
+     ],
+     "rank": 2,
+     "n_points": 5,
+     "dof": 3,
+     "fitted": [
+      653602297.661205,
+      653363017.4901881,
+      653123737.3191711,
+      652884457.148154,
+      652645176.977137
+     ],
+     "residuals": [
+      -4643.937705755234,
+      9822.209943532944,
+      -140.5195587873459,
+      -10609.83988392353,
+      5572.08720767498
+     ],
+     "max_abs_residual_eur": 10609.83988392353,
+     "rms_residual_eur": 7234.342672953833
+    },
+    "sigma_Q_eur": 10400.913593888283,
+    "sigma_Q_fraction_of_mean_Q": 1.592487456753622e-05,
+    "sigma_Q_at_label": "n7_4h_e4",
+    "sigma_Q_at_E_mwh": 4.0,
+    "bars_eur": [
+     11340.31878066063,
+     6212.0297157764435,
+     8423.915330410004,
+     11330.328626990318,
+     4082.620955467224
+    ],
+    "max_bar_eur": 11340.31878066063,
+    "mean_bar_eur": 8277.842681860924,
+    "sigma_Q_over_max_bar": 0.917162365102613
+   },
+   "a1a|n9|2h|y2025": {
+    "points": [
+     {
+      "label": "n9_2h_e1",
+      "candidate_key": "75271798795beebe10bee15fc5e4f8f9bdc8758dbbb8dd0f46c8890381edf547",
+      "E_mwh": 1.0,
+      "P_mva": 0.5,
+      "Q_gross_eur": 653590205.4983026,
+      "I_x_eur": 382036.339568524,
+      "F_eur": 653972241.8378711,
+      "bar_eur": 5759.765527367592
+     },
+     {
+      "label": "n9_2h_e2",
+      "candidate_key": "46628fb108a5ab88af50d491cf7032a6bb2504c7a662a92310e1986419d3bc14",
+      "E_mwh": 2.0,
+      "P_mva": 1.0,
+      "Q_gross_eur": 653307646.9815872,
+      "I_x_eur": 764072.679137048,
+      "F_eur": 654071719.6607242,
+      "bar_eur": 10139.91791844368
+     },
+     {
+      "label": "n9_2h_e3",
+      "candidate_key": "dd970259278dd74247b29d9beca6bfc109a215d4c8e397c2729c57853c9c533e",
+      "E_mwh": 3.0,
+      "P_mva": 1.5,
+      "Q_gross_eur": 653082632.866926,
+      "I_x_eur": 1146109.018705572,
+      "F_eur": 654228741.8856316,
+      "bar_eur": 9296.303857326508
+     },
+     {
+      "label": "n9_2h_e4",
+      "candidate_key": "30d0f10d376bc8eca985ccb1cf218ce31b33c3a6a38eedfde0b77a726c6179f9",
+      "E_mwh": 4.0,
+      "P_mva": 2.0,
+      "Q_gross_eur": 652804572.325414,
+      "I_x_eur": 1528145.358274096,
+      "F_eur": 654332717.683688,
+      "bar_eur": 1096.031464934349
+     },
+     {
+      "label": "n9_2h_e5",
+      "candidate_key": "a2a2bd2b7e9d2437c179e9ca409a78128ee0623cf2eefb09dafc2d8cc2b2cfbf",
+      "E_mwh": 5.0,
+      "P_mva": 2.5,
+      "Q_gross_eur": 652566422.1858051,
+      "I_x_eur": 1910181.6978426196,
+      "F_eur": 654476603.8836477,
+      "bar_eur": 2763.89946269989
+     }
+    ],
+    "E_mwh": [
+     1.0,
+     2.0,
+     3.0,
+     4.0,
+     5.0
+    ],
+    "Q_gross_eur": [
+     653590205.4983026,
+     653307646.9815872,
+     653082632.866926,
+     652804572.325414,
+     652566422.1858051
+    ],
+    "mean_Q_eur": 653070295.971607,
+    "monotone_decreasing_in_E": true,
+    "first_differences_eur": [
+     -282558.5167154074,
+     -225014.11466121674,
+     -278060.5415120125,
+     -238150.13960886002
+    ],
+    "second_differences_eur": [
+     57544.402054190636,
+     -53046.426850795746,
+     39910.401903152466
+    ],
+    "max_abs_second_difference_eur": 57544.402054190636,
+    "quadratic_fit": {
+     "basis": [
+      "E^0",
+      "E^1",
+      "E^2"
+     ],
+     "coefficients": [
+      653853373.5196385,
+      -270394.2684149991,
+      2555.023383023322
+     ],
+     "rank": 3,
+     "n_points": 5,
+     "dof": 2,
+     "fitted": [
+      653585534.2746066,
+      653322805.0763407,
+      653065185.9248407,
+      652812676.8201069,
+      652565277.7621391
+     ],
+     "residuals": [
+      4671.2236959934235,
+      -15158.0947535038,
+      17446.942085266113,
+      -8104.4946929216385,
+      1144.4236660003662
+     ],
+     "max_abs_residual_eur": 17446.942085266113,
+     "rms_residual_eur": 11162.22643790867
+    },
+    "linear_fit": {
+     "basis": [
+      "E^0",
+      "E^1"
+     ],
+     "coefficients": [
+      653835488.3559573,
+      -255064.12811683986
+     ],
+     "rank": 2,
+     "n_points": 5,
+     "dof": 3,
+     "fitted": [
+      653580424.2278404,
+      653325360.0997236,
+      653070295.9716067,
+      652815231.8434899,
+      652560167.715373
+     ],
+     "residuals": [
+      9781.270462155342,
+      -17713.118136405945,
+      12336.895319223404,
+      -10659.518075942993,
+      6254.470432043076
+     ],
+     "max_abs_residual_eur": 17713.118136405945,
+     "rms_residual_eur": 11952.99559175221
+    },
+    "sigma_Q_eur": 17446.942085266113,
+    "sigma_Q_fraction_of_mean_Q": 2.6715258974241633e-05,
+    "sigma_Q_at_label": "n9_2h_e3",
+    "sigma_Q_at_E_mwh": 3.0,
+    "bars_eur": [
+     5759.765527367592,
+     10139.91791844368,
+     9296.303857326508,
+     1096.031464934349,
+     2763.89946269989
+    ],
+    "max_bar_eur": 10139.91791844368,
+    "mean_bar_eur": 5811.1836461544035,
+    "sigma_Q_over_max_bar": 1.7206196564502318
+   },
+   "a1a|n9|4h|y2025": {
+    "points": [
+     {
+      "label": "n9_4h_e1",
+      "candidate_key": "a361ac9321459482d0dc53245f7f1711cb4fe2a541f50350e2f3bad6b7588710",
+      "E_mwh": 1.0,
+      "P_mva": 0.25,
+      "Q_gross_eur": 653602441.5951662,
+      "I_x_eur": 317957.0085035586,
+      "F_eur": 653920398.6036698,
+      "bar_eur": 11766.427225589752
+     },
+     {
+      "label": "n9_4h_e2",
+      "candidate_key": "6ed97c64f357dbdca7169367a85822e33fb5e410485884cbdd60ee5e896f8fca",
+      "E_mwh": 2.0,
+      "P_mva": 0.5,
+      "Q_gross_eur": 653402723.8984206,
+      "I_x_eur": 635914.0170071172,
+      "F_eur": 654038637.9154277,
+      "bar_eur": 11364.703977704048
+     },
+     {
+      "label": "n9_4h_e3",
+      "candidate_key": "ace7403b9b2710a9fa901a1a31d5e0bc7a3a78672c82718a350f9b9f1f35c0ca",
+      "E_mwh": 3.0,
+      "P_mva": 0.75,
+      "Q_gross_eur": 653127641.0571632,
+      "I_x_eur": 953871.0255106756,
+      "F_eur": 654081512.0826739,
+      "bar_eur": 6311.735717892647
+     },
+     {
+      "label": "n9_4h_e4",
+      "candidate_key": "466fb2a6c3b18620c21687c3964206013cc31549205cdaa60e226a2ea97e9d38",
+      "E_mwh": 4.0,
+      "P_mva": 1.0,
+      "Q_gross_eur": 652852486.3826941,
+      "I_x_eur": 1271828.0340142343,
+      "F_eur": 654124314.4167084,
+      "bar_eur": 9972.235941410065
+     },
+     {
+      "label": "n9_4h_e5",
+      "candidate_key": "b2e9d339a0f7cd252995c7653856af74e8dd6c42c2f0d7880a7f8c719611e0bf",
+      "E_mwh": 5.0,
+      "P_mva": 1.25,
+      "Q_gross_eur": 652639190.6022797,
+      "I_x_eur": 1589785.0425177924,
+      "F_eur": 654228975.6447974,
+      "bar_eur": 4920.511647939682
+     }
+    ],
+    "E_mwh": [
+     1.0,
+     2.0,
+     3.0,
+     4.0,
+     5.0
+    ],
+    "Q_gross_eur": [
+     653602441.5951662,
+     653402723.8984206,
+     653127641.0571632,
+     652852486.3826941,
+     652639190.6022797
+    ],
+    "mean_Q_eur": 653124896.7071447,
+    "monotone_decreasing_in_E": true,
+    "first_differences_eur": [
+     -199717.69674563408,
+     -275082.84125733376,
+     -275154.67446911335,
+     -213295.7804144621
+    ],
+    "second_differences_eur": [
+     -75365.14451169968,
+     -71.83321177959442,
+     61858.89405465126
+    ],
+    "max_abs_second_difference_eur": 75365.14451169968,
+    "quadratic_fit": {
+     "basis": [
+      "E^0",
+      "E^1",
+      "E^2"
+     ],
+     "coefficients": [
+      653854304.5573195,
+      -236004.80705723862,
+      -1944.8571821241217
+     ],
+     "rank": 3,
+     "n_points": 5,
+     "dof": 2,
+     "fitted": [
+      653616354.8930801,
+      653374515.5144765,
+      653128786.4215088,
+      652879167.6141766,
+      652625659.0924802
+     ],
+     "residuals": [
+      -13913.297913908958,
+      28208.383944034576,
+      -1145.364345550537,
+      -26681.2314825058,
+      13531.509799480438
+     ],
+     "max_abs_residual_eur": 28208.383944034576,
+     "rms_residual_eur": 19419.549500108405
+    },
+    "linear_fit": {
+     "basis": [
+      "E^0",
+      "E^1"
+     ],
+     "coefficients": [
+      653867918.5575943,
+      -247673.95014999888
+     ],
+     "rank": 2,
+     "n_points": 5,
+     "dof": 3,
+     "fitted": [
+      653620244.6074443,
+      653372570.6572943,
+      653124896.7071443,
+      652877222.7569942,
+      652629548.8068444
+     ],
+     "residuals": [
+      -17803.012278079987,
+      30153.241126298904,
+      2744.350018978119,
+      -24736.37430012226,
+      9641.79543530941
+     ],
+     "max_abs_residual_eur": 30153.241126298904,
+     "rms_residual_eur": 19690.34832781258
+    },
+    "sigma_Q_eur": 28208.383944034576,
+    "sigma_Q_fraction_of_mean_Q": 4.318987698409996e-05,
+    "sigma_Q_at_label": "n9_4h_e2",
+    "sigma_Q_at_E_mwh": 2.0,
+    "bars_eur": [
+     11766.427225589752,
+     11364.703977704048,
+     6311.735717892647,
+     9972.235941410065,
+     4920.511647939682
+    ],
+    "max_bar_eur": 11766.427225589752,
+    "mean_bar_eur": 8867.12290210724,
+    "sigma_Q_over_max_bar": 2.3973618672188515
+   },
+   "a1b|n7|2h|y2030": {
+    "points": [
+     {
+      "label": "n7_2h_e1_y2030",
+      "candidate_key": "e7c94efae91d76464f6794b6df208e783f68505016db1252ca634ead667d0028",
+      "E_mwh": 1.0,
+      "P_mva": 0.5,
+      "Q_gross_eur": 653669414.3018088,
+      "I_x_eur": 283764.04372699186,
+      "F_eur": 653953178.3455359,
+      "bar_eur": 8669.735781431198
+     },
+     {
+      "label": "n7_2h_e2_y2030",
+      "candidate_key": "44cfc7e5b0635b798c6ace31ac791ae0c205eb84b05082f4258d1e661db51cdb",
+      "E_mwh": 2.0,
+      "P_mva": 1.0,
+      "Q_gross_eur": 653513161.0401447,
+      "I_x_eur": 567528.0874539837,
+      "F_eur": 654080689.1275986,
+      "bar_eur": 14690.284644246101
+     },
+     {
+      "label": "n7_2h_e3_y2030",
+      "candidate_key": "0226e5e77299613922618c55d141d9cd29a57adc12c63f77a42c8830441c79a7",
+      "E_mwh": 3.0,
+      "P_mva": 1.5,
+      "Q_gross_eur": 653355838.7064495,
+      "I_x_eur": 851292.1311809756,
+      "F_eur": 654207130.8376305,
+      "bar_eur": 15352.63029062748
+     },
+     {
+      "label": "n7_2h_e4_y2030",
+      "candidate_key": "6d0daf8d44ff609b7a895d14abfeaf6e53048cb39f0bc8a32a4f2f1c0b98fa65",
+      "E_mwh": 4.0,
+      "P_mva": 2.0,
+      "Q_gross_eur": 653173091.654324,
+      "I_x_eur": 1135056.1749079674,
+      "F_eur": 654308147.829232,
+      "bar_eur": 15674.05398619175
+     },
+     {
+      "label": "n7_2h_e5_y2030",
+      "candidate_key": "b1d7831dfc0dac60aa6e38d88186cfe6892cfeba6a3dd6cb72d1360cbcd667b4",
+      "E_mwh": 5.0,
+      "P_mva": 2.5,
+      "Q_gross_eur": 653004397.4294119,
+      "I_x_eur": 1418820.2186349595,
+      "F_eur": 654423217.6480469,
+      "bar_eur": 10830.739538550377
+     }
+    ],
+    "E_mwh": [
+     1.0,
+     2.0,
+     3.0,
+     4.0,
+     5.0
+    ],
+    "Q_gross_eur": [
+     653669414.3018088,
+     653513161.0401447,
+     653355838.7064495,
+     653173091.654324,
+     653004397.4294119
+    ],
+    "mean_Q_eur": 653343180.6264279,
+    "monotone_decreasing_in_E": true,
+    "first_differences_eur": [
+     -156253.26166415215,
+     -157322.33369517326,
+     -182747.05212545395,
+     -168694.2249121666
+    ],
+    "second_differences_eur": [
+     -1069.0720310211182,
+     -25424.718430280685,
+     14052.827213287354
+    ],
+    "max_abs_second_difference_eur": 25424.718430280685,
+    "quadratic_fit": {
+     "basis": [
+      "E^0",
+      "E^1",
+      "E^2"
+     ],
+     "coefficients": [
+      653819058.243148,
+      -145450.3223781797,
+      -3593.3317805451093
+     ],
+     "rank": 3,
+     "n_points": 5,
+     "dof": 2,
+     "fitted": [
+      653670014.5889893,
+      653513784.2712694,
+      653350367.2899885,
+      653179763.6451465,
+      653001973.3367435
+     ],
+     "residuals": [
+      -600.2871804237366,
+      -623.2311247587204,
+      5471.416460990906,
+      -6671.990822434425,
+      2424.092668414116
+     ],
+     "max_abs_residual_eur": 6671.990822434425,
+     "rms_residual_eur": 4026.8311765744443
+    },
+    "linear_fit": {
+     "basis": [
+      "E^0",
+      "E^1"
+     ],
+     "coefficients": [
+      653844211.5656115,
+      -167010.31306140532
+     ],
+     "rank": 2,
+     "n_points": 5,
+     "dof": 3,
+     "fitted": [
+      653677201.2525501,
+      653510190.9394886,
+      653343180.6264273,
+      653176170.3133658,
+      653009160.0003045
+     ],
+     "residuals": [
+      -7786.950741291046,
+      2970.1006560325623,
+      12658.080022215843,
+      -3078.659041762352,
+      -4762.570892572403
+     ],
+     "max_abs_residual_eur": 12658.080022215843,
+     "rms_residual_eur": 7236.64718782505
+    },
+    "sigma_Q_eur": 6671.990822434425,
+    "sigma_Q_fraction_of_mean_Q": 1.021207693028539e-05,
+    "sigma_Q_at_label": "n7_2h_e4_y2030",
+    "sigma_Q_at_E_mwh": 4.0,
+    "bars_eur": [
+     8669.735781431198,
+     14690.284644246101,
+     15352.63029062748,
+     15674.05398619175,
+     10830.739538550377
+    ],
+    "max_bar_eur": 15674.05398619175,
+    "mean_bar_eur": 13043.488848209381,
+    "sigma_Q_over_max_bar": 0.4256710375192147
+   },
+   "a1b|n7|2h|y2035": {
+    "points": [
+     {
+      "label": "n7_2h_e1_y2035",
+      "candidate_key": "803d1a6cf8f21c558d5c748ce7ed7501914bc0579fb1ae4ee1936164a3a55767",
+      "E_mwh": 1.0,
+      "P_mva": 0.5,
+      "Q_gross_eur": 653790388.2279301,
+      "I_x_eur": 237891.24848356392,
+      "F_eur": 654028279.4764136,
+      "bar_eur": 14682.46416091919
+     },
+     {
+      "label": "n7_2h_e2_y2035",
+      "candidate_key": "389e6e079d673a1104ce3a11c725cc809de73b542d8fc548136bb841a3cd6650",
+      "E_mwh": 2.0,
+      "P_mva": 1.0,
+      "Q_gross_eur": 653701282.9331598,
+      "I_x_eur": 475782.49696712784,
+      "F_eur": 654177065.4301269,
+      "bar_eur": 8271.436918020248
+     },
+     {
+      "label": "n7_2h_e3_y2035",
+      "candidate_key": "f90159726c7da46db9ec39da84dd32d85dd7561370d88a213390493c9e43927d",
+      "E_mwh": 3.0,
+      "P_mva": 1.5,
+      "Q_gross_eur": 653582342.1280053,
+      "I_x_eur": 713673.7454506918,
+      "F_eur": 654296015.873456,
+      "bar_eur": 6423.544390797615
+     },
+     {
+      "label": "n7_2h_e4_y2035",
+      "candidate_key": "930e7a1528ddef7eb6eb50682c794f9823d0d40f8a935728cac4f614eca98e27",
+      "E_mwh": 4.0,
+      "P_mva": 2.0,
+      "Q_gross_eur": 653515395.0680953,
+      "I_x_eur": 951564.9939342557,
+      "F_eur": 654466960.0620296,
+      "bar_eur": 6622.534716725349
+     },
+     {
+      "label": "n7_2h_e5_y2035",
+      "candidate_key": "947de89b21ebd4ac6f7a1fcddae95da9dea63c2ae05b7c219a2b34591f7cfe63",
+      "E_mwh": 5.0,
+      "P_mva": 2.5,
+      "Q_gross_eur": 653413139.4719769,
+      "I_x_eur": 1189456.2424178196,
+      "F_eur": 654602595.7143947,
+      "bar_eur": 830.5430274009705
+     }
+    ],
+    "E_mwh": [
+     1.0,
+     2.0,
+     3.0,
+     4.0,
+     5.0
+    ],
+    "Q_gross_eur": [
+     653790388.2279301,
+     653701282.9331598,
+     653582342.1280053,
+     653515395.0680953,
+     653413139.4719769
+    ],
+    "mean_Q_eur": 653600509.5658334,
+    "monotone_decreasing_in_E": true,
+    "first_differences_eur": [
+     -89105.29477024078,
+     -118940.805154562,
+     -66947.05990993977,
+     -102255.59611845016
+    ],
+    "second_differences_eur": [
+     -29835.510384321213,
+     51993.74524462223,
+     -35308.5362085104
+    ],
+    "max_abs_second_difference_eur": 51993.74524462223,
+    "quadratic_fit": {
+     "basis": [
+      "E^0",
+      "E^1",
+      "E^2"
+     ],
+     "coefficients": [
+      653895471.7501984,
+      -105049.88450322789,
+      1835.2244676783453
+     ],
+     "rank": 3,
+     "n_points": 5,
+     "dof": 2,
+     "fitted": [
+      653792257.0901628,
+      653692712.8790625,
+      653596839.1168977,
+      653504635.8036684,
+      653416102.9393742
+     ],
+     "residuals": [
+      -1868.862232685089,
+      8570.054097294807,
+      -14496.988892436028,
+      10759.26442694664,
+      -2963.4673973321915
+     ],
+     "max_abs_residual_eur": 14496.988892436028,
+     "rms_residual_eur": 9073.53371346291
+    },
+    "linear_fit": {
+     "basis": [
+      "E^0",
+      "E^1"
+     ],
+     "coefficients": [
+      653882625.1789242,
+      -94038.53769706322
+     ],
+     "rank": 2,
+     "n_points": 5,
+     "dof": 3,
+     "fitted": [
+      653788586.6412271,
+      653694548.10353,
+      653600509.565833,
+      653506471.0281359,
+      653412432.4904389
+     ],
+     "residuals": [
+      1801.5867029428482,
+      6734.829629778862,
+      -18167.437827706337,
+      8924.039959430695,
+      706.981537938118
+     ],
+     "max_abs_residual_eur": 18167.437827706337,
+     "rms_residual_eur": 9579.120566173537
+    },
+    "sigma_Q_eur": 14496.988892436028,
+    "sigma_Q_fraction_of_mean_Q": 2.2180198271365988e-05,
+    "sigma_Q_at_label": "n7_2h_e3_y2035",
+    "sigma_Q_at_E_mwh": 3.0,
+    "bars_eur": [
+     14682.46416091919,
+     8271.436918020248,
+     6423.544390797615,
+     6622.534716725349,
+     830.5430274009705
+    ],
+    "max_bar_eur": 14682.46416091919,
+    "mean_bar_eur": 7366.104642772674,
+    "sigma_Q_over_max_bar": 0.9873675653861395
+   },
+   "a1b|n7|4h|y2030": {
+    "points": [
+     {
+      "label": "n7_4h_e1_y2030",
+      "candidate_key": "c408836ee5888f639f6a8ba26ce66f8ac1ffdc3beee9bace0f5b7b9b83bc85ca",
+      "E_mwh": 1.0,
+      "P_mva": 0.25,
+      "Q_gross_eur": 653689107.4598882,
+      "I_x_eur": 236168.02151912605,
+      "F_eur": 653925275.4814074,
+      "bar_eur": 10181.317537546158
+     },
+     {
+      "label": "n7_4h_e2_y2030",
+      "candidate_key": "76baf11ecc051621ee156e44e778f9825621c5c3751a3fa6f7367dd14618ea56",
+      "E_mwh": 2.0,
+      "P_mva": 0.5,
+      "Q_gross_eur": 653527588.9164999,
+      "I_x_eur": 472336.0430382521,
+      "F_eur": 653999924.9595381,
+      "bar_eur": 35239.50065612793
+     },
+     {
+      "label": "n7_4h_e3_y2030",
+      "candidate_key": "3b77a5f6804ba4fff0ba0229094f3a52d9d67271f416f699fc21f6b2379625c5",
+      "E_mwh": 3.0,
+      "P_mva": 0.75,
+      "Q_gross_eur": 653381538.3082225,
+      "I_x_eur": 708504.0645573782,
+      "F_eur": 654090042.37278,
+      "bar_eur": 7732.135379076004
+     },
+     {
+      "label": "n7_4h_e4_y2030",
+      "candidate_key": "0025f3453f364ed222425ca8a49b828ccd8f03c19317f657b6b84c4022534a58",
+      "E_mwh": 4.0,
+      "P_mva": 1.0,
+      "Q_gross_eur": 653221518.5204217,
+      "I_x_eur": 944672.0860765042,
+      "F_eur": 654166190.6064982,
+      "bar_eur": 35469.37648844719
+     },
+     {
+      "label": "n7_4h_e5_y2030",
+      "candidate_key": "b1429b9d9a4a254638022c64af47f7b9e2a11ab41101144b8859f05f70c88896",
+      "E_mwh": 5.0,
+      "P_mva": 1.25,
+      "Q_gross_eur": 653064055.9820656,
+      "I_x_eur": 1180840.1075956305,
+      "F_eur": 654244896.0896612,
+      "bar_eur": 11104.009491443634
+     }
+    ],
+    "E_mwh": [
+     1.0,
+     2.0,
+     3.0,
+     4.0,
+     5.0
+    ],
+    "Q_gross_eur": [
+     653689107.4598882,
+     653527588.9164999,
+     653381538.3082225,
+     653221518.5204217,
+     653064055.9820656
+    ],
+    "mean_Q_eur": 653376761.8374196,
+    "monotone_decreasing_in_E": true,
+    "first_differences_eur": [
+     -161518.5433883667,
+     -146050.60827732086,
+     -160019.78780078888,
+     -157462.53835618496
+    ],
+    "second_differences_eur": [
+     15467.935111045837,
+     -13969.179523468018,
+     2557.24944460392
+    ],
+    "max_abs_second_difference_eur": 15467.935111045837,
+    "quadratic_fit": {
+     "basis": [
+      "E^0",
+      "E^1",
+      "E^2"
+     ],
+     "coefficients": [
+      653840685.2582064,
+      -153107.11968953605,
+      -418.36924714202286
+     ],
+     "rank": 3,
+     "n_points": 5,
+     "dof": 2,
+     "fitted": [
+      653687159.7692696,
+      653532797.5418388,
+      653377598.5759134,
+      653221562.871494,
+      653064690.4285802
+     ],
+     "residuals": [
+      1947.690618634224,
+      -5208.62533891201,
+      3939.732309103012,
+      -44.35107231140137,
+      -634.4465146064758
+     ],
+     "max_abs_residual_eur": 5208.62533891201,
+     "rms_residual_eur": 3061.0212913984656
+    },
+    "linear_fit": {
+     "basis": [
+      "E^0",
+      "E^1"
+     ],
+     "coefficients": [
+      653843613.8429362,
+      -155617.33517231996
+     ],
+     "rank": 2,
+     "n_points": 5,
+     "dof": 3,
+     "fitted": [
+      653687996.5077639,
+      653532379.1725916,
+      653376761.8374192,
+      653221144.5022469,
+      653065527.1670746
+     ],
+     "residuals": [
+      1110.9521243572235,
+      -4790.256091713905,
+      4776.4708033800125,
+      374.0181748867035,
+      -1471.1850090026855
+     ],
+     "max_abs_residual_eur": 4790.256091713905,
+     "rms_residual_eur": 3140.0546590216395
+    },
+    "sigma_Q_eur": 5208.62533891201,
+    "sigma_Q_fraction_of_mean_Q": 7.971855816029277e-06,
+    "sigma_Q_at_label": "n7_4h_e2_y2030",
+    "sigma_Q_at_E_mwh": 2.0,
+    "bars_eur": [
+     10181.317537546158,
+     35239.50065612793,
+     7732.135379076004,
+     35469.37648844719,
+     11104.009491443634
+    ],
+    "max_bar_eur": 35469.37648844719,
+    "mean_bar_eur": 19945.267910528182,
+    "sigma_Q_over_max_bar": 0.14684851707524443
+   },
+   "a1b|n7|4h|y2035": {
+    "points": [
+     {
+      "label": "n7_4h_e1_y2035",
+      "candidate_key": "7fca7670b9b79fef8ff34f324f83eea6949b47962eb7976a306e39d24ab9392f",
+      "E_mwh": 1.0,
+      "P_mva": 0.25,
+      "Q_gross_eur": 653776244.6982625,
+      "I_x_eur": 197989.5153493472,
+      "F_eur": 653974234.2136118,
+      "bar_eur": 4662.933325886726
+     },
+     {
+      "label": "n7_4h_e2_y2035",
+      "candidate_key": "ca1b7bac4ba57a9e37785e1bb0f91c941da0efa2a164f612c321868b8f8019a2",
+      "E_mwh": 2.0,
+      "P_mva": 0.5,
+      "Q_gross_eur": 653677237.8866626,
+      "I_x_eur": 395979.0306986944,
+      "F_eur": 654073216.9173613,
+      "bar_eur": 22999.198988318443
+     },
+     {
+      "label": "n7_4h_e3_y2035",
+      "candidate_key": "1435efacb664af00fbdb6802ddff367d78bb12395b8039860f1c83a69e788f01",
+      "E_mwh": 3.0,
+      "P_mva": 0.75,
+      "Q_gross_eur": 653610370.3623502,
+      "I_x_eur": 593968.5460480414,
+      "F_eur": 654204338.9083983,
+      "bar_eur": 5366.455287456512
+     },
+     {
+      "label": "n7_4h_e4_y2035",
+      "candidate_key": "ab6edede03e3501f2cc005c4c2b09c144a2c0715112c501970840bf384eae17d",
+      "E_mwh": 4.0,
+      "P_mva": 1.0,
+      "Q_gross_eur": 653510195.8090053,
+      "I_x_eur": 791958.0613973888,
+      "F_eur": 654302153.8704027,
+      "bar_eur": 14376.99841594696
+     },
+     {
+      "label": "n7_4h_e5_y2035",
+      "candidate_key": "ed8c36fd40c6c85fa7f8f1f25d6cdc63e56416d4cb955c71aff9ecf9726449a1",
+      "E_mwh": 5.0,
+      "P_mva": 1.25,
+      "Q_gross_eur": 653425375.5727756,
+      "I_x_eur": 989947.576746736,
+      "F_eur": 654415323.1495223,
+      "bar_eur": 34988.684945106506
+     }
+    ],
+    "E_mwh": [
+     1.0,
+     2.0,
+     3.0,
+     4.0,
+     5.0
+    ],
+    "Q_gross_eur": [
+     653776244.6982625,
+     653677237.8866626,
+     653610370.3623502,
+     653510195.8090053,
+     653425375.5727756
+    ],
+    "mean_Q_eur": 653599884.8658113,
+    "monotone_decreasing_in_E": true,
+    "first_differences_eur": [
+     -99006.81159985065,
+     -66867.52431237698,
+     -100174.55334496498,
+     -84820.23622965813
+    ],
+    "second_differences_eur": [
+     32139.28728747368,
+     -33307.029032588005,
+     15354.317115306854
+    ],
+    "max_abs_second_difference_eur": 33307.029032588005,
+    "quadratic_fit": {
+     "basis": [
+      "E^0",
+      "E^1",
+      "E^2"
+     ],
+     "coefficients": [
+      653858052.0252538,
+      -84763.51359478706,
+      -352.4198780461789
+     ],
+     "rank": 3,
+     "n_points": 5,
+     "dof": 2,
+     "fitted": [
+      653772936.091781,
+      653687115.318552,
+      653600589.705567,
+      653513359.252826,
+      653425423.9603287
+     ],
+     "residuals": [
+      3308.6064814329147,
+      -9877.431889414787,
+      9780.656783223152,
+      -3163.4438207149506,
+      -48.387553095817566
+     ],
+     "max_abs_residual_eur": 9877.431889414787,
+     "rms_residual_eur": 6544.944657555652
+    },
+    "linear_fit": {
+     "basis": [
+      "E^0",
+      "E^1"
+     ],
+     "coefficients": [
+      653860518.9644,
+      -86878.03286308168
+     ],
+     "rank": 2,
+     "n_points": 5,
+     "dof": 3,
+     "fitted": [
+      653773640.9315369,
+      653686762.8986739,
+      653599884.8658108,
+      653513006.8329477,
+      653426128.8000846
+     ],
+     "residuals": [
+      2603.766725540161,
+      -9525.012011289597,
+      10485.496539473534,
+      -2811.0239424705505,
+      -753.2273089885712
+     ],
+     "max_abs_residual_eur": 10485.496539473534,
+     "rms_residual_eur": 6571.457975817871
+    },
+    "sigma_Q_eur": 9877.431889414787,
+    "sigma_Q_fraction_of_mean_Q": 1.511235255410532e-05,
+    "sigma_Q_at_label": "n7_4h_e2_y2035",
+    "sigma_Q_at_E_mwh": 2.0,
+    "bars_eur": [
+     4662.933325886726,
+     22999.198988318443,
+     5366.455287456512,
+     14376.99841594696,
+     34988.684945106506
+    ],
+    "max_bar_eur": 34988.684945106506,
+    "mean_bar_eur": 16478.85419254303,
+    "sigma_Q_over_max_bar": 0.28230360486286976
+   }
+  },
+  "comparison_with_lattice_step_cost": {
+   "cost_of_one_lattice_P_step_0.25_mva_eur": 64079.331064965416,
+   "cost_of_one_lattice_E_step_0.5_mwh_eur": 126938.83871929655,
+   "sigma_Q_max_over_P_step_cost": 0.4402103373307085,
+   "sigma_Q_max_over_E_step_cost": 0.22222027732908897,
+   "why": "STEP4 5.2: if sigma_Q exceeds one lattice step's investment cost, the reported optimum is the incumbent at the coarsest poll size whose step cost exceeds 2 sigma_Q"
+  }
+ },
+ "write_scope": {
+  "files_modified_during_run": {
+   "under_OUT_DIR": [],
+   "under_concurrent_campaign_dir": [],
+   "elsewhere": [
+    "data/SRP1/Diagrams/SRP1_market_prices_2025_Autumn.pdf",
+    "data/SRP1/Diagrams/SRP1_market_prices_2025_Spring.pdf",
+    "data/SRP1/Diagrams/SRP1_market_prices_2025_Summer.pdf",
+    "data/SRP1/Diagrams/SRP1_market_prices_2025_Winter.pdf",
+    "data/SRP1/Diagrams/case33_1_RES_generation_scenarios_2025_Autumn.pdf",
+    "data/SRP1/Diagrams/case33_1_RES_generation_scenarios_2025_Spring.pdf",
+    "data/SRP1/Diagrams/case33_1_RES_generation_scenarios_2025_Summer.pdf",
+    "data/SRP1/Diagrams/case33_1_RES_generation_scenarios_2025_Winter.pdf",
+    "data/SRP1/Diagrams/case33_1_flexibility_scenarios_2025_Autumn.pdf",
+    "data/SRP1/Diagrams/case33_1_flexibility_scenarios_2025_Spring.pdf",
+    "data/SRP1/Diagrams/case33_1_flexibility_scenarios_2025_Summer.pdf",
+    "data/SRP1/Diagrams/case33_1_flexibility_scenarios_2025_Winter.pdf",
+    "data/SRP1/Diagrams/case33_1_load_scenarios_2025_Autumn.pdf",
+    "data/SRP1/Diagrams/case33_1_load_scenarios_2025_Spring.pdf",
+    "data/SRP1/Diagrams/case33_1_load_scenarios_2025_Summer.pdf",
+    "data/SRP1/Diagrams/case33_1_load_scenarios_2025_Winter.pdf",
+    "data/SRP1/Diagrams/case33_2_RES_generation_scenarios_2025_Autumn.pdf",
+    "data/SRP1/Diagrams/case33_2_RES_generation_scenarios_2025_Spring.pdf",
+    "data/SRP1/Diagrams/case33_2_RES_generation_scenarios_2025_Summer.pdf",
+    "data/SRP1/Diagrams/case33_2_RES_generation_scenarios_2025_Winter.pdf",
+    "data/SRP1/Diagrams/case33_2_flexibility_scenarios_2025_Autumn.pdf",
+    "data/SRP1/Diagrams/case33_2_flexibility_scenarios_2025_Spring.pdf",
+    "data/SRP1/Diagrams/case33_2_flexibility_scenarios_2025_Summer.pdf",
+    "data/SRP1/Diagrams/case33_2_flexibility_scenarios_2025_Winter.pdf",
+    "data/SRP1/Diagrams/case33_2_load_scenarios_2025_Autumn.pdf",
+    "data/SRP1/Diagrams/case33_2_load_scenarios_2025_Spring.pdf",
+    "data/SRP1/Diagrams/case33_2_load_scenarios_2025_Summer.pdf",
+    "data/SRP1/Diagrams/case33_2_load_scenarios_2025_Winter.pdf",
+    "data/SRP1/Diagrams/case33_3_RES_generation_scenarios_2025_Autumn.pdf",
+    "data/SRP1/Diagrams/case33_3_RES_generation_scenarios_2025_Spring.pdf",
+    "data/SRP1/Diagrams/case33_3_RES_generation_scenarios_2025_Summer.pdf",
+    "data/SRP1/Diagrams/case33_3_RES_generation_scenarios_2025_Winter.pdf",
+    "data/SRP1/Diagrams/case33_3_flexibility_scenarios_2025_Autumn.pdf",
+    "data/SRP1/Diagrams/case33_3_flexibility_scenarios_2025_Spring.pdf",
+    "data/SRP1/Diagrams/case33_3_flexibility_scenarios_2025_Summer.pdf",
+    "data/SRP1/Diagrams/case33_3_flexibility_scenarios_2025_Winter.pdf",
+    "data/SRP1/Diagrams/case33_3_load_scenarios_2025_Autumn.pdf",
+    "data/SRP1/Diagrams/case33_3_load_scenarios_2025_Spring.pdf",
+    "data/SRP1/Diagrams/case33_3_load_scenarios_2025_Summer.pdf",
+    "data/SRP1/Diagrams/case33_3_load_scenarios_2025_Winter.pdf",
+    "data/SRP1/Diagrams/case9_RES_generation_scenarios_2025_Autumn.pdf",
+    "data/SRP1/Diagrams/case9_RES_generation_scenarios_2025_Spring.pdf",
+    "data/SRP1/Diagrams/case9_RES_generation_scenarios_2025_Summer.pdf",
+    "data/SRP1/Diagrams/case9_RES_generation_scenarios_2025_Winter.pdf",
+    "data/SRP1/Diagrams/case9_flexibility_scenarios_2025_Autumn.pdf",
+    "data/SRP1/Diagrams/case9_flexibility_scenarios_2025_Spring.pdf",
+    "data/SRP1/Diagrams/case9_flexibility_scenarios_2025_Summer.pdf",
+    "data/SRP1/Diagrams/case9_flexibility_scenarios_2025_Winter.pdf",
+    "data/SRP1/Diagrams/case9_load_scenarios_2025_Autumn.pdf",
+    "data/SRP1/Diagrams/case9_load_scenarios_2025_Spring.pdf",
+    "data/SRP1/Diagrams/case9_load_scenarios_2025_Summer.pdf",
+    "data/SRP1/Diagrams/case9_load_scenarios_2025_Winter.pdf",
+    "data/SRP1/Results/P515S45/investment_cost_a2a3/launch.log"
+   ]
+  },
+  "modified_outside_OUT_DIR": [
+   "data/SRP1/Diagrams/SRP1_market_prices_2025_Autumn.pdf",
+   "data/SRP1/Diagrams/SRP1_market_prices_2025_Spring.pdf",
+   "data/SRP1/Diagrams/SRP1_market_prices_2025_Summer.pdf",
+   "data/SRP1/Diagrams/SRP1_market_prices_2025_Winter.pdf",
+   "data/SRP1/Diagrams/case33_1_RES_generation_scenarios_2025_Autumn.pdf",
+   "data/SRP1/Diagrams/case33_1_RES_generation_scenarios_2025_Spring.pdf",
+   "data/SRP1/Diagrams/case33_1_RES_generation_scenarios_2025_Summer.pdf",
+   "data/SRP1/Diagrams/case33_1_RES_generation_scenarios_2025_Winter.pdf",
+   "data/SRP1/Diagrams/case33_1_flexibility_scenarios_2025_Autumn.pdf",
+   "data/SRP1/Diagrams/case33_1_flexibility_scenarios_2025_Spring.pdf",
+   "data/SRP1/Diagrams/case33_1_flexibility_scenarios_2025_Summer.pdf",
+   "data/SRP1/Diagrams/case33_1_flexibility_scenarios_2025_Winter.pdf",
+   "data/SRP1/Diagrams/case33_1_load_scenarios_2025_Autumn.pdf",
+   "data/SRP1/Diagrams/case33_1_load_scenarios_2025_Spring.pdf",
+   "data/SRP1/Diagrams/case33_1_load_scenarios_2025_Summer.pdf",
+   "data/SRP1/Diagrams/case33_1_load_scenarios_2025_Winter.pdf",
+   "data/SRP1/Diagrams/case33_2_RES_generation_scenarios_2025_Autumn.pdf",
+   "data/SRP1/Diagrams/case33_2_RES_generation_scenarios_2025_Spring.pdf",
+   "data/SRP1/Diagrams/case33_2_RES_generation_scenarios_2025_Summer.pdf",
+   "data/SRP1/Diagrams/case33_2_RES_generation_scenarios_2025_Winter.pdf",
+   "data/SRP1/Diagrams/case33_2_flexibility_scenarios_2025_Autumn.pdf",
+   "data/SRP1/Diagrams/case33_2_flexibility_scenarios_2025_Spring.pdf",
+   "data/SRP1/Diagrams/case33_2_flexibility_scenarios_2025_Summer.pdf",
+   "data/SRP1/Diagrams/case33_2_flexibility_scenarios_2025_Winter.pdf",
+   "data/SRP1/Diagrams/case33_2_load_scenarios_2025_Autumn.pdf",
+   "data/SRP1/Diagrams/case33_2_load_scenarios_2025_Spring.pdf",
+   "data/SRP1/Diagrams/case33_2_load_scenarios_2025_Summer.pdf",
+   "data/SRP1/Diagrams/case33_2_load_scenarios_2025_Winter.pdf",
+   "data/SRP1/Diagrams/case33_3_RES_generation_scenarios_2025_Autumn.pdf",
+   "data/SRP1/Diagrams/case33_3_RES_generation_scenarios_2025_Spring.pdf",
+   "data/SRP1/Diagrams/case33_3_RES_generation_scenarios_2025_Summer.pdf",
+   "data/SRP1/Diagrams/case33_3_RES_generation_scenarios_2025_Winter.pdf",
+   "data/SRP1/Diagrams/case33_3_flexibility_scenarios_2025_Autumn.pdf",
+   "data/SRP1/Diagrams/case33_3_flexibility_scenarios_2025_Spring.pdf",
+   "data/SRP1/Diagrams/case33_3_flexibility_scenarios_2025_Summer.pdf",
+   "data/SRP1/Diagrams/case33_3_flexibility_scenarios_2025_Winter.pdf",
+   "data/SRP1/Diagrams/case33_3_load_scenarios_2025_Autumn.pdf",
+   "data/SRP1/Diagrams/case33_3_load_scenarios_2025_Spring.pdf",
+   "data/SRP1/Diagrams/case33_3_load_scenarios_2025_Summer.pdf",
+   "data/SRP1/Diagrams/case33_3_load_scenarios_2025_Winter.pdf",
+   "data/SRP1/Diagrams/case9_RES_generation_scenarios_2025_Autumn.pdf",
+   "data/SRP1/Diagrams/case9_RES_generation_scenarios_2025_Spring.pdf",
+   "data/SRP1/Diagrams/case9_RES_generation_scenarios_2025_Summer.pdf",
+   "data/SRP1/Diagrams/case9_RES_generation_scenarios_2025_Winter.pdf",
+   "data/SRP1/Diagrams/case9_flexibility_scenarios_2025_Autumn.pdf",
+   "data/SRP1/Diagrams/case9_flexibility_scenarios_2025_Spring.pdf",
+   "data/SRP1/Diagrams/case9_flexibility_scenarios_2025_Summer.pdf",
+   "data/SRP1/Diagrams/case9_flexibility_scenarios_2025_Winter.pdf",
+   "data/SRP1/Diagrams/case9_load_scenarios_2025_Autumn.pdf",
+   "data/SRP1/Diagrams/case9_load_scenarios_2025_Spring.pdf",
+   "data/SRP1/Diagrams/case9_load_scenarios_2025_Summer.pdf",
+   "data/SRP1/Diagrams/case9_load_scenarios_2025_Winter.pdf"
+  ],
+  "note": "walk of the repository (excluding .git) for mtime >= run start; the results JSON and the launch log are written after/around this scan"
+ }
+}

@@ -1,0 +1,356 @@
+[15:41:40] repo HEAD 5c1e6f234be81c3e7976e698892ee1d6da53c5bc; tracked changes: [' M TASKS.md']; script committed; dry_run False; out_dir data/SRP1/Results/P515S55/e6_export
+[15:41:40] capture-path checklist: 29 paths, 30 key checks, all present
+[15:41:40] JSONL pins verified: row1 0012cef5, row2 47de0cb1 (= blobs at 741e8ddf and HEAD)
+[15:41:40] pickle sha256 verified before load: d0a3d512fa58f41053befdb784bb842ad57ec0d71c989aef776a0aa668e6030d
+[15:41:40] declared day: 2025 Spring, contribution 40181.22 EUR; margin to rank 2 12170.61; bar 103.37
+[15:41:40] negative controls before load: [('NC1_wrong_sha256_on_allow_list', True), ('NC2_pickle_loads_bytes', True), ('NC3_pickle_load_in_memory_handle', True)]
+[15:41:40] loading data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/certified_models.pkl (single declared load)
+[15:41:48] loaded; payload keys ['dso', 'tso']
+[15:41:48] NC4: True
+=== day selection (Q gross, contracted settlement excluded; block-weighted EUR)
+   1 2025 Spring  c =     40181.22  one-day     87.35 (rank 1)  bar     56.10  w [460.0]  next-rank determinate True
+   2 2025 Summer  c =     28010.61  one-day     61.56 (rank 3)  bar     47.27  w [455.0]  next-rank determinate False
+   3 2035 Spring  c =     26072.72  one-day     69.09 (rank 2)  bar   8588.75  w [377.36021794257135]  next-rank determinate False
+   4 2030 Spring  c =     23246.73  one-day     55.80 (rank 5)  bar    103.15  w [416.63617252176135]  next-rank determinate True
+   5 2030 Summer  c =     21806.36  one-day     52.91 (rank 6)  bar    222.03  w [412.10751847261173]  next-rank determinate True
+   6 2030 Autumn  c =     21405.52  one-day     51.94 (rank 7)  bar     70.28  w [412.10751847261173]  next-rank determinate True
+   7 2035 Summer  c =     20964.15  one-day     56.17 (rank 4)  bar    116.77  w [373.2584764431956]  next-rank determinate True
+   8 2025 Autumn  c =     20085.27  one-day     44.14 (rank 8)  bar     13.32  w [455.0]  next-rank determinate True
+   9 2025 Winter  c =     16091.66  one-day     35.37 (rank 9)  bar     10.37  w [455.0]  next-rank determinate True
+  10 2035 Autumn  c =     13082.00  one-day     35.05 (rank 10)  bar     29.51  w [373.2584764431956]  next-rank determinate True
+  11 2030 Winter  c =     12622.69  one-day     30.63 (rank 11)  bar     61.25  w [412.10751847261173]  next-rank determinate True
+  12 2035 Winter  c =      9970.69  one-day     26.71 (rank 12)  bar     20.13  w [373.2584764431956]  next-rank determinate None
+{
+ "declared_day": {
+  "year": "2025",
+  "day": "Spring",
+  "label": "illustrative day (not a typical-day estimate)",
+  "value_contribution": 40181.22258103639,
+  "share_of_total_value": 0.15848103851897147
+ },
+ "margin_rank1_minus_rank2": 12170.61018178612,
+ "resolution": {
+  "bar_rank1_plus_rank2": 103.3669975027442,
+  "margin_over_bar": 117.74174036024422,
+  "not_explained_by_stopping_slack": true,
+  "windows": {
+   "row1": [
+    150,
+    181
+   ],
+   "row2": [
+    140,
+    172
+   ]
+  },
+  "missing_cycles_in_windows": {
+   "row1": [],
+   "row2": []
+  },
+  "note": "bar = sum over both rows of the per-(year, day) block range over each row's certification window (recourse_blocks_all.jsonl); a local, stopping-slack measure only (CLAUDE.md refinement of 2026-09-13)"
+ },
+ "identity_check": {
+  "row1": {
+   "sum_of_48_block_Q": 653873702.1876612,
+   "gross_operational_cost": 653873702.1876609,
+   "residual": 2.384185791015625e-07,
+   "relative_residual": 3.6462481715335398e-16
+  },
+  "row2": {
+   "sum_of_48_block_Q": 653620162.5657827,
+   "gross_operational_cost": 653620162.5657823,
+   "residual": 3.5762786865234375e-07,
+   "relative_residual": 5.471493829818186e-16
+  }
+ },
+ "sum_of_contributions": 253539.62187865376,
+ "Q_row1_minus_Q_row2": 253539.62187862396
+}
+=== panel b horizon totals {"tn_conventional_cost_change": -158938.59087385796, "dn_flexibility_cost_change_total": -94581.13244988886, "Q_change": -253539.62187865376}
+=== cross-checks {
+ "block_weight_vs_SRP1_formula_max_abs": 5.684341886080802e-14,
+ "day_selection_identity": {
+  "row1": {
+   "sum_of_48_block_Q": 653873702.1876612,
+   "gross_operational_cost": 653873702.1876609,
+   "residual": 2.384185791015625e-07,
+   "relative_residual": 3.6462481715335398e-16
+  },
+  "row2": {
+   "sum_of_48_block_Q": 653620162.5657827,
+   "gross_operational_cost": 653620162.5657823,
+   "residual": 3.5762786865234375e-07,
+   "relative_residual": 5.471493829818186e-16
+  }
+ },
+ "panel_b_vs_recourse_blocks_all": {
+  "tso_generation_cost": {
+   "n": 24,
+   "max_abs_diff_eur": 0.0
+  },
+  "dso_flexibility_cost": {
+   "n": 72,
+   "max_abs_diff_eur": 0.0
+  },
+  "block_q_value": {
+   "n": 96,
+   "max_abs_diff_eur": 1.4901161193847656e-08
+  }
+ },
+ "panel_c_published_vs_ageing_trajectory": {
+  "n": 3,
+  "max_abs_diff_mwh": 0.0
+ },
+ "esso": {
+  "pnet_vs_stride_x_esso": {
+   "n": 288,
+   "max_abs_diff_mw": 0.0
+  },
+  "pch_minus_pdch_minus_pnet": {
+   "n": 288,
+   "max_abs_mw": 1.3877787807814457e-15
+  }
+ },
+ "efc_per_day_max_abs_diff": 1.5543122344752192e-15,
+ "efc_stride_line_vs_record_max": 0.0,
+ "row1_x0_node7_storage_entries_max_abs_mw": 7.995215323610433e-25,
+ "n_row1_node7_values": 2304,
+ "pickle": {
+  "summary_over_12_blocks": {
+   "tso_copy.stride_x_tso_p_vs_pickle_expected_p": {
+    "max_over_12_blocks": 0.0
+   },
+   "tso_copy.stride_x_tso_q_vs_pickle_expected_q": {
+    "max_over_12_blocks": 0.0
+   },
+   "tso_copy.pickle_expected_p_vs_pnet": {
+    "max_over_12_blocks": 6.192733977992545e-18
+   },
+   "tso_copy.pickle_expected_q_vs_qnet": {
+    "max_over_12_blocks": 0.0
+   },
+   "tso_copy.pickle_pnet_vs_pch_minus_pdch": {
+    "max_over_12_blocks": 5.551115123125783e-17
+   },
+   "tso_copy.pickle_soc_vs_recursion_from_pickle_pch_pdch_mwh": {
+    "max_over_12_blocks": 1.5675349906985048e-11
+   },
+   "tso_copy.pickle_soc_vs_recursion_from_recorded_net_power_stride_x_tso_mwh": {
+    "max_over_12_blocks": 5.635578936846741e-08
+   },
+   "tso_copy.soc_min_minus_10pct_e_mwh": {
+    "min_over_12_blocks": -9.975510826126799e-07
+   },
+   "tso_copy.soc_90pct_e_minus_max_mwh": {
+    "min_over_12_blocks": -9.976444085291192e-07
+   },
+   "tso_copy.day_end_soc_minus_half_e_mwh": {
+    "max_abs_over_12_blocks": 2.6485091897399116e-11
+   },
+   "tso_copy.max_min_pch_pdch_mw": {
+    "max_over_12_blocks": 9.657272202983268e-08
+   },
+   "dso_copy.stride_x_dso_p_vs_pickle_expected_p": {
+    "max_over_12_blocks": 0.0
+   },
+   "dso_copy.stride_x_dso_q_vs_pickle_expected_q": {
+    "max_over_12_blocks": 0.0
+   },
+   "dso_copy.pickle_expected_p_vs_pnet": {
+    "max_over_12_blocks": 0.0
+   },
+   "dso_copy.pickle_expected_q_vs_qnet": {
+    "max_over_12_blocks": 0.0
+   },
+   "dso_copy.pickle_pnet_vs_pch_minus_pdch": {
+    "max_over_12_blocks": 5.551115123125783e-17
+   },
+   "dso_copy.pickle_soc_vs_recursion_from_pickle_pch_pdch_mwh": {
+    "max_over_12_blocks": 4.440892098500626e-16
+   },
+   "dso_copy.pickle_soc_vs_recursion_from_recorded_net_power_stride_x_dso_mwh": {
+    "max_over_12_blocks": 2.657449204829243e-05
+   },
+   "dso_copy.soc_min_minus_10pct_e_mwh": {
+    "min_over_12_blocks": -9.894547768618533e-07
+   },
+   "dso_copy.soc_90pct_e_minus_max_mwh": {
+    "min_over_12_blocks": -9.899763639964476e-07
+   },
+   "dso_copy.day_end_soc_minus_half_e_mwh": {
+    "max_abs_over_12_blocks": 9.252598687226055e-13
+   },
+   "dso_copy.max_min_pch_pdch_mw": {
+    "max_over_12_blocks": 0.00017847941859850349
+   }
+  },
+  "tso_copy_soc_vs_dso_copy_soc_max_abs_mwh": 2.458060020502084e-05,
+  "tso_other_shared_ess_max_abs": 0.0,
+  "e_av_pickle_vs_record": {
+   "n": 24,
+   "max_abs_diff_e_mwh": 1.216521985480945e-06,
+   "max_abs_diff_s_mva": 0.0
+  }
+ },
+ "declared_day_derived_soc_vs_pickle": {
+  "from_esso_vs_tso_copy": 6.535736093568612e-05,
+  "from_z_vs_tso_copy": 2.415286500807856e-05
+ }
+}
+=== declared day 2025 Spring node 7 (MW / MWh)
+  h  price   esso_pnet  tso_pnet  dso_pnet   z_p     tso_soc  dso_soc  derived_esso_soc
+   1  116.67  -0.03442  -0.03444  -0.03443  -0.03443  0.40436  0.40436  0.40438
+   2  117.73  -0.05396  -0.05398  -0.05398  -0.05397  0.34813  0.34814  0.34817
+   3  120.20  -0.00000  -0.00000  -0.00000  -0.00000  0.34813  0.34814  0.34817
+   4  119.23  -0.00000  -0.00000  -0.00000  -0.00000  0.34813  0.34813  0.34817
+   5  124.73  -0.00000  -0.00000  -0.00000  -0.00000  0.34813  0.34813  0.34817
+   6  128.04  -0.00000  -0.00000  -0.00001  -0.00000  0.34813  0.34813  0.34817
+   7  134.88  -0.24966  -0.24968  -0.24967  -0.24967  0.08804  0.08805  0.08811
+   8  115.97  -0.00000  -0.00000  -0.00001  -0.00000  0.08804  0.08804  0.08811
+   9   77.84   0.00000   0.00000   0.00000   0.00000  0.08804  0.08804  0.08811
+  10   38.12   0.00000   0.00000   0.00000   0.00000  0.08804  0.08804  0.08811
+  11   33.61   0.00000   0.00000   0.00000   0.00000  0.08804  0.08804  0.08811
+  12   30.84   0.00000  -0.00000   0.00000   0.00000  0.08804  0.08804  0.08811
+  13   15.69   0.00000   0.00000   0.00000   0.00000  0.08805  0.08804  0.08811
+  14   12.70   0.14764   0.14766   0.14766   0.14765  0.23127  0.23127  0.23132
+  15    3.26   0.25000   0.25000   0.25000   0.25000  0.47377  0.47377  0.47382
+  16    6.99   0.25000   0.25000   0.25000   0.25000  0.71627  0.71627  0.71632
+  17   13.60   0.07848   0.07850   0.07850   0.07849  0.79241  0.79241  0.79245
+  18   41.52   0.00000   0.00000   0.00000   0.00000  0.79241  0.79241  0.79245
+  19   80.21   0.00000   0.00000   0.00000   0.00000  0.79241  0.79241  0.79245
+  20  113.97   0.00000  -0.00000  -0.00000  -0.00000  0.79241  0.79241  0.79245
+  21  142.54  -0.11503  -0.11504  -0.11504  -0.11504  0.67258  0.67258  0.67263
+  22  134.53   0.02883   0.02884   0.02884   0.02884  0.70055  0.70055  0.70060
+  23  125.50   0.00000   0.00000  -0.00000  -0.00000  0.70055  0.70055  0.70060
+  24  158.09  -0.24991  -0.24991  -0.24991  -0.24991  0.44023  0.44023  0.44027
+{
+ "e_available_record_mwh": 0.8804577542392256,
+ "lower_10pct_record_mwh": 0.08804577542392256,
+ "upper_90pct_record_mwh": 0.792411978815303,
+ "e_rated_fixed_pickle_tso_mwh": 0.8804565377172401,
+ "lower_10pct_pickle_tso_mwh": 0.08804565377172402,
+ "upper_90pct_pickle_tso_mwh": 0.7924108839455161,
+ "e_rated_fixed_pickle_dso_mwh": 0.8804565377172401,
+ "start_and_target_end_soc_mwh": 0.44022826885862004
+} {"tso_copy": [-9.99919158208464e-07, -9.99896159569393e-07], "dso_copy": [-9.999094918611517e-07, -9.999086863890603e-07], "order": "[up, down]"}
+=== panel c
+  row 2 node 7 {"2025": {"e_available_mwh": 0.8804577542392256, "s_available_mva": 0.25, "soh": 0.8804577542392256, "floor_e_mwh_0p70_x_e_rated": 0.7, "margin_above_floor_mwh": 0.1804577542392256, "soc_lower_10pct_mwh": 0.08804577542392256, "soc_upper_90pct_mwh": 0.792411978815303, "efc_per_day": 1.0165116593513808}, "2030": {"e_available_mwh": 0.7798174939987235, "s_available_mva": 0.25, "soh": 0.7798174939987235, "floor_e_mwh_0p70_x_e_rated": 0.7, "margin_above_floor_mwh": 0.07981749399872351, "soc_lower_10pct_mwh": 0.07798174939987235, "soc_upper_90pct_mwh": 0.7018357445988511, "efc_per_day": 0.8999938673104734}, "2035": {"e_available_mwh": 0.6999999900000561, "s_available_mva": 0.25, "soh": 0.6999999900000561, "floor_e_mwh_0p70_x_e_rated": 0.7, "margin_above_floor_mwh": -9.999943872962547e-09, "soc_lower_10pct_mwh": 0.06999999900000561, "soc_upper_90pct_mwh": 0.6299999910000504, "efc_per_day": 0.6367083923121929}}
+guards: {
+ "solve_profile_guard": {
+  "label": "P5.15 W183e E6 export (never solves)",
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "pickle_gate": {
+  "allow_list": [
+   {
+    "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/certified_models.pkl",
+    "sha256": "d0a3d512fa58f41053befdb784bb842ad57ec0d71c989aef776a0aa668e6030d"
+   }
+  ],
+  "counts": {
+   "load_attempts": 3,
+   "loads_attempts": 1,
+   "unpickler_attempts": 0,
+   "refused": 3,
+   "delegated": 1
+  },
+  "expected_delegated_loads": 1,
+  "expected_refusals": 3,
+  "refusals": [
+   {
+    "kind": "pickle.loads",
+    "reason": "byte-string loads are not on the allow-list"
+   },
+   {
+    "kind": "pickle.load",
+    "reason": "the handle has no file path (not on the allow-list)"
+   },
+   {
+    "kind": "pickle.load",
+    "reason": "the single declared load has already been made (exactly 1 permitted)"
+   }
+  ],
+  "loaded": [
+   {
+    "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/certified_models.pkl",
+    "sha256_of_bytes_unpickled": "d0a3d512fa58f41053befdb784bb842ad57ec0d71c989aef776a0aa668e6030d",
+    "size_bytes": 164685741
+   }
+  ],
+  "ok": true
+ },
+ "build_guard": {
+  "blocked": "pyomo.core.base.PyomoModel.Model.__init__",
+  "counts": {
+   "pyomo_model_init": 0
+  },
+  "ok": true
+ },
+ "negative_controls": {
+  "NC1_wrong_sha256_on_allow_list": {
+   "raised": true,
+   "message": "W183e NC1 gate (wrong sha256): pickle.load refused -- sha256 of the bytes read d0a3d512fa58f41053befdb784bb842ad57ec0d71c989aef776a0aa668e6030d != allow-listed d0a3d512fa58f41053befdb784bb842ad57ec0d71c989aef776a0aa668e60300",
+   "delegated": 0,
+   "ok": true
+  },
+  "NC2_pickle_loads_bytes": {
+   "control": "pickle.loads(bytes)",
+   "raised": true,
+   "message": "W183e pickle gate: pickle.loads refused -- byte-string loads are not on the allow-list",
+   "ok": true
+  },
+  "NC3_pickle_load_in_memory_handle": {
+   "control": "pickle.load(BytesIO)",
+   "raised": true,
+   "message": "W183e pickle gate: pickle.load refused -- the handle has no file path (not on the allow-list)",
+   "ok": true
+  },
+  "NC4_second_load_of_the_allowed_file": {
+   "control": "second pickle.load",
+   "raised": true,
+   "message": "W183e pickle gate: pickle.load refused -- the single declared load has already been made (exactly 1 permitted)",
+   "ok": true
+  }
+ },
+ "negative_controls_ok": true,
+ "project_modules_imported": [
+  "__main__",
+  "branch",
+  "definitions",
+  "energy_storage",
+  "gate_result_io",
+  "generator",
+  "helper_functions",
+  "hierarchical_coordination",
+  "load",
+  "model_construction_helpers",
+  "network",
+  "network_parameters",
+  "node",
+  "p513_solve_profile_guard",
+  "shared_energy_storage",
+  "solver_parameters"
+ ],
+ "project_modules_imported_by_unpickling": [
+  "branch",
+  "definitions",
+  "energy_storage",
+  "generator",
+  "helper_functions",
+  "hierarchical_coordination",
+  "load",
+  "model_construction_helpers",
+  "network",
+  "network_parameters",
+  "node",
+  "shared_energy_storage",
+  "solver_parameters"
+ ]
+}
+[15:41:48] wrote data/SRP1/Results/P515S55/e6_export/e6_export.json and data/SRP1/Results/P515S55/e6_export/manifest_sha256.json

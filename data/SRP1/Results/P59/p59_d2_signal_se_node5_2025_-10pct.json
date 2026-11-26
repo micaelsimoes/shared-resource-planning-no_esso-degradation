@@ -1,0 +1,319 @@
+{
+ "stage": "P5.9-D2",
+ "provenance": {
+  "timestamp_utc": "2026-09-09T17:00:44.563275+00:00",
+  "git_head": "c06f2cd4f2b093e7a49701e332e50fdfc3309be3",
+  "sys_executable": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "exists": true,
+   "version": "3.14.18",
+   "asl": "20241111",
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)",
+   "path_ipopt_not_used": {
+    "path": "/usr/local/bin/ipopt",
+    "version": "3.14.18",
+    "shadows_canonical": false
+   }
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-14",
+   "available": true,
+   "licence_id": "2807206",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "canonical_ipopt_path": "/usr/local/bin/ipopt",
+  "canonical_ipopt_version": "3.14.18",
+  "canonical_ipopt_asl": "20241111",
+  "canonical_hsl_linear_solver": "ma97",
+  "stage": "P5.9-D2 investment signal",
+  "gate_failures": [],
+  "gate_passes": true
+ },
+ "timestamp_utc": "2026-09-09T17:00:44.664956+00:00",
+ "design": "one generation from frozen T0 per (candidate, rho_pf); pre-polish objective is the comparison quantity because it is defined even where the polish fails",
+ "rho_pf_values": [
+  2.25,
+  100.0,
+  300.0
+ ],
+ "rows": [
+  {
+   "status": "POLISH_FAILURE",
+   "polish_all_solved": false,
+   "failed_blocks": [
+    "DSO5|2025|Spring",
+    "DSO5|2030|Summer"
+   ],
+   "admm_cycles": 4,
+   "admm_converged": true,
+   "admm_runtime_s": 161.27377700805664,
+   "primal_v": 3.97619688152335e-05,
+   "primal_pf": 0.003257447060220553,
+   "primal_ess": 0.000536215483169563,
+   "primal_v_mean": 3.1849208259534125e-06,
+   "primal_pf_mean": 0.00021949603777072647,
+   "primal_ess_mean": 4.980774639010189e-06,
+   "dual_ess_mean": 1.1977120126664152e-05,
+   "objective_change_abs": 787905.8581442833,
+   "objective_convergence": true,
+   "residual_convergence": true,
+   "objective_tolerance": 826602.3960794185,
+   "admm_net_recourse_before_polish": 825814490.2212741,
+   "polished_net_operational_recourse": null,
+   "admm_to_polish_improvement": null,
+   "total_objective": null,
+   "max_coordinated_residual": null,
+   "esso_production_feasible": null,
+   "network_max_violation": null,
+   "network_h1_violation": null,
+   "wall_clock_s": 271.2508533000946,
+   "case_id": "d2_se_node5_2025_-10pct_pf2.25",
+   "rho_requested": {
+    "v": 1.5,
+    "pf": 2.25
+   },
+   "adaptive_penalty": null,
+   "rho_observed_final": {
+    "v": 1.5,
+    "pf": 2.25,
+    "ess": 1.0
+   },
+   "n_failed_polish_blocks": 2,
+   "primal_pf_ratio": 0.3257447060220553,
+   "primal_v_ratio": 0.00397619688152335,
+   "primal_ess_ratio": 0.00536215483169563,
+   "dual_pf_mean_ratio": 0.18903579394438325,
+   "dual_v_mean_ratio": 0.00954798353996673,
+   "terminating_criterion": {
+    "residual_convergence": true,
+    "objective_convergence": true,
+    "objective_change_abs": 787905.8581442833,
+    "objective_tolerance": 826602.3960794185,
+    "objective_slack_factor": 1.0491131491600727,
+    "worst_primal_ratio": 0.3257447060220553,
+    "worst_dual_mean_ratio": 0.18903579394438325
+   },
+   "cost_families": {
+    "gross_operational_cost": 825817862.9584817,
+    "terminal_salvage_value": 3372.7372075894755,
+    "net_operational_recourse": 825814490.2212741
+   },
+   "rho_actions": [
+    {
+     "cycle": 1,
+     "v": "held",
+     "pf": "held",
+     "ess": "held"
+    },
+    {
+     "cycle": 2,
+     "v": "held",
+     "pf": "held",
+     "ess": "held"
+    },
+    {
+     "cycle": 3,
+     "v": "held",
+     "pf": "held",
+     "ess": "held"
+    },
+    {
+     "cycle": 4,
+     "v": "held",
+     "pf": "held",
+     "ess": "held"
+    }
+   ],
+   "candidate": "se|node5|2025|-10%",
+   "rho_pf": 2.25
+  },
+  {
+   "status": "POLISH_FAILURE",
+   "polish_all_solved": false,
+   "failed_blocks": [
+    "TSO|2035|Summer",
+    "TSO|2035|Autumn",
+    "DSO7|2035|Autumn",
+    "DSO9|2035|Summer"
+   ],
+   "admm_cycles": 3,
+   "admm_converged": true,
+   "admm_runtime_s": 142.01503586769104,
+   "primal_v": 3.401886661889137e-05,
+   "primal_pf": 0.0009359893170732647,
+   "primal_ess": 0.0005041064212334828,
+   "primal_v_mean": 5.979377618006026e-06,
+   "primal_pf_mean": 2.9871488426269935e-05,
+   "primal_ess_mean": 4.941701219388625e-06,
+   "dual_ess_mean": 1.569227695693738e-05,
+   "objective_change_abs": 328810.7251212597,
+   "objective_convergence": true,
+   "residual_convergence": true,
+   "objective_tolerance": 827840.8932206436,
+   "admm_net_recourse_before_polish": 827512082.4955224,
+   "polished_net_operational_recourse": null,
+   "admm_to_polish_improvement": null,
+   "total_objective": null,
+   "max_coordinated_residual": null,
+   "esso_production_feasible": null,
+   "network_max_violation": null,
+   "network_h1_violation": null,
+   "wall_clock_s": 241.21462225914001,
+   "case_id": "d2_se_node5_2025_-10pct_pf100",
+   "rho_requested": {
+    "v": 1.5,
+    "pf": 100.0
+   },
+   "adaptive_penalty": null,
+   "rho_observed_final": {
+    "v": 1.5,
+    "pf": 44.444444444444436,
+    "ess": 1.0
+   },
+   "n_failed_polish_blocks": 4,
+   "primal_pf_ratio": 0.09359893170732647,
+   "primal_v_ratio": 0.003401886661889137,
+   "primal_ess_ratio": 0.005041064212334828,
+   "dual_pf_mean_ratio": 0.6221919678583636,
+   "dual_v_mean_ratio": 0.008404684852982654,
+   "terminating_criterion": {
+    "residual_convergence": true,
+    "objective_convergence": true,
+    "objective_change_abs": 328810.7251212597,
+    "objective_tolerance": 827840.8932206436,
+    "objective_slack_factor": 2.517682149556862,
+    "worst_primal_ratio": 0.09359893170732647,
+    "worst_dual_mean_ratio": 0.6221919678583636
+   },
+   "cost_families": {
+    "gross_operational_cost": 827515451.6848274,
+    "terminal_salvage_value": 3369.189305039077,
+    "net_operational_recourse": 827512082.4955224
+   },
+   "rho_actions": [
+    {
+     "cycle": 1,
+     "v": "held",
+     "pf": "decreased",
+     "ess": "held"
+    },
+    {
+     "cycle": 2,
+     "v": "held",
+     "pf": "decreased",
+     "ess": "held"
+    },
+    {
+     "cycle": 3,
+     "v": "held",
+     "pf": "held",
+     "ess": "held"
+    }
+   ],
+   "candidate": "se|node5|2025|-10%",
+   "rho_pf": 100.0
+  },
+  {
+   "status": "VALID",
+   "polish_all_solved": true,
+   "failed_blocks": [],
+   "admm_cycles": 4,
+   "admm_converged": true,
+   "admm_runtime_s": 191.3766028881073,
+   "primal_v": 3.7088591697105904e-05,
+   "primal_pf": 0.0005130831281295656,
+   "primal_ess": 0.0005336988423158134,
+   "primal_v_mean": 4.010792343409032e-06,
+   "primal_pf_mean": 1.2165089502124402e-05,
+   "primal_ess_mean": 5.322284889464071e-06,
+   "dual_ess_mean": 1.2275562224824914e-05,
+   "objective_change_abs": 212657.71158015728,
+   "objective_convergence": true,
+   "residual_convergence": true,
+   "objective_tolerance": 827948.2770321275,
+   "admm_net_recourse_before_polish": 827735619.3205473,
+   "polished_net_operational_recourse": 829806693.017897,
+   "admm_to_polish_improvement": 2071073.6973496675,
+   "total_objective": 829855988.4332685,
+   "max_coordinated_residual": 1.1102230246251565e-16,
+   "esso_production_feasible": true,
+   "network_max_violation": 9.909712114286595e-06,
+   "network_h1_violation": 0.0,
+   "wall_clock_s": 246.50671792030334,
+   "case_id": "d2_se_node5_2025_-10pct_pf300",
+   "rho_requested": {
+    "v": 1.5,
+    "pf": 300.0
+   },
+   "adaptive_penalty": null,
+   "rho_observed_final": {
+    "v": 1.5,
+    "pf": 88.88888888888887,
+    "ess": 1.0
+   },
+   "n_failed_polish_blocks": 0,
+   "primal_pf_ratio": 0.05130831281295656,
+   "primal_v_ratio": 0.0037088591697105903,
+   "primal_ess_ratio": 0.005336988423158134,
+   "dual_pf_mean_ratio": 0.8365005521262845,
+   "dual_v_mean_ratio": 0.008203955637322444,
+   "terminating_criterion": {
+    "residual_convergence": true,
+    "objective_convergence": true,
+    "objective_change_abs": 212657.71158015728,
+    "objective_tolerance": 827948.2770321275,
+    "objective_slack_factor": 3.893337659283746,
+    "worst_primal_ratio": 0.05130831281295656,
+    "worst_dual_mean_ratio": 0.8365005521262845
+   },
+   "cost_families": {
+    "gross_operational_cost": 829810064.0796678,
+    "terminal_salvage_value": 3371.642667754409,
+    "net_operational_recourse": 829806692.437
+   },
+   "rho_actions": [
+    {
+     "cycle": 1,
+     "v": "held",
+     "pf": "decreased",
+     "ess": "held"
+    },
+    {
+     "cycle": 2,
+     "v": "held",
+     "pf": "decreased",
+     "ess": "held"
+    },
+    {
+     "cycle": 3,
+     "v": "held",
+     "pf": "decreased",
+     "ess": "held"
+    },
+    {
+     "cycle": 4,
+     "v": "held",
+     "pf": "held",
+     "ess": "held"
+    }
+   ],
+   "candidate": "se|node5|2025|-10%",
+   "rho_pf": 300.0
+  }
+ ]
+}

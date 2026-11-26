@@ -1,0 +1,580 @@
+{
+ "stage": "P5.15 Addendum 16 item 1 (s35ref, run 1) -- reference equilibrium at cap 500, rho_ess=0.1125 -- terminal report",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 16 item 1",
+  "data/SRP1/Results/P515S35/frozen_s35_reference_spec_v5_995548ab.json"
+ ],
+ "spec_file": "data/SRP1/Results/P515S35/frozen_s35_reference_spec_v5_995548ab.json",
+ "spec_file_sha256": "995548ababa1b428e9bc4354a078ffd8322cc54d00f04b9ef7a694e43311c7ba",
+ "predecessor_spec_file": "data/SRP1/Results/P515S34/frozen_s34_spec_v4_966940a7.json",
+ "predecessor_spec_sha256": "966940a789db3093a57d5fdc23be8ccb172b762bf02d0cd09eeaaf0f52f544e9",
+ "timestamp_utc": "2026-11-23T21:45:18.776661+00:00",
+ "label": "s39_D",
+ "objective_convention": "gross_operational_cost (matched-cycle and terminal comparisons below use gross, NOT net_operational_recourse -- see CLAUDE.md \"Reporting conventions\")",
+ "cycles": 2,
+ "stopped_by": "cap",
+ "converged_at_cycle": null,
+ "consecutive_converged_at_stop": 0,
+ "consecutive_converged_run_began_at_cycle": null,
+ "binding_test_per_channel": {
+  "v": {
+   "r": 0.9996065933228173,
+   "s": 0.009045679757218804,
+   "eps_pri": 0.0034364761626056485,
+   "eps_dual": 0.00029454846758778636,
+   "primal_ratio": 290.88128246025224,
+   "dual_ratio": 30.710327000845307,
+   "dual_ratio_balance": 30.710327000845307,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  },
+  "pf": {
+   "r": 0.5199061240769299,
+   "s": 2.9296327801408424,
+   "eps_pri": 0.0014878159711792195,
+   "eps_dual": 0.00043216130049124725,
+   "primal_ratio": 349.4424943327235,
+   "dual_ratio": 6779.026203435302,
+   "dual_ratio_balance": 6779.026203435302,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  },
+  "ess": {
+   "r": 0.16836749722314898,
+   "s": 0.0031911096149338496,
+   "eps_pri": 0.0008026551977552149,
+   "eps_dual": 0.000720503530935679,
+   "primal_ratio": 209.76316816239677,
+   "dual_ratio": 4.428999273313384,
+   "dual_ratio_balance": 4.428999273313384,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  }
+ },
+ "rho_gamma_freeze_trajectory_per_channel": {
+  "v": [
+   {
+    "cycle": 1,
+    "rho_before": 0.0076999999999999985,
+    "rho_after": 0.011549999999999998,
+    "action": "increased",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 2,
+    "rho_before": 0.011549999999999998,
+    "rho_after": 0.01732500000000001,
+    "action": "increased",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   }
+  ],
+  "pf": [
+   {
+    "cycle": 1,
+    "rho_before": 0.1980000000000002,
+    "rho_after": 0.1980000000000002,
+    "action": "held",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 1,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 2,
+    "rho_before": 0.1980000000000002,
+    "rho_after": 0.13199999999999992,
+    "action": "decreased",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   }
+  ],
+  "ess": [
+   {
+    "cycle": 1,
+    "rho_before": 0.010000000000000004,
+    "rho_after": 0.010000000000000004,
+    "action": "exempt (fixed)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 2,
+    "rho_before": 0.010000000000000004,
+    "rho_after": 0.010000000000000004,
+    "action": "exempt (fixed)",
+    "gamma_before": 0.0,
+    "gamma_after": 0.0,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   }
+  ]
+ },
+ "sigma_fixed": 93635360.0,
+ "sigma_computed": 87770624.84451607,
+ "al_scale_esso": 227210.9966521344,
+ "shared_ess_reference_rating_mva": 2.5,
+ "initial_rho": {
+  "v": {
+   "case9": 0.0077,
+   "case33_1": 0.0077,
+   "case33_2": 0.0077,
+   "case33_3": 0.0077
+  },
+  "pf": {
+   "case9": 0.198,
+   "case33_1": 0.198,
+   "case33_2": 0.198,
+   "case33_3": 0.198
+  },
+  "ess": {
+   "case9": 0.01,
+   "case33_1": 0.01,
+   "case33_2": 0.01,
+   "case33_3": 0.01,
+   "esso": 0.01
+  }
+ },
+ "initial_rho_ess_value_v5": 0.1125,
+ "freeze_after_unchanged_cycles": 10,
+ "freeze_backstop_cycle": 200,
+ "freeze_cycle_per_channel": {
+  "v": null,
+  "pf": null,
+  "ess": null
+ },
+ "rho_at_clamp_per_channel_at_terminal": {
+  "v": false,
+  "pf": false,
+  "ess": false
+ },
+ "rho_at_clamp_any_true_gate_failure_flag": false,
+ "efc_per_day_max_terminal": 0.6657600277050854,
+ "soh_floor_multiplier_and_efc_per_cohort_year_terminal": {
+  "available": true,
+  "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/e2b75b66-5876-478c-8406-61146cba3204/scratchpad/memprobe/export_b0391b80/data/SRP1/Results/P515S56/memory_probe_v1/srp1grid/campaign_s56memprobe_v1_srp1grid/evals/2bddebff662eb9ca_staged_sp/soh_floor_sidecar_baseline.jsonl",
+  "cycle": 2,
+  "dual_sign_convention": "model.dual.get(con) as returned by Pyomo (Suffix direction=IMPORT_EXPORT, populated from the IPOPT .sol file) for the row es_soh_per_unit_cumul[y_inv, y] >= soh_min; NO sign flip applied -- the SAME mechanism _duals_for_keys uses elsewhere in this harness",
+  "threshold_efc_binding": 1.4612,
+  "per_node_per_cohort_year": [
+   {
+    "node_id": 5,
+    "y_inv": "0",
+    "y": "0",
+    "constraint_idx": 3,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 5,
+    "y_inv": "0",
+    "y": "1",
+    "constraint_idx": 6,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 5,
+    "y_inv": "0",
+    "y": "2",
+    "constraint_idx": 9,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 5,
+    "y_inv": "1",
+    "y": "1",
+    "constraint_idx": 12,
+    "dual": 4.346286190855422e-09,
+    "es_soh_per_unit_cumul": 0.9091645428330998,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": 0.38623205313658165,
+    "efc_margin_to_threshold": 1.0749679468634183,
+    "efc_fraction_of_threshold": 0.2643252485194235
+   },
+   {
+    "node_id": 5,
+    "y_inv": "1",
+    "y": "2",
+    "constraint_idx": 15,
+    "dual": 7.080690497298946e-09,
+    "es_soh_per_unit_cumul": 0.8283899743180506,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": 0.34326699763567203,
+    "efc_margin_to_threshold": 1.1179330023643281,
+    "efc_fraction_of_threshold": 0.2349212959455735
+   },
+   {
+    "node_id": 5,
+    "y_inv": "2",
+    "y": "2",
+    "constraint_idx": 18,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "0",
+    "y": "0",
+    "constraint_idx": 3,
+    "dual": 4.526831418147368e-09,
+    "es_soh_per_unit_cumul": 0.9008223753418668,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": 0.5673157356591056,
+    "efc_margin_to_threshold": 0.8938842643408944,
+    "efc_fraction_of_threshold": 0.3882533093752434
+   },
+   {
+    "node_id": 7,
+    "y_inv": "0",
+    "y": "1",
+    "constraint_idx": 6,
+    "dual": 8.462587379970558e-09,
+    "es_soh_per_unit_cumul": 0.8074245744309309,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": 0.6657600277050854,
+    "efc_margin_to_threshold": 0.7954399722949147,
+    "efc_fraction_of_threshold": 0.4556255322372607
+   },
+   {
+    "node_id": 7,
+    "y_inv": "0",
+    "y": "2",
+    "constraint_idx": 9,
+    "dual": 3.348760151698378e-08,
+    "es_soh_per_unit_cumul": 0.7271470719383167,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": 0.5726925579883168,
+    "efc_margin_to_threshold": 0.8885074420116833,
+    "efc_fraction_of_threshold": 0.3919330399591546
+   },
+   {
+    "node_id": 7,
+    "y_inv": "1",
+    "y": "1",
+    "constraint_idx": 12,
+    "dual": 4.000980373080647e-09,
+    "es_soh_per_unit_cumul": 0.9272165116312203,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": -1.9630662702669174e-07,
+    "efc_margin_to_threshold": 1.461200196306627,
+    "efc_fraction_of_threshold": -1.3434617234238416e-07
+   },
+   {
+    "node_id": 7,
+    "y_inv": "1",
+    "y": "2",
+    "constraint_idx": 15,
+    "dual": 5.69139663944315e-09,
+    "es_soh_per_unit_cumul": 0.8597304594414477,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": -1.9630385552564124e-07,
+    "efc_margin_to_threshold": 1.4612001963038557,
+    "efc_fraction_of_threshold": -1.343442756129491e-07
+   },
+   {
+    "node_id": 7,
+    "y_inv": "2",
+    "y": "2",
+    "constraint_idx": 18,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "0",
+    "y": "0",
+    "constraint_idx": 3,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "0",
+    "y": "1",
+    "constraint_idx": 6,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "0",
+    "y": "2",
+    "constraint_idx": 9,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "1",
+    "y": "1",
+    "constraint_idx": 12,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "1",
+    "y": "2",
+    "constraint_idx": 15,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": null,
+    "efc_margin_to_threshold": null,
+    "efc_fraction_of_threshold": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "2",
+    "y": "2",
+    "constraint_idx": 18,
+    "dual": 4.197586588115419e-09,
+    "es_soh_per_unit_cumul": 0.916574185965449,
+    "soh_min": 0.7,
+    "active": false,
+    "efc_per_day": 0.22677863948536062,
+    "efc_margin_to_threshold": 1.2344213605146395,
+    "efc_fraction_of_threshold": 0.15520027339540146
+   }
+  ],
+  "per_node_max_efc_per_day": {
+   "5": {
+    "efc_per_day": 0.38623205313658165,
+    "y_inv": "1",
+    "y": "1",
+    "margin_to_threshold": 1.0749679468634183,
+    "fraction_of_threshold": 0.2643252485194235
+   },
+   "7": {
+    "efc_per_day": 0.6657600277050854,
+    "y_inv": "0",
+    "y": "1",
+    "margin_to_threshold": 0.7954399722949147,
+    "fraction_of_threshold": 0.4556255322372607
+   },
+   "9": {
+    "efc_per_day": 0.22677863948536062,
+    "y_inv": "2",
+    "y": "2",
+    "margin_to_threshold": 1.2344213605146395,
+    "fraction_of_threshold": 0.15520027339540146
+   }
+  }
+ },
+ "soh_floor_row_counts_by_node": {
+  "5": 6,
+  "7": 6,
+  "9": 6
+ },
+ "system_cost_vs_s31c_s32_s33e2_s34": {
+  "s31c": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S31C_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s34_gross_operational_cost": 2464998427.886087,
+     "s31c_gross_operational_cost": 2359311749.284464,
+     "difference": 105686678.60162306
+    },
+    {
+     "cycle": 2,
+     "s34_gross_operational_cost": 1099742608.5967152,
+     "s31c_gross_operational_cost": 1635793408.6698973,
+     "difference": -536050800.0731821
+    }
+   ],
+   "terminal": {
+    "s34_cycle": 2,
+    "s31c_cycle": 90,
+    "s34_gross_operational_cost": 1099742608.5967152,
+    "s31c_gross_operational_cost": 661400927.7360976,
+    "difference": 438341680.86061764,
+    "s34_terminal_step_objective_change_abs": 1365248739.2575088,
+    "s31c_terminal_step_objective_change_abs": 129616.68283557892,
+    "error_bar_sum_of_terminal_steps": 1365378355.9403443,
+    "determinate_at_gt_error_bar": false
+   }
+  },
+  "s32": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S32_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s34_gross_operational_cost": 2464998427.886087,
+     "s32_gross_operational_cost": 968494925.0938367,
+     "difference": 1496503502.7922502
+    },
+    {
+     "cycle": 2,
+     "s34_gross_operational_cost": 1099742608.5967152,
+     "s32_gross_operational_cost": 1219820650.0962644,
+     "difference": -120078041.49954915
+    }
+   ],
+   "terminal": {
+    "s34_cycle": 2,
+    "s32_cycle": 150,
+    "s34_gross_operational_cost": 1099742608.5967152,
+    "s32_gross_operational_cost": 654413409.7351172,
+    "difference": 445329198.861598,
+    "s34_terminal_step_objective_change_abs": 1365248739.2575088,
+    "s32_terminal_step_objective_change_abs": 30394.44314610958,
+    "error_bar_sum_of_terminal_steps": 1365279133.700655,
+    "determinate_at_gt_error_bar": false
+   }
+  },
+  "s33e2": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S33_E2_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s34_gross_operational_cost": 2464998427.886087,
+     "s33e2_gross_operational_cost": 968494925.0938367,
+     "difference": 1496503502.7922502
+    },
+    {
+     "cycle": 2,
+     "s34_gross_operational_cost": 1099742608.5967152,
+     "s33e2_gross_operational_cost": 1219820650.0962644,
+     "difference": -120078041.49954915
+    }
+   ],
+   "terminal": {
+    "s34_cycle": 2,
+    "s33e2_cycle": 150,
+    "s34_gross_operational_cost": 1099742608.5967152,
+    "s33e2_gross_operational_cost": 653826841.6344557,
+    "difference": 445915766.96225953,
+    "s34_terminal_step_objective_change_abs": 1365248739.2575088,
+    "s33e2_terminal_step_objective_change_abs": 5179.306692242622,
+    "error_bar_sum_of_terminal_steps": 1365253918.5642009,
+    "determinate_at_gt_error_bar": false
+   }
+  },
+  "s34": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S34_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s35ref_gross_operational_cost": 2464998427.886087,
+     "s34_gross_operational_cost": 907716715.668015,
+     "difference": 1557281712.218072
+    },
+    {
+     "cycle": 2,
+     "s35ref_gross_operational_cost": 1099742608.5967152,
+     "s34_gross_operational_cost": 1124883514.3571718,
+     "difference": -25140905.760456562
+    }
+   ],
+   "terminal": {
+    "s35ref_cycle": 2,
+    "s34_cycle": 150,
+    "s35ref_gross_operational_cost": 1099742608.5967152,
+    "s34_gross_operational_cost": 651180637.2519937,
+    "difference": 448561971.34472156,
+    "s35ref_terminal_step_objective_change_abs": 1365248739.2575088,
+    "s34_terminal_step_objective_change_abs": 4682.301938891411,
+    "error_bar_sum_of_terminal_steps": 1365253421.5594478,
+    "determinate_at_gt_error_bar": false
+   }
+  }
+ },
+ "network_failures_summary": {
+  "n_blocks": 0,
+  "classes": {
+   "recovered_tier1": 0,
+   "recovered_tier2": 0,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 0
+  },
+  "n_frozen_snapshots": 0,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S56/memory_probe_v1/srp1grid/campaign_s56memprobe_v1_srp1grid/evals/2bddebff662eb9ca_staged_sp/network_failures_s39_D.jsonl"
+ },
+ "component_levels_terminal_and_settlement_detail_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/e2b75b66-5876-478c-8406-61146cba3204/scratchpad/memprobe/export_b0391b80/data/SRP1/Results/P515S56/memory_probe_v1/srp1grid/campaign_s56memprobe_v1_srp1grid/evals/2bddebff662eb9ca_staged_sp/interface_settlement_detail_s31c.json",
+ "interface_voltage_terminal_path": "data/SRP1/Results/P515S56/memory_probe_v1/srp1grid/campaign_s56memprobe_v1_srp1grid/evals/2bddebff662eb9ca_staged_sp/interface_voltage_terminal.json",
+ "recourse_jump_sidecar_path": "data/SRP1/Results/P515S56/memory_probe_v1/srp1grid/campaign_s56memprobe_v1_srp1grid/evals/2bddebff662eb9ca_staged_sp/recourse_jump_sidecar_baseline.jsonl",
+ "ess_entry_stride_sidecar_path": "data/SRP1/Results/P515S56/memory_probe_v1/srp1grid/campaign_s56memprobe_v1_srp1grid/evals/2bddebff662eb9ca_staged_sp/ess_entry_stride_baseline.jsonl",
+ "soh_floor_sidecar_path": "data/SRP1/Results/P515S56/memory_probe_v1/srp1grid/campaign_s56memprobe_v1_srp1grid/evals/2bddebff662eb9ca_staged_sp/soh_floor_sidecar_baseline.jsonl",
+ "note_D_rows_and_cancellation_residual": "D rows are in component_levels_terminal.json (written by write_component_levels_terminal, called first by write_interface_settlement_detail_s31c above); the cancellation residual T_TSO + sum(T_DSO) is \"t_tso_plus_t_dso_terminal\" and per-DSO settlement/flexibility volumes are \"interface_consensus_residual_per_dso\" / \"flexibility_volumes_per_dso\" in interface_settlement_detail_s31c.json."
+}

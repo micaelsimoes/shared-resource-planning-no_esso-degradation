@@ -1,0 +1,3620 @@
+{
+ "schema": "p515_s56_input_audit_A_v1",
+ "script": "p515_s56_expected_profiles.py",
+ "started_utc": "2026-11-21T10:52:33.125288+00:00",
+ "finished_utc": "2026-11-21T10:56:47.333611+00:00",
+ "wall_s": 254.20834708213806,
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "git_head": "3c7852d965cceb272a7b552a1acecd10e086c60d",
+ "solve_claim": "ZERO SOLVES, guard-verified (SolveProfileGuard(permitted=()) armed for the whole run, verify(0))",
+ "formula": {
+  "market": "Abar[year][day][t] = sum_{s_m} pi_m[year][s_m] * A[year][day][s_m, t], A in {cost_energy_p (EUR/MWh), cost_flex (EUR/MWh)}, pi_m = planning.prob_market_scenarios[year] (production _read_market_data_from_file: [1/NumMarketScenarios] * NumMarketScenarios)",
+  "operation": "Abar[net][year][day][device][t] = sum_{s_o} pi_o[s_o] * A[s_o, t], A in {load.pd, load.qd, load.flexibility.active_power.upward, .downward, load.flexibility.reactive_power.upward, .downward, generator.pg, generator.qg} (p.u. on the network baseMVA, as stored), pi_o = network.prob_operation_scenarios (production _read_network_data: [1/num_oper_scenarios] * n)",
+  "joint_equivalence": "equal to the joint mean over the 9 (s_m, s_o) pairs with weight pi_m * pi_o (production _scenario_probability) because each array depends on one dimension only and the other dimension's weights sum to 1; checked numerically",
+  "evaluation": "numpy float64, np.sum(w[:, None] * A, axis=0), w the production probability vector",
+  "capture_point": "arrays as stored at the entry of shared_resources_planning._compute_scenario_metadata (the production scenario-checksum point: TSO and DSOs read, ADN loads not yet zeroed, shared ESS not yet added); the post-read arrays are compared separately",
+  "what_it_is_not": "no re-derivation of power factor / Q-P ratio, no capacity clipping, no abs() of flexibility bounds (production applies abs() at model build), no re-sampling"
+ },
+ "q1_dimensions": {
+  "s53_3x3": {
+   "years": {
+    "2025": 3,
+    "2028": 3,
+    "2031": 3,
+    "2034": 3,
+    "2037": 3
+   },
+   "days": {
+    "Spring": 92,
+    "Summer": 91,
+    "Autumn": 91,
+    "Winter": 91
+   },
+   "num_instants": 24,
+   "random_seed": 2026,
+   "num_market_scenarios": 3,
+   "num_operation_scenarios": {
+    "case9": 3,
+    "case33_1": 3,
+    "case33_2": 3,
+    "case33_3": 3
+   },
+   "active_distribution_network_nodes": [
+    5,
+    7,
+    9
+   ],
+   "scenario_metadata": {
+    "random_seed": 2026,
+    "deterministic_scenarios": true,
+    "market_scenario_checksum": "bf2869084ed4bf59f6b1b5bd875e7ef5b2a6e7c764f7a160ebb3bdb2684d7904",
+    "operational_scenario_checksum": "4497bf25605b718972fc96cd6bb723eb6cbd9045e793f8b96a420e0fafb001c2",
+    "combined_scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193"
+   }
+  },
+  "srp1": {
+   "years": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "days": {
+    "Spring": 92,
+    "Summer": 91,
+    "Autumn": 91,
+    "Winter": 91
+   },
+   "num_instants": 24,
+   "random_seed": 2026,
+   "num_market_scenarios": 1,
+   "num_operation_scenarios": {
+    "case9": 1,
+    "case33_1": 1,
+    "case33_2": 1,
+    "case33_3": 1
+   },
+   "active_distribution_network_nodes": [
+    5,
+    7,
+    9
+   ],
+   "scenario_metadata": {
+    "random_seed": 2026,
+    "deterministic_scenarios": true,
+    "market_scenario_checksum": "a8c958289c1e0bdaaf0df36ce56fb4da6734621bf34be7711babcae94d79d907",
+    "operational_scenario_checksum": "502de30606ff8f0290498c56559b59ea01436ce43d9c21a0fc87c876a17ce30e",
+    "combined_scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358"
+   }
+  },
+  "srp1_5x3y": {
+   "years": {
+    "2025": 3,
+    "2028": 3,
+    "2031": 3,
+    "2034": 3,
+    "2037": 3
+   },
+   "days": {
+    "Spring": 92,
+    "Summer": 91,
+    "Autumn": 91,
+    "Winter": 91
+   },
+   "num_instants": 24,
+   "random_seed": 2026,
+   "num_market_scenarios": 1,
+   "num_operation_scenarios": {
+    "case9": 1,
+    "case33_1": 1,
+    "case33_2": 1,
+    "case33_3": 1
+   },
+   "active_distribution_network_nodes": [
+    5,
+    7,
+    9
+   ],
+   "scenario_metadata": {
+    "random_seed": 2026,
+    "deterministic_scenarios": true,
+    "market_scenario_checksum": "186d57dfdda4a4f9066bf3a63b5af084df234ed7c1895e8a48368e7a38cf68f3",
+    "operational_scenario_checksum": "a2f0b4aabb737569be2e25817a68f2967d541dbae2859ed981dc8fd1fb01a427",
+    "combined_scenario_checksum": "9f7837e23fb9df693f6abe47993cd266b5df71911aba6f35742e312e52412336"
+   }
+  }
+ },
+ "q1_probabilities": {
+  "market": {
+   "2025": [
+    0.3333333333333333,
+    0.3333333333333333,
+    0.3333333333333333
+   ],
+   "2028": [
+    0.3333333333333333,
+    0.3333333333333333,
+    0.3333333333333333
+   ],
+   "2031": [
+    0.3333333333333333,
+    0.3333333333333333,
+    0.3333333333333333
+   ],
+   "2034": [
+    0.3333333333333333,
+    0.3333333333333333,
+    0.3333333333333333
+   ],
+   "2037": [
+    0.3333333333333333,
+    0.3333333333333333,
+    0.3333333333333333
+   ]
+  },
+  "operation": [
+   [
+    "DSO5",
+    [
+     0.3333333333333333,
+     0.3333333333333333,
+     0.3333333333333333
+    ]
+   ],
+   [
+    "DSO7",
+    [
+     0.3333333333333333,
+     0.3333333333333333,
+     0.3333333333333333
+    ]
+   ],
+   [
+    "DSO9",
+    [
+     0.3333333333333333,
+     0.3333333333333333,
+     0.3333333333333333
+    ]
+   ],
+   [
+    "TSO",
+    [
+     0.3333333333333333,
+     0.3333333333333333,
+     0.3333333333333333
+    ]
+   ]
+  ],
+  "investment_cost_scenarios_ess_workbook": [
+   0.35,
+   0.55,
+   0.1
+  ]
+ },
+ "q1_block_weights_tso": {
+  "2025|Spring": 276.0,
+  "2025|Summer": 273.0,
+  "2025|Autumn": 273.0,
+  "2025|Winter": 273.0,
+  "2028|Spring": 260.08096433498423,
+  "2028|Summer": 257.2539973313431,
+  "2028|Autumn": 257.2539973313431,
+  "2028|Winter": 257.2539973313431,
+  "2031|Spring": 245.080101483389,
+  "2031|Summer": 242.4161873368304,
+  "2031|Autumn": 242.4161873368304,
+  "2031|Winter": 242.4161873368304,
+  "2034|Spring": 230.94445338085367,
+  "2034|Summer": 228.4341875832357,
+  "2034|Autumn": 228.4341875832357,
+  "2034|Winter": 228.4341875832357,
+  "2037|Spring": 217.62411646053712,
+  "2037|Summer": 215.25863693379213,
+  "2037|Autumn": 215.25863693379213,
+  "2037|Winter": 215.25863693379213
+ },
+ "reads": {
+  "s53_3x3": {
+   "wall_s": 13.341629266738892,
+   "read_dir": "data/SRP1/Results/P515S56/input_audit_A/reads/s53_3x3",
+   "scenario_metadata": {
+    "random_seed": 2026,
+    "deterministic_scenarios": true,
+    "market_scenario_checksum": "bf2869084ed4bf59f6b1b5bd875e7ef5b2a6e7c764f7a160ebb3bdb2684d7904",
+    "operational_scenario_checksum": "4497bf25605b718972fc96cd6bb723eb6cbd9045e793f8b96a420e0fafb001c2",
+    "combined_scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193"
+   }
+  },
+  "srp1": {
+   "wall_s": 12.307693719863892,
+   "read_dir": "data/SRP1/Results/P515S56/input_audit_A/reads/srp1",
+   "scenario_metadata": {
+    "random_seed": 2026,
+    "deterministic_scenarios": true,
+    "market_scenario_checksum": "a8c958289c1e0bdaaf0df36ce56fb4da6734621bf34be7711babcae94d79d907",
+    "operational_scenario_checksum": "502de30606ff8f0290498c56559b59ea01436ce43d9c21a0fc87c876a17ce30e",
+    "combined_scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358"
+   }
+  },
+  "srp1_5x3y": {
+   "wall_s": 12.293107986450195,
+   "read_dir": "data/SRP1/Results/P515S56/input_audit_A/reads/srp1_5x3y",
+   "scenario_metadata": {
+    "random_seed": 2026,
+    "deterministic_scenarios": true,
+    "market_scenario_checksum": "186d57dfdda4a4f9066bf3a63b5af084df234ed7c1895e8a48368e7a38cf68f3",
+    "operational_scenario_checksum": "a2f0b4aabb737569be2e25817a68f2967d541dbae2859ed981dc8fd1fb01a427",
+    "combined_scenario_checksum": "9f7837e23fb9df693f6abe47993cd266b5df71911aba6f35742e312e52412336"
+   }
+  },
+  "ev": {
+   "wall_s": 12.209487915039062,
+   "read_dir": "data/SRP1/Results/P515S56/input_audit_A/reads/ev",
+   "scenario_metadata": {
+    "random_seed": 2026,
+    "deterministic_scenarios": true,
+    "market_scenario_checksum": "5c83ed9f26644d170fbf27ce00d94b73b4a8bb3bb67818210d20fc91bf077b52",
+    "operational_scenario_checksum": "e6ab386501d68fd0f714539fc894dba1f40b3be6a5a429bede0bb18a34cfbda7",
+    "combined_scenario_checksum": "d0d3a6000bff0841d1f9c234d517e99b5972d4e7fef55ddb316cb85a40885557"
+   }
+  }
+ },
+ "q2": {
+  "prefix_identity": {
+   "srp1_2025_vs_3x3_s0_2025": {
+    "n_equal": 2576,
+    "n": 2576
+   },
+   "srp1_5x3y_vs_3x3_s0_all_years": {
+    "n_equal": 12880,
+    "n": 12880
+   }
+  },
+  "scenario0_vs_mean_all_years": {
+   "DSO.gen0.pg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen0.qg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen2.pg": {
+    "n_arrays": 80,
+    "n_elements": 1920,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.1170306727758128,
+    "mean_abs_stored": 0.014930124481196181,
+    "max_abs_physical": 11.70306727758128,
+    "mean_abs_physical": 1.493012448119618,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 28521.530828025236,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.10050596223863846,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.8601228782004142,
+    "n_elements_relative_defined": 1920,
+    "signed_mean_diff_physical_x_minus_mean": 0.2302110755780028,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen2.qg": {
+    "n_arrays": 80,
+    "n_elements": 1920,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen3.pg": {
+    "n_arrays": 160,
+    "n_elements": 3840,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.04180119229276336,
+    "mean_abs_stored": 0.0018962076345401745,
+    "max_abs_physical": 4.180119229276336,
+    "mean_abs_physical": 0.18962076345401746,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 17248.12701201023,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.0422158145725855,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.3430163459632996,
+    "n_elements_relative_defined": 2080,
+    "signed_mean_diff_physical_x_minus_mean": 6.019640536434334e-05,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen3.qg": {
+    "n_arrays": 160,
+    "n_elements": 3840,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.flex_p_down": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.011020421998566343,
+    "mean_abs_stored": 0.00037457142543931613,
+    "max_abs_physical": 1.1020421998566343,
+    "mean_abs_physical": 0.03745714254393162,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 89040.04032768494,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.01938481970664271,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.2704234421148246,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": -4.8157309554157264e-05,
+    "n_negative_values_in_x": 46080,
+    "n_negative_values_in_mean": 46080
+   },
+   "DSO.load.flex_p_up": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.021285439205982942,
+    "mean_abs_stored": 0.0004773612444773057,
+    "max_abs_physical": 2.128543920598294,
+    "mean_abs_physical": 0.04773612444773056,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 78420.0085329694,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.02804999203266642,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.3901883116348949,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": 1.0301838772886199e-06,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.flex_q_down": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 1.6940658945086007e-21,
+    "mean_abs_stored": 1.6940658945086007e-21,
+    "max_abs_physical": 1.6940658945086007e-19,
+    "mean_abs_physical": 1.6940658945086007e-19,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 46.08000000000001,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 1.6940658945086007e-16,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.694065894508601e-16,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": 1.6940658945086007e-19,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.flex_q_up": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 1.6940658945086007e-21,
+    "mean_abs_stored": 1.6940658945086007e-21,
+    "max_abs_physical": 1.6940658945086007e-19,
+    "mean_abs_physical": 1.6940658945086007e-19,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 46.08000000000001,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 1.6940658945086007e-16,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.694065894508601e-16,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": 1.6940658945086007e-19,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.pd": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.006577466089096082,
+    "mean_abs_stored": 0.0003726808790455429,
+    "max_abs_physical": 0.6577466089096082,
+    "mean_abs_physical": 0.037268087904554284,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 99647.07120747303,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.017233958508085807,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.1470407434505284,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": 0.0035033535982822916,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.qd": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.005715082114416389,
+    "mean_abs_stored": 0.00012072459205572353,
+    "max_abs_physical": 0.571508211441639,
+    "mean_abs_physical": 0.012072459205572353,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 30140.848695561537,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.01845664419776916,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 62.02032119769404,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": 0.0006814019238664638,
+    "n_negative_values_in_x": 24967,
+    "n_negative_values_in_mean": 24964
+   },
+   "TSO.gen1.pg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen1.qg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen2.pg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.08257778105004743,
+    "mean_abs_stored": 0.013019252820549415,
+    "max_abs_physical": 8.257778105004743,
+    "mean_abs_physical": 1.3019252820549416,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 20225.807475397378,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.09269209194439254,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.640825218539054,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": -0.0027367502980185222,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen2.qg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen3.pg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.02956578474097099,
+    "mean_abs_stored": 0.0015131503774748593,
+    "max_abs_physical": 2.956578474097099,
+    "mean_abs_physical": 0.15131503774748592,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 6312.764421496217,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.03451636079027574,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.9822897418454877,
+    "n_elements_relative_defined": 780,
+    "signed_mean_diff_physical_x_minus_mean": 0.006814059176258093,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen3.qg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.flex_p_down": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.03895421746963157,
+    "mean_abs_stored": 0.005812175576029696,
+    "max_abs_physical": 3.895421746963157,
+    "mean_abs_physical": 0.5812175576029696,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 35742.485879474676,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.02341620238084507,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.1069591490201121,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": -0.01597822717183594,
+    "n_negative_values_in_x": 1440,
+    "n_negative_values_in_mean": 1440
+   },
+   "TSO.load.flex_p_up": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.04237959619957321,
+    "mean_abs_stored": 0.0058753467525810964,
+    "max_abs_physical": 4.237959619957321,
+    "mean_abs_physical": 0.5875346752581097,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 31192.41082242393,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.027123582630024245,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.1708386908513773,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": -0.03446931270218723,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.flex_q_down": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 1.6940658945086007e-21,
+    "mean_abs_stored": 1.6940658945086007e-21,
+    "max_abs_physical": 1.6940658945086007e-19,
+    "mean_abs_physical": 1.6940658945086007e-19,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 1.4400000000000004,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 1.6940658945086007e-16,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.694065894508601e-16,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": 1.6940658945086007e-19,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.flex_q_up": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 1.6940658945086007e-21,
+    "mean_abs_stored": 1.6940658945086007e-21,
+    "max_abs_physical": 1.6940658945086007e-19,
+    "mean_abs_physical": 1.6940658945086007e-19,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 1.4400000000000004,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 1.6940658945086007e-16,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.694065894508601e-16,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": 1.6940658945086007e-19,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.pd": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.10094713270757305,
+    "mean_abs_stored": 0.014579861176578553,
+    "max_abs_physical": 10.094713270757305,
+    "mean_abs_physical": 1.4579861176578552,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 133291.28372455513,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.015751217564727662,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.08515129151187517,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": 0.3039748831955557,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.qd": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.02596092312929149,
+    "mean_abs_stored": 0.0029976265916299614,
+    "max_abs_physical": 2.596092312929149,
+    "mean_abs_physical": 0.2997626591629961,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 28029.417999952675,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.015400185233794127,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 7.935857989956382,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": 0.005389986495096358,
+    "n_negative_values_in_x": 522,
+    "n_negative_values_in_mean": 522
+   },
+   "market.energy": {
+    "n_arrays": 20,
+    "n_elements": 480,
+    "units_stored": "EUR/MWh",
+    "max_abs_stored": 51.12252827793877,
+    "mean_abs_stored": 8.582369993706333,
+    "max_abs_physical": 51.12252827793877,
+    "mean_abs_physical": 8.582369993706333,
+    "units_physical": "EUR/MWh",
+    "sum_abs_mean_physical": 55072.62696265205,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.07480190839221702,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.8539597999720486,
+    "n_elements_relative_defined": 480,
+    "signed_mean_diff_physical_x_minus_mean": -1.3727528942065859,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "market.flex": {
+    "n_arrays": 20,
+    "n_elements": 480,
+    "units_stored": "EUR/MWh",
+    "max_abs_stored": 6.224680228801972,
+    "mean_abs_stored": 0.765608995360074,
+    "max_abs_physical": 6.224680228801972,
+    "mean_abs_physical": 0.765608995360074,
+    "units_physical": "EUR/MWh",
+    "sum_abs_mean_physical": 23587.668782274057,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.015579848995039435,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.12239107847618447,
+    "n_elements_relative_defined": 480,
+    "signed_mean_diff_physical_x_minus_mean": -0.019281966934120726,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   }
+  },
+  "scenario0_vs_mean_2025_only": {
+   "DSO.gen0.pg": {
+    "n_arrays": 12,
+    "n_elements": 288,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen0.qg": {
+    "n_arrays": 12,
+    "n_elements": 288,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen2.pg": {
+    "n_arrays": 16,
+    "n_elements": 384,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.053199292895579106,
+    "mean_abs_stored": 0.010386115182043265,
+    "max_abs_physical": 5.31992928955791,
+    "mean_abs_physical": 1.0386115182043267,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 4808.640839528169,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.08293961564191077,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.39155589809580776,
+    "n_elements_relative_defined": 384,
+    "signed_mean_diff_physical_x_minus_mean": -0.3462880134894319,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen2.qg": {
+    "n_arrays": 16,
+    "n_elements": 384,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen3.pg": {
+    "n_arrays": 32,
+    "n_elements": 768,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.017647519257615506,
+    "mean_abs_stored": 0.0012469667961370586,
+    "max_abs_physical": 1.7647519257615505,
+    "mean_abs_physical": 0.12469667961370585,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 2854.1041459989383,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.033554153963715146,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.9673999955193731,
+    "n_elements_relative_defined": 416,
+    "signed_mean_diff_physical_x_minus_mean": -0.034093574964098136,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen3.qg": {
+    "n_arrays": 32,
+    "n_elements": 768,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.flex_p_down": {
+    "n_arrays": 384,
+    "n_elements": 9216,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.010430157758287872,
+    "mean_abs_stored": 0.00031654680504147816,
+    "max_abs_physical": 1.0430157758287872,
+    "mean_abs_physical": 0.031654680504147804,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 14798.256769360287,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.019713777107196215,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.23662302847172204,
+    "n_elements_relative_defined": 9216,
+    "signed_mean_diff_physical_x_minus_mean": -0.0002501151996078738,
+    "n_negative_values_in_x": 9216,
+    "n_negative_values_in_mean": 9216
+   },
+   "DSO.load.flex_p_up": {
+    "n_arrays": 384,
+    "n_elements": 9216,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.011538199508282387,
+    "mean_abs_stored": 0.00038192441362192465,
+    "max_abs_physical": 1.1538199508282387,
+    "mean_abs_physical": 0.038192441362192464,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 13036.304059326725,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.027000102022178847,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.32059918083319344,
+    "n_elements_relative_defined": 9216,
+    "signed_mean_diff_physical_x_minus_mean": 0.0003759428612921218,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.flex_q_down": {
+    "n_arrays": 384,
+    "n_elements": 9216,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 1.6940658945086007e-21,
+    "mean_abs_stored": 1.6940658945086007e-21,
+    "max_abs_physical": 1.6940658945086007e-19,
+    "mean_abs_physical": 1.6940658945086007e-19,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 9.216000000000001,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 1.694065894508601e-16,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.694065894508601e-16,
+    "n_elements_relative_defined": 9216,
+    "signed_mean_diff_physical_x_minus_mean": 1.6940658945086007e-19,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.flex_q_up": {
+    "n_arrays": 384,
+    "n_elements": 9216,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 1.6940658945086007e-21,
+    "mean_abs_stored": 1.6940658945086007e-21,
+    "max_abs_physical": 1.6940658945086007e-19,
+    "mean_abs_physical": 1.6940658945086007e-19,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 9.216000000000001,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 1.694065894508601e-16,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.694065894508601e-16,
+    "n_elements_relative_defined": 9216,
+    "signed_mean_diff_physical_x_minus_mean": 1.6940658945086007e-19,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.pd": {
+    "n_arrays": 384,
+    "n_elements": 9216,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.004638136930192931,
+    "mean_abs_stored": 0.00034940479270069934,
+    "max_abs_physical": 0.4638136930192931,
+    "mean_abs_physical": 0.034940479270069935,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 18178.726715663317,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.01771364199427181,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.12300778717603902,
+    "n_elements_relative_defined": 9216,
+    "signed_mean_diff_physical_x_minus_mean": 0.004952180691024605,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.qd": {
+    "n_arrays": 384,
+    "n_elements": 9216,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.005715082114416389,
+    "mean_abs_stored": 0.00012402260666936007,
+    "max_abs_physical": 0.571508211441639,
+    "mean_abs_physical": 0.012402260666936008,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 5584.337613178412,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.020467823083752824,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 62.02032119769404,
+    "n_elements_relative_defined": 9216,
+    "signed_mean_diff_physical_x_minus_mean": 0.0013146168150615525,
+    "n_negative_values_in_x": 4991,
+    "n_negative_values_in_mean": 4993
+   },
+   "TSO.gen1.pg": {
+    "n_arrays": 12,
+    "n_elements": 288,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen1.qg": {
+    "n_arrays": 12,
+    "n_elements": 288,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen2.pg": {
+    "n_arrays": 12,
+    "n_elements": 288,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.04951238866711652,
+    "mean_abs_stored": 0.007481106272576939,
+    "max_abs_physical": 4.951238866711652,
+    "mean_abs_physical": 0.7481106272576938,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 3003.4762889321173,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.07173549578006522,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.55961585254033,
+    "n_elements_relative_defined": 288,
+    "signed_mean_diff_physical_x_minus_mean": -0.11168324370598798,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen2.qg": {
+    "n_arrays": 12,
+    "n_elements": 288,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen3.pg": {
+    "n_arrays": 12,
+    "n_elements": 288,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.018911676695584058,
+    "mean_abs_stored": 0.0011853431861262747,
+    "max_abs_physical": 1.8911676695584059,
+    "mean_abs_physical": 0.11853431861262748,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 872.9730276437255,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.03910531331372238,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.5615434143441304,
+    "n_elements_relative_defined": 156,
+    "signed_mean_diff_physical_x_minus_mean": -0.03498143287679686,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen3.qg": {
+    "n_arrays": 12,
+    "n_elements": 288,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.flex_p_down": {
+    "n_arrays": 12,
+    "n_elements": 288,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.02438360612598295,
+    "mean_abs_stored": 0.0042260462092761,
+    "max_abs_physical": 2.438360612598295,
+    "mean_abs_physical": 0.42260462092761003,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 6130.58453455888,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.019852940635767483,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.08280813519023957,
+    "n_elements_relative_defined": 288,
+    "signed_mean_diff_physical_x_minus_mean": 0.003790293227063276,
+    "n_negative_values_in_x": 288,
+    "n_negative_values_in_mean": 288
+   },
+   "TSO.load.flex_p_up": {
+    "n_arrays": 12,
+    "n_elements": 288,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.030898874262074216,
+    "mean_abs_stored": 0.005041464244589071,
+    "max_abs_physical": 3.0898874262074214,
+    "mean_abs_physical": 0.5041464244589071,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 5346.064916609221,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.027159073544556895,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.16140765308863797,
+    "n_elements_relative_defined": 288,
+    "signed_mean_diff_physical_x_minus_mean": 0.05842556126933984,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.flex_q_down": {
+    "n_arrays": 12,
+    "n_elements": 288,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 1.6940658945086007e-21,
+    "mean_abs_stored": 1.6940658945086007e-21,
+    "max_abs_physical": 1.6940658945086007e-19,
+    "mean_abs_physical": 1.6940658945086007e-19,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.28800000000000003,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 1.694065894508601e-16,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.694065894508601e-16,
+    "n_elements_relative_defined": 288,
+    "signed_mean_diff_physical_x_minus_mean": 1.6940658945086007e-19,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.flex_q_up": {
+    "n_arrays": 12,
+    "n_elements": 288,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 1.6940658945086007e-21,
+    "mean_abs_stored": 1.6940658945086007e-21,
+    "max_abs_physical": 1.6940658945086007e-19,
+    "mean_abs_physical": 1.6940658945086007e-19,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.28800000000000003,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 1.694065894508601e-16,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.694065894508601e-16,
+    "n_elements_relative_defined": 288,
+    "signed_mean_diff_physical_x_minus_mean": 1.6940658945086007e-19,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.pd": {
+    "n_arrays": 12,
+    "n_elements": 288,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.04658291532725667,
+    "mean_abs_stored": 0.013675452436519499,
+    "max_abs_physical": 4.658291532725666,
+    "mean_abs_physical": 1.3675452436519497,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 25066.71399409151,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.015712192282745827,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.05717382573340806,
+    "n_elements_relative_defined": 288,
+    "signed_mean_diff_physical_x_minus_mean": -0.03494222932442343,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.qd": {
+    "n_arrays": 12,
+    "n_elements": 288,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.012191063741707697,
+    "mean_abs_stored": 0.0025185533749532913,
+    "max_abs_physical": 1.2191063741707697,
+    "mean_abs_physical": 0.2518553374953291,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 5250.750009401401,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.013814090762040277,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.40169372236945106,
+    "n_elements_relative_defined": 288,
+    "signed_mean_diff_physical_x_minus_mean": 0.009113868112009586,
+    "n_negative_values_in_x": 104,
+    "n_negative_values_in_mean": 104
+   },
+   "market.energy": {
+    "n_arrays": 4,
+    "n_elements": 96,
+    "units_stored": "EUR/MWh",
+    "max_abs_stored": 23.183297289400485,
+    "mean_abs_stored": 6.492545596377951,
+    "max_abs_physical": 23.183297289400485,
+    "mean_abs_physical": 6.492545596377951,
+    "units_physical": "EUR/MWh",
+    "sum_abs_mean_physical": 9343.05775001063,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.06671096272005535,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.7062627442489993,
+    "n_elements_relative_defined": 96,
+    "signed_mean_diff_physical_x_minus_mean": -1.9134657506812243,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "market.flex": {
+    "n_arrays": 4,
+    "n_elements": 96,
+    "units_stored": "EUR/MWh",
+    "max_abs_stored": 3.8271829154129904,
+    "mean_abs_stored": 0.575389402365639,
+    "max_abs_physical": 3.8271829154129904,
+    "mean_abs_physical": 0.575389402365639,
+    "units_physical": "EUR/MWh",
+    "sum_abs_mean_physical": 4169.244910019202,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.01324877377540456,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.0816249177475293,
+    "n_elements_relative_defined": 96,
+    "signed_mean_diff_physical_x_minus_mean": 0.09408027772721177,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   }
+  },
+  "scenario1_vs_mean_all_years": {
+   "DSO.gen0.pg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen0.qg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen2.pg": {
+    "n_arrays": 80,
+    "n_elements": 1920,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.10005073700780145,
+    "mean_abs_stored": 0.01424938739280101,
+    "max_abs_physical": 10.005073700780146,
+    "mean_abs_physical": 1.424938739280101,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 28521.530828025236,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.09592340593196765,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.7816405338642499,
+    "n_elements_relative_defined": 1920,
+    "signed_mean_diff_physical_x_minus_mean": -0.10794617521236226,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen2.qg": {
+    "n_arrays": 80,
+    "n_elements": 1920,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen3.pg": {
+    "n_arrays": 160,
+    "n_elements": 3840,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.05015132440558047,
+    "mean_abs_stored": 0.0019305727543879768,
+    "max_abs_physical": 5.015132440558047,
+    "mean_abs_physical": 0.1930572754387977,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 17248.12701201023,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.04298089509479914,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.8447556974081415,
+    "n_elements_relative_defined": 2080,
+    "signed_mean_diff_physical_x_minus_mean": 0.006468702724143805,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen3.qg": {
+    "n_arrays": 160,
+    "n_elements": 3840,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.flex_p_down": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.013388529202270773,
+    "mean_abs_stored": 0.00037738645845418706,
+    "max_abs_physical": 1.3388529202270774,
+    "mean_abs_physical": 0.0377386458454187,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 89040.04032768494,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.019530503289947335,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.26874672551634154,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": 0.0001720928952564129,
+    "n_negative_values_in_x": 46080,
+    "n_negative_values_in_mean": 46080
+   },
+   "DSO.load.flex_p_up": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.026176352618268686,
+    "mean_abs_stored": 0.0004900943176267628,
+    "max_abs_physical": 2.6176352618268686,
+    "mean_abs_physical": 0.049009431762676296,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 78420.0085329694,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.02879819395422106,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.38934919414017943,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": -0.0004367916289776599,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.flex_q_down": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 1.6940658945086007e-21,
+    "mean_abs_stored": 1.6940658945086007e-21,
+    "max_abs_physical": 1.6940658945086007e-19,
+    "mean_abs_physical": 1.6940658945086007e-19,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 46.08000000000001,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 1.6940658945086007e-16,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.694065894508601e-16,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": 1.6940658945086007e-19,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.flex_q_up": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 1.6940658945086007e-21,
+    "mean_abs_stored": 1.6940658945086007e-21,
+    "max_abs_physical": 1.6940658945086007e-19,
+    "mean_abs_physical": 1.6940658945086007e-19,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 46.08000000000001,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 1.6940658945086007e-16,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.694065894508601e-16,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": 1.6940658945086007e-19,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.pd": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.010344458847656335,
+    "mean_abs_stored": 0.00037985790750832895,
+    "max_abs_physical": 1.0344458847656335,
+    "mean_abs_physical": 0.037985790750832894,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 99647.07120747303,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.01756584731079492,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.1441197703715188,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": -0.0014707783544115464,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.qd": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.004538916241357219,
+    "mean_abs_stored": 0.00011975698036778833,
+    "max_abs_physical": 0.4538916241357219,
+    "mean_abs_physical": 0.011975698036778833,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 30140.848695561537,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.01830871357036576,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 60.56306758151659,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": 1.0176242274198188e-05,
+    "n_negative_values_in_x": 24943,
+    "n_negative_values_in_mean": 24964
+   },
+   "TSO.gen1.pg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen1.qg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen2.pg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.12191314812152723,
+    "mean_abs_stored": 0.013678915346683028,
+    "max_abs_physical": 12.191314812152724,
+    "mean_abs_physical": 1.3678915346683025,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 20225.807475397378,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.09738863639033309,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.6717281877069738,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": 0.03982327490427228,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen2.qg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen3.pg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.02553525648226255,
+    "mean_abs_stored": 0.0015279097428106624,
+    "max_abs_physical": 2.553525648226255,
+    "mean_abs_physical": 0.15279097428106625,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 6312.764421496217,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.03485303557590823,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.8417007853611334,
+    "n_elements_relative_defined": 780,
+    "signed_mean_diff_physical_x_minus_mean": 0.0004328926506948568,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen3.qg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.flex_p_down": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.04517504798180122,
+    "mean_abs_stored": 0.005575457913658952,
+    "max_abs_physical": 4.517504798180122,
+    "mean_abs_physical": 0.5575457913658952,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 35742.485879474676,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.022462509806234248,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.1305344015202017,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": -0.018554031561631067,
+    "n_negative_values_in_x": 1440,
+    "n_negative_values_in_mean": 1440
+   },
+   "TSO.load.flex_p_up": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.049986274831771926,
+    "mean_abs_stored": 0.006247312430580828,
+    "max_abs_physical": 4.998627483177192,
+    "mean_abs_physical": 0.6247312430580829,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 31192.41082242393,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.028840764990082653,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.18716333073829958,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": -0.0023138565018497193,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.flex_q_down": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 1.6940658945086007e-21,
+    "mean_abs_stored": 1.6940658945086007e-21,
+    "max_abs_physical": 1.6940658945086007e-19,
+    "mean_abs_physical": 1.6940658945086007e-19,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 1.4400000000000004,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 1.6940658945086007e-16,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.694065894508601e-16,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": 1.6940658945086007e-19,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.flex_q_up": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 1.6940658945086007e-21,
+    "mean_abs_stored": 1.6940658945086007e-21,
+    "max_abs_physical": 1.6940658945086007e-19,
+    "mean_abs_physical": 1.6940658945086007e-19,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 1.4400000000000004,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 1.6940658945086007e-16,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.694065894508601e-16,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": 1.6940658945086007e-19,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.pd": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.12382260730048489,
+    "mean_abs_stored": 0.015952022961451113,
+    "max_abs_physical": 12.38226073004849,
+    "mean_abs_physical": 1.5952022961451116,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 133291.28372455513,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.017233619800645566,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.118018957186402,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": -0.1930603736498244,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.qd": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.03913079327216695,
+    "mean_abs_stored": 0.0032409620533217706,
+    "max_abs_physical": 3.9130793272166953,
+    "mean_abs_physical": 0.3240962053321772,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 28029.417999952675,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.016650311315030624,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 13.029303954893473,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": -0.004672745756726735,
+    "n_negative_values_in_x": 520,
+    "n_negative_values_in_mean": 522
+   },
+   "market.energy": {
+    "n_arrays": 20,
+    "n_elements": 480,
+    "units_stored": "EUR/MWh",
+    "max_abs_stored": 54.06750545189061,
+    "mean_abs_stored": 7.644194854169325,
+    "max_abs_physical": 54.06750545189061,
+    "mean_abs_physical": 7.644194854169325,
+    "units_physical": "EUR/MWh",
+    "sum_abs_mean_physical": 55072.62696265205,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.066624995616962,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.2357172974730128,
+    "n_elements_relative_defined": 480,
+    "signed_mean_diff_physical_x_minus_mean": 4.979381129654237,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "market.flex": {
+    "n_arrays": 20,
+    "n_elements": 480,
+    "units_stored": "EUR/MWh",
+    "max_abs_stored": 4.755432622582681,
+    "mean_abs_stored": 0.8265161912129426,
+    "max_abs_physical": 4.755432622582681,
+    "mean_abs_physical": 0.8265161912129426,
+    "units_physical": "EUR/MWh",
+    "sum_abs_mean_physical": 23587.668782274057,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.016819287036977142,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.09633798355453656,
+    "n_elements_relative_defined": 480,
+    "signed_mean_diff_physical_x_minus_mean": -0.03679067837082853,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   }
+  },
+  "scenario2_vs_mean_all_years": {
+   "DSO.gen0.pg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen0.qg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen2.pg": {
+    "n_arrays": 80,
+    "n_elements": 1920,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.10864105408770808,
+    "mean_abs_stored": 0.01601668754920344,
+    "max_abs_physical": 10.864105408770808,
+    "mean_abs_physical": 1.6016687549203439,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 28521.530828025236,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.10782044021372682,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.8575295714841982,
+    "n_elements_relative_defined": 1920,
+    "signed_mean_diff_physical_x_minus_mean": -0.12226490036563782,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen2.qg": {
+    "n_arrays": 80,
+    "n_elements": 1920,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen3.pg": {
+    "n_arrays": 160,
+    "n_elements": 3840,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.04366807508941023,
+    "mean_abs_stored": 0.0018897648833751932,
+    "max_abs_physical": 4.366807508941023,
+    "mean_abs_physical": 0.18897648833751937,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 17248.12701201023,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.04207237775503249,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.3922847282016415,
+    "n_elements_relative_defined": 2080,
+    "signed_mean_diff_physical_x_minus_mean": -0.006528899129507356,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.gen3.qg": {
+    "n_arrays": 160,
+    "n_elements": 3840,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.flex_p_down": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.013562369927121384,
+    "mean_abs_stored": 0.00038495368405343266,
+    "max_abs_physical": 1.3562369927121385,
+    "mean_abs_physical": 0.03849536840534327,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 89040.04032768494,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.019922122334963443,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.27514880533935204,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": -0.00012393558570258172,
+    "n_negative_values_in_x": 46080,
+    "n_negative_values_in_mean": 46080
+   },
+   "DSO.load.flex_p_up": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.021883654012657752,
+    "mean_abs_stored": 0.00047759615802774323,
+    "max_abs_physical": 2.1883654012657754,
+    "mean_abs_physical": 0.04775961580277431,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 78420.0085329694,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.028063795673607894,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.4195702262980674,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": 0.0004357614451006616,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.flex_q_down": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 1.6940658945086007e-21,
+    "mean_abs_stored": 1.6940658945086007e-21,
+    "max_abs_physical": 1.6940658945086007e-19,
+    "mean_abs_physical": 1.6940658945086007e-19,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 46.08000000000001,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 1.6940658945086007e-16,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.694065894508601e-16,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": 1.6940658945086007e-19,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.flex_q_up": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 1.6940658945086007e-21,
+    "mean_abs_stored": 1.6940658945086007e-21,
+    "max_abs_physical": 1.6940658945086007e-19,
+    "mean_abs_physical": 1.6940658945086007e-19,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 46.08000000000001,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 1.6940658945086007e-16,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.694065894508601e-16,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": 1.6940658945086007e-19,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.pd": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.005895667387479903,
+    "mean_abs_stored": 0.00038092880845021747,
+    "max_abs_physical": 0.5895667387479903,
+    "mean_abs_physical": 0.03809288084502175,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 99647.07120747303,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.017615369203214097,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.14315616781178864,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": -0.0020325752438703775,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "DSO.load.qd": {
+    "n_arrays": 1920,
+    "n_elements": 46080,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.005905191960055567,
+    "mean_abs_stored": 0.00012117044985627022,
+    "max_abs_physical": 0.5905191960055567,
+    "mean_abs_physical": 0.012117044985627018,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 30140.848695561537,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.01852480793017334,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 51.137618087933845,
+    "n_elements_relative_defined": 46080,
+    "signed_mean_diff_physical_x_minus_mean": -0.0006915781661406704,
+    "n_negative_values_in_x": 24961,
+    "n_negative_values_in_mean": 24964
+   },
+   "TSO.gen1.pg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen1.qg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen2.pg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.17435882656016582,
+    "mean_abs_stored": 0.012192148958371243,
+    "max_abs_physical": 17.43588265601658,
+    "mean_abs_physical": 1.2192148958371243,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 20225.807475397378,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.0868034293385345,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.7751166928636194,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": -0.03708652460625151,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen2.qg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen3.pg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.021999267261504335,
+    "mean_abs_stored": 0.0016620849211316767,
+    "max_abs_physical": 2.1999267261504336,
+    "mean_abs_physical": 0.16620849211316766,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 6312.764421496217,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.03791369559553979,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.9772990899349112,
+    "n_elements_relative_defined": 780,
+    "signed_mean_diff_physical_x_minus_mean": -0.00724695182695223,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.gen3.qg": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.0,
+    "mean_abs_stored": 0.0,
+    "max_abs_physical": 0.0,
+    "mean_abs_physical": 0.0,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 0.0,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": null,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": null,
+    "n_elements_relative_defined": 0,
+    "signed_mean_diff_physical_x_minus_mean": 0.0,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.flex_p_down": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.033976460519696716,
+    "mean_abs_stored": 0.005245103196540584,
+    "max_abs_physical": 3.3976460519696716,
+    "mean_abs_physical": 0.5245103196540585,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 35742.485879474676,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.021131570502643086,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.10757586634231456,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": 0.034532258733462794,
+    "n_negative_values_in_x": 1440,
+    "n_negative_values_in_mean": 1440
+   },
+   "TSO.load.flex_p_up": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.045341701551113306,
+    "mean_abs_stored": 0.006135311935648246,
+    "max_abs_physical": 4.5341701551113305,
+    "mean_abs_physical": 0.6135311935648246,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 31192.41082242393,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.028323713859853963,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.20844898312694188,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": 0.03678316920404068,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.flex_q_down": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 1.6940658945086007e-21,
+    "mean_abs_stored": 1.6940658945086007e-21,
+    "max_abs_physical": 1.6940658945086007e-19,
+    "mean_abs_physical": 1.6940658945086007e-19,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 1.4400000000000004,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 1.6940658945086007e-16,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.694065894508601e-16,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": 1.6940658945086007e-19,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.flex_q_up": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 1.6940658945086007e-21,
+    "mean_abs_stored": 1.6940658945086007e-21,
+    "max_abs_physical": 1.6940658945086007e-19,
+    "mean_abs_physical": 1.6940658945086007e-19,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 1.4400000000000004,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 1.6940658945086007e-16,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 1.694065894508601e-16,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": 1.6940658945086007e-19,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.pd": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.09002908873879567,
+    "mean_abs_stored": 0.013633505334674369,
+    "max_abs_physical": 9.002908873879568,
+    "mean_abs_physical": 1.3633505334674367,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 133291.28372455513,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.0147288308232524,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.09869540036510811,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": -0.11091450954571569,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "TSO.load.qd": {
+    "n_arrays": 60,
+    "n_elements": 1440,
+    "units_stored": "p.u. (network baseMVA)",
+    "max_abs_stored": 0.05430193103755665,
+    "mean_abs_stored": 0.0032465462361884953,
+    "max_abs_physical": 5.4301931037556646,
+    "mean_abs_physical": 0.32465462361884956,
+    "units_physical": "MW / MVAr",
+    "sum_abs_mean_physical": 28029.417999952675,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.01667899982839218,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 15.150792195439742,
+    "n_elements_relative_defined": 1440,
+    "signed_mean_diff_physical_x_minus_mean": -0.0007172407383678649,
+    "n_negative_values_in_x": 522,
+    "n_negative_values_in_mean": 522
+   },
+   "market.energy": {
+    "n_arrays": 20,
+    "n_elements": 480,
+    "units_stored": "EUR/MWh",
+    "max_abs_stored": 35.37332046288324,
+    "mean_abs_stored": 6.282138016707656,
+    "max_abs_physical": 35.37332046288324,
+    "mean_abs_physical": 6.282138016707656,
+    "units_physical": "EUR/MWh",
+    "sum_abs_mean_physical": 55072.62696265205,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.054753630148505726,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.5722388239687336,
+    "n_elements_relative_defined": 480,
+    "signed_mean_diff_physical_x_minus_mean": -3.60662823544763,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   },
+   "market.flex": {
+    "n_arrays": 20,
+    "n_elements": 480,
+    "units_stored": "EUR/MWh",
+    "max_abs_stored": 6.4379434010217125,
+    "mean_abs_stored": 0.8023360716354327,
+    "max_abs_physical": 6.4379434010217125,
+    "mean_abs_physical": 0.8023360716354327,
+    "units_physical": "EUR/MWh",
+    "sum_abs_mean_physical": 23587.668782274057,
+    "aggregate_relative_sum_abs_diff_over_sum_abs_mean": 0.0163272308908468,
+    "max_elementwise_relative_where_mean_ge_1e-6_max": 0.09743113536069756,
+    "n_elements_relative_defined": 480,
+    "signed_mean_diff_physical_x_minus_mean": 0.05607264530495711,
+    "n_negative_values_in_x": 0,
+    "n_negative_values_in_mean": 0
+   }
+  },
+  "ensemble_spread": {
+   "DSO.gen0.pg": {
+    "n_neg": 0,
+    "n_el": 4320,
+    "max_spread_phys": 0.0,
+    "sum_abs_dev": 0.0,
+    "sum_abs_mean": 0.0,
+    "expected_abs_dev_over_abs_mean": null
+   },
+   "DSO.gen0.qg": {
+    "n_neg": 0,
+    "n_el": 4320,
+    "max_spread_phys": 0.0,
+    "sum_abs_dev": 0.0,
+    "sum_abs_mean": 0.0,
+    "expected_abs_dev_over_abs_mean": null
+   },
+   "DSO.gen2.pg": {
+    "n_neg": 0,
+    "n_el": 5760,
+    "max_spread_phys": 22.42726048182675,
+    "sum_abs_dev": 2892.5567630848404,
+    "sum_abs_mean": 28521.530828025232,
+    "expected_abs_dev_over_abs_mean": 0.10141660279477764
+   },
+   "DSO.gen2.qg": {
+    "n_neg": 0,
+    "n_el": 5760,
+    "max_spread_phys": 0.0,
+    "sum_abs_dev": 0.0,
+    "sum_abs_mean": 0.0,
+    "expected_abs_dev_over_abs_mean": null
+   },
+   "DSO.gen3.pg": {
+    "n_neg": 0,
+    "n_el": 11520,
+    "max_spread_phys": 9.32580413220195,
+    "sum_abs_dev": 731.7177948548283,
+    "sum_abs_mean": 17248.127012010227,
+    "expected_abs_dev_over_abs_mean": 0.04242302914080573
+   },
+   "DSO.gen3.qg": {
+    "n_neg": 0,
+    "n_el": 11520,
+    "max_spread_phys": 0.0,
+    "sum_abs_dev": 0.0,
+    "sum_abs_mean": 0.0,
+    "expected_abs_dev_over_abs_mean": null
+   },
+   "DSO.load.flex_p_down": {
+    "n_neg": 138240,
+    "n_el": 138240,
+    "max_spread_phys": 2.6950899129392156,
+    "sum_abs_dev": 1746.296168366494,
+    "sum_abs_mean": 89040.04032768511,
+    "expected_abs_dev_over_abs_mean": 0.019612481777184464
+   },
+   "DSO.load.flex_p_up": {
+    "n_neg": 0,
+    "n_el": 138240,
+    "max_spread_phys": 4.806000663092644,
+    "sum_abs_dev": 2219.5994421224627,
+    "sum_abs_mean": 78420.00853296944,
+    "expected_abs_dev_over_abs_mean": 0.028303993886831774
+   },
+   "DSO.load.flex_q_down": {
+    "n_neg": 0,
+    "n_el": 138240,
+    "max_spread_phys": 0.0,
+    "sum_abs_dev": 7.806255641895632e-15,
+    "sum_abs_mean": 46.08000000000086,
+    "expected_abs_dev_over_abs_mean": 1.6940658945085691e-16
+   },
+   "DSO.load.flex_q_up": {
+    "n_neg": 0,
+    "n_el": 138240,
+    "max_spread_phys": 0.0,
+    "sum_abs_dev": 7.806255641895632e-15,
+    "sum_abs_mean": 46.08000000000086,
+    "expected_abs_dev_over_abs_mean": 1.6940658945085691e-16
+   },
+   "DSO.load.pd": {
+    "n_neg": 0,
+    "n_el": 138240,
+    "max_spread_phys": 1.6469973538174045,
+    "sum_abs_dev": 1741.0062259262797,
+    "sum_abs_mean": 99647.07120747314,
+    "expected_abs_dev_over_abs_mean": 0.017471725007364904
+   },
+   "DSO.load.qd": {
+    "n_neg": 74871,
+    "n_el": 138240,
+    "max_spread_phys": 1.1300196928456463,
+    "sum_abs_dev": 555.4975062217451,
+    "sum_abs_mean": 30140.84869556156,
+    "expected_abs_dev_over_abs_mean": 0.0184300552327694
+   },
+   "TSO.gen1.pg": {
+    "n_neg": 0,
+    "n_el": 4320,
+    "max_spread_phys": 0.0,
+    "sum_abs_dev": 0.0,
+    "sum_abs_mean": 0.0,
+    "expected_abs_dev_over_abs_mean": null
+   },
+   "TSO.gen1.qg": {
+    "n_neg": 0,
+    "n_el": 4320,
+    "max_spread_phys": 0.0,
+    "sum_abs_dev": 0.0,
+    "sum_abs_mean": 0.0,
+    "expected_abs_dev_over_abs_mean": null
+   },
+   "TSO.gen2.pg": {
+    "n_neg": 0,
+    "n_el": 4320,
+    "max_spread_phys": 29.627197468169307,
+    "sum_abs_dev": 1866.7352220289772,
+    "sum_abs_mean": 20225.807475397378,
+    "expected_abs_dev_over_abs_mean": 0.09229471922442005
+   },
+   "TSO.gen2.qg": {
+    "n_neg": 0,
+    "n_el": 4320,
+    "max_spread_phys": 0.0,
+    "sum_abs_dev": 0.0,
+    "sum_abs_mean": 0.0,
+    "expected_abs_dev_over_abs_mean": null
+   },
+   "TSO.gen3.pg": {
+    "n_neg": 0,
+    "n_el": 4320,
+    "max_spread_phys": 4.8744832010247094,
+    "sum_abs_dev": 225.75096198802547,
+    "sum_abs_mean": 6312.764421496218,
+    "expected_abs_dev_over_abs_mean": 0.035761030653907906
+   },
+   "TSO.gen3.qg": {
+    "n_neg": 0,
+    "n_el": 4320,
+    "max_spread_phys": 0.0,
+    "sum_abs_dev": 0.0,
+    "sum_abs_mean": 0.0,
+    "expected_abs_dev_over_abs_mean": null
+   },
+   "TSO.load.flex_p_down": {
+    "n_neg": 4320,
+    "n_el": 4320,
+    "max_spread_phys": 7.005520365765755,
+    "sum_abs_dev": 798.3713609390031,
+    "sum_abs_mean": 35742.485879474676,
+    "expected_abs_dev_over_abs_mean": 0.022336760896574135
+   },
+   "TSO.load.flex_p_up": {
+    "n_neg": 0,
+    "n_el": 4320,
+    "max_spread_phys": 9.091993961282114,
+    "sum_abs_dev": 876.3826137028881,
+    "sum_abs_mean": 31192.41082242392,
+    "expected_abs_dev_over_abs_mean": 0.02809602049332029
+   },
+   "TSO.load.flex_q_down": {
+    "n_neg": 0,
+    "n_el": 4320,
+    "max_spread_phys": 0.0,
+    "sum_abs_dev": 2.439454888092385e-16,
+    "sum_abs_mean": 1.4400000000000008,
+    "expected_abs_dev_over_abs_mean": 1.6940658945085997e-16
+   },
+   "TSO.load.flex_q_up": {
+    "n_neg": 0,
+    "n_el": 4320,
+    "max_spread_phys": 0.0,
+    "sum_abs_dev": 2.439454888092385e-16,
+    "sum_abs_mean": 1.4400000000000008,
+    "expected_abs_dev_over_abs_mean": 1.6940658945085997e-16
+   },
+   "TSO.load.pd": {
+    "n_neg": 0,
+    "n_el": 4320,
+    "max_spread_phys": 22.476974000805793,
+    "sum_abs_dev": 2119.9386946897944,
+    "sum_abs_mean": 133291.28372455513,
+    "expected_abs_dev_over_abs_mean": 0.01590455606287522
+   },
+   "TSO.load.qd": {
+    "n_neg": 1564,
+    "n_el": 4320,
+    "max_spread_phys": 8.264293894582192,
+    "sum_abs_dev": 455.28647429473085,
+    "sum_abs_mean": 28029.41799995268,
+    "expected_abs_dev_over_abs_mean": 0.016243165459072305
+   },
+   "market.energy": {
+    "n_neg": 0,
+    "n_el": 1440,
+    "max_spread_phys": 85.41378709523806,
+    "sum_abs_dev": 3601.3924583333305,
+    "sum_abs_mean": 55072.62696265205,
+    "expected_abs_dev_over_abs_mean": 0.06539351138589491
+   },
+   "market.flex": {
+    "n_neg": 0,
+    "n_el": 1440,
+    "max_spread_phys": 10.354911207614286,
+    "sum_abs_dev": 383.11380131335187,
+    "sum_abs_mean": 23587.668782274053,
+    "expected_abs_dev_over_abs_mean": 0.016242122307621128
+   }
+  },
+  "system_aggregates_per_block": {
+   "2025|Spring": {
+    "load_MWh_s0": 4514.916659984936,
+    "load_MWh_mean": 4506.937916995805,
+    "res_MWh_s0": 2545.2614838318,
+    "res_MWh_mean": 2601.7271612436252,
+    "mean_price_s0": 83.60145377354466,
+    "mean_price_mean": 93.15281508641881
+   },
+   "2025|Summer": {
+    "load_MWh_s0": 4683.163350463717,
+    "load_MWh_mean": 4667.456423290239,
+    "res_MWh_s0": 2938.2949524611968,
+    "res_MWh_mean": 2963.348751997822,
+    "mean_price_s0": 90.60782341050286,
+    "mean_price_mean": 93.80880451854985
+   },
+   "2025|Autumn": {
+    "load_MWh_s0": 4443.667088683313,
+    "load_MWh_mean": 4431.631061617028,
+    "res_MWh_s0": 2955.915068308096,
+    "res_MWh_mean": 2987.5558032647896,
+    "mean_price_s0": 104.31500466875927,
+    "mean_price_mean": 97.80667454377685
+   },
+   "2025|Winter": {
+    "load_MWh_s0": 4582.618913779833,
+    "load_MWh_mean": 4572.701313760244,
+    "res_MWh_s0": 2898.3249078936446,
+    "res_MWh_mean": 2986.562585596712,
+    "mean_price_s0": 103.11592806157795,
+    "mean_price_mean": 104.52577876836408
+   },
+   "2028|Spring": {
+    "load_MWh_s0": 4712.64812825205,
+    "load_MWh_mean": 4722.396921432347,
+    "res_MWh_s0": 2571.1742539656602,
+    "res_MWh_mean": 2587.4600458693617,
+    "mean_price_s0": 92.34997073583854,
+    "mean_price_mean": 103.22624493816289
+   },
+   "2028|Summer": {
+    "load_MWh_s0": 4910.474983510795,
+    "load_MWh_mean": 4902.822648343488,
+    "res_MWh_s0": 2842.7024245133157,
+    "res_MWh_mean": 2978.2091883280564,
+    "mean_price_s0": 108.0840102589868,
+    "mean_price_mean": 104.03886089807894
+   },
+   "2028|Autumn": {
+    "load_MWh_s0": 4652.577262971463,
+    "load_MWh_mean": 4629.740255706529,
+    "res_MWh_s0": 2917.140643403536,
+    "res_MWh_mean": 2851.4319389595553,
+    "mean_price_s0": 125.93170916795907,
+    "mean_price_mean": 113.76416649686338
+   },
+   "2028|Winter": {
+    "load_MWh_s0": 4811.161921542512,
+    "load_MWh_mean": 4809.3173194094525,
+    "res_MWh_s0": 2978.9189443854516,
+    "res_MWh_mean": 2987.4486884796024,
+    "mean_price_s0": 120.57745059924942,
+    "mean_price_mean": 116.25603782589015
+   },
+   "2031|Spring": {
+    "load_MWh_s0": 4936.234697903544,
+    "load_MWh_mean": 4919.618814942932,
+    "res_MWh_s0": 3561.2521126789866,
+    "res_MWh_mean": 3511.7401060677917,
+    "mean_price_s0": 102.49688842884854,
+    "mean_price_mean": 104.31143518465387
+   },
+   "2031|Summer": {
+    "load_MWh_s0": 5110.46543843325,
+    "load_MWh_mean": 5107.407538730586,
+    "res_MWh_s0": 4026.1973960880996,
+    "res_MWh_mean": 3815.7746026601467,
+    "mean_price_s0": 111.10328283758405,
+    "mean_price_mean": 109.67918700139887
+   },
+   "2031|Autumn": {
+    "load_MWh_s0": 4840.392727937589,
+    "load_MWh_mean": 4853.767797407027,
+    "res_MWh_s0": 4347.661936804655,
+    "res_MWh_mean": 4039.8399717975835,
+    "mean_price_s0": 103.54828776134052,
+    "mean_price_mean": 114.97430854670954
+   },
+   "2031|Winter": {
+    "load_MWh_s0": 5063.248924713448,
+    "load_MWh_mean": 5010.487469545781,
+    "res_MWh_s0": 4428.816176115508,
+    "res_MWh_mean": 4170.718169117609,
+    "mean_price_s0": 123.35891532217988,
+    "mean_price_mean": 122.9777089731736
+   },
+   "2034|Spring": {
+    "load_MWh_s0": 5153.805259676298,
+    "load_MWh_mean": 5140.305880197202,
+    "res_MWh_s0": 3510.9065085655184,
+    "res_MWh_mean": 3532.368525527684,
+    "mean_price_s0": 108.06678011030145,
+    "mean_price_mean": 117.44312491439757
+   },
+   "2034|Summer": {
+    "load_MWh_s0": 5384.775317253134,
+    "load_MWh_mean": 5360.840769873292,
+    "res_MWh_s0": 3768.475996663018,
+    "res_MWh_mean": 3864.3983093841293,
+    "mean_price_s0": 114.486707293922,
+    "mean_price_mean": 118.88040343589621
+   },
+   "2034|Autumn": {
+    "load_MWh_s0": 5051.916361983224,
+    "load_MWh_mean": 5050.202239221148,
+    "res_MWh_s0": 4246.204739453395,
+    "res_MWh_mean": 4134.603013393965,
+    "mean_price_s0": 153.04374718548286,
+    "mean_price_mean": 124.31781045230225
+   },
+   "2034|Winter": {
+    "load_MWh_s0": 5210.977812779837,
+    "load_MWh_mean": 5226.256556866639,
+    "res_MWh_s0": 4202.374140191511,
+    "res_MWh_mean": 4244.552047626616,
+    "mean_price_s0": 126.7033367890039,
+    "mean_price_mean": 131.08941534770972
+   },
+   "2037|Spring": {
+    "load_MWh_s0": 5388.580907091147,
+    "load_MWh_mean": 5383.264265963701,
+    "res_MWh_s0": 4195.670000697296,
+    "res_MWh_mean": 4233.517701443054,
+    "mean_price_s0": 108.4101045485982,
+    "mean_price_mean": 120.47914701097234
+   },
+   "2037|Summer": {
+    "load_MWh_s0": 5601.7571423391555,
+    "load_MWh_mean": 5587.562318601501,
+    "res_MWh_s0": 4934.583173631868,
+    "res_MWh_mean": 4881.210396809277,
+    "mean_price_s0": 115.32930811369289,
+    "mean_price_mean": 125.41050161560848
+   },
+   "2037|Autumn": {
+    "load_MWh_s0": 5299.333604155748,
+    "load_MWh_mean": 5293.391847585701,
+    "res_MWh_s0": 4271.969422406207,
+    "res_MWh_mean": 4365.077307731236,
+    "mean_price_s0": 131.6501997135699,
+    "mean_price_mean": 136.06406724654434
+   },
+   "2037|Winter": {
+    "load_MWh_s0": 5455.7892378268725,
+    "load_MWh_mean": 5470.961847982358,
+    "res_MWh_s0": 4614.4931989613215,
+    "res_MWh_mean": 4570.685421630446,
+    "mean_price_s0": 140.4568234454276,
+    "mean_price_mean": 142.4862973050302
+   }
+  },
+  "energy_price_4h_spread": {
+   "definition": "mean(4 highest) - mean(4 lowest) hourly EUR/MWh; horizon = sum_b w_b spread_b / sum_b w_b, w_b = num_years * num_days",
+   "horizon": {
+    "mean_profile": 91.29940620053188,
+    "expected_over_scenarios": 94.00257812242934,
+    "s0": 95.31159254563494,
+    "s1": 94.83047520462318,
+    "s2": 91.86566661702999
+   },
+   "per_block": {
+    "2025|Spring": {
+     "mean_profile": 131.00785801038754,
+     "expected_over_scenarios": 134.93491338121765,
+     "s0": 133.3715969399047,
+     "s1": 142.40304181445094,
+     "s2": 129.0301013892974
+    },
+    "2025|Summer": {
+     "mean_profile": 87.89037542229708,
+     "expected_over_scenarios": 88.47760447783139,
+     "s0": 96.40798156790564,
+     "s1": 87.66891837345445,
+     "s2": 81.35591349213408
+    },
+    "2025|Autumn": {
+     "mean_profile": 56.716541323102575,
+     "expected_over_scenarios": 59.873240637333225,
+     "s0": 56.25985147000799,
+     "s1": 55.42067028214528,
+     "s2": 67.93920015984641
+    },
+    "2025|Winter": {
+     "mean_profile": 44.05968240864543,
+     "expected_over_scenarios": 44.235839218095805,
+     "s0": 46.27642309551209,
+     "s1": 45.33915791318246,
+     "s2": 41.09193664559287
+    },
+    "2028|Spring": {
+     "mean_profile": 141.27903846247017,
+     "expected_over_scenarios": 143.98941773844257,
+     "s0": 138.14162881552943,
+     "s1": 153.28518454571213,
+     "s2": 140.54143985408612
+    },
+    "2028|Summer": {
+     "mean_profile": 86.40388200419207,
+     "expected_over_scenarios": 86.8653004596124,
+     "s0": 90.56416561991364,
+     "s1": 90.866475418442,
+     "s2": 79.16526034048158
+    },
+    "2028|Autumn": {
+     "mean_profile": 59.563526993036646,
+     "expected_over_scenarios": 65.17059046419098,
+     "s0": 73.17900518932571,
+     "s1": 60.845977155552745,
+     "s2": 61.48678904769447
+    },
+    "2028|Winter": {
+     "mean_profile": 39.719703971509546,
+     "expected_over_scenarios": 43.381462448308696,
+     "s0": 43.824555914359934,
+     "s1": 39.76699769674545,
+     "s2": 46.552833733820705
+    },
+    "2031|Spring": {
+     "mean_profile": 154.09659730655943,
+     "expected_over_scenarios": 154.5310538873657,
+     "s0": 151.3869600817726,
+     "s1": 157.53603843257457,
+     "s2": 154.67016314774992
+    },
+    "2031|Summer": {
+     "mean_profile": 94.42186002814867,
+     "expected_over_scenarios": 94.42186002814867,
+     "s0": 88.39157669020273,
+     "s1": 92.84654316991575,
+     "s2": 102.02746022432757
+    },
+    "2031|Autumn": {
+     "mean_profile": 65.51417249685342,
+     "expected_over_scenarios": 69.21942188472921,
+     "s0": 72.06283062448972,
+     "s1": 69.02532528285643,
+     "s2": 66.57010974684151
+    },
+    "2031|Winter": {
+     "mean_profile": 50.93832514988809,
+     "expected_over_scenarios": 51.339173127518706,
+     "s0": 50.89718066848664,
+     "s1": 52.041950887756286,
+     "s2": 51.078387826313204
+    },
+    "2034|Spring": {
+     "mean_profile": 167.7327873563756,
+     "expected_over_scenarios": 170.76439018288048,
+     "s0": 166.3373143620465,
+     "s1": 177.84188572997678,
+     "s2": 168.11397045661815
+    },
+    "2034|Summer": {
+     "mean_profile": 106.57306386336285,
+     "expected_over_scenarios": 108.39879527722225,
+     "s0": 122.65306748815559,
+     "s1": 101.60087444763346,
+     "s2": 100.94244389587772
+    },
+    "2034|Autumn": {
+     "mean_profile": 71.36853631460212,
+     "expected_over_scenarios": 81.28507411306504,
+     "s0": 87.11220195370588,
+     "s1": 75.59491988999702,
+     "s2": 81.14810049549222
+    },
+    "2034|Winter": {
+     "mean_profile": 51.055994819160915,
+     "expected_over_scenarios": 55.04669427591624,
+     "s0": 58.48211502056682,
+     "s1": 51.65213081691107,
+     "s2": 55.00583699027082
+    },
+    "2037|Spring": {
+     "mean_profile": 174.9429712729476,
+     "expected_over_scenarios": 180.5233480732862,
+     "s0": 179.34469134519284,
+     "s1": 189.96664726557808,
+     "s2": 172.2587056090877
+    },
+    "2037|Summer": {
+     "mean_profile": 111.57720505740434,
+     "expected_over_scenarios": 113.94557745200082,
+     "s0": 108.28409271290863,
+     "s1": 122.34492528301621,
+     "s2": 111.20771436007762
+    },
+    "2037|Autumn": {
+     "mean_profile": 75.09780172203634,
+     "expected_over_scenarios": 76.86212528122607,
+     "s0": 77.2009181231219,
+     "s1": 74.53464009469606,
+     "s2": 78.85081762586026
+    },
+    "2037|Winter": {
+     "mean_profile": 52.593450341876036,
+     "expected_over_scenarios": 53.3271060550188,
+     "s0": 62.844635770070056,
+     "s1": 52.21532682521617,
+     "s2": 44.9213555697702
+    }
+   }
+  },
+  "res_capacity": {
+   "n_curtaillable_generator_blocks": 360,
+   "max_pg_over_pmax_any_scenario": 1.0206732823372258,
+   "max_pg_over_pmax_mean": 0.99868766579252,
+   "n_elements_pg_above_pmax_scenarios": 13,
+   "n_elements_pg_above_pmax_mean": 0,
+   "generator_hours_available_in_any_scenario": 6220,
+   "generator_hours_available_in_all_scenarios": 6217,
+   "generator_hours_available_in_mean": 6220,
+   "note": "production skips the RES capability / power-factor rows and fixes pg to 0 where available apparent power <= EQUALITY_TOLERANCE (model_construction_helpers.renewable_generation_is_unavailable); the mean is \"available\" wherever ANY scenario is"
+  },
+  "load_q_over_p": {
+   "n_loads_compared": 1980,
+   "max_abs_diff_Q_over_P_of_mean_vs_mean_of_Q_over_P": 0.011149645961889387
+  },
+  "flex_bounds_sign": {
+   "flex_p_up": {
+    "n_negative_elements": 0,
+    "n_elements": 142560,
+    "max_abs_mean_of_abs_minus_abs_of_mean_pu": 0.0
+   },
+   "flex_p_down": {
+    "n_negative_elements": 142560,
+    "n_elements": 142560,
+    "max_abs_mean_of_abs_minus_abs_of_mean_pu": 0.0
+   },
+   "flex_q_up": {
+    "n_negative_elements": 0,
+    "n_elements": 142560,
+    "max_abs_mean_of_abs_minus_abs_of_mean_pu": 0.0
+   },
+   "flex_q_down": {
+    "n_negative_elements": 0,
+    "n_elements": 142560,
+    "max_abs_mean_of_abs_minus_abs_of_mean_pu": 0.0
+   }
+  },
+  "years": {
+   "srp1": [
+    2025,
+    2030,
+    2035
+   ],
+   "s53_3x3": [
+    2025,
+    2028,
+    2031,
+    2034,
+    2037
+   ],
+   "like_for_like_years": [
+    2025
+   ],
+   "note": "per (network, year, day) the profile is a draw from the SEASON pool with a seed that depends on the year (network_data._read_network_data: derive_random_seed(network seed, \"realization\", year, day); _read_market_data_from_file: derive_random_seed(market seed, \"selection\", <type>, year, day)) times the growth factor (1+g)^(year - first year); SRP1 2030 / 2035 have no counterpart on the 3 x 3 grid"
+  },
+  "identity_walk_5x3y_vs_3x3": {
+   "n_leaves_compared": 68364,
+   "n_diffs": 4,
+   "diffs_first": [
+    {
+     "path": "planning.shared_ess_data.params_file",
+     "what": "'SRP1_5x3y_ESS_Params.json' != 'SRP1_ESS_Params.json'"
+    },
+    {
+     "path": "planning.shared_ess_data.params.salvage_value.in_objective",
+     "what": "True != False"
+    },
+    {
+     "path": "planning.shared_ess_data.params.available_energy_soh_point",
+     "what": "type str != NoneType"
+    },
+    {
+     "path": "planning.shared_ess_data.available_energy_soh_point",
+     "what": "'mid' != 'end'"
+    }
+   ],
+   "uncompared_types": {},
+   "excluded_attribute_hits": {
+    "SharedResourcesPlanning.cost_energy_p": 1,
+    "SharedResourcesPlanning.cost_flex": 1,
+    "SharedResourcesPlanning.diagrams_dir": 1,
+    "SharedResourcesPlanning.filename": 1,
+    "SharedResourcesPlanning.logs_dir": 1,
+    "SharedResourcesPlanning.num_market_scenarios": 1,
+    "SharedResourcesPlanning.prob_market_scenarios": 1,
+    "SharedResourcesPlanning.results_dir": 1,
+    "SharedResourcesPlanning.scenario_metadata": 1,
+    "NetworkData.cost_energy_p": 4,
+    "NetworkData.cost_flex": 4,
+    "NetworkData.diagrams_dir": 4,
+    "NetworkData.logs_dir": 4,
+    "NetworkData.num_oper_scenarios": 4,
+    "NetworkData.results_dir": 4,
+    "Network.cost_energy_p": 80,
+    "Network.cost_flex": 80,
+    "Network.diagrams_dir": 80,
+    "Network.logs_dir": 80,
+    "Network.num_oper_scenarios": 80,
+    "Network.prob_market_scenarios": 80,
+    "Network.prob_operation_scenarios": 80,
+    "Network.results_dir": 80,
+    "Load.pd": 1980,
+    "Load.qd": 1980,
+    "LoadFlexibilityDirection.downward": 3960,
+    "LoadFlexibilityDirection.upward": 3960,
+    "Generator.pg": 480,
+    "Generator.qg": 480,
+    "SharedEnergyStorageData.cost_energy_p": 1,
+    "SharedEnergyStorageData.logs_dir": 1,
+    "SharedEnergyStorageData.results_dir": 1
+   }
+  }
+ },
+ "q3": {
+  "case_changes_vs_3x3": [
+   {
+    "key": "NumMarketScenarios",
+    "from": 3,
+    "to": 1
+   },
+   {
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "from": 3,
+    "to": 1
+   },
+   {
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "from": 3,
+    "to": 1
+   },
+   {
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "from": 3,
+    "to": 1
+   },
+   {
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "from": 3,
+    "to": 1
+   }
+  ],
+  "identity_walk_ev_vs_3x3": {
+   "n_leaves_compared": 68365,
+   "n_diffs": 0,
+   "diffs_first": [],
+   "uncompared_types": {},
+   "excluded_attribute_hits": {
+    "SharedResourcesPlanning.cost_energy_p": 1,
+    "SharedResourcesPlanning.cost_flex": 1,
+    "SharedResourcesPlanning.diagrams_dir": 1,
+    "SharedResourcesPlanning.filename": 1,
+    "SharedResourcesPlanning.logs_dir": 1,
+    "SharedResourcesPlanning.num_market_scenarios": 1,
+    "SharedResourcesPlanning.prob_market_scenarios": 1,
+    "SharedResourcesPlanning.results_dir": 1,
+    "SharedResourcesPlanning.scenario_metadata": 1,
+    "NetworkData.cost_energy_p": 4,
+    "NetworkData.cost_flex": 4,
+    "NetworkData.diagrams_dir": 4,
+    "NetworkData.logs_dir": 4,
+    "NetworkData.num_oper_scenarios": 4,
+    "NetworkData.results_dir": 4,
+    "Network.cost_energy_p": 80,
+    "Network.cost_flex": 80,
+    "Network.diagrams_dir": 80,
+    "Network.logs_dir": 80,
+    "Network.num_oper_scenarios": 80,
+    "Network.prob_market_scenarios": 80,
+    "Network.prob_operation_scenarios": 80,
+    "Network.results_dir": 80,
+    "Load.pd": 1980,
+    "Load.qd": 1980,
+    "LoadFlexibilityDirection.downward": 3960,
+    "LoadFlexibilityDirection.upward": 3960,
+    "Generator.pg": 480,
+    "Generator.qg": 480,
+    "SharedEnergyStorageData.cost_energy_p": 1,
+    "SharedEnergyStorageData.logs_dir": 1,
+    "SharedEnergyStorageData.results_dir": 1
+   }
+  },
+  "excluded_attributes": {
+   "SharedResourcesPlanning": [
+    "cost_energy_p",
+    "cost_flex",
+    "diagrams_dir",
+    "filename",
+    "logs_dir",
+    "num_market_scenarios",
+    "prob_market_scenarios",
+    "results_dir",
+    "scenario_metadata"
+   ],
+   "NetworkData": [
+    "cost_energy_p",
+    "cost_flex",
+    "diagrams_dir",
+    "logs_dir",
+    "num_oper_scenarios",
+    "results_dir"
+   ],
+   "Network": [
+    "cost_energy_p",
+    "cost_flex",
+    "diagrams_dir",
+    "logs_dir",
+    "num_oper_scenarios",
+    "prob_market_scenarios",
+    "prob_operation_scenarios",
+    "results_dir"
+   ],
+   "Load": [
+    "pd",
+    "qd"
+   ],
+   "Generator": [
+    "pg",
+    "qg"
+   ],
+   "LoadFlexibilityDirection": [
+    "downward",
+    "upward"
+   ],
+   "SharedEnergyStorageData": [
+    "cost_energy_p",
+    "logs_dir",
+    "results_dir"
+   ]
+  },
+  "ev_scenario_metadata": {
+   "random_seed": 2026,
+   "deterministic_scenarios": true,
+   "market_scenario_checksum": "5c83ed9f26644d170fbf27ce00d94b73b4a8bb3bb67818210d20fc91bf077b52",
+   "operational_scenario_checksum": "e6ab386501d68fd0f714539fc894dba1f40b3be6a5a429bede0bb18a34cfbda7",
+   "combined_scenario_checksum": "d0d3a6000bff0841d1f9c234d517e99b5972d4e7fef55ddb316cb85a40885557"
+  },
+  "hook_max_relative_error": 0.0,
+  "post_read_max_relative_error": 0.0,
+  "files": {
+   "case": {
+    "path": "data/SRP1/Results/P515S56/input_audit_A/instance/SRP1__s56_3x3_ev.json",
+    "sha256": "e5531eb7ff7aafb055772316f11b1f909629b9857b74c85dba431d3c1727096b"
+   },
+   "profiles": {
+    "path": "data/SRP1/Results/P515S56/input_audit_A/instance/SRP1__s56_3x3_ev_profiles.json",
+    "sha256": "23570acbe90a6d8ee15f86572a7744d091efeba2be9bdbfb177145d92f1f3255"
+   }
+  },
+  "loading_route": "production reader (p515_s44_scale_measurement.read_planning_from_derived_case on the EV case) + the S56 injection hook (ScenarioHook, mode inject, means read from the profiles file) at shared_resources_planning._compute_scenario_metadata; production alone cannot load explicit profiles (it synthesizes them)"
+ },
+ "q5": {
+  "cost_workbook": {
+   "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+   "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "pinned_sha256_PB": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "investment_cost_scenario_probabilities": [
+    0.35,
+    0.55,
+    0.1
+   ]
+  },
+  "unit_costs": {
+   "2025": {
+    "discount": 1.0,
+    "power_eur_per_mva_by_cost_scenario": {
+     "0": 214171.32910223768,
+     "1": 267528.7212530719,
+     "2": 342165.6238488894
+    },
+    "energy_eur_per_mwh_by_cost_scenario": {
+     "0": 212132.83090957787,
+     "1": 264982.3635447595,
+     "2": 338908.86670623126
+    },
+    "power_eur_per_mva_discounted_expected": 256317.32425986166,
+    "energy_eur_per_mwh_discounted_expected": 253877.6774385931
+   },
+   "2028": {
+    "discount": 0.9423223345470444,
+    "power_eur_per_mva_by_cost_scenario": {
+     "0": 186899.05697716027,
+     "1": 241563.93705913064,
+     "2": 303723.9139351164
+    },
+    "energy_eur_per_mwh_by_cost_scenario": {
+     "0": 185120.13824207647,
+     "1": 239264.7140437486,
+     "2": 300833.04776633636
+    },
+    "power_eur_per_mva_discounted_expected": 215459.38846865043,
+    "energy_eur_per_mwh_discounted_expected": 213408.63043382834
+   },
+   "2031": {
+    "discount": 0.887971382186192,
+    "power_eur_per_mva_by_cost_scenario": {
+     "0": 165761.86321252867,
+     "1": 220791.66263587188,
+     "2": 276193.0874221751
+    },
+    "energy_eur_per_mwh_by_cost_scenario": {
+     "0": 164184.12981568652,
+     "1": 218690.15163006057,
+     "2": 273564.2616503255
+    },
+    "power_eur_per_mva_discounted_expected": 183873.45535083913,
+    "energy_eur_per_mwh_discounted_expected": 182123.33451075281
+   },
+   "2034": {
+    "discount": 0.8367552658726582,
+    "power_eur_per_mva_by_cost_scenario": {
+     "0": 156884.39457965287,
+     "1": 210416.329570133,
+     "2": 270480.86097848084
+    },
+    "energy_eur_per_mwh_by_cost_scenario": {
+     "0": 155391.1575710032,
+     "1": 208413.5717344655,
+     "2": 267906.40459085436
+    },
+    "power_eur_per_mva_discounted_expected": 165415.3081147434,
+    "energy_eur_per_mwh_discounted_expected": 163840.87325437422
+   },
+   "2037": {
+    "discount": 0.7884931755816562,
+    "power_eur_per_mva_by_cost_scenario": {
+     "0": 148009.90640081587,
+     "1": 200042.11417465872,
+     "2": 264768.6345347866
+    },
+    "energy_eur_per_mwh_by_cost_scenario": {
+     "0": 146601.13741218162,
+     "1": 198138.09887106865,
+     "2": 262248.5475313832
+    },
+    "power_eur_per_mva_discounted_expected": 148476.01955491301,
+    "energy_eur_per_mwh_discounted_expected": 147062.81406758315
+   }
+  },
+  "rule": "production search lattice p515_s47_phase_b_record.Lattice on years (2025, 2028, 2031, 2034, 2037), unit costs = 1.02^-(y-2025) * sum_c w_c c_{c,y} from the production-read SRP1_ESS.xlsx, w = investment-cost scenario probabilities; common installation year; granules 0.25 MVA / 0.5 MWh; E/P in [2, 4] h; E <= 5 MWh; I(x) <= 1e6 EUR",
+  "COUNT_ADMISSIBLE_EXCLUDING_X0": 3281,
+  "split_by_year": {
+   "2025": 149,
+   "2028": 288,
+   "2031": 522,
+   "2034": 886,
+   "2037": 1436
+  },
+  "split_by_n_nodes": {
+   "1": 321,
+   "2": 1641,
+   "3": 1319
+  },
+  "split_by_year_and_n_nodes": {
+   "2025|1": 36,
+   "2025|2": 87,
+   "2025|3": 26,
+   "2028|1": 48,
+   "2028|2": 165,
+   "2028|3": 75,
+   "2031|1": 63,
+   "2031|2": 282,
+   "2031|3": 177,
+   "2034|1": 78,
+   "2034|2": 444,
+   "2034|3": 364,
+   "2037|1": 96,
+   "2037|2": 663,
+   "2037|3": 677
+  },
+  "n_grid_points_classified": 14929915,
+  "master_expression_checks": [
+   {
+    "label": "y2025__n9_p0.25_e0.5",
+    "I_lattice": 191018.16978426196,
+    "I_master_expression": 191018.169784262,
+    "abs_diff": 2.9103830456733704e-11
+   },
+   {
+    "label": "y2025__n5_p1.25_e2.5",
+    "I_lattice": 955090.8489213098,
+    "I_master_expression": 955090.8489213098,
+    "abs_diff": 0.0
+   },
+   {
+    "label": "y2028__n9_p0.25_e0.5",
+    "I_lattice": 160569.16233407677,
+    "I_master_expression": 160569.16233407674,
+    "abs_diff": 2.9103830456733704e-11
+   },
+   {
+    "label": "y2028__n5_p1.5_e3",
+    "I_lattice": 963414.9740044607,
+    "I_master_expression": 963414.9740044607,
+    "abs_diff": 0.0
+   },
+   {
+    "label": "y2031__n9_p0.25_e0.5",
+    "I_lattice": 137030.03109308617,
+    "I_master_expression": 137030.0310930862,
+    "abs_diff": 2.9103830456733704e-11
+   },
+   {
+    "label": "y2031__n5_p1.75_e3.5",
+    "I_lattice": 959210.2176516033,
+    "I_master_expression": 959210.2176516034,
+    "abs_diff": 1.1641532182693481e-10
+   },
+   {
+    "label": "y2034__n9_p0.25_e0.5",
+    "I_lattice": 123274.26365587296,
+    "I_master_expression": 123274.26365587297,
+    "abs_diff": 1.4551915228366852e-11
+   },
+   {
+    "label": "y2034__n5_p1.75_e3.5__n7_p0.25_e0.5",
+    "I_lattice": 986194.1092469839,
+    "I_master_expression": 986194.1092469837,
+    "abs_diff": 2.3283064365386963e-10
+   },
+   {
+    "label": "y2037__n9_p0.25_e0.5",
+    "I_lattice": 110650.41192251982,
+    "I_master_expression": 110650.41192251985,
+    "abs_diff": 2.9103830456733704e-11
+   },
+   {
+    "label": "y2037__n5_p1.5_e3__n7_p0.75_e1.5",
+    "I_lattice": 995853.7073026785,
+    "I_master_expression": 995853.7073026787,
+    "abs_diff": 2.3283064365386963e-10
+   }
+  ],
+  "max_I_admissible_eur": 995853.7073026785,
+  "min_slack_eur": 4146.292697321507,
+  "srp1_reference_count": {
+   "count": 1704,
+   "split_by_year": {
+    "2025": 149,
+    "2030": 522,
+    "2035": 1033
+   },
+   "source": "data/SRP1/Results/P515S55/admissible_plan_count/admissible_plan_count.json"
+  },
+  "salvage_end_of_horizon": {
+   "s53_3x3": {
+    "years": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    },
+    "horizon_years_sum": 15,
+    "y_end": 2040,
+    "terminal_discount_factor": 0.7430147299885189,
+    "cohorts": {
+     "2025": {
+      "age_at_terminal_years": 15.0,
+      "remaining_life_years": 0.0,
+      "remaining_life_fraction": 0.0,
+      "t_cal": 15,
+      "tcal_norm_blocks": 5,
+      "expected_energy_unit_cost_eur_per_mwh_undiscounted": 253877.6774385931
+     },
+     "2028": {
+      "age_at_terminal_years": 12.0,
+      "remaining_life_years": 3.0,
+      "remaining_life_fraction": 0.2,
+      "t_cal": 15,
+      "tcal_norm_blocks": 5,
+      "expected_energy_unit_cost_eur_per_mwh_undiscounted": 226470.94588542212
+     },
+     "2031": {
+      "age_at_terminal_years": 9.0,
+      "remaining_life_years": 6.0,
+      "remaining_life_fraction": 0.4,
+      "t_cal": 15,
+      "tcal_norm_blocks": 5,
+      "expected_energy_unit_cost_eur_per_mwh_undiscounted": 205100.45499705616
+     },
+     "2034": {
+      "age_at_terminal_years": 6.0,
+      "remaining_life_years": 9.0,
+      "remaining_life_fraction": 0.6,
+      "t_cal": 15,
+      "tcal_norm_blocks": 5,
+      "expected_energy_unit_cost_eur_per_mwh_undiscounted": 195805.0100628926
+     },
+     "2037": {
+      "age_at_terminal_years": 3.0,
+      "remaining_life_years": 12.0,
+      "remaining_life_fraction": 0.8,
+      "t_cal": 15,
+      "tcal_norm_blocks": 5,
+      "expected_energy_unit_cost_eur_per_mwh_undiscounted": 186511.20722648964
+     }
+    },
+    "salvage_params": {
+     "enabled": true,
+     "in_objective": false,
+     "energy_recovery_fraction": 1.0,
+     "recycling_floor_fraction": 0.0,
+     "cost_basis": "EXPECTED_INSTALLATION_ENERGY_COST",
+     "health_basis": "NORMALIZED_ABOVE_MINIMUM_SOH",
+     "calendar_life_basis": "REMAINING_FRACTION_AT_TERMINAL"
+    },
+    "available_energy_soh_point": "end"
+   },
+   "srp1": {
+    "years": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "horizon_years_sum": 15,
+    "y_end": 2040,
+    "terminal_discount_factor": 0.7430147299885189,
+    "cohorts": {
+     "2025": {
+      "age_at_terminal_years": 15.0,
+      "remaining_life_years": 0.0,
+      "remaining_life_fraction": 0.0,
+      "t_cal": 15,
+      "tcal_norm_blocks": 3,
+      "expected_energy_unit_cost_eur_per_mwh_undiscounted": 253877.6774385931
+     },
+     "2030": {
+      "age_at_terminal_years": 10.0,
+      "remaining_life_years": 5.0,
+      "remaining_life_fraction": 0.3333333333333333,
+      "t_cal": 15,
+      "tcal_norm_blocks": 3,
+      "expected_energy_unit_cost_eur_per_mwh_undiscounted": 208198.72446060603
+     },
+     "2035": {
+      "age_at_terminal_years": 5.0,
+      "remaining_life_years": 10.0,
+      "remaining_life_fraction": 0.6666666666666666,
+      "t_cal": 15,
+      "tcal_norm_blocks": 3,
+      "expected_energy_unit_cost_eur_per_mwh_undiscounted": 192708.1243895905
+     }
+    },
+    "salvage_params": {
+     "enabled": true,
+     "in_objective": false,
+     "energy_recovery_fraction": 1.0,
+     "recycling_floor_fraction": 0.0,
+     "cost_basis": "EXPECTED_INSTALLATION_ENERGY_COST",
+     "health_basis": "NORMALIZED_ABOVE_MINIMUM_SOH",
+     "calendar_life_basis": "REMAINING_FRACTION_AT_TERMINAL"
+    },
+    "available_energy_soh_point": "end"
+   }
+  },
+  "guards": {
+   "s55_module": {
+    "counts": {
+     "permitted_solve": 0,
+     "permitted_exec": 0,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "verify_0": []
+   },
+   "pb_parent": {
+    "counts": {
+     "permitted_solve": 0,
+     "permitted_exec": 0,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "verify_0": []
+   },
+   "s55_pickle_counts": {
+    "load": 0,
+    "loads": 0
+   }
+  }
+ },
+ "inputs": {
+  "case_3x3": {
+   "path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+   "sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+   "tracked": true,
+   "clean": true
+  },
+  "instance_record_3x3": {
+   "path": "data/SRP1/Results/P515S53/w89_3x3/instance/instance_record.json",
+   "sha256": "a47dc358edc1a69279ddd1965a587efc2906eb6c770d336cb9c8f34227f910ea",
+   "tracked": true,
+   "clean": true
+  },
+  "case_srp1": {
+   "path": "data/SRP1/SRP1.json",
+   "sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+   "tracked": true,
+   "clean": true
+  },
+  "case_srp1_5x3y_1x1": {
+   "path": "data/SRP1/SRP1_5x3y_1x1.json",
+   "sha256": "f916e0c6feff4ce1bdf62d843efef386b791e7649442176bacfa16cec3d55b79",
+   "tracked": true,
+   "clean": true
+  },
+  "market_data": {
+   "path": "data/SRP1/MarketData/SRP1_market_data.xlsx",
+   "sha256": "f8da8b9a97dbe066f67af5a5f873a9a48ab4666af15020027251840e78a94578",
+   "tracked": true,
+   "clean": true
+  },
+  "ess_workbook": {
+   "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+   "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "tracked": true,
+   "clean": true
+  },
+  "ess_params": {
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+   "tracked": true,
+   "clean": true
+  },
+  "ess_params_5x3y": {
+   "path": "data/SRP1/SharedESS/SRP1_5x3y_ESS_Params.json",
+   "sha256": "08ade261858aeadd852c9f823c9f273b7490ba426c52a50f229fdbca80a50517",
+   "tracked": true,
+   "clean": true
+  },
+  "planning_params": {
+   "path": "data/SRP1/SRP1_params.json",
+   "sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "tracked": true,
+   "clean": true
+  },
+  "op_case9": {
+   "path": "data/SRP1/case9/case9_operational_data.xlsx",
+   "sha256": "5eab94aa6eb6e661554db947cc2e3ff7d761350de569f8a1f36c6c13d418d6bb",
+   "tracked": true,
+   "clean": true
+  },
+  "op_case33_1": {
+   "path": "data/SRP1/case33_1/case33_1_operational_data.xlsx",
+   "sha256": "e4ddc6d95cfd6237bb486e2ffca9c42e0efbd30a8b211eca5357502619dccc43",
+   "tracked": true,
+   "clean": true
+  },
+  "op_case33_2": {
+   "path": "data/SRP1/case33_2/case33_2_operational_data.xlsx",
+   "sha256": "44c8893a331899b1668f5af37228eaaf3bbd7e05fa13500f9b78345a15fcd720",
+   "tracked": true,
+   "clean": true
+  },
+  "op_case33_3": {
+   "path": "data/SRP1/case33_3/case33_3_operational_data.xlsx",
+   "sha256": "866bcfc7afb24ee9a06277e550acc5a2d73549e81877cc7fc1480f7e5ecd8f45",
+   "tracked": true,
+   "clean": true
+  },
+  "srp_module": {
+   "path": "shared_resources_planning.py",
+   "sha256": "c9336a61a713ef6890fbffcda845395d757e26c41ae2422e82dd88bb881c33e8",
+   "tracked": true,
+   "clean": true
+  },
+  "network_module": {
+   "path": "network.py",
+   "sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+   "tracked": true,
+   "clean": true
+  },
+  "network_data_module": {
+   "path": "network_data.py",
+   "sha256": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+   "tracked": true,
+   "clean": true
+  },
+  "mch_module": {
+   "path": "model_construction_helpers.py",
+   "sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+   "tracked": true,
+   "clean": true
+  },
+  "essd_module": {
+   "path": "shared_energy_storage_data.py",
+   "sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85",
+   "tracked": true,
+   "clean": true
+  },
+  "reader_module": {
+   "path": "p515_s44_scale_measurement.py",
+   "sha256": "284abb4d12811886f5ee1c28809db34ccc8425ba4bb9eb726abafd9c764a0a3e",
+   "tracked": true,
+   "clean": true
+  },
+  "s55_module": {
+   "path": "p515_s55_count_admissible_plans.py",
+   "sha256": "0f69d9e99f1c3bd819850e9ce6c1d963f97ea3db115747f308be7a2e5963d3c1",
+   "tracked": true,
+   "clean": true
+  },
+  "pb_module": {
+   "path": "p515_s47_phase_b_record.py",
+   "sha256": "97f573e52fb574836a72dce8c61b3d5c6b8919aa509e0ffbc04a1a6473ed6c62",
+   "tracked": true,
+   "clean": true
+  },
+  "guard_module": {
+   "path": "p513_solve_profile_guard.py",
+   "sha256": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+   "tracked": true,
+   "clean": true
+  },
+  "this_script": {
+   "path": "p515_s56_expected_profiles.py",
+   "sha256": "e8eadde537eeb5ef2887202c3e227627b794206835a89ee07af1bcc581ea6f9a",
+   "tracked": false,
+   "clean": null
+  }
+ },
+ "checks": [
+  {
+   "check": "3 x 3 case sha256 == instance_record case_sha256",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "3 x 3 production read: combined scenario checksum == instance_record",
+   "ok": true,
+   "detail": {
+    "random_seed": 2026,
+    "deterministic_scenarios": true,
+    "market_scenario_checksum": "bf2869084ed4bf59f6b1b5bd875e7ef5b2a6e7c764f7a160ebb3bdb2684d7904",
+    "operational_scenario_checksum": "4497bf25605b718972fc96cd6bb723eb6cbd9045e793f8b96a420e0fafb001c2",
+    "combined_scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193"
+   }
+  },
+  {
+   "check": "SRP1 production read: combined scenario checksum == canonical",
+   "ok": true,
+   "detail": {
+    "random_seed": 2026,
+    "deterministic_scenarios": true,
+    "market_scenario_checksum": "a8c958289c1e0bdaaf0df36ce56fb4da6734621bf34be7711babcae94d79d907",
+    "operational_scenario_checksum": "502de30606ff8f0290498c56559b59ea01436ce43d9c21a0fc87c876a17ce30e",
+    "combined_scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358"
+   }
+  },
+  {
+   "check": "3 x 3 market probabilities all 1/3",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "3 x 3 operation probabilities all 1/3 on every network block",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "3 x 3 TSO block weights == instance_record",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "same array key set at the hook and after the read (3 x 3)",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "joint 9-pair mean (weights _scenario_probability = pi_m * pi_o) == factorized mean (max abs diff <= 1e-12 x the largest |mean|)",
+   "ok": true,
+   "detail": 5.684341886080802e-14
+  },
+  {
+   "check": "3 x 3: the only arrays production changes after the checksum point are the TSO ADN loads pd / qd (zeroed by _add_adn_node_to_transmission_network)",
+   "ok": true,
+   "detail": [
+    "TSO|2025|Spring|load|0|pd",
+    "TSO|2025|Spring|load|0|qd",
+    "TSO|2025|Spring|load|1|pd",
+    "TSO|2025|Spring|load|1|qd",
+    "TSO|2025|Spring|load|2|pd",
+    "TSO|2025|Spring|load|2|qd",
+    "TSO|2025|Summer|load|0|pd",
+    "TSO|2025|Summer|load|0|qd",
+    "TSO|2025|Summer|load|1|pd",
+    "TSO|2025|Summer|load|1|qd",
+    "TSO|2025|Summer|load|2|pd",
+    "TSO|2025|Summer|load|2|qd",
+    "TSO|2025|Autumn|load|0|pd",
+    "TSO|2025|Autumn|load|0|qd",
+    "TSO|2025|Autumn|load|1|pd",
+    "TSO|2025|Autumn|load|1|qd",
+    "TSO|2025|Autumn|load|2|pd",
+    "TSO|2025|Autumn|load|2|qd",
+    "TSO|2025|Winter|load|0|pd",
+    "TSO|2025|Winter|load|0|qd"
+   ]
+  },
+  {
+   "check": "profiles file round trip bitwise (every array)",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "EV read: hook injected every array exactly once",
+   "ok": true,
+   "detail": [
+    12880
+   ]
+  },
+  {
+   "check": "EV read: array key set == 3 x 3 key set",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "EV read: every scenario array is 1 x 24",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "EV read: market probability [1.0] every year, operation probability [1.0] every block",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "EV read, at the checksum point: every array == computed mean (bitwise)",
+   "ok": true,
+   "detail": 0.0
+  },
+  {
+   "check": "EV read, at the checksum point: every array == computed mean (<= 1e-12 relative)",
+   "ok": true,
+   "detail": 0.0
+  },
+  {
+   "check": "EV read, after the read: every array == mean of the 3 x 3 post-read arrays (bitwise)",
+   "ok": true,
+   "detail": 0.0
+  },
+  {
+   "check": "EV read, after the read: every array == mean of the 3 x 3 post-read arrays (<= 1e-12 relative)",
+   "ok": true,
+   "detail": 0.0
+  },
+  {
+   "check": "EV read: every network block sees the mean market arrays (alias of planning.cost_*)",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "EV vs 3 x 3: every non-scenario item identical (recursive walk; declared exclusions only)",
+   "ok": true,
+   "detail": {
+    "n_diffs": 0,
+    "diffs_first": [],
+    "uncompared_types": {}
+   }
+  },
+  {
+   "check": "SRP1 2025 single-scenario arrays == 3 x 3 2025 scenario index 0 (bitwise, every array)",
+   "ok": true,
+   "detail": [
+    2576,
+    2576
+   ]
+  },
+  {
+   "check": "SRP1_5x3y_1x1 arrays == 3 x 3 scenario index 0 (bitwise, every array, every year)",
+   "ok": true,
+   "detail": [
+    12880,
+    12880
+   ]
+  },
+  {
+   "check": "Q5 cost workbook sha256 == PB.COST_FILE pin",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "Q5 cost tables read standalone == those in the 3 x 3 planning read",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "Q5 domain()[0] is x = 0 and appears once",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "Q5 (a) grid reason-free points == domain() minus x = 0",
+   "ok": true,
+   "detail": {
+    "grid_only": 0,
+    "domain_only": 0
+   }
+  },
+  {
+   "check": "Q5 (b) production master check feasible set == lattice admissible set",
+   "ok": true,
+   "detail": {
+    "master_only": 0,
+    "lattice_only": 0,
+    "first": []
+   }
+  },
+  {
+   "check": "Q5 no admissible point at the grid edge",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "Q5 lattice I(x) == closed form from production-read workbook (<= 1e-6)",
+   "ok": true,
+   "detail": 4.656612873077393e-10
+  },
+  {
+   "check": "Q5 production master investment_cost expression == lattice I(x) (10 plans, <= 1e-6)",
+   "ok": true,
+   "detail": [
+    {
+     "label": "y2025__n9_p0.25_e0.5",
+     "I_lattice": 191018.16978426196,
+     "I_master_expression": 191018.169784262,
+     "abs_diff": 2.9103830456733704e-11
+    },
+    {
+     "label": "y2025__n5_p1.25_e2.5",
+     "I_lattice": 955090.8489213098,
+     "I_master_expression": 955090.8489213098,
+     "abs_diff": 0.0
+    },
+    {
+     "label": "y2028__n9_p0.25_e0.5",
+     "I_lattice": 160569.16233407677,
+     "I_master_expression": 160569.16233407674,
+     "abs_diff": 2.9103830456733704e-11
+    },
+    {
+     "label": "y2028__n5_p1.5_e3",
+     "I_lattice": 963414.9740044607,
+     "I_master_expression": 963414.9740044607,
+     "abs_diff": 0.0
+    },
+    {
+     "label": "y2031__n9_p0.25_e0.5",
+     "I_lattice": 137030.03109308617,
+     "I_master_expression": 137030.0310930862,
+     "abs_diff": 2.9103830456733704e-11
+    },
+    {
+     "label": "y2031__n5_p1.75_e3.5",
+     "I_lattice": 959210.2176516033,
+     "I_master_expression": 959210.2176516034,
+     "abs_diff": 1.1641532182693481e-10
+    },
+    {
+     "label": "y2034__n9_p0.25_e0.5",
+     "I_lattice": 123274.26365587296,
+     "I_master_expression": 123274.26365587297,
+     "abs_diff": 1.4551915228366852e-11
+    },
+    {
+     "label": "y2034__n5_p1.75_e3.5__n7_p0.25_e0.5",
+     "I_lattice": 986194.1092469839,
+     "I_master_expression": 986194.1092469837,
+     "abs_diff": 2.3283064365386963e-10
+    },
+    {
+     "label": "y2037__n9_p0.25_e0.5",
+     "I_lattice": 110650.41192251982,
+     "I_master_expression": 110650.41192251985,
+     "abs_diff": 2.9103830456733704e-11
+    },
+    {
+     "label": "y2037__n5_p1.5_e3__n7_p0.75_e1.5",
+     "I_lattice": 995853.7073026785,
+     "I_master_expression": 995853.7073026787,
+     "abs_diff": 2.3283064365386963e-10
+    }
+   ]
+  },
+  {
+   "check": "Q5 n7 0.25/1 @2025 I(x) == instance_record master expression (<= 1e-6)",
+   "ok": true,
+   "detail": [
+    317957.0085035585,
+    317957.0085035586
+   ]
+  },
+  {
+   "check": "Q5 guard s55_module verify(0) == []",
+   "ok": true,
+   "detail": {
+    "counts": {
+     "permitted_solve": 0,
+     "permitted_exec": 0,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "verify_0": []
+   }
+  },
+  {
+   "check": "Q5 guard pb_parent verify(0) == []",
+   "ok": true,
+   "detail": {
+    "counts": {
+     "permitted_solve": 0,
+     "permitted_exec": 0,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "verify_0": []
+   }
+  },
+  {
+   "check": "Q5 s55 pickle block: 0 load / loads",
+   "ok": true,
+   "detail": {
+    "load": 0,
+    "loads": 0
+   }
+  },
+  {
+   "check": "own SolveProfileGuard(permitted=()) verify(0) == []",
+   "ok": true,
+   "detail": []
+  }
+ ],
+ "failed_checks": [],
+ "all_checks_ok": true,
+ "guards": {
+  "own": {
+   "label": "P5.15 S56 input audit A (never solves)",
+   "permitted": [],
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0": []
+  }
+ }
+}

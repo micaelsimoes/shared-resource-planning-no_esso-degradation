@@ -1,0 +1,688 @@
+{
+ "schema": "p515_s44_evaluation_record_v2",
+ "campaign_id": "s45_a1b",
+ "campaign_spec_path": "data/SRP1/Results/P515S45/campaign_s45_a1b/campaign_spec_s45_a1b_bd3040a9.json",
+ "campaign_spec_sha256": "bd3040a9e3ac51fd8fa305e2e1bccaf8eb08811d57b4e499e1a12c0dfa8fd789",
+ "candidate_label": "n7_4h_e4_y2035",
+ "candidate_canonical": {
+  "investment_year": 2035,
+  "nodes": {
+   "5": [
+    0.0,
+    0.0
+   ],
+   "7": [
+    1.0,
+    4.0
+   ],
+   "9": [
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "candidate_key": "ab6edede03e3501f2cc005c4c2b09c144a2c0715112c501970840bf384eae17d",
+ "instance_note": "candidate_key = sha256 of the canonical candidate; identifies the problem instance",
+ "working_dir_ids": {
+  "precheck": "p515s44_s45_a1b_69e0758622e1740c_precheck",
+  "run": "p515s44_s45_a1b_69e0758622e1740c_run"
+ },
+ "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/69e0758622e1740c_n7_4h_e4_y2035",
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "full_diagnostics_in_rows": true,
+  "name": "case file alone: AA keep_memory adopted in data/SRP1/SRP1_params.json (Addendum 27)",
+  "note": "no overrides; the case file carries AA (declared, checked by the child hook); num_max_iters := cap (run_admm_arm always sets it)",
+  "overrides": {}
+ },
+ "cap": 500,
+ "required_consecutive_cycles": 10,
+ "status": "certified",
+ "barrier": false,
+ "barrier_cause": null,
+ "objective_convention": "gross_operational_cost: settlement-EXCLUDED gross operational cost (the oracle cost convention); net_operational_recourse = gross minus terminal salvage credit",
+ "certified_cost": 653510195.8090053,
+ "terminal_gross_operational_cost": 653510195.8090053,
+ "terminal_net_operational_recourse": 653229358.8341496,
+ "bar": {
+  "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+  "value": 14376.99841594696,
+  "n_cycles_in_window": 10,
+  "n_steps_available": 10,
+  "trajectory_cycles_contiguous_from_1": true,
+  "window": [
+   {
+    "cycle": 82,
+    "gross_operational_cost": 653565888.4731824,
+    "predecessor_cycle": 81,
+    "predecessor_gross_operational_cost": 653575122.1144421,
+    "gross_step_abs": 9233.641259670258
+   },
+   {
+    "cycle": 83,
+    "gross_operational_cost": 653551511.4747665,
+    "predecessor_cycle": 82,
+    "predecessor_gross_operational_cost": 653565888.4731824,
+    "gross_step_abs": 14376.99841594696
+   },
+   {
+    "cycle": 84,
+    "gross_operational_cost": 653538654.8898479,
+    "predecessor_cycle": 83,
+    "predecessor_gross_operational_cost": 653551511.4747665,
+    "gross_step_abs": 12856.584918618202
+   },
+   {
+    "cycle": 85,
+    "gross_operational_cost": 653527804.0814792,
+    "predecessor_cycle": 84,
+    "predecessor_gross_operational_cost": 653538654.8898479,
+    "gross_step_abs": 10850.808368682861
+   },
+   {
+    "cycle": 86,
+    "gross_operational_cost": 653519200.7008966,
+    "predecessor_cycle": 85,
+    "predecessor_gross_operational_cost": 653527804.0814792,
+    "gross_step_abs": 8603.38058257103
+   },
+   {
+    "cycle": 87,
+    "gross_operational_cost": 653512986.7230918,
+    "predecessor_cycle": 86,
+    "predecessor_gross_operational_cost": 653519200.7008966,
+    "gross_step_abs": 6213.977804780006
+   },
+   {
+    "cycle": 88,
+    "gross_operational_cost": 653509143.0013452,
+    "predecessor_cycle": 87,
+    "predecessor_gross_operational_cost": 653512986.7230918,
+    "gross_step_abs": 3843.7217466831207
+   },
+   {
+    "cycle": 89,
+    "gross_operational_cost": 653507542.8085845,
+    "predecessor_cycle": 88,
+    "predecessor_gross_operational_cost": 653509143.0013452,
+    "gross_step_abs": 1600.1927607059479
+   },
+   {
+    "cycle": 90,
+    "gross_operational_cost": 653507990.3623931,
+    "predecessor_cycle": 89,
+    "predecessor_gross_operational_cost": 653507542.8085845,
+    "gross_step_abs": 447.55380868911743
+   },
+   {
+    "cycle": 91,
+    "gross_operational_cost": 653510195.8090053,
+    "predecessor_cycle": 90,
+    "predecessor_gross_operational_cost": 653507990.3623931,
+    "gross_step_abs": 2205.4466121196747
+   }
+  ]
+ },
+ "bar_net_recourse_step_reported": {
+  "definition": "max objective_change_abs over the last 10 cycles (production: |net_operational_recourse[k] - net_operational_recourse[k-1]|, shared_resources_planning.py:2849/2814; NET of the terminal salvage credit; reported, not the bar)",
+  "value": 14306.295714259148,
+  "n_cycles_in_window": 10,
+  "n_steps_available": 10,
+  "window": [
+   {
+    "cycle": 82,
+    "objective_change_abs": 9210.752979636192
+   },
+   {
+    "cycle": 83,
+    "objective_change_abs": 14306.295714259148
+   },
+   {
+    "cycle": 84,
+    "objective_change_abs": 12780.932932138443
+   },
+   {
+    "cycle": 85,
+    "objective_change_abs": 10809.370535254478
+   },
+   {
+    "cycle": 86,
+    "objective_change_abs": 8570.453808426857
+   },
+   {
+    "cycle": 87,
+    "objective_change_abs": 6169.7918264865875
+   },
+   {
+    "cycle": 88,
+    "objective_change_abs": 3792.264262676239
+   },
+   {
+    "cycle": 89,
+    "objective_change_abs": 1548.9662059545517
+   },
+   {
+    "cycle": 90,
+    "objective_change_abs": 497.2930654287338
+   },
+   {
+    "cycle": 91,
+    "objective_change_abs": 2254.7843165397644
+   }
+  ]
+ },
+ "certification": {
+  "certified": true,
+  "certification_cycle": 91,
+  "cycles_run": 91,
+  "cap": 500,
+  "required_consecutive_cycles": 10,
+  "terminal_cycle_convergence": true,
+  "terminal_consecutive_converged_cycles": 10,
+  "local_solve_failures_total": 0
+ },
+ "certification_cycle": 91,
+ "cycles_run": 91,
+ "stopped_by_trajectory": {
+  "stopped_by": "boyd",
+  "converged_at_cycle": 82,
+  "stop_run_cycles": [
+   82,
+   83,
+   84,
+   85,
+   86,
+   87,
+   88,
+   89,
+   90,
+   91
+  ]
+ },
+ "first_pass_cycle_per_channel": {
+  "v": 40,
+  "pf": 81,
+  "ess": 23
+ },
+ "terminal_ratios_per_channel": {
+  "v": {
+   "primal": 0.028678178501243767,
+   "dual": 0.23285887182391066,
+   "max": 0.23285887182391066
+  },
+  "pf": {
+   "primal": 0.4998963213239347,
+   "dual": 0.3988499784865673,
+   "max": 0.4998963213239347
+  },
+  "ess": {
+   "primal": 0.19348350074450676,
+   "dual": 0.1842552708199719,
+   "max": 0.19348350074450676
+  }
+ },
+ "rule_ten": {
+  "reported_not_gated": true,
+  "terminal_objective_change_abs": 2254.7843165397644,
+  "terminal_objective_tolerance": 65322.93588341496,
+  "terminal_step_over_threshold": 0.034517498119863876,
+  "boyd_terminal_ratio_max_per_channel": {
+   "v": 0.23285887182391066,
+   "pf": 0.4998963213239347,
+   "ess": 0.19348350074450676
+  }
+ },
+ "component_decomposition_totals_weighted": {
+  "generation_cost": 445543944.9445711,
+  "flexibility_cost_internal": 207979000.10614908,
+  "load_curtailment_cost": 0.0,
+  "res_curtailment_penalty": 0.0,
+  "ess_usage_cost": 0.0,
+  "flexibility_cost_tso_adn_interface_definitional": 0.0,
+  "voltage_slack": -11796.939854176875,
+  "node_balance_slack": 0.0,
+  "branch_flow_slack": 0.0,
+  "flexibility_p_day_balance_slack": -946.4787332950164,
+  "local_ess_day_balance_slack": 0.0,
+  "shared_ess_day_balance_slack": -5.823127441555517,
+  "detector_penalty_total": -12749.241714913447,
+  "ess_complementarity_bilinear_definitional": 1.3088125836933167,
+  "orphan_flex_q_day_balance_slack_raw": 0.0,
+  "orphan_tso_adn_flex_p_day_balance_slack_raw": 0.0,
+  "orphan_flex_q_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional": 0.0,
+  "orphan_tso_adn_flex_p_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional": 0.0,
+  "res_curtailment_definitional_at_weight_1": 579.3490177922454
+ },
+ "recourse_components": {
+  "gross_operational_cost": 653510195.8090053,
+  "gross_operational_cost_including_settlement": 653560707.5595665,
+  "interface_settlement_tso": -1131360457.189176,
+  "interface_settlement_dso": {
+   "5": 428141072.3265476,
+   "7": 311119010.6062842,
+   "9": 392150886.0069055
+  },
+  "interface_settlement_total": 50511.750561237335,
+  "terminal_salvage_value": 280836.9748556448,
+  "net_operational_recourse": 653229358.8341496,
+  "detector_penalty_total": -12749.241714913447,
+  "detector_components": {
+   "voltage_slack": -11796.939854176875,
+   "node_balance_slack": 0.0,
+   "branch_flow_slack": 0.0,
+   "flexibility_p_day_balance_slack": -946.4787332950164,
+   "local_ess_day_balance_slack": 0.0,
+   "shared_ess_day_balance_slack": -5.823127441555517,
+   "detector_penalty_total": -12749.241714913447
+  },
+  "economic_recourse_all_D_excluded": 653242108.0758646,
+  "economic_recourse_voltage_excluded": 653241155.7740037
+ },
+ "settlement_remainder": {
+  "definition": "recourse_components.interface_settlement_total: T_TSO + sum(T_DSO), the non-cancelling interface settlement at the terminal point, excluded from the cost",
+  "value": 50511.750561237335
+ },
+ "storage_per_node": {
+  "5": {
+   "s_mva": 0.0,
+   "e_mwh": 0.0,
+   "has_storage": false,
+   "efc_per_day_max": null,
+   "efc_per_day_per_cohort_year": {},
+   "terminal_soh_per_active_cohort_year": {},
+   "terminal_soh_min_over_active_cohort_years": null,
+   "soh_floor_rows_active_at_terminal": [],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 0.0,
+     "e_available": 0.0
+    },
+    "2030": {
+     "s_available": 0.0,
+     "e_available": 0.0
+    },
+    "2035": {
+     "s_available": 0.0,
+     "e_available": 0.0
+    }
+   },
+   "note_zero_node": "zero-capacity node: no active cohort; EFC undefined (None), SoH variables fixed at 1.0 by production and not reported as a result"
+  },
+  "7": {
+   "s_mva": 1.0,
+   "e_mwh": 4.0,
+   "has_storage": true,
+   "efc_per_day_max": 0.8970564030170132,
+   "efc_per_day_per_cohort_year": {
+    "(2, 2)": 0.8970564030170132
+   },
+   "terminal_soh_per_active_cohort_year": {
+    "(2, 2)": 0.867754597029355
+   },
+   "terminal_soh_min_over_active_cohort_years": 0.867754597029355,
+   "soh_floor_rows_active_at_terminal": [],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": -9.698450753716573e-43,
+     "e_available": -5.094387540641446e-42
+    },
+    "2030": {
+     "s_available": -6.064232616013103e-42,
+     "e_available": -1.0188775081282892e-41
+    },
+    "2035": {
+     "s_available": 1.0,
+     "e_available": 3.47101838811742
+    }
+   },
+   "note_zero_node": null
+  },
+  "9": {
+   "s_mva": 0.0,
+   "e_mwh": 0.0,
+   "has_storage": false,
+   "efc_per_day_max": null,
+   "efc_per_day_per_cohort_year": {},
+   "terminal_soh_per_active_cohort_year": {},
+   "terminal_soh_min_over_active_cohort_years": null,
+   "soh_floor_rows_active_at_terminal": [],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 0.0,
+     "e_available": 0.0
+    },
+    "2030": {
+     "s_available": 0.0,
+     "e_available": 0.0
+    },
+    "2035": {
+     "s_available": 0.0,
+     "e_available": 0.0
+    }
+   },
+   "note_zero_node": "zero-capacity node: no active cohort; EFC undefined (None), SoH variables fixed at 1.0 by production and not reported as a result"
+  }
+ },
+ "local_solve_failures": 0,
+ "network_failures_summary": {
+  "n_blocks": 5,
+  "classes": {
+   "recovered_tier1": 5,
+   "recovered_tier2": 0,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 5
+  },
+  "n_frozen_snapshots": 2,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/69e0758622e1740c_n7_4h_e4_y2035/network_failures_s39_D.jsonl"
+ },
+ "solve_profile": {
+  "observed": {
+   "permitted_solve": 4697,
+   "permitted_exec": 4697,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "identity_holds": false
+ },
+ "wall_time_s": {
+  "child_process_s": 2719.804342985153,
+  "run_admm_arm_s": 2704.4346220493317,
+  "run_admm_arm_reported_wall_clock_s": 2703.345998764038
+ },
+ "peak_rss": {
+  "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+  "child_python_process_ru_maxrss": 2512011264,
+  "production_state_peak_rss_ru_maxrss": 2512011264,
+  "solver_subprocesses_max_ru_maxrss": 55738368,
+  "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+ },
+ "record_capture_checklist_asserted_before_run": {
+  "trajectory_field_boyd_all_pass": true,
+  "trajectory_field_boyd_ess_channel_pass": true,
+  "trajectory_field_boyd_ess_dual_ratio": true,
+  "trajectory_field_boyd_ess_primal_ratio": true,
+  "trajectory_field_boyd_pf_channel_pass": true,
+  "trajectory_field_boyd_pf_dual_ratio": true,
+  "trajectory_field_boyd_pf_primal_ratio": true,
+  "trajectory_field_boyd_stop": true,
+  "trajectory_field_boyd_v_channel_pass": true,
+  "trajectory_field_boyd_v_dual_ratio": true,
+  "trajectory_field_boyd_v_primal_ratio": true,
+  "trajectory_field_consecutive_converged_cycles": true,
+  "trajectory_field_cycle": true,
+  "trajectory_field_cycle_convergence": true,
+  "trajectory_field_efc_per_day_max": true,
+  "trajectory_field_gross_operational_cost": true,
+  "trajectory_field_local_solves_ok": true,
+  "trajectory_field_objective_change_abs": true,
+  "trajectory_field_objective_change_ratio": true,
+  "trajectory_field_objective_tolerance": true,
+  "trajectory_field_recourse": true,
+  "trajectory_field_rho_ess_action": true,
+  "trajectory_field_rho_ess_after": true,
+  "trajectory_field_rho_freeze_active": true,
+  "trajectory_field_rho_pf_action": true,
+  "trajectory_field_rho_pf_after": true,
+  "trajectory_field_rho_v_action": true,
+  "trajectory_field_rho_v_after": true,
+  "trajectory_field_terminal_salvage_value": true,
+  "esso_capture_attr_es_avg_ch_dch_per_unit": true,
+  "esso_capture_attr_es_soh_per_unit_cumul": true,
+  "esso_capture_attr_es_e_rated_per_unit": true,
+  "harness_fn_run_admm_arm": true,
+  "harness_fn_write_boyd_terminal_s35ref": true,
+  "harness_fn_s38_pf_capture_hooks": true,
+  "harness_fn_s39_exempt_until_capture_hooks": true,
+  "harness_fn__s35ref_terminal_floor_and_efc": true,
+  "harness_fn__derive_stopped_by_from_trajectory": true,
+  "harness_fn__identify_soh_floor_rows": true,
+  "evaluator_fn__certification_from_trajectory": true,
+  "evaluator_fn__first_pass_cycle": true,
+  "evaluator_fn__terminal_ratios": true,
+  "component_levels_recourse_key_interface_settlement_total": true,
+  "run_admm_arm_accepts_investment_map": true,
+  "run_admm_arm_post_run_hook_gets_state": true,
+  "production_state_has_peak_rss": true
+ },
+ "eval_key": "69e0758622e1740ced60a6e2756b9bd34d3040dda391066de9acebdb4d298d1a",
+ "evaluation_overrides_effective": {},
+ "post_certification_capture_checklist_asserted_before_run": null,
+ "post_certification": null,
+ "post_certification_path": null,
+ "aa_per_cycle": {
+  "path": "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/69e0758622e1740c_n7_4h_e4_y2035/aa_per_cycle.jsonl",
+  "n_rows": 91,
+  "action_counts": {
+   "insufficient memory (m_k=0)": 7,
+   "accepted": 46,
+   "rejected (safeguard; memory retained)": 28,
+   "off (all channels within Boyd tolerance)": 10
+  },
+  "n_accepted": 46,
+  "n_rejected": 28,
+  "rejections_with_memory_retained": [
+   {
+    "cycle": 24,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 29,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 30,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 34,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 37,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 39,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 40,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 41,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 43,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 44,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 46,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 49,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 50,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 51,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 53,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 56,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 60,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 64,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 65,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 66,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 67,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 70,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 71,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 73,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 75,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 76,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 77,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   }
+  ],
+  "first_accept_cycle": 4,
+  "first_reject_cycle": 14
+ },
+ "configuration_checks_in_child": {
+  "rho_v_matches_D": true,
+  "rho_pf_matches_D": true,
+  "rho_ess_matches_D": true,
+  "tau_is_0": true,
+  "gamma_policy_tied_to_rho": true,
+  "balancing_exempt_until_matches_D": true,
+  "balancing_exempt_channels_empty": true,
+  "freeze_after_unchanged_cycles_is_10": true,
+  "freeze_backstop_cycle_is_200": true,
+  "minimum_consecutive_converged_cycles_matches_spec": true,
+  "shared_ess_initialization_is_standalone": true,
+  "num_max_iters_is_spec_cap": true,
+  "anderson_acceleration_case_file_matches_declaration": true,
+  "anderson_acceleration_case_file_memory_regularization_frozen": true,
+  "persistent_workers_off": true,
+  "parallel_execution_off": true
+ },
+ "overrides_applied_in_child": {},
+ "anderson_acceleration_effective_in_child": {
+  "enabled": true,
+  "memory": 5,
+  "regularization": 1e-10,
+  "reject_policy": "keep_memory"
+ },
+ "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+ "thread_caps_seen_by_child": {
+  "OMP_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1"
+ },
+ "PYTHONHASHSEED_in_child": null,
+ "nlp_solver_path_in_child": "/usr/local/bin/ipopt",
+ "campaign_lock_seen_by_child": {
+  "pid": 86602,
+  "campaign_id": "s45_a1b",
+  "campaign_spec_sha256": "bd3040a9e3ac51fd8fa305e2e1bccaf8eb08811d57b4e499e1a12c0dfa8fd789",
+  "started_utc": "2026-09-20T17:50:54.861476+00:00"
+ },
+ "child_pid": 70555,
+ "parent_pid": 86602,
+ "report_path": "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/69e0758622e1740c_n7_4h_e4_y2035/g_s39_D.json",
+ "per_cycle_record_path": "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/69e0758622e1740c_n7_4h_e4_y2035/per_cycle_record.jsonl"
+}

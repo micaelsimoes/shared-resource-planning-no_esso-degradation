@@ -1,0 +1,1157 @@
+{
+ "requested": {
+  "hull_polish": true,
+  "persist_certified_models": true,
+  "reference": {
+   "campaign_spec_sha256": "4047b4e3f1852c3616a80ad26f2d43f2aa4b333847e447fb5b9323fb3bce7f33",
+   "candidate_key": "e30704e6e4dd3765d2cc8960d5a3d48c5adb362bc6fd067dda567f14086b46b5",
+   "certification_cycle": 136,
+   "certified_cost": 651900014.159667,
+   "component_levels_terminal_sha256": "f4e74af099b4940928fd2c024800804ad9fc0cba57da40aab76d2d7dd53c28d4",
+   "configuration_overrides": {},
+   "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/e30704e6e4dd3765_node7_empty",
+   "evaluation_record_sha256": "02f5a1b2ff7818afaeee2dc200e6d21d784a7959c3563bca2cf02d526f7ed7a4"
+  }
+ },
+ "status": "evaluated",
+ "certification": {
+  "certified": true,
+  "certification_cycle": 107,
+  "cycles_run": 107,
+  "cap": 500,
+  "required_consecutive_cycles": 10,
+  "terminal_cycle_convergence": true,
+  "terminal_consecutive_converged_cycles": 10,
+  "local_solve_failures_total": 0
+ },
+ "stopped_by": {
+  "stopped_by": "boyd",
+  "converged_at_cycle": 98,
+  "stop_run_cycles": [
+   98,
+   99,
+   100,
+   101,
+   102,
+   103,
+   104,
+   105,
+   106,
+   107
+  ]
+ },
+ "evaluated": true,
+ "certified_cost": 651918540.6013606,
+ "objective_convention": "gross_operational_cost (settlement-excluded), as the evaluation record",
+ "gate_b_cost_vs_reference": {
+  "definition": "|Q - Q_ref| <= 1.5e-4 * Q_ref (p515_s43_aa_run gate (b), reference = the D evaluation of the same candidate)",
+  "certified_cost": 651918540.6013606,
+  "reference_certified_cost": 651900014.159667,
+  "reference_eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/e30704e6e4dd3765_node7_empty",
+  "abs_diff": 18526.441693544388,
+  "relative_tolerance": 0.00015,
+  "abs_tolerance": 97785.00212395005,
+  "pass": true
+ },
+ "gate_c_cost_decomposition_vs_reference": {
+  "method_note": "Re-applies p515_s40_cost_decomposition.py's own reconciliation method (same PRICED_COMPONENT_KEYS/DETECTOR_COMPONENT_KEYS constants, IMPORTED; same dominant-two-components convention, that script's section 4) to the (D, AA) pair -- that script's main() is hardcoded to four specific committed runs and is not factored into a directly-callable two-run function, so the METHOD (key lists, reconciliation formula) is re-applied here rather than the whole script imported; every key LIST used below is the imported module constant, never retyped.",
+  "d_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/e30704e6e4dd3765_node7_empty",
+  "d_gross_operational_cost": 651900014.159667,
+  "aa_gross_operational_cost": 651918540.6013606,
+  "headline_diff_AA_minus_D": 18526.441693544388,
+  "dominant_two_components": [
+   "generation_cost",
+   "flexibility_cost_internal"
+  ],
+  "dominant_two_diff": 18526.441732138395,
+  "other_priced_components_diff": 0.0,
+  "detector_penalty_total_diff": -3.869771353492979e-05,
+  "accounted_total": 18526.441693440684,
+  "unaccounted_residual": 1.0370422387495637e-07,
+  "unaccounted_residual_over_abs_headline_diff": 5.597633133786965e-12,
+  "reconciliation_tolerance_used": 1.0,
+  "reconciliation_tolerance_source": "Planner, before the full run: |residual| <= 1.0 and other priced components identically 0",
+  "other_priced_components_nonzero": [],
+  "reconciles": true,
+  "component_table": {
+   "branch_flow_slack": {
+    "D": 0.0,
+    "AA": 0.0,
+    "diff_AA_minus_D": 0.0,
+    "category": "detector_D"
+   },
+   "detector_penalty_total": {
+    "D": -12782.121294099285,
+    "AA": -12782.121332796998,
+    "diff_AA_minus_D": -3.869771353492979e-05,
+    "category": "detector_D_total"
+   },
+   "ess_complementarity_bilinear_definitional": {
+    "D": 10.213414517140277,
+    "AA": 9.764430167953634,
+    "diff_AA_minus_D": -0.4489843491866434,
+    "category": "other"
+   },
+   "ess_usage_cost": {
+    "D": 0.0,
+    "AA": 0.0,
+    "diff_AA_minus_D": 0.0,
+    "category": "priced"
+   },
+   "flexibility_cost_internal": {
+    "D": 207452770.56468377,
+    "AA": 207471669.5808543,
+    "diff_AA_minus_D": 18899.01617053151,
+    "category": "priced"
+   },
+   "flexibility_cost_tso_adn_interface_definitional": {
+    "D": 0.0,
+    "AA": 0.0,
+    "diff_AA_minus_D": 0.0,
+    "category": "priced"
+   },
+   "flexibility_p_day_balance_slack": {
+    "D": -946.4785665413173,
+    "AA": -946.4785988100807,
+    "diff_AA_minus_D": -3.226876344797347e-05,
+    "category": "detector_D"
+   },
+   "generation_cost": {
+    "D": 444460025.7162774,
+    "AA": 444459653.141839,
+    "diff_AA_minus_D": -372.574438393116,
+    "category": "priced"
+   },
+   "load_curtailment_cost": {
+    "D": 0.0,
+    "AA": 0.0,
+    "diff_AA_minus_D": 0.0,
+    "category": "priced"
+   },
+   "local_ess_day_balance_slack": {
+    "D": 0.0,
+    "AA": 0.0,
+    "diff_AA_minus_D": 0.0,
+    "category": "other"
+   },
+   "node_balance_slack": {
+    "D": 0.0,
+    "AA": 0.0,
+    "diff_AA_minus_D": 0.0,
+    "category": "detector_D"
+   },
+   "orphan_flex_q_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional": {
+    "D": 0.0,
+    "AA": 0.0,
+    "diff_AA_minus_D": 0.0,
+    "category": "other"
+   },
+   "orphan_flex_q_day_balance_slack_raw": {
+    "D": 0.0,
+    "AA": 0.0,
+    "diff_AA_minus_D": 0.0,
+    "category": "other"
+   },
+   "orphan_tso_adn_flex_p_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional": {
+    "D": 0.0,
+    "AA": 0.0,
+    "diff_AA_minus_D": 0.0,
+    "category": "other"
+   },
+   "orphan_tso_adn_flex_p_day_balance_slack_raw": {
+    "D": 0.0,
+    "AA": 0.0,
+    "diff_AA_minus_D": 0.0,
+    "category": "other"
+   },
+   "res_curtailment_definitional_at_weight_1": {
+    "D": 588.3724332123898,
+    "AA": 588.6204723988991,
+    "diff_AA_minus_D": 0.2480391865093452,
+    "category": "other"
+   },
+   "res_curtailment_penalty": {
+    "D": 0.0,
+    "AA": 0.0,
+    "diff_AA_minus_D": 0.0,
+    "category": "priced"
+   },
+   "shared_ess_day_balance_slack": {
+    "D": -38.70287593692118,
+    "AA": -38.702881862594964,
+    "diff_AA_minus_D": -5.925673782769536e-06,
+    "category": "detector_D"
+   },
+   "voltage_slack": {
+    "D": -11796.939851621046,
+    "AA": -11796.939852124324,
+    "diff_AA_minus_D": -5.032779881730676e-07,
+    "category": "detector_D"
+   }
+  },
+  "labels_note": "keys named 'D'/'AA' by p515_s43_aa_run: 'D' = the reference evaluation, 'AA' = this evaluation"
+ },
+ "gate_c_pass": true,
+ "persisted_models": {
+  "path": "data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/0796b6dceeb0f95f_node7_empty_aa_keep_memory/certified_models.pkl",
+  "sha256": "03836cf40e4824ef9c1e75efb241dc2efc6970123aeb5d76108905e90e1e1dfa",
+  "size_bytes": 165031975
+ },
+ "gate_d_hull_polish": {
+  "definition": "p515_s41_hull_polish gate: |sum over blocks of [f_i(polished) - f_i(certified)]| / certified cost < 0.1 %, evaluated only when every block solves",
+  "blocks_solved": 48,
+  "n_blocks": 48,
+  "all_solved": true,
+  "failed_blocks": [],
+  "delta_sum_blocks": -2108.518084205687,
+  "relative_pct": 0.0003234327531566582,
+  "threshold_pct": 0.1,
+  "settlement_excluded_change": 12221.046985387802,
+  "settlement_remainder_before": 39034.665605545044,
+  "settlement_remainder_after": 24705.1005358696,
+  "hull_bounds_active_by_channel_incl_degenerate": {
+   "V": 464,
+   "ESS_Q": 1505,
+   "PF_P": 496,
+   "ESS_P": 328,
+   "PF_Q": 422
+  },
+  "hull_bounds_non_degenerate_by_channel": {
+   "V": {
+    "total": 1728,
+    "degenerate": 0,
+    "non_degenerate": 1728,
+    "active_non_degenerate": 464
+   },
+   "PF_P": {
+    "total": 1728,
+    "degenerate": 0,
+    "non_degenerate": 1728,
+    "active_non_degenerate": 496
+   },
+   "PF_Q": {
+    "total": 1728,
+    "degenerate": 0,
+    "non_degenerate": 1728,
+    "active_non_degenerate": 422
+   },
+   "ESS_P": {
+    "total": 1728,
+    "degenerate": 0,
+    "non_degenerate": 1728,
+    "active_non_degenerate": 328
+   },
+   "ESS_Q": {
+    "total": 1728,
+    "degenerate": 576,
+    "non_degenerate": 1152,
+    "active_non_degenerate": 929
+   }
+  },
+  "flagged_blocks": [],
+  "flag_abs_threshold": 650.9669752943751,
+  "solve_profile": {
+   "observed": {
+    "permitted_solve": 48,
+    "permitted_exec": 48,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "n_blocks_dispatched": 48,
+   "retries_beyond_one_per_block": 0,
+   "blocked_calls": 0
+  },
+  "runtime_s": 27.25127911567688,
+  "pass": true
+ },
+ "hull_polish_full": {
+  "before_recourse_components": {
+   "gross_operational_cost": 651918540.6013606,
+   "gross_operational_cost_including_settlement": 651957575.2669661,
+   "interface_settlement_tso": -1131993340.1616993,
+   "interface_settlement_dso": {
+    "5": 428372461.8995817,
+    "7": 311266956.2531595,
+    "9": 392392956.67456365
+   },
+   "interface_settlement_total": 39034.665605545044,
+   "terminal_salvage_value": 5.396402354411897e-51,
+   "net_operational_recourse": 651918540.6013606,
+   "detector_penalty_total": -12782.121332796998,
+   "detector_components": {
+    "voltage_slack": -11796.939852124324,
+    "node_balance_slack": 0.0,
+    "branch_flow_slack": 0.0,
+    "flexibility_p_day_balance_slack": -946.4785988100807,
+    "local_ess_day_balance_slack": 0.0,
+    "shared_ess_day_balance_slack": -38.702881862594964,
+    "detector_penalty_total": -12782.121332796998
+   },
+   "economic_recourse_all_D_excluded": 651931322.7226933,
+   "economic_recourse_voltage_excluded": 651930337.5412127
+  },
+  "after_recourse_components": {
+   "gross_operational_cost": 651930761.648346,
+   "gross_operational_cost_including_settlement": 651955466.7488818,
+   "interface_settlement_tso": -1131999973.1106048,
+   "interface_settlement_dso": {
+    "5": 428369870.94580966,
+    "7": 311263662.2047565,
+    "9": 392391145.0605746
+   },
+   "interface_settlement_total": 24705.1005358696,
+   "terminal_salvage_value": 5.396402354411897e-51,
+   "net_operational_recourse": 651930761.648346,
+   "detector_penalty_total": -12782.101467451308,
+   "detector_components": {
+    "voltage_slack": -11796.939514117465,
+    "node_balance_slack": 0.0,
+    "branch_flow_slack": 0.0,
+    "flexibility_p_day_balance_slack": -946.462567054309,
+    "local_ess_day_balance_slack": 0.0,
+    "shared_ess_day_balance_slack": -38.69938627953456,
+    "detector_penalty_total": -12782.101467451308
+   },
+   "economic_recourse_all_D_excluded": 651943543.7498134,
+   "economic_recourse_voltage_excluded": 651942558.5878601
+  },
+  "all_solved": true,
+  "failed_blocks": [],
+  "flagged_blocks": [],
+  "flag_abs_threshold": 650.9669752943751,
+  "n_blocks": 48,
+  "per_block": [
+   {
+    "block": "TSO|2025|Spring",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -24304094.834638495,
+    "weighted_base_objective_after": -24304106.96896557,
+    "delta": -12.134327076375484
+   },
+   {
+    "block": "TSO|2025|Summer",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -32651045.939693294,
+    "weighted_base_objective_after": -32651046.551244672,
+    "delta": -0.6115513779222965
+   },
+   {
+    "block": "TSO|2025|Autumn",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -49194273.98055847,
+    "weighted_base_objective_after": -49194274.44109314,
+    "delta": -0.4605346694588661
+   },
+   {
+    "block": "TSO|2025|Winter",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -50185984.58614466,
+    "weighted_base_objective_after": -50185986.5146054,
+    "delta": -1.9284607395529747
+   },
+   {
+    "block": "TSO|2030|Spring",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -39358854.39379382,
+    "weighted_base_objective_after": -39358854.62083182,
+    "delta": -0.22703799605369568
+   },
+   {
+    "block": "TSO|2030|Summer",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -57340609.788619846,
+    "weighted_base_objective_after": -57340610.152258396,
+    "delta": -0.3636385500431061
+   },
+   {
+    "block": "TSO|2030|Autumn",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -88190552.52359405,
+    "weighted_base_objective_after": -88190560.76238914,
+    "delta": -8.238795086741447
+   },
+   {
+    "block": "TSO|2030|Winter",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -74415870.65564108,
+    "weighted_base_objective_after": -74415871.58043003,
+    "delta": -0.9247889518737793
+   },
+   {
+    "block": "TSO|2035|Spring",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -62241440.05228033,
+    "weighted_base_objective_after": -62241449.83847224,
+    "delta": -9.786191910505295
+   },
+   {
+    "block": "TSO|2035|Summer",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -58391250.201655276,
+    "weighted_base_objective_after": -58391251.280398846,
+    "delta": -1.0787435695528984
+   },
+   {
+    "block": "TSO|2035|Autumn",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -57936970.24757471,
+    "weighted_base_objective_after": -57936971.061499044,
+    "delta": -0.8139243349432945
+   },
+   {
+    "block": "TSO|2035|Winter",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -93323301.53668112,
+    "weighted_base_objective_after": -93323302.43425082,
+    "delta": -0.8975697010755539
+   },
+   {
+    "block": "DSO5|2025|Spring",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 31451942.832653273,
+    "weighted_base_objective_after": 31451941.251086686,
+    "delta": -1.5815665870904922
+   },
+   {
+    "block": "DSO5|2025|Summer",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 41275124.51935498,
+    "weighted_base_objective_after": 41275123.3579667,
+    "delta": -1.1613882780075073
+   },
+   {
+    "block": "DSO5|2025|Autumn",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 47286606.594904974,
+    "weighted_base_objective_after": 47286606.52702549,
+    "delta": -0.06787948310375214
+   },
+   {
+    "block": "DSO5|2025|Winter",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 44956040.49449223,
+    "weighted_base_objective_after": 44956040.39338465,
+    "delta": -0.10110758244991302
+   },
+   {
+    "block": "DSO5|2030|Spring",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 31756846.143451218,
+    "weighted_base_objective_after": 31756837.05924086,
+    "delta": -9.084210358560085
+   },
+   {
+    "block": "DSO5|2030|Summer",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 40122394.14677753,
+    "weighted_base_objective_after": 40122386.227595836,
+    "delta": -7.919181697070599
+   },
+   {
+    "block": "DSO5|2030|Autumn",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 47564525.55691007,
+    "weighted_base_objective_after": 47564418.24521976,
+    "delta": -107.31169030815363
+   },
+   {
+    "block": "DSO5|2030|Winter",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 46001983.70432259,
+    "weighted_base_objective_after": 46001983.534811586,
+    "delta": -0.16951100528240204
+   },
+   {
+    "block": "DSO5|2035|Spring",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 38675834.06563746,
+    "weighted_base_objective_after": 38675389.8769464,
+    "delta": -444.1886910647154
+   },
+   {
+    "block": "DSO5|2035|Summer",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 41607866.0214115,
+    "weighted_base_objective_after": 41607856.919654004,
+    "delta": -9.101757496595383
+   },
+   {
+    "block": "DSO5|2035|Autumn",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 32941525.419508144,
+    "weighted_base_objective_after": 32941523.971858624,
+    "delta": -1.4476495198905468
+   },
+   {
+    "block": "DSO5|2035|Winter",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 49643317.57298993,
+    "weighted_base_objective_after": 49643313.87281523,
+    "delta": -3.700174704194069
+   },
+   {
+    "block": "DSO7|2025|Spring",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 25097562.740182925,
+    "weighted_base_objective_after": 25097560.65413185,
+    "delta": -2.0860510766506195
+   },
+   {
+    "block": "DSO7|2025|Summer",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 35832626.11266166,
+    "weighted_base_objective_after": 35832622.121488884,
+    "delta": -3.9911727756261826
+   },
+   {
+    "block": "DSO7|2025|Autumn",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 26341683.418804057,
+    "weighted_base_objective_after": 26341683.35057001,
+    "delta": -0.06823404878377914
+   },
+   {
+    "block": "DSO7|2025|Winter",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 33259154.190179277,
+    "weighted_base_objective_after": 33259154.156893313,
+    "delta": -0.0332859642803669
+   },
+   {
+    "block": "DSO7|2030|Spring",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 25463452.84734418,
+    "weighted_base_objective_after": 25463444.637639787,
+    "delta": -8.209704391658306
+   },
+   {
+    "block": "DSO7|2030|Summer",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 42958156.15285234,
+    "weighted_base_objective_after": 42958142.49597744,
+    "delta": -13.656874902546406
+   },
+   {
+    "block": "DSO7|2030|Autumn",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 28461251.761425354,
+    "weighted_base_objective_after": 28461205.702310447,
+    "delta": -46.059114906936884
+   },
+   {
+    "block": "DSO7|2030|Winter",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 24819590.309728798,
+    "weighted_base_objective_after": 24819590.300956536,
+    "delta": -0.008772261440753937
+   },
+   {
+    "block": "DSO7|2035|Spring",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 39498261.34443568,
+    "weighted_base_objective_after": 39497272.503242604,
+    "delta": -988.8411930724978
+   },
+   {
+    "block": "DSO7|2035|Summer",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 40555800.05265463,
+    "weighted_base_objective_after": 40555796.086755626,
+    "delta": -3.9658990055322647
+   },
+   {
+    "block": "DSO7|2035|Autumn",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 23709935.3769007,
+    "weighted_base_objective_after": 23709930.06965952,
+    "delta": -5.307241179049015
+   },
+   {
+    "block": "DSO7|2035|Winter",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 31165882.976807166,
+    "weighted_base_objective_after": 31165882.18284196,
+    "delta": -0.7939652055501938
+   },
+   {
+    "block": "DSO9|2025|Spring",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 31445231.53062608,
+    "weighted_base_objective_after": 31445230.409380212,
+    "delta": -1.1212458685040474
+   },
+   {
+    "block": "DSO9|2025|Summer",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 37434234.98931257,
+    "weighted_base_objective_after": 37434234.249272056,
+    "delta": -0.740040510892868
+   },
+   {
+    "block": "DSO9|2025|Autumn",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 52441946.93130796,
+    "weighted_base_objective_after": 52441946.93646405,
+    "delta": 0.005156092345714569
+   },
+   {
+    "block": "DSO9|2025|Winter",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 54941144.71842048,
+    "weighted_base_objective_after": 54941144.65788368,
+    "delta": -0.06053680181503296
+   },
+   {
+    "block": "DSO9|2030|Spring",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 27591946.3997746,
+    "weighted_base_objective_after": 27591934.273750704,
+    "delta": -12.126023896038532
+   },
+   {
+    "block": "DSO9|2030|Summer",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 33886321.53015208,
+    "weighted_base_objective_after": 33886301.31889711,
+    "delta": -20.211254969239235
+   },
+   {
+    "block": "DSO9|2030|Autumn",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 38591388.89079082,
+    "weighted_base_objective_after": 38591306.13456531,
+    "delta": -82.7562255114317
+   },
+   {
+    "block": "DSO9|2030|Winter",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 42254938.89640913,
+    "weighted_base_objective_after": 42254938.86419699,
+    "delta": -0.032212138175964355
+   },
+   {
+    "block": "DSO9|2035|Spring",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 35144837.828650564,
+    "weighted_base_objective_after": 35144552.71423374,
+    "delta": -285.1144168227911
+   },
+   {
+    "block": "DSO9|2035|Summer",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 34164932.496819735,
+    "weighted_base_objective_after": 34164925.932374924,
+    "delta": -6.564444810152054
+   },
+   {
+    "block": "DSO9|2035|Autumn",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 33654391.439873315,
+    "weighted_base_objective_after": 33654389.89031389,
+    "delta": -1.5495594218373299
+   },
+   {
+    "block": "DSO9|2035|Winter",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 47493143.9993132,
+    "weighted_base_objective_after": 47493142.07391449,
+    "delta": -1.9253987073898315
+   }
+  ],
+  "per_block_by_largest_abs_delta": [
+   {
+    "block": "DSO7|2035|Spring",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 39498261.34443568,
+    "weighted_base_objective_after": 39497272.503242604,
+    "delta": -988.8411930724978
+   },
+   {
+    "block": "DSO5|2035|Spring",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 38675834.06563746,
+    "weighted_base_objective_after": 38675389.8769464,
+    "delta": -444.1886910647154
+   },
+   {
+    "block": "DSO9|2035|Spring",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 35144837.828650564,
+    "weighted_base_objective_after": 35144552.71423374,
+    "delta": -285.1144168227911
+   },
+   {
+    "block": "DSO5|2030|Autumn",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 47564525.55691007,
+    "weighted_base_objective_after": 47564418.24521976,
+    "delta": -107.31169030815363
+   },
+   {
+    "block": "DSO9|2030|Autumn",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 38591388.89079082,
+    "weighted_base_objective_after": 38591306.13456531,
+    "delta": -82.7562255114317
+   },
+   {
+    "block": "DSO7|2030|Autumn",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 28461251.761425354,
+    "weighted_base_objective_after": 28461205.702310447,
+    "delta": -46.059114906936884
+   },
+   {
+    "block": "DSO9|2030|Summer",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 33886321.53015208,
+    "weighted_base_objective_after": 33886301.31889711,
+    "delta": -20.211254969239235
+   },
+   {
+    "block": "DSO7|2030|Summer",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 42958156.15285234,
+    "weighted_base_objective_after": 42958142.49597744,
+    "delta": -13.656874902546406
+   },
+   {
+    "block": "TSO|2025|Spring",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -24304094.834638495,
+    "weighted_base_objective_after": -24304106.96896557,
+    "delta": -12.134327076375484
+   },
+   {
+    "block": "DSO9|2030|Spring",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 27591946.3997746,
+    "weighted_base_objective_after": 27591934.273750704,
+    "delta": -12.126023896038532
+   },
+   {
+    "block": "TSO|2035|Spring",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -62241440.05228033,
+    "weighted_base_objective_after": -62241449.83847224,
+    "delta": -9.786191910505295
+   },
+   {
+    "block": "DSO5|2035|Summer",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 41607866.0214115,
+    "weighted_base_objective_after": 41607856.919654004,
+    "delta": -9.101757496595383
+   },
+   {
+    "block": "DSO5|2030|Spring",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 31756846.143451218,
+    "weighted_base_objective_after": 31756837.05924086,
+    "delta": -9.084210358560085
+   },
+   {
+    "block": "TSO|2030|Autumn",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -88190552.52359405,
+    "weighted_base_objective_after": -88190560.76238914,
+    "delta": -8.238795086741447
+   },
+   {
+    "block": "DSO7|2030|Spring",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 25463452.84734418,
+    "weighted_base_objective_after": 25463444.637639787,
+    "delta": -8.209704391658306
+   },
+   {
+    "block": "DSO5|2030|Summer",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 40122394.14677753,
+    "weighted_base_objective_after": 40122386.227595836,
+    "delta": -7.919181697070599
+   },
+   {
+    "block": "DSO9|2035|Summer",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 34164932.496819735,
+    "weighted_base_objective_after": 34164925.932374924,
+    "delta": -6.564444810152054
+   },
+   {
+    "block": "DSO7|2035|Autumn",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 23709935.3769007,
+    "weighted_base_objective_after": 23709930.06965952,
+    "delta": -5.307241179049015
+   },
+   {
+    "block": "DSO7|2025|Summer",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 35832626.11266166,
+    "weighted_base_objective_after": 35832622.121488884,
+    "delta": -3.9911727756261826
+   },
+   {
+    "block": "DSO7|2035|Summer",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 40555800.05265463,
+    "weighted_base_objective_after": 40555796.086755626,
+    "delta": -3.9658990055322647
+   },
+   {
+    "block": "DSO5|2035|Winter",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 49643317.57298993,
+    "weighted_base_objective_after": 49643313.87281523,
+    "delta": -3.700174704194069
+   },
+   {
+    "block": "DSO7|2025|Spring",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 25097562.740182925,
+    "weighted_base_objective_after": 25097560.65413185,
+    "delta": -2.0860510766506195
+   },
+   {
+    "block": "TSO|2025|Winter",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -50185984.58614466,
+    "weighted_base_objective_after": -50185986.5146054,
+    "delta": -1.9284607395529747
+   },
+   {
+    "block": "DSO9|2035|Winter",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 47493143.9993132,
+    "weighted_base_objective_after": 47493142.07391449,
+    "delta": -1.9253987073898315
+   },
+   {
+    "block": "DSO5|2025|Spring",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 31451942.832653273,
+    "weighted_base_objective_after": 31451941.251086686,
+    "delta": -1.5815665870904922
+   },
+   {
+    "block": "DSO9|2035|Autumn",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 33654391.439873315,
+    "weighted_base_objective_after": 33654389.89031389,
+    "delta": -1.5495594218373299
+   },
+   {
+    "block": "DSO5|2035|Autumn",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 32941525.419508144,
+    "weighted_base_objective_after": 32941523.971858624,
+    "delta": -1.4476495198905468
+   },
+   {
+    "block": "DSO5|2025|Summer",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 41275124.51935498,
+    "weighted_base_objective_after": 41275123.3579667,
+    "delta": -1.1613882780075073
+   },
+   {
+    "block": "DSO9|2025|Spring",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 31445231.53062608,
+    "weighted_base_objective_after": 31445230.409380212,
+    "delta": -1.1212458685040474
+   },
+   {
+    "block": "TSO|2035|Summer",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -58391250.201655276,
+    "weighted_base_objective_after": -58391251.280398846,
+    "delta": -1.0787435695528984
+   },
+   {
+    "block": "TSO|2030|Winter",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -74415870.65564108,
+    "weighted_base_objective_after": -74415871.58043003,
+    "delta": -0.9247889518737793
+   },
+   {
+    "block": "TSO|2035|Winter",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -93323301.53668112,
+    "weighted_base_objective_after": -93323302.43425082,
+    "delta": -0.8975697010755539
+   },
+   {
+    "block": "TSO|2035|Autumn",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -57936970.24757471,
+    "weighted_base_objective_after": -57936971.061499044,
+    "delta": -0.8139243349432945
+   },
+   {
+    "block": "DSO7|2035|Winter",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 31165882.976807166,
+    "weighted_base_objective_after": 31165882.18284196,
+    "delta": -0.7939652055501938
+   },
+   {
+    "block": "DSO9|2025|Summer",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 37434234.98931257,
+    "weighted_base_objective_after": 37434234.249272056,
+    "delta": -0.740040510892868
+   },
+   {
+    "block": "TSO|2025|Summer",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -32651045.939693294,
+    "weighted_base_objective_after": -32651046.551244672,
+    "delta": -0.6115513779222965
+   },
+   {
+    "block": "TSO|2025|Autumn",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -49194273.98055847,
+    "weighted_base_objective_after": -49194274.44109314,
+    "delta": -0.4605346694588661
+   },
+   {
+    "block": "TSO|2030|Summer",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -57340609.788619846,
+    "weighted_base_objective_after": -57340610.152258396,
+    "delta": -0.3636385500431061
+   },
+   {
+    "block": "TSO|2030|Spring",
+    "agent": "TSO",
+    "solved": true,
+    "weighted_base_objective_before": -39358854.39379382,
+    "weighted_base_objective_after": -39358854.62083182,
+    "delta": -0.22703799605369568
+   },
+   {
+    "block": "DSO5|2030|Winter",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 46001983.70432259,
+    "weighted_base_objective_after": 46001983.534811586,
+    "delta": -0.16951100528240204
+   },
+   {
+    "block": "DSO5|2025|Winter",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 44956040.49449223,
+    "weighted_base_objective_after": 44956040.39338465,
+    "delta": -0.10110758244991302
+   },
+   {
+    "block": "DSO7|2025|Autumn",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 26341683.418804057,
+    "weighted_base_objective_after": 26341683.35057001,
+    "delta": -0.06823404878377914
+   },
+   {
+    "block": "DSO5|2025|Autumn",
+    "agent": "DSO5",
+    "solved": true,
+    "weighted_base_objective_before": 47286606.594904974,
+    "weighted_base_objective_after": 47286606.52702549,
+    "delta": -0.06787948310375214
+   },
+   {
+    "block": "DSO9|2025|Winter",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 54941144.71842048,
+    "weighted_base_objective_after": 54941144.65788368,
+    "delta": -0.06053680181503296
+   },
+   {
+    "block": "DSO7|2025|Winter",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 33259154.190179277,
+    "weighted_base_objective_after": 33259154.156893313,
+    "delta": -0.0332859642803669
+   },
+   {
+    "block": "DSO9|2030|Winter",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 42254938.89640913,
+    "weighted_base_objective_after": 42254938.86419699,
+    "delta": -0.032212138175964355
+   },
+   {
+    "block": "DSO7|2030|Winter",
+    "agent": "DSO7",
+    "solved": true,
+    "weighted_base_objective_before": 24819590.309728798,
+    "weighted_base_objective_after": 24819590.300956536,
+    "delta": -0.008772261440753937
+   },
+   {
+    "block": "DSO9|2025|Autumn",
+    "agent": "DSO9",
+    "solved": true,
+    "weighted_base_objective_before": 52441946.93130796,
+    "weighted_base_objective_after": 52441946.93646405,
+    "delta": 0.005156092345714569
+   }
+  ],
+  "hull_bounds_active_by_channel": {
+   "V": 464,
+   "ESS_Q": 1505,
+   "PF_P": 496,
+   "ESS_P": 328,
+   "PF_Q": 422
+  },
+  "hull_bounds_total_by_channel": {
+   "V": 1728,
+   "PF_P": 1728,
+   "PF_Q": 1728,
+   "ESS_P": 1728,
+   "ESS_Q": 1728
+  },
+  "hull_active_rel_tol": 1e-09,
+  "n_hull_descriptors": 8640,
+  "solve_profile": {
+   "observed": {
+    "permitted_solve": 48,
+    "permitted_exec": 48,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "n_blocks_dispatched": 48,
+   "retries_beyond_one_per_block": 0,
+   "blocked_calls": 0
+  },
+  "gate": {
+   "gate_quantity": "Delta = sum over the 48 blocks of [f_i(polished) - f_i(certified)] (weighted base objectives)",
+   "denominator": "certified gross_operational_cost (settlement-excluded; the oracle cost convention)",
+   "delta_sum_blocks": -2108.518084205687,
+   "tso_delta": -37.46556396409869,
+   "dso_delta": -2071.0525202415884,
+   "delta_sign_as_expected_le_0": true,
+   "certified_cost": 651918540.6013606,
+   "max_abs_delta_block": {
+    "block": "DSO7|2035|Spring",
+    "delta": -988.8411930724978
+   },
+   "relative_pct": 0.0003234327531566582,
+   "threshold_pct": 0.1,
+   "pass": true,
+   "reconciliation_sum_f_before_vs_gross_including_settlement": {
+    "sum_f_before": 651957575.2669663,
+    "gross_including_settlement_before": 651957575.2669661,
+    "abs_diff": 2.384185791015625e-07
+   },
+   "reported_not_gated": {
+    "gross_operational_cost_before": 651918540.6013606,
+    "gross_operational_cost_after": 651930761.648346,
+    "gross_operational_cost_change_settlement_excluded": 12221.046985387802,
+    "gross_including_settlement_change": -2108.5180842876434,
+    "interface_settlement_total_before": 39034.665605545044,
+    "interface_settlement_total_after": 24705.1005358696
+   }
+  },
+  "runtime_s": 27.25127911567688
+ },
+ "hull_bound_detail_path": "data/SRP1/Results/P515S44/campaign_s44_selection_aa/evals/0796b6dceeb0f95f_node7_empty_aa_keep_memory/hull_bound_detail.json",
+ "runtime_s": 36.15548896789551,
+ "production_peak_rss_before_step": 2494611456,
+ "process_ru_maxrss_after_step": 3568123904
+}

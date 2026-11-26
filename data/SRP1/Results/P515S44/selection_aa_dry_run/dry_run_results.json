@@ -1,0 +1,782 @@
+{
+ "stage": "P5.15 Addendum 25 item 3 -- selection run AA arm: ZERO-SOLVE DRY RUN of the campaign script",
+ "mode": "dry_run",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 25 (selection run)",
+  "data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json item3_selection_run",
+  "campaign_s44_aa_variant (d178c5c6): item-2 choice -> AA keep_memory variant"
+ ],
+ "timestamp_utc": "2026-09-19T14:19:49.827704+00:00",
+ "real_campaign_root": "data/SRP1/Results/P515S44/campaign_s44_selection_aa",
+ "dry_run_spec_path": "data/SRP1/Results/P515S44/selection_aa_dry_run/campaign_spec_s44_selection_aa_075e33ef.json",
+ "dry_run_spec_sha256": "075e33ef941f6c797f09ffa4ac503a07cc09f0228bf9d8312f32d0eafaeb46b9",
+ "dry_run_spec_note": "same campaign id, candidates, overrides, post-certification requests, cap and concurrency as the real launch; differs in frozen_utc, git_head and extra.mode, so the real spec will have a different sha256",
+ "campaign_preconditions_failures": [],
+ "reference_verification": {
+  "D@C_star": {
+   "name": "D@C_star",
+   "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star",
+   "candidate": "C_star",
+   "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "record_candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "record_schema": "p515_s44_evaluation_record_v1",
+   "certification_cycle": 139,
+   "certified_cost_gross": 650966975.2943751,
+   "overrides": {},
+   "evaluation_record_sha256": "f7722fc44a2785f1d085dbc2f72703bc0962d06cf9a3796dbd4bce89d9ed7870",
+   "component_levels_terminal_sha256": "ff9050bb1759cff14f9d4e94d7e095b7a9b7fc3fa7ca8439f2a9ed5c0aa0444d",
+   "checks": {
+    "canonical_equal": true,
+    "candidate_key_equal": true,
+    "record_key_recomputed_from_its_canonical": true,
+    "certified": true,
+    "certification_cycle_as_committed": true,
+    "certified_cost_as_committed": true,
+    "component_levels_gross_equals_certified_cost": true,
+    "configuration_as_expected": true
+   },
+   "ok": true
+  },
+  "D@paper_plan": {
+   "name": "D@paper_plan",
+   "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/d1a02e67107d0bac_paper_plan",
+   "candidate": "paper_plan",
+   "candidate_key": "d1a02e67107d0bace5f3de92e28df61f2f6be93f6c9d7020a68efffc6d836c0c",
+   "record_candidate_key": "d1a02e67107d0bace5f3de92e28df61f2f6be93f6c9d7020a68efffc6d836c0c",
+   "record_schema": "p515_s44_evaluation_record_v1",
+   "certification_cycle": 139,
+   "certified_cost_gross": 653029766.9858261,
+   "overrides": {},
+   "evaluation_record_sha256": "36d9bf6bda46de65450060d15262362b4372bbabcaf1f13c80fc135de31e5da5",
+   "component_levels_terminal_sha256": "6e5d2fccfaf751a22feded918e176ad2f960702c2d705ce94838bda341573319",
+   "checks": {
+    "canonical_equal": true,
+    "candidate_key_equal": true,
+    "record_key_recomputed_from_its_canonical": true,
+    "certified": true,
+    "certification_cycle_as_committed": true,
+    "certified_cost_as_committed": true,
+    "component_levels_gross_equals_certified_cost": true,
+    "configuration_as_expected": true
+   },
+   "ok": true
+  },
+  "D@node7_empty": {
+   "name": "D@node7_empty",
+   "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/e30704e6e4dd3765_node7_empty",
+   "candidate": "node7_empty",
+   "candidate_key": "e30704e6e4dd3765d2cc8960d5a3d48c5adb362bc6fd067dda567f14086b46b5",
+   "record_candidate_key": "e30704e6e4dd3765d2cc8960d5a3d48c5adb362bc6fd067dda567f14086b46b5",
+   "record_schema": "p515_s44_evaluation_record_v1",
+   "certification_cycle": 136,
+   "certified_cost_gross": 651900014.159667,
+   "overrides": {},
+   "evaluation_record_sha256": "02f5a1b2ff7818afaeee2dc200e6d21d784a7959c3563bca2cf02d526f7ed7a4",
+   "component_levels_terminal_sha256": "f4e74af099b4940928fd2c024800804ad9fc0cba57da40aab76d2d7dd53c28d4",
+   "checks": {
+    "canonical_equal": true,
+    "candidate_key_equal": true,
+    "record_key_recomputed_from_its_canonical": true,
+    "certified": true,
+    "certification_cycle_as_committed": true,
+    "certified_cost_as_committed": true,
+    "component_levels_gross_equals_certified_cost": true,
+    "configuration_as_expected": true
+   },
+   "ok": true
+  },
+  "D@two_c_star": {
+   "name": "D@two_c_star",
+   "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/4e53fa5560bbfa10_two_c_star_d",
+   "candidate": "two_c_star",
+   "candidate_key": "4e53fa5560bbfa101c5ce8da78776179b92b0d817c42d04dd7330b077ab8c41c",
+   "record_candidate_key": "4e53fa5560bbfa101c5ce8da78776179b92b0d817c42d04dd7330b077ab8c41c",
+   "record_schema": "p515_s44_evaluation_record_v2",
+   "certification_cycle": 187,
+   "certified_cost_gross": 648138276.7714801,
+   "overrides": {},
+   "evaluation_record_sha256": "44c9538537a25076894d728b08a8052267d92290cbdfc579e9a40bac2263da2e",
+   "component_levels_terminal_sha256": "53817e7703aa9d4c15d6b4973f1a9e2b5bb531c7e9da171665000fd5c776d8de",
+   "checks": {
+    "canonical_equal": true,
+    "candidate_key_equal": true,
+    "record_key_recomputed_from_its_canonical": true,
+    "certified": true,
+    "certification_cycle_as_committed": true,
+    "certified_cost_as_committed": true,
+    "component_levels_gross_equals_certified_cost": true,
+    "configuration_as_expected": true
+   },
+   "ok": true
+  },
+  "AA@C_star": {
+   "name": "AA@C_star",
+   "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory",
+   "candidate": "C_star",
+   "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "record_candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "record_schema": "p515_s44_evaluation_record_v2",
+   "certification_cycle": 107,
+   "certified_cost_gross": 650982939.9389359,
+   "overrides": {
+    "anderson_acceleration": {
+     "enabled": true,
+     "reject_policy": "keep_memory"
+    }
+   },
+   "evaluation_record_sha256": "6e90d4424df3405b0cc066bba1f57c28666a1524e5cdcc62890c6e6a74e69a4f",
+   "component_levels_terminal_sha256": "8452f6261b1bf1fe84d4dfd8a177fa8f4145ade4c042a4904a29d4483a745782",
+   "checks": {
+    "canonical_equal": true,
+    "candidate_key_equal": true,
+    "record_key_recomputed_from_its_canonical": true,
+    "certified": true,
+    "certification_cycle_as_committed": true,
+    "certified_cost_as_committed": true,
+    "component_levels_gross_equals_certified_cost": true,
+    "configuration_as_expected": true
+   },
+   "ok": true
+  }
+ },
+ "reference_problems": [],
+ "spec_entry_checks": {
+  "paper_plan_aa_keep_memory": {
+   "entry_present": true,
+   "canonical_equal": true,
+   "candidate_key_equal_reference": true,
+   "overrides_pass_allow_list_and_equal": true,
+   "eval_key_is_override_key": true,
+   "eval_dir": "8e48f3ec8993a283_paper_plan_aa_keep_memory",
+   "persist_and_polish_requested": true,
+   "reference_eval_dir": true,
+   "reference_hashes_equal_pinned": true,
+   "reference_certified_cost_equal": true,
+   "reference_certification_cycle_equal": true,
+   "reference_configuration_overrides_empty": true,
+   "reference_unchanged_child_side_check": true
+  },
+  "node7_empty_aa_keep_memory": {
+   "entry_present": true,
+   "canonical_equal": true,
+   "candidate_key_equal_reference": true,
+   "overrides_pass_allow_list_and_equal": true,
+   "eval_key_is_override_key": true,
+   "eval_dir": "0796b6dceeb0f95f_node7_empty_aa_keep_memory",
+   "persist_and_polish_requested": true,
+   "reference_eval_dir": true,
+   "reference_hashes_equal_pinned": true,
+   "reference_certified_cost_equal": true,
+   "reference_certification_cycle_equal": true,
+   "reference_configuration_overrides_empty": true,
+   "reference_unchanged_child_side_check": true
+  },
+  "two_c_star_aa_keep_memory": {
+   "entry_present": true,
+   "canonical_equal": true,
+   "candidate_key_equal_reference": true,
+   "overrides_pass_allow_list_and_equal": true,
+   "eval_key_is_override_key": true,
+   "eval_dir": "a6ca6c94e033e460_two_c_star_aa_keep_memory",
+   "persist_and_polish_requested": true,
+   "reference_eval_dir": true,
+   "reference_hashes_equal_pinned": true,
+   "reference_certified_cost_equal": true,
+   "reference_certification_cycle_equal": true,
+   "reference_configuration_overrides_empty": true,
+   "reference_unchanged_child_side_check": true
+  }
+ },
+ "adoption_computation_preview_c_star_only": {
+  "rule": "spec v14 item3: AA-on adopted ONLY IF it certifies in fewer cycles than D at all four candidates AND passes (b)-(d) at each, band 1.5e-4 relative to D's cost at the SAME candidate; otherwise D",
+  "per_candidate": {
+   "C_star": {
+    "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+    "candidate_canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.96875,
+       3.875
+      ],
+      "7": [
+       0.96875,
+       3.875
+      ],
+      "9": [
+       0.96875,
+       3.875
+      ]
+     }
+    },
+    "D": {
+     "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star",
+     "status": "certified",
+     "certification_cycle": 139,
+     "certified_cost_gross": 650966975.2943751,
+     "storage_per_node": {
+      "5": {
+       "s_mva": 0.96875,
+       "e_mwh": 3.875,
+       "has_storage": true,
+       "efc_per_day_max": 1.129771945084693,
+       "efc_per_day_per_cohort_year": {
+        "(0, 0)": 1.129771945084693,
+        "(0, 1)": 0.9662898478900557,
+        "(0, 2)": 0.7795951811744287
+       },
+       "terminal_soh_per_active_cohort_year": {
+        "(0, 0)": 0.8364033671775128,
+        "(0, 1)": 0.7178905956071796,
+        "(0, 2)": 0.6346313752053337
+       },
+       "terminal_soh_min_over_active_cohort_years": 0.6346313752053337
+      },
+      "7": {
+       "s_mva": 0.96875,
+       "e_mwh": 3.875,
+       "has_storage": true,
+       "efc_per_day_max": 1.1335381186764042,
+       "efc_per_day_per_cohort_year": {
+        "(0, 0)": 1.1335381186764042,
+        "(0, 1)": 0.9677593102854039,
+        "(0, 2)": 0.7858010701439064
+       },
+       "terminal_soh_per_active_cohort_year": {
+        "(0, 0)": 0.8359054178624543,
+        "(0, 1)": 0.717296513747456,
+        "(0, 2)": 0.6334842495458604
+       },
+       "terminal_soh_min_over_active_cohort_years": 0.6334842495458604
+      },
+      "9": {
+       "s_mva": 0.96875,
+       "e_mwh": 3.875,
+       "has_storage": true,
+       "efc_per_day_max": 1.1318601751179502,
+       "efc_per_day_per_cohort_year": {
+        "(0, 0)": 1.1318601751179502,
+        "(0, 1)": 0.9674725477766345,
+        "(0, 2)": 0.7814515404035547
+       },
+       "terminal_soh_per_active_cohort_year": {
+        "(0, 0)": 0.836127232625031,
+        "(0, 1)": 0.7175193891349784,
+        "(0, 2)": 0.6341170572906316
+       },
+       "terminal_soh_min_over_active_cohort_years": 0.6341170572906316
+      }
+     },
+     "peak_rss": {
+      "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+      "child_python_process_ru_maxrss": 2345844736,
+      "production_state_peak_rss_ru_maxrss": 2345844736,
+      "solver_subprocesses_max_ru_maxrss": 52756480,
+      "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched"
+     },
+     "wall_time_s": {
+      "child_process_s": 4680.617321014404,
+      "run_admm_arm_s": 4666.193145036697,
+      "run_admm_arm_reported_wall_clock_s": 4665.239454984665
+     }
+    },
+    "AA": {
+     "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory",
+     "eval_key": "837fc982565dbba32241ed21a46da14984395006e3dbb4b03d5f72b9b72c50a7",
+     "status": "certified",
+     "certification_cycle": 107,
+     "certified_cost_gross": 650982939.9389359,
+     "overrides": {
+      "anderson_acceleration": {
+       "enabled": true,
+       "reject_policy": "keep_memory"
+      }
+     },
+     "storage_per_node": {
+      "5": {
+       "s_mva": 0.96875,
+       "e_mwh": 3.875,
+       "has_storage": true,
+       "efc_per_day_max": 1.1259319657327935,
+       "efc_per_day_per_cohort_year": {
+        "(0, 0)": 1.1259319657327935,
+        "(0, 1)": 0.9566846458878706,
+        "(0, 2)": 0.7648143772766601
+       },
+       "terminal_soh_per_active_cohort_year": {
+        "(0, 0)": 0.8369113802192069,
+        "(0, 1)": 0.7194184607053425,
+        "(0, 2)": 0.6374701995883938
+       },
+       "terminal_soh_min_over_active_cohort_years": 0.6374701995883938
+      },
+      "7": {
+       "s_mva": 0.96875,
+       "e_mwh": 3.875,
+       "has_storage": true,
+       "efc_per_day_max": 1.129740846330087,
+       "efc_per_day_per_cohort_year": {
+        "(0, 0)": 1.129740846330087,
+        "(0, 1)": 0.9580672979229334,
+        "(0, 2)": 0.7697011799581477
+       },
+       "terminal_soh_per_active_cohort_year": {
+        "(0, 0)": 0.836407480172607,
+        "(0, 1)": 0.7188281274308553,
+        "(0, 2)": 0.6364551178213349
+       },
+       "terminal_soh_min_over_active_cohort_years": 0.6364551178213349
+      },
+      "9": {
+       "s_mva": 0.96875,
+       "e_mwh": 3.875,
+       "has_storage": true,
+       "efc_per_day_max": 1.1281765369292902,
+       "efc_per_day_per_cohort_year": {
+        "(0, 0)": 1.1281765369292902,
+        "(0, 1)": 0.9580105754291035,
+        "(0, 2)": 0.7659241341236948
+       },
+       "terminal_soh_per_active_cohort_year": {
+        "(0, 0)": 0.8366143954796222,
+        "(0, 1)": 0.7190124042155752,
+        "(0, 2)": 0.6369986066504834
+       },
+       "terminal_soh_min_over_active_cohort_years": 0.6369986066504834
+      }
+     },
+     "gates_b_c_d": {
+      "post_certification_status": "evaluated",
+      "b": true,
+      "c": true,
+      "d": true,
+      "gate_b": {
+       "abs_diff": 15964.644560813904,
+       "abs_tolerance": 97645.04629415624,
+       "reference_certified_cost": 650966975.2943751,
+       "pass": true
+      },
+      "gate_c": {
+       "headline_diff_AA_minus_D": 15964.644560813904,
+       "dominant_two_diff": 15964.644634366035,
+       "unaccounted_residual": -8.794086170382798e-08,
+       "other_priced_components_nonzero": [],
+       "reconciles": true
+      },
+      "gate_d": {
+       "blocks_solved": 48,
+       "n_blocks": 48,
+       "relative_pct": 0.000251548202285187,
+       "threshold_pct": 0.1,
+       "settlement_excluded_change": 9128.456514120102,
+       "settlement_remainder_before": 26195.5495057106,
+       "settlement_remainder_after": 15429.55710887909,
+       "hull_bounds_non_degenerate_by_channel": {
+        "V": {
+         "total": 1728,
+         "degenerate": 0,
+         "non_degenerate": 1728,
+         "active_non_degenerate": 516
+        },
+        "PF_P": {
+         "total": 1728,
+         "degenerate": 0,
+         "non_degenerate": 1728,
+         "active_non_degenerate": 492
+        },
+        "PF_Q": {
+         "total": 1728,
+         "degenerate": 0,
+         "non_degenerate": 1728,
+         "active_non_degenerate": 201
+        },
+        "ESS_P": {
+         "total": 1728,
+         "degenerate": 0,
+         "non_degenerate": 1728,
+         "active_non_degenerate": 24
+        },
+        "ESS_Q": {
+         "total": 1728,
+         "degenerate": 0,
+         "non_degenerate": 1728,
+         "active_non_degenerate": 1418
+        }
+       },
+       "pass": true
+      }
+     },
+     "aa_per_cycle_action_counts": {
+      "insufficient memory (m_k=0)": 6,
+      "accepted": 46,
+      "rejected (safeguard; memory retained)": 45,
+      "off (all channels within Boyd tolerance)": 10
+     },
+     "peak_rss": {
+      "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+      "child_python_process_ru_maxrss": 3386720256,
+      "production_state_peak_rss_ru_maxrss": 2467315712,
+      "solver_subprocesses_max_ru_maxrss": 55476224,
+      "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+     },
+     "wall_time_s": {
+      "child_process_s": 3631.326085805893,
+      "run_admm_arm_s": 3617.2052030563354,
+      "run_admm_arm_reported_wall_clock_s": 3580.0612659454346
+     }
+    },
+    "aa_fewer_cycles_than_d": true,
+    "aa_b_c_d_pass": true,
+    "objective_convention": "gross_operational_cost, settlement-excluded"
+   },
+   "paper_plan": {
+    "candidate_key": "d1a02e67107d0bace5f3de92e28df61f2f6be93f6c9d7020a68efffc6d836c0c",
+    "candidate_canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       1.62,
+       3.24
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "D": {
+     "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/d1a02e67107d0bac_paper_plan",
+     "status": "certified",
+     "certification_cycle": 139,
+     "certified_cost_gross": 653029766.9858261,
+     "storage_per_node": {
+      "5": {
+       "s_mva": 0.0,
+       "e_mwh": 0.0,
+       "has_storage": false,
+       "efc_per_day_max": null,
+       "efc_per_day_per_cohort_year": {},
+       "terminal_soh_per_active_cohort_year": {},
+       "terminal_soh_min_over_active_cohort_years": null
+      },
+      "7": {
+       "s_mva": 1.62,
+       "e_mwh": 3.24,
+       "has_storage": true,
+       "efc_per_day_max": 1.2361382802872338,
+       "efc_per_day_per_cohort_year": {
+        "(0, 0)": 1.2361382802872338,
+        "(0, 1)": 0.978953259222216,
+        "(0, 2)": 0.8227353771789971
+       },
+       "terminal_soh_per_active_cohort_year": {
+        "(0, 0)": 0.8224534634304139,
+        "(0, 1)": 0.7045051913224573,
+        "(0, 2)": 0.6185644105333844
+       },
+       "terminal_soh_min_over_active_cohort_years": 0.6185644105333844
+      },
+      "9": {
+       "s_mva": 0.0,
+       "e_mwh": 0.0,
+       "has_storage": false,
+       "efc_per_day_max": null,
+       "efc_per_day_per_cohort_year": {},
+       "terminal_soh_per_active_cohort_year": {},
+       "terminal_soh_min_over_active_cohort_years": null
+      }
+     },
+     "peak_rss": {
+      "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+      "child_python_process_ru_maxrss": 2376548352,
+      "production_state_peak_rss_ru_maxrss": 2376548352,
+      "solver_subprocesses_max_ru_maxrss": 55820288,
+      "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched"
+     },
+     "wall_time_s": {
+      "child_process_s": 4143.51242184639,
+      "run_admm_arm_s": 4129.100588083267,
+      "run_admm_arm_reported_wall_clock_s": 4128.062694787979
+     }
+    },
+    "AA": {
+     "eval_dir": null,
+     "eval_key": null,
+     "status": null,
+     "certification_cycle": null,
+     "certified_cost_gross": null,
+     "overrides": null,
+     "storage_per_node": {},
+     "gates_b_c_d": {
+      "post_certification_status": null,
+      "b": null,
+      "c": null,
+      "d": null,
+      "gate_b": null,
+      "gate_c": null,
+      "gate_d": null
+     },
+     "aa_per_cycle_action_counts": null,
+     "peak_rss": null,
+     "wall_time_s": null
+    },
+    "aa_fewer_cycles_than_d": false,
+    "aa_b_c_d_pass": false,
+    "objective_convention": "gross_operational_cost, settlement-excluded"
+   },
+   "node7_empty": {
+    "candidate_key": "e30704e6e4dd3765d2cc8960d5a3d48c5adb362bc6fd067dda567f14086b46b5",
+    "candidate_canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.96875,
+       3.875
+      ],
+      "7": [
+       0.0,
+       0.0
+      ],
+      "9": [
+       0.96875,
+       3.875
+      ]
+     }
+    },
+    "D": {
+     "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/e30704e6e4dd3765_node7_empty",
+     "status": "certified",
+     "certification_cycle": 136,
+     "certified_cost_gross": 651900014.159667,
+     "storage_per_node": {
+      "5": {
+       "s_mva": 0.96875,
+       "e_mwh": 3.875,
+       "has_storage": true,
+       "efc_per_day_max": 1.1290869409695776,
+       "efc_per_day_per_cohort_year": {
+        "(0, 0)": 1.1290869409695776,
+        "(0, 1)": 0.9794353720933593,
+        "(0, 2)": 0.7758529707873867
+       },
+       "terminal_soh_per_active_cohort_year": {
+        "(0, 0)": 0.8364939677238381,
+        "(0, 1)": 0.7164775213014812,
+        "(0, 2)": 0.6337570905521863
+       },
+       "terminal_soh_min_over_active_cohort_years": 0.6337570905521863
+      },
+      "7": {
+       "s_mva": 0.0,
+       "e_mwh": 0.0,
+       "has_storage": false,
+       "efc_per_day_max": null,
+       "efc_per_day_per_cohort_year": {},
+       "terminal_soh_per_active_cohort_year": {},
+       "terminal_soh_min_over_active_cohort_years": null
+      },
+      "9": {
+       "s_mva": 0.96875,
+       "e_mwh": 3.875,
+       "has_storage": true,
+       "efc_per_day_max": 1.1310617852269607,
+       "efc_per_day_per_cohort_year": {
+        "(0, 0)": 1.1310617852269607,
+        "(0, 1)": 0.9806179920082345,
+        "(0, 2)": 0.7775837352552489
+       },
+       "terminal_soh_per_active_cohort_year": {
+        "(0, 0)": 0.8362327959728559,
+        "(0, 1)": 0.7161198937803186,
+        "(0, 2)": 0.6332674190243834
+       },
+       "terminal_soh_min_over_active_cohort_years": 0.6332674190243834
+      }
+     },
+     "peak_rss": {
+      "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+      "child_python_process_ru_maxrss": 2383642624,
+      "production_state_peak_rss_ru_maxrss": 2383642624,
+      "solver_subprocesses_max_ru_maxrss": 57442304,
+      "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched"
+     },
+     "wall_time_s": {
+      "child_process_s": 4297.921983957291,
+      "run_admm_arm_s": 4283.509649753571,
+      "run_admm_arm_reported_wall_clock_s": 4282.505534887314
+     }
+    },
+    "AA": {
+     "eval_dir": null,
+     "eval_key": null,
+     "status": null,
+     "certification_cycle": null,
+     "certified_cost_gross": null,
+     "overrides": null,
+     "storage_per_node": {},
+     "gates_b_c_d": {
+      "post_certification_status": null,
+      "b": null,
+      "c": null,
+      "d": null,
+      "gate_b": null,
+      "gate_c": null,
+      "gate_d": null
+     },
+     "aa_per_cycle_action_counts": null,
+     "peak_rss": null,
+     "wall_time_s": null
+    },
+    "aa_fewer_cycles_than_d": false,
+    "aa_b_c_d_pass": false,
+    "objective_convention": "gross_operational_cost, settlement-excluded"
+   },
+   "two_c_star": {
+    "candidate_key": "4e53fa5560bbfa101c5ce8da78776179b92b0d817c42d04dd7330b077ab8c41c",
+    "candidate_canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       1.9375,
+       7.75
+      ],
+      "7": [
+       1.9375,
+       7.75
+      ],
+      "9": [
+       1.9375,
+       7.75
+      ]
+     }
+    },
+    "D": {
+     "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/4e53fa5560bbfa10_two_c_star_d",
+     "status": "certified",
+     "certification_cycle": 187,
+     "certified_cost_gross": 648138276.7714801,
+     "storage_per_node": {
+      "5": {
+       "s_mva": 1.9375,
+       "e_mwh": 7.75,
+       "has_storage": true,
+       "efc_per_day_max": 1.1278610301379497,
+       "efc_per_day_per_cohort_year": {
+        "(0, 0)": 1.1278610301379497,
+        "(0, 1)": 0.9501372031586699,
+        "(0, 2)": 0.7713847297323556
+       },
+       "terminal_soh_per_active_cohort_year": {
+        "(0, 0)": 0.8366561345702662,
+        "(0, 1)": 0.7199440275452115,
+        "(0, 2)": 0.6372734718577522
+       },
+       "terminal_soh_min_over_active_cohort_years": 0.6372734718577522
+      },
+      "7": {
+       "s_mva": 1.9375,
+       "e_mwh": 7.75,
+       "has_storage": true,
+       "efc_per_day_max": 1.1318017079708493,
+       "efc_per_day_per_cohort_year": {
+        "(0, 0)": 1.1318017079708493,
+        "(0, 1)": 0.9511751209646775,
+        "(0, 2)": 0.7696663230857642
+       },
+       "terminal_soh_per_active_cohort_year": {
+        "(0, 0)": 0.8361349627163711,
+        "(0, 1)": 0.7193774844625825,
+        "(0, 2)": 0.6369450327741404
+       },
+       "terminal_soh_min_over_active_cohort_years": 0.6369450327741404
+      },
+      "9": {
+       "s_mva": 1.9375,
+       "e_mwh": 7.75,
+       "has_storage": true,
+       "efc_per_day_max": 1.1299623925753741,
+       "efc_per_day_per_cohort_year": {
+        "(0, 0)": 1.1299623925753741,
+        "(0, 1)": 0.9509428721837563,
+        "(0, 2)": 0.773192259099563
+       },
+       "terminal_soh_per_active_cohort_year": {
+        "(0, 0)": 0.8363781797854982,
+        "(0, 1)": 0.7196131654684966,
+        "(0, 2)": 0.6367985703493542
+       },
+       "terminal_soh_min_over_active_cohort_years": 0.6367985703493542
+      }
+     },
+     "peak_rss": {
+      "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+      "child_python_process_ru_maxrss": 3467214848,
+      "production_state_peak_rss_ru_maxrss": 2438971392,
+      "solver_subprocesses_max_ru_maxrss": 56770560,
+      "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+     },
+     "wall_time_s": {
+      "child_process_s": 5814.709722042084,
+      "run_admm_arm_s": 5800.483010053635,
+      "run_admm_arm_reported_wall_clock_s": 5763.8323011398315
+     }
+    },
+    "AA": {
+     "eval_dir": null,
+     "eval_key": null,
+     "status": null,
+     "certification_cycle": null,
+     "certified_cost_gross": null,
+     "overrides": null,
+     "storage_per_node": {},
+     "gates_b_c_d": {
+      "post_certification_status": null,
+      "b": null,
+      "c": null,
+      "d": null,
+      "gate_b": null,
+      "gate_c": null,
+      "gate_d": null
+     },
+     "aa_per_cycle_action_counts": null,
+     "peak_rss": null,
+     "wall_time_s": null
+    },
+    "aa_fewer_cycles_than_d": false,
+    "aa_b_c_d_pass": false,
+    "objective_convention": "gross_operational_cost, settlement-excluded"
+   }
+  },
+  "candidates_failing_the_rule": [
+   "paper_plan",
+   "node7_empty",
+   "two_c_star"
+  ],
+  "mechanical_reading": "D (AA not adopted)",
+  "note": "reported for the Planner; the ruling is the Planner's"
+ },
+ "checks": {
+  "campaign_preconditions_pass": true,
+  "references_verified": true,
+  "spec_entries_verified": true,
+  "three_entries_concurrency_3_cap_500": true,
+  "parent_guard_zero_solves": true,
+  "real_campaign_root_absent": true,
+  "campaign_lock_absent": true,
+  "legacy_lock_absent": true
+ },
+ "parent_solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "wall_clock_s": 0.17882108688354492
+}

@@ -1,0 +1,155 @@
+{
+ "stage": "P5.15 Addendum 24 item 1 -- exact-fix rerun harness zero-solve checks",
+ "authority": [
+  "data/SRP1/Results/P515S42/frozen_s42_helper_aa_spec_v13_2cab76e8.json"
+ ],
+ "timestamp_utc": "2026-09-18T17:58:46.709731+00:00",
+ "checks": {
+  "parse_ipopt_log_tail_failing": {
+   "parsed": {
+    "log_path": "data/SRP1/Results/P515S42/exact_fix_rerun_checks/_synthetic_failing.log",
+    "found": true,
+    "iterations": 50,
+    "constraint_violation_unscaled": 0.3229922395819971,
+    "exit_message": "Converged to a point of local infeasibility. Problem may be infeasible."
+   },
+   "expected_iterations": 50,
+   "expected_violation": 0.3229922395819971,
+   "expected_exit_substring": "local infeasibility",
+   "pass": true
+  },
+  "parse_ipopt_log_tail_success": {
+   "parsed": {
+    "log_path": "data/SRP1/Results/P515S42/exact_fix_rerun_checks/_synthetic_success.log",
+    "found": true,
+    "iterations": 42,
+    "constraint_violation_unscaled": 1.4589942587406313e-09,
+    "exit_message": "Optimal Solution Found."
+   },
+   "expected_iterations": 42,
+   "expected_violation": 1.4589942587406313e-09,
+   "expected_exit": "Optimal Solution Found.",
+   "pass": true
+  },
+  "parse_ipopt_log_tail_missing_file": {
+   "parsed": {
+    "log_path": "data/SRP1/Results/P515S42/exact_fix_rerun_checks/does_not_exist.log",
+    "found": false,
+    "iterations": null,
+    "constraint_violation_unscaled": null,
+    "exit_message": null
+   },
+   "pass": true
+  },
+  "classify_final_attempt": {
+   "no_retry": {
+    "got": [
+     null,
+     "primary"
+    ],
+    "expected": [
+     null,
+     "primary"
+    ],
+    "pass": true
+   },
+   "tier1_ok": {
+    "got": [
+     "recovery",
+     "tier-1 cold recovery"
+    ],
+    "expected": [
+     "recovery",
+     "tier-1 cold recovery"
+    ],
+    "pass": true
+   },
+   "tier1_failed": {
+    "got": [
+     "recovery",
+     "tier-1 cold recovery"
+    ],
+    "expected": [
+     "recovery",
+     "tier-1 cold recovery"
+    ],
+    "pass": true
+   },
+   "tier2_ok": {
+    "got": [
+     "recovery_tier2",
+     "tier-2 cold+adaptive recovery"
+    ],
+    "expected": [
+     "recovery_tier2",
+     "tier-2 cold+adaptive recovery"
+    ],
+    "pass": true
+   },
+   "tier2_failed": {
+    "got": [
+     "recovery_tier2",
+     "tier-2 cold+adaptive recovery"
+    ],
+    "expected": [
+     "recovery_tier2",
+     "tier-2 cold+adaptive recovery"
+    ],
+    "pass": true
+   },
+   "all_pass": true
+  },
+  "expected_log_path": {
+   "computed": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s42_exact_fix_rerun_checks_probe/logs/optim_log_case9_2025_Spring.log",
+   "manual": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s42_exact_fix_rerun_checks_probe/logs/optim_log_case9_2025_Spring.log",
+   "pass": true
+  },
+  "expected_log_path_recovery_suffix": {
+   "computed": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s42_exact_fix_rerun_checks_probe/logs/optim_log_case9_2025_Spring_recovery.log",
+   "pass": true
+  },
+  "tso_interface_diagnostics": {
+   "n_rows": 72,
+   "expected_n_rows": 72,
+   "required_delta_p_pu": 0.325,
+   "manual_required_delta_p_pu": 0.325,
+   "excess_p_pu": 0.0,
+   "manual_excess_p_pu": 0.0,
+   "excess_p_mva": 0.0,
+   "manual_excess_p_mva": 0.0,
+   "base_mva": 100.0,
+   "pass": true
+  },
+  "score_predictions": {
+   "all_match_case": {
+    "n_scored": 12,
+    "n_matched": 12,
+    "all_matched": true,
+    "all_12_tso_solve": false,
+    "pass": true
+   },
+   "all_solve_case": {
+    "all_12_tso_solve": true,
+    "note_present": true,
+    "pass": true
+   }
+  },
+  "hash_and_size_roundtrip": {
+   "sha256": "07cafc1a98282c2c78611405569e6f0d157d2590aaa22703690ddf84011368c8",
+   "manual_sha256": "07cafc1a98282c2c78611405569e6f0d157d2590aaa22703690ddf84011368c8",
+   "size": 36,
+   "manual_size": 36,
+   "roundtrip_matches": true,
+   "pass": true
+  }
+ },
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ }
+}

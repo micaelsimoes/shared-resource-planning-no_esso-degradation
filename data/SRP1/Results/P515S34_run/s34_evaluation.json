@@ -1,0 +1,848 @@
+{
+ "stage": "P5.15 Step 3.4 gate (s34, spec v4) - evaluation",
+ "run_dir": "data/SRP1/Results/P515S34_run",
+ "instance": {
+  "s_mva": 0.96875,
+  "e_mwh": 3.875,
+  "year": 2025,
+  "assignment": "uniform across active nodes (control/perturbation)"
+ },
+ "spec": {
+  "file": "data/SRP1/Results/P515S34/frozen_s34_spec_v4_966940a7.json",
+  "sha256": "966940a789db3093a57d5fdc23be8ccb172b762bf02d0cd09eeaaf0f52f544e9"
+ },
+ "scaling_in_force": {
+  "sigma_fixed": 93635360.0,
+  "sigma_computed": 93635360.28800085,
+  "al_scale_esso": 227210.9966521344,
+  "shared_ess_reference_rating_mva": 2.5,
+  "boyd_eps_abs": 1e-05,
+  "boyd_eps_rel": 0.0001
+ },
+ "PASS_TEST_boyd_stop": {
+  "cycles": 150,
+  "stopped_by": "cap",
+  "converged_at_cycle": null,
+  "consecutive_at_stop": 0,
+  "all_pass_cycles": [],
+  "rho_at_clamp_any_channel": false,
+  "verdict": "FAIL"
+ },
+ "terminal_residuals_per_channel": {
+  "v": {
+   "r": 0.00015258257943682243,
+   "s": 4.516824090694312e-05,
+   "s_rho_part": 3.193876943956709e-05,
+   "s_proximal_part": 3.193876943956709e-05,
+   "proximal_share": 0.7071067811865475,
+   "eps_pri": 0.003422444427619008,
+   "eps_dual": 0.0002939957103692901,
+   "norm_x": 31.28504578449048,
+   "norm_z": 31.285056584850263,
+   "norm_y": 0.000569412353086999,
+   "primal_ratio": 0.04458292389073911,
+   "dual_ratio": 0.1536357141068724,
+   "dual_ratio_balance": 0.1086368552774072,
+   "primal_pass": true,
+   "dual_pass": true,
+   "channel_pass": true,
+   "rho_in_force": 0.011549999999999998,
+   "gamma_in_force": 0.011550000000000003,
+   "frozen": true,
+   "rho_at_clamp": false
+  },
+  "pf": {
+   "r": 0.0006532224456092262,
+   "s": 0.0003301774714848291,
+   "s_rho_part": 0.0002334707290819506,
+   "s_proximal_part": 0.0002334707290819506,
+   "proximal_share": 0.7071067811865476,
+   "eps_pri": 0.0013733191129454364,
+   "eps_dual": 0.00045465337006079945,
+   "norm_x": 9.57626919128906,
+   "norm_z": 9.576243550956505,
+   "norm_y": 0.3896117624426886,
+   "primal_ratio": 0.4756523370655073,
+   "dual_ratio": 0.7262180228438105,
+   "dual_ratio_balance": 0.5135136885727455,
+   "primal_pass": true,
+   "dual_pass": true,
+   "channel_pass": true,
+   "rho_in_force": 0.08800000000000004,
+   "gamma_in_force": 0.08799999999999998,
+   "frozen": true,
+   "rho_at_clamp": false
+  },
+  "ess": {
+   "r": 0.0003708639228530553,
+   "s": 0.0020494820301366974,
+   "s_rho_part": 0.0017750687677876972,
+   "s_proximal_part": 0.0010244547142152624,
+   "proximal_share": 0.4998603057509769,
+   "eps_pri": 0.00106971934305723,
+   "eps_dual": 0.0007209137040173678,
+   "norm_x": 3.497193430572299,
+   "norm_z": 3.4971934109079443,
+   "norm_y": 0.009137040173677733,
+   "primal_ratio": 0.3466927332482704,
+   "dual_ratio": 2.842895090932163,
+   "dual_ratio_balance": 2.462248612969817,
+   "primal_pass": true,
+   "dual_pass": false,
+   "channel_pass": false,
+   "rho_in_force": 0.11249999999999989,
+   "gamma_in_force": 0.11250000000000003,
+   "frozen": true,
+   "rho_at_clamp": false
+  }
+ },
+ "binding_test": {
+  "channel": "ess",
+  "test": "dual",
+  "ratio": 2.842895090932163
+ },
+ "pass_counts": {
+  "v": {
+   "primal": 110,
+   "dual": 106
+  },
+  "pf": {
+   "primal": 44,
+   "dual": 18
+  },
+  "ess": {
+   "primal": 54,
+   "dual": 0
+  }
+ },
+ "rho_gamma_freeze": {
+  "v": {
+   "actions": {
+    "increased": 1,
+    "held": 10,
+    "held (frozen after 10 unchanged cycles)": 139
+   },
+   "change_cycles": [
+    1
+   ],
+   "rho_initial": 0.0076999999999999985,
+   "rho_terminal": 0.011549999999999998,
+   "gamma_terminal": 0.011550000000000003,
+   "freeze_cycle": 11,
+   "rho_at_clamp_any": false,
+   "sampled": [
+    {
+     "cycle": 1,
+     "rho": 0.0076999999999999985,
+     "action": "increased",
+     "gamma": 0.007699999999999999,
+     "frozen": false,
+     "streak": 0
+    },
+    {
+     "cycle": 2,
+     "rho": 0.011549999999999998,
+     "action": "held",
+     "gamma": 0.011550000000000003,
+     "frozen": false,
+     "streak": 1
+    },
+    {
+     "cycle": 3,
+     "rho": 0.011549999999999998,
+     "action": "held",
+     "gamma": 0.011550000000000003,
+     "frozen": false,
+     "streak": 2
+    },
+    {
+     "cycle": 5,
+     "rho": 0.011549999999999998,
+     "action": "held",
+     "gamma": 0.011550000000000003,
+     "frozen": false,
+     "streak": 4
+    },
+    {
+     "cycle": 10,
+     "rho": 0.011549999999999998,
+     "action": "held",
+     "gamma": 0.011550000000000003,
+     "frozen": false,
+     "streak": 9
+    },
+    {
+     "cycle": 20,
+     "rho": 0.011549999999999998,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.011550000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 30,
+     "rho": 0.011549999999999998,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.011550000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 40,
+     "rho": 0.011549999999999998,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.011550000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 50,
+     "rho": 0.011549999999999998,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.011550000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 60,
+     "rho": 0.011549999999999998,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.011550000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 75,
+     "rho": 0.011549999999999998,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.011550000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 90,
+     "rho": 0.011549999999999998,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.011550000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 100,
+     "rho": 0.011549999999999998,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.011550000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 125,
+     "rho": 0.011549999999999998,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.011550000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 150,
+     "rho": 0.011549999999999998,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.011550000000000003,
+     "frozen": true,
+     "streak": 10
+    }
+   ]
+  },
+  "pf": {
+   "actions": {
+    "held": 57,
+    "decreased": 2,
+    "held (frozen backstop cycle 60)": 91
+   },
+   "change_cycles": [
+    57,
+    58
+   ],
+   "rho_initial": 0.1980000000000002,
+   "rho_terminal": 0.08800000000000004,
+   "gamma_terminal": 0.08799999999999998,
+   "freeze_cycle": 60,
+   "rho_at_clamp_any": false,
+   "sampled": [
+    {
+     "cycle": 1,
+     "rho": 0.1980000000000002,
+     "action": "held",
+     "gamma": 0.19799999999999998,
+     "frozen": false,
+     "streak": 1
+    },
+    {
+     "cycle": 2,
+     "rho": 0.1980000000000002,
+     "action": "held",
+     "gamma": 0.19799999999999998,
+     "frozen": false,
+     "streak": 2
+    },
+    {
+     "cycle": 3,
+     "rho": 0.1980000000000002,
+     "action": "held",
+     "gamma": 0.19799999999999998,
+     "frozen": false,
+     "streak": 3
+    },
+    {
+     "cycle": 5,
+     "rho": 0.1980000000000002,
+     "action": "held",
+     "gamma": 0.19799999999999998,
+     "frozen": false,
+     "streak": 5
+    },
+    {
+     "cycle": 10,
+     "rho": 0.1980000000000002,
+     "action": "held",
+     "gamma": 0.19799999999999998,
+     "frozen": false,
+     "streak": 10
+    },
+    {
+     "cycle": 20,
+     "rho": 0.1980000000000002,
+     "action": "held",
+     "gamma": 0.19799999999999998,
+     "frozen": false,
+     "streak": 20
+    },
+    {
+     "cycle": 30,
+     "rho": 0.1980000000000002,
+     "action": "held",
+     "gamma": 0.19799999999999998,
+     "frozen": false,
+     "streak": 30
+    },
+    {
+     "cycle": 40,
+     "rho": 0.1980000000000002,
+     "action": "held",
+     "gamma": 0.19799999999999998,
+     "frozen": false,
+     "streak": 40
+    },
+    {
+     "cycle": 50,
+     "rho": 0.1980000000000002,
+     "action": "held",
+     "gamma": 0.19799999999999998,
+     "frozen": false,
+     "streak": 50
+    },
+    {
+     "cycle": 60,
+     "rho": 0.08800000000000004,
+     "action": "held (frozen backstop cycle 60)",
+     "gamma": 0.08799999999999998,
+     "frozen": true,
+     "streak": 1
+    },
+    {
+     "cycle": 75,
+     "rho": 0.08800000000000004,
+     "action": "held (frozen backstop cycle 60)",
+     "gamma": 0.08799999999999998,
+     "frozen": true,
+     "streak": 1
+    },
+    {
+     "cycle": 90,
+     "rho": 0.08800000000000004,
+     "action": "held (frozen backstop cycle 60)",
+     "gamma": 0.08799999999999998,
+     "frozen": true,
+     "streak": 1
+    },
+    {
+     "cycle": 100,
+     "rho": 0.08800000000000004,
+     "action": "held (frozen backstop cycle 60)",
+     "gamma": 0.08799999999999998,
+     "frozen": true,
+     "streak": 1
+    },
+    {
+     "cycle": 125,
+     "rho": 0.08800000000000004,
+     "action": "held (frozen backstop cycle 60)",
+     "gamma": 0.08799999999999998,
+     "frozen": true,
+     "streak": 1
+    },
+    {
+     "cycle": 150,
+     "rho": 0.08800000000000004,
+     "action": "held (frozen backstop cycle 60)",
+     "gamma": 0.08799999999999998,
+     "frozen": true,
+     "streak": 1
+    }
+   ]
+  },
+  "ess": {
+   "actions": {
+    "increased": 2,
+    "held": 10,
+    "held (frozen after 10 unchanged cycles)": 138
+   },
+   "change_cycles": [
+    1,
+    2
+   ],
+   "rho_initial": 0.04999999999999998,
+   "rho_terminal": 0.11249999999999989,
+   "gamma_terminal": 0.11250000000000003,
+   "freeze_cycle": 12,
+   "rho_at_clamp_any": false,
+   "sampled": [
+    {
+     "cycle": 1,
+     "rho": 0.04999999999999998,
+     "action": "increased",
+     "gamma": 0.049999999999999996,
+     "frozen": false,
+     "streak": 0
+    },
+    {
+     "cycle": 2,
+     "rho": 0.07500000000000007,
+     "action": "increased",
+     "gamma": 0.075,
+     "frozen": false,
+     "streak": 0
+    },
+    {
+     "cycle": 3,
+     "rho": 0.11249999999999989,
+     "action": "held",
+     "gamma": 0.11250000000000003,
+     "frozen": false,
+     "streak": 1
+    },
+    {
+     "cycle": 5,
+     "rho": 0.11249999999999989,
+     "action": "held",
+     "gamma": 0.11250000000000003,
+     "frozen": false,
+     "streak": 3
+    },
+    {
+     "cycle": 10,
+     "rho": 0.11249999999999989,
+     "action": "held",
+     "gamma": 0.11250000000000003,
+     "frozen": false,
+     "streak": 8
+    },
+    {
+     "cycle": 20,
+     "rho": 0.11249999999999989,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.11250000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 30,
+     "rho": 0.11249999999999989,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.11250000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 40,
+     "rho": 0.11249999999999989,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.11250000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 50,
+     "rho": 0.11249999999999989,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.11250000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 60,
+     "rho": 0.11249999999999989,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.11250000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 75,
+     "rho": 0.11249999999999989,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.11250000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 90,
+     "rho": 0.11249999999999989,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.11250000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 100,
+     "rho": 0.11249999999999989,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.11250000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 125,
+     "rho": 0.11249999999999989,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.11250000000000003,
+     "frozen": true,
+     "streak": 10
+    },
+    {
+     "cycle": 150,
+     "rho": 0.11249999999999989,
+     "action": "held (frozen after 10 unchanged cycles)",
+     "gamma": 0.11250000000000003,
+     "frozen": true,
+     "streak": 10
+    }
+   ]
+  }
+ },
+ "efc_diagnostic": {
+  "terminal": 0.8382386925751658,
+  "sampled": [
+   [
+    1,
+    0.00028746553429966174
+   ],
+   [
+    2,
+    0.061096691475554556
+   ],
+   [
+    3,
+    0.10998856542568165
+   ],
+   [
+    5,
+    0.1646114487380474
+   ],
+   [
+    10,
+    0.2491122313482237
+   ],
+   [
+    20,
+    0.4327898498718292
+   ],
+   [
+    30,
+    0.5178454913879686
+   ],
+   [
+    40,
+    0.5637237523741603
+   ],
+   [
+    50,
+    0.5943859634879614
+   ],
+   [
+    60,
+    0.6215733944360843
+   ],
+   [
+    75,
+    0.6615219542518349
+   ],
+   [
+    90,
+    0.7014813181048927
+   ],
+   [
+    100,
+    0.7252061361059513
+   ],
+   [
+    125,
+    0.7852198872435011
+   ],
+   [
+    150,
+    0.8382386925751658
+   ]
+  ],
+  "EFC_star_2025_max": 1.852,
+  "EFC_star_range_all_cells": [
+   0.7964,
+   1.852
+  ],
+  "soh_binding_threshold": 1.4612,
+  "fraction_of_EFC_star": 0.45261268497579143,
+  "fraction_of_soh_threshold": 0.5736645856660045,
+  "s33e2_terminal_for_comparison": 0.0671,
+  "reading": "equilibrium near the SoH threshold with the constraint active is the expected success case"
+ },
+ "storage_response_falsifier": {
+  "s34_ess_step_per_entry": 0.00021914429231946898,
+  "s33e2_ess_step_per_entry": 4.26e-05,
+  "ratio": 5.144232214072042,
+  "n_ess_entries": 5184.0,
+  "criterion": "spec v4: a rise < 3x together with a persistent step cosine of 1.000 falsifies the Addendum 15 stiffness reading"
+ },
+ "s_ref_prediction": {
+  "s33e2_ess_dual_ratio": 3.245,
+  "s34_ess_dual_ratio_terminal": 2.842895090932163,
+  "predicted_multiplier": 2.58,
+  "note": "recorded separately from the pass test; x1.0 means the residual is not gradient-limited, x0.39 means the mechanism is misidentified"
+ },
+ "cycle_30_early_read": {
+  "boyd_ess_norm_z": 2.0280066776094294,
+  "boyd_ess_r": 0.008878896165259092,
+  "boyd_ess_s": 0.004930470779917762,
+  "rho_ess_before": 0.11249999999999989,
+  "efc_per_day_max": 0.5178454913879686
+ },
+ "system_cost_matched_cycles": [
+  {
+   "cycle": 1,
+   "s34_gross": 907716715.668015,
+   "s31c_gross": 2359311749.284464,
+   "minus_s31c": -1451595033.6164489,
+   "s32_gross": 968494925.0938367,
+   "minus_s32": -60778209.42582166,
+   "s33e2_gross": 968494925.0938367,
+   "minus_s33e2": -60778209.42582166
+  },
+  {
+   "cycle": 2,
+   "s34_gross": 1124883514.3571718,
+   "s31c_gross": 1635793408.6698973,
+   "minus_s31c": -510909894.31272554,
+   "s32_gross": 1219820650.0962644,
+   "minus_s32": -94937135.73909259,
+   "s33e2_gross": 1219820650.0962644,
+   "minus_s33e2": -94937135.73909259
+  },
+  {
+   "cycle": 3,
+   "s34_gross": 1054599784.1834378,
+   "s31c_gross": 1416323507.6458967,
+   "minus_s31c": -361723723.46245885,
+   "s32_gross": 1157573767.643047,
+   "minus_s32": -102973983.45960927,
+   "s33e2_gross": 1157551155.8654451,
+   "minus_s33e2": -102951371.68200731
+  },
+  {
+   "cycle": 5,
+   "s34_gross": 695849750.9617386,
+   "s31c_gross": 1357909196.3566816,
+   "minus_s31c": -662059445.394943,
+   "s32_gross": 799099849.7294499,
+   "minus_s32": -103250098.76771128,
+   "s33e2_gross": 754691931.0576913,
+   "minus_s33e2": -58842180.09595275
+  },
+  {
+   "cycle": 10,
+   "s34_gross": 677327878.808085,
+   "s31c_gross": 1191551992.2462602,
+   "minus_s31c": -514224113.4381752,
+   "s32_gross": 651281159.4925663,
+   "minus_s32": 26046719.315518618,
+   "s33e2_gross": 729117524.632208,
+   "minus_s33e2": -51789645.824123025
+  },
+  {
+   "cycle": 20,
+   "s34_gross": 653157324.952465,
+   "s31c_gross": 741234151.594587,
+   "minus_s31c": -88076826.64212191,
+   "s32_gross": 666033865.8841152,
+   "minus_s32": -12876540.931650162,
+   "s33e2_gross": 665167144.6515703,
+   "minus_s33e2": -12009819.699105263
+  },
+  {
+   "cycle": 30,
+   "s34_gross": 653639902.2050092,
+   "s31c_gross": 698488996.893102,
+   "minus_s31c": -44849094.68809283,
+   "s32_gross": 663771540.0656254,
+   "minus_s32": -10131637.860616207,
+   "s33e2_gross": 656532453.3443153,
+   "minus_s33e2": -2892551.1393060684
+  },
+  {
+   "cycle": 40,
+   "s34_gross": 652224218.0889473,
+   "s31c_gross": 683675506.8801093,
+   "minus_s31c": -31451288.791162014,
+   "s32_gross": 661375572.9197404,
+   "minus_s32": -9151354.830793142,
+   "s33e2_gross": 655343731.7834339,
+   "minus_s33e2": -3119513.694486618
+  },
+  {
+   "cycle": 50,
+   "s34_gross": 651856201.6016469,
+   "s31c_gross": 674927476.3556473,
+   "minus_s31c": -23071274.754000425,
+   "s32_gross": 659201581.6713443,
+   "minus_s32": -7345380.06969738,
+   "s33e2_gross": 654342996.6751572,
+   "minus_s33e2": -2486795.073510289
+  },
+  {
+   "cycle": 60,
+   "s34_gross": 652049624.1263955,
+   "s31c_gross": 669638772.4486934,
+   "minus_s31c": -17589148.32229793,
+   "s32_gross": 656728359.2641778,
+   "minus_s32": -4678735.137782335,
+   "s33e2_gross": 654511335.7735177,
+   "minus_s33e2": -2461711.647122264
+  },
+  {
+   "cycle": 75,
+   "s34_gross": 651494399.1939714,
+   "s31c_gross": 664628004.8055086,
+   "minus_s31c": -13133605.611537218,
+   "s32_gross": 656396801.2202053,
+   "minus_s32": -4902402.0262339115,
+   "s33e2_gross": 654137692.3434541,
+   "minus_s33e2": -2643293.149482727
+  },
+  {
+   "cycle": 90,
+   "s34_gross": 651359149.0640671,
+   "s31c_gross": 661400927.7360976,
+   "minus_s31c": -10041778.672030449,
+   "s32_gross": 655287809.9766437,
+   "minus_s32": -3928660.912576556,
+   "s33e2_gross": 654075530.833818,
+   "minus_s33e2": -2716381.7697508335
+  },
+  {
+   "cycle": 100,
+   "s34_gross": 651430412.147897,
+   "s31c_gross": null,
+   "minus_s31c": null,
+   "s32_gross": 655370576.9586096,
+   "minus_s32": -3940164.810712576,
+   "s33e2_gross": 653965596.2455195,
+   "minus_s33e2": -2535184.097622514
+  },
+  {
+   "cycle": 125,
+   "s34_gross": 651238873.4428197,
+   "s31c_gross": null,
+   "minus_s31c": null,
+   "s32_gross": 654810030.4731328,
+   "minus_s32": -3571157.030313134,
+   "s33e2_gross": 653774086.9736173,
+   "minus_s33e2": -2535213.5307976007
+  },
+  {
+   "cycle": 150,
+   "s34_gross": 651180637.2519937,
+   "s31c_gross": null,
+   "minus_s31c": null,
+   "s32_gross": 654413409.7351172,
+   "minus_s32": -3232772.483123541,
+   "s33e2_gross": 653826841.6344557,
+   "minus_s33e2": -2646204.3824620247
+  }
+ ],
+ "system_cost_terminal": {
+  "s34": 651180637.2519937,
+  "s31c": 661400927.7360976,
+  "s32": 654413409.7351172,
+  "s33e2": 653826841.6344557,
+  "bars_valid": false,
+  "note": "no reference run settled; differences bound stopping slack only"
+ },
+ "objective_diagnostic": {
+  "terminal_step": 4682.301938891411,
+  "terminal_tolerance": 65118.53195539326,
+  "rule_ten": 0.07190429203930498
+ },
+ "network_failures_summary": {
+  "n_blocks": 138,
+  "classes": {
+   "recovered_tier1": 133,
+   "recovered_tier2": 5,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 138
+  },
+  "n_frozen_snapshots": 2,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S34_run/network_failures_baseline.jsonl"
+ },
+ "local_solve_failures": 0,
+ "solves": {
+  "observed": {
+   "permitted_solve": 7844,
+   "permitted_exec": 7844,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "identity_holds": false
+ },
+ "wall_clock_s": 5913.962801933289,
+ "interface_voltage_terminal_summary": {
+  "n_entries": 864,
+  "min_distance_to_bound_pu_overall": 2.9120555788964e-07,
+  "min_distance_to_bound_pu_per_node": {
+   "5": 2.9120555788964e-07,
+   "7": 3.18237815943867e-06,
+   "9": 3.113626851902751e-07
+  },
+  "n_entries_at_bound_within_1e-6_pu": 52,
+  "n_entries_within_0p005_pu": 330,
+  "stage": "P5.15 Step 3.2 E2 -- per-entry terminal interface voltage vs TSO node bounds",
+  "authority": "data/SRP1/Results/P515S33/frozen_s33_e2_spec_v3_825f1f02.json report_terminal",
+  "timestamp_utc": "2026-09-16T12:14:45.441521+00:00",
+  "label": "baseline",
+  "cycle": 150
+ },
+ "cancellation": {
+  "t_sum": 1946.7967631816864,
+  "priced_residual_total": -1946.7967634606332,
+  "closure": -2.789467998809414e-07
+ },
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ }
+}

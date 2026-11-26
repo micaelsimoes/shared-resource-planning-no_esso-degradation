@@ -1,0 +1,1448 @@
+{
+ "stage": "P5.15 Addenda 28-29 W20 item 3 -- SRP1_ESS_Params.json max_energy_to_power_factor 10 -> 4: zero-solve gate",
+ "phase": "before",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 28",
+  "data/SRP1/Results/P515S46/frozen_s46_ageing_spec_v16_f4295086.json (case_file_edit)",
+  "Planner task W20 item 3"
+ ],
+ "timestamp_utc": "2026-09-21T12:56:38.836835+00:00",
+ "git_head_at_run": "e5721b6d99e1f0a49f0598d4e89e62c10d79926e",
+ "script": "p515_s46_case_file_edit_check.py",
+ "script_sha256": "7a5f8849ff69ef46f507cdc42ae5e6be1c203ec28e235be62d05088f6a8885b2",
+ "harness_sha256": "9967925b31f80cbba5915f1cdad0d6898cde9abb55a4fc71e9050e05013ad24f",
+ "ess_params_file": {
+  "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+  "sha256": "badcdeae4d2a0ac9d369fb7cfb028ecb84b369c881bc0b4e56c590d38a3a13bb",
+  "text": "{\n\t\"budget\": 1.0e6,\n\t\"max_capacity\": 5.00,\n\t\"min_energy_to_power_factor\": 2.00,\n\t\"max_energy_to_power_factor\": 10.00,\n\t\"slacks\": true,\n\t\"print_results_to_file\": true,\n\t\"salvage_value\": {\n\t\t\"enabled\": true,\n\t\t\"energy_recovery_fraction\": 1.0,\n\t\t\"recycling_floor_fraction\": 0.0,\n\t\t\"cost_basis\": \"EXPECTED_INSTALLATION_ENERGY_COST\",\n\t\t\"health_basis\": \"NORMALIZED_ABOVE_MINIMUM_SOH\",\n\t\t\"calendar_life_basis\": \"REMAINING_FRACTION_AT_TERMINAL\"\n\t},\n\t\"ageing\": {\n\t\t\"calendar_life_years\": 15,\n\t\t\"cycle_life_nominal\": 10000,\n\t\t\"depth_of_discharge_nominal\": 0.80,\n\t\t\"minimum_soh\": 0.50,\n\t\t\"calibration\": {\n\t\t\t\"status\": \"ACTIVE\",\n\t\t\t\"cycles_n\": 10000,\n\t\t\t\"reference_dod_d\": 0.80,\n\t\t\t\"eol_retention_r\": 0.50,\n\t\t\t\"_note\": \"k = cycles_n * reference_dod_d / (-ln eol_retention_r). ACTIVE since P5.13-D: calibration C3 = (10000, 0.80, 0.50) gives k = 11541.560327111707, consumed by the degradation law in place of cycle_life_nominal. See P5_13_B_CYCLING_CALIBRATION.md for the candidates and P5_13_D_* for the impact gate. Setting status back to DECLARED_NOT_CONSUMED restores k = cycle_life_nominal exactly.\"\n\t\t}\n\t},\n\t\"solver\": {\n\t\t\"name\": \"ipopt\",\n\t\t\"verbose\": false,\n\t\t\"options\": {\n\t  \t\t\"tol\": 1e-6,\n\t  \t\t\"acceptable_tol\": 1e-5,\n\t  \t\t\"acceptable_iter\": 5,\n\t\t\t\"linear_solver\": \"ma57\"\n\t\t},\n\t\t\"recovery_options\": {\n\t\t\t\"acceptable_tol\": 1e-4,\n\t\t\t\"acceptable_iter\": 1\n\t\t}\n\t},\n\t\"lp_solver\": {\n\t\t\"name\": \"clp\",\n\t\t\"verbose\": false,\n\t\t\"options\": {}\n\t}\n}\n",
+  "git_status": ""
+ },
+ "readers": {
+  "search": "grep -rn --include=*.py 'max_energy_to_power' . (repository root, data/ included, tracked and untracked)",
+  "oracle_path": "p515_s44_campaign_harness child -> p515_g_g1_g4_admm_gates.run_admm_arm -> _construct_arm_planning (p56a_oracle.fresh_planning, candidate) -> SharedResourcesPlanning.run_operational_planning(type=\"distributed\") -> shared_resources_planning._run_operational_planning (create_* builders, the ADMM loop, _get_operational_sensitivities at convergence)",
+  "hits": [
+   {
+    "file": "shared_energy_storage_data.py",
+    "line": 363,
+    "enclosing": "_build_master_problem",
+    "text": "model.energy_storage_power_to_energy_factor.add(model.es_e_investment[e, y] <= model.es_s_investment[e, y] * shared_ess_data.params.max_energy_to_power_ratio)",
+    "tracked": true,
+    "classification": "the Benders MASTER problem (E <= ratio * S row); called only by shared_resources_planning._run_planning_problem, never on the oracle path",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p56b_b5_coordinates.py",
+    "line": 94,
+    "enclosing": "main",
+    "text": "phi_max = params.max_energy_to_power_ratio",
+    "tracked": true,
+    "classification": "P5.6-B diagnostic (candidate coordinates); not on the oracle path",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p56a_oracle.py",
+    "line": 789,
+    "enclosing": "_config_hash",
+    "text": "f'{esso_params.max_energy_to_power_ratio}')",
+    "tracked": true,
+    "classification": "the P5.6 oracle CACHE key (evaluate_planning_candidate); the campaign harness does not use the p56a cache (it calls run_admm_arm directly); a changed value would only invalidate p56a cache entries",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s44_addendum26_confirmations.py",
+    "line": 622,
+    "enclosing": "item2_investment_cost",
+    "text": "'max_energy_to_power_ratio'})",
+    "tracked": true,
+    "classification": "W-stage confirmation record (reads and reports the value)",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s44_addendum26_confirmations.py",
+    "line": 648,
+    "enclosing": "item2_investment_cost",
+    "text": "'max_energy_to_power_ratio': sed.params.max_energy_to_power_ratio,",
+    "tracked": true,
+    "classification": "W-stage confirmation record (reads and reports the value)",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s45_investment_cost_recompute.py",
+    "line": 632,
+    "enclosing": "main",
+    "text": "'max_energy_to_power_ratio': sed_new.params.max_energy_to_power_ratio,",
+    "tracked": true,
+    "classification": "W2 I(x) recompute (records the value); not the oracle",
+    "on_oracle_path": false
+   },
+   {
+    "file": "shared_resources_planning.py",
+    "line": 1868,
+    "enclosing": "_check_candidate_first_stage_feasibility",
+    "text": "if e_value > params.max_energy_to_power_ratio * s_value + tolerance:",
+    "tracked": true,
+    "classification": "first-stage feasibility of a candidate; called by _validate_local_sensitivities_with_finite_differences and _build_positive_bootstrap_candidate (both inside _run_planning_problem, the Benders loop), never by _run_operational_planning",
+    "on_oracle_path": false
+   },
+   {
+    "file": "shared_resources_planning.py",
+    "line": 1899,
+    "enclosing": "_build_positive_bootstrap_candidate",
+    "text": "<= shared_ess_params.max_energy_to_power_ratio):",
+    "tracked": true,
+    "classification": "Benders bootstrap candidate; called by _run_planning_problem and _complete_missing_sensitivities_with_probe (Benders loop)",
+    "on_oracle_path": false
+   },
+   {
+    "file": "shared_resources_planning.py",
+    "line": 1903,
+    "enclosing": "_build_positive_bootstrap_candidate",
+    "text": "f'{shared_ess_params.max_energy_to_power_ratio:.6f}]'",
+    "tracked": true,
+    "classification": "Benders bootstrap candidate; called by _run_planning_problem and _complete_missing_sensitivities_with_probe (Benders loop)",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p514_d_preflight.py",
+    "line": 67,
+    "enclosing": "main",
+    "text": "'max_energy_to_power_ratio': params.max_energy_to_power_ratio,",
+    "tracked": true,
+    "classification": "P5.14-D preflight record; not on the oracle path",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p514_d_preflight.py",
+    "line": 68,
+    "enclosing": "main",
+    "text": "'ratio_within_bounds': params.min_energy_to_power_ratio <= ratio <= params.max_energy_to_power_ratio,",
+    "tracked": true,
+    "classification": "P5.14-D preflight record; not on the oracle path",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s46_case_file_edit_check.py",
+    "line": 4,
+    "enclosing": "<module>",
+    "text": "`max_energy_to_power_factor` 10 -> 4 (frozen spec v16 `case_file_edit`).",
+    "tracked": false,
+    "classification": "this gate",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s46_case_file_edit_check.py",
+    "line": 17,
+    "enclosing": "<module>",
+    "text": "included) is searched for `max_energy_to_power` (the JSON key",
+    "tracked": false,
+    "classification": "this gate",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s46_case_file_edit_check.py",
+    "line": 18,
+    "enclosing": "<module>",
+    "text": "`max_energy_to_power_factor` and the attribute `max_energy_to_power_ratio` it",
+    "tracked": false,
+    "classification": "this gate",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s46_case_file_edit_check.py",
+    "line": 36,
+    "enclosing": "<module>",
+    "text": "reads of `max_energy_to_power_ratio` (expected 0).",
+    "tracked": false,
+    "classification": "this gate",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s46_case_file_edit_check.py",
+    "line": 77,
+    "enclosing": "<module>",
+    "text": "STAGE = ('P5.15 Addenda 28-29 W20 item 3 -- SRP1_ESS_Params.json max_energy_to_power_factor 10 -> 4: '",
+    "tracked": false,
+    "classification": "this gate",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s46_case_file_edit_check.py",
+    "line": 84,
+    "enclosing": "<module>",
+    "text": "KEY = 'max_energy_to_power_factor'",
+    "tracked": false,
+    "classification": "this gate",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s46_case_file_edit_check.py",
+    "line": 85,
+    "enclosing": "<module>",
+    "text": "ATTR = 'max_energy_to_power_ratio'",
+    "tracked": false,
+    "classification": "this gate",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s46_case_file_edit_check.py",
+    "line": 101,
+    "enclosing": "<module>",
+    "text": "'_read_parameters_from_file': ('THE LOADER: reads the JSON key into params.max_energy_to_power_ratio; '",
+    "tracked": false,
+    "classification": "this gate",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s46_case_file_edit_check.py",
+    "line": 171,
+    "enclosing": "readers",
+    "text": "out = subprocess.run(['grep', '-rn', '--include=*.py', 'max_energy_to_power', '.'], cwd=REPO,",
+    "tracked": false,
+    "classification": "this gate",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s46_case_file_edit_check.py",
+    "line": 188,
+    "enclosing": "readers",
+    "text": "return {'search': \"grep -rn --include=*.py 'max_energy_to_power' . (repository root, data/ included, \"",
+    "tracked": false,
+    "classification": "this gate",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s46_case_file_edit_check.py",
+    "line": 236,
+    "enclosing": "_RatioReadCounter",
+    "text": "\"\"\"Counts reads of `max_energy_to_power_ratio` on ONE shared-ESS parameters object by swapping its",
+    "tracked": false,
+    "classification": "this gate",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s46_case_file_edit_check.py",
+    "line": 292,
+    "enclosing": "oracle_path_build",
+    "text": "ratio_loaded = sed.params.max_energy_to_power_ratio",
+    "tracked": false,
+    "classification": "this gate",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s46_case_file_edit_check.py",
+    "line": 308,
+    "enclosing": "oracle_path_build",
+    "text": "_control = sed.params.max_energy_to_power_ratio  # positive control: the counter must see this read",
+    "tracked": false,
+    "classification": "this gate",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s46_case_file_edit_check.py",
+    "line": 314,
+    "enclosing": "oracle_path_build",
+    "text": "'max_energy_to_power_ratio_loaded': ratio_loaded,",
+    "tracked": false,
+    "classification": "this gate",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s46_case_file_edit_check.py",
+    "line": 373,
+    "enclosing": "main",
+    "text": "f\"ratio loaded {builds[label]['max_energy_to_power_ratio_loaded']} \"",
+    "tracked": false,
+    "classification": "this gate",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p515_s46_case_file_edit_check.py",
+    "line": 382,
+    "enclosing": "main",
+    "text": "'loaded_ratio_is_file_value': all(b['max_energy_to_power_ratio_loaded'] == expected_value",
+    "tracked": false,
+    "classification": "this gate",
+    "on_oracle_path": false
+   },
+   {
+    "file": "p56b_candidates.py",
+    "line": 91,
+    "enclosing": "describe",
+    "text": "'phi_max': params.max_energy_to_power_ratio,",
+    "tracked": true,
+    "classification": "P5.6-B diagnostic (candidate generation); not on the oracle path",
+    "on_oracle_path": false
+   },
+   {
+    "file": "shared_energy_storage_parameters.py",
+    "line": 227,
+    "enclosing": "SharedEnergyStorageParameters.__init__",
+    "text": "self.max_energy_to_power_ratio = 10.00          # Maximum energy-to-power ratio (related to the ESS technology)",
+    "tracked": true,
+    "classification": "default value of the attribute (10.00); not a reader of the file",
+    "on_oracle_path": false
+   },
+   {
+    "file": "shared_energy_storage_parameters.py",
+    "line": 256,
+    "enclosing": "_read_parameters_from_file",
+    "text": "planning_parameters.max_energy_to_power_ratio = float(params_data['max_energy_to_power_factor'])",
+    "tracked": true,
+    "classification": "THE LOADER: reads the JSON key into params.max_energy_to_power_ratio; loads the value, consumes nothing",
+    "on_oracle_path": false
+   }
+  ],
+  "unclassified": [],
+  "n_hits": 30
+ },
+ "pins": {
+  "searched": "git grep -l badcdeae4d2a0ac9d369fb7cfb028ecb84b369c881bc0b4e56c590d38a3a13bb -- data *.py *.md (tracked files at HEAD)",
+  "files_recording_the_pre_edit_sha256": [
+   "data/SRP1/Results/P515S46/zero_solve_reports/zero_solve_reports.json"
+  ],
+  "campaign_or_frozen_specs_among_them": [],
+  "note": "a file that RECORDS the input hash is provenance of a past computation, not a pin that gates a future run; none of the campaign launchers or the harness check this file's hash (the harness pins data/SRP1/SRP1_params.json, a different file)"
+ },
+ "builds": {
+  "c_star": {
+   "label": "c_star",
+   "eval_id": "p515s46_w20_casefile_before_20260921T125607_c_star",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "configuration_checks": {
+    "rho_v_matches_D": true,
+    "rho_pf_matches_D": true,
+    "rho_ess_matches_D": true,
+    "tau_is_0": true,
+    "gamma_policy_tied_to_rho": true,
+    "balancing_exempt_until_matches_D": true,
+    "balancing_exempt_channels_empty": true,
+    "freeze_after_unchanged_cycles_is_10": true,
+    "freeze_backstop_cycle_is_200": true,
+    "minimum_consecutive_converged_cycles_matches_spec": true,
+    "shared_ess_initialization_is_standalone": true,
+    "num_max_iters_is_spec_cap": true,
+    "anderson_acceleration_case_file_matches_declaration": true,
+    "anderson_acceleration_case_file_memory_regularization_frozen": true,
+    "persistent_workers_off": true,
+    "parallel_execution_off": true
+   },
+   "max_energy_to_power_ratio_loaded": 10.0,
+   "ratio_reads_during_build": [],
+   "n_ratio_reads_during_build": 0,
+   "read_counter_positive_control_seen": true,
+   "n_blocks": 51,
+   "blocks": {
+    "DSO5|2025|Autumn": {
+     "sha256": "2a3dcdd3aaeae273c09eebbf67205ceb2b40edb83df48ae53cea9ea44cf7adaf",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2025|Spring": {
+     "sha256": "28bbb8035e25202cbb44609293892661d693b27ee071feaced0a9dced886ae2b",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2025|Summer": {
+     "sha256": "e48bc99e805a8e6c96ac0183b0219160f96c18ff05042b062df4fd0a13bbbad9",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2025|Winter": {
+     "sha256": "a98fe0a6c12347a696bdafaa35cbc9a14cf5e2d12252249d228386425ea79af9",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2030|Autumn": {
+     "sha256": "2e662a3f9c9a404a057abccd4cbb86a543cbcc0ff60b502f96aeef4ab7143a74",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2030|Spring": {
+     "sha256": "9fea20f872d63028a2e45ec206f5366d05d9916c2ff658d13e7ee3d3436a042a",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2030|Summer": {
+     "sha256": "f6d1b711fc43f2c484a8c2526c98a82bd079dd35ab74ec43fbe7c3707955bbde",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2030|Winter": {
+     "sha256": "509a56197f1144ffb66879d6226753793e87bc46559858427a83475b79a25766",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2035|Autumn": {
+     "sha256": "886b2318fc2585c69d4353f2a5821dc9edbdd7af5806ab6930954327e534b5f4",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2035|Spring": {
+     "sha256": "94ac15ed5530539f25809bcbe971da6b3d8ce0f0748f6b1dfac22f96876ad7b9",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2035|Summer": {
+     "sha256": "b0dfca7bfb00c4f0c39dcbd7dc5ad52e8277bacc0c2c44722d2171501bcb4d36",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2035|Winter": {
+     "sha256": "fcfe7fb637153652d4cf4fabf3be519ae6e75a6c3bf6d54605d65e3df0db8287",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2025|Autumn": {
+     "sha256": "31fff68a23c93c999b17093105dfb44180f7228fcaefc61d006e218142125a02",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7779,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2025|Spring": {
+     "sha256": "6d7cec0b2bc7153d807c6c8cb159e7f504c08d2ba7f33fcc3c0dacd73344a500",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7803,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2025|Summer": {
+     "sha256": "0eb462e3dfd3799a58d0faea90b947470b4cef0726090aa0af02602f9848715a",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7803,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2025|Winter": {
+     "sha256": "7abb5e350f3bb2e29e40693081427ff6f104eb971288e7bd284662575218246a",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7779,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2030|Autumn": {
+     "sha256": "0c7475fa75419e9216d7f7d16304c1cb1f1064882852f0025c1ddd3cf648b7a2",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7779,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2030|Spring": {
+     "sha256": "6a5ebe27f23c6caaf56f212e1c50fdb6ae39d0f883669cb6f36fcc10b2e1e2ee",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7803,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2030|Summer": {
+     "sha256": "8558009abdfe6609aca846732cb01533ce29a08e613c94a5915becb6b40fe234",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7803,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2030|Winter": {
+     "sha256": "839b4ee55e9acfb5dc1c601d24f35ac8dffe0a2c275c26ca0de9a3d75942e954",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7779,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2035|Autumn": {
+     "sha256": "e0eb4f31139801ca095b1244d4311d62a8c7c6b9555b5a2126ae9e524a795961",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7779,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2035|Spring": {
+     "sha256": "9aacb69c5168f40e351bddff5db02b1af61e6fe6e1c0ef2087b446fb8b45eedc",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7803,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2035|Summer": {
+     "sha256": "5fc8ff6ab9912b8057bd4cff401dfd1d28a8520971c7f4b2098b5718e1e78cd9",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7803,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2035|Winter": {
+     "sha256": "88a35adce40d719c8a80ae1b1a9664877b4e8ce9c44b99994005d54c180448c8",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7779,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2025|Autumn": {
+     "sha256": "efad7b9c8caabcbbeaf4af7d24071b602b8755d002c4d41b655a9db3d3367357",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2025|Spring": {
+     "sha256": "6864ee0696ea3cbb5f6c2a10d43097ee9dd3dc97eb3adf89e55d3f39572c90d3",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2025|Summer": {
+     "sha256": "ac434c2f177a7787c809e8e11e811699d3888c7af5d183757dfc6b61a0252de7",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2025|Winter": {
+     "sha256": "f7bcb03c7bdcfea463ef33155bfb359ca22095bfaabdb8400bb5344c1ab7a46a",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2030|Autumn": {
+     "sha256": "d5af96fab00acbc1c5d84b546d359cd931b17485a96f84722a0464a7466af366",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2030|Spring": {
+     "sha256": "153d13265d99cc7c50526ebbd0ada0f343609e5fa73e0436ad1572cc59fe45de",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2030|Summer": {
+     "sha256": "c04cefa02d53f5f883633937c3df393d2aaed9cb5d315ad0f9f557e22c7ae51e",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2030|Winter": {
+     "sha256": "f7163fb99f3a37f91c1b2c1f004e0e52b5ba9318d0efea244d503510b507346f",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2035|Autumn": {
+     "sha256": "4829b45435cf273d742ef163304319c70c72dc3e0b51f74a16264803223cf30d",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2035|Spring": {
+     "sha256": "f5d620b17017216bc781122f63c7608d7e9419e1b0ae9617c8a86c71bebda817",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2035|Summer": {
+     "sha256": "92aa743a732674550dde86d5f874a90425159bd72ebf4ca4dafa6916c8639441",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2035|Winter": {
+     "sha256": "9871fab3c185f067785c6c8cb4e1b950ae8a19124859025c32a2ef6047736b81",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "ESSO|node5": {
+     "sha256": "ff799d223bfb1e552170d30e139629e0aa91861e1a35ff454f5daff988a3da0a",
+     "counts": {
+      "params": 15,
+      "vars": 2949,
+      "constraints": 3231,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "ESSO|node7": {
+     "sha256": "ff799d223bfb1e552170d30e139629e0aa91861e1a35ff454f5daff988a3da0a",
+     "counts": {
+      "params": 15,
+      "vars": 2949,
+      "constraints": 3231,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "ESSO|node9": {
+     "sha256": "ff799d223bfb1e552170d30e139629e0aa91861e1a35ff454f5daff988a3da0a",
+     "counts": {
+      "params": 15,
+      "vars": 2949,
+      "constraints": 3231,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2025|Autumn": {
+     "sha256": "a0989689d9c48f7763c655fd6ce2c0a2a2aca52b7a3fe6fdb2a3e4935e17d23a",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3342,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2025|Spring": {
+     "sha256": "3ca270ce71deb513929d55141f9fbb82d9169e7e2612ca270970087a8d138824",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3378,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2025|Summer": {
+     "sha256": "09fcd65846d9d95cc0795a5ec9af910c1cb28784025d1946d904ac97954a1cb9",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3378,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2025|Winter": {
+     "sha256": "4745cae98460df0bf7fa7b7493d11150782626caf1b98e5327afe919a2b14799",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3342,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2030|Autumn": {
+     "sha256": "bf3fe87e09b721a4c7628e8d92389e96498e40fbbce04f259fa95db54d00b4d8",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3342,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2030|Spring": {
+     "sha256": "80338d8252b1e22cf9eec314799e1568d5273c2efc313215ad15ade58f5bb618",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3378,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2030|Summer": {
+     "sha256": "048f1dedb68bba8ede1f2fe54422440ddc765c2f7b4d03a2421b18a532741dfa",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3378,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2030|Winter": {
+     "sha256": "684382a3c1d876be0fee4c2a2dd463376414f813e6456685504cf15df2ea387a",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3342,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2035|Autumn": {
+     "sha256": "1d28e594e5b0b93634b2b8c1f2006e3a8530735f829402f3c64f2cdcbe4fdce4",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3342,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2035|Spring": {
+     "sha256": "7e7c76b90fc62f0f330e1c461f17e4d007b7a5fcb0ce068976ecef68aaf88bdb",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3378,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2035|Summer": {
+     "sha256": "c473ed9f7b6368ffefe38e7d9fe346ed999b43fe8017743ffa734fbae26b44d0",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3378,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2035|Winter": {
+     "sha256": "7ecb83c9f8f74c87ba103212b61efb52e2cd508d796b3b6430956638548f6492",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3342,
+      "objectives": 1,
+      "blocks": 1
+     }
+    }
+   }
+  },
+  "x0": {
+   "label": "x0",
+   "eval_id": "p515s46_w20_casefile_before_20260921T125607_x0",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "configuration_checks": {
+    "rho_v_matches_D": true,
+    "rho_pf_matches_D": true,
+    "rho_ess_matches_D": true,
+    "tau_is_0": true,
+    "gamma_policy_tied_to_rho": true,
+    "balancing_exempt_until_matches_D": true,
+    "balancing_exempt_channels_empty": true,
+    "freeze_after_unchanged_cycles_is_10": true,
+    "freeze_backstop_cycle_is_200": true,
+    "minimum_consecutive_converged_cycles_matches_spec": true,
+    "shared_ess_initialization_is_standalone": true,
+    "num_max_iters_is_spec_cap": true,
+    "anderson_acceleration_case_file_matches_declaration": true,
+    "anderson_acceleration_case_file_memory_regularization_frozen": true,
+    "persistent_workers_off": true,
+    "parallel_execution_off": true
+   },
+   "max_energy_to_power_ratio_loaded": 10.0,
+   "ratio_reads_during_build": [],
+   "n_ratio_reads_during_build": 0,
+   "read_counter_positive_control_seen": true,
+   "n_blocks": 51,
+   "blocks": {
+    "DSO5|2025|Autumn": {
+     "sha256": "6a6b3132a99b369d4dfb4655698b2acba479b7ef21788b15b68dfb416d36f1cd",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2025|Spring": {
+     "sha256": "d75e838d4aa961063973467a7993f3c41928983cd85dce478585bca496819158",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2025|Summer": {
+     "sha256": "a510f5267319ffcde21ce95c87eef18a9b96da14630dd0df9010d9446f76a967",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2025|Winter": {
+     "sha256": "df1043dd3592e329c9d911da92e3e292ee7d88eb8e889e1070610b796317fba2",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2030|Autumn": {
+     "sha256": "5829c9d5bbd7fdb31e8b46850ab1d19d95234108b8d29531b59b829478ae1a7f",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2030|Spring": {
+     "sha256": "657af14a20a38097eac319091283780759fdccc8d377b108cd8024a6ee36709c",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2030|Summer": {
+     "sha256": "6280c9a598a551bcdf5741d5e5886dbad9452b789d34081daaf96c134d9553d8",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2030|Winter": {
+     "sha256": "f1db351aba4833fa6f96aefaebd2e3f30f5655aa9fcadc4d46e9ca48d3618145",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2035|Autumn": {
+     "sha256": "269ceec9b5d6abb8f4dd8be0db5bcd7b997f4924b09fefc7a4390b1a940e73ee",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2035|Spring": {
+     "sha256": "bd4a437a9bf3ce5556a09ff0c251308728c84c4671406d359435cb78b25fa2d5",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2035|Summer": {
+     "sha256": "63d3066bba69e93ced500b4e6a3fd70ce73daa2ef543703a5953f8e4941eb484",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO5|2035|Winter": {
+     "sha256": "06712e964ecd6af59b63323ab556392f939b8fb49920db985e49c0901bfb64e0",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2025|Autumn": {
+     "sha256": "591d9c8a479cdbdfd6d7d16e4ba9a8f6e3db7b293e2dc223c9bf490e7233ba50",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7779,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2025|Spring": {
+     "sha256": "07f9eaaecf058fc8a992b424b125d58cd2cc05f65d8debd1df396c42da07cbce",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7803,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2025|Summer": {
+     "sha256": "8d57e746af94bbd993a87786632f403c4bb449032e234b7af81e04f66861b880",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7803,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2025|Winter": {
+     "sha256": "4221e84d1e11fb82284b9f93146868087b539ea464f702eec8faa82f3da9bfe9",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7779,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2030|Autumn": {
+     "sha256": "c13d2cc6b5d2dd377d4c36f5c7b285fdec1005eb7e835db8ec4d99f138900d97",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7779,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2030|Spring": {
+     "sha256": "718e56e85385afd9f7cccb3ef4ca53fee2a6e122d85b8fe56a730f7f3da439f3",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7803,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2030|Summer": {
+     "sha256": "9b8a82ee89d340de05e27bc13ce27ae6ade2217cd63c57845ae7822eb9c4aa6d",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7803,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2030|Winter": {
+     "sha256": "30edf5941d2a5ec9a076aa2e6adb0f5fc942e25fea1b9295af108c168b5954e6",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7779,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2035|Autumn": {
+     "sha256": "8793609761aa88b21a164d0c118b8cd601a4a79128653867aa19712c1f7d5992",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7779,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2035|Spring": {
+     "sha256": "52500e95a12f344d859874e86e8838c2f008034956c4fab6c920e79b2ceb44ac",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7803,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2035|Summer": {
+     "sha256": "553454617d97217e40f35681b7e4fddd30b5b7f17efd97218c69e1c182238153",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7803,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO7|2035|Winter": {
+     "sha256": "300dbd795e96ef9be6e7afdc3220f9cef540b93a548ff01bca347bfdadfa2bba",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7779,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2025|Autumn": {
+     "sha256": "f3231f998518bc3bf52c3cc7b239367ca2f37172c28e8c1434288f44cb440715",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2025|Spring": {
+     "sha256": "f3349e99fe7fb0ef7a91e7e1daa653222cbfb8b643480bd1e3d1aaf6a2bf1d0d",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2025|Summer": {
+     "sha256": "5beb1f8d671c7b54be331475a4e48c1625181cc6f6b0de62aaaa93fcd2c451b0",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2025|Winter": {
+     "sha256": "22f847d06e3a41f052f8446612e9d07f11623eed8b422eab5f9a712f4fd00536",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2030|Autumn": {
+     "sha256": "14a9b8a01f3d2baec4683dc75dafc423a63ecee13bde42f4b7681e98121021a0",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2030|Spring": {
+     "sha256": "7b8892792f107cbd6c43e6e86990899de4d4e1a1b164bccf0c84498d601bded1",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2030|Summer": {
+     "sha256": "c2a5c36ac318032f0dd0cb1b116ff7dae7f67db59e011a005c157fcbfe659fd1",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2030|Winter": {
+     "sha256": "f72b507df1a3ebda0f10656202815990184a5b59156b1dc1f82aefb6f2b66a01",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2035|Autumn": {
+     "sha256": "ce03302ae65978a7ca6cffa53ca5aac6eec08cd70b493198da50c5865044be09",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2035|Spring": {
+     "sha256": "687f10db0fbd8a50199bd475454e480a03b333505955904296f75b900639e974",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2035|Summer": {
+     "sha256": "177873b254435ec0f1327f23e682e0b9218baed3750e034dc3d801e69ab0ba71",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7776,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "DSO9|2035|Winter": {
+     "sha256": "adc6681108394fa5949b789bf926b4d31f6da40ee90585425d93cda2f8e2b0a2",
+     "counts": {
+      "params": 1783,
+      "vars": 10882,
+      "constraints": 7740,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "ESSO|node5": {
+     "sha256": "8b6aab882ecc9cee0ef1fc7506a26822a492c37f6336e13697497864ec0e981b",
+     "counts": {
+      "params": 15,
+      "vars": 2949,
+      "constraints": 3231,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "ESSO|node7": {
+     "sha256": "8b6aab882ecc9cee0ef1fc7506a26822a492c37f6336e13697497864ec0e981b",
+     "counts": {
+      "params": 15,
+      "vars": 2949,
+      "constraints": 3231,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "ESSO|node9": {
+     "sha256": "8b6aab882ecc9cee0ef1fc7506a26822a492c37f6336e13697497864ec0e981b",
+     "counts": {
+      "params": 15,
+      "vars": 2949,
+      "constraints": 3231,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2025|Autumn": {
+     "sha256": "223c038d753cfbd981d322f4297d68e7fc5b28777a45af49009af3ac26639067",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3342,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2025|Spring": {
+     "sha256": "0d674aa6d43a985b9a2f57e16eddfe92c3ebabd91d46aa055ee6183be2fb4e93",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3378,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2025|Summer": {
+     "sha256": "fe3d1ff45f5219f25391d358d084cbe821c002cde564d57c3489dc8a337137b7",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3378,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2025|Winter": {
+     "sha256": "67ec2744726ef9742a223d6694110c89aacccecee85ad75eda6139c8eb1caa9f",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3342,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2030|Autumn": {
+     "sha256": "6f39950c00b5bba7137fc7936e7a561ea25a553e756642fd1aefb5798d9f08f4",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3342,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2030|Spring": {
+     "sha256": "c81ea4d07fc38d7ebe0555bde899a7151907bcaa57cffac4acff8b9d226dcf0b",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3378,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2030|Summer": {
+     "sha256": "d99f5a44d23337975bf136148d3990e542c31ecc7ff404207604e58554a6e482",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3378,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2030|Winter": {
+     "sha256": "9e7fc3f618672dd4a44d0dd46d2442290c021e84553aeb5ea8342c325edf7791",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3342,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2035|Autumn": {
+     "sha256": "3953945b6a83e6954aa79df21ca930d8d9e27889a0a1a458b1fdc94aaa0169d0",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3342,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2035|Spring": {
+     "sha256": "3005b4f999cb9e47d257b3695a328d52a16be2ae396c0168215722147fc76808",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3378,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2035|Summer": {
+     "sha256": "2627507784af487a4793f3e05cd56b85d4684861cd77282c94fb28e4afc4fd1d",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3378,
+      "objectives": 1,
+      "blocks": 1
+     }
+    },
+    "TSO|2035|Winter": {
+     "sha256": "4f706c12253e31dd63302e4fd0c10b951cdbf1c344690b5f523535f289f298c6",
+     "counts": {
+      "params": 443,
+      "vars": 3906,
+      "constraints": 3342,
+      "objectives": 1,
+      "blocks": 1
+     }
+    }
+   }
+  }
+ },
+ "comparison": null,
+ "digest_definition": "sha256 of the canonical form of {every Param value (mutable and immutable), every Var (value, raw _lb, raw _ub, fixed), every Constraint (active, lower, upper), every Objective (active), every block active flag} of the block as handed to optimize() at ADMM initialization. Nothing is solved, so the TSO blocks carry the interface values of UNSOLVED DSO blocks (the initial consensus values) rather than solved ones -- the same in both phases",
+ "checks": {
+  "readers_all_classified": true,
+  "readers_none_on_oracle_path": true,
+  "c_star_key_is_pinned_c_star": true,
+  "loaded_ratio_is_file_value": true,
+  "json_key_value_is_expected": true,
+  "no_ratio_read_during_oracle_build": true,
+  "read_counter_positive_control": true,
+  "blocks_48_network_plus_3_esso_per_instance": true,
+  "digest_discriminates_c_star_from_x0_in_every_block": true,
+  "configuration_hook_passed": true,
+  "guard_zero_solves_verified": true
+ },
+ "all_ok": true,
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "wall_clock_s": 31.825318336486816
+}

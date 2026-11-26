@@ -1,0 +1,250 @@
+{
+  "stage": "P5.15-1b",
+  "objective": "EPS_ESSO_THROUGHPUT sensitivity check (Addendum 2, \"eps check before the gates\"): two direct ESSO solves of the same reformulated node-7 instance, differing only in EPS_ESSO_THROUGHPUT (1e-3 vs 1e-7).",
+  "authority": "PLANNER_BRIEF_2026-09-13.md, Addendum 2, bullet \"eps check (before the gates)\"",
+  "construction_commit": "b03c9b14",
+  "construction_source": "p515_1_esso_reform_smoke.py (imported, not reimplemented)",
+  "capture_path_notes": {
+    "gross_operational_cost": "NOT CAPTURED. Production defines gross_operational_cost as the TSO objective plus the sum of DSO objectives (shared_resources_planning.py get_primal_value calls at lines ~727-729); it structurally EXCLUDES the ESSO objective and requires solving the TSO/DSO SMOPFs, which this task's 'no ADMM run, direct ESSO solves only' restriction forbids. There is no quantity in this experiment that convention applies to."
+  },
+  "instance": {
+    "construction_commit": "b03c9b14",
+    "construction_module": "p515_1_esso_reform_smoke.py",
+    "baseline_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+    "smoke_nodes_with_investment": [
+      7,
+      9
+    ],
+    "s_candidate_mva": 1.0,
+    "e_candidate_mvah": 2.0,
+    "amplitude_mw_formula": "0.10 * S_CANDIDATE_MVA",
+    "primary_node_for_this_task": 7
+  },
+  "instance_hash_sha256": "3c86026145760ec438c014d76e2454a4ed517d0c1cbd5e9040b03f437846ee3d",
+  "guard": {
+    "permitted_call_sites": [
+      [
+        "shared_energy_storage_data.py",
+        "_run_solver_attempt"
+      ]
+    ],
+    "expected_solves_declared_in_advance": 6,
+    "observed_counts": {
+      "permitted_solve": 6,
+      "permitted_exec": 6,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+    },
+    "permitted_sites_hit": {
+      "shared_energy_storage_data.py:_run_solver_attempt": 6
+    },
+    "verify_failures": []
+  },
+  "results": {
+    "pnet_displacement": {
+      "convention": "max abs diff in es_pnet[y,d,p] between the two arms, over all (year, day, period), for every active node produced by the production entry point. es_pnet is HARD-FIXED to an eps-independent input in this construction (create_shared_energy_storage_model uses fix_or_set, not an AL penalty) -- see docstring for the reading.",
+      "predeclared_prediction": "< 1e-6 p.u.",
+      "max_abs_diff_all_nodes": 0.0,
+      "max_abs_diff_node_7": {
+        "max_abs_diff": 0.0,
+        "argmax_y_d_p": null
+      },
+      "per_node": {
+        "5": {
+          "max_abs_diff": 0.0,
+          "argmax_y_d_p": null
+        },
+        "7": {
+          "max_abs_diff": 0.0,
+          "argmax_y_d_p": null
+        },
+        "9": {
+          "max_abs_diff": 0.0,
+          "argmax_y_d_p": null
+        }
+      },
+      "argmax": null
+    },
+    "dispatch_displacement_supplementary": {
+      "convention": "max(|pch_a-pch_b|, |pdch_a-pdch_b|) over all active cohort-periods -- the actual free decision in this construction, reported because pnet is fixed and therefore trivially eps-invariant by construction.",
+      "max_abs_diff_all_nodes": 0.07091672697716785,
+      "max_abs_diff_node_7": {
+        "max_abs_diff": 0.07091672697716785,
+        "argmax_y_inv_y_d_p": [
+          0,
+          2,
+          1,
+          0
+        ]
+      },
+      "per_node": {
+        "5": {
+          "max_abs_diff": 0.0,
+          "argmax_y_inv_y_d_p": null
+        },
+        "7": {
+          "max_abs_diff": 0.07091672697716785,
+          "argmax_y_inv_y_d_p": [
+            0,
+            2,
+            1,
+            0
+          ]
+        },
+        "9": {
+          "max_abs_diff": 0.07091672697716785,
+          "argmax_y_inv_y_d_p": [
+            0,
+            2,
+            1,
+            0
+          ]
+        }
+      },
+      "argmax": {
+        "node": 7,
+        "y_inv_y_d_p": [
+          0,
+          2,
+          1,
+          0
+        ],
+        "a": [
+          0.10046293022641624,
+          0.00046293022641805446
+        ],
+        "b": [
+          0.17137965720358408,
+          0.07137965720358172
+        ]
+      }
+    },
+    "complementarity_detector_ratio_form": {
+      "convention": "max over active cohort-periods of min(pch, pdch) / s_max, skipping s_max == 0",
+      "predeclared_prediction": "ratio <= 1e-6 at eps=1e-3; drift upward at eps=1e-7 argues for keeping 1e-3",
+      "eps1e-3": {
+        "max_ratio": 0.0004631922961631556,
+        "argmax": {
+          "node": 7,
+          "y_inv": 0,
+          "y": 0,
+          "d": 0,
+          "p": 12,
+          "pch": 0.0004631922961631556,
+          "pdch": 0.10046319229616135,
+          "s_max": 1.0
+        }
+      },
+      "eps1e-7": {
+        "max_ratio": 0.07137965720358172,
+        "argmax": {
+          "node": 7,
+          "y_inv": 0,
+          "y": 2,
+          "d": 1,
+          "p": 0,
+          "pch": 0.17137965720358408,
+          "pdch": 0.07137965720358172,
+          "s_max": 1.0
+        }
+      }
+    },
+    "complementarity_detector_absolute_form": {
+      "convention": "SharedEnergyStorageData.get_complementarity_violation(models): max(0, min(pch, pdch) - 1e-6 * s_max) over active cohort-periods",
+      "eps1e-3": 0.0004621922961631556,
+      "eps1e-7": 0.07137865720358172
+    },
+    "iterations_and_termination": {
+      "eps1e-3": {
+        "5": {
+          "termination_condition": "optimal",
+          "status": "ok",
+          "n_iterations_primary": 7,
+          "exit_line_primary": "EXIT: Optimal Solution Found.",
+          "recovery_fired": false,
+          "n_iterations_recovery": null,
+          "exit_line_recovery": null
+        },
+        "7": {
+          "termination_condition": "optimal",
+          "status": "ok",
+          "n_iterations_primary": 16,
+          "exit_line_primary": "EXIT: Optimal Solution Found.",
+          "recovery_fired": false,
+          "n_iterations_recovery": null,
+          "exit_line_recovery": null
+        },
+        "9": {
+          "termination_condition": "optimal",
+          "status": "ok",
+          "n_iterations_primary": 16,
+          "exit_line_primary": "EXIT: Optimal Solution Found.",
+          "recovery_fired": false,
+          "n_iterations_recovery": null,
+          "exit_line_recovery": null
+        }
+      },
+      "eps1e-7": {
+        "5": {
+          "termination_condition": "optimal",
+          "status": "ok",
+          "n_iterations_primary": 7,
+          "exit_line_primary": "EXIT: Optimal Solution Found.",
+          "recovery_fired": false,
+          "n_iterations_recovery": null,
+          "exit_line_recovery": null
+        },
+        "7": {
+          "termination_condition": "optimal",
+          "status": "ok",
+          "n_iterations_primary": 12,
+          "exit_line_primary": "EXIT: Optimal Solution Found.",
+          "recovery_fired": false,
+          "n_iterations_recovery": null,
+          "exit_line_recovery": null
+        },
+        "9": {
+          "termination_condition": "optimal",
+          "status": "ok",
+          "n_iterations_primary": 12,
+          "exit_line_primary": "EXIT: Optimal Solution Found.",
+          "recovery_fired": false,
+          "n_iterations_recovery": null,
+          "exit_line_recovery": null
+        }
+      }
+    },
+    "recovery_diagnostics": {
+      "eps1e-3": [],
+      "eps1e-7": []
+    },
+    "objective_and_cost": {
+      "convention": "ESSO model.objective == model.feasibility_penalty (no AL terms; see docstring on why gross_operational_cost has no capture path here). total_* sums over the 3 active nodes (5, 7, 9).",
+      "eps1e-3": {
+        "total_objective_all_active_nodes": 0.042424308355609355,
+        "total_feasibility_penalty_all_active_nodes": 0.042424308355609355,
+        "per_node_objective": {
+          "5": -0.005236363636361883,
+          "7": 0.023830335995985618,
+          "9": 0.023830335995985618
+        }
+      },
+      "eps1e-7": {
+        "total_objective_all_active_nodes": -0.015695167326854765,
+        "total_feasibility_penalty_all_active_nodes": -0.015695167326854765,
+        "per_node_objective": {
+          "5": -0.005236363636361883,
+          "7": -0.005229401845246441,
+          "9": -0.005229401845246441
+        }
+      }
+    }
+  },
+  "decision_rule": {
+    "rule": "G1-G5 run at eps=1e-3 regardless of outcome UNLESS the 1e-3 arm shows a complementarity detector ratio above 1e-6, in which case STOP and report; do not recommend a value.",
+    "eps1e-3_ratio_detector_max": 0.0004631922961631556,
+    "threshold": 1e-06,
+    "eps1e-3_passes_threshold": false,
+    "verdict": "STOP -- 1e-3 arm exceeds the 1e-6 ratio threshold; no value is recommended."
+  }
+}

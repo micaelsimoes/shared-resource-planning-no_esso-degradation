@@ -1,0 +1,21 @@
+% =====================================================================================================================
+% CONCLUSIONS -- replaces the four paragraphs under \section{Conclusions} (the submitted text: 18.25 % / 92.16 %,
+% voltage violations, non-wire alternative, horizon discretization -- none of which the revised results support).
+% Every number below is in Section 4 (4.1 baseline, 4.2 break-even, 4.3 degradation, 4.4 coordination, 4.5 multi-scenario,
+% 4.6 year / discount rate, 4.7 the 15-21 kEUR residual-test movement).
+% =====================================================================================================================
+\textcolor{blue}{
+    This paper presented a degradation-aware framework for planning shared ESSs at TN--DN interface nodes. Planning is formulated as a two-stage stochastic program whose first stage selects a single, discrete investment plan and whose recourse is the coordinated TSO--DSO operation of that plan, a nonconvex problem with AC network models and the ageing of the storage over the horizon. Candidate plans are proposed by a derivative-free search over the lattice of commercial unit sizes and evaluated by consensus-ADMM coordination with a dedicated shared-ESS agent. Because the recourse is nonconvex, the method claims no optimality certificate; instead, each evaluation is certified by an explicit stopping rule, and every planning comparison is reported with the resolution at which it is decided.
+}
+
+\textcolor{blue}{
+    On an integrated 108-bus system, the search returned no investment at the baseline: the reference unit (0.25~MVA / 1~MWh) falls 64.4~k\euro{} short of its investment cost of 318.0~k\euro{}, and every other evaluated plan, from 0.5 to 5~MWh and at one or two nodes, also loses determinately. Degradation decides this result. Without ageing the reference unit is at break-even, within resolution; with ageing it loses 31.6--73.7~k\euro{} across the calibrations tested, and lowering the end-of-life floor from 0.70 to 0.50 does not change the verdict. For 4~h storage at node~7 the break-even energy cost is 171--193~k\euro/MWh, against 254~k\euro/MWh at the baseline, and the reference unit pays at 1.75 and 2 times the base flexibility price; at 2 times, the search returns a two-node plan. The verdict at the baseline holds for discount rates of 0--8\,\%, for deferral of the investment to 2030 or 2035, and on the multi-scenario instance, where the storage value is 7--9\,\% lower. Coordination itself is worth 13.9\,\% of the operating cost, 90.9~M\euro{}, against the best static no-reverse-flow arrangement at the plan without storage, through the dispatch of distribution flexibility against the transmission network's marginal value rather than the wholesale price.
+}
+
+\textcolor{blue}{
+    Two implications follow. For planning, the value of shared storage cannot be assessed apart from its ageing or from the coordination of the operators who share it: on this system, the coordinated operation that would give storage its value is itself the larger benefit, and storage becomes worthwhile where flexibility is expensive. For the method, a residual-based stopping test is not sufficient on a nonconvex recourse: on the reference evaluations the objective moved by a further 15--21~k\euro{} after that test had been passed, the same order as the planning differences reported; stating the resolution of every evaluation is what makes such differences interpretable.
+}
+
+\textcolor{blue}{
+    The search explored plans with one investment year common to all nodes. Per-node timing and staged expansion, which the master problem admits, larger test systems, and an economic tie-breaker for the degenerate interface prices that left some evaluations at high flexibility prices uncertified are the next steps. Future work will also extend the framework to other shared flexibility resources and to richer representations of degradation and uncertainty.
+}

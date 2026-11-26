@@ -1,0 +1,33 @@
+17:15:33 OK   [2] settled summary complete on the fixture (real smoke files + synthetic pricing, W = 2 for a 2-cycle record)
+17:15:33 OK   [2] PR = the independent hand computation (rel 1e-12)
+17:15:33 OK   [2] A = the independent hand computation (rel 1e-12)
+17:15:33 OK   [2] G = the independent hand computation (rel 1e-12)
+17:15:33 OK   [2] PR sign: Q - price + dual (Expert ruling 3): PR = -price + dual
+17:15:33 OK   [2] S = range of F over the last W cycles (rel 1e-12)
+17:15:33 OK   [2] all settled conditions hold on the fixture -> status settled
+17:15:33 OK   [2] settled condition: a cycle without the production certification test -> not_settled, the failed condition named
+17:15:33 OK   [2] settled condition: a cycle not at tail depth -> not_settled, the failed condition named
+17:15:33 OK   [2] a record that stopped before its cap K (2 cycles of K = 3) -> harness_error: F(K) and S do not exist (reached_K False recorded)
+17:15:33 OK   [2] a blocked solve -> not_settled (guards) and gates_pass False
+17:15:33 OK   [2] gates on the fixture: dP 0.01 MW <= 12.5 kW; ESSO slack 2e-6 <= 1e-5; closure 3e-6 p.u. <= 1e-5; D1
+17:15:33 OK   [2] gate boundary: dP = 12.5 kW exactly passes
+17:15:33 OK   [2] gate boundary: dP = 12.6 kW fails
+17:15:33 OK   [2] gate boundary: ESSO slack 2e-5 fails
+17:15:33 OK   [2] gate boundary: closure 2e-5 p.u. fails
+17:15:33 OK   [2] gate boundary: unequal efficiencies across active cohorts fail D1
+17:15:33 OK   [2] leak 25.01 EUR > 25: flagged, NOT in gates_pass (reported)
+17:15:33 OK   [2] a closure row without its dual -> harness_error (incomplete G), never a silent 0
+17:15:33 OK   [2] a non-zero settlement deviation part (not one scenario) -> harness_error (the price derivation fails)
+17:15:33 OK   [2] identity_tolerance: the 1e-6 EUR floor on small totals; 64 u sum|s| on large ones
+17:15:33 OK   [2] settlement fixture sanity: production-order and list-order sums differ, beyond the old 1e-9 x max(1, |T|) form and within the identity tolerance
+17:15:33 OK   [2] cancelling blocks summed in another order than production reconcile with the record (not harness_error)
+17:15:33 OK   [2] settlement identity: record offset 2 x tolerance -> blocks_reconcile_with_record False -> harness_error
+17:15:33 OK   [2] settlement identity: contracted offset 2 x tolerance -> contracted_equals_total False -> harness_error
+17:15:33 OK   [2] settlement identity floor 1e-6 EUR on the small fixture: record offset 9e-07 -> reconcile True
+17:15:33 OK   [2] settlement identity floor 1e-6 EUR on the small fixture: record offset 1.1e-06 -> reconcile False
+17:15:33 OK   [2] pilot records (7, real): record interface_settlement_total == production-order sum of the captured blocks bitwise (and the contracted total likewise) -- summation order, not reduced precision
+17:15:33 OK   [2] pilot records (7, real): list-order sum reconciles under the identity tolerance on all 7; the old 1e-9 form failed on all 7
+17:15:33 OK   [2] the policy's confirm() consumes two mapped settled summaries (shape check)
+17:15:33 OK   [guards] SolveProfileGuard(permitted=()) verify(0) == [] in this parent
+17:15:33 OK   [guards] pickle load/loads 0
+17:15:33 32/32 checks ok; failed: []

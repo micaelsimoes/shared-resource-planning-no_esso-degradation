@@ -1,0 +1,911 @@
+{
+ "schema": "p515_s56_srp1grid_3x3_ev_instance_record_v1",
+ "stage": "P5.15 S56 input preparation (task E): the EV twin of SRP1-3x3 (zero solves)",
+ "utc": "2026-11-21T11:28:06.604734+00:00",
+ "git_head": "f80ec8a9d61c0f1e18d022c2289f712d7e9dc0f9",
+ "script": "p515_s56_build_instances.py",
+ "instance_label": "s56_srp1grid_3x3_ev",
+ "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+ "case_sha256": "45e8e700a547de22b2c9cd2f9373c4307da30764461e647424eca7eb2d1594b3",
+ "profiles_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json",
+ "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729",
+ "scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+ "source_instance": {
+  "label": "s56_srp1grid_3x3",
+  "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+  "scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7"
+ },
+ "case_changes_vs_source_instance": [
+  {
+   "key": "NumMarketScenarios",
+   "from": 3,
+   "to": 1
+  },
+  {
+   "key": "TransmissionNetwork[case9].num_operation_scenarios",
+   "from": 3,
+   "to": 1
+  },
+  {
+   "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+   "from": 3,
+   "to": 1
+  },
+  {
+   "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+   "from": 3,
+   "to": 1
+  },
+  {
+   "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+   "from": 3,
+   "to": 1
+  }
+ ],
+ "case_parses_equal_to_srp1_json": true,
+ "warning": "the EV case file IS SRP1.json's content: read without the injection hook it yields the published draw 0 (checksum 5a02b77c...). The means reach a run only through p515_s56_ev_injection.ScenarioPointHook(profiles=load_profiles(<profiles>)); a child must call p515_s56_ev_injection.assert_ev_arrays(planning, profiles, point=\"post_read\", expected_scenario_checksum=<this record's scenario_checksum>) after its read",
+ "formula": {
+  "market": "Abar[year][day][t] = sum_{s_m} pi_m[year][s_m] * A[year][day][s_m, t], A in {cost_energy_p (EUR/MWh), cost_flex (EUR/MWh)}, pi_m = planning.prob_market_scenarios[year] (production _read_market_data_from_file: [1/NumMarketScenarios] * NumMarketScenarios)",
+  "operation": "Abar[net][year][day][device][t] = sum_{s_o} pi_o[s_o] * A[s_o, t], A in {load.pd, load.qd, load.flexibility.active_power.upward, .downward, load.flexibility.reactive_power.upward, .downward, generator.pg, generator.qg} (p.u. on the network baseMVA, as stored), pi_o = network.prob_operation_scenarios (production _read_network_data: [1/num_oper_scenarios] * n)",
+  "joint_equivalence": "equal to the joint mean over the 9 (s_m, s_o) pairs with weight pi_m * pi_o (production _scenario_probability) because each array depends on one dimension only and the other dimension's weights sum to 1; checked numerically",
+  "evaluation": "numpy float64, np.sum(w[:, None] * A, axis=0), w the production probability vector",
+  "capture_point": "arrays as stored at the entry of shared_resources_planning._compute_scenario_metadata (the production scenario-checksum point: TSO and DSOs read, ADN loads not yet zeroed, shared ESS not yet added); the post-read arrays are compared separately",
+  "what_it_is_not": "no re-derivation of power factor / Q-P ratio, no capacity clipping, no abs() of flexibility bounds (production applies abs() at model build), no re-sampling"
+ },
+ "a5": "reactive-flexibility arrays (flex_q_up, flex_q_down) NOT injected: production's constant np.ones((1, 24)) * EQUALITY_TOLERANCE is kept (S56_DESIGN_NOTE_v1 D2 \"A5 keeps production's constant\"); listed under a5_keys",
+ "a2_a3": "plain probability-weighted means of the arrays as stored (audit A, \"as built\")",
+ "a5_mean_vs_production_constant": {
+  "max_abs_diff_pu": 1.6940658945086007e-21,
+  "n_a5_arrays": 2376,
+  "n_a5_means_bitwise_equal_constant": 0
+ },
+ "loading_route": "production reader p515_s44_scale_measurement.read_planning_from_derived_case on the EV case + p515_s56_ev_injection.ScenarioPointHook (inject) at shared_resources_planning._compute_scenario_metadata",
+ "assertion": {
+  "module": "p515_s56_ev_injection.py",
+  "module_sha256": "98ae3072e8f3a23fcbf912742ba40a47b77ec71a2f0870f752b1cb99f4425f5a",
+  "function": "assert_ev_arrays(planning, profiles, point=\"post_read\", expected_scenario_checksum=None)",
+  "tests": {
+   "ev_checksum_point": {
+    "point": "checksum",
+    "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729",
+    "n_arrays_read": 7728,
+    "n_injected_checked": 5352,
+    "n_a5_checked": 2376,
+    "n_mismatches": 0,
+    "mismatches_first": [],
+    "n_network_market_arrays_bad": 0,
+    "scenario_dimensions": {
+     "num_market_scenarios": 1,
+     "num_oper_scenarios": {
+      "TSO": 1,
+      "DSO5": 1,
+      "DSO7": 1,
+      "DSO9": 1
+     }
+    },
+    "combined_scenario_checksum": null,
+    "expected_scenario_checksum": null,
+    "failures": [],
+    "ok": true
+   },
+   "ev_post_read": {
+    "point": "post_read",
+    "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729",
+    "n_arrays_read": 7728,
+    "n_injected_checked": 5352,
+    "n_a5_checked": 2376,
+    "n_mismatches": 0,
+    "mismatches_first": [],
+    "n_network_market_arrays_bad": 0,
+    "scenario_dimensions": {
+     "num_market_scenarios": 1,
+     "num_oper_scenarios": {
+      "TSO": 1,
+      "DSO5": 1,
+      "DSO7": 1,
+      "DSO9": 1
+     }
+    },
+    "combined_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+    "expected_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+    "failures": [],
+    "ok": true
+   },
+   "srp1_plain_read": {
+    "raised": true,
+    "error": "EV injection assertion FAILED: 4920 of 7728 arrays differ from the stored EV profiles (first: {'key': 'market|energy|2025|Spring', 'what': 'array != stored mean', 'shape': [1, 24], 'max_abs_diff': 23.183297289400485}) | 96 network-block market arrays differ from the stored means (first ['TSO|2025|Spring|cost_energy_p', 'TSO|2025|Spring|cost_flex', 'TSO|2025|Summer|cost_energy_p'])",
+    "summary": {
+     "point": "post_read",
+     "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729",
+     "n_arrays_read": 7728,
+     "n_injected_checked": 5352,
+     "n_a5_checked": 2376,
+     "n_mismatches": 4920,
+     "mismatches_first": [
+      {
+       "key": "market|energy|2025|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 23.183297289400485
+      },
+      {
+       "key": "market|flex|2025|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 3.8271829154129904
+      },
+      {
+       "key": "market|energy|2025|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 11.48210826729347
+      },
+      {
+       "key": "market|flex|2025|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 0.8532524286808609
+      },
+      {
+       "key": "market|energy|2025|Autumn",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 19.922517300014846
+      },
+      {
+       "key": "market|flex|2025|Autumn",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 0.8924192135701645
+      },
+      {
+       "key": "market|energy|2025|Winter",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 4.125681804032098
+      },
+      {
+       "key": "market|flex|2025|Winter",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 0.8515835079045502
+      },
+      {
+       "key": "market|energy|2030|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 22.332908539650674
+      },
+      {
+       "key": "market|flex|2030|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 2.3815254823753946
+      },
+      {
+       "key": "market|energy|2030|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 17.07066441977139
+      },
+      {
+       "key": "market|flex|2030|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 1.72055500889482
+      },
+      {
+       "key": "market|energy|2030|Autumn",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 15.43739502664829
+      },
+      {
+       "key": "market|flex|2030|Autumn",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 1.721629163078191
+      },
+      {
+       "key": "market|energy|2030|Winter",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 5.794633187849854
+      },
+      {
+       "key": "market|flex|2030|Winter",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 2.91103820708787
+      },
+      {
+       "key": "market|energy|2035|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 53.71828466335725
+      },
+      {
+       "key": "market|flex|2035|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 2.480643088264486
+      },
+      {
+       "key": "market|energy|2035|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 18.737643801755155
+      },
+      {
+       "key": "market|flex|2035|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 2.207310146450979
+      }
+     ],
+     "n_network_market_arrays_bad": 96,
+     "scenario_dimensions": {
+      "num_market_scenarios": 1,
+      "num_oper_scenarios": {
+       "TSO": 1,
+       "DSO5": 1,
+       "DSO7": 1,
+       "DSO9": 1
+      }
+     },
+     "combined_scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+     "expected_scenario_checksum": null,
+     "failures": [
+      "4920 of 7728 arrays differ from the stored EV profiles (first: {'key': 'market|energy|2025|Spring', 'what': 'array != stored mean', 'shape': [1, 24], 'max_abs_diff': 23.183297289400485})",
+      "96 network-block market arrays differ from the stored means (first ['TSO|2025|Spring|cost_energy_p', 'TSO|2025|Spring|cost_flex', 'TSO|2025|Summer|cost_energy_p'])"
+     ],
+     "ok": false
+    }
+   },
+   "ev_case_without_injection": {
+    "raised": true,
+    "error": "EV injection assertion FAILED: 4920 of 7728 arrays differ from the stored EV profiles (first: {'key': 'market|energy|2025|Spring', 'what': 'array != stored mean', 'shape': [1, 24], 'max_abs_diff': 23.183297289400485}) | 96 network-block market arrays differ from the stored means (first ['TSO|2025|Spring|cost_energy_p', 'TSO|2025|Spring|cost_flex', 'TSO|2025|Summer|cost_energy_p'])",
+    "summary": {
+     "point": "post_read",
+     "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729",
+     "n_arrays_read": 7728,
+     "n_injected_checked": 5352,
+     "n_a5_checked": 2376,
+     "n_mismatches": 4920,
+     "mismatches_first": [
+      {
+       "key": "market|energy|2025|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 23.183297289400485
+      },
+      {
+       "key": "market|flex|2025|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 3.8271829154129904
+      },
+      {
+       "key": "market|energy|2025|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 11.48210826729347
+      },
+      {
+       "key": "market|flex|2025|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 0.8532524286808609
+      },
+      {
+       "key": "market|energy|2025|Autumn",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 19.922517300014846
+      },
+      {
+       "key": "market|flex|2025|Autumn",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 0.8924192135701645
+      },
+      {
+       "key": "market|energy|2025|Winter",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 4.125681804032098
+      },
+      {
+       "key": "market|flex|2025|Winter",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 0.8515835079045502
+      },
+      {
+       "key": "market|energy|2030|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 22.332908539650674
+      },
+      {
+       "key": "market|flex|2030|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 2.3815254823753946
+      },
+      {
+       "key": "market|energy|2030|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 17.07066441977139
+      },
+      {
+       "key": "market|flex|2030|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 1.72055500889482
+      },
+      {
+       "key": "market|energy|2030|Autumn",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 15.43739502664829
+      },
+      {
+       "key": "market|flex|2030|Autumn",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 1.721629163078191
+      },
+      {
+       "key": "market|energy|2030|Winter",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 5.794633187849854
+      },
+      {
+       "key": "market|flex|2030|Winter",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 2.91103820708787
+      },
+      {
+       "key": "market|energy|2035|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 53.71828466335725
+      },
+      {
+       "key": "market|flex|2035|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 2.480643088264486
+      },
+      {
+       "key": "market|energy|2035|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 18.737643801755155
+      },
+      {
+       "key": "market|flex|2035|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        1,
+        24
+       ],
+       "max_abs_diff": 2.207310146450979
+      }
+     ],
+     "n_network_market_arrays_bad": 96,
+     "scenario_dimensions": {
+      "num_market_scenarios": 1,
+      "num_oper_scenarios": {
+       "TSO": 1,
+       "DSO5": 1,
+       "DSO7": 1,
+       "DSO9": 1
+      }
+     },
+     "combined_scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+     "expected_scenario_checksum": null,
+     "failures": [
+      "4920 of 7728 arrays differ from the stored EV profiles (first: {'key': 'market|energy|2025|Spring', 'what': 'array != stored mean', 'shape': [1, 24], 'max_abs_diff': 23.183297289400485})",
+      "96 network-block market arrays differ from the stored means (first ['TSO|2025|Spring|cost_energy_p', 'TSO|2025|Spring|cost_flex', 'TSO|2025|Summer|cost_energy_p'])"
+     ],
+     "ok": false
+    }
+   },
+   "ev_read_wrong_checksum": {
+    "raised": true,
+    "error": "EV injection assertion FAILED: combined scenario checksum 0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de != expected 5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+    "summary": {
+     "point": "post_read",
+     "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729",
+     "n_arrays_read": 7728,
+     "n_injected_checked": 5352,
+     "n_a5_checked": 2376,
+     "n_mismatches": 0,
+     "mismatches_first": [],
+     "n_network_market_arrays_bad": 0,
+     "scenario_dimensions": {
+      "num_market_scenarios": 1,
+      "num_oper_scenarios": {
+       "TSO": 1,
+       "DSO5": 1,
+       "DSO7": 1,
+       "DSO9": 1
+      }
+     },
+     "combined_scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+     "expected_scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+     "failures": [
+      "combined scenario checksum 0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de != expected 5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358"
+     ],
+     "ok": false
+    }
+   },
+   "sp_read": {
+    "raised": true,
+    "error": "EV injection assertion FAILED: scenario dimensions are not 1: {'num_market_scenarios': 3, 'num_oper_scenarios': {'TSO': 3, 'DSO5': 3, 'DSO7': 3, 'DSO9': 3}} | planning.prob_market_scenarios is not [1.0] in every year | 48 network blocks without [1.0] probabilities (first ['TSO|2025|Spring', 'TSO|2025|Summer', 'TSO|2025|Autumn']) | 7728 of 7728 arrays differ from the stored EV profiles (first: {'key': 'market|energy|2025|Spring', 'what': 'array != stored mean', 'shape': [3, 24], 'max_abs_diff': None}) | 96 network-block market arrays differ from the stored means (first ['TSO|2025|Spring|cost_energy_p', 'TSO|2025|Spring|cost_flex', 'TSO|2025|Summer|cost_energy_p'])",
+    "summary": {
+     "point": "post_read",
+     "profiles_sha256": "f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729",
+     "n_arrays_read": 7728,
+     "n_injected_checked": 5352,
+     "n_a5_checked": 2376,
+     "n_mismatches": 7728,
+     "mismatches_first": [
+      {
+       "key": "market|energy|2025|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|flex|2025|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|energy|2025|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|flex|2025|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|energy|2025|Autumn",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|flex|2025|Autumn",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|energy|2025|Winter",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|flex|2025|Winter",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|energy|2030|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|flex|2030|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|energy|2030|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|flex|2030|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|energy|2030|Autumn",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|flex|2030|Autumn",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|energy|2030|Winter",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|flex|2030|Winter",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|energy|2035|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|flex|2035|Spring",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|energy|2035|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      },
+      {
+       "key": "market|flex|2035|Summer",
+       "what": "array != stored mean",
+       "shape": [
+        3,
+        24
+       ],
+       "max_abs_diff": null
+      }
+     ],
+     "n_network_market_arrays_bad": 96,
+     "scenario_dimensions": {
+      "num_market_scenarios": 3,
+      "num_oper_scenarios": {
+       "TSO": 3,
+       "DSO5": 3,
+       "DSO7": 3,
+       "DSO9": 3
+      }
+     },
+     "combined_scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+     "expected_scenario_checksum": null,
+     "failures": [
+      "scenario dimensions are not 1: {'num_market_scenarios': 3, 'num_oper_scenarios': {'TSO': 3, 'DSO5': 3, 'DSO7': 3, 'DSO9': 3}}",
+      "planning.prob_market_scenarios is not [1.0] in every year",
+      "48 network blocks without [1.0] probabilities (first ['TSO|2025|Spring', 'TSO|2025|Summer', 'TSO|2025|Autumn'])",
+      "7728 of 7728 arrays differ from the stored EV profiles (first: {'key': 'market|energy|2025|Spring', 'what': 'array != stored mean', 'shape': [3, 24], 'max_abs_diff': None})",
+      "96 network-block market arrays differ from the stored means (first ['TSO|2025|Spring|cost_energy_p', 'TSO|2025|Spring|cost_flex', 'TSO|2025|Summer|cost_energy_p'])"
+     ],
+     "ok": false
+    }
+   }
+  }
+ },
+ "derived_instance_declaration_draft": {
+  "instance_label": "s56_srp1grid_3x3_ev",
+  "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev.json",
+  "case_sha256": "45e8e700a547de22b2c9cd2f9373c4307da30764461e647424eca7eb2d1594b3",
+  "scenario_checksum": "0040b1463046cf09c3bb8c4f95d839f7871ac88b8522a720da8484cbcf6690de",
+  "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+  "changes_vs_source": [
+   {
+    "key": "NumMarketScenarios",
+    "from": 3,
+    "to": 1
+   },
+   {
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "from": 3,
+    "to": 1
+   },
+   {
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "from": 3,
+    "to": 1
+   },
+   {
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "from": 3,
+    "to": 1
+   },
+   {
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "from": 3,
+    "to": 1
+   },
+   {
+    "key": "scenario arrays (all but A5)",
+    "from": "production synthesis at one scenario (= the published draw 0)",
+    "to": "probability-weighted means of s56_srp1grid_3x3, injected at shared_resources_planning._compute_scenario_metadata from data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3_ev_profiles.json (sha256 f48e9be57aa7e44508e703a32168bc1c99c657f77a11b9210aa51c949e881729)"
+   }
+  ]
+ },
+ "declaration_note": "format-validated with p515_s44_campaign_harness.validate_derived_instance only; the harness child refuses a one-scenario derived instance (S56_DESIGN_NOTE_v1, corrections) and has no injection plumbing -- a harness change, not made here",
+ "object_walk_vs_source_instance": {
+  "n_leaves_compared": 41169,
+  "n_diffs": 0,
+  "diffs_first": [],
+  "uncompared_types": {},
+  "excluded_attribute_hits": {
+   "SharedResourcesPlanning.cost_energy_p": 1,
+   "SharedResourcesPlanning.cost_flex": 1,
+   "SharedResourcesPlanning.diagrams_dir": 1,
+   "SharedResourcesPlanning.filename": 1,
+   "SharedResourcesPlanning.logs_dir": 1,
+   "SharedResourcesPlanning.num_market_scenarios": 1,
+   "SharedResourcesPlanning.prob_market_scenarios": 1,
+   "SharedResourcesPlanning.results_dir": 1,
+   "SharedResourcesPlanning.scenario_metadata": 1,
+   "NetworkData.cost_energy_p": 4,
+   "NetworkData.cost_flex": 4,
+   "NetworkData.diagrams_dir": 4,
+   "NetworkData.logs_dir": 4,
+   "NetworkData.num_oper_scenarios": 4,
+   "NetworkData.results_dir": 4,
+   "Network.cost_energy_p": 48,
+   "Network.cost_flex": 48,
+   "Network.diagrams_dir": 48,
+   "Network.logs_dir": 48,
+   "Network.num_oper_scenarios": 48,
+   "Network.prob_market_scenarios": 48,
+   "Network.prob_operation_scenarios": 48,
+   "Network.results_dir": 48,
+   "Load.pd": 1188,
+   "Load.qd": 1188,
+   "LoadFlexibilityDirection.downward": 2376,
+   "LoadFlexibilityDirection.upward": 2376,
+   "Generator.pg": 288,
+   "Generator.qg": 288,
+   "SharedEnergyStorageData.cost_energy_p": 1,
+   "SharedEnergyStorageData.logs_dir": 1,
+   "SharedEnergyStorageData.results_dir": 1
+  }
+ },
+ "all_checks_pass": true,
+ "failed_checks": [],
+ "solve_claim": "ZERO SOLVES, guard-verified",
+ "guards": {
+  "own": {
+   "label": "P5.15 S56 build instances (never solves)",
+   "permitted": [],
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0": []
+  },
+  "audit_A_module": {
+   "label": "P5.15 S56 input audit A (never solves)",
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0": []
+  },
+  "s55_module": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0": []
+  },
+  "pb_parent": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0": []
+  },
+  "s55_pickle_counts": {
+   "load": 0,
+   "loads": 0
+  }
+ }
+}

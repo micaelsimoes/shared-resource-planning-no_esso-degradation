@@ -1,0 +1,34 @@
+20:40:06 [S52-REPRO] memory preflight: available (memsize - wired - anonymous - compressor) = 20.26 GiB; free+inactive = 16.26 GiB (recorded only); required 11.00 GiB (hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 7 GiB + 4 GiB (one terminal-phase transient at a time: the harness terminal-phase lock)) -> PASS
+20:40:06 [S52-REPRO] P5.15 Addendum 39 (W47) -- the multi-scenario pilot (Addendum 36): paper years x 4 days x 2 market x 2 operation scenarios, row 18 at alpha = 0.50, baseline ageing, AA-on
+20:40:06 [S52-REPRO] preconditions passed; spec data/SRP1/Results/P515S52/campaign_s52_pilot_repro_nopersist/campaign_spec_s52_pilot_repro_nopersist_2d0fccd5.json sha256=2d0fccd5414e1a33a9ee9e3e66012784e13255d492fabc9021a7cbcad8f30568; git HEAD f2174d7cb00e79efaa251655ec8fd1eef031e02e (spec frozen at bc937cde327228e1bb3b2e574aaff9acd6d8a2d0); points ['x0'], one wave at concurrency 1, cap 2
+20:40:06 [S52-REPRO] campaign lock acquired: {'pid': 8669, 'campaign_id': 's52_pilot_repro_nopersist', 'campaign_spec_sha256': '2d0fccd5414e1a33a9ee9e3e66012784e13255d492fabc9021a7cbcad8f30568', 'started_utc': '2026-09-23T20:40:06.980101+00:00'}
+20:40:06 [S44-HARNESS] launched x0 (key 8435c71859ddde68) pid=8699
+20:40:06 [S44-HARNESS] heartbeat x0: 0s cycle=None
+20:41:07 [S44-HARNESS] heartbeat x0: 60s cycle=None
+20:42:07 [S44-HARNESS] heartbeat x0: 120s cycle=None
+20:43:07 [S44-HARNESS] heartbeat x0: 180s cycle=None
+20:44:07 [S44-HARNESS] heartbeat x0: 240s cycle=None
+20:45:07 [S44-HARNESS] heartbeat x0: 300s cycle=None
+20:46:07 [S44-HARNESS] heartbeat x0: 360s cycle=None
+20:47:07 [S44-HARNESS] heartbeat x0: 421s cycle=None
+20:48:07 [S44-HARNESS] heartbeat x0: 481s cycle=1
+20:49:07 [S44-HARNESS] heartbeat x0: 541s cycle=1
+20:50:07 [S44-HARNESS] heartbeat x0: 601s cycle=1
+20:51:07 [S44-HARNESS] heartbeat x0: 661s cycle=1
+20:52:08 [S44-HARNESS] heartbeat x0: 721s cycle=2
+20:53:08 [S44-HARNESS] heartbeat x0: 781s cycle=2
+20:54:08 [S44-HARNESS] heartbeat x0: 841s cycle=2
+20:55:08 [S44-HARNESS] heartbeat x0: 901s cycle=2
+20:56:08 [S44-HARNESS] heartbeat x0: 961s cycle=2
+20:57:08 [S44-HARNESS] heartbeat x0: 1021s cycle=2
+20:58:08 [S44-HARNESS] heartbeat x0: 1082s cycle=2
+20:58:38 [S44-HARNESS] finished x0 pid=8699 exit=0 status=not_certified wall=1112s
+20:58:38 [S52-REPRO] campaign lock released
+20:58:38 [S52-REPRO] objective convention: Q(x) = certified_cost = gross_operational_cost (_get_operational_recourse_components: the CONTRACTED interface settlement and the solver-only interface-voltage pin excluded; the row 18 charge and the price-deviation covariance -- the settlement DEVIATION part -- included, Addendum 38 (C)); value = Q(0) - Q(x); F = I + Q; terminal salvage and net_operational_recourse = gross - salvage reported, excluded.
+20:58:38 [S52-REPRO] {'label': 'x0', 'status': 'not_certified', 'cycles': 2, 'cert_cycle': None, 'Q_gross': None, 'bar': 1426944445.6532838, 'rule_ten_production': 4680.694644936683, 'sigma_ratio': 0.4893821273263238, 'rms_mw_max_over_all_dso_blocks': 12.263207951758574, 'E_abs_d_mwh_sum_over_blocks': 740.0565984307779, 'row18_charge_weighted': 15944512.794179576, 'hull_polish_pass': None, 'cycle_time_s': 360.8415373961131, 'wall_s': 1111.5684962272644, 'peak_rss_bytes': 12855246848}
+20:58:38 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+20:58:38 !!! SIGMA x0: sigma_computed=45823471.669766165 sigma_fixed=93635360.0 ratio=0.4893821273263238 band=[0.3333333333333333, 3.0] ratio/lower_edge=1.4681463819789715 within_band=True
+20:58:38 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+20:58:38 [S52-REPRO] non-certified points (reported with cause): [('x0', 'cap reached without certification')]
+20:58:38 [S52-REPRO] parent guard {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} verify0_failures=[]
+20:58:38 [S52-REPRO] OK

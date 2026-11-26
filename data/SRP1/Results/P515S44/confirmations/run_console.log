@@ -1,0 +1,20 @@
+[S44-A26] item 1 ...
+[S44-A26] item 2 ...
+[S44-A26] item 3 ...
+[S44-A26] item 4 ...
+[S44-A26] guard counts {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} verify(0) failures []
+[S44-A26] item 1: The committed file on this branch (blob 5ef61f5d, sha256 1458147446e9b701...) is byte-identical to the working copy. The repository holds 1 content-changing commit(s) to this exact path that are NOT ancestors of HEAD: 7ce1d1ab 2026-07-29T18:49:57+01:00 'Costs updated.' on paper_revisions, remotes/origin/paper_revisions. HEAD carries the version those commits replaced (parent blob == HEAD blob: True). Therefore the committed file on this branch is NOT the latest cost update present in the repository. Whether that update is the "correction" Addendum 26 refers to cannot be established from the repository: no document found by the recorded search names a commit, blob or hash for the corrected file.
+[S44-A26] item 2 committed paper_plan: I=1073285.01 slack=-73285.01 feasible=False (investment budget violated)
+[S44-A26] item 2 committed c_star: I=3105984.62 slack=-2105984.62 feasible=False (investment budget violated)
+[S44-A26] item 2 committed lattice_c_star: I=3206177.68 slack=-2206177.68 feasible=False (investment budget violated)
+[S44-A26] item 2 committed lattice_paper_plan: I=993782.41 slack=6217.59 feasible=True ()
+[S44-A26] item 2 committed node7_empty: I=2070656.42 slack=-1070656.42 feasible=False (investment budget violated)
+[S44-A26] item 2 committed two_c_star: I=6211969.25 slack=-5211969.25 feasible=False (maximum energy capacity violated at node 5, year 2025; maximum energy capacity violated at node 5, year 2030; maximum energy capacity violated at node 5, year 2035; maximum energy capacity violated at node 7, year 2025; maximum energy capacity violated at node 7, year 2030; maximum energy capacity violated at node 7, year 2035; maximum energy capacity violated at node 9, year 2025; maximum energy capacity violated at node 9, year 2030; maximum energy capacity violated at node 9, year 2035; investment budget violated)
+[S44-A26] item 2 committed zero: I=0.00 slack=1000000.00 feasible=True ()
+[S44-A26] item 2 blob 8a7e3744 paper_plan: I=1237797.74 slack=-237797.74
+[S44-A26] item 2 blob 8a7e3744 c_star: I=3696250.22 slack=-2696250.22
+[S44-A26] item 2 blob 8a7e3744 lattice_c_star: I=3815484.10 slack=-2815484.10
+[S44-A26] item 2 blob 8a7e3744 lattice_paper_plan: I=1146109.02 slack=-146109.02
+[S44-A26] item 3 steps: [('1 oracle construction (_construct_arm_pl', True), ('2 first-stage feasibility at x = 0', True), ('3 create_admm_variables', True), ('4 create_distribution_networks_models (s', True), ('5 create_transmission_network_model (opt', True), ('6 create_shared_energy_storage_model (bu', True), ('7 production initialization-success chec', True), ('8a _prepare_distribution/transmission_ob', True), ('8b _compute_common_admm_objective_scale ', False), ('8c ESSO AL scale, update_*_to_admm (TSO/', True), ('9 S_ref normalization at x = 0 (the sing', True), ('10 ESSO structure after ADMM preparation', True), ('11 get_updated_capacities (published to ', True), ('12 ESSO coordination update, cycle 1 (pa', True), ('13 ADMM residual metrics (legacy + Boyd)', True), ('14 evaluator captures on the x = 0 ESSO ', True)]
+[S44-A26] item 3 interceptor: {'declared': {'dso': 3, 'tso': 1, 'esso_init': 1, 'esso_coordination': 1}, 'observed': {'dso': 3, 'tso': 1, 'esso_init': 1, 'esso_coordination': 1}, 'exact_match': True}
+[S44-A26] done

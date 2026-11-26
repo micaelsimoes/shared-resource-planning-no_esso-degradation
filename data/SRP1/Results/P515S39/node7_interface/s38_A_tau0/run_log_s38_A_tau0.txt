@@ -1,0 +1,23 @@
+P5.15 Addendum 21 item (3): node 7 interface zero-solve look
+run_dir = /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S38_A_TAU0_run
+label   = s38_A_tau0
+timestamp_utc = 2026-09-17T17:21:25.583650+00:00
+instance (from g_s38_A_tau0.json): {'s_mva': 0.96875, 'e_mwh': 3.875, 'year': 2025, 'assignment': 'uniform across active nodes (control/perturbation)'}
+cycles_run=133, converged_at_cycle=131, gross_operational_cost=651000017.0637478
+reading PF per-entry stride (last 30 cycles + full-file line count): /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S38_A_TAU0_run/pf_entry_stride_s38_A_tau0.jsonl
+  133 cycle-rows (stride 1, so 133 cycles captured)
+  stop cycle (last captured row) = 133; identity holds on last 30 rows = True (max rel_err_r=3.047e-16, max rel_err_s=3.526e-16)
+computing interface-flow utilization (S = sqrt(P^2+Q^2)) vs interface_rating at the stop cycle
+  node 7 max utilization_s = 1.0000050030485044
+reading terminal interface voltage: /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S38_A_TAU0_run/interface_voltage_terminal.json
+  node 7 min distance to voltage bound (pu) = 3.5903658275326933e-06
+reading interface settlement detail (flexibility usage): /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S38_A_TAU0_run/interface_settlement_detail_s31c.json
+reading component levels terminal (per-block flexibility cost): /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S38_A_TAU0_run/component_levels_terminal.json
+reading ESS entry stride (stop row): /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S38_A_TAU0_run/ess_entry_stride_baseline.jsonl
+  node 7 max storage utilization (S/rated) at stop = 1.0000342526782562
+reading SoH floor sidecar (stop row): /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S38_A_TAU0_run/soh_floor_sidecar_baseline.jsonl
+unpickling ESSO models (zero-solve, cross-check only): /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S38_A_TAU0_run/esso_models_s38_A_tau0.pkl
+IPOPT terminal-cycle log check (best-effort, read-only, not required for the analysis above):
+  IPOPT log directory: /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s38_a_tau0_arm/logs
+SolveProfileGuard.verify(0): OK -- zero solves for the whole script
+wrote /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S39/node7_interface/s38_A_tau0/node7_interface_s38_A_tau0.json

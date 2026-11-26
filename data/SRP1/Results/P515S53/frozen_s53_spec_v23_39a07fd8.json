@@ -1,0 +1,73 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 40 (rulings 1-4 and the Step 5 design item)",
+  "P5_15_ADDENDUM39_PILOT_REPORT.md (accepted in full)"
+ ],
+ "order": [
+  "F2 certificate (SRP1)",
+  "init fix + SRP1 bitwise gate",
+  "alpha row (2x2, x = 0, certified) + the unit re-run at alpha = 0.5",
+  "3x3 selection rule and R prediction (zero solves)",
+  "author's route confirmation",
+  "3x3 pair",
+  "uncoordinated benchmark definition (Advisor) then Step 5"
+ ],
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S52/frozen_s52_spec_v22_5d8df1e8.json",
+  "sha256": "5d8df1e8fe7f3741a3e03167937881ac85c47fd713fe6aa7b938e3113106fe1c"
+ },
+ "ruling1_alpha_row": {
+  "concurrency": 2,
+  "predictions_recorded_before_run": {
+   "planner": [
+    "at certified points the market-arbitrage part of sum omega d^2 falls monotonically with alpha and the earned covariance shrinks toward 0, as the 2-cycle sweep showed for that component",
+    "the operation part does NOT fall to zero: it is physical recourse, so dispersion plateaus rather than vanishing; I expect no alpha in this range to reach the 1e-2 MW tolerance",
+    "Q(0) rises with alpha, since the premium is a real cost inside Q: monotone increase across the row",
+    "the non-monotonicity seen at 2 cycles does NOT survive certification - if it does, that is a finding about the formulation rather than the coordination state"
+   ]
+  },
+  "what": "alpha in {0, 0.1, 0.25, 0.5, 1.0} at x = 0 on the 2x2 instance, CERTIFIED (not 2-cycle), after the init fix; report per alpha: dispersion (RMS share of mean flow, peak), the arbitrage/operation split of sum omega d^2, the covariance earned, the row-18 charge, and Q(0) - the cost-of-commitment curve"
+ },
+ "ruling2_init_fix": {
+  "gate": "SRP1 two-cycle bitwise identity (inert at one scenario)",
+  "predictions_recorded_before_run": {
+   "planner": [
+    "the SRP1 bitwise gate passes unchanged (nothing is wired at one scenario)",
+    "the re-run unit value stays within 10,000 EUR (~4 %) of the pilot's 244,321, since the certified point should not depend on the initialisation economy; a larger shift would itself be a finding about path dependence",
+    "the restated R ratio stays within 0.01 of 0.942"
+   ]
+  },
+  "supersedes": "the pilot's alpha > 0 artifacts: the alpha row re-runs alpha = 0.5 at x = 0, and the smallest node-7 unit at alpha = 0.5 is re-run once so the pilot pair stays consistent; the R comparison is restated on the re-run",
+  "what": "row 18 INACTIVE at the initialisation solve, activated with the settlement weight (the Advisor's minimal fix, using the existing mutable row18_alpha Param); the uncoordinated benchmark already passes alpha = 0 with that reason recorded"
+ },
+ "ruling3_3x3": {
+  "R_prediction": "computed zero-solve from the selected set's renormalized mean profile, in the same way as the confirmed R = 0.937, and recorded BEFORE the run",
+  "alpha_row_stays": "2x2",
+  "optional": "the 5x5 pair (~78 h each) at the end as a confirmation row, not a requirement - the confirmed R makes it so",
+  "runs": "the headline pair (x = 0 and the smallest node-7 4 h unit) at concurrency 2, about 16 h per evaluation, after the author confirms the route",
+  "selection_rule": "the three MARKET scenarios whose renormalized (probability-renormalized) mean price profile has a 4 h spread closest to the five-scenario mean profile's 91.7 EUR/MWh; three OPERATION scenarios spanning low / mid / high RES availability. Both recorded with the metric and the losing candidates before any run"
+ },
+ "ruling4_F2_certificate": {
+  "predictions_recorded_before_run": {
+   "planner": [
+    "the incumbent sits 7,732 EUR under the budget, so most unit neighbours that add capacity are budget-infeasible and will be snapped or rejected; I expect <= 18 evaluations in the first poll",
+    "more likely than not (~60/40) the poll fails and the certificate holds at the incumbent; the alternative is one further move toward more 2030 capacity at another node",
+    "no barrier points"
+   ]
+  },
+  "runs_first": "before the initialisation fix, since it needs none of the multi-scenario code",
+  "what": "SRP1, flexibility price m = 2, from the committed incumbent y2030 n5 0.25/0.5 + n7 1.0/3.5 (I = 992,268, F = 810,787,758.2559508, campaign s51_f2_phase_b, 0012d85b): the STANDARD unit poll - 2n OrthoMADS directions rounded to the lattice, infeasible ones SNAPPED to the nearest feasible lattice point, the completion set added ONLY if fewer than n + 1 feasible poll points remain (completion cap 30 stays); iterate on success; cap the continuation at 60 new evaluations; report the certificate or the exhaustion"
+ },
+ "stage": "P5.15 Addendum 40 - F2 certificate; row-18 initialisation fix; R3.6 alpha row (settled, 2x2); 3x3 selection and R prediction",
+ "step5_next_design_item": "the UNCOORDINATED BENCHMARK must be defined before it is run - what each agent assumes about the interface, how the resulting operating point is made consistent and costed, and that its economy (alpha = 0, unpriced import) differs from the coordinated one. ADVISOR REVIEW OF THE DEFINITION FIRST",
+ "stop": "STOP FOR REVIEW after the alpha row, with the 3x3 prediction attached",
+ "withdrawn_and_confirmed": {
+  "confirmed": "P5_15_ADDENDUM39_PILOT_REPORT.md section 5's manuscript paragraph, as proposed: the premium prices away market-scenario arbitrage; residual dispersion at alpha = 0.5 is the operation scenarios differing physically",
+  "methodological_footnote": "alpha thresholds cannot be read from unsettled arms: at cycle 2 the coordination gap prices deviation at ~225 EUR/MWh against a premium of 5-10 EUR/MWh. Only certified sweeps count",
+  "withdrawn": [
+   "Addendum 39's premise that alpha = 0.50 is a schedule-honouring regime",
+   "the 'unpriced upward flexibility' explanation (spec v22 manuscript_convention)",
+   "the curtail-and-reimport explanation as a statement about the coordinated problem - it belongs to the initialisation economy"
+  ]
+ }
+}

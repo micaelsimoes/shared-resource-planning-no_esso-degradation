@@ -1,0 +1,2161 @@
+{
+ "stage": "P5.5-A inventory",
+ "git_head": "e11b0b0560b95446e16a395dec8576e19dd72472",
+ "timestamp_utc": "2026-09-07T17:39:39.831475+00:00",
+ "tso": {
+  "name": "case9",
+  "year": 2025,
+  "day": "Spring",
+  "baseMVA": 100.0,
+  "num_instants": 24,
+  "topology": {
+   "n_nodes": 9,
+   "n_branches_after_preprocess": 9,
+   "n_distinct_pairs": 9,
+   "n_components": 1,
+   "cyclomatic": 1,
+   "radial": false,
+   "n_transformers": 0,
+   "transformers": [],
+   "n_branches_with_line_charging": 6,
+   "n_branches_with_shunt_conductance": 0,
+   "n_nodes_with_fixed_shunt": 0,
+   "generator_types": {}
+  },
+  "params": {
+   "obj_type": 1,
+   "transf_reg": true,
+   "es_reg": true,
+   "fl_reg": true,
+   "rg_curt": true,
+   "l_curt": false,
+   "enforce_vg": false,
+   "branch_limit_type": 3,
+   "ess_model": 2,
+   "shared_ess_model": 2
+  },
+  "n_shared_ess": 3,
+  "n_ordinary_ess": 0,
+  "n_generators": 9,
+  "n_loads": 3,
+  "model": {
+   "label": "TSO case9",
+   "vars": {
+    "e": {
+     "n": 216,
+     "domain": "Reals",
+     "sample_bounds": [
+      0.0,
+      1.1501000000000001
+     ],
+     "n_fixed": 0
+    },
+    "f": {
+     "n": 216,
+     "domain": "Reals",
+     "sample_bounds": [
+      -1e-05,
+      1e-05
+     ],
+     "n_fixed": 0
+    },
+    "slack_v_sqr_down": {
+     "n": 216,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      0.0
+     ],
+     "n_fixed": 0
+    },
+    "slack_v_sqr_up": {
+     "n": 216,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      0.0
+     ],
+     "n_fixed": 0
+    },
+    "vmag": {
+     "n": 72,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.85,
+      1.1500000000000001
+     ],
+     "n_fixed": 0
+    },
+    "vmag_sqr": {
+     "n": 216,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.81,
+      1.2100000000000002
+     ],
+     "n_fixed": 0
+    },
+    "voltage_product_real": {
+     "n": 216,
+     "domain": "Reals",
+     "sample_bounds": [
+      null,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "voltage_product_imag": {
+     "n": 216,
+     "domain": "Reals",
+     "sample_bounds": [
+      null,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "pg": {
+     "n": 216,
+     "domain": "Reals",
+     "sample_bounds": [
+      -1e-05,
+      2.50001
+     ],
+     "n_fixed": 0
+    },
+    "qg": {
+     "n": 216,
+     "domain": "Reals",
+     "sample_bounds": [
+      -3.00001,
+      3.00001
+     ],
+     "n_fixed": 0
+    },
+    "pc": {
+     "n": 72,
+     "domain": "Reals",
+     "sample_bounds": [
+      -1e-05,
+      1e-05
+     ],
+     "n_fixed": 0
+    },
+    "qc": {
+     "n": 72,
+     "domain": "Reals",
+     "sample_bounds": [
+      -1e-05,
+      1e-05
+     ],
+     "n_fixed": 0
+    },
+    "flex_p_up": {
+     "n": 72,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      0.12656369677545673
+     ],
+     "n_fixed": 0
+    },
+    "flex_p_down": {
+     "n": 72,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      0.1576010319026867
+     ],
+     "n_fixed": 0
+    },
+    "flex_q_up": {
+     "n": 72,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      2e-05
+     ],
+     "n_fixed": 0
+    },
+    "flex_q_down": {
+     "n": 72,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      2e-05
+     ],
+     "n_fixed": 0
+    },
+    "r": {
+     "n": 216,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.99999,
+      1.00001
+     ],
+     "n_fixed": 0
+    },
+    "r_sqr": {
+     "n": 216,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "pij": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "qij": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "pji": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "qji": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "es_pch": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "es_pdch": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "es_pch_hat": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "es_pdch_hat": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "es_pnet": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "es_qnet": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "es_soc": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "slack_es_soc_final_up": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "slack_es_soc_final_down": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "shared_es_s_rated": {
+     "n": 3,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "shared_es_e_rated": {
+     "n": 3,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "shared_es_pch": {
+     "n": 72,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "shared_es_pdch": {
+     "n": 72,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "shared_es_pch_hat": {
+     "n": 72,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      1.0
+     ],
+     "n_fixed": 0
+    },
+    "shared_es_pdch_hat": {
+     "n": 72,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      1.0
+     ],
+     "n_fixed": 0
+    },
+    "shared_es_pnet": {
+     "n": 72,
+     "domain": "Reals",
+     "sample_bounds": [
+      null,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "shared_es_qnet": {
+     "n": 72,
+     "domain": "Reals",
+     "sample_bounds": [
+      null,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "shared_es_soc": {
+     "n": 72,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "slack_shared_es_soc_final_up": {
+     "n": 3,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "slack_shared_es_soc_final_down": {
+     "n": 3,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    }
+   },
+   "params": {
+    "pg_avail": {
+     "n": 216,
+     "mutable": false
+    },
+    "sg_avail": {
+     "n": 216,
+     "mutable": false
+    },
+    "shared_es_s_rated_fixed": {
+     "n": 3,
+     "mutable": true
+    },
+    "shared_es_e_rated_fixed": {
+     "n": 3,
+     "mutable": true
+    },
+    "penalty_ess_usage": {
+     "n": 1,
+     "mutable": true
+    },
+    "cost_load_curtailment": {
+     "n": 1,
+     "mutable": true
+    },
+    "penalty_gen_curtailment": {
+     "n": 1,
+     "mutable": true
+    }
+   },
+   "expressions": {
+    "sg_sqr": {
+     "n": 216,
+     "sample": "0.0"
+    },
+    "pg_node": {
+     "n": 216,
+     "sample": "pg[0,0,0,0]"
+    },
+    "qg_node": {
+     "n": 216,
+     "sample": "qg[0,0,0,0]"
+    },
+    "pc_node": {
+     "n": 216,
+     "sample": "0.0"
+    },
+    "qc_node": {
+     "n": 216,
+     "sample": "0.0"
+    },
+    "flow_ij_sqr": {
+     "n": 216,
+     "sample": "301.40817901234567*(vmag_sqr[0,0,0,0] + vmag_sqr[3,0,0,0] - 2.0*voltage_product_real[0,0,0,0])"
+    },
+    "flow_ji_sqr": {
+     "n": 0,
+     "sample": null
+    },
+    "vmag_adn": {
+     "n": 72,
+     "sample": "vmag[4,0,0,0]"
+    },
+    "pc_adn": {
+     "n": 72,
+     "sample": "flex_p_up[0,0,0,0] - flex_p_down[0,0,0,0] + pc[0,0,0,0]"
+    },
+    "qc_adn": {
+     "n": 72,
+     "sample": "flex_q_up[0,0,0,0] - flex_q_down[0,0,0,0] + qc[0,0,0,0]"
+    },
+    "gen_cost_scenario": {
+     "n": 1,
+     "sample": "11666.93445471274*pg[0,0,0,0] + 11772.433796692107*pg[0,0,0,1] + 12020.235680531034*pg[0,0,0,2] + 11922.999379594687*pg[0,0,0,3] + 12472.262317466771*pg[0,0,0,4] + 12804.036771353747*pg[0,0,0,5] + 13488.001720972947*pg[0,0,0,6] + 11597.86706696944*pg[0,0,0,7] + 7783.266873403047*pg[0,0,0,8] + 3812.408347418321*pg[0,0,0,9] + 3361.07391809772*pg[0,0,0,10] + 3083.898539964947*pg[0,0,0,11] + 1568.8563"
+    },
+    "flex_cost_scenario": {
+     "n": 1,
+     "sample": "5038.723862366171*(flex_p_down[0,0,0,0] + flex_q_down[0,0,0,0]) + 4865.116102283329*(flex_p_down[0,0,0,1] + flex_q_down[0,0,0,1]) + 4672.526657456672*(flex_p_down[0,0,0,2] + flex_q_down[0,0,0,2]) + 4305.904566013015*(flex_p_down[0,0,0,3] + flex_q_down[0,0,0,3]) + 4528.184339107789*(flex_p_down[0,0,0,4] + flex_q_down[0,0,0,4]) + 4757.705577852408*(flex_p_down[0,0,0,5] + flex_q_down[0,0,0,5]) + 5322"
+    },
+    "load_curt_cost_scenario": {
+     "n": 1,
+     "sample": "0.0"
+    },
+    "total_gen_cost": {
+     "n": 1,
+     "sample": "gen_cost_scenario[0,0]"
+    },
+    "total_flex_cost": {
+     "n": 1,
+     "sample": "flex_cost_scenario[0,0]"
+    },
+    "total_load_curt_cost": {
+     "n": 1,
+     "sample": "load_curt_cost_scenario[0,0]"
+    },
+    "gen_curt_penalty_scenario": {
+     "n": 1,
+     "sample": "penalty_gen_curtailment*100.0*(0.052388171068732066 - pg[3,0,0,0]) + penalty_gen_curtailment*100.0*(0.04916243709955235 - pg[3,0,0,1]) + penalty_gen_curtailment*100.0*(0.04709331826629701 - pg[3,0,0,2]) + penalty_gen_curtailment*100.0*(0.04792018701322601 - pg[3,0,0,3]) + penalty_gen_curtailment*100.0*(0.04780645351815885 - pg[3,0,0,4]) + penalty_gen_curtailment*100.0*(0.04396917213145837 - pg[3,0"
+    },
+    "ess_utilization_cost_penalty_scenario": {
+     "n": 1,
+     "sample": "penalty_ess_usage*100.0*(shared_es_pch[0,0,0,0] + shared_es_pdch[0,0,0,0]) + penalty_ess_usage*100.0*(shared_es_pch[0,0,0,1] + shared_es_pdch[0,0,0,1]) + penalty_ess_usage*100.0*(shared_es_pch[0,0,0,2] + shared_es_pdch[0,0,0,2]) + penalty_ess_usage*100.0*(shared_es_pch[0,0,0,3] + shared_es_pdch[0,0,0,3]) + penalty_ess_usage*100.0*(shared_es_pch[0,0,0,4] + shared_es_pdch[0,0,0,4]) + penalty_ess_usa"
+    },
+    "slack_penalties_scenario": {
+     "n": 1,
+     "sample": "50000.0*(slack_v_sqr_down[0,0,0,0] + slack_v_sqr_up[0,0,0,0]) + 50000.0*(slack_v_sqr_down[0,0,0,1] + slack_v_sqr_up[0,0,0,1]) + 50000.0*(slack_v_sqr_down[0,0,0,2] + slack_v_sqr_up[0,0,0,2]) + 50000.0*(slack_v_sqr_down[0,0,0,3] + slack_v_sqr_up[0,0,0,3]) + 50000.0*(slack_v_sqr_down[0,0,0,4] + slack_v_sqr_up[0,0,0,4]) + 50000.0*(slack_v_sqr_down[0,0,0,5] + slack_v_sqr_up[0,0,0,5]) + 50000.0*(slack_v"
+    },
+    "ess_complementarity_penalty_scenario": {
+     "n": 1,
+     "sample": "10000.0*(shared_es_pch[0,0,0,0]*shared_es_pdch[0,0,0,0]) + 10000.0*(shared_es_pch[0,0,0,1]*shared_es_pdch[0,0,0,1]) + 10000.0*(shared_es_pch[0,0,0,2]*shared_es_pdch[0,0,0,2]) + 10000.0*(shared_es_pch[0,0,0,3]*shared_es_pdch[0,0,0,3]) + 10000.0*(shared_es_pch[0,0,0,4]*shared_es_pdch[0,0,0,4]) + 10000.0*(shared_es_pch[0,0,0,5]*shared_es_pdch[0,0,0,5]) + 10000.0*(shared_es_pch[0,0,0,6]*shared_es_pdch"
+    },
+    "total_gen_curt_penalty": {
+     "n": 1,
+     "sample": "gen_curt_penalty_scenario[0,0]"
+    },
+    "total_ess_utilization_cost_penalty": {
+     "n": 1,
+     "sample": "ess_utilization_cost_penalty_scenario[0,0]"
+    },
+    "total_slack_penalties": {
+     "n": 1,
+     "sample": "slack_penalties_scenario[0,0]"
+    },
+    "total_ess_complementarity_penalties": {
+     "n": 1,
+     "sample": "ess_complementarity_penalty_scenario[0,0]"
+    }
+   },
+   "constraints": {
+    "voltage_mag_def": {
+     "n": 72,
+     "n_active": 72,
+     "sample": "vmag_sqr[4,0,0,0]  ==  vmag[4,0,0,0]**2"
+    },
+    "voltage_mag_sqr_def": {
+     "n": 216,
+     "n_active": 216,
+     "sample": "vmag_sqr[0,0,0,0]  ==  e[0,0,0,0]**2 + f[0,0,0,0]**2"
+    },
+    "voltage_setpoint_cons": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "voltage_magnitude_lower_cons": {
+     "n": 216,
+     "n_active": 216,
+     "sample": "0.81  <=  vmag_sqr[0,0,0,0] + slack_v_sqr_down[0,0,0,0]"
+    },
+    "voltage_magnitude_upper_cons": {
+     "n": 216,
+     "n_active": 216,
+     "sample": "vmag_sqr[0,0,0,0] - slack_v_sqr_up[0,0,0,0]  <=  1.2100000000000002"
+    },
+    "voltage_product_real_def": {
+     "n": 216,
+     "n_active": 216,
+     "sample": "voltage_product_real[0,0,0,0]  ==  e[0,0,0,0]*e[3,0,0,0] + f[0,0,0,0]*f[3,0,0,0]"
+    },
+    "voltage_product_imag_def": {
+     "n": 216,
+     "n_active": 216,
+     "sample": "voltage_product_imag[0,0,0,0]  ==  f[0,0,0,0]*e[3,0,0,0] - e[0,0,0,0]*f[3,0,0,0]"
+    },
+    "voltage_product_real_nonnegative": {
+     "n": 216,
+     "n_active": 216,
+     "sample": "0.0  <=  voltage_product_real[0,0,0,0]"
+    },
+    "r_sqr_def": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "pij_def": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "qij_def": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "pji_def": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "qji_def": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "sg_capability": {
+     "n": 117,
+     "n_active": 117,
+     "sample": "(pg[3,0,0,0]**2 + qg[3,0,0,0]**2)  <=  0.0027445204679267354"
+    },
+    "gen_pf_upper": {
+     "n": 117,
+     "n_active": 117,
+     "sample": "qg[3,0,0,0]  <=  0.48432210483785254*pg[3,0,0,0]"
+    },
+    "gen_pf_lower": {
+     "n": 117,
+     "n_active": 117,
+     "sample": "-0.48432210483785265*pg[3,0,0,0]  <=  qg[3,0,0,0]"
+    },
+    "gen_pf_profile": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "flex_energy_balance_p": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_pnet_def": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_pch_hat_link": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_pdch_hat_link": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_converter_capability": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_active_sum_limit": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_phi_lower": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_phi_upper": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_soc_def": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_soc_limits": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_soc_final": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_comp": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "sess_pnet_def": {
+     "n": 72,
+     "n_active": 72,
+     "sample": "shared_es_pnet[0,0,0,0]  ==  shared_es_pch[0,0,0,0] - shared_es_pdch[0,0,0,0]"
+    },
+    "sess_pch_hat_link": {
+     "n": 72,
+     "n_active": 72,
+     "sample": "shared_es_pch[0,0,0,0] - shared_es_s_rated[0]*shared_es_pch_hat[0,0,0,0]  ==  0"
+    },
+    "sess_pdch_hat_link": {
+     "n": 72,
+     "n_active": 72,
+     "sample": "shared_es_pdch[0,0,0,0] - shared_es_s_rated[0]*shared_es_pdch_hat[0,0,0,0]  ==  0"
+    },
+    "sess_converter_capability": {
+     "n": 72,
+     "n_active": 72,
+     "sample": "shared_es_pnet[0,0,0,0]**2 + shared_es_qnet[0,0,0,0]**2  <=  shared_es_s_rated[0]**2"
+    },
+    "sess_active_sum_limit": {
+     "n": 72,
+     "n_active": 72,
+     "sample": "shared_es_pch[0,0,0,0] + shared_es_pdch[0,0,0,0]  <=  shared_es_s_rated[0]"
+    },
+    "sess_phi_limit_lower": {
+     "n": 72,
+     "n_active": 72,
+     "sample": "-0.48432210483785265*shared_es_pch[0,0,0,0] - 0.48432210483785254*shared_es_pdch[0,0,0,0]  <=  shared_es_qnet[0,0,0,0]"
+    },
+    "sess_phi_limit_upper": {
+     "n": 72,
+     "n_active": 72,
+     "sample": "shared_es_qnet[0,0,0,0]  <=  0.48432210483785254*shared_es_pch[0,0,0,0] + 0.48432210483785265*shared_es_pdch[0,0,0,0]"
+    },
+    "sess_soc_def": {
+     "n": 72,
+     "n_active": 72,
+     "sample": "shared_es_soc[0,0,0,0]  ==  0.97*shared_es_pch[0,0,0,0] - 1.0416666666666667*shared_es_pdch[0,0,0,0] + 0.5*shared_es_e_rated[0]"
+    },
+    "sess_soc_limit_upper": {
+     "n": 72,
+     "n_active": 72,
+     "sample": "shared_es_soc[0,0,0,0]  <=  0.9*shared_es_e_rated[0]"
+    },
+    "sess_soc_limit_lower": {
+     "n": 72,
+     "n_active": 72,
+     "sample": "0.1*shared_es_e_rated[0]  <=  shared_es_soc[0,0,0,0]"
+    },
+    "sess_soc_final": {
+     "n": 3,
+     "n_active": 3,
+     "sample": "shared_es_soc[0,0,0,23]  ==  0.5*shared_es_e_rated[0] + slack_shared_es_soc_final_up[0,0,0] - slack_shared_es_soc_final_down[0,0,0]"
+    },
+    "sess_comp": {
+     "n": 72,
+     "n_active": 72,
+     "sample": "shared_es_pch_hat[0,0,0,0]*shared_es_pdch_hat[0,0,0,0]  <=  0.0001"
+    },
+    "shared_energy_storage_s_sensitivities": {
+     "n": 3,
+     "n_active": 3,
+     "sample": "shared_es_s_rated_fixed[0]  ==  shared_es_s_rated[0]"
+    },
+    "shared_energy_storage_e_sensitivities": {
+     "n": 3,
+     "n_active": 3,
+     "sample": "shared_es_e_rated_fixed[0]  ==  shared_es_e_rated[0]"
+    },
+    "node_balance_p": {
+     "n": 216,
+     "n_active": 216,
+     "sample": "pg[0,0,0,0]  ==  0.0*vmag_sqr[0,0,0,0] + 0.0*vmag_sqr[0,0,0,0] - (0.0*voltage_product_real[0,0,0,0] - 17.36111111111111*voltage_product_imag[0,0,0,0]) + 0.0"
+    },
+    "node_balance_q": {
+     "n": 216,
+     "n_active": 216,
+     "sample": "qg[0,0,0,0]  ==  0.0 + (-0.0*vmag_sqr[0,0,0,0] + 17.36111111111111*vmag_sqr[0,0,0,0] - 17.36111111111111*voltage_product_real[0,0,0,0] - 0.0*voltage_product_imag[0,0,0,0])"
+    },
+    "branch_flow_limit": {
+     "n": 216,
+     "n_active": 216,
+     "sample": "(301.40817901234567*(vmag_sqr[0,0,0,0] + vmag_sqr[3,0,0,0] - 2.0*voltage_product_real[0,0,0,0]))  <=  6.25001"
+    },
+    "branch_flow_limit_ji": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    }
+   },
+   "objectives": {
+    "objective": {
+     "sense": "min",
+     "n_terms_str_len": 40895
+    }
+   },
+   "sets": {
+    "vmag_nodes": 3,
+    "apparent_power_limited_branches": 0
+   }
+  },
+  "generators": [
+   {
+    "gen_id": 1,
+    "bus": 1,
+    "type": 1,
+    "pmax": 2.5,
+    "pmin": 0.0,
+    "qmax": 3.0,
+    "qmin": -3.0,
+    "vg": 1.04,
+    "status": "[ True  True  True  True  True  True  True  True  True  True  True  True\n  True  True  True  True  True  True  True  True  True  True  True  True]",
+    "power_factor_control": false,
+    "max_pf": 0.8,
+    "min_pf": -0.8,
+    "is_controllable": true,
+    "is_curtaillable": false
+   },
+   {
+    "gen_id": 2,
+    "bus": 2,
+    "type": 1,
+    "pmax": 3.0,
+    "pmin": 0.0,
+    "qmax": 3.0,
+    "qmin": -3.0,
+    "vg": 1.025,
+    "status": "[ True  True  True  True  True  True  True  True  True  True  True  True\n  True  True  True  True  True  True  True  True  True  True  True  True]",
+    "power_factor_control": false,
+    "max_pf": 0.8,
+    "min_pf": -0.8,
+    "is_controllable": true,
+    "is_curtaillable": false
+   },
+   {
+    "gen_id": 3,
+    "bus": 3,
+    "type": 1,
+    "pmax": 2.7,
+    "pmin": 0.0,
+    "qmax": 3.0,
+    "qmin": -3.0,
+    "vg": 1.025,
+    "status": "[ True  True  True  True  True  True  True  True  True  True  True  True\n  True  True  True  True  True  True  True  True  True  True  True  True]",
+    "power_factor_control": false,
+    "max_pf": 0.8,
+    "min_pf": -0.8,
+    "is_controllable": true,
+    "is_curtaillable": false
+   },
+   {
+    "gen_id": 4,
+    "bus": 4,
+    "type": 2,
+    "pmax": 0.2,
+    "pmin": 0.0,
+    "qmax": 0.2,
+    "qmin": -0.2,
+    "vg": 1.0,
+    "status": "[ True  True  True  True  True  True  True  True  True  True  True  True\n  True  True  True  True  True  True  True  True  True  True  True  True]",
+    "power_factor_control": true,
+    "max_pf": 0.9,
+    "min_pf": -0.9,
+    "is_controllable": false,
+    "is_curtaillable": true
+   },
+   {
+    "gen_id": 5,
+    "bus": 6,
+    "type": 2,
+    "pmax": 0.4,
+    "pmin": 0.0,
+    "qmax": 0.4,
+    "qmin": -0.4,
+    "vg": 1.0,
+    "status": "[ True  True  True  True  True  True  True  True  True  True  True  True\n  True  True  True  True  True  True  True  True  True  True  True  True]",
+    "power_factor_control": true,
+    "max_pf": 0.9,
+    "min_pf": -0.9,
+    "is_controllable": false,
+    "is_curtaillable": true
+   },
+   {
+    "gen_id": 6,
+    "bus": 8,
+    "type": 2,
+    "pmax": 0.25,
+    "pmin": 0.0,
+    "qmax": 0.25,
+    "qmin": -0.25,
+    "vg": 1.0,
+    "status": "[ True  True  True  True  True  True  True  True  True  True  True  True\n  True  True  True  True  True  True  True  True  True  True  True  True]",
+    "power_factor_control": true,
+    "max_pf": 0.9,
+    "min_pf": -0.9,
+    "is_controllable": false,
+    "is_curtaillable": true
+   },
+   {
+    "gen_id": 7,
+    "bus": 4,
+    "type": 3,
+    "pmax": 0.12,
+    "pmin": 0.0,
+    "qmax": 0.12,
+    "qmin": -0.12,
+    "vg": 1.0,
+    "status": "[ True  True  True  True  True  True  True  True  True  True  True  True\n  True  True  True  True  True  True  True  True  True  True  True  True]",
+    "power_factor_control": true,
+    "max_pf": 0.9,
+    "min_pf": -0.9,
+    "is_controllable": false,
+    "is_curtaillable": true
+   },
+   {
+    "gen_id": 8,
+    "bus": 6,
+    "type": 3,
+    "pmax": 0.2,
+    "pmin": 0.0,
+    "qmax": 0.2,
+    "qmin": -0.2,
+    "vg": 1.0,
+    "status": "[ True  True  True  True  True  True  True  True  True  True  True  True\n  True  True  True  True  True  True  True  True  True  True  True  True]",
+    "power_factor_control": true,
+    "max_pf": 0.9,
+    "min_pf": -0.9,
+    "is_controllable": false,
+    "is_curtaillable": true
+   },
+   {
+    "gen_id": 9,
+    "bus": 8,
+    "type": 3,
+    "pmax": 0.15,
+    "pmin": 0.0,
+    "qmax": 0.15,
+    "qmin": -0.15,
+    "vg": 1.0,
+    "status": "[ True  True  True  True  True  True  True  True  True  True  True  True\n  True  True  True  True  True  True  True  True  True  True  True  True]",
+    "power_factor_control": true,
+    "max_pf": 0.9,
+    "min_pf": -0.9,
+    "is_controllable": false,
+    "is_curtaillable": true
+   }
+  ],
+  "loads_flexible": 3,
+  "loads_total": 3
+ },
+ "dso": {
+  "name": "case33_1",
+  "year": 2025,
+  "day": "Spring",
+  "baseMVA": 100.0,
+  "num_instants": 24,
+  "topology": {
+   "n_nodes": 33,
+   "n_branches_after_preprocess": 32,
+   "n_distinct_pairs": 32,
+   "n_components": 1,
+   "cyclomatic": 0,
+   "radial": true,
+   "n_transformers": 1,
+   "transformers": [
+    {
+     "branch_id": 1,
+     "fbus": 1,
+     "tbus": 2,
+     "ratio": 1.0,
+     "is_transformer": true,
+     "vmag_reg": true,
+     "rate": 200.0,
+     "angle_min": -30.0,
+     "angle_max": 30.0
+    }
+   ],
+   "n_branches_with_line_charging": 0,
+   "n_branches_with_shunt_conductance": 0,
+   "n_nodes_with_fixed_shunt": 0,
+   "generator_types": {}
+  },
+  "params": {
+   "obj_type": 1,
+   "transf_reg": true,
+   "es_reg": true,
+   "fl_reg": true,
+   "rg_curt": true,
+   "l_curt": false,
+   "enforce_vg": false,
+   "branch_limit_type": 3,
+   "ess_model": 2,
+   "shared_ess_model": 2
+  },
+  "n_shared_ess": 1,
+  "n_ordinary_ess": 0,
+  "n_generators": 5,
+  "n_loads": 32,
+  "model": {
+   "label": "DSO case33_1",
+   "vars": {
+    "e": {
+     "n": 792,
+     "domain": "Reals",
+     "sample_bounds": [
+      0.9999,
+      1.0001
+     ],
+     "n_fixed": 0
+    },
+    "f": {
+     "n": 792,
+     "domain": "Reals",
+     "sample_bounds": [
+      -1e-05,
+      1e-05
+     ],
+     "n_fixed": 0
+    },
+    "slack_v_sqr_down": {
+     "n": 792,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      0.0
+     ],
+     "n_fixed": 0
+    },
+    "slack_v_sqr_up": {
+     "n": 792,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      0.0
+     ],
+     "n_fixed": 0
+    },
+    "vmag": {
+     "n": 24,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.9,
+      1.1
+     ],
+     "n_fixed": 0
+    },
+    "vmag_sqr": {
+     "n": 792,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.81,
+      1.2100000000000002
+     ],
+     "n_fixed": 0
+    },
+    "voltage_product_real": {
+     "n": 768,
+     "domain": "Reals",
+     "sample_bounds": [
+      null,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "voltage_product_imag": {
+     "n": 768,
+     "domain": "Reals",
+     "sample_bounds": [
+      null,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "pg": {
+     "n": 120,
+     "domain": "Reals",
+     "sample_bounds": [
+      -2.50001,
+      2.50001
+     ],
+     "n_fixed": 0
+    },
+    "qg": {
+     "n": 120,
+     "domain": "Reals",
+     "sample_bounds": [
+      -2.50001,
+      2.50001
+     ],
+     "n_fixed": 0
+    },
+    "flex_p_up": {
+     "n": 768,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      0.006014148008879938
+     ],
+     "n_fixed": 0
+    },
+    "flex_p_down": {
+     "n": 768,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      0.009183667639326017
+     ],
+     "n_fixed": 0
+    },
+    "flex_q_up": {
+     "n": 768,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      2e-05
+     ],
+     "n_fixed": 0
+    },
+    "flex_q_down": {
+     "n": 768,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      2e-05
+     ],
+     "n_fixed": 0
+    },
+    "r": {
+     "n": 768,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.99999,
+      1.00001
+     ],
+     "n_fixed": 0
+    },
+    "r_sqr": {
+     "n": 768,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "pij": {
+     "n": 24,
+     "domain": "Reals",
+     "sample_bounds": [
+      null,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "qij": {
+     "n": 24,
+     "domain": "Reals",
+     "sample_bounds": [
+      null,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "pji": {
+     "n": 24,
+     "domain": "Reals",
+     "sample_bounds": [
+      null,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "qji": {
+     "n": 24,
+     "domain": "Reals",
+     "sample_bounds": [
+      null,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "es_pch": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "es_pdch": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "es_pch_hat": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "es_pdch_hat": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "es_pnet": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "es_qnet": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "es_soc": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "slack_es_soc_final_up": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "slack_es_soc_final_down": {
+     "n": 0,
+     "domain": null,
+     "sample_bounds": null,
+     "n_fixed": 0
+    },
+    "shared_es_s_rated": {
+     "n": 1,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "shared_es_e_rated": {
+     "n": 1,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "shared_es_pch": {
+     "n": 24,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "shared_es_pdch": {
+     "n": 24,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "shared_es_pch_hat": {
+     "n": 24,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      1.0
+     ],
+     "n_fixed": 0
+    },
+    "shared_es_pdch_hat": {
+     "n": 24,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      1.0
+     ],
+     "n_fixed": 0
+    },
+    "shared_es_pnet": {
+     "n": 24,
+     "domain": "Reals",
+     "sample_bounds": [
+      null,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "shared_es_qnet": {
+     "n": 24,
+     "domain": "Reals",
+     "sample_bounds": [
+      null,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "shared_es_soc": {
+     "n": 24,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "slack_shared_es_soc_final_up": {
+     "n": 1,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "slack_shared_es_soc_final_down": {
+     "n": 1,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    }
+   },
+   "params": {
+    "pg_avail": {
+     "n": 120,
+     "mutable": false
+    },
+    "sg_avail": {
+     "n": 120,
+     "mutable": false
+    },
+    "pc": {
+     "n": 768,
+     "mutable": true
+    },
+    "qc": {
+     "n": 768,
+     "mutable": true
+    },
+    "shared_es_s_rated_fixed": {
+     "n": 1,
+     "mutable": true
+    },
+    "shared_es_e_rated_fixed": {
+     "n": 1,
+     "mutable": true
+    },
+    "penalty_ess_usage": {
+     "n": 1,
+     "mutable": true
+    },
+    "cost_load_curtailment": {
+     "n": 1,
+     "mutable": true
+    },
+    "penalty_gen_curtailment": {
+     "n": 1,
+     "mutable": true
+    }
+   },
+   "expressions": {
+    "sg_sqr": {
+     "n": 120,
+     "sample": "0.0"
+    },
+    "pg_node": {
+     "n": 792,
+     "sample": "pg[0,0,0,0]"
+    },
+    "qg_node": {
+     "n": 792,
+     "sample": "qg[0,0,0,0]"
+    },
+    "pc_node": {
+     "n": 792,
+     "sample": "shared_es_pnet[0,0,0,0]"
+    },
+    "qc_node": {
+     "n": 792,
+     "sample": "shared_es_qnet[0,0,0,0]"
+    },
+    "flow_ij_sqr": {
+     "n": 768,
+     "sample": "7552.8994768817665*(vmag_sqr[1,0,0,0] + vmag_sqr[2,0,0,0] - 2.0*voltage_product_real[0,0,0,0])"
+    },
+    "flow_ji_sqr": {
+     "n": 24,
+     "sample": "pji[31,0,0,0]**2 + qji[31,0,0,0]**2"
+    },
+    "vmag_adn": {
+     "n": 24,
+     "sample": "vmag[0,0,0,0]"
+    },
+    "pg_adn": {
+     "n": 24,
+     "sample": "pg[0,0,0,0] - shared_es_pnet[0,0,0,0]"
+    },
+    "qg_adn": {
+     "n": 24,
+     "sample": "qg[0,0,0,0] - shared_es_qnet[0,0,0,0]"
+    },
+    "gen_cost_scenario": {
+     "n": 1,
+     "sample": "0.0"
+    },
+    "flex_cost_scenario": {
+     "n": 1,
+     "sample": "5038.723862366171*(flex_p_down[0,0,0,0] + flex_q_down[0,0,0,0]) + 4865.116102283329*(flex_p_down[0,0,0,1] + flex_q_down[0,0,0,1]) + 4672.526657456672*(flex_p_down[0,0,0,2] + flex_q_down[0,0,0,2]) + 4305.904566013015*(flex_p_down[0,0,0,3] + flex_q_down[0,0,0,3]) + 4528.184339107789*(flex_p_down[0,0,0,4] + flex_q_down[0,0,0,4]) + 4757.705577852408*(flex_p_down[0,0,0,5] + flex_q_down[0,0,0,5]) + 5322"
+    },
+    "load_curt_cost_scenario": {
+     "n": 1,
+     "sample": "0.0"
+    },
+    "total_gen_cost": {
+     "n": 1,
+     "sample": "gen_cost_scenario[0,0]"
+    },
+    "total_flex_cost": {
+     "n": 1,
+     "sample": "flex_cost_scenario[0,0]"
+    },
+    "total_load_curt_cost": {
+     "n": 1,
+     "sample": "load_curt_cost_scenario[0,0]"
+    },
+    "gen_curt_penalty_scenario": {
+     "n": 1,
+     "sample": "penalty_gen_curtailment*100.0*(0.09906510719660261 - pg[1,0,0,0]) + penalty_gen_curtailment*100.0*(0.09399592369928059 - pg[1,0,0,1]) + penalty_gen_curtailment*100.0*(0.09122071212888427 - pg[1,0,0,2]) + penalty_gen_curtailment*100.0*(0.09635614986941335 - pg[1,0,0,3]) + penalty_gen_curtailment*100.0*(0.09663734475740507 - pg[1,0,0,4]) + penalty_gen_curtailment*100.0*(0.08545619375717 - pg[1,0,0,5"
+    },
+    "ess_utilization_cost_penalty_scenario": {
+     "n": 1,
+     "sample": "penalty_ess_usage*100.0*(shared_es_pch[0,0,0,0] + shared_es_pdch[0,0,0,0]) + penalty_ess_usage*100.0*(shared_es_pch[0,0,0,1] + shared_es_pdch[0,0,0,1]) + penalty_ess_usage*100.0*(shared_es_pch[0,0,0,2] + shared_es_pdch[0,0,0,2]) + penalty_ess_usage*100.0*(shared_es_pch[0,0,0,3] + shared_es_pdch[0,0,0,3]) + penalty_ess_usage*100.0*(shared_es_pch[0,0,0,4] + shared_es_pdch[0,0,0,4]) + penalty_ess_usa"
+    },
+    "slack_penalties_scenario": {
+     "n": 1,
+     "sample": "50000.0*(slack_v_sqr_down[0,0,0,0] + slack_v_sqr_up[0,0,0,0]) + 50000.0*(slack_v_sqr_down[0,0,0,1] + slack_v_sqr_up[0,0,0,1]) + 50000.0*(slack_v_sqr_down[0,0,0,2] + slack_v_sqr_up[0,0,0,2]) + 50000.0*(slack_v_sqr_down[0,0,0,3] + slack_v_sqr_up[0,0,0,3]) + 50000.0*(slack_v_sqr_down[0,0,0,4] + slack_v_sqr_up[0,0,0,4]) + 50000.0*(slack_v_sqr_down[0,0,0,5] + slack_v_sqr_up[0,0,0,5]) + 50000.0*(slack_v"
+    },
+    "ess_complementarity_penalty_scenario": {
+     "n": 1,
+     "sample": "10000.0*(shared_es_pch[0,0,0,0]*shared_es_pdch[0,0,0,0]) + 10000.0*(shared_es_pch[0,0,0,1]*shared_es_pdch[0,0,0,1]) + 10000.0*(shared_es_pch[0,0,0,2]*shared_es_pdch[0,0,0,2]) + 10000.0*(shared_es_pch[0,0,0,3]*shared_es_pdch[0,0,0,3]) + 10000.0*(shared_es_pch[0,0,0,4]*shared_es_pdch[0,0,0,4]) + 10000.0*(shared_es_pch[0,0,0,5]*shared_es_pdch[0,0,0,5]) + 10000.0*(shared_es_pch[0,0,0,6]*shared_es_pdch"
+    },
+    "total_gen_curt_penalty": {
+     "n": 1,
+     "sample": "gen_curt_penalty_scenario[0,0]"
+    },
+    "total_ess_utilization_cost_penalty": {
+     "n": 1,
+     "sample": "ess_utilization_cost_penalty_scenario[0,0]"
+    },
+    "total_slack_penalties": {
+     "n": 1,
+     "sample": "slack_penalties_scenario[0,0]"
+    },
+    "total_ess_complementarity_penalties": {
+     "n": 1,
+     "sample": "ess_complementarity_penalty_scenario[0,0]"
+    }
+   },
+   "constraints": {
+    "voltage_mag_def": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "vmag_sqr[0,0,0,0]  ==  vmag[0,0,0,0]**2"
+    },
+    "voltage_mag_sqr_def": {
+     "n": 792,
+     "n_active": 792,
+     "sample": "vmag_sqr[0,0,0,0]  ==  e[0,0,0,0]**2 + f[0,0,0,0]**2"
+    },
+    "voltage_setpoint_cons": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "voltage_magnitude_lower_cons": {
+     "n": 792,
+     "n_active": 792,
+     "sample": "0.81  <=  vmag_sqr[0,0,0,0] + slack_v_sqr_down[0,0,0,0]"
+    },
+    "voltage_magnitude_upper_cons": {
+     "n": 792,
+     "n_active": 792,
+     "sample": "vmag_sqr[0,0,0,0] - slack_v_sqr_up[0,0,0,0]  <=  1.2100000000000002"
+    },
+    "voltage_product_real_def": {
+     "n": 768,
+     "n_active": 768,
+     "sample": "voltage_product_real[0,0,0,0]  ==  e[1,0,0,0]*e[2,0,0,0] + f[1,0,0,0]*f[2,0,0,0]"
+    },
+    "voltage_product_imag_def": {
+     "n": 768,
+     "n_active": 768,
+     "sample": "voltage_product_imag[0,0,0,0]  ==  f[1,0,0,0]*e[2,0,0,0] - e[1,0,0,0]*f[2,0,0,0]"
+    },
+    "voltage_product_real_nonnegative": {
+     "n": 768,
+     "n_active": 768,
+     "sample": "0.0  <=  voltage_product_real[0,0,0,0]"
+    },
+    "r_sqr_def": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "r_sqr[31,0,0,0]  ==  r[31,0,0,0]**2"
+    },
+    "pij_def": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "pij[31,0,0,0]  ==  137.9797487170676*vmag_sqr[0,0,0,0]*r_sqr[31,0,0,0] - 137.9797487170676*voltage_product_real[31,0,0,0]*r[31,0,0,0] + 70.336748261412*voltage_product_imag[31,0,0,0]*r[31,0,0,0]"
+    },
+    "qij_def": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "qij[31,0,0,0]  ==  70.336748261412*vmag_sqr[0,0,0,0]*r_sqr[31,0,0,0] - 70.336748261412*voltage_product_real[31,0,0,0]*r[31,0,0,0] - 137.9797487170676*voltage_product_imag[31,0,0,0]*r[31,0,0,0]"
+    },
+    "pji_def": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "pji[31,0,0,0]  ==  137.9797487170676*vmag_sqr[1,0,0,0] - 137.9797487170676*voltage_product_real[31,0,0,0]*r[31,0,0,0] - 70.336748261412*voltage_product_imag[31,0,0,0]*r[31,0,0,0]"
+    },
+    "qji_def": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "qji[31,0,0,0]  ==  70.336748261412*vmag_sqr[1,0,0,0] - 70.336748261412*voltage_product_real[31,0,0,0]*r[31,0,0,0] + 137.9797487170676*voltage_product_imag[31,0,0,0]*r[31,0,0,0]"
+    },
+    "sg_capability": {
+     "n": 69,
+     "n_active": 69,
+     "sample": "(pg[1,0,0,0]**2 + qg[1,0,0,0]**2)  <=  0.009813895463874366"
+    },
+    "gen_pf_upper": {
+     "n": 69,
+     "n_active": 69,
+     "sample": "qg[1,0,0,0]  <=  0.48432210483785254*pg[1,0,0,0]"
+    },
+    "gen_pf_lower": {
+     "n": 69,
+     "n_active": 69,
+     "sample": "-0.48432210483785265*pg[1,0,0,0]  <=  qg[1,0,0,0]"
+    },
+    "gen_pf_profile": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "flex_energy_balance_p": {
+     "n": 32,
+     "n_active": 32,
+     "sample": "-0.0001  <=  flex_p_up[0,0,0,0] + flex_p_up[0,0,0,1] + flex_p_up[0,0,0,2] + flex_p_up[0,0,0,3] + flex_p_up[0,0,0,4] + flex_p_up[0,0,0,5] + flex_p_up[0,0,0,6] + flex_p_up[0,0,0,7] + flex_p_up[0,0,0,8] + flex_p_up[0,0,0,9] + flex_p_up[0,0,0,10] + flex_p_up[0,0,0,11] + flex_p_up[0,0,0,12] + flex_p_up[0,0,0,13] + flex_p_up[0,0,0,14] + flex_p_up[0,0,0,15] + flex_p_up[0,0,0,16] + flex_p_up[0,0,0,17] + flex_p_up[0,0,0,18] + flex_p_up[0,0,0,19] + flex_p_up[0,0,0,20] + flex_p_up[0,0,0,21] + flex_p_up[0,0,0,22] + flex_p_up[0,0,0,23] - (flex_p_down[0,0,0,0] + flex_p_down[0,0,0,1] + flex_p_down[0,0,0,2] + flex_p_down[0,0,0,3] + flex_p_down[0,0,0,4] + flex_p_down[0,0,0,5] + flex_p_down[0,0,0,6] + flex_p_"
+    },
+    "ess_pnet_def": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_pch_hat_link": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_pdch_hat_link": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_converter_capability": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_active_sum_limit": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_phi_lower": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_phi_upper": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_soc_def": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_soc_limits": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_soc_final": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "ess_comp": {
+     "n": 0,
+     "n_active": 0,
+     "sample": null
+    },
+    "sess_pnet_def": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "shared_es_pnet[0,0,0,0]  ==  shared_es_pch[0,0,0,0] - shared_es_pdch[0,0,0,0]"
+    },
+    "sess_pch_hat_link": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "shared_es_pch[0,0,0,0] - shared_es_s_rated[0]*shared_es_pch_hat[0,0,0,0]  ==  0"
+    },
+    "sess_pdch_hat_link": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "shared_es_pdch[0,0,0,0] - shared_es_s_rated[0]*shared_es_pdch_hat[0,0,0,0]  ==  0"
+    },
+    "sess_converter_capability": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "shared_es_pnet[0,0,0,0]**2 + shared_es_qnet[0,0,0,0]**2  <=  shared_es_s_rated[0]**2"
+    },
+    "sess_active_sum_limit": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "shared_es_pch[0,0,0,0] + shared_es_pdch[0,0,0,0]  <=  shared_es_s_rated[0]"
+    },
+    "sess_phi_limit_lower": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "-0.48432210483785265*shared_es_pch[0,0,0,0] - 0.48432210483785254*shared_es_pdch[0,0,0,0]  <=  shared_es_qnet[0,0,0,0]"
+    },
+    "sess_phi_limit_upper": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "shared_es_qnet[0,0,0,0]  <=  0.48432210483785254*shared_es_pch[0,0,0,0] + 0.48432210483785265*shared_es_pdch[0,0,0,0]"
+    },
+    "sess_soc_def": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "shared_es_soc[0,0,0,0]  ==  0.97*shared_es_pch[0,0,0,0] - 1.0416666666666667*shared_es_pdch[0,0,0,0] + 0.5*shared_es_e_rated[0]"
+    },
+    "sess_soc_limit_upper": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "shared_es_soc[0,0,0,0]  <=  0.9*shared_es_e_rated[0]"
+    },
+    "sess_soc_limit_lower": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "0.1*shared_es_e_rated[0]  <=  shared_es_soc[0,0,0,0]"
+    },
+    "sess_soc_final": {
+     "n": 1,
+     "n_active": 1,
+     "sample": "shared_es_soc[0,0,0,23]  ==  0.5*shared_es_e_rated[0] + slack_shared_es_soc_final_up[0,0,0] - slack_shared_es_soc_final_down[0,0,0]"
+    },
+    "sess_comp": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "shared_es_pch_hat[0,0,0,0]*shared_es_pdch_hat[0,0,0,0]  <=  0.0001"
+    },
+    "shared_energy_storage_s_sensitivities": {
+     "n": 1,
+     "n_active": 1,
+     "sample": "shared_es_s_rated_fixed[0]  ==  shared_es_s_rated[0]"
+    },
+    "shared_energy_storage_e_sensitivities": {
+     "n": 1,
+     "n_active": 1,
+     "sample": "shared_es_e_rated_fixed[0]  ==  shared_es_e_rated[0]"
+    },
+    "node_balance_p": {
+     "n": 792,
+     "n_active": 792,
+     "sample": "pg[0,0,0,0]  ==  0.0*vmag_sqr[0,0,0,0] + 137.9797487170676*vmag_sqr[0,0,0,0]*r_sqr[31,0,0,0] - r[31,0,0,0]*(137.9797487170676*voltage_product_real[31,0,0,0] - 70.336748261412*voltage_product_imag[31,0,0,0]) + shared_es_pnet[0,0,0,0]"
+    },
+    "node_balance_q": {
+     "n": 792,
+     "n_active": 792,
+     "sample": "qg[0,0,0,0]  ==  -0.0*vmag_sqr[0,0,0,0] + 70.336748261412*vmag_sqr[0,0,0,0]*r_sqr[31,0,0,0] + r[31,0,0,0]*(-70.336748261412*voltage_product_real[31,0,0,0] - 137.9797487170676*voltage_product_imag[31,0,0,0]) + shared_es_qnet[0,0,0,0]"
+    },
+    "branch_flow_limit": {
+     "n": 768,
+     "n_active": 768,
+     "sample": "(7552.8994768817665*(vmag_sqr[1,0,0,0] + vmag_sqr[2,0,0,0] - 2.0*voltage_product_real[0,0,0,0]))  <=  16.00001"
+    },
+    "branch_flow_limit_ji": {
+     "n": 24,
+     "n_active": 24,
+     "sample": "(pji[31,0,0,0]**2 + qji[31,0,0,0]**2)  <=  4.00001"
+    }
+   },
+   "objectives": {
+    "objective": {
+     "sense": "min",
+     "n_terms_str_len": 115019
+    }
+   },
+   "sets": {
+    "vmag_nodes": 1,
+    "apparent_power_limited_branches": 1
+   }
+  },
+  "generators": [
+   {
+    "gen_id": 1,
+    "bus": 1,
+    "type": 0,
+    "pmax": 2.5,
+    "pmin": -2.5,
+    "qmax": 2.5,
+    "qmin": -2.5,
+    "vg": 1.0,
+    "status": "[ True  True  True  True  True  True  True  True  True  True  True  True\n  True  True  True  True  True  True  True  True  True  True  True  True]",
+    "power_factor_control": false,
+    "max_pf": 0.8,
+    "min_pf": -0.8,
+    "is_controllable": true,
+    "is_curtaillable": false
+   },
+   {
+    "gen_id": 2,
+    "bus": 6,
+    "type": 2,
+    "pmax": 0.4,
+    "pmin": 0.0,
+    "qmax": 0.4,
+    "qmin": -0.4,
+    "vg": 1.0,
+    "status": "[ True  True  True  True  True  True  True  True  True  True  True  True\n  True  True  True  True  True  True  True  True  True  True  True  True]",
+    "power_factor_control": true,
+    "max_pf": 0.9,
+    "min_pf": -0.9,
+    "is_controllable": false,
+    "is_curtaillable": true
+   },
+   {
+    "gen_id": 3,
+    "bus": 23,
+    "type": 3,
+    "pmax": 0.15,
+    "pmin": 0.0,
+    "qmax": 0.15,
+    "qmin": -0.15,
+    "vg": 1.0,
+    "status": "[ True  True  True  True  True  True  True  True  True  True  True  True\n  True  True  True  True  True  True  True  True  True  True  True  True]",
+    "power_factor_control": true,
+    "max_pf": 0.9,
+    "min_pf": -0.9,
+    "is_controllable": false,
+    "is_curtaillable": true
+   },
+   {
+    "gen_id": 4,
+    "bus": 25,
+    "type": 3,
+    "pmax": 0.2,
+    "pmin": 0.0,
+    "qmax": 0.2,
+    "qmin": -0.2,
+    "vg": 1.0,
+    "status": "[ True  True  True  True  True  True  True  True  True  True  True  True\n  True  True  True  True  True  True  True  True  True  True  True  True]",
+    "power_factor_control": true,
+    "max_pf": 0.9,
+    "min_pf": -0.9,
+    "is_controllable": false,
+    "is_curtaillable": true
+   },
+   {
+    "gen_id": 5,
+    "bus": 18,
+    "type": 3,
+    "pmax": 0.08,
+    "pmin": 0.0,
+    "qmax": 0.08,
+    "qmin": -0.08,
+    "vg": 1.0,
+    "status": "[ True  True  True  True  True  True  True  True  True  True  True  True\n  True  True  True  True  True  True  True  True  True  True  True  True]",
+    "power_factor_control": true,
+    "max_pf": 0.9,
+    "min_pf": -0.9,
+    "is_controllable": false,
+    "is_curtaillable": true
+   }
+  ],
+  "loads_flexible": 32,
+  "loads_total": 32
+ },
+ "esso": {
+  "nodes": [
+   5,
+   7,
+   9
+  ],
+  "model": {
+   "label": "ESSO node 5",
+   "vars": {
+    "es_s_investment": {
+     "n": 3,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 3
+    },
+    "es_e_investment": {
+     "n": 3,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 3
+    },
+    "slack_es_s_investment_up": {
+     "n": 3,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "slack_es_s_investment_down": {
+     "n": 3,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "slack_es_e_investment_up": {
+     "n": 3,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "slack_es_e_investment_down": {
+     "n": 3,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "es_s_rated": {
+     "n": 3,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "es_e_rated": {
+     "n": 3,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "es_pnet": {
+     "n": 288,
+     "domain": "Reals",
+     "sample_bounds": [
+      null,
+      null
+     ],
+     "n_fixed": 288
+    },
+    "es_qnet": {
+     "n": 288,
+     "domain": "Reals",
+     "sample_bounds": [
+      null,
+      null
+     ],
+     "n_fixed": 288
+    },
+    "slack_es_pnet_up": {
+     "n": 288,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "slack_es_pnet_down": {
+     "n": 288,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "es_s_rated_per_unit": {
+     "n": 9,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 3
+    },
+    "es_e_rated_per_unit": {
+     "n": 9,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 3
+    },
+    "es_s_available_per_unit": {
+     "n": 9,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "es_e_available_per_unit": {
+     "n": 9,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 0
+    },
+    "es_pch_per_unit": {
+     "n": 864,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 288
+    },
+    "es_pdch_per_unit": {
+     "n": 864,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 288
+    },
+    "es_pch_hat_per_unit": {
+     "n": 864,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      1.0
+     ],
+     "n_fixed": 288
+    },
+    "es_pdch_hat_per_unit": {
+     "n": 864,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      1.0
+     ],
+     "n_fixed": 288
+    },
+    "es_pch_hat_agg": {
+     "n": 288,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      1.0
+     ],
+     "n_fixed": 0
+    },
+    "es_pdch_hat_agg": {
+     "n": 288,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      1.0
+     ],
+     "n_fixed": 0
+    },
+    "slack_es_ch_comp_per_unit": {
+     "n": 864,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 288
+    },
+    "es_avg_ch_dch_per_unit": {
+     "n": 9,
+     "domain": "Reals",
+     "sample_bounds": [
+      null,
+      null
+     ],
+     "n_fixed": 3
+    },
+    "es_soh_per_unit": {
+     "n": 9,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      1.0
+     ],
+     "n_fixed": 3
+    },
+    "es_degradation_per_unit": {
+     "n": 9,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      1.0
+     ],
+     "n_fixed": 3
+    },
+    "es_soh_per_unit_cumul": {
+     "n": 9,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      1.0
+     ],
+     "n_fixed": 3
+    },
+    "es_degradation_per_unit_cumul": {
+     "n": 9,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0.0,
+      1.0
+     ],
+     "n_fixed": 3
+    },
+    "slack_es_soh_per_unit_up": {
+     "n": 9,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 3
+    },
+    "slack_es_soh_per_unit_down": {
+     "n": 9,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 3
+    },
+    "slack_es_soh_per_unit_cumul_up": {
+     "n": 9,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 3
+    },
+    "slack_es_soh_per_unit_cumul_down": {
+     "n": 9,
+     "domain": "NonNegativeReals",
+     "sample_bounds": [
+      0,
+      null
+     ],
+     "n_fixed": 3
+    }
+   },
+   "params": {
+    "es_s_investment_fixed": {
+     "n": 3,
+     "mutable": true
+    },
+    "es_e_investment_fixed": {
+     "n": 3,
+     "mutable": true
+    }
+   },
+   "expressions": {
+    "feasibility_penalty": {
+     "n": 1,
+     "sample": "1000.0*(slack_es_s_investment_up[0] + slack_es_s_investment_down[0]) + 1000.0*(slack_es_e_investment_up[0] + slack_es_e_investment_down[0]) + 1000.0*(slack_es_soh_per_unit_up[0,0] + slack_es_soh_per_unit_down[0,0]) + 1000.0*(slack_es_soh_per_unit_cumul_up[0,0] + slack_es_soh_per_unit_cumul_down[0,0]) + 1000.0*(slack_es_soh_per_unit_up[0,1] + slack_es_soh_per_unit_down[0,1]) + 1000.0*(slack_es_soh_"
+    },
+    "salvage_value": {
+     "n": 1,
+     "sample": "0.0*(0.0*es_e_rated_per_unit[0,2] + (es_e_available_per_unit[0,2] - 0.5*es_e_rated_per_unit[0,2])/0.5) + 41251.92507708033*(0.0*es_e_rated_per_unit[1,2] + (es_e_available_per_unit[1,2] - 0.5*es_e_rated_per_unit[1,2])/0.5) + 76365.32000529357*(0.0*es_e_rated_per_unit[2,2] + (es_e_available_per_unit[2,2] - 0.5*es_e_rated_per_unit[2,2])/0.5)"
+    },
+    "salvage_credit": {
+     "n": 1,
+     "sample": "- (0.0*(0.0*es_e_rated_per_unit[0,2] + (es_e_available_per_unit[0,2] - 0.5*es_e_rated_per_unit[0,2])/0.5) + 41251.92507708033*(0.0*es_e_rated_per_unit[1,2] + (es_e_available_per_unit[1,2] - 0.5*es_e_rated_per_unit[1,2])/0.5) + 76365.32000529357*(0.0*es_e_rated_per_unit[2,2] + (es_e_available_per_unit[2,2] - 0.5*es_e_rated_per_unit[2,2])/0.5))"
+    }
+   },
+   "constraints": {
+    "energy_storage_capacity_fixing": {
+     "n": 6,
+     "n_active": 6,
+     "sample": "es_s_investment[0]  ==  es_s_investment_fixed[0] + slack_es_s_investment_up[0] - slack_es_s_investment_down[0]"
+    },
+    "rated_s_capacity_unit": {
+     "n": 6,
+     "n_active": 6,
+     "sample": "es_s_rated_per_unit[0,0]  ==  es_s_investment[0]"
+    },
+    "rated_e_capacity_unit": {
+     "n": 6,
+     "n_active": 6,
+     "sample": "es_e_rated_per_unit[0,0]  ==  es_e_investment[0]"
+    },
+    "rated_s_capacity": {
+     "n": 3,
+     "n_active": 3,
+     "sample": "es_s_rated[0]  ==  es_s_rated_per_unit[0,0] + es_s_rated_per_unit[1,0] + es_s_rated_per_unit[2,0]"
+    },
+    "rated_e_capacity": {
+     "n": 3,
+     "n_active": 3,
+     "sample": "es_e_rated[0]  ==  es_e_rated_per_unit[0,0] + es_e_rated_per_unit[1,0] + es_e_rated_per_unit[2,0]"
+    },
+    "available_s_capacity_unit": {
+     "n": 9,
+     "n_active": 9,
+     "sample": "es_s_available_per_unit[0,0]  ==  es_s_rated_per_unit[0,0]"
+    },
+    "available_e_capacity_unit": {
+     "n": 9,
+     "n_active": 9,
+     "sample": "es_e_available_per_unit[0,0]  ==  es_e_rated_per_unit[0,0]*es_soh_per_unit_cumul[0,0]"
+    },
+    "energy_storage_charging_discharging": {
+     "n": 9,
+     "n_active": 6,
+     "sample": "es_avg_ch_dch_per_unit[0,0]  ==  0.25205479452054796*(0.97*es_pch_per_unit[0,0,0,0] + 1.0416666666666667*es_pdch_per_unit[0,0,0,0]) + 0.25205479452054796*(0.97*es_pch_per_unit[0,0,0,1] + 1.0416666666666667*es_pdch_per_unit[0,0,0,1]) + 0.25205479452054796*(0.97*es_pch_per_unit[0,0,0,2] + 1.0416666666666667*es_pdch_per_unit[0,0,0,2]) + 0.25205479452054796*(0.97*es_pch_per_unit[0,0,0,3] + 1.0416666666666667*es_pdch_per_unit[0,0,0,3]) + 0.25205479452054796*(0.97*es_pch_per_unit[0,0,0,4] + 1.0416666666666667*es_pdch_per_unit[0,0,0,4]) + 0.25205479452054796*(0.97*es_pch_per_unit[0,0,0,5] + 1.0416666666666667*es_pdch_per_unit[0,0,0,5]) + 0.25205479452054796*(0.97*es_pch_per_unit[0,0,0,6] + 1.041666"
+    },
+    "energy_storage_capacity_degradation": {
+     "n": 30,
+     "n_active": 30,
+     "sample": "es_degradation_per_unit[0,0]*(20000*es_e_rated_per_unit[0,0])  ==  es_avg_ch_dch_per_unit[0,0]"
+    },
+    "energy_storage_limits": {
+     "n": 1728,
+     "n_active": 1152,
+     "sample": "es_pch_per_unit[0,0,0,0]  <=  es_s_rated_per_unit[0,0]"
+    },
+    "energy_storage_complementarity": {
+     "n": 864,
+     "n_active": 576,
+     "sample": "es_pch_hat_per_unit[0,0,0,0]*es_pdch_hat_per_unit[0,0,0,0]  <=  slack_es_ch_comp_per_unit[0,0,0,0] + 0.0001"
+    },
+    "energy_storage_normalization": {
+     "n": 1728,
+     "n_active": 1152,
+     "sample": "es_pch_per_unit[0,0,0,0] - es_s_rated_per_unit[0,0]*es_pch_hat_per_unit[0,0,0,0]  ==  0"
+    },
+    "energy_storage_operation_agg": {
+     "n": 1440,
+     "n_active": 1440,
+     "sample": "es_pnet[0,0,0]  ==  es_pch_per_unit[0,0,0,0] - es_pdch_per_unit[0,0,0,0] + es_pch_per_unit[1,0,0,0] - es_pdch_per_unit[1,0,0,0] + es_pch_per_unit[2,0,0,0] - es_pdch_per_unit[2,0,0,0] + slack_es_pnet_up[0,0,0] - slack_es_pnet_down[0,0,0]"
+    }
+   },
+   "objectives": {
+    "objective": {
+     "sense": "min",
+     "n_terms_str_len": 19
+    }
+   },
+   "sets": {}
+  }
+ }
+}

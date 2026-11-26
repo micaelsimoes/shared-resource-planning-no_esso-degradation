@@ -1,0 +1,2967 @@
+{
+ "stage": "P5.15 Addendum 40 ruling 3 W52 -- 3 x 3 selection rule and R prediction (spec v23; zero solves)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 40 ruling 3",
+  "data/SRP1/Results/P515S53/frozen_s53_spec_v23_39a07fd8.json ruling3_3x3"
+ ],
+ "started_utc": "2026-09-24T08:57:29.109408+00:00",
+ "git_HEAD": "e1f98be8360697125fbd9c71e54f6483dd5e3f81",
+ "script_sha256": "f129a01e9e6492c3ab668cc8b075e4048c5fd7f7a0ff9269ec73899babb607d8",
+ "imported_w22_script_sha256": "7524f32e4a9eea642833baef410b942bb949ff6db7a557d5dd47fbbe89863cc1",
+ "w22_commit": "046d4d00",
+ "spec": "data/SRP1/Results/P515S53/frozen_s53_spec_v23_39a07fd8.json",
+ "spec_sha256": "39a07fd85bd02aaee0f4042d9a7b201cf4df9027191ff70d7939b124061f685c",
+ "spec_ruling3_3x3": {
+  "R_prediction": "computed zero-solve from the selected set's renormalized mean profile, in the same way as the confirmed R = 0.937, and recorded BEFORE the run",
+  "alpha_row_stays": "2x2",
+  "optional": "the 5x5 pair (~78 h each) at the end as a confirmation row, not a requirement - the confirmed R makes it so",
+  "runs": "the headline pair (x = 0 and the smallest node-7 4 h unit) at concurrency 2, about 16 h per evaluation, after the author confirms the route",
+  "selection_rule": "the three MARKET scenarios whose renormalized (probability-renormalized) mean price profile has a 4 h spread closest to the five-scenario mean profile's 91.7 EUR/MWh; three OPERATION scenarios spanning low / mid / high RES availability. Both recorded with the metric and the losing candidates before any run"
+ },
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "model_construction_blockers": [
+  "Network.build_model",
+  "NetworkData.build_model",
+  "SharedEnergyStorageData.build_subproblem",
+  "SharedEnergyStorageData.build_master_problem"
+ ],
+ "model_construction_blocked_calls": [],
+ "stop_point": {
+  "target": "SharedEnergyStorageData.read_parameters_from_file",
+  "hits": 2,
+  "declared": 2,
+  "site": "shared_resources_planning.py:8677",
+  "operational_data_read_before_stop": [
+   "shared_resources_planning.py:8592",
+   "shared_resources_planning.py:8635"
+  ]
+ },
+ "instances": {
+  "srp1": {
+   "case": "data/SRP1/SRP1.json",
+   "case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+   "years": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "days": {
+    "Spring": 92,
+    "Summer": 91,
+    "Autumn": 91,
+    "Winter": 91
+   },
+   "num_market_scenarios": 1,
+   "random_seed": 2026,
+   "discount_factor": 0.02,
+   "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+   "market_scenario_checksum": "a8c958289c1e0bdaaf0df36ce56fb4da6734621bf34be7711babcae94d79d907",
+   "pm": {
+    "2025": [
+     1.0
+    ],
+    "2030": [
+     1.0
+    ],
+    "2035": [
+     1.0
+    ]
+   },
+   "expected_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+   "expected_checksum_source": "p56a_oracle.CANONICAL_CHECKSUM",
+   "checksum_matches": true
+  },
+  "paper": {
+   "case": "data/SRP1/Results/P515S44/scale_measurement/paper_build/case/SRP1__paper.json",
+   "case_sha256": "d726307c1949d91b34b00241fbc713412c689b113222929133eda38d9756ca14",
+   "years": {
+    "2025": 3,
+    "2028": 3,
+    "2031": 3,
+    "2034": 3,
+    "2037": 3
+   },
+   "days": {
+    "Spring": 92,
+    "Summer": 91,
+    "Autumn": 91,
+    "Winter": 91
+   },
+   "num_market_scenarios": 5,
+   "random_seed": 2026,
+   "discount_factor": 0.02,
+   "scenario_checksum": "1e8bdd3e5233442a87fbe44b78281c8ae61b09c09700388fed20ab9684d18aef",
+   "market_scenario_checksum": "13a1755eda70e2c4756114e3fd8f81eb9b0240c1f96dc6268216996a4ae04df2",
+   "pm": {
+    "2025": [
+     0.2,
+     0.2,
+     0.2,
+     0.2,
+     0.2
+    ],
+    "2028": [
+     0.2,
+     0.2,
+     0.2,
+     0.2,
+     0.2
+    ],
+    "2031": [
+     0.2,
+     0.2,
+     0.2,
+     0.2,
+     0.2
+    ],
+    "2034": [
+     0.2,
+     0.2,
+     0.2,
+     0.2,
+     0.2
+    ],
+    "2037": [
+     0.2,
+     0.2,
+     0.2,
+     0.2,
+     0.2
+    ]
+   },
+   "expected_checksum": "1e8bdd3e5233442a87fbe44b78281c8ae61b09c09700388fed20ab9684d18aef",
+   "expected_checksum_source": "data/SRP1/Results/P515S44/scale_measurement/paper_build/build_child_stdout.log:33 (\"[INFO] Scenario checksum: ...\")",
+   "checksum_matches": true
+  }
+ },
+ "w22_reference": {
+  "json": "data/SRP1/Results/P515S47/market_spreads/market_spreads.json",
+  "json_sha256": "e0806dc14feb77ffc62895308e82822910eb0c54dd008859040b79064b143957",
+  "target_u": 91.72775939691898,
+  "target_r2": 90.9307562006712,
+  "R_u": 0.9360848453102575,
+  "R_r2": 0.9372576465471794,
+  "R_gn": 0.9150641848892984
+ },
+ "energy_growth_factor_g": 0.025,
+ "market": {
+  "rule": "rank the 10 three-subsets S of the market-scenario indices {1..5} by |spread_u(S) - TARGET| ascending, spread_u = horizon (undiscounted day-weighted) 4 h spread of the probability-renormalized mean price profile, TARGET = W22 five-scenario mean-profile spread (undiscounted); ties (|diff| equal within 1e-09) broken by |spread_r2(S) - TARGET_r2|, then by the lexicographic order of S; select the first.",
+  "target_u": 91.72775939691898,
+  "target_r2": 90.9307562006712,
+  "srp1_growth_normalized_spread": 85.97345342344896,
+  "ranking": [
+   {
+    "subset": [
+     2,
+     3,
+     4
+    ],
+    "spread_u": 91.89641979698735,
+    "spread_r2": 91.11406973888263,
+    "spread_growth_normalized_u": 78.83277358614954,
+    "abs_diff_u_to_target": 0.16866040006836158,
+    "signed_diff_u_to_target": 0.16866040006836158,
+    "abs_diff_r2_to_target_r2": 0.18331353821143637,
+    "avg_of_scenario_spreads_u": 93.64010912812796,
+    "avg_of_scenario_spreads_r2": 92.83169704523479,
+    "max_minus_min_mean_profile_u": 105.4428864489766,
+    "mean_price_u": 114.50515927914454,
+    "R_u": 0.9378060303206183,
+    "R_r2": 0.939147128418694,
+    "R_gn": 0.9169432010352184,
+    "per_year_spread_u": {
+     "2025": 79.81936764273767,
+     "2028": 83.85418775252293,
+     "2031": 91.21925715105436,
+     "2034": 99.62666931759301,
+     "2037": 104.96261712102869
+    },
+    "per_block_spread": {
+     "2025/Spring": 129.3784447239886,
+     "2025/Summer": 86.27240100487808,
+     "2025/Autumn": 59.842710612822785,
+     "2025/Winter": 43.2393089866101,
+     "2028/Spring": 151.67155526285387,
+     "2028/Summer": 82.81467643883884,
+     "2028/Autumn": 60.21072735107259,
+     "2028/Winter": 39.97454616050962,
+     "2031/Spring": 151.36788507527913,
+     "2031/Summer": 98.56777249864456,
+     "2031/Autumn": 68.48612256749755,
+     "2031/Winter": 45.79427452956297,
+     "2034/Spring": 170.0024520310127,
+     "2034/Summer": 101.1596695838155,
+     "2034/Autumn": 74.82666987765012,
+     "2034/Winter": 51.74452552829574,
+     "2037/Spring": 176.3870796048947,
+     "2037/Summer": 118.83450536605797,
+     "2037/Autumn": 75.37684805053956,
+     "2037/Winter": 48.46715125950317
+    },
+    "rank": 1
+   },
+   {
+    "subset": [
+     1,
+     3,
+     5
+    ],
+    "spread_u": 91.91689470423552,
+    "spread_r2": 91.11295964731363,
+    "spread_growth_normalized_u": 78.82758335916023,
+    "abs_diff_u_to_target": 0.18913530731653339,
+    "signed_diff_u_to_target": 0.18913530731653339,
+    "abs_diff_r2_to_target_r2": 0.1822034466424327,
+    "avg_of_scenario_spreads_u": 94.72704032498667,
+    "avg_of_scenario_spreads_r2": 93.90327890281299,
+    "max_minus_min_mean_profile_u": 105.70109732961753,
+    "mean_price_u": 112.48155141062833,
+    "R_u": 0.9380149774322686,
+    "R_r2": 0.939135686285637,
+    "R_gn": 0.9168828309234845,
+    "per_year_spread_u": {
+     "2025": 81.06402352507679,
+     "2028": 80.92111293917267,
+     "2031": 91.59410214746185,
+     "2034": 100.9731221380079,
+     "2037": 105.0321127714583
+    },
+    "per_block_spread": {
+     "2025/Spring": 131.9699352502074,
+     "2025/Summer": 88.60977410595918,
+     "2025/Autumn": 58.558942905257,
+     "2025/Winter": 44.558036215530464,
+     "2028/Spring": 137.49622784796713,
+     "2028/Summer": 84.61011888648163,
+     "2028/Autumn": 60.01757999789372,
+     "2028/Winter": 40.93882046491093,
+     "2031/Spring": 154.81374625645753,
+     "2031/Summer": 98.18355291393587,
+     "2031/Autumn": 65.38267857751728,
+     "2031/Winter": 47.30170947810157,
+     "2034/Spring": 164.61468258565776,
+     "2034/Summer": 112.15943650412395,
+     "2034/Autumn": 71.9045770302142,
+     "2034/Winter": 54.51443462491869,
+     "2037/Spring": 177.6704689123388,
+     "2037/Summer": 114.32757279602208,
+     "2037/Autumn": 77.2721855721847,
+     "2037/Winter": 50.06000011143183
+    },
+    "rank": 2
+   },
+   {
+    "subset": [
+     1,
+     3,
+     4
+    ],
+    "spread_u": 91.40684091939048,
+    "spread_r2": 90.60629988478848,
+    "spread_growth_normalized_u": 78.38915313629974,
+    "abs_diff_u_to_target": 0.3209184775285081,
+    "signed_diff_u_to_target": -0.3209184775285081,
+    "abs_diff_r2_to_target_r2": 0.3244563158827134,
+    "avg_of_scenario_spreads_u": 93.80048157513187,
+    "avg_of_scenario_spreads_r2": 92.99000600406107,
+    "max_minus_min_mean_profile_u": 105.53435295591109,
+    "mean_price_u": 112.37206431242569,
+    "R_u": 0.9328098615390462,
+    "R_r2": 0.933913352759932,
+    "R_gn": 0.9117832309260171,
+    "per_year_spread_u": {
+     "2025": 80.12452889651003,
+     "2028": 82.05600507457208,
+     "2031": 89.98004058650606,
+     "2034": 99.69094980376201,
+     "2037": 105.18268023560222
+    },
+    "per_block_spread": {
+     "2025/Spring": 129.01102368572487,
+     "2025/Summer": 88.59819301416083,
+     "2025/Autumn": 58.75397556920673,
+     "2025/Winter": 43.59770908849475,
+     "2028/Spring": 144.75906507976384,
+     "2028/Summer": 82.47859623337334,
+     "2028/Autumn": 61.40746673056479,
+     "2028/Winter": 38.88984763914469,
+     "2031/Spring": 149.92946381815256,
+     "2031/Summer": 97.08278367207353,
+     "2031/Autumn": 66.43721346669722,
+     "2031/Winter": 45.81191651842349,
+     "2034/Spring": 169.19919773487408,
+     "2034/Summer": 108.13639932686004,
+     "2034/Autumn": 71.10017136951994,
+     "2034/Winter": 49.564203883451995,
+     "2037/Spring": 178.2334877876219,
+     "2037/Summer": 112.79715674059996,
+     "2037/Autumn": 76.41666985607503,
+     "2037/Winter": 52.48065043116671
+    },
+    "rank": 3
+   },
+   {
+    "subset": [
+     1,
+     2,
+     3
+    ],
+    "spread_u": 91.29940620053189,
+    "spread_r2": 90.53144561322347,
+    "spread_growth_normalized_u": 78.3306969517329,
+    "abs_diff_u_to_target": 0.4283531963870928,
+    "signed_diff_u_to_target": -0.4283531963870928,
+    "abs_diff_r2_to_target_r2": 0.3993105874477294,
+    "avg_of_scenario_spreads_u": 94.00257812242934,
+    "avg_of_scenario_spreads_r2": 93.20012474067069,
+    "max_minus_min_mean_profile_u": 104.8427436468811,
+    "mean_price_u": 114.7154283107892,
+    "R_u": 0.9317134866483382,
+    "R_r2": 0.933141801512231,
+    "R_gn": 0.9111032979671895,
+    "per_year_spread_u": {
+     "2025": 80.05858482184591,
+     "2028": 81.9046542978149,
+     "2031": 91.41494109758484,
+     "2034": 99.37040433294523,
+     "2037": 103.7484464524685
+    },
+    "per_block_spread": {
+     "2025/Spring": 131.00785801038754,
+     "2025/Summer": 87.89037542229705,
+     "2025/Autumn": 56.716541323102575,
+     "2025/Winter": 44.05968240864543,
+     "2028/Spring": 141.27903846247017,
+     "2028/Summer": 86.40388200419207,
+     "2028/Autumn": 59.563526993036646,
+     "2028/Winter": 39.71970397150953,
+     "2031/Spring": 154.09659730655943,
+     "2031/Summer": 94.42186002814867,
+     "2031/Autumn": 65.5141724968534,
+     "2031/Winter": 50.93832514988806,
+     "2034/Spring": 167.73278735637564,
+     "2034/Summer": 106.57306386336285,
+     "2034/Autumn": 71.36853631460211,
+     "2034/Winter": 51.0559948191609,
+     "2037/Spring": 174.9429712729476,
+     "2037/Summer": 111.57720505740437,
+     "2037/Autumn": 75.09780172203634,
+     "2037/Winter": 52.593450341876036
+    },
+    "rank": 4
+   },
+   {
+    "subset": [
+     1,
+     2,
+     4
+    ],
+    "spread_u": 92.20335024371704,
+    "spread_r2": 91.4173532938117,
+    "spread_growth_normalized_u": 79.09585592666882,
+    "abs_diff_u_to_target": 0.4755908467980561,
+    "signed_diff_u_to_target": 0.4755908467980561,
+    "abs_diff_r2_to_target_r2": 0.48659709314050303,
+    "avg_of_scenario_spreads_u": 94.78875110432959,
+    "avg_of_scenario_spreads_r2": 93.95542641800441,
+    "max_minus_min_mean_profile_u": 106.01040735653793,
+    "mean_price_u": 115.24532392422313,
+    "R_u": 0.9409382657707913,
+    "R_r2": 0.942273186562343,
+    "R_gn": 0.9200032425950648,
+    "per_year_spread_u": {
+     "2025": 81.194667782112,
+     "2028": 84.04707383474273,
+     "2031": 89.39831328065605,
+     "2034": 99.66432233649711,
+     "2037": 106.71237398457728
+    },
+    "per_block_spread": {
+     "2025/Spring": 132.28753054480782,
+     "2025/Summer": 91.08759728478478,
+     "2025/Autumn": 55.939701349417476,
+     "2025/Winter": 44.90238191907872,
+     "2028/Spring": 149.3419378167688,
+     "2028/Summer": 86.60510944215778,
+     "2028/Autumn": 61.85622805232407,
+     "2028/Winter": 37.667494049895836,
+     "2031/Spring": 150.27978485865214,
+     "2031/Summer": 94.02247798726958,
+     "2031/Autumn": 67.3303745191926,
+     "2031/Winter": 45.291588597312185,
+     "2034/Spring": 169.41023333282217,
+     "2034/Summer": 107.46334443908036,
+     "2034/Autumn": 73.62960625457201,
+     "2034/Winter": 47.38766673713667,
+     "2037/Spring": 178.9423914944127,
+     "2037/Summer": 116.00057640199236,
+     "2037/Autumn": 76.7122732987828,
+     "2037/Winter": 54.40051828696923
+    },
+    "rank": 5
+   },
+   {
+    "subset": [
+     1,
+     2,
+     5
+    ],
+    "spread_u": 92.48310858307742,
+    "spread_r2": 91.71300142228712,
+    "spread_growth_normalized_u": 79.35566305036399,
+    "abs_diff_u_to_target": 0.7553491861584405,
+    "signed_diff_u_to_target": 0.7553491861584405,
+    "abs_diff_r2_to_target_r2": 0.7822452216159235,
+    "avg_of_scenario_spreads_u": 95.71530985418443,
+    "avg_of_scenario_spreads_r2": 94.8686993167563,
+    "max_minus_min_mean_profile_u": 105.88969124446774,
+    "mean_price_u": 115.3548110224258,
+    "R_u": 0.9437932089586134,
+    "R_r2": 0.9453205434818153,
+    "R_gn": 0.9230251884789359,
+    "per_year_spread_u": {
+     "2025": 82.7840633402673,
+     "2028": 81.83759623078635,
+     "2031": 91.52614123424729,
+     "2034": 99.7964458918088,
+     "2037": 106.47129621827732
+    },
+    "per_block_spread": {
+     "2025/Spring": 137.6049168006535,
+     "2025/Summer": 91.14667260201881,
+     "2025/Autumn": 56.5041141268057,
+     "2025/Winter": 45.27812287048806,
+     "2028/Spring": 139.27000520650114,
+     "2028/Summer": 87.76569279522326,
+     "2028/Autumn": 60.06408489933679,
+     "2028/Winter": 39.619476648724756,
+     "2031/Spring": 155.3345814372595,
+     "2031/Summer": 95.12324722913192,
+     "2031/Autumn": 67.307919327922,
+     "2031/Winter": 47.63762529209325,
+     "2034/Spring": 164.82571818360577,
+     "2034/Summer": 111.44962278316481,
+     "2034/Autumn": 70.73969579085346,
+     "2034/Winter": 51.45613942178919,
+     "2037/Spring": 180.04092782098763,
+     "2037/Summer": 117.5309924574145,
+     "2037/Autumn": 75.52493913733306,
+     "2037/Winter": 51.97986796723437
+    },
+    "rank": 6
+   },
+   {
+    "subset": [
+     1,
+     4,
+     5
+    ],
+    "spread_u": 92.50434801461428,
+    "spread_r2": 91.7042404170669,
+    "spread_growth_normalized_u": 79.3417750692219,
+    "abs_diff_u_to_target": 0.7765886176952961,
+    "signed_diff_u_to_target": 0.7765886176952961,
+    "abs_diff_r2_to_target_r2": 0.7734842163957012,
+    "avg_of_scenario_spreads_u": 95.51321330688693,
+    "avg_of_scenario_spreads_r2": 94.65858058014669,
+    "max_minus_min_mean_profile_u": 106.70333160705728,
+    "mean_price_u": 113.01144702406228,
+    "R_u": 0.9440099580661395,
+    "R_r2": 0.9452302404921868,
+    "R_gn": 0.9228636504623845,
+    "per_year_spread_u": {
+     "2025": 82.22867487722125,
+     "2028": 82.17645776295993,
+     "2031": 90.8017318606111,
+     "2034": 100.09966211553652,
+     "2037": 107.21521345674256
+    },
+    "per_block_spread": {
+     "2025/Spring": 133.24960778462767,
+     "2025/Summer": 92.10030817289956,
+     "2025/Autumn": 57.28525270295259,
+     "2025/Winter": 45.71886125601608,
+     "2028/Spring": 142.81362903234754,
+     "2028/Summer": 84.979490004945,
+     "2028/Autumn": 61.4567491567654,
+     "2028/Winter": 38.7896203163599,
+     "2031/Spring": 150.99063300318477,
+     "2031/Summer": 97.78417087305675,
+     "2031/Autumn": 71.23278296766806,
+     "2031/Winter": 42.5379241024626,
+     "2034/Spring": 166.2921285621043,
+     "2034/Summer": 113.29878602761552,
+     "2034/Autumn": 70.1159956451749,
+     "2034/Winter": 49.96434848608028,
+     "2037/Spring": 181.66988913380388,
+     "2037/Summer": 118.75094414061004,
+     "2037/Autumn": 75.75476924683291,
+     "2037/Winter": 51.86706805652497
+    },
+    "rank": 7
+   },
+   {
+    "subset": [
+     3,
+     4,
+     5
+    ],
+    "spread_u": 92.70453895111352,
+    "spread_r2": 91.88624847914289,
+    "spread_growth_normalized_u": 79.49478110243588,
+    "abs_diff_u_to_target": 0.9767795541945361,
+    "signed_diff_u_to_target": 0.9767795541945361,
+    "abs_diff_r2_to_target_r2": 0.955492278471695,
+    "avg_of_scenario_spreads_u": 94.3645713306853,
+    "avg_of_scenario_spreads_r2": 93.53485120737706,
+    "max_minus_min_mean_profile_u": 107.13301034214555,
+    "mean_price_u": 112.2712823789837,
+    "R_u": 0.9460529132528516,
+    "R_r2": 0.9471062663281261,
+    "R_gn": 0.9246433397399616,
+    "per_year_spread_u": {
+     "2025": 80.98495150068688,
+     "2028": 82.46561073807916,
+     "2031": 92.55156898645318,
+     "2034": 101.47141830797732,
+     "2037": 106.04914522237108
+    },
+    "per_block_spread": {
+     "2025/Spring": 130.30287759506288,
+     "2025/Summer": 86.99179968854017,
+     "2025/Autumn": 62.34642211846685,
+     "2025/Winter": 43.756751368871235,
+     "2028/Spring": 143.26275269583803,
+     "2028/Summer": 80.70491989393624,
+     "2028/Autumn": 61.33655965970347,
+     "2028/Winter": 43.89011024176466,
+     "2031/Spring": 152.0850340251772,
+     "2031/Summer": 102.32946538443173,
+     "2031/Autumn": 72.09695259996599,
+     "2031/Winter": 43.04061003471335,
+     "2034/Spring": 166.88434726029485,
+     "2034/Summer": 106.6273250841335,
+     "2034/Autumn": 78.2538971009474,
+     "2034/Winter": 53.40128039145307,
+     "2037/Spring": 179.11457724428587,
+     "2037/Summer": 121.90282530068454,
+     "2037/Autumn": 76.381631713025,
+     "2037/Winter": 45.994629796083274
+    },
+    "rank": 8
+   },
+   {
+    "subset": [
+     2,
+     3,
+     5
+    ],
+    "spread_u": 92.87154507025521,
+    "spread_r2": 92.0601198748796,
+    "spread_growth_normalized_u": 79.6469692920759,
+    "abs_diff_u_to_target": 1.1437856733362253,
+    "signed_diff_u_to_target": 1.1437856733362253,
+    "abs_diff_r2_to_target_r2": 1.129363674208406,
+    "avg_of_scenario_spreads_u": 94.56666787798277,
+    "avg_of_scenario_spreads_r2": 93.74496994398669,
+    "max_minus_min_mean_profile_u": 105.99676906765939,
+    "mean_price_u": 114.61464637734721,
+    "R_u": 0.9477572162711575,
+    "R_r2": 0.9488984244710809,
+    "R_gn": 0.9264135162721341,
+    "per_year_spread_u": {
+     "2025": 81.29017715381244,
+     "2028": 82.44658879525157,
+     "2031": 93.17913242250808,
+     "2034": 101.31011869229721,
+     "2037": 106.13170828740662
+    },
+    "per_block_spread": {
+     "2025/Spring": 135.58660777969934,
+     "2025/Summer": 86.28398209667643,
+     "2025/Autumn": 59.377441682718754,
+     "2025/Winter": 43.31601298334324,
+     "2028/Spring": 139.66015077710296,
+     "2028/Summer": 83.97525979190432,
+     "2028/Autumn": 62.52156990411501,
+     "2028/Winter": 43.000654246545,
+     "2031/Spring": 156.42898245925193,
+     "2031/Summer": 99.66854174050687,
+     "2031/Autumn": 68.62677249276157,
+     "2031/Winter": 47.297179700404826,
+     "2034/Spring": 165.41793688179632,
+     "2034/Summer": 105.0639896206363,
+     "2034/Autumn": 80.05894843949595,
+     "2034/Winter": 53.99511830869437,
+     "2037/Spring": 178.129746903909,
+     "2037/Summer": 120.64775102621235,
+     "2037/Autumn": 78.86854943209309,
+     "2037/Winter": 46.08959854986806
+    },
+    "rank": 9
+   },
+   {
+    "subset": [
+     2,
+     4,
+     5
+    ],
+    "spread_u": 93.33822122350793,
+    "spread_r2": 92.47721492705267,
+    "spread_growth_normalized_u": 79.99866755109154,
+    "abs_diff_u_to_target": 1.6104618265889457,
+    "signed_diff_u_to_target": 1.6104618265889457,
+    "abs_diff_r2_to_target_r2": 1.5464587263814735,
+    "avg_of_scenario_spreads_u": 95.352840859883,
+    "avg_of_scenario_spreads_r2": 94.50027162132042,
+    "max_minus_min_mean_profile_u": 106.25602130100441,
+    "mean_price_u": 115.14454199078115,
+    "R_u": 0.9525196619866062,
+    "R_r2": 0.9531975807007232,
+    "R_gn": 0.9305042936576069,
+    "per_year_spread_u": {
+     "2025": 81.38108926209347,
+     "2028": 82.91765458830326,
+     "2031": 92.8230794094573,
+     "2034": 100.52807854508919,
+     "2037": 109.04120431259639
+    },
+    "per_block_spread": {
+     "2025/Spring": 133.8325990446753,
+     "2025/Summer": 89.0961346489803,
+     "2025/Autumn": 57.54239511349846,
+     "2025/Winter": 44.47683802382882,
+     "2028/Spring": 145.44649529130072,
+     "2028/Summer": 84.17648722986999,
+     "2028/Autumn": 61.20426725692769,
+     "2028/Winter": 40.15623845749931,
+     "2031/Spring": 152.60586920597916,
+     "2031/Summer": 99.2691596996278,
+     "2031/Autumn": 76.24005288459246,
+     "2031/Winter": 42.52028211360208,
+     "2034/Spring": 167.09538285824283,
+     "2034/Summer": 105.9542701963538,
+     "2034/Autumn": 75.61610452432691,
+     "2034/Winter": 52.71504776282717,
+     "2037/Spring": 185.3285513956743,
+     "2037/Summer": 126.56912183019922,
+     "2037/Autumn": 75.59394084610548,
+     "2037/Winter": 47.834880682988114
+    },
+    "rank": 10
+   }
+  ],
+  "selected": [
+   2,
+   3,
+   4
+  ],
+  "ties_at_top": [],
+  "tie_break_used": false,
+  "margin_winner_to_runner_up_abs_diff": 0.020474907248171803,
+  "full_five": {
+   "subset": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "spread_u": 91.72775939691898,
+   "spread_r2": 90.9307562006712,
+   "spread_growth_normalized_u": 78.67122807904639,
+   "abs_diff_u_to_target": 0.0,
+   "signed_diff_u_to_target": 0.0,
+   "abs_diff_r2_to_target_r2": 0.0,
+   "avg_of_scenario_spreads_u": 94.64715634846279,
+   "avg_of_scenario_spreads_r2": 93.81879057803711,
+   "max_minus_min_mean_profile_u": 104.93047030982804,
+   "mean_price_u": 113.97162560308112,
+   "R_u": 0.9360848453102575,
+   "R_r2": 0.9372576465471794,
+   "R_gn": 0.9150641848892984,
+   "per_year_spread_u": {
+    "2025": 80.67571706952488,
+    "2028": 81.79684390751112,
+    "2031": 91.12439782648698,
+    "2034": 99.48098220820582,
+    "2037": 105.56085597286618
+   },
+   "per_block_spread": {
+    "2025/Spring": 131.88016008902818,
+    "2025/Summer": 88.65812236807557,
+    "2025/Autumn": 57.582493513753036,
+    "2025/Winter": 44.01940612021525,
+    "2028/Spring": 142.66710019989054,
+    "2028/Summer": 84.17492645674889,
+    "2028/Autumn": 59.95788016892976,
+    "2028/Winter": 39.71856488917442,
+    "2031/Spring": 152.77494616949204,
+    "2031/Summer": 97.64530320268273,
+    "2031/Autumn": 67.75795054121721,
+    "2031/Winter": 45.6419128393361,
+    "2034/Spring": 167.14748667867866,
+    "2034/Summer": 107.73174458932228,
+    "2034/Autumn": 71.62608800364097,
+    "2034/Winter": 50.67502159996734,
+    "2037/Spring": 178.09877797501235,
+    "2037/Summer": 117.65570402523252,
+    "2037/Autumn": 75.54181593963989,
+    "2037/Winter": 50.15000592957833
+   }
+  }
+ },
+ "operation": {
+  "num_operation_scenarios": 5,
+  "primary_metric": "system_res_MWh_per_day_u",
+  "rule": "rank the five operation-scenario indices by the PRIMARY metric (system horizon RES availability, MWh/day, undiscounted day weights, TSO + 3 DSOs, PV + Wind pg * baseMVA summed over 24 h) ascending; select (lowest, median = 3rd of 5, highest). Secondary metrics are reported, not used.",
+  "ranking_primary_ascending": [
+   {
+    "rank": 1,
+    "index": 4,
+    "system_pv_MWh_per_day_u": 1174.7181298757819,
+    "system_wind_MWh_per_day_u": 2419.8606510746467,
+    "system_res_MWh_per_day_u": 3594.578780950428,
+    "system_load_MWh_per_day_u": 11655.753725535063,
+    "system_res_share_of_load_u": 0.30839522398929353,
+    "system_net_load_MWh_per_day_u": 8061.174944584635,
+    "system_pv_MWh_per_day_r2": 1154.6474238810756,
+    "system_wind_MWh_per_day_r2": 2391.2559985043777,
+    "system_res_MWh_per_day_r2": 3545.9034223854537,
+    "system_load_MWh_per_day_r2": 11603.579997916906,
+    "system_res_share_of_load_r2": 0.30558701909428126,
+    "system_net_load_MWh_per_day_r2": 8057.676575531452
+   },
+   {
+    "rank": 2,
+    "index": 3,
+    "system_pv_MWh_per_day_u": 1177.1684567833431,
+    "system_wind_MWh_per_day_u": 2421.2109560033,
+    "system_res_MWh_per_day_u": 3598.3794127866427,
+    "system_load_MWh_per_day_u": 11633.858961956515,
+    "system_res_share_of_load_u": 0.3093023067026668,
+    "system_net_load_MWh_per_day_u": 8035.479549169873,
+    "system_pv_MWh_per_day_r2": 1157.3097356705584,
+    "system_wind_MWh_per_day_r2": 2391.546743360529,
+    "system_res_MWh_per_day_r2": 3548.856479031088,
+    "system_load_MWh_per_day_r2": 11583.922206006222,
+    "system_res_share_of_load_r2": 0.30636052417470644,
+    "system_net_load_MWh_per_day_r2": 8035.065726975134
+   },
+   {
+    "rank": 3,
+    "index": 5,
+    "system_pv_MWh_per_day_u": 1177.1951822092074,
+    "system_wind_MWh_per_day_u": 2431.051370593338,
+    "system_res_MWh_per_day_u": 3608.2465528025455,
+    "system_load_MWh_per_day_u": 11654.444749491475,
+    "system_res_share_of_load_u": 0.30960261345440643,
+    "system_net_load_MWh_per_day_u": 8046.198196688929,
+    "system_pv_MWh_per_day_r2": 1157.1357032621677,
+    "system_wind_MWh_per_day_r2": 2397.4981968339407,
+    "system_res_MWh_per_day_r2": 3554.633900096108,
+    "system_load_MWh_per_day_r2": 11605.261298707526,
+    "system_res_share_of_load_r2": 0.30629503365787947,
+    "system_net_load_MWh_per_day_r2": 8050.627398611418
+   },
+   {
+    "rank": 4,
+    "index": 2,
+    "system_pv_MWh_per_day_u": 1180.2268234319256,
+    "system_wind_MWh_per_day_u": 2428.1533164770594,
+    "system_res_MWh_per_day_u": 3608.3801399089857,
+    "system_load_MWh_per_day_u": 11629.258408776095,
+    "system_res_share_of_load_u": 0.31028462977363186,
+    "system_net_load_MWh_per_day_u": 8020.878268867109,
+    "system_pv_MWh_per_day_r2": 1160.334113929355,
+    "system_wind_MWh_per_day_r2": 2395.8792502755496,
+    "system_res_MWh_per_day_r2": 3556.2133642049043,
+    "system_load_MWh_per_day_r2": 11578.843971361413,
+    "system_res_share_of_load_r2": 0.307130260412929,
+    "system_net_load_MWh_per_day_r2": 8022.630607156509
+   },
+   {
+    "rank": 5,
+    "index": 1,
+    "system_pv_MWh_per_day_u": 1179.4666674349135,
+    "system_wind_MWh_per_day_u": 2457.361264144575,
+    "system_res_MWh_per_day_u": 3636.827931579488,
+    "system_load_MWh_per_day_u": 11676.405584403607,
+    "system_res_share_of_load_u": 0.3114681059415465,
+    "system_net_load_MWh_per_day_u": 8039.577652824119,
+    "system_pv_MWh_per_day_r2": 1159.211233400545,
+    "system_wind_MWh_per_day_r2": 2424.8147389189517,
+    "system_res_MWh_per_day_r2": 3584.0259723194968,
+    "system_load_MWh_per_day_r2": 11625.384124947945,
+    "system_res_share_of_load_r2": 0.3082931225152567,
+    "system_net_load_MWh_per_day_r2": 8041.358152628448
+   }
+  ],
+  "per_index": [
+   {
+    "index": 1,
+    "system_pv_MWh_per_day_u": 1179.4666674349135,
+    "system_wind_MWh_per_day_u": 2457.361264144575,
+    "system_res_MWh_per_day_u": 3636.827931579488,
+    "system_load_MWh_per_day_u": 11676.405584403607,
+    "system_res_share_of_load_u": 0.3114681059415465,
+    "system_net_load_MWh_per_day_u": 8039.577652824119,
+    "system_pv_MWh_per_day_r2": 1159.211233400545,
+    "system_wind_MWh_per_day_r2": 2424.8147389189517,
+    "system_res_MWh_per_day_r2": 3584.0259723194968,
+    "system_load_MWh_per_day_r2": 11625.384124947945,
+    "system_res_share_of_load_r2": 0.3082931225152567,
+    "system_net_load_MWh_per_day_r2": 8041.358152628448,
+    "per_network_u": {
+     "TSO_case9": {
+      "res": 1326.6834448864845,
+      "load": 6686.115059412066,
+      "res_share_of_load": 0.19842366353221932
+     },
+     "DSO_node5_case33_1": {
+      "res": 652.7769815646757,
+      "load": 1624.835927672144,
+      "res_share_of_load": 0.40174947540696654
+     },
+     "DSO_node7_case33_2": {
+      "res": 890.1535098092174,
+      "load": 1692.8922210911965,
+      "res_share_of_load": 0.5258181818777846
+     },
+     "DSO_node9_case33_3": {
+      "res": 767.2139953191115,
+      "load": 1672.5623762281978,
+      "res_share_of_load": 0.458705759631673
+     }
+    }
+   },
+   {
+    "index": 2,
+    "system_pv_MWh_per_day_u": 1180.2268234319256,
+    "system_wind_MWh_per_day_u": 2428.1533164770594,
+    "system_res_MWh_per_day_u": 3608.3801399089857,
+    "system_load_MWh_per_day_u": 11629.258408776095,
+    "system_res_share_of_load_u": 0.31028462977363186,
+    "system_net_load_MWh_per_day_u": 8020.878268867109,
+    "system_pv_MWh_per_day_r2": 1160.334113929355,
+    "system_wind_MWh_per_day_r2": 2395.8792502755496,
+    "system_res_MWh_per_day_r2": 3556.2133642049043,
+    "system_load_MWh_per_day_r2": 11578.843971361413,
+    "system_res_share_of_load_r2": 0.307130260412929,
+    "system_net_load_MWh_per_day_r2": 8022.630607156509,
+    "per_network_u": {
+     "TSO_case9": {
+      "res": 1329.3428085423486,
+      "load": 6650.403174793788,
+      "res_share_of_load": 0.19988905538551324
+     },
+     "DSO_node5_case33_1": {
+      "res": 647.9153426184396,
+      "load": 1618.5521046059391,
+      "res_share_of_load": 0.40030552045538526
+     },
+     "DSO_node7_case33_2": {
+      "res": 874.9103892328808,
+      "load": 1691.5846226296478,
+      "res_share_of_load": 0.5172134917334442
+     },
+     "DSO_node9_case33_3": {
+      "res": 756.2115995153162,
+      "load": 1668.7185067467194,
+      "res_share_of_load": 0.45316906144320424
+     }
+    }
+   },
+   {
+    "index": 3,
+    "system_pv_MWh_per_day_u": 1177.1684567833431,
+    "system_wind_MWh_per_day_u": 2421.2109560033,
+    "system_res_MWh_per_day_u": 3598.3794127866427,
+    "system_load_MWh_per_day_u": 11633.858961956515,
+    "system_res_share_of_load_u": 0.3093023067026668,
+    "system_net_load_MWh_per_day_u": 8035.479549169873,
+    "system_pv_MWh_per_day_r2": 1157.3097356705584,
+    "system_wind_MWh_per_day_r2": 2391.546743360529,
+    "system_res_MWh_per_day_r2": 3548.856479031088,
+    "system_load_MWh_per_day_r2": 11583.922206006222,
+    "system_res_share_of_load_r2": 0.30636052417470644,
+    "system_net_load_MWh_per_day_r2": 8035.065726975134,
+    "per_network_u": {
+     "TSO_case9": {
+      "res": 1323.2093037304269,
+      "load": 6656.337317621467,
+      "res_share_of_load": 0.19878940032493034
+     },
+     "DSO_node5_case33_1": {
+      "res": 654.2735370472592,
+      "load": 1616.6304155441244,
+      "res_share_of_load": 0.4047143557094614
+     },
+     "DSO_node7_case33_2": {
+      "res": 865.3359025656291,
+      "load": 1691.4930440724404,
+      "res_share_of_load": 0.5115811179939856
+     },
+     "DSO_node9_case33_3": {
+      "res": 755.5606694433279,
+      "load": 1669.3981847184848,
+      "res_share_of_load": 0.45259463940937505
+     }
+    }
+   },
+   {
+    "index": 4,
+    "system_pv_MWh_per_day_u": 1174.7181298757819,
+    "system_wind_MWh_per_day_u": 2419.8606510746467,
+    "system_res_MWh_per_day_u": 3594.578780950428,
+    "system_load_MWh_per_day_u": 11655.753725535063,
+    "system_res_share_of_load_u": 0.30839522398929353,
+    "system_net_load_MWh_per_day_u": 8061.174944584635,
+    "system_pv_MWh_per_day_r2": 1154.6474238810756,
+    "system_wind_MWh_per_day_r2": 2391.2559985043777,
+    "system_res_MWh_per_day_r2": 3545.9034223854537,
+    "system_load_MWh_per_day_r2": 11603.579997916906,
+    "system_res_share_of_load_r2": 0.30558701909428126,
+    "system_net_load_MWh_per_day_r2": 8057.676575531452,
+    "per_network_u": {
+     "TSO_case9": {
+      "res": 1304.9855524047637,
+      "load": 6671.461579696016,
+      "res_share_of_load": 0.19560714497350445
+     },
+     "DSO_node5_case33_1": {
+      "res": 656.2768366387044,
+      "load": 1618.8574382939757,
+      "res_share_of_load": 0.4053950774876868
+     },
+     "DSO_node7_case33_2": {
+      "res": 863.524308017098,
+      "load": 1691.8630168307955,
+      "res_share_of_load": 0.5103984775520746
+     },
+     "DSO_node9_case33_3": {
+      "res": 769.792083889863,
+      "load": 1673.5716907142728,
+      "res_share_of_load": 0.4599695896871434
+     }
+    }
+   },
+   {
+    "index": 5,
+    "system_pv_MWh_per_day_u": 1177.1951822092074,
+    "system_wind_MWh_per_day_u": 2431.051370593338,
+    "system_res_MWh_per_day_u": 3608.2465528025455,
+    "system_load_MWh_per_day_u": 11654.444749491475,
+    "system_res_share_of_load_u": 0.30960261345440643,
+    "system_net_load_MWh_per_day_u": 8046.198196688929,
+    "system_pv_MWh_per_day_r2": 1157.1357032621677,
+    "system_wind_MWh_per_day_r2": 2397.4981968339407,
+    "system_res_MWh_per_day_r2": 3554.633900096108,
+    "system_load_MWh_per_day_r2": 11605.261298707526,
+    "system_res_share_of_load_r2": 0.30629503365787947,
+    "system_net_load_MWh_per_day_r2": 8050.627398611418,
+    "per_network_u": {
+     "TSO_case9": {
+      "res": 1306.0824344210398,
+      "load": 6672.274880171971,
+      "res_share_of_load": 0.19574769593236196
+     },
+     "DSO_node5_case33_1": {
+      "res": 671.6417420740852,
+      "load": 1618.9734402704926,
+      "res_share_of_load": 0.4148565537689547
+     },
+     "DSO_node7_case33_2": {
+      "res": 871.6421999559196,
+      "load": 1690.9422964747705,
+      "res_share_of_load": 0.5154771997679016
+     },
+     "DSO_node9_case33_3": {
+      "res": 758.8801763515011,
+      "load": 1672.2541325742404,
+      "res_share_of_load": 0.4538067280379768
+     }
+    }
+   }
+  ],
+  "selected_low_mid_high": [
+   4,
+   5,
+   1
+  ],
+  "orders_ascending": {
+   "system_res_MWh_per_day_u": [
+    4,
+    3,
+    5,
+    2,
+    1
+   ],
+   "system_res_MWh_per_day_r2": [
+    4,
+    3,
+    5,
+    2,
+    1
+   ],
+   "system_res_share_of_load_u": [
+    4,
+    3,
+    5,
+    2,
+    1
+   ],
+   "system_net_load_MWh_per_day_u": [
+    2,
+    3,
+    1,
+    5,
+    4
+   ],
+   "system_load_MWh_per_day_u": [
+    2,
+    3,
+    5,
+    4,
+    1
+   ],
+   "system_pv_MWh_per_day_u": [
+    4,
+    3,
+    5,
+    1,
+    2
+   ],
+   "system_wind_MWh_per_day_u": [
+    4,
+    3,
+    2,
+    5,
+    1
+   ]
+  },
+  "per_network_res_orders_ascending": {
+   "TSO_case9": [
+    4,
+    5,
+    3,
+    1,
+    2
+   ],
+   "DSO_node5_case33_1": [
+    2,
+    1,
+    3,
+    4,
+    5
+   ],
+   "DSO_node7_case33_2": [
+    4,
+    3,
+    5,
+    2,
+    1
+   ],
+   "DSO_node9_case33_3": [
+    3,
+    2,
+    5,
+    1,
+    4
+   ]
+  },
+  "relative_range": {
+   "system_res_MWh_per_day_u": 0.011705692165828544,
+   "system_load_MWh_per_day_u": 0.00404698721898932,
+   "system_res_share_of_load_u": 0.009918583129736753,
+   "system_net_load_MWh_per_day_u": 0.0050116118683529816
+  },
+  "per_block_rank_on_system_res": {
+   "2025/Spring": [
+    2,
+    5,
+    4,
+    1,
+    3
+   ],
+   "2025/Summer": [
+    1,
+    4,
+    2,
+    3,
+    5
+   ],
+   "2025/Autumn": [
+    3,
+    4,
+    5,
+    2,
+    1
+   ],
+   "2025/Winter": [
+    1,
+    4,
+    3,
+    5,
+    2
+   ],
+   "2028/Spring": [
+    2,
+    5,
+    1,
+    4,
+    3
+   ],
+   "2028/Summer": [
+    2,
+    4,
+    5,
+    3,
+    1
+   ],
+   "2028/Autumn": [
+    4,
+    1,
+    3,
+    5,
+    2
+   ],
+   "2028/Winter": [
+    2,
+    1,
+    5,
+    4,
+    3
+   ],
+   "2031/Spring": [
+    4,
+    1,
+    3,
+    5,
+    2
+   ],
+   "2031/Summer": [
+    4,
+    2,
+    1,
+    5,
+    3
+   ],
+   "2031/Autumn": [
+    5,
+    1,
+    2,
+    4,
+    3
+   ],
+   "2031/Winter": [
+    5,
+    1,
+    2,
+    3,
+    4
+   ],
+   "2034/Spring": [
+    3,
+    5,
+    4,
+    1,
+    2
+   ],
+   "2034/Summer": [
+    1,
+    2,
+    5,
+    3,
+    4
+   ],
+   "2034/Autumn": [
+    5,
+    4,
+    3,
+    1,
+    2
+   ],
+   "2034/Winter": [
+    4,
+    5,
+    3,
+    2,
+    1
+   ],
+   "2037/Spring": [
+    1,
+    5,
+    2,
+    4,
+    3
+   ],
+   "2037/Summer": [
+    4,
+    2,
+    5,
+    1,
+    3
+   ],
+   "2037/Autumn": [
+    2,
+    4,
+    1,
+    3,
+    5
+   ],
+   "2037/Winter": [
+    5,
+    4,
+    1,
+    3,
+    2
+   ]
+  },
+  "rank_sums": [
+   60,
+   64,
+   60,
+   62,
+   54
+  ],
+  "kendall_W": 0.014,
+  "kendall_W_note": "W = 1: every block ranks the indices identically; W ~ 0: no agreement. Under independent per-block draws the expectation is about 1/m = 0.050.",
+  "selected_consistency_across_blocks": {
+   "blocks_where_selected_lowest_is_lowest": 4,
+   "blocks_where_selected_highest_is_highest": 4,
+   "blocks_where_selected_median_is_3rd": 7,
+   "blocks_where_selected_low_below_selected_high": 9,
+   "num_blocks": 20
+  },
+  "network_counts": {
+   "TSO_case9": {
+    "n_pv": 3,
+    "n_wind": 3,
+    "n_loads": 3,
+    "baseMVA": 100.0,
+    "num_instants": 24
+   },
+   "DSO_node5_case33_1": {
+    "n_pv": 3,
+    "n_wind": 1,
+    "n_loads": 32,
+    "baseMVA": 100.0,
+    "num_instants": 24
+   },
+   "DSO_node7_case33_2": {
+    "n_pv": 2,
+    "n_wind": 2,
+    "n_loads": 32,
+    "baseMVA": 100.0,
+    "num_instants": 24
+   },
+   "DSO_node9_case33_3": {
+    "n_pv": 3,
+    "n_wind": 1,
+    "n_loads": 32,
+    "baseMVA": 100.0,
+    "num_instants": 24
+   }
+  },
+  "per_block_system_MWh_per_day": {
+   "2025/Spring": {
+    "res": [
+     2545.2614838317995,
+     2650.0101950941707,
+     2609.9098048049073,
+     2534.3975623027764,
+     2557.5916431902024
+    ],
+    "load": [
+     10702.496914911604,
+     10666.981387043736,
+     10651.487307416672,
+     10654.298558777942,
+     10683.32813756887
+    ]
+   },
+   "2025/Summer": {
+    "res": [
+     2938.2949524611963,
+     3004.096940255899,
+     2947.6543632763724,
+     2953.173084344137,
+     3088.2636193564235
+    ],
+    "load": [
+     11262.338605136156,
+     11153.725975050493,
+     11120.475035430747,
+     11092.165040130642,
+     11256.733919941376
+    ]
+   },
+   "2025/Autumn": {
+    "res": [
+     2955.915068308097,
+     2997.6405732068365,
+     3009.1117682794356,
+     2881.7371151760594,
+     2831.632980721295
+    ],
+    "load": [
+     10550.45227226779,
+     10618.20857652466,
+     10441.040383759135,
+     10583.21583420291,
+     10476.114419578693
+    ]
+   },
+   "2025/Winter": {
+    "res": [
+     2898.3249078936446,
+     3042.0656336669995,
+     3019.297215229491,
+     3094.3475524711675,
+     2978.0153163723844
+    ],
+    "load": [
+     10765.728852642329,
+     10838.072607661825,
+     10965.314211419354,
+     10871.268620539402,
+     10964.320216581818
+    ]
+   },
+   "2028/Spring": {
+    "res": [
+     2571.17425396566,
+     2639.9106119940893,
+     2551.295271648334,
+     2599.5283250008397,
+     2598.664159259855
+    ],
+    "load": [
+     11091.806468372984,
+     11083.33305662853,
+     11069.083698777371,
+     11057.734989740635,
+     11047.991849610911
+    ]
+   },
+   "2028/Summer": {
+    "res": [
+     2842.7024245133152,
+     2997.3987278101954,
+     3094.52641266066,
+     2896.4174452039874,
+     2800.9735944288755
+    ],
+    "load": [
+     11602.304861767592,
+     11369.113025753262,
+     11614.156561582204,
+     11444.208024255846,
+     11572.452292497434
+    ]
+   },
+   "2028/Autumn": {
+    "res": [
+     2917.140643403536,
+     2760.7453181740175,
+     2876.4098553011104,
+     2974.4133857235142,
+     2802.1990384260853
+    ],
+    "load": [
+     10851.410349782818,
+     10823.32942300583,
+     10769.949457830935,
+     10865.347584637691,
+     10983.029796708992
+    ]
+   },
+   "2028/Winter": {
+    "res": [
+     2978.918944385451,
+     2909.069160942876,
+     3074.3579601104802,
+     3045.67205579417,
+     3026.943059668306
+    ],
+    "load": [
+     11364.314780703848,
+     11435.297050174115,
+     11293.81306246266,
+     11427.819783831033,
+     11339.369058958113
+    ]
+   },
+   "2031/Spring": {
+    "res": [
+     3561.2521126789866,
+     3451.2484786728637,
+     3522.7197268515242,
+     3564.6839908336624,
+     3518.056863123704
+    ],
+    "load": [
+     11467.889764454389,
+     11498.655992167274,
+     11459.615160707915,
+     11462.051734633375,
+     11488.908460248927
+    ]
+   },
+   "2031/Summer": {
+    "res": [
+     4026.1973960881,
+     3825.147019462046,
+     3595.9793924302935,
+     4101.6176130786025,
+     3857.468433520243
+    ],
+    "load": [
+     12202.154793303664,
+     11931.336507703341,
+     12034.642688787826,
+     12046.071170286985,
+     12102.65968505059
+    ]
+   },
+   "2031/Autumn": {
+    "res": [
+     4347.661936804655,
+     3851.3633876627127,
+     3920.49459092538,
+     4045.547895715399,
+     4003.2901725612687
+    ],
+    "load": [
+     11450.57856560006,
+     11276.517700571854,
+     11425.9112076981,
+     11192.632732665334,
+     11196.34712543379
+    ]
+   },
+   "2031/Winter": {
+    "res": [
+     4428.816176115509,
+     3951.5055041091287,
+     4131.832827128192,
+     4241.985789653043,
+     4253.705075652524
+    ],
+    "load": [
+     11772.61934975882,
+     11717.840841867566,
+     11697.339866426157,
+     11740.16192370203,
+     11777.775443491593
+    ]
+   },
+   "2034/Spring": {
+    "res": [
+     3510.906508565519,
+     3552.4053249217177,
+     3533.7937430958164,
+     3413.00111535992,
+     3505.3346509788657
+    ],
+    "load": [
+     11904.779467976956,
+     11880.209655997876,
+     11940.338254132303,
+     11884.978198948402,
+     11942.893362164901
+    ]
+   },
+   "2034/Summer": {
+    "res": [
+     3768.475996663018,
+     3777.190277233138,
+     4047.528654256232,
+     3887.192058929405,
+     3968.168700570732
+    ],
+    "load": [
+     12417.13150138511,
+     12485.218953363048,
+     12562.973769834322,
+     12719.417256585753,
+     12509.539472740771
+    ]
+   },
+   "2034/Autumn": {
+    "res": [
+     4246.2047394533965,
+     4084.2130448452976,
+     4073.391255883204,
+     3761.2883859558597,
+     4013.0323249325843
+    ],
+    "load": [
+     11824.558944496126,
+     11491.057557243112,
+     11695.300166011239,
+     11808.389022899108,
+     11551.16230067611
+    ]
+   },
+   "2034/Winter": {
+    "res": [
+     4202.374140191512,
+     4427.589867838246,
+     4103.692134850085,
+     4030.3278583336732,
+     3972.386446092682
+    ],
+    "load": [
+     12081.156132506074,
+     12204.76409885079,
+     12156.924471231112,
+     12160.32090279267,
+     12103.745028331052
+    ]
+   },
+   "2037/Spring": {
+    "res": [
+     4195.670000697296,
+     4276.038719447091,
+     4228.844384184775,
+     4261.251505870658,
+     4230.447045840789
+    ],
+    "load": [
+     12359.508835750337,
+     12343.133931033033,
+     12339.176784534899,
+     12347.703811067831,
+     12326.626829051738
+    ]
+   },
+   "2037/Summer": {
+    "res": [
+     4934.58317363187,
+     4746.283241967021,
+     4962.76477482894,
+     4718.7603397664025,
+     4808.243687121415
+    ],
+    "load": [
+     13067.55448194526,
+     12719.515041799505,
+     12732.006462131669,
+     12980.526702896928,
+     12809.577732755173
+    ]
+   },
+   "2037/Autumn": {
+    "res": [
+     4271.969422406206,
+     4634.9822019527455,
+     4188.280298834758,
+     4307.46376208305,
+     4773.291074194341
+    ],
+    "load": [
+     12115.088734720372,
+     12292.574033158333,
+     12191.420242426164,
+     12155.63930289807,
+     12270.620817511703
+    ]
+   },
+   "2037/Winter": {
+    "res": [
+     4614.4931989613215,
+     4604.877551004093,
+     4492.6855149259245,
+     4596.351540108779,
+     4595.147767858326
+    ],
+    "load": [
+     12683.639620156328,
+     12763.689111802953,
+     12524.008178444006,
+     12630.70574745598,
+     12694.297668496281
+    ]
+   }
+  },
+  "per_block_network_MWh_per_day": {
+   "TSO_case9": {
+    "2025/Spring": {
+     "res": [
+      785.7026600396637,
+      829.5469442597189,
+      828.385642630339,
+      797.2185489116098,
+      823.3339436234907
+     ],
+     "load": [
+      6187.580254926668,
+      6155.279733063248,
+      6157.291870394682,
+      6151.989654854876,
+      6170.156499336605
+     ]
+    },
+    "2025/Summer": {
+     "res": [
+      904.9979738523916,
+      855.1685855227594,
+      895.1408719662171,
+      927.7703848664014,
+      931.1273759923164
+     ],
+     "load": [
+      6579.175254672437,
+      6496.807579069592,
+      6458.187512004646,
+      6388.102027921786,
+      6571.012330950078
+     ]
+    },
+    "2025/Autumn": {
+     "res": [
+      1059.882017453246,
+      1151.1442728468792,
+      1116.9887766101895,
+      1107.1550264504992,
+      977.7315924297857
+     ],
+     "load": [
+      6106.785183584478,
+      6203.3389123435045,
+      6004.683951772512,
+      6140.975956787162,
+      6050.2218175313465
+     ]
+    },
+    "2025/Winter": {
+     "res": [
+      1083.6272383746998,
+      1096.0690035140071,
+      1022.6939626574185,
+      1100.7077886092586,
+      1137.3474023168535
+     ],
+     "load": [
+      6183.109938862495,
+      6293.814078950636,
+      6374.087712629641,
+      6269.322768497406,
+      6349.173723064412
+     ]
+    },
+    "2028/Spring": {
+     "res": [
+      810.0666436838976,
+      856.8399630669481,
+      761.5724306820849,
+      823.4514907149546,
+      810.4492000487543
+     ],
+     "load": [
+      6379.158340120934,
+      6356.335466408875,
+      6341.5386529520365,
+      6369.0465483391035,
+      6334.061533845619
+     ]
+    },
+    "2028/Summer": {
+     "res": [
+      878.8990979580316,
+      915.1838599034363,
+      1023.6934775427899,
+      808.585079731947,
+      840.2856627538617
+     ],
+     "load": [
+      6691.829878256795,
+      6477.522713689021,
+      6707.75391212678,
+      6592.290963680462,
+      6696.183910944947
+     ]
+    },
+    "2028/Autumn": {
+     "res": [
+      1080.0407547466045,
+      1084.0093747979504,
+      996.581965081568,
+      1151.143640015138,
+      975.8055384149227
+     ],
+     "load": [
+      6198.833086811355,
+      6211.563117779626,
+      6145.072258909007,
+      6221.3945543726095,
+      6338.793370788129
+     ]
+    },
+    "2028/Winter": {
+     "res": [
+      1089.0567807540144,
+      960.1078729264588,
+      1052.7663608147368,
+      1030.4209420840396,
+      1054.9442859061223
+     ],
+     "load": [
+      6553.152859161336,
+      6626.593136287063,
+      6485.726939663866,
+      6623.7233724045955,
+      6544.340131884352
+     ]
+    },
+    "2031/Spring": {
+     "res": [
+      1285.8865401334701,
+      1276.621137924095,
+      1288.3330777587403,
+      1325.1847980418293,
+      1255.3012106594601
+     ],
+     "load": [
+      6531.655066550846,
+      6572.983128957062,
+      6562.666276992869,
+      6527.106094566796,
+      6565.0747955405
+     ]
+    },
+    "2031/Summer": {
+     "res": [
+      1383.8807237382857,
+      1404.444844706491,
+      1259.603786083909,
+      1444.811834125489,
+      1399.821828428514
+     ],
+     "load": [
+      7091.689354870414,
+      6798.21097394315,
+      6956.011044789508,
+      6931.619410108873,
+      7000.771938321162
+     ]
+    },
+    "2031/Autumn": {
+     "res": [
+      1548.862573924757,
+      1568.989275499021,
+      1603.973815057683,
+      1567.8900752065495,
+      1561.5207111175894
+     ],
+     "load": [
+      6610.185837662471,
+      6405.221583517272,
+      6576.296660469193,
+      6334.046182809408,
+      6335.3043276924145
+     ]
+    },
+    "2031/Winter": {
+     "res": [
+      1796.6630399710941,
+      1606.7833369961375,
+      1661.2039121307332,
+      1606.920599990324,
+      1625.8925710353706
+     ],
+     "load": [
+      6709.370425045374,
+      6730.052885309682,
+      6716.914339060135,
+      6728.161524134083,
+      6754.012368868356
+     ]
+    },
+    "2034/Spring": {
+     "res": [
+      1252.699261614625,
+      1254.4947767135482,
+      1261.3785603752847,
+      1206.1852517305135,
+      1236.1305921578873
+     ],
+     "load": [
+      6750.974208300657,
+      6737.920908931238,
+      6815.514620283631,
+      6748.40202072934,
+      6794.068371316742
+     ]
+    },
+    "2034/Summer": {
+     "res": [
+      1253.506601329392,
+      1254.5488272737691,
+      1422.3382024945008,
+      1337.5860187971807,
+      1379.2621399343693
+     ],
+     "load": [
+      7032.356184131979,
+      7121.742393677504,
+      7228.703337153113,
+      7358.639297325299,
+      7163.593640065612
+     ]
+    },
+    "2034/Autumn": {
+     "res": [
+      1838.0418606021944,
+      1681.294635552538,
+      1622.8813653106863,
+      1381.564460218879,
+      1506.7871003431896
+     ],
+     "load": [
+      6772.642582512901,
+      6445.759924573781,
+      6641.907443000348,
+      6743.938907867365,
+      6507.446995711569
+     ]
+    },
+    "2034/Winter": {
+     "res": [
+      1652.1646060697256,
+      1737.8788884108817,
+      1738.5977086067505,
+      1562.707000404902,
+      1554.4519176091437
+     ],
+     "load": [
+      6870.1783197262375,
+      6988.174444408611,
+      6905.722267853203,
+      6912.081844457143,
+      6876.269039370431
+     ]
+    },
+    "2037/Spring": {
+     "res": [
+      1518.598639640893,
+      1547.9119541024725,
+      1516.7257310725681,
+      1479.1923412895476,
+      1516.8179049796386
+     ],
+     "load": [
+      6970.92792865919,
+      6955.087189858871,
+      6966.011634909109,
+      6995.43938540688,
+      6959.6561424165875
+     ]
+    },
+    "2037/Summer": {
+     "res": [
+      1652.1748925202944,
+      1541.6567575860572,
+      1685.8622376436156,
+      1546.302656097459,
+      1608.0348627937317
+     ],
+     "load": [
+      7465.797339606106,
+      7139.483046495181,
+      7151.108643970636,
+      7412.640634369262,
+      7250.160934808126
+     ]
+    },
+    "2037/Autumn": {
+     "res": [
+      1667.6264687044477,
+      2148.213767003354,
+      1732.251820138535,
+      1966.4065097406376,
+      1874.052872325115
+     ],
+     "load": [
+      6815.755130564623,
+      7000.289040018894,
+      6902.863296964239,
+      6863.4189008065605,
+      6973.206737083254
+     ]
+    },
+    "2037/Winter": {
+     "res": [
+      2002.0648465665313,
+      1825.6326995662241,
+      1983.7579861714307,
+      1938.3274288849834,
+      2062.312385667553
+     ],
+     "load": [
+      7227.850382329455,
+      7297.096529216594,
+      7033.504454910161,
+      7123.103898267975,
+      7217.905005529975
+     ]
+    }
+   },
+   "DSO_node5_case33_1": {
+    "2025/Spring": {
+     "res": [
+      479.81583980952223,
+      536.7931930879283,
+      476.95604652580414,
+      479.6199592663892,
+      476.95915347684013
+     ],
+     "load": [
+      1464.654347519847,
+      1464.8720879954558,
+      1454.8496869121016,
+      1465.1282160039334,
+      1473.5612515618766
+     ]
+    },
+    "2025/Summer": {
+     "res": [
+      556.4526740010948,
+      549.3603824658384,
+      606.1600518145451,
+      561.6322909234118,
+      559.9754186570754
+     ],
+     "load": [
+      1529.9478639379836,
+      1514.2095653436427,
+      1523.6708681932,
+      1524.187024220392,
+      1536.2830765423748
+     ]
+    },
+    "2025/Autumn": {
+     "res": [
+      497.90715104073865,
+      570.3339926845961,
+      620.511068789054,
+      557.4248979935256,
+      515.9526237502209
+     ],
+     "load": [
+      1459.474558823272,
+      1436.649624894,
+      1444.4404176391022,
+      1454.8729599483738,
+      1438.2330910438627
+     ]
+    },
+    "2025/Winter": {
+     "res": [
+      563.4406452633247,
+      573.66458938109,
+      585.5808289394976,
+      605.8551532129986,
+      503.1687850037338
+     ],
+     "load": [
+      1498.8056137786934,
+      1453.58597895,
+      1491.3441024356794,
+      1505.100386844994,
+      1503.5285826195013
+     ]
+    },
+    "2028/Spring": {
+     "res": [
+      459.94828770935277,
+      494.2308965572795,
+      530.663835895612,
+      486.33351519771446,
+      521.5337952376775
+     ],
+     "load": [
+      1519.9913044591337,
+      1540.4226441429187,
+      1549.082452684319,
+      1512.3528535189116,
+      1533.995405529223
+     ]
+    },
+    "2028/Summer": {
+     "res": [
+      585.0508958869517,
+      622.8493634196208,
+      554.7033919727477,
+      544.3574023306678,
+      543.0281270821661
+     ],
+     "load": [
+      1602.0889316893629,
+      1597.0586247852575,
+      1601.2669512342604,
+      1571.3928152979936,
+      1601.8004425478296
+     ]
+    },
+    "2028/Autumn": {
+     "res": [
+      483.0338916189497,
+      316.7531418681076,
+      552.1585134708458,
+      579.7730039754681,
+      567.0778292517848
+     ],
+     "load": [
+      1519.7882416259265,
+      1489.9174734278472,
+      1491.8283108686878,
+      1501.1408923102729,
+      1510.2312584048805
+     ]
+    },
+    "2028/Winter": {
+     "res": [
+      468.62046007344725,
+      526.3783716714274,
+      596.2330470825959,
+      568.2819009771554,
+      530.7810526521718
+     ],
+     "load": [
+      1570.2512180592867,
+      1576.287967118499,
+      1555.8053675290444,
+      1560.7034531023987,
+      1559.9444885517423
+     ]
+    },
+    "2031/Spring": {
+     "res": [
+      681.6637175414531,
+      634.4786045067838,
+      622.8692695471692,
+      673.7600934139598,
+      641.9022972151165
+     ],
+     "load": [
+      1599.8248891743108,
+      1603.17337162307,
+      1584.1451053392354,
+      1605.618270782144,
+      1597.1515383713343
+     ]
+    },
+    "2031/Summer": {
+     "res": [
+      821.7445209146615,
+      739.7705778517104,
+      668.6291509998589,
+      764.4614017237359,
+      803.0110697678415
+     ],
+     "load": [
+      1667.4055456653573,
+      1690.556900109992,
+      1649.3470408002659,
+      1664.1692412588202,
+      1659.2222237054343
+     ]
+    },
+    "2031/Autumn": {
+     "res": [
+      747.5049585576032,
+      662.0745017305569,
+      645.535793685084,
+      734.5195225585533,
+      683.4555294329452
+     ],
+     "load": [
+      1577.1401172947642,
+      1582.5097187163126,
+      1561.6699327515394,
+      1587.3027541694914,
+      1579.6053758288404
+     ]
+    },
+    "2031/Winter": {
+     "res": [
+      699.8561232965071,
+      730.4596178631774,
+      606.9937656625987,
+      705.801785757382,
+      664.4132616683213
+     ],
+     "load": [
+      1636.7223355529422,
+      1609.2187368392624,
+      1610.0571965540219,
+      1617.782073908735,
+      1622.6671603973734
+     ]
+    },
+    "2034/Spring": {
+     "res": [
+      670.4779397656755,
+      669.4176820119211,
+      662.7666603043856,
+      645.9920770405671,
+      667.8277332110579
+     ],
+     "load": [
+      1676.399345658993,
+      1662.5608991288407,
+      1670.8457053380268,
+      1666.5547694648255,
+      1674.2206157459423
+     ]
+    },
+    "2034/Summer": {
+     "res": [
+      724.0385642507836,
+      773.6943732791669,
+      824.659769509251,
+      786.1984116675711,
+      732.3525335108212
+     ],
+     "load": [
+      1755.766507400414,
+      1751.859262227533,
+      1737.504342183705,
+      1755.2883131744404,
+      1727.2767366971977
+     ]
+    },
+    "2034/Autumn": {
+     "res": [
+      653.0746288328376,
+      661.0528274565263,
+      644.9316688988631,
+      612.5183144722912,
+      740.4494629110588
+     ],
+     "load": [
+      1639.9412418177133,
+      1657.6082223382843,
+      1645.615098807288,
+      1634.6615728483596,
+      1635.7398246616353
+     ]
+    },
+    "2034/Winter": {
+     "res": [
+      646.2229651881105,
+      674.2322929249499,
+      605.243435528613,
+      604.7149756742433,
+      700.5068745961621
+     ],
+     "load": [
+      1692.7540305241293,
+      1693.7041140415872,
+      1705.523190966058,
+      1699.3378858667259,
+      1681.2798521785896
+     ]
+    },
+    "2037/Spring": {
+     "res": [
+      840.8612141854253,
+      878.433564038022,
+      827.1248508104068,
+      867.0212251361878,
+      832.8742483007303
+     ],
+     "load": [
+      1749.3722274500615,
+      1750.025412291004,
+      1740.0342900962637,
+      1744.4247555008542,
+      1729.1847352609068
+     ]
+    },
+    "2037/Summer": {
+     "res": [
+      1046.0413784589707,
+      1021.6672310371773,
+      1056.828320968205,
+      994.3886206487339,
+      1044.803003882099
+     ],
+     "load": [
+      1849.3167316897957,
+      1818.1589684548924,
+      1835.1362452682188,
+      1825.0914868015373,
+      1811.2442918553386
+     ]
+    },
+    "2037/Autumn": {
+     "res": [
+      760.4259508724838,
+      541.4168975672391,
+      633.0251643259011,
+      651.9037735794775,
+      997.169462553964
+     ],
+     "load": [
+      1723.2656630902165,
+      1703.040713414565,
+      1713.2466155478169,
+      1714.5388402827346,
+      1726.5429386629553
+     ]
+    },
+    "2037/Winter": {
+     "res": [
+      670.79868016641,
+      781.5329133051243,
+      765.5553042597817,
+      702.3922238519508,
+      707.9784197916622
+     ],
+     "load": [
+      1765.059898935056,
+      1776.4097854829436,
+      1768.1206077265201,
+      1768.601390971367,
+      1778.709252109861
+     ]
+    }
+   },
+   "DSO_node7_case33_2": {
+    "2025/Spring": {
+     "res": [
+      616.7287893861942,
+      648.2419294198573,
+      636.3359252735876,
+      608.9307861687189,
+      619.2519606177508
+     ],
+     "load": [
+      1541.3560393211806,
+      1538.0127592760746,
+      1534.0289327125083,
+      1526.0738765346964,
+      1524.6357987682036
+     ]
+    },
+    "2025/Summer": {
+     "res": [
+      627.8158312628019,
+      710.4628485211792,
+      580.6068297336583,
+      620.3019628385675,
+      771.2381089351377
+     ],
+     "load": [
+      1580.2708626957608,
+      1578.041679620169,
+      1576.9093825148702,
+      1595.4663401347323,
+      1579.5807434947662
+     ]
+    },
+    "2025/Autumn": {
+     "res": [
+      976.9388577315299,
+      902.3016530000899,
+      798.7277119773885,
+      796.8245104299658,
+      909.4620949172017
+     ],
+     "load": [
+      1505.4993709199123,
+      1502.2331229517565,
+      1502.4026607391927,
+      1498.0491446164358,
+      1503.0234852280328
+     ]
+    },
+    "2025/Winter": {
+     "res": [
+      869.4123382496016,
+      958.8876819312313,
+      955.2539430781937,
+      910.972197202517,
+      942.6413606979269
+     ],
+     "load": [
+      1563.7251248240793,
+      1556.7413919882263,
+      1565.2371401362016,
+      1562.2392203405657,
+      1562.6932600104406
+     ]
+    },
+    "2028/Spring": {
+     "res": [
+      631.3213405798175,
+      637.6092538944861,
+      597.6383042795925,
+      624.7765762859952,
+      628.6277018881576
+     ],
+     "load": [
+      1605.773197689696,
+      1607.9862878466956,
+      1600.6090298937518,
+      1591.27022962401,
+      1600.3595798883348
+     ]
+    },
+    "2028/Summer": {
+     "res": [
+      532.4264522180052,
+      571.0404710733752,
+      646.9864601885521,
+      687.6979920611013,
+      557.7938345235766
+     ],
+     "load": [
+      1657.1405594915884,
+      1657.564687227096,
+      1655.9292238176495,
+      1640.2410891427917,
+      1642.4967834402212
+     ]
+    },
+    "2028/Autumn": {
+     "res": [
+      948.146778786758,
+      942.4954131149319,
+      929.2843748877283,
+      882.9903219646725,
+      861.0398943601039
+     ],
+     "load": [
+      1582.903188470746,
+      1557.8858816736658,
+      1578.2476089257184,
+      1582.9795950651048,
+      1577.9834749124257
+     ]
+    },
+    "2028/Winter": {
+     "res": [
+      1068.1887306053804,
+      983.7390363297384,
+      986.5905519887275,
+      1030.207135936488,
+      1004.9110132021679
+     ],
+     "load": [
+      1611.693703241783,
+      1623.7856637796876,
+      1647.0089921928272,
+      1632.9511158469911,
+      1629.5092967764956
+     ]
+    },
+    "2031/Spring": {
+     "res": [
+      767.0027029107548,
+      738.3953583181412,
+      760.1732598309177,
+      713.7674979408113,
+      768.7088545230516
+     ],
+     "load": [
+      1673.7917642520515,
+      1669.4248363053355,
+      1667.167059952365,
+      1671.0848088763605,
+      1677.847480406051
+     ]
+    },
+    "2031/Summer": {
+     "res": [
+      770.7419640506475,
+      688.9221967220344,
+      745.9448350189374,
+      760.8398126248762,
+      690.6818068095713
+     ],
+     "load": [
+      1736.881573204677,
+      1730.4194887900496,
+      1707.7069112917795,
+      1740.6252303391009,
+      1727.2646868771421
+     ]
+    },
+    "2031/Autumn": {
+     "res": [
+      1234.862211087942,
+      918.8118619770063,
+      967.778089594607,
+      894.2986154453838,
+      986.7137647587684
+     ],
+     "load": [
+      1646.6707428963457,
+      1650.3159876659147,
+      1653.3049035275228,
+      1650.4798131511639,
+      1642.305382300905
+     ]
+    },
+    "2031/Winter": {
+     "res": [
+      1108.4878564188202,
+      954.7576458541113,
+      1125.097268273491,
+      1201.6212051703392,
+      1202.6985843417735
+     ],
+     "load": [
+      1731.4184723080077,
+      1709.5496994996702,
+      1700.4348270365458,
+      1715.9124069294512,
+      1716.7077732419775
+     ]
+    },
+    "2034/Spring": {
+     "res": [
+      750.9177860535364,
+      769.4779218382882,
+      715.9158000834673,
+      748.9700915701459,
+      742.5852157867
+     ],
+     "load": [
+      1755.8310721413418,
+      1757.6186321206776,
+      1738.5676477832328,
+      1742.970213908908,
+      1744.1046799696287
+     ]
+    },
+    "2034/Summer": {
+     "res": [
+      749.5904782152013,
+      749.7689687739384,
+      768.1037621246188,
+      698.6375024872113,
+      772.5140472683343
+     ],
+     "load": [
+      1814.788362437105,
+      1821.13814824607,
+      1809.6070448939552,
+      1818.1371912605516,
+      1820.3427382414188
+     ]
+    },
+    "2034/Autumn": {
+     "res": [
+      996.9644932461806,
+      929.8906338143271,
+      1163.5854999658427,
+      954.3332780539529,
+      1139.6224781387386
+     ],
+     "load": [
+      1711.1716990527004,
+      1706.1166260480845,
+      1716.1104873036081,
+      1722.197819198159,
+      1715.032248284344
+     ]
+    },
+    "2034/Winter": {
+     "res": [
+      1151.2655179090227,
+      1227.6921051321322,
+      958.2116087749881,
+      1066.8090260440833,
+      991.3511498148308
+     ],
+     "load": [
+      1767.651525191976,
+      1767.018697359764,
+      1792.0374625319753,
+      1783.2180571813558,
+      1788.3188560718627
+     ]
+    },
+    "2037/Spring": {
+     "res": [
+      825.8242906198537,
+      879.0058759264075,
+      872.747552691564,
+      877.8116898657815,
+      870.3703924631823
+     ],
+     "load": [
+      1833.4831181251689,
+      1834.107494891185,
+      1822.310704145954,
+      1810.4949262902587,
+      1835.6178802602776
+     ]
+    },
+    "2037/Summer": {
+     "res": [
+      960.7438890768674,
+      956.0899558751935,
+      956.1695243790945,
+      905.1686804551958,
+      937.7635052921022
+     ],
+     "load": [
+      1888.9923356136046,
+      1895.6168539899181,
+      1888.0442517774109,
+      1884.5954094459316,
+      1872.6845942622676
+     ]
+    },
+    "2037/Autumn": {
+     "res": [
+      1041.7043692344084,
+      1146.8346799899284,
+      1116.281702098944,
+      1004.1722614766979,
+      1026.2163007243598
+     ],
+     "load": [
+      1795.5299082960407,
+      1807.420252934366,
+      1792.6500087958143,
+      1796.3948495657369,
+      1794.3373178729848
+     ]
+    },
+    "2037/Winter": {
+     "res": [
+      1183.4247783157034,
+      1191.4946185003084,
+      1033.4594280650429,
+      1289.5238613552085,
+      1016.6592583461724
+     ],
+     "load": [
+      1853.867690814191,
+      1861.2522065621565,
+      1882.5881602217873,
+      1873.1693401407433,
+      1864.7926830676447
+     ]
+    }
+   },
+   "DSO_node9_case33_3": {
+    "2025/Spring": {
+     "res": [
+      663.0141945964194,
+      635.4281283266662,
+      668.2321903751763,
+      648.6282679560588,
+      638.0465854721211
+     ],
+     "load": [
+      1508.9062731439087,
+      1508.8168067089573,
+      1505.31681739738,
+      1511.1068113844358,
+      1514.9745879021852
+     ]
+    },
+    "2025/Summer": {
+     "res": [
+      849.028473344908,
+      889.105123746122,
+      865.7466097619517,
+      843.468445715756,
+      825.9227157718936
+     ],
+     "load": [
+      1572.9446238299738,
+      1564.6671510170897,
+      1561.7072727180318,
+      1584.4096478537303,
+      1569.8577689541585
+     ]
+    },
+    "2025/Autumn": {
+     "res": [
+      421.1870420825825,
+      373.86065467527135,
+      472.8842109028039,
+      420.3326803020687,
+      428.4866696240871
+     ],
+     "load": [
+      1478.6931589401288,
+      1475.986916335397,
+      1489.5133536083272,
+      1489.3177728509384,
+      1484.6360257754516
+     ]
+    },
+    "2025/Winter": {
+     "res": [
+      381.84468600601883,
+      413.44435884067104,
+      455.7684805543809,
+      476.8124134463932,
+      394.85776835387037
+     ],
+     "load": [
+      1520.0881751770619,
+      1533.9311577729616,
+      1534.645256217833,
+      1534.6062448564346,
+      1548.9246508874644
+     ]
+    },
+    "2028/Spring": {
+     "res": [
+      669.8379819925917,
+      651.2304984753757,
+      661.4207007910449,
+      664.9667428021755,
+      638.0534620852653
+     ],
+     "load": [
+      1586.8836261032204,
+      1578.5886582300418,
+      1577.8535632472624,
+      1585.0653582586096,
+      1579.5753303477347
+     ]
+    },
+    "2028/Summer": {
+     "res": [
+      846.3259784503266,
+      888.3250334137633,
+      869.1430829565701,
+      855.7769710802714,
+      859.865970069271
+     ],
+     "load": [
+      1651.2454923298442,
+      1636.9670000518895,
+      1649.2064744035151,
+      1640.283156134599,
+      1631.9711555644355
+     ]
+    },
+    "2028/Autumn": {
+     "res": [
+      405.91921825122404,
+      417.4873883930276,
+      398.3850018609684,
+      360.5064197682354,
+      398.2757763992739
+     ],
+     "load": [
+      1549.8858328747901,
+      1563.9629501246902,
+      1554.8012791275219,
+      1559.8325428897044,
+      1556.0216926035562
+     ]
+    },
+    "2028/Winter": {
+     "res": [
+      353.0529729526089,
+      438.8438800152518,
+      438.7680002244199,
+      416.762076796487,
+      436.3067079078441
+     ],
+     "load": [
+      1629.2170002414414,
+      1608.6302829888666,
+      1605.2717630769214,
+      1610.4418424770488,
+      1605.5751417455233
+     ]
+    },
+    "2031/Spring": {
+     "res": [
+      826.6991520933085,
+      801.7533779238438,
+      851.3441197146972,
+      851.9716014370622,
+      852.1445007260754
+     ],
+     "load": [
+      1662.6180444771805,
+      1653.074655281807,
+      1645.6367184234455,
+      1658.2425604080724,
+      1648.834645931042
+     ]
+    },
+    "2031/Summer": {
+     "res": [
+      1049.8301873845053,
+      992.0094001818097,
+      921.8016203275884,
+      1131.504564604501,
+      963.953728514316
+     ],
+     "load": [
+      1706.178319563217,
+      1712.1491448601505,
+      1721.577691906272,
+      1709.6572885801897,
+      1715.400836146851
+     ]
+    },
+    "2031/Autumn": {
+     "res": [
+      816.432193234353,
+      701.4877484561291,
+      703.2068925880063,
+      848.8396825049128,
+      771.600167251966
+     ],
+     "load": [
+      1616.5818677464788,
+      1638.4704106723557,
+      1634.6397109498457,
+      1620.8039825352719,
+      1639.1320396116294
+     ]
+    },
+    "2031/Winter": {
+     "res": [
+      823.8091564290872,
+      659.5049033957026,
+      738.5378810613685,
+      727.6421987349972,
+      760.7006586070588
+     ],
+     "load": [
+      1695.1081168524963,
+      1669.0195202189511,
+      1669.9335037754533,
+      1678.3059187297606,
+      1684.3881409838848
+     ]
+    },
+    "2034/Spring": {
+     "res": [
+      836.8115211316822,
+      859.0149443579605,
+      893.7327223326787,
+      811.8536950186929,
+      858.7911098232203
+     ],
+     "load": [
+      1721.5748418759654,
+      1722.1092158171216,
+      1715.4102807274116,
+      1727.05119484533,
+      1730.4996951325893
+     ]
+    },
+    "2034/Summer": {
+     "res": [
+      1041.3403528676413,
+      999.1781079062638,
+      1032.4269201278616,
+      1064.7701259774417,
+      1084.0399798572075
+     ],
+     "load": [
+      1814.220447415614,
+      1790.479149211942,
+      1787.1590456035485,
+      1787.352454825463,
+      1798.3263577365415
+     ]
+    },
+    "2034/Autumn": {
+     "res": [
+      758.1237567721834,
+      811.9749480219066,
+      641.992721707812,
+      812.8723332107368,
+      626.173283539597
+     ],
+     "load": [
+      1700.8034211128117,
+      1681.5727842829629,
+      1691.6671368999932,
+      1707.5907229852232,
+      1692.9432320185613
+     ]
+    },
+    "2034/Winter": {
+     "res": [
+      752.7210510246532,
+      787.7865813702831,
+      801.6393819397324,
+      796.0968562104447,
+      726.076504072545
+     ],
+     "load": [
+      1750.5722570637315,
+      1755.8668430408275,
+      1753.6415498798751,
+      1765.6831152874452,
+      1757.8772807101682
+     ]
+    },
+    "2037/Spring": {
+     "res": [
+      1010.3858562511241,
+      970.6873253801893,
+      1012.246249610236,
+      1037.2262495791408,
+      1010.3845000972377
+     ],
+     "load": [
+      1805.725561515918,
+      1803.913833991974,
+      1810.8201553835743,
+      1797.344743869837,
+      1802.1680711139668
+     ]
+    },
+    "2037/Summer": {
+     "res": [
+      1275.623013575737,
+      1226.8692974685928,
+      1263.904691838025,
+      1272.900382565014,
+      1217.642315153482
+     ],
+     "load": [
+      1863.4480750357543,
+      1866.2561728595117,
+      1857.7173211154015,
+      1858.1991722801963,
+      1875.4879118294411
+     ]
+    },
+    "2037/Autumn": {
+     "res": [
+      802.2126335948665,
+      798.5168573922241,
+      706.721612271377,
+      684.9812172862363,
+      875.8524385909018
+     ],
+     "load": [
+      1780.538032769491,
+      1781.8240267905076,
+      1782.6603211182937,
+      1781.286712243038,
+      1776.5338238925083
+     ]
+    },
+    "2037/Winter": {
+     "res": [
+      758.2048939126764,
+      806.2173196324367,
+      709.9127964296695,
+      666.1080260166367,
+      808.1977040529382
+     ],
+     "load": [
+      1836.8616480776247,
+      1828.9305905412589,
+      1839.7949555855378,
+      1865.8311180758965,
+      1832.8907277888018
+     ]
+    }
+   }
+  }
+ },
+ "operation_finding": "Relative range across the five indices: RES 1.1706%, load 0.4047%, RES share of load 0.9919%, net load 0.5012%. Kendall W of the per-block RES ranks = 0.0140 (about 0.050 expected with no agreement). Primary-metric order [4, 3, 5, 2, 1]; RES-share order [4, 3, 5, 2, 1]; net-load order [2, 3, 1, 5, 4]; load order [2, 3, 5, 4, 1]. The selected (low, mid, high) = [4, 5, 1] is the same as the (low, mid, high) of the RES-share order ([4, 5, 1]). Operation-scenario indices are not coherent RES states: production draws every load and every generator row with its own seed per network and per (year, day) block (network.py _update_network_with_operational_data; network_data.py realization seed per block), so an index is a bundle of independent per-element draws and its horizon RES level is an aggregate of those draws.",
+ "R_prediction": {
+  "formula": "R_u = spread_u(S*) / 97.99086039739976 (SRP1 Z4, undiscounted day weights); R_r2 = spread_r2(S*) / 97.01788674187569 (model block weight w / 1.02^(y-2025)); R_gn = [sum w_u top4_mean_minus_bottom4_mean(y,d) / (1+g)^(y-2025) / sum w_u](S*) / same for SRP1, g = 0.025. spread(S*) is the horizon 4 h spread of the probability-renormalized mean price profile of the selected market scenarios. The operation-scenario selection does not enter R (R is a price-only measure).",
+  "selected_market_scenarios": [
+   2,
+   3,
+   4
+  ],
+  "selected_operation_scenarios": [
+   4,
+   5,
+   1
+  ],
+  "selected": {
+   "spread_u": 91.89641979698735,
+   "spread_r2": 91.11406973888263,
+   "spread_growth_normalized_u": 78.83277358614954,
+   "R_u": 0.9378060303206183,
+   "R_r2": 0.939147128418694,
+   "R_gn": 0.9169432010352184
+  },
+  "five": {
+   "spread_u": 91.72775939691898,
+   "spread_r2": 90.9307562006712,
+   "spread_growth_normalized_u": 78.67122807904639,
+   "R_u": 0.9360848453102575,
+   "R_r2": 0.9372576465471794,
+   "R_gn": 0.9150641848892984
+  },
+  "bias_vs_five": {
+   "R_u": 0.0018387062016693712,
+   "R_r2": 0.0020159684783318532,
+   "R_gn": 0.0020534255158803916
+  },
+  "prediction": "for the 3 x 3 instance (market [2, 3, 4], operation [4, 5, 1]), the first-order arbitrage value per MWh relative to SRP1 is R_u = 0.9378, R_r2 = 0.9391 (the form of the confirmed R = 0.937), R_gn = 0.9169; recorded before any 3 x 3 run exists."
+ },
+ "comparison": "Selected-set renormalized mean-profile 4 h spread 91.8964 vs five-scenario 91.7278 EUR/MWh (undiscounted; difference +0.1687, +0.1839%); r2 91.1141 vs 90.9308 (+0.2016%); growth-normalized 78.8328 vs 78.6712 (+0.2053%). On the first-order (spread-proportional) model the reduction is expected to bias the arbitrage value UP relative to the full 5 x 5 instance by about 0.20% (r2 form). Bracket: average of the selected scenarios' own spreads 93.6401 vs five-scenario 94.6472 (-1.0640%). This covers price only; the operation-scenario reduction (and any interaction with network constraints) is not captured by R.",
+ "prefix_check": {
+  "note": "index-level only, dummy frame of the pool size; seeds recomputed with production's derive_random_seed and the labels of _read_market_data_from_file and _update_network_with_operational_data (network.random_seed read from the production objects). Checks whether DataFrame.sample(n=3) is the first 3 rows of DataFrame.sample(n=5) for the same seed. No seed depends on the scenario count.",
+  "market_seeds_checked": 40,
+  "market_prefix_true": 40,
+  "operation_seeds_checked": 10620,
+  "operation_prefix_true": 10620,
+  "first_failures": [],
+  "implication": "market prefix 40/40, operation prefix 10620/10620. If all true, a case derived with NumMarketScenarios = 3 and num_operation_scenarios = 3 (the p515_s44_scale_measurement.derive_case route used for the 2 x 2 pilot) holds exactly indices [1, 2, 3] in both dimensions, NOT the selected market [2, 3, 4] x operation [4, 5, 1]. Indices [1, 2, 3] rank 4 of 10 on the market rule (spread_u 91.2994, R_r2 0.9331). Realizing the selected set needs a selection mechanism the derive route does not have."
+ },
+ "checks": {
+  "solve_guard_verify_0": true,
+  "no_model_construction_call": true,
+  "stop_point_hits_exactly_declared": true,
+  "no_curtailable_generator_other_than_pv_wind": true,
+  "srp1_scenario_checksum_matches": true,
+  "srp1_prices_bound_to_every_block_are_planning_object": true,
+  "srp1_network_pm_is_planning_prob_market_scenarios": true,
+  "srp1_no_congestion_management_network": true,
+  "paper_scenario_checksum_matches": true,
+  "paper_prices_bound_to_every_block_are_planning_object": true,
+  "paper_network_pm_is_planning_prob_market_scenarios": true,
+  "paper_no_congestion_management_network": true,
+  "paper_pm_all_0_2": true,
+  "srp1_recomputed_spread_equals_Z4_97.99_to_1e-9": true,
+  "srp1_recomputed_spread_r2_equals_Z4_97.02_to_1e-9": true,
+  "five_set_spread_u_reproduces_W22_to_1e-9": true,
+  "five_set_R_u_reproduces_W22_to_1e-9": true,
+  "five_set_R_r2_reproduces_W22_to_1e-9": true,
+  "five_set_R_gn_reproduces_W22_to_1e-9": true,
+  "ten_market_subsets_ranked": true,
+  "five_operation_indices_ranked": true,
+  "operation_selection_three_distinct": true,
+  "prefix_check_ran_market": true,
+  "prefix_check_ran_operation": true
+ },
+ "ok": true,
+ "elapsed_s": 40.20195388793945,
+ "post_git_status_tracked_changes": [
+  " M PLANNER_BRIEF_2026-09-13.md"
+ ],
+ "ended_utc": "2026-09-24T08:58:09.468380+00:00"
+}

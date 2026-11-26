@@ -1,0 +1,466 @@
+{
+ "schema": "p515_s44_scale_measurement_v1",
+ "label": "srp1_build_memfix_plumbing",
+ "instance": "srp1",
+ "launch": "launch.json",
+ "build_child": {
+  "mode": "build",
+  "command": [
+   "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+   "-u",
+   "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_scale_measurement.py",
+   "--child",
+   "build",
+   "--label",
+   "srp1_build_memfix_plumbing"
+  ],
+  "exit_code": 0,
+  "raw_returncode": 0,
+  "wall_s": 22.222936153411865,
+  "parent_observed_peak": {
+   "measure": 973291520,
+   "rss_tree": 973291520,
+   "gating_measure": "rss_tree",
+   "gating_value": 973291520
+  },
+  "parent_backstop_gating_measure": "rss_tree",
+  "parent_backstop_bytes": 26843545600,
+  "wait4_rusage": {
+   "ru_utime": 20.677708,
+   "ru_stime": 1.081443,
+   "ru_maxrss": 973291520,
+   "ru_minflt": 103981,
+   "ru_majflt": 166,
+   "ru_nvcsw": 30,
+   "ru_nivcsw": 8021
+  },
+  "thread_caps_in_child_env": {
+   "OMP_NUM_THREADS": "1",
+   "MKL_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": "1",
+   "VECLIB_MAXIMUM_THREADS": "1",
+   "NUMEXPR_NUM_THREADS": "1"
+  }
+ },
+ "build_status": "complete",
+ "build": {
+  "d_configuration_checks": {
+   "configuration_checks": {
+    "rho_v_matches_D": true,
+    "rho_pf_matches_D": true,
+    "rho_ess_matches_D": true,
+    "tau_is_0": true,
+    "gamma_policy_tied_to_rho": true,
+    "balancing_exempt_until_matches_D": true,
+    "balancing_exempt_channels_empty": true,
+    "freeze_after_unchanged_cycles_is_10": true,
+    "freeze_backstop_cycle_is_200": true,
+    "minimum_consecutive_converged_cycles_matches_spec": true,
+    "shared_ess_initialization_is_standalone": true,
+    "num_max_iters_is_spec_cap": true,
+    "anderson_acceleration_case_file_matches_declaration": true,
+    "anderson_acceleration_case_file_memory_regularization_frozen": true,
+    "persistent_workers_off": true,
+    "parallel_execution_off": true
+   },
+   "case_file_anderson_acceleration_declared": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "anderson_acceleration_effective": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "overrides_applied": {},
+   "declaration_note": "spec_like declares configuration.case_file_anderson_acceleration; the harness hook checks the loaded AA equals it exactly and raises otherwise (p515_s44_campaign_harness._config_hook_factory)"
+  },
+  "snapshot_setting": {
+   "requested": "off",
+   "tso_mode_before": "lightweight",
+   "dso_mode_before": "lightweight",
+   "tso_mode_after": "off",
+   "dso_mode_after": "off",
+   "expected": [
+    "off",
+    "off"
+   ],
+   "took_effect": true,
+   "persistent_workers_enabled": false
+  },
+  "block_counts": {
+   "tso_blocks": 12,
+   "dso_blocks": 36,
+   "dso_blocks_per_node": {
+    "5": 12,
+    "7": 12,
+    "9": 12
+   },
+   "esso_models": 3,
+   "network_build_model_calls": 48,
+   "pristine_clone_blocks": {},
+   "network_blocks": 48
+  },
+  "counts_by_agent": {
+   "TSO": {
+    "models": 12,
+    "len_counts": {
+     "var": 46872,
+     "constraint": 40320,
+     "expression": 18324,
+     "param": 18384,
+     "objective": 36,
+     "suffix": 0
+    },
+    "deep": {
+     "var_data": 46872,
+     "var_fixed": 7056,
+     "var_free": 39816,
+     "constraint_data": 40320,
+     "constraint_active": 40320,
+     "constraint_active_equality": 21636,
+     "constraint_active_inequality": 18684,
+     "objective_active": 12
+    }
+   },
+   "DSO": {
+    "models": 36,
+    "len_counts": {
+     "var": 391752,
+     "constraint": 279684,
+     "expression": 150012,
+     "param": 73044,
+     "objective": 108,
+     "suffix": 0
+    },
+    "deep": {
+     "var_data": 391752,
+     "var_fixed": 2304,
+     "var_free": 389448,
+     "constraint_data": 279684,
+     "constraint_active": 279684,
+     "constraint_active_equality": 154980,
+     "constraint_active_inequality": 124704,
+     "objective_active": 36
+    }
+   },
+   "ESSO": {
+    "models": 3,
+    "len_counts": {
+     "var": 8847,
+     "constraint": 9693,
+     "expression": 9,
+     "param": 3507,
+     "objective": 6,
+     "suffix": 0
+    },
+    "deep": {
+     "var_data": 8847,
+     "var_fixed": 3528,
+     "var_free": 5319,
+     "constraint_data": 9693,
+     "constraint_active": 3600,
+     "constraint_active_equality": 999,
+     "constraint_active_inequality": 2601,
+     "objective_active": 3
+    }
+   },
+   "ALL": {
+    "models": 51,
+    "len_counts": {
+     "var": 447471,
+     "constraint": 329697,
+     "expression": 168345,
+     "param": 94935,
+     "objective": 150,
+     "suffix": 0
+    },
+    "deep": {
+     "var_data": 447471,
+     "var_fixed": 12888,
+     "var_free": 434583,
+     "constraint_data": 329697,
+     "constraint_active": 323604,
+     "constraint_active_equality": 177615,
+     "constraint_active_inequality": 145989,
+     "objective_active": 51
+    }
+   }
+  },
+  "memory_at_build_complete": {
+   "t": 20.278,
+   "stage": "child start",
+   "rss_self": 973209600,
+   "rss_children": 0,
+   "n_children": 0,
+   "rss_tree": 973209600,
+   "footprint_self": 773162544,
+   "measure": 973209600,
+   "sys_available": 15019950080,
+   "sys_used_pct": 56.3,
+   "swap_used": 928776192,
+   "gating_measure": "rss_tree",
+   "gating_value": 973209600
+  },
+  "watchdog_peak": {
+   "measure": 973242368,
+   "rss_tree": 973242368,
+   "rss_self": 973242368,
+   "footprint_self": 773162544,
+   "stage_at_peak_measure": "counting (after build complete)",
+   "t_at_peak_measure": 20.518,
+   "gating_measure": "rss_tree",
+   "gating_value": 973242368,
+   "stage_at_peak_gating_value": "counting (after build complete)",
+   "t_at_peak_gating_value": 20.518,
+   "swap_used": 928776192,
+   "stage_at_peak_swap_used": "child start"
+  },
+  "ru_maxrss_self_final": 973242368,
+  "guard": {
+   "permitted": [],
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "declared_solves": 0,
+   "verify_failures": []
+  },
+  "interceptor_check": {
+   "declared": {
+    "dso": 3,
+    "tso": 1,
+    "esso_init": 1
+   },
+   "observed": {
+    "dso": 3,
+    "tso": 1,
+    "esso_init": 1
+   },
+   "exact_match": true
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "stage_wall_s": [
+   [
+    "import production modules",
+    1.22,
+    220102656
+   ],
+   [
+    "read_planning_problem (data, copula/KDE scenario generation, networks, ESS)",
+    11.805,
+    461914112
+   ],
+   [
+    "provenance (IPOPT identity probe: `ipopt --version`, not a solve)",
+    0.161,
+    467271680
+   ],
+   [
+    "oracle construction: _construct_arm_planning (fresh_planning deepcopy, results redirect, budget, candidate C*)",
+    0.049,
+    470728704
+   ],
+   [
+    "create_admm_variables",
+    0.011,
+    470958080
+   ],
+   [
+    "create_distribution_networks_models (sequential; optimize intercepted)",
+    5.529,
+    887832576
+   ],
+   [
+    "create_transmission_network_model (optimize intercepted)",
+    1.08,
+    945340416
+   ],
+   [
+    "create_shared_energy_storage_model (optimize intercepted)",
+    0.074,
+    954236928
+   ],
+   [
+    "_prepare_distribution/transmission_objectives_for_admm",
+    0.011,
+    954843136
+   ],
+   [
+    "_compute_common_admm_objective_scale (attempted on unsolved blocks)",
+    0.136,
+    954957824
+   ],
+   [
+    "ADMM preparation: ESSO AL scale; update_*_to_admm (TSO/DSO under patched_admm_objectives); ESSO AL objective; consensus initialization",
+    0.134,
+    972570624
+   ],
+   [
+    "update_interface_power_flow_variables (skips unsolved blocks)",
+    0.011,
+    972701696
+   ],
+   [
+    "get_updated_capacities",
+    0.011,
+    973209600
+   ],
+   [
+    "pristine clones kept by the ADMM loop (tso_pristine_base, dso_pristine_base)",
+    0.01,
+    973209600
+   ],
+   [
+    "model counting (len per component type, all models; deep iteration, all models)",
+    0.234,
+    973225984
+   ]
+  ]
+ },
+ "parent_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "scale_measurement": {
+  "instance": "srp1",
+  "label": "srp1_build_memfix_plumbing",
+  "snapshots_requested": "off",
+  "snapshot_setting_build": {
+   "requested": "off",
+   "tso_mode_before": "lightweight",
+   "dso_mode_before": "lightweight",
+   "tso_mode_after": "off",
+   "dso_mode_after": "off",
+   "expected": [
+    "off",
+    "off"
+   ],
+   "took_effect": true,
+   "persistent_workers_enabled": false
+  },
+  "snapshot_setting_cycle": null,
+  "release_solution_bookkeeping_requested": true,
+  "release_solution_bookkeeping_cycle": null,
+  "case_file_anderson_acceleration_declared": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "anderson_acceleration_effective_cycle": null,
+  "anderson_acceleration_effective_build": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "timing_s": {
+   "build_child_wall_s": 22.222936153411865,
+   "build_stage_wall_s": 20.279,
+   "initialization_s": null,
+   "one_cycle_s": null,
+   "one_cycle_production_printed_s": null,
+   "run_admm_arm_wall_clock_s": null,
+   "cycle_child_wall_s": null
+  },
+  "peak_rss_bytes": {
+   "build_child_watchdog_peak": {
+    "measure": 973242368,
+    "rss_tree": 973242368,
+    "rss_self": 973242368,
+    "footprint_self": 773162544,
+    "stage_at_peak_measure": "counting (after build complete)",
+    "t_at_peak_measure": 20.518,
+    "gating_measure": "rss_tree",
+    "gating_value": 973242368,
+    "stage_at_peak_gating_value": "counting (after build complete)",
+    "t_at_peak_gating_value": 20.518,
+    "swap_used": 928776192,
+    "stage_at_peak_swap_used": "child start"
+   },
+   "build_child_parent_observed_peak": {
+    "measure": 973291520,
+    "rss_tree": 973291520,
+    "gating_measure": "rss_tree",
+    "gating_value": 973291520
+   },
+   "cycle_child_watchdog_peak": null,
+   "cycle_child_parent_observed_peak": null,
+   "cycle_child_ru_maxrss_self": null,
+   "cycle_child_ru_maxrss_children_ipopt": null,
+   "watchdog_limit_bytes": 25769803776,
+   "watchdog_gating_measure": "rss_tree",
+   "watchdog_thresholds": {
+    "rss_limit_bytes": 25769803776,
+    "rss_limit_gib": 24,
+    "rss_limit_is_spec_default": true,
+    "gating_measure": "rss_tree",
+    "gating_measure_sample_field": "rss_tree",
+    "gating_measure_is_default": true,
+    "gating_measures_available": [
+     "rss_tree",
+     "footprint"
+    ],
+    "parent_backstop_bytes": 26843545600,
+    "parent_backstop_gating_measure": "rss_tree",
+    "min_available_bytes": 1073741824,
+    "swap_used_limit_bytes": 2147483648,
+    "swap_growth_limit_bytes": 1073741824,
+    "swap_growth_window_s": 60.0,
+    "sample_interval_s": 0.5
+   },
+   "watchdog_thresholds_note": "P5.15 Addendum 27 W13. The memory limit gates on `gating_measure`: \"rss_tree\" (default) = RSS of the child and its descendants; \"footprint\" = the pre-W13 quantity `measure` = max(rss_tree, macOS phys_footprint + descendants' RSS), which counts COMPRESSED pages. Both are computed and recorded on every sample whichever gates. Guards in force: (1) gating measure > rss_limit_bytes; (2) system available memory < min_available_bytes; (3) thrashing -- swap used > swap_used_limit_bytes, or swap used grown by more than swap_growth_limit_bytes within any swap_growth_window_s window."
+  },
+  "objective_scale": {
+   "sigma_fixed": null,
+   "sigma_computed": null,
+   "ratio_sigma_computed_over_fixed": null,
+   "assert_factor": null,
+   "calibration_check_passed": null,
+   "al_scale_esso": null
+  },
+  "solves": {
+   "declared_base": null,
+   "derivation": null,
+   "solves_per_cycle": null,
+   "recovered_tier1": null,
+   "recovered_tier2": null,
+   "reconciled_expected": null,
+   "observed": null,
+   "identity": null,
+   "identity_holds": null,
+   "guard_verify_failures": null,
+   "build_child_zero_solve_guard": {
+    "permitted": [],
+    "counts": {
+     "permitted_solve": 0,
+     "permitted_exec": 0,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "declared_solves": 0,
+    "verify_failures": []
+   }
+  },
+  "failures": {
+   "n_blocks_with_failures": null,
+   "classes": null,
+   "n_frozen_snapshots": null,
+   "n_esso_recovery_events": null,
+   "local_solves_ok_cycle_1": null
+  }
+ },
+ "exit_code": 0,
+ "ended_utc": "2026-09-22T12:17:27.232199+00:00"
+}

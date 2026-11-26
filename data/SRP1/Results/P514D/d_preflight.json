@@ -1,0 +1,164 @@
+{
+ "stage": "Track D pre-flight",
+ "timestamp_utc": "2026-09-12T21:05:39.995347+00:00",
+ "solve_profile": {
+  "declared": 0,
+  "observed": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "failures": []
+ },
+ "plan": {
+  "s_MVA_per_node": 1.0,
+  "e_MWh_per_node": 4.0,
+  "invested_year": 2025,
+  "zero_in": [
+   2030,
+   2035
+  ],
+  "nodes": [
+   5,
+   7,
+   9
+  ],
+  "single_cohort": true,
+  "source": "specified explicitly; NOT from _build_positive_bootstrap_candidate"
+ },
+ "check1_investment_cost": {
+  "discount_factor": 0.02,
+  "market_scenario_probabilities": [
+   0.35,
+   0.55,
+   0.1
+  ],
+  "unit_costs_2025": {
+   "0": {
+    "power": 214171.32910223768,
+    "energy": 169706.26472766226
+   },
+   "1": {
+    "power": 267528.7212530719,
+    "energy": 211985.89083580763
+   },
+   "2": {
+    "power": 342165.6238488894,
+    "energy": 271127.093364985
+   }
+  },
+  "per_node": {
+   "5": 1068725.8920633597,
+   "7": 1068725.8920633597,
+   "9": 1068725.8920633597
+  },
+  "total_discounted_expected": 3206177.676190079,
+  "current_budget": 1000000.0,
+  "exceeds_current_budget": true,
+  "headroom_at_current_budget": -2206177.676190079
+ },
+ "check2_bounds": {
+  "max_capacity": 5.0,
+  "plan_energy_per_node": 4.0,
+  "comparison_operator": "candidate check uses `total_capacity['e'] > max_capacity + 1e-8` (shared_resources_planning.py:1631); the master adds `es_e_rated <= max_capacity` (shared_energy_storage_data.py:282)",
+  "margin_absolute": 1.0,
+  "margin_fraction_of_cap": 0.8,
+  "ratio": 4.0,
+  "min_energy_to_power_ratio": 2.0,
+  "max_energy_to_power_ratio": 10.0,
+  "ratio_within_bounds": true,
+  "bootstrap_pinned_ratio": 2.0
+ },
+ "check3_soh": {
+  "k_in_force": 11541.560327111707,
+  "soh_min": 0.5,
+  "trajectory": {
+   "0.5 EFC/day": {
+    "delta_daily": 4.332169878499658e-05,
+    "blocks": [
+     {
+      "year": 2025,
+      "years_in_block": 5,
+      "soh_cumulative": 0.9239809606736809
+     },
+     {
+      "year": 2030,
+      "years_in_block": 5,
+      "soh_cumulative": 0.8537408156874582
+     },
+     {
+      "year": 2035,
+      "years_in_block": 5,
+      "soh_cumulative": 0.7888402590452295
+     }
+    ],
+    "terminal_soh": 0.7888402590452295,
+    "floor_active": false
+   },
+   "1.0 EFC/day": {
+    "delta_daily": 8.664339756999317e-05,
+    "blocks": [
+     {
+      "year": 2025,
+      "years_in_block": 5,
+      "soh_cumulative": 0.853737891287412
+     },
+     {
+      "year": 2030,
+      "years_in_block": 5,
+      "soh_cumulative": 0.7288683870198769
+     },
+     {
+      "year": 2035,
+      "years_in_block": 5,
+      "soh_cumulative": 0.622262559760407
+     }
+    ],
+    "terminal_soh": 0.622262559760407,
+    "floor_active": false
+   },
+   "1.5 EFC/day": {
+    "delta_daily": 0.00012996509635498975,
+    "blocks": [
+     {
+      "year": 2025,
+      "years_in_block": 5,
+      "soh_cumulative": 0.7888321525692823
+     },
+     {
+      "year": 2030,
+      "years_in_block": 5,
+      "soh_cumulative": 0.6222561649270875
+     },
+     {
+      "year": 2035,
+      "years_in_block": 5,
+      "soh_cumulative": 0.49085567002894076
+     }
+    ],
+    "terminal_soh": 0.49085567002894076,
+    "floor_active": true
+   }
+  },
+  "efc_to_floor": 7999.6534214014,
+  "average_efc_per_day_at_which_floor_binds_by_2035": 1.4611239125847306
+ },
+ "check4_cell1_solve_mode": {
+  "mode": "type='uncoordinated' -> run_without_coordination -> _run_operational_planning_without_coordination (shared_resources_planning.py:5816)",
+  "structure": "one distribution_network.optimize per node (:5866) and one transmission_network.optimize (:5931). NO consensus loop, NO ESSO solve.",
+  "solves": {
+   "dso": "3 nodes x 12 year-day blocks = 36",
+   "tso": "12 year-day blocks",
+   "total": 48
+  },
+  "finding": "cell 1 costs ~48 solves in a single pass, NOT 3,519. The campaign figure was a large overestimate."
+ },
+ "check5_budget_paths": {
+  "hard_constraint": "shared_energy_storage_data.py:309, investment_cost_total <= budget \u2014 built inside build_master_problem only",
+  "alpha_lower_bound": "shared_energy_storage_data.py:260, model.alpha.setlb(-budget*1e3) \u2014 master only; a recourse evaluation never builds alpha",
+  "validity_check": "shared_resources_planning.py:1634, _check_candidate_first_stage_feasibility -> 'investment budget violated'",
+  "config_fingerprint": "p56a_oracle.py:739 includes budget in the config hash",
+  "finding": "a recourse evaluation with a FIXED candidate does not optimize the master, so neither the hard constraint nor the alpha bound is built. The binding path is the VALIDITY CHECK, plus the config fingerprint. Both are reached with the in-memory override, which is why the override must be applied before the candidate is validated."
+ }
+}

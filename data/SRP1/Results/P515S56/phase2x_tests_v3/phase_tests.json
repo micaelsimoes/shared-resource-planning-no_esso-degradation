@@ -1,0 +1,3342 @@
+{
+ "all_checks_ok": false,
+ "checks": [
+  {
+   "check": "classify_settled boundaries (12 cases)",
+   "detail": {
+    "A sum = R/2 exactly -> improver": "improver",
+    "A sum > R/2 -> unresolved": "unresolved",
+    "V_pair = R/4 exactly -> improver": "improver",
+    "V_pair > R/4 -> unresolved": "unresolved",
+    "a gate fails -> unresolved": "unresolved",
+    "dF = +R exactly -> worse": "worse",
+    "dF = -R + 0.01 -> unresolved": "unresolved",
+    "dF = -R exactly -> improver": "improver",
+    "harness_error -> harness_error": "harness_error",
+    "missing V -> harness_error": "harness_error",
+    "not_settled -> not_settled": "not_settled",
+    "unknown status -> harness_error": "harness_error"
+   },
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "classify_settled refuses mixed depth and a non-usable incumbent",
+   "detail": [
+    [
+     "mixed depth",
+     true
+    ],
+    [
+     "incumbent not settled",
+     true
+    ],
+    [
+     "incumbent gate fails",
+     true
+    ]
+   ],
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "efficiency rule: 11/22 (= 1/2) -> exit_then_confirm; 12/22 -> settled_direct; uncertified rows stay in the denominator",
+   "detail": [
+    {
+     "band_measure_information_only": {
+      "band_eur": 17494.0,
+      "branch_the_v1_measure_would_give": "exit_then_confirm",
+      "fraction": [
+       0,
+       1
+      ],
+      "fraction_float": 0.0,
+      "n_in_band": 0,
+      "rule": "v1 measure: certified rows with |F_exit(x) - F_exit(x0)| <= e_EV over every row; recorded beside the deciding measure, read by no decision (Planner decision P1)"
+     },
+     "branch": "exit_then_confirm",
+     "class_counts": {
+      "confirm_candidate": 0,
+      "harness_error": 0,
+      "uncertified": 0,
+      "unresolved": 11,
+      "worse": 11
+     },
+     "fraction": [
+      1,
+      2
+     ],
+     "fraction_float": 0.5,
+     "measure": "not_worse_against_x0",
+     "n_not_worse": 11,
+     "n_rows": 22,
+     "not_worse_classes": [
+      "confirm_candidate",
+      "unresolved"
+     ],
+     "rule": "fraction of the screen and ladder rows whose class against x0 at exit is NOT worse (confirm_candidate + unresolved; Planner decision P1) (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+     "threshold": [
+      1,
+      2
+     ]
+    },
+    {
+     "band_measure_information_only": {
+      "band_eur": 17494.0,
+      "branch_the_v1_measure_would_give": "exit_then_confirm",
+      "fraction": [
+       0,
+       1
+      ],
+      "fraction_float": 0.0,
+      "n_in_band": 0,
+      "rule": "v1 measure: certified rows with |F_exit(x) - F_exit(x0)| <= e_EV over every row; recorded beside the deciding measure, read by no decision (Planner decision P1)"
+     },
+     "branch": "settled_direct",
+     "class_counts": {
+      "confirm_candidate": 12,
+      "harness_error": 0,
+      "uncertified": 0,
+      "unresolved": 0,
+      "worse": 10
+     },
+     "fraction": [
+      6,
+      11
+     ],
+     "fraction_float": 0.5454545454545454,
+     "measure": "not_worse_against_x0",
+     "n_not_worse": 12,
+     "n_rows": 22,
+     "not_worse_classes": [
+      "confirm_candidate",
+      "unresolved"
+     ],
+     "rule": "fraction of the screen and ladder rows whose class against x0 at exit is NOT worse (confirm_candidate + unresolved; Planner decision P1) (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+     "threshold": [
+      1,
+      2
+     ]
+    },
+    {
+     "band_measure_information_only": {
+      "band_eur": 17494.0,
+      "branch_the_v1_measure_would_give": "exit_then_confirm",
+      "fraction": [
+       0,
+       1
+      ],
+      "fraction_float": 0.0,
+      "n_in_band": 0,
+      "rule": "v1 measure: certified rows with |F_exit(x) - F_exit(x0)| <= e_EV over every row; recorded beside the deciding measure, read by no decision (Planner decision P1)"
+     },
+     "branch": "exit_then_confirm",
+     "class_counts": {
+      "confirm_candidate": 0,
+      "harness_error": 0,
+      "uncertified": 1,
+      "unresolved": 11,
+      "worse": 10
+     },
+     "fraction": [
+      1,
+      2
+     ],
+     "fraction_float": 0.5,
+     "measure": "not_worse_against_x0",
+     "n_not_worse": 11,
+     "n_rows": 22,
+     "not_worse_classes": [
+      "confirm_candidate",
+      "unresolved"
+     ],
+     "rule": "fraction of the screen and ladder rows whose class against x0 at exit is NOT worse (confirm_candidate + unresolved; Planner decision P1) (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+     "threshold": [
+      1,
+      2
+     ]
+    }
+   ],
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "table row: |dF_exit| = e_EV in band, e_EV + 0.01 out; class by classify_exit with e = max(e_EV, bar sum)",
+   "detail": [
+    {
+     "F_exit": 800017494.0,
+     "bar": 1000.0,
+     "class": "unresolved",
+     "criterion": "-R + e < dF_exit < R + e",
+     "dF_exit": 17494.0,
+     "duration": "4h",
+     "e": 17494.0,
+     "in_efficiency_band": true,
+     "label": "n5_y2025_p0.25_e1",
+     "node": 5,
+     "reason": null,
+     "served_as": null,
+     "source": "screen",
+     "status": "certified",
+     "year": 2025,
+     "z": [
+      1,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "ze": 2,
+     "zp": 1
+    },
+    {
+     "F_exit": 800017494.01,
+     "bar": 1000.0,
+     "class": "unresolved",
+     "criterion": "-R + e < dF_exit < R + e",
+     "dF_exit": 17494.009999990463,
+     "duration": "4h",
+     "e": 17494.0,
+     "in_efficiency_band": false,
+     "label": "n5_y2025_p0.25_e1",
+     "node": 5,
+     "reason": null,
+     "served_as": null,
+     "source": "screen",
+     "status": "certified",
+     "year": 2025,
+     "z": [
+      1,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "ze": 2,
+     "zp": 1
+    }
+   ],
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "candidates: best, then the next distinct in node AND year (same node and same year passed over); only confirm-candidate rows; fewer logged",
+   "detail": [
+    {
+     "log": [],
+     "n_qualified": 4,
+     "passed_over": [
+      {
+       "label": "r1",
+       "reason": "shares a node or a year with a pick"
+      },
+      {
+       "label": "r2",
+       "reason": "shares a node or a year with a pick"
+      }
+     ],
+     "picked": [
+      "r0",
+      "r4"
+     ],
+     "qualified": [
+      "r0",
+      "r1",
+      "r2",
+      "r4"
+     ],
+     "rule": "rows classed confirm_candidate against x0, by (F_exit, label); greedily the best, then the next whose node AND year both differ from every pick"
+    },
+    {
+     "log": [
+      "1 of 2 candidates: 2 row(s) classed confirm_candidate"
+     ],
+     "n_qualified": 2,
+     "passed_over": [
+      {
+       "label": "r1",
+       "reason": "shares a node or a year with a pick"
+      }
+     ],
+     "picked": [
+      "r0"
+     ],
+     "qualified": [
+      "r0",
+      "r1"
+     ],
+     "rule": "rows classed confirm_candidate against x0, by (F_exit, label); greedily the best, then the next whose node AND year both differ from every pick"
+    }
+   ],
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "ladder: best duration 4 h; node-years (7, 2025), (9, 2030); 1.0 MVA x 4 MWh in 2025 skipped (budget); 3 plans",
+   "detail": {
+    "best_duration": "4h",
+    "log": [
+     "ladder point n7_y2025_p1_e4 skipped: ['budget: I(x) = 1271828.03 > B = 1e+06']"
+    ],
+    "node_years": [
+     [
+      7,
+      2025
+     ],
+     [
+      9,
+      2030
+     ]
+    ],
+    "plans": [
+     {
+      "label": "n7_y2025_p0.5_e2",
+      "node": 7,
+      "year": 2025,
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       2,
+       4,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      "ze": 4,
+      "zp": 2
+     },
+     {
+      "label": "n9_y2030_p0.5_e2",
+      "node": 9,
+      "year": 2030,
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       2,
+       4,
+       0,
+       0
+      ],
+      "ze": 4,
+      "zp": 2
+     },
+     {
+      "label": "n9_y2030_p1_e4",
+      "node": 9,
+      "year": 2030,
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       4,
+       8,
+       0,
+       0
+      ],
+      "ze": 8,
+      "zp": 4
+     }
+    ],
+    "rule": "best duration = duration of the certified screen plan with the lowest F_exit (ties by label); two best node-years = lowest F_exit among certified screen plans at that duration (ties by label); P in ladder_zp at that duration; a ladder point the lattice refuses is skipped",
+    "skipped": [
+     {
+      "label": "n7_y2025_p1_e4",
+      "node": 7,
+      "reasons": [
+       "budget: I(x) = 1271828.03 > B = 1e+06"
+      ],
+      "year": 2025,
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       4,
+       8,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      "ze": 8,
+      "zp": 4
+     }
+    ]
+   },
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "the comparison is not vacuous: the policy at 6b1d98b2 differs from the working-tree policy",
+   "detail": [
+    "a39919ed1620845c2ca2a5fbf1776b38aa3f578e95f30d14a1db30e467d7b71a",
+    "27d9347839f22367e178d76646a1cfdeb0f14acf51ecd34fe15c4d85860507c1"
+   ],
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "default search path (no poll_depth / poll_only): state and terminal report byte-identical to the policy at 6b1d98b2 (a39919ed1620) on 6 synthetic searches",
+   "detail": [
+    {
+     "budget": 48,
+     "moves": 5,
+     "rank": "resize",
+     "report_equal": true,
+     "start": "x0",
+     "state_equal": true
+    },
+    {
+     "budget": 48,
+     "moves": 5,
+     "rank": "remove",
+     "report_equal": true,
+     "start": "x0",
+     "state_equal": true
+    },
+    {
+     "budget": 31,
+     "moves": 0,
+     "rank": "resize",
+     "report_equal": true,
+     "start": "reference_unit",
+     "state_equal": true
+    },
+    {
+     "budget": 31,
+     "moves": 0,
+     "rank": "remove",
+     "report_equal": true,
+     "start": "reference_unit",
+     "state_equal": true
+    },
+    {
+     "budget": 14,
+     "moves": 0,
+     "rank": "resize",
+     "report_equal": true,
+     "start": "plan_2030",
+     "state_equal": true
+    },
+    {
+     "budget": 14,
+     "moves": 0,
+     "rank": "remove",
+     "report_equal": true,
+     "start": "plan_2030",
+     "state_equal": true
+    }
+   ],
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "the landscape comparison is not vacuous: the driver at 6b1d98b2 differs from the working tree",
+   "detail": null,
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "the plain synthetic landscape (no knobs) byte-identical to 6b1d98b2's on 382 plans x 2 depths",
+   "detail": null,
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "phase capture-path checklist (rule eleven) holds on the committed harness",
+   "detail": {
+    "best start in the phase state (Q3)": true,
+    "efficiency per-class counts and the v1 band measure (Q6, P1)": true,
+    "efficiency record in the phase state (Q6)": true,
+    "exit-view check per candidate in the phase state (Q7, R4)": true,
+    "exit_view in the settled summary (Q7, R4)": true,
+    "harness_error from the mapping (Q2)": true,
+    "launch wall in the phase launch record (Q4, ceiling)": true,
+    "local_solve_failures in the record (Q2)": true,
+    "mapping capture paths (F_exit, bar, settled F, V, gates; Q1, Q3)": true,
+    "peak_rss in the record (Q5)": true,
+    "per-cycle trajectory by default (stage template)": true,
+    "termination in the phase state (Q4)": true
+   },
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "whole phase (exit-then-confirm) through the launch CLI: freeze 0, codes 4...4, 0",
+   "detail": {
+    "codes_tail": [
+     4,
+     4,
+     0
+    ],
+    "n": 31
+   },
+   "ok": true,
+   "test": "T2"
+  },
+  {
+   "check": "final state == results state == the in-process phase (byte-equal)",
+   "detail": null,
+   "ok": true,
+   "test": "T2"
+  },
+  {
+   "check": "every launch is one block of <= 5 evaluations at one depth; stages run in order",
+   "detail": [
+    "screen",
+    "ladder",
+    "candidate_confirmation",
+    "candidate_polls",
+    "search"
+   ],
+   "ok": true,
+   "test": "T2"
+  },
+  {
+   "check": "the phase ran every stage: 18 screen rows + ladder rows in the table, efficiency branch exit_then_confirm, 2 candidates distinct in node and year, both polled completely, best start from the pool, a search with >= 1 move ending complete_poll_no_accepted_candidate",
+   "detail": {
+    "cands": [
+     "n5_y2030_p0.25_e1",
+     "n9_y2035_p0.25_e1"
+    ],
+    "efficiency": {
+     "band_measure_information_only": {
+      "band_eur": 17494.04935669899,
+      "branch_the_v1_measure_would_give": "exit_then_confirm",
+      "fraction": [
+       1,
+       22
+      ],
+      "fraction_float": 0.045454545454545456,
+      "n_in_band": 1,
+      "rule": "v1 measure: certified rows with |F_exit(x) - F_exit(x0)| <= e_EV over every row; recorded beside the deciding measure, read by no decision (Planner decision P1)"
+     },
+     "branch": "exit_then_confirm",
+     "class_counts": {
+      "confirm_candidate": 10,
+      "harness_error": 0,
+      "uncertified": 0,
+      "unresolved": 0,
+      "worse": 12
+     },
+     "fraction": [
+      5,
+      11
+     ],
+     "fraction_float": 0.45454545454545453,
+     "measure": "not_worse_against_x0",
+     "n_not_worse": 10,
+     "n_rows": 22,
+     "not_worse_classes": [
+      "confirm_candidate",
+      "unresolved"
+     ],
+     "rule": "fraction of the screen and ladder rows whose class against x0 at exit is NOT worse (confirm_candidate + unresolved; Planner decision P1) (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+     "threshold": [
+      1,
+      2
+     ]
+    },
+    "pool": "pilot_staged",
+    "search": {
+     "budget_used": 65,
+     "detail": null,
+     "reason": "complete_poll_no_accepted_candidate"
+    },
+    "stages": [
+     "screen",
+     "ladder",
+     "candidate_confirmation",
+     "candidate_polls",
+     "search"
+    ]
+   },
+   "ok": true,
+   "test": "T2"
+  },
+  {
+   "check": "spec v2: the efficiency record carries the not-worse measure, the per-class counts and the v1 band measure (information only); each candidate's exit-view check is recorded, equal, mode stop",
+   "detail": {
+    "efficiency": {
+     "band_measure_information_only": {
+      "band_eur": 17494.04935669899,
+      "branch_the_v1_measure_would_give": "exit_then_confirm",
+      "fraction": [
+       1,
+       22
+      ],
+      "fraction_float": 0.045454545454545456,
+      "n_in_band": 1,
+      "rule": "v1 measure: certified rows with |F_exit(x) - F_exit(x0)| <= e_EV over every row; recorded beside the deciding measure, read by no decision (Planner decision P1)"
+     },
+     "branch": "exit_then_confirm",
+     "class_counts": {
+      "confirm_candidate": 10,
+      "harness_error": 0,
+      "uncertified": 0,
+      "unresolved": 0,
+      "worse": 12
+     },
+     "fraction": [
+      5,
+      11
+     ],
+     "fraction_float": 0.45454545454545453,
+     "measure": "not_worse_against_x0",
+     "n_not_worse": 10,
+     "n_rows": 22,
+     "not_worse_classes": [
+      "confirm_candidate",
+      "unresolved"
+     ],
+     "rule": "fraction of the screen and ladder rows whose class against x0 at exit is NOT worse (confirm_candidate + unresolved; Planner decision P1) (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+     "threshold": [
+      1,
+      2
+     ]
+    },
+    "q7": {
+     "candidates": [
+      {
+       "exit_view_check": {
+        "differing": [],
+        "equal": true,
+        "exit_run": {
+         "F": 810391144.7460958,
+         "bar": 23949.80281989067,
+         "read_cycle": 111
+        },
+        "exit_run_bits": {
+         "F": [
+          "float",
+          "0x1.826cb345f8011p+29"
+         ],
+         "bar": [
+          "float",
+          "0x1.763736166adc0p+14"
+         ],
+         "read_cycle": [
+          "int",
+          111
+         ]
+        },
+        "exit_view": {
+         "F": 810391144.7460958,
+         "bar": 23949.80281989067,
+         "read_cycle": 111
+        },
+        "exit_view_bits": {
+         "F": [
+          "float",
+          "0x1.826cb345f8011p+29"
+         ],
+         "bar": [
+          "float",
+          "0x1.763736166adc0p+14"
+         ],
+         "read_cycle": [
+          "int",
+          111
+         ]
+        },
+        "fields": [
+         "read_cycle",
+         "F",
+         "bar"
+        ],
+        "mode": "stop",
+        "reason": null
+       },
+       "label": "n5_y2030_p0.25_e1"
+      },
+      {
+       "exit_view_check": {
+        "differing": [],
+        "equal": true,
+        "exit_run": {
+         "F": 810447779.5180695,
+         "bar": 23107.362772399745,
+         "read_cycle": 145
+        },
+        "exit_run_bits": {
+         "F": [
+          "float",
+          "0x1.82739d1c2501ap+29"
+         ],
+         "bar": [
+          "float",
+          "0x1.690d737a9ba33p+14"
+         ],
+         "read_cycle": [
+          "int",
+          145
+         ]
+        },
+        "exit_view": {
+         "F": 810447779.5180695,
+         "bar": 23107.362772399745,
+         "read_cycle": 145
+        },
+        "exit_view_bits": {
+         "F": [
+          "float",
+          "0x1.82739d1c2501ap+29"
+         ],
+         "bar": [
+          "float",
+          "0x1.690d737a9ba33p+14"
+         ],
+         "read_cycle": [
+          "int",
+          145
+         ]
+        },
+        "fields": [
+         "read_cycle",
+         "F",
+         "bar"
+        ],
+        "mode": "stop",
+        "reason": null
+       },
+       "label": "n9_y2035_p0.25_e1"
+      }
+     ],
+     "mode": "stop",
+     "n_checked": 2,
+     "n_equal": 2,
+     "termination_reason": "phase_complete"
+    }
+   },
+   "ok": true,
+   "test": "T2"
+  },
+  {
+   "check": "count identities hold in the candidate polls and the search",
+   "detail": null,
+   "ok": true,
+   "test": "T2"
+  },
+  {
+   "check": "the cached pool members (x0, unit, staged: the pilot records in the real phase) are never requested; the unit's screen row is served from the cache",
+   "detail": null,
+   "ok": true,
+   "test": "T2"
+  },
+  {
+   "check": "hours: cumulative = sum of the launch records' accounted walls; every launch passed the ceiling check before it ran",
+   "detail": [
+    60.84382214797618,
+    60.84382214797618
+   ],
+   "ok": true,
+   "test": "T2"
+  },
+  {
+   "check": "settled-direct branch: exit 0; final state byte-equal to in process",
+   "detail": [
+    4,
+    4,
+    0
+   ],
+   "ok": true,
+   "test": "T3"
+  },
+  {
+   "check": "every launch is one block of <= 5 evaluations at one depth; stages run in order",
+   "detail": [
+    "screen",
+    "ladder",
+    "candidate_confirmation",
+    "candidate_polls",
+    "search"
+   ],
+   "ok": true,
+   "test": "T3"
+  },
+  {
+   "check": "efficiency fraction > 1/2 -> settled_direct; every candidate-poll and search evaluation at settled depth; polls classified on settled values; the search moved; count identities hold",
+   "detail": {
+    "efficiency": {
+     "band_measure_information_only": {
+      "band_eur": 17494.04935669899,
+      "branch_the_v1_measure_would_give": "settled_direct",
+      "fraction": [
+       13,
+       22
+      ],
+      "fraction_float": 0.5909090909090909,
+      "n_in_band": 13,
+      "rule": "v1 measure: certified rows with |F_exit(x) - F_exit(x0)| <= e_EV over every row; recorded beside the deciding measure, read by no decision (Planner decision P1)"
+     },
+     "branch": "settled_direct",
+     "class_counts": {
+      "confirm_candidate": 20,
+      "harness_error": 0,
+      "uncertified": 1,
+      "unresolved": 0,
+      "worse": 1
+     },
+     "fraction": [
+      10,
+      11
+     ],
+     "fraction_float": 0.9090909090909091,
+     "measure": "not_worse_against_x0",
+     "n_not_worse": 20,
+     "n_rows": 22,
+     "not_worse_classes": [
+      "confirm_candidate",
+      "unresolved"
+     ],
+     "rule": "fraction of the screen and ladder rows whose class against x0 at exit is NOT worse (confirm_candidate + unresolved; Planner decision P1) (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+     "threshold": [
+      1,
+      2
+     ]
+    },
+    "moves": 2,
+    "search": {
+     "budget_used": 75,
+     "detail": null,
+     "reason": "complete_poll_no_accepted_candidate"
+    }
+   },
+   "ok": true,
+   "test": "T3"
+  },
+  {
+   "check": "the ceiling stops with exit 6 before the first block that would cross it; nothing launched; the record's arithmetic (cumulative = sum of launch walls; projected = max(frozen, measured same depth)); a re-issue stops again (6), no new launch",
+   "detail": {
+    "check": {
+     "carried_h": 0.0,
+     "ceiling_h": 12.0,
+     "cumulative_h": 9.582194311274126,
+     "cumulative_plus_projected_h": 12.675767534157304,
+     "frozen_projection_h": 3.0935732228831774,
+     "max_measured_same_depth_h": null,
+     "next_block_depth": "settled",
+     "projected_next_block_h": 3.0935732228831774,
+     "rule": "before each block: carried hours (a continuation's predecessors' measured hours, frozen; 0 otherwise) + cumulative measured hours (completed launch walls + interrupted launch walls) + projected wall of the next block (max(frozen projection at its depth, largest measured wall of a completed launch at that depth)) <= ceiling_h; otherwise exit 6 with an hours summary",
+     "stop": true
+    },
+    "cum": 9.582194311274126,
+    "proj": 3.0935732228831774,
+    "rc": 6,
+    "rc2": 6
+   },
+   "ok": true,
+   "test": "T4"
+  },
+  {
+   "check": "harness_error_screen: exit 5, termination harness_error at stage screen; results written; byte-equal to in process",
+   "detail": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "labels": [
+       "n5_y2025_p0.25_e1"
+      ],
+      "stage": "screen"
+     },
+     "reason": "harness_error",
+     "stage": "screen"
+    }
+   },
+   "ok": true,
+   "test": "T5"
+  },
+  {
+   "check": "offset_candidate_confirmation: exit 5, termination stop_for_review_offset at stage candidate_confirmation; results written; byte-equal to in process",
+   "detail": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "candidate": "n5_y2030_p0.25_e1",
+      "failed": [
+       "held-out check: offset 60255.2313131094 > e 43409.25643962409"
+      ]
+     },
+     "reason": "stop_for_review_offset",
+     "stage": "candidate_confirmation"
+    }
+   },
+   "ok": true,
+   "test": "T5"
+  },
+  {
+   "check": "offset_search_confirmation: exit 5, termination stop_for_review_offset at stage search; results written; byte-equal to in process",
+   "detail": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "search": {
+       "budget_used": 11,
+       "detail": {
+        "failed": [
+         "held-out check: offset 58824.09675145149 > e 36224.60132637269"
+        ],
+        "pos": 6,
+        "z": [
+         0,
+         0,
+         2,
+         2,
+         0,
+         0,
+         1,
+         2,
+         1,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         1,
+         2
+        ]
+       },
+       "reason": "stop_for_review_offset"
+      }
+     },
+     "reason": "stop_for_review_offset",
+     "stage": "search"
+    }
+   },
+   "ok": true,
+   "test": "T5"
+  },
+  {
+   "check": "not_settled_trigger: exit 5, termination stop_for_review_not_settled at stage candidate_polls; results written; byte-equal to in process",
+   "detail": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "review": {
+     "consecutive_not_settled": 3,
+     "n_confirmations": 3,
+     "n_not_settled": 3,
+     "pos": 2,
+     "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+     "rule_consecutive": true,
+     "rule_share": false,
+     "stop": true,
+     "z": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      4
+     ]
+    },
+    "termination": {
+     "detail": {
+      "candidate": "n9_y2035_p0.5_e2",
+      "sub": {
+       "budget_used": 5,
+       "detail": {
+        "consecutive_not_settled": 3,
+        "n_confirmations": 3,
+        "n_not_settled": 3,
+        "pos": 2,
+        "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+        "rule_consecutive": true,
+        "rule_share": false,
+        "stop": true,
+        "z": [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         3,
+         4
+        ]
+       },
+       "reason": "stop_for_review_not_settled"
+      }
+     },
+     "reason": "stop_for_review_not_settled",
+     "stage": "candidate_polls"
+    }
+   },
+   "ok": true,
+   "test": "T5"
+  },
+  {
+   "check": "start_not_certified: exit 5, termination start_incumbent_not_certified at stage screen; results written; byte-equal to in process",
+   "detail": {
+    "codes_tail": [
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "status": "not_certified",
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     "reason": "start_incumbent_not_certified",
+     "stage": "screen"
+    }
+   },
+   "ok": true,
+   "test": "T5"
+  },
+  {
+   "check": "exit_view_mismatch_candidate: exit 5, termination exit_view_mismatch at stage candidate_confirmation; results written; byte-equal to in process",
+   "detail": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "mismatches": [
+       {
+        "candidate": "n5_y2030_p0.25_e1",
+        "differing": [
+         "F"
+        ],
+        "exit_run": {
+         "F": 810391144.7460958,
+         "bar": 23949.80281989067,
+         "read_cycle": 111
+        },
+        "exit_view": {
+         "F": 810391144.7460959,
+         "bar": 23949.80281989067,
+         "read_cycle": 111
+        }
+       }
+      ],
+      "rule": "R4 (phase spec v2)"
+     },
+     "reason": "exit_view_mismatch",
+     "stage": "candidate_confirmation"
+    }
+   },
+   "ok": true,
+   "test": "T5"
+  },
+  {
+   "check": "kill at after_lock (launch 1, stage screen) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over",
+   "detail": {
+    "evaluated": 123,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed": true,
+    "killed_evaluations": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_lock",
+     1
+    ]
+   },
+   "ok": true,
+   "test": "T6"
+  },
+  {
+   "check": "kill at after_launch_dir (launch 2, stage screen) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over",
+   "detail": {
+    "evaluated": 123,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed": true,
+    "killed_evaluations": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_launch_dir",
+     2
+    ]
+   },
+   "ok": true,
+   "test": "T6"
+  },
+  {
+   "check": "kill at during_evaluate (launch 5, stage ladder) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over",
+   "detail": {
+    "evaluated": 123,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed": true,
+    "killed_evaluations": 3,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "during_evaluate",
+     5,
+     0.0
+    ]
+   },
+   "ok": true,
+   "test": "T6"
+  },
+  {
+   "check": "kill at after_evaluate (launch 6, stage candidate_confirmation) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over",
+   "detail": {
+    "evaluated": 123,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed": true,
+    "killed_evaluations": 2,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_evaluate",
+     6
+    ]
+   },
+   "ok": true,
+   "test": "T6"
+  },
+  {
+   "check": "kill at after_launch_record (launch 7, stage candidate_polls) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over",
+   "detail": {
+    "evaluated": 123,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed": true,
+    "killed_evaluations": 5,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_launch_record",
+     7
+    ]
+   },
+   "ok": true,
+   "test": "T6"
+  },
+  {
+   "check": "kill at after_manifest (launch 15, stage search) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over",
+   "detail": {
+    "evaluated": 123,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed": true,
+    "killed_evaluations": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_manifest",
+     15
+    ]
+   },
+   "ok": true,
+   "test": "T6"
+  },
+  {
+   "check": "kill at after_state_view (launch 17, stage search) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over",
+   "detail": {
+    "evaluated": 123,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed": true,
+    "killed_evaluations": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_state_view",
+     17
+    ]
+   },
+   "ok": true,
+   "test": "T6"
+  },
+  {
+   "check": "kill at after_results (launch 31, stage search) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over",
+   "detail": {
+    "evaluated": 123,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed": true,
+    "killed_evaluations": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_results",
+     31
+    ]
+   },
+   "ok": true,
+   "test": "T6"
+  },
+  {
+   "check": "the author's command (exact text, scratch --lock-path): prints every exit code, 4...4 then 0, stops; one stdout/stderr log pair per invocation (empty stderr); final state byte-equal to in process",
+   "detail": {
+    "exits": [
+     4,
+     4,
+     0
+    ],
+    "n": 31,
+    "stderr": ""
+   },
+   "ok": true,
+   "test": "T7"
+  },
+  {
+   "check": "the command re-issued on the finished phase: one invocation, exit 0, the next log number",
+   "detail": [
+    "2026-11-24T19:39:29Z launch 032 exit 0"
+   ],
+   "ok": true,
+   "test": "T7"
+  },
+  {
+   "check": "stub children (harness evaluate, stub mode): freeze (collision scan clean) and the whole phase, exit 0; final state byte-equal to the in-process synthetic phase",
+   "detail": {
+    "codes_tail": [
+     4,
+     4,
+     0
+    ],
+    "rc": 0,
+    "rc0": 0
+   },
+   "ok": true,
+   "test": "T8"
+  },
+  {
+   "check": "each stub launch froze one harness spec whose keys recompute (replay verified every launch)",
+   "detail": null,
+   "ok": true,
+   "test": "T8"
+  },
+  {
+   "check": "refused (exit 2): real freeze without predictions; synthetic phase not test-only; --preflight-only on a synthetic phase",
+   "detail": [
+    2,
+    2,
+    2
+   ],
+   "ok": true,
+   "test": "T9"
+  },
+  {
+   "check": "a tampered evaluation record: the replay refuses (exit 2), nothing written; restored -> proceeds (4); re-freezing an existing root refused (write-once)",
+   "detail": [
+    2,
+    4,
+    2,
+    "p515_s56_synthetic_record_v1"
+   ],
+   "ok": true,
+   "test": "T9"
+  },
+  {
+   "check": "efficiency (P1): numerator = confirm_candidate + unresolved; per-class counts recorded; uncertified in the denominator only; 11/22 -> exit_then_confirm",
+   "detail": {
+    "band_measure_information_only": {
+     "band_eur": 17494.0,
+     "branch_the_v1_measure_would_give": "exit_then_confirm",
+     "fraction": [
+      0,
+      1
+     ],
+     "fraction_float": 0.0,
+     "n_in_band": 0,
+     "rule": "v1 measure: certified rows with |F_exit(x) - F_exit(x0)| <= e_EV over every row; recorded beside the deciding measure, read by no decision (Planner decision P1)"
+    },
+    "branch": "exit_then_confirm",
+    "class_counts": {
+     "confirm_candidate": 5,
+     "harness_error": 0,
+     "uncertified": 1,
+     "unresolved": 6,
+     "worse": 10
+    },
+    "fraction": [
+     1,
+     2
+    ],
+    "fraction_float": 0.5,
+    "measure": "not_worse_against_x0",
+    "n_not_worse": 11,
+    "n_rows": 22,
+    "not_worse_classes": [
+     "confirm_candidate",
+     "unresolved"
+    ],
+    "rule": "fraction of the screen and ladder rows whose class against x0 at exit is NOT worse (confirm_candidate + unresolved; Planner decision P1) (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+    "threshold": [
+     1,
+     2
+    ]
+   },
+   "ok": true,
+   "test": "T10"
+  },
+  {
+   "check": "efficiency (P1): 12/22 not worse -> settled_direct (strict > 1/2, exact rational)",
+   "detail": {
+    "band_measure_information_only": {
+     "band_eur": 17494.0,
+     "branch_the_v1_measure_would_give": "exit_then_confirm",
+     "fraction": [
+      0,
+      1
+     ],
+     "fraction_float": 0.0,
+     "n_in_band": 0,
+     "rule": "v1 measure: certified rows with |F_exit(x) - F_exit(x0)| <= e_EV over every row; recorded beside the deciding measure, read by no decision (Planner decision P1)"
+    },
+    "branch": "settled_direct",
+    "class_counts": {
+     "confirm_candidate": 6,
+     "harness_error": 0,
+     "uncertified": 0,
+     "unresolved": 6,
+     "worse": 10
+    },
+    "fraction": [
+     6,
+     11
+    ],
+    "fraction_float": 0.5454545454545454,
+    "measure": "not_worse_against_x0",
+    "n_not_worse": 12,
+    "n_rows": 22,
+    "not_worse_classes": [
+     "confirm_candidate",
+     "unresolved"
+    ],
+    "rule": "fraction of the screen and ladder rows whose class against x0 at exit is NOT worse (confirm_candidate + unresolved; Planner decision P1) (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+    "threshold": [
+     1,
+     2
+    ]
+   },
+   "ok": true,
+   "test": "T10"
+  },
+  {
+   "check": "the v1 band measure is information only: 14/22 not worse with 0 in band -> settled_direct (v1 would give exit_then_confirm); 3/22 not worse with 12 in band -> exit_then_confirm (v1 would give settled_direct)",
+   "detail": [
+    {
+     "band_measure_information_only": {
+      "band_eur": 17494.0,
+      "branch_the_v1_measure_would_give": "exit_then_confirm",
+      "fraction": [
+       0,
+       1
+      ],
+      "fraction_float": 0.0,
+      "n_in_band": 0,
+      "rule": "v1 measure: certified rows with |F_exit(x) - F_exit(x0)| <= e_EV over every row; recorded beside the deciding measure, read by no decision (Planner decision P1)"
+     },
+     "branch": "settled_direct",
+     "class_counts": {
+      "confirm_candidate": 14,
+      "harness_error": 0,
+      "uncertified": 0,
+      "unresolved": 0,
+      "worse": 8
+     },
+     "fraction": [
+      7,
+      11
+     ],
+     "fraction_float": 0.6363636363636364,
+     "measure": "not_worse_against_x0",
+     "n_not_worse": 14,
+     "n_rows": 22,
+     "not_worse_classes": [
+      "confirm_candidate",
+      "unresolved"
+     ],
+     "rule": "fraction of the screen and ladder rows whose class against x0 at exit is NOT worse (confirm_candidate + unresolved; Planner decision P1) (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+     "threshold": [
+      1,
+      2
+     ]
+    },
+    {
+     "band_measure_information_only": {
+      "band_eur": 17494.0,
+      "branch_the_v1_measure_would_give": "settled_direct",
+      "fraction": [
+       6,
+       11
+      ],
+      "fraction_float": 0.5454545454545454,
+      "n_in_band": 12,
+      "rule": "v1 measure: certified rows with |F_exit(x) - F_exit(x0)| <= e_EV over every row; recorded beside the deciding measure, read by no decision (Planner decision P1)"
+     },
+     "branch": "exit_then_confirm",
+     "class_counts": {
+      "confirm_candidate": 0,
+      "harness_error": 0,
+      "uncertified": 0,
+      "unresolved": 3,
+      "worse": 19
+     },
+     "fraction": [
+      3,
+      22
+     ],
+     "fraction_float": 0.13636363636363635,
+     "measure": "not_worse_against_x0",
+     "n_not_worse": 3,
+     "n_rows": 22,
+     "not_worse_classes": [
+      "confirm_candidate",
+      "unresolved"
+     ],
+     "rule": "fraction of the screen and ladder rows whose class against x0 at exit is NOT worse (confirm_candidate + unresolved; Planner decision P1) (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+     "threshold": [
+      1,
+      2
+     ]
+    }
+   ],
+   "ok": true,
+   "test": "T10"
+  },
+  {
+   "check": "an unknown row class is refused (no silent bucket)",
+   "detail": null,
+   "ok": true,
+   "test": "T10"
+  },
+  {
+   "check": "a row at dF_exit = -20,000 EUR is confirm_candidate (counts as not worse) and outside the band",
+   "detail": {
+    "F_exit": 799980000.0,
+    "bar": 1000.0,
+    "class": "confirm_candidate",
+    "criterion": "dF_exit <= -R + e",
+    "dF_exit": -20000.0,
+    "duration": "4h",
+    "e": 17494.0,
+    "in_efficiency_band": false,
+    "label": "n5_y2025_p0.25_e1",
+    "node": 5,
+    "reason": null,
+    "served_as": null,
+    "source": "screen",
+    "status": "certified",
+    "year": 2025,
+    "z": [
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "ze": 2,
+    "zp": 1
+   },
+   "ok": true,
+   "test": "T10"
+  },
+  {
+   "check": "exit-view check (R4) is bitwise: equal -> equal; one ulp in F or bar, read_cycle + 1, read_cycle as a float, an absent exit_view -> mismatch naming the field",
+   "detail": [
+    {
+     "differing": [],
+     "equal": true,
+     "exit_run": {
+      "F": 811976794.7754139,
+      "bar": 2490.025410294533,
+      "read_cycle": 127
+     },
+     "exit_run_bits": {
+      "F": [
+       "float",
+       "0x1.832e42d6340c3p+29"
+      ],
+      "bar": [
+       "float",
+       "0x1.3740d02940000p+11"
+      ],
+      "read_cycle": [
+       "int",
+       127
+      ]
+     },
+     "exit_view": {
+      "F": 811976794.7754139,
+      "bar": 2490.025410294533,
+      "read_cycle": 127
+     },
+     "exit_view_bits": {
+      "F": [
+       "float",
+       "0x1.832e42d6340c3p+29"
+      ],
+      "bar": [
+       "float",
+       "0x1.3740d02940000p+11"
+      ],
+      "read_cycle": [
+       "int",
+       127
+      ]
+     },
+     "fields": [
+      "read_cycle",
+      "F",
+      "bar"
+     ],
+     "reason": null
+    },
+    {
+     "differing": [
+      "F"
+     ],
+     "equal": false,
+     "exit_run": {
+      "F": 811976794.775414,
+      "bar": 2490.025410294533,
+      "read_cycle": 127
+     },
+     "exit_run_bits": {
+      "F": [
+       "float",
+       "0x1.832e42d6340c4p+29"
+      ],
+      "bar": [
+       "float",
+       "0x1.3740d02940000p+11"
+      ],
+      "read_cycle": [
+       "int",
+       127
+      ]
+     },
+     "exit_view": {
+      "F": 811976794.7754139,
+      "bar": 2490.025410294533,
+      "read_cycle": 127
+     },
+     "exit_view_bits": {
+      "F": [
+       "float",
+       "0x1.832e42d6340c3p+29"
+      ],
+      "bar": [
+       "float",
+       "0x1.3740d02940000p+11"
+      ],
+      "read_cycle": [
+       "int",
+       127
+      ]
+     },
+     "fields": [
+      "read_cycle",
+      "F",
+      "bar"
+     ],
+     "reason": "differs in ['F']"
+    },
+    {
+     "differing": [
+      "bar"
+     ],
+     "equal": false,
+     "exit_run": {
+      "F": 811976794.7754139,
+      "bar": 2490.025410294533,
+      "read_cycle": 127
+     },
+     "exit_run_bits": {
+      "F": [
+       "float",
+       "0x1.832e42d6340c3p+29"
+      ],
+      "bar": [
+       "float",
+       "0x1.3740d02940000p+11"
+      ],
+      "read_cycle": [
+       "int",
+       127
+      ]
+     },
+     "exit_view": {
+      "F": 811976794.7754139,
+      "bar": 2490.0254102945323,
+      "read_cycle": 127
+     },
+     "exit_view_bits": {
+      "F": [
+       "float",
+       "0x1.832e42d6340c3p+29"
+      ],
+      "bar": [
+       "float",
+       "0x1.3740d0293ffffp+11"
+      ],
+      "read_cycle": [
+       "int",
+       127
+      ]
+     },
+     "fields": [
+      "read_cycle",
+      "F",
+      "bar"
+     ],
+     "reason": "differs in ['bar']"
+    },
+    {
+     "differing": [
+      "read_cycle"
+     ],
+     "equal": false,
+     "exit_run": {
+      "F": 811976794.7754139,
+      "bar": 2490.025410294533,
+      "read_cycle": 128
+     },
+     "exit_run_bits": {
+      "F": [
+       "float",
+       "0x1.832e42d6340c3p+29"
+      ],
+      "bar": [
+       "float",
+       "0x1.3740d02940000p+11"
+      ],
+      "read_cycle": [
+       "int",
+       128
+      ]
+     },
+     "exit_view": {
+      "F": 811976794.7754139,
+      "bar": 2490.025410294533,
+      "read_cycle": 127
+     },
+     "exit_view_bits": {
+      "F": [
+       "float",
+       "0x1.832e42d6340c3p+29"
+      ],
+      "bar": [
+       "float",
+       "0x1.3740d02940000p+11"
+      ],
+      "read_cycle": [
+       "int",
+       127
+      ]
+     },
+     "fields": [
+      "read_cycle",
+      "F",
+      "bar"
+     ],
+     "reason": "differs in ['read_cycle']"
+    },
+    {
+     "differing": [
+      "read_cycle"
+     ],
+     "equal": false,
+     "exit_run": {
+      "F": 811976794.7754139,
+      "bar": 2490.025410294533,
+      "read_cycle": 127.0
+     },
+     "exit_run_bits": {
+      "F": [
+       "float",
+       "0x1.832e42d6340c3p+29"
+      ],
+      "bar": [
+       "float",
+       "0x1.3740d02940000p+11"
+      ],
+      "read_cycle": [
+       "float",
+       "0x1.fc00000000000p+6"
+      ]
+     },
+     "exit_view": {
+      "F": 811976794.7754139,
+      "bar": 2490.025410294533,
+      "read_cycle": 127
+     },
+     "exit_view_bits": {
+      "F": [
+       "float",
+       "0x1.832e42d6340c3p+29"
+      ],
+      "bar": [
+       "float",
+       "0x1.3740d02940000p+11"
+      ],
+      "read_cycle": [
+       "int",
+       127
+      ]
+     },
+     "fields": [
+      "read_cycle",
+      "F",
+      "bar"
+     ],
+     "reason": "differs in ['read_cycle']"
+    },
+    {
+     "differing": [
+      "read_cycle",
+      "F",
+      "bar"
+     ],
+     "equal": false,
+     "exit_run": {
+      "F": 811976794.7754139,
+      "bar": 2490.025410294533,
+      "read_cycle": 127
+     },
+     "exit_view": null,
+     "fields": [
+      "read_cycle",
+      "F",
+      "bar"
+     ],
+     "reason": "the settled summary carries no exit_view"
+    }
+   ],
+   "ok": true,
+   "test": "T11"
+  },
+  {
+   "check": "in the phase: a mismatch stops exit_view_mismatch at candidate_confirmation (either candidate, any field, an absent view); a first-in-order harness_error precedes it; it precedes the offset stop (the offset alone still stops); mode record records the mismatch and the phase completes",
+   "detail": {
+    "absent": {
+     "detail": {
+      "mismatches": [
+       {
+        "candidate": "n5_y2030_p0.25_e1",
+        "differing": [
+         "read_cycle",
+         "F",
+         "bar"
+        ],
+        "exit_run": {
+         "F": 810391144.7460958,
+         "bar": 23949.80281989067,
+         "read_cycle": 111
+        },
+        "exit_view": null
+       }
+      ],
+      "rule": "R4 (phase spec v2)"
+     },
+     "reason": "exit_view_mismatch",
+     "stage": "candidate_confirmation"
+    },
+    "harness_error_precedes": {
+     "detail": {
+      "candidate": "n5_y2030_p0.25_e1",
+      "failed": [
+       "candidate settled status 'harness_error' (harness error)"
+      ]
+     },
+     "reason": "harness_error",
+     "stage": "candidate_confirmation"
+    },
+    "mismatch_F": {
+     "detail": {
+      "mismatches": [
+       {
+        "candidate": "n5_y2030_p0.25_e1",
+        "differing": [
+         "F"
+        ],
+        "exit_run": {
+         "F": 810391144.7460958,
+         "bar": 23949.80281989067,
+         "read_cycle": 111
+        },
+        "exit_view": {
+         "F": 810391144.7460959,
+         "bar": 23949.80281989067,
+         "read_cycle": 111
+        }
+       }
+      ],
+      "rule": "R4 (phase spec v2)"
+     },
+     "reason": "exit_view_mismatch",
+     "stage": "candidate_confirmation"
+    },
+    "mismatch_precedes_offset": {
+     "detail": {
+      "mismatches": [
+       {
+        "candidate": "n9_y2035_p0.25_e1",
+        "differing": [
+         "bar"
+        ],
+        "exit_run": {
+         "F": 810447779.5180695,
+         "bar": 23107.362772399745,
+         "read_cycle": 145
+        },
+        "exit_view": {
+         "F": 810447779.5180695,
+         "bar": 23107.36277239975,
+         "read_cycle": 145
+        }
+       }
+      ],
+      "rule": "R4 (phase spec v2)"
+     },
+     "reason": "exit_view_mismatch",
+     "stage": "candidate_confirmation"
+    },
+    "mismatch_read_cycle_c2": {
+     "detail": {
+      "mismatches": [
+       {
+        "candidate": "n9_y2035_p0.25_e1",
+        "differing": [
+         "read_cycle"
+        ],
+        "exit_run": {
+         "F": 810447779.5180695,
+         "bar": 23107.362772399745,
+         "read_cycle": 145
+        },
+        "exit_view": {
+         "F": 810447779.5180695,
+         "bar": 23107.362772399745,
+         "read_cycle": 146
+        }
+       }
+      ],
+      "rule": "R4 (phase spec v2)"
+     },
+     "reason": "exit_view_mismatch",
+     "stage": "candidate_confirmation"
+    },
+    "mode_record": {
+     "detail": {
+      "search": {
+       "budget_used": 65,
+       "detail": null,
+       "reason": "complete_poll_no_accepted_candidate"
+      }
+     },
+     "reason": "phase_complete",
+     "stage": "search"
+    },
+    "offset_alone": {
+     "detail": {
+      "candidate": "n5_y2030_p0.25_e1",
+      "failed": [
+       "held-out check: offset 60255.2313131094 > e 43409.25643962409"
+      ]
+     },
+     "reason": "stop_for_review_offset",
+     "stage": "candidate_confirmation"
+    }
+   },
+   "ok": true,
+   "test": "T11"
+  },
+  {
+   "check": "an unknown exit_view_check mode is refused",
+   "detail": null,
+   "ok": true,
+   "test": "T11"
+  },
+  {
+   "check": "a declared, verified un-launched predecessor (spec + freeze logs; .DS_Store ignored) is excluded: the scan passes, 1 file excluded; the same root undeclared: the scan refuses, naming its spec",
+   "detail": {
+    "declared": {
+     "collisions": [],
+     "excluded_predecessor_files": [
+      "data/SRP1/Results/P515S56/phase2x_tests_v3/t12/pred_ok/phase_spec_adc60fa8.json"
+     ],
+     "n_excluded_cache_roots": 0,
+     "n_excluded_own_root": 0,
+     "n_excluded_predecessor_roots": 1,
+     "n_files_scanned": 0,
+     "n_keys": 74084,
+     "scope": "git ls-files data/SRP1/Results: campaign_spec_* / search_spec_* / phase_spec_* / launches/launch_*.json"
+    },
+    "undeclared": [
+     "collision scan: 1 artefact(s) outside the search's own root and its declared cache roots carry its eval keys: ['/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_tests_v3/t12/pred_ok/phase_spec_adc60fa8.json']"
+    ]
+   },
+   "ok": true,
+   "test": "T12"
+  },
+  {
+   "check": "the scan refuses when the declared predecessor has launches (launches/), an eval dir, a state view or a launch log (re-verified at the scan); a wrong declared sha is refused",
+   "detail": {
+    "cases": {
+     "eval_dir": [
+      "declared un-launched predecessor data/SRP1/Results/P515S56/phase2x_tests_v3/t12/pred_eval_dir holds directories ['evals'] (launches / eval dirs): it is not un-launched; a launched predecessor is declared as a continuation, never excluded"
+     ],
+     "launch_log": [
+      "declared un-launched predecessor data/SRP1/Results/P515S56/phase2x_tests_v3/t12/pred_launch_log holds files other than its spec and freeze logs: ['launch_001_stdout.log']"
+     ],
+     "launches_dir": [
+      "declared un-launched predecessor data/SRP1/Results/P515S56/phase2x_tests_v3/t12/pred_launches_dir holds directories ['launches'] (launches / eval dirs): it is not un-launched; a launched predecessor is declared as a continuation, never excluded"
+     ],
+     "state_view": [
+      "declared un-launched predecessor data/SRP1/Results/P515S56/phase2x_tests_v3/t12/pred_state_view holds files other than its spec and freeze logs: ['phase_state.json']"
+     ]
+    },
+    "wrong_sha": [
+     "declared un-launched predecessor data/SRP1/Results/P515S56/phase2x_tests_v3/t12/pred_ok: phase_spec_adc60fa8.json has sha256 adc60fa8dd2c2125..., declared ffffffff"
+    ]
+   },
+   "ok": true,
+   "test": "T12"
+  },
+  {
+   "check": "REAL artefacts (tracked specs): the real v2 configuration with v1 (de4e947e) declared un-launched -> scan passes, v1's spec excluded; v1 undeclared -> the scan refuses, naming v1's spec",
+   "detail": {
+    "declared": null,
+    "refused": [
+     "collision scan: 1 artefact(s) outside the search's own root and its declared cache roots carry its eval keys: ['/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_ev_v2/phase_spec_18a224d1.json']"
+    ],
+    "undeclared_refusal": [
+     "collision scan: 2 artefact(s) outside the search's own root and its declared cache roots carry its eval keys: ['/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_ev_v1/phase_spec_de4e947e.json', '/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_ev_v2/phase_spec_18a224d1.json']"
+    ],
+    "wall_s": 29.315394163131714
+   },
+   "ok": false,
+   "test": "T12"
+  },
+  {
+   "check": "the real v2 spec built in process: v1 recorded as un-launched predecessor (files = spec + 2 freeze logs), cache-root key audit ok, pilot exit views on, exit-view check mode stop",
+   "detail": {
+    "continuation": [],
+    "rule": "Planner decision P2 (spec v2)",
+    "unlaunched": [
+     {
+      "files": [
+       "freeze_stderr.log",
+       "freeze_stdout.log",
+       "phase_spec_de4e947e.json"
+      ],
+      "phase_spec": "phase_spec_de4e947e.json",
+      "root": "data/SRP1/Results/P515S56/phase2x_ev_v1",
+      "rule": "un-launched: only the spec and its freeze logs, no directory (.DS_Store ignored); excluded from the collision scan, re-verified at every launch",
+      "spec_sha256": "de4e947ec3d3720e7336c907ed0a683d9a3e079de40edb159f673fa5b2e6ac7e"
+     }
+    ]
+   },
+   "ok": true,
+   "test": "T12"
+  },
+  {
+   "check": "continuation after exit 6 (stubs): predecessor stops 6; the continuation (raised ceiling 1000, note) freezes with it as cache root and runs to exit 0; its decisions equal the uninterrupted stub phase's (T8); predecessor + continuation requests = T8's requests, disjoint",
+   "detail": {
+    "codes_a": [
+     4,
+     6
+    ],
+    "n_a": 21,
+    "n_b": 102,
+    "n_ref": 123,
+    "rcb": 0,
+    "rcf": 0
+   },
+   "ok": true,
+   "test": "T13"
+  },
+  {
+   "check": "the continuation carries the predecessor's measured hours into its ceiling (carried_h = predecessor cumulative; every launch's ceiling check includes it); its spec records the predecessor (sha, launches, stop exit 6) and serves no exit view from it",
+   "detail": {
+    "carried": 9.582194311274126,
+    "hours_a": 9.582194311274126
+   },
+   "ok": true,
+   "test": "T13"
+  },
+  {
+   "check": "continuation after exit 5 (exit_view_mismatch, stubs): predecessor stops 5 at candidate_confirmation; the continuation with --no-pilot-exit-views first runs x0 at exit depth, records the mismatch (mode record) and completes (exit 0)",
+   "detail": {
+    "first_action": {
+     "action_index": 0,
+     "depth": "exit",
+     "kind": "evaluate",
+     "purpose": "x0_exit",
+     "stage": "screen",
+     "sub_action": null,
+     "zs": [
+      [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     ]
+    },
+    "rcfn": 0,
+    "rcm": 5,
+    "rcn": 0,
+    "term_m": {
+     "detail": {
+      "mismatches": [
+       {
+        "candidate": "n5_y2030_p0.25_e1",
+        "differing": [
+         "F"
+        ],
+        "exit_run": {
+         "F": 810391144.7460958,
+         "bar": 23949.80281989067,
+         "read_cycle": 111
+        },
+        "exit_view": {
+         "F": 810391144.7460959,
+         "bar": 23949.80281989067,
+         "read_cycle": 111
+        }
+       }
+      ],
+      "rule": "R4 (phase spec v2)"
+     },
+     "reason": "exit_view_mismatch",
+     "stage": "candidate_confirmation"
+    }
+   },
+   "ok": true,
+   "test": "T13"
+  },
+  {
+   "check": "continuation refusals: an incomplete predecessor launch, a completed (phase_complete) predecessor, a wrong sha, a synthetic oracle, a raised ceiling or --no-pilot-exit-views without a continuation, an un-launched root declared as continuation",
+   "detail": {
+    "ceiling_without_continuation": [
+     "a raised ceiling and --no-pilot-exit-views are for continuation specs only"
+    ],
+    "completed_predecessor": [
+     "continuation predecessor /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_tests_v3/t8/stub: terminated 'phase_complete' after 31 launches -- a continuation resumes a review stop (exit 5) or a ceiling stop (exit 6) only"
+    ],
+    "incomplete_launch": [
+     "continuation predecessor data/SRP1/Results/P515S56/phase2x_tests_v3/t13/pred_incomplete: launches [1, 2, 3, 4, 5, 6], complete [1, 2, 3, 4, 5] (an incomplete launch: resume or move it aside with the predecessor's own --phase-run first)"
+    ],
+    "no_views_without_continuation": [
+     "a raised ceiling and --no-pilot-exit-views are for continuation specs only"
+    ],
+    "synthetic_oracle": [
+     "a continuation needs a harness oracle (stub_children or harness): its predecessor is a cache root"
+    ],
+    "unlaunched_as_continuation": [
+     "continuation predecessor data/SRP1/Results/P515S56/phase2x_tests_v3/t13/unlaunched_as_continuation has no complete launch: declare it as an un-launched predecessor instead"
+    ],
+    "wrong_sha": [
+     "continuation predecessor data/SRP1/Results/P515S56/phase2x_tests_v3/t13/pred_ceiling: spec sha256 7749dd2308e33a5f..., declared ffffffff"
+    ]
+   },
+   "ok": true,
+   "test": "T13"
+  },
+  {
+   "check": "a continuation whose predecessor gained a launch after the freeze refuses every launch (exit 2), nothing written",
+   "detail": {
+    "msg": "19:51:38 [S56-SEARCH] REFUSED: continuation predecessor data/SRP1/Results/P515S56/phase2x_tests_v3/t13/pred_grows: launches [1, 2, 3, 4, 5, 6] (complete [1, 2, 3, 4, 5]) != the 5 indexed at the freeze\n",
+    "rcg": 2,
+    "rcg0": 0
+   },
+   "ok": true,
+   "test": "T13"
+  },
+  {
+   "check": "code drift: --phase-run and --preflight-only refuse (exit 2) naming the file, nothing written, no lock left; the same spec without drift launches (exit 4)",
+   "detail": {
+    "m1": "19:51:38 [S56-SEARCH] REFUSED: code drift: p515_s56_search_policy.py sha256 now 27d9347839f22367..., frozen in the spec 0000000000000000... -- the phase runs only the code its spec froze\n",
+    "r": [
+     2,
+     2,
+     4
+    ]
+   },
+   "ok": true,
+   "test": "T14"
+  },
+  {
+   "check": "code_drift lists exactly the altered file",
+   "detail": [
+    {
+     "file": "p515_s56_search_policy.py",
+     "frozen": "0000000000000000000000000000000000000000000000000000000000000000",
+     "now": "27d9347839f22367e178d76646a1cfdeb0f14acf51ecd34fe15c4d85860507c1"
+    }
+   ],
+   "ok": true,
+   "test": "T14"
+  },
+  {
+   "check": ".DS_Store planted at the top level, in launches/, in a launch dir and in its evals/: the next launch runs (4) and its manifest lists none; a killed launch holding only .DS_Store files is moved aside with 0 killed evaluations; the phase completes with the state of T2 (byte-equal)",
+   "detail": {
+    "irecs": [
+     {
+      "detected_by_pid": 84140,
+      "detected_utc": "2026-11-24T19:51:40.442628+00:00",
+      "hours_killed_lower_bound_total": 0,
+      "incomplete_launches": [
+       5
+      ],
+      "index": 1,
+      "killed_evaluations": [],
+      "moved_aside": [
+       {
+        "from": "launches/launch_005",
+        "to": "interrupted/aside_001/launch_005"
+       }
+      ],
+      "oracle": "synthetic",
+      "rule": "an interrupted launch never counts; nothing deleted; the action re-issues",
+      "schema": "p515_s56_search_interrupted_v1"
+     }
+    ],
+    "r4": 4,
+    "r5": -9,
+    "r6": 4,
+    "rc": 0
+   },
+   "ok": true,
+   "test": "T15"
+  },
+  {
+   "check": "files_under ignores .DS_Store; a root holding only .DS_Store can be frozen",
+   "detail": null,
+   "ok": true,
+   "test": "T15"
+  },
+  {
+   "check": "s56_phase_check.py: all-pass record -> 0 (walls 0.7 and 1.6 h inclusive); uncertified, read_cycle 300, a guard false, no guards, wall 0.69 / 1.61 h -> 1 with FAIL; no manifest or no record -> 2",
+   "detail": {
+    "guard_false": {
+     "n_fail": 1,
+     "n_pass": 0,
+     "rc": 1,
+     "tail": "l 1.000 h  F 1.0  bar 1.0\n      guards: child_exit_0=True, nothing_blocked=False, solve_profile_identity_holds=True\n      failed: ['all guards true']\noverall: FAIL (1 evaluation(s); manifest ok True)\n"
+    },
+    "missing": {
+     "rc": 2
+    },
+    "no_guards": {
+     "n_fail": 1,
+     "n_pass": 0,
+     "rc": 1,
+     "tail": " wall 0.7-1.6 h\nFAIL  p0  depth exit  status certified  read_cycle 121  wall 1.000 h  F 1.0  bar 1.0\n      guards: \n      failed: ['all guards true']\noverall: FAIL (1 evaluation(s); manifest ok True)\n"
+    },
+    "no_manifest": {
+     "n_fail": 0,
+     "n_pass": 0,
+     "rc": 2,
+     "tail": " such file or directory: '/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_tests_v3/t16/no_manifest/launches/launch_001_manifest_sha256.json'\n"
+    },
+    "pass": {
+     "n_fail": 0,
+     "n_pass": 3,
+     "rc": 0,
+     "tail": "atus certified  read_cycle 121  wall 1.600 h  F 1.0  bar 1.0\n      guards: child_exit_0=True, nothing_blocked=True, solve_profile_identity_holds=True\noverall: PASS (3 evaluation(s); manifest ok True)\n"
+    },
+    "read_cycle_300": {
+     "n_fail": 1,
+     "n_pass": 0,
+     "rc": 1,
+     "tail": "l 1.000 h  F 1.0  bar 1.0\n      guards: child_exit_0=True, nothing_blocked=True, solve_profile_identity_holds=True\n      failed: ['read_cycle < 300']\noverall: FAIL (1 evaluation(s); manifest ok True)\n"
+    },
+    "uncertified": {
+     "n_fail": 1,
+     "n_pass": 1,
+     "rc": 1,
+     "tail": "21  wall 1.000 h  F 1.0  bar 1.0\n      guards: child_exit_0=True, nothing_blocked=True, solve_profile_identity_holds=True\n      failed: ['certified']\noverall: FAIL (2 evaluation(s); manifest ok True)\n"
+    },
+    "wall_long": {
+     "n_fail": 1,
+     "n_pass": 0,
+     "rc": 1,
+     "tail": "all 1.610 h  F 1.0  bar 1.0\n      guards: child_exit_0=True, nothing_blocked=True, solve_profile_identity_holds=True\n      failed: ['wall 0.7-1.6 h']\noverall: FAIL (1 evaluation(s); manifest ok True)\n"
+    },
+    "wall_short": {
+     "n_fail": 1,
+     "n_pass": 0,
+     "rc": 1,
+     "tail": "all 0.690 h  F 1.0  bar 1.0\n      guards: child_exit_0=True, nothing_blocked=True, solve_profile_identity_holds=True\n      failed: ['wall 0.7-1.6 h']\noverall: FAIL (1 evaluation(s); manifest ok True)\n"
+    }
+   },
+   "ok": true,
+   "test": "T16"
+  },
+  {
+   "check": "first-block hold: the single invocation runs launch 001 (exit 4, logs launch_001_*), a second issue refuses to overwrite them; the loop then starts at 002 and runs to exit 0, state byte-equal to in process",
+   "detail": {
+    "again": "launch_001 logs exist: not re-run\n",
+    "loop_first": [
+     "2026-11-24T19:51:49Z launch 002 exit 4"
+    ],
+    "loop_last": [
+     "2026-11-24T19:51:59Z launch 031 exit 0"
+    ],
+    "one": "2026-11-24T19:51:49Z launch 001 exit 4\n"
+   },
+   "ok": true,
+   "test": "T16"
+  },
+  {
+   "check": "no author command line (single, loop, check) for the real v2 root contains the harness hazard string",
+   "detail": [
+    "cd /repo && caffeinate -i zsh -c 'R=data/SRP1/Results/P515S56/phase2x_ev_v2; n=001; if [ -e \"$R/launch_${n}_stdout.log\" ]; then echo \"launch_${n} logs exist: not re-run\"; else NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s56_search_driver.py --phase-run --root \"$R\" --take-over-stale-lock > \"$R/launch_${n}_stdout.log\" 2> \"$R/launch_${n}_stderr.log\"; rc=$?; echo \"$(date -u +%Y-%m-%dT%H:%M:%SZ) launch $n exit $rc\"; fi'",
+    "cd /repo && caffeinate -i zsh -c 'R=data/SRP1/Results/P515S56/phase2x_ev_v2; i=1; while [ -e \"$R/launch_$(printf %03d $i)_stdout.log\" ]; do i=$((i+1)); done; while true; do n=$(printf %03d $i); NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s56_search_driver.py --phase-run --root \"$R\" --take-over-stale-lock > \"$R/launch_${n}_stdout.log\" 2> \"$R/launch_${n}_stderr.log\"; rc=$?; echo \"$(date -u +%Y-%m-%dT%H:%M:%SZ) launch $n exit $rc\"; if [ $rc -ne 4 ]; then echo \"loop stopped: exit $rc (0 complete, 5 review, 6 ceiling, other fault)\"; break; fi; i=$((i+1)); done'",
+    "cd /repo && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python s56_phase_check.py data/SRP1/Results/P515S56/phase2x_ev_v2 --launch 1"
+   ],
+   "ok": true,
+   "test": "T16"
+  },
+  {
+   "check": "SolveProfileGuard(permitted=()) verify(0) == []",
+   "detail": [],
+   "ok": true,
+   "test": "guards"
+  },
+  {
+   "check": "pickle load/loads 0",
+   "detail": {
+    "load": 0,
+    "loads": 0
+   },
+   "ok": true,
+   "test": "guards"
+  }
+ ],
+ "code_files": {
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+  "p515_s44_campaign_harness.py": "05a9838c46f19837398af31252bd85c465a3794aa03e9cfc1a7a30c08c462b29",
+  "p515_s56_neighbourhood.py": "bd95342d2da2b0ecf2d99b9ef3b8a396e3637e18a050f8ce0117ec2ec9590cc0",
+  "p515_s56_phase_tests.py": "59bd76b272e65e11503fbe4e2a9882ad436be592b465b9768fb208209c4459f8",
+  "p515_s56_search_driver.py": "18eca5726847b0125e6960c31260f0e30c3fc61b5f470c3cca0061f32241dcba",
+  "p515_s56_search_policy.py": "27d9347839f22367e178d76646a1cfdeb0f14acf51ecd34fe15c4d85860507c1",
+  "p516_lattice.py": "ff5d63ef897ccd04e5bbaa719b352537108180a31b83c1b8574506612af86e88",
+  "s56_phase_check.py": "43ad476900809dda901b68ba429d29dcb550674bad34ec6e467b111eeacf2dab"
+ },
+ "code_files_dirty_vs_head": "",
+ "failed_checks": [
+  "[T12] REAL artefacts (tracked specs): the real v2 configuration with v1 (de4e947e) declared un-launched -> scan passes, v1's spec excluded; v1 undeclared -> the scan refuses, naming v1's spec"
+ ],
+ "finished_utc": "2026-11-24T19:51:59.233993+00:00",
+ "git_head": "1e6ab91ceedcc060e494b64c316274d078e5a051",
+ "guards": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "pickle": {
+   "load": 0,
+   "loads": 0
+  },
+  "verify_0": []
+ },
+ "instance": {
+  "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+  "lattice": {
+   "block_widths": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "budget_eur": 1000000.0,
+   "cost_energy": {
+    "0": {
+     "2025": 212132.83090957787,
+     "2030": 167114.2595388713,
+     "2035": 152464.16443904658
+    },
+    "1": {
+     "2025": 264982.3635447595,
+     "2030": 222115.86276729195,
+     "2035": 204988.41411333327
+    },
+    "2": {
+     "2025": 338908.86670623126,
+     "2030": 275450.090999905,
+     "2035": 266020.3907359085
+    }
+   },
+   "cost_power": {
+    "0": {
+     "2025": 214171.32910223768,
+     "2030": 168720.15012439265,
+     "2035": 153929.27440020515
+    },
+    "1": {
+     "2025": 267528.7212530719,
+     "2030": 224250.2932694956,
+     "2035": 206958.25777164166
+    },
+    "2": {
+     "2025": 342165.6238488894,
+     "2030": 278097.0387178216,
+     "2035": 268576.723404457
+    }
+   },
+   "discount_factor": 0.02,
+   "max_capacity_mwh": 5.0,
+   "max_energy_to_power_ratio": 4.0,
+   "min_energy_to_power_ratio": 2.0,
+   "nodes": [
+    5,
+    7,
+    9
+   ],
+   "prob_market": [
+    0.35,
+    0.55,
+    0.1
+   ],
+   "sources": {
+    "case": {
+     "path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+     "sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+    },
+    "cost_file": {
+     "cells": "Scenarios!B1 = number of market scenarios, Scenarios!C1.. = omega_m; 'Investment Cost, Power'/'Investment Cost, Energy' row 1 (from column B) = years, row 1 + m = scenario m (EUR/MVA, EUR/MWh, undiscounted)",
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/SharedESS/SRP1_ESS.xlsx",
+     "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+     "sheets": {
+      "energy": "Investment Cost, Energy",
+      "power": "Investment Cost, Power",
+      "scenarios": "Scenarios"
+     }
+    },
+    "note": "omega_m is read from the workbook Scenarios sheet, as production does; it is independent of the case file NumMarketScenarios",
+    "num_market_scenarios_case_file": 3,
+    "params_file": {
+     "fields": "budget, max_capacity, min_energy_to_power_factor, max_energy_to_power_factor, ageing.calendar_life_years",
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/SharedESS/SRP1_ESS_Params.json",
+     "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+    }
+   },
+   "t_cal_years": 15.0,
+   "years": [
+    2025,
+    2030,
+    2035
+   ]
+  }
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "python": "3.11.11",
+ "results": {
+  "T1": {
+   "default_path_identity": [
+    {
+     "budget": 48,
+     "moves": 5,
+     "rank": "resize",
+     "report_equal": true,
+     "start": "x0",
+     "state_equal": true
+    },
+    {
+     "budget": 48,
+     "moves": 5,
+     "rank": "remove",
+     "report_equal": true,
+     "start": "x0",
+     "state_equal": true
+    },
+    {
+     "budget": 31,
+     "moves": 0,
+     "rank": "resize",
+     "report_equal": true,
+     "start": "reference_unit",
+     "state_equal": true
+    },
+    {
+     "budget": 31,
+     "moves": 0,
+     "rank": "remove",
+     "report_equal": true,
+     "start": "reference_unit",
+     "state_equal": true
+    },
+    {
+     "budget": 14,
+     "moves": 0,
+     "rank": "resize",
+     "report_equal": true,
+     "start": "plan_2030",
+     "state_equal": true
+    },
+    {
+     "budget": 14,
+     "moves": 0,
+     "rank": "remove",
+     "report_equal": true,
+     "start": "plan_2030",
+     "state_equal": true
+    }
+   ],
+   "head_policy_sha256": "a39919ed1620845c2ca2a5fbf1776b38aa3f578e95f30d14a1db30e467d7b71a"
+  },
+  "T10": {
+   "examples": {
+    "at_half": {
+     "band_measure_information_only": {
+      "band_eur": 17494.0,
+      "branch_the_v1_measure_would_give": "exit_then_confirm",
+      "fraction": [
+       0,
+       1
+      ],
+      "fraction_float": 0.0,
+      "n_in_band": 0,
+      "rule": "v1 measure: certified rows with |F_exit(x) - F_exit(x0)| <= e_EV over every row; recorded beside the deciding measure, read by no decision (Planner decision P1)"
+     },
+     "branch": "exit_then_confirm",
+     "class_counts": {
+      "confirm_candidate": 5,
+      "harness_error": 0,
+      "uncertified": 1,
+      "unresolved": 6,
+      "worse": 10
+     },
+     "fraction": [
+      1,
+      2
+     ],
+     "fraction_float": 0.5,
+     "measure": "not_worse_against_x0",
+     "n_not_worse": 11,
+     "n_rows": 22,
+     "not_worse_classes": [
+      "confirm_candidate",
+      "unresolved"
+     ],
+     "rule": "fraction of the screen and ladder rows whose class against x0 at exit is NOT worse (confirm_candidate + unresolved; Planner decision P1) (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+     "threshold": [
+      1,
+      2
+     ]
+    },
+    "disagree_a": "settled_direct",
+    "disagree_b": "exit_then_confirm"
+   }
+  },
+  "T11": {
+   "absent": {
+    "detail": {
+     "mismatches": [
+      {
+       "candidate": "n5_y2030_p0.25_e1",
+       "differing": [
+        "read_cycle",
+        "F",
+        "bar"
+       ],
+       "exit_run": {
+        "F": 810391144.7460958,
+        "bar": 23949.80281989067,
+        "read_cycle": 111
+       },
+       "exit_view": null
+      }
+     ],
+     "rule": "R4 (phase spec v2)"
+    },
+    "reason": "exit_view_mismatch",
+    "stage": "candidate_confirmation"
+   },
+   "harness_error_precedes": {
+    "detail": {
+     "candidate": "n5_y2030_p0.25_e1",
+     "failed": [
+      "candidate settled status 'harness_error' (harness error)"
+     ]
+    },
+    "reason": "harness_error",
+    "stage": "candidate_confirmation"
+   },
+   "mismatch_F": {
+    "detail": {
+     "mismatches": [
+      {
+       "candidate": "n5_y2030_p0.25_e1",
+       "differing": [
+        "F"
+       ],
+       "exit_run": {
+        "F": 810391144.7460958,
+        "bar": 23949.80281989067,
+        "read_cycle": 111
+       },
+       "exit_view": {
+        "F": 810391144.7460959,
+        "bar": 23949.80281989067,
+        "read_cycle": 111
+       }
+      }
+     ],
+     "rule": "R4 (phase spec v2)"
+    },
+    "reason": "exit_view_mismatch",
+    "stage": "candidate_confirmation"
+   },
+   "mismatch_precedes_offset": {
+    "detail": {
+     "mismatches": [
+      {
+       "candidate": "n9_y2035_p0.25_e1",
+       "differing": [
+        "bar"
+       ],
+       "exit_run": {
+        "F": 810447779.5180695,
+        "bar": 23107.362772399745,
+        "read_cycle": 145
+       },
+       "exit_view": {
+        "F": 810447779.5180695,
+        "bar": 23107.36277239975,
+        "read_cycle": 145
+       }
+      }
+     ],
+     "rule": "R4 (phase spec v2)"
+    },
+    "reason": "exit_view_mismatch",
+    "stage": "candidate_confirmation"
+   },
+   "mismatch_read_cycle_c2": {
+    "detail": {
+     "mismatches": [
+      {
+       "candidate": "n9_y2035_p0.25_e1",
+       "differing": [
+        "read_cycle"
+       ],
+       "exit_run": {
+        "F": 810447779.5180695,
+        "bar": 23107.362772399745,
+        "read_cycle": 145
+       },
+       "exit_view": {
+        "F": 810447779.5180695,
+        "bar": 23107.362772399745,
+        "read_cycle": 146
+       }
+      }
+     ],
+     "rule": "R4 (phase spec v2)"
+    },
+    "reason": "exit_view_mismatch",
+    "stage": "candidate_confirmation"
+   },
+   "mode_record": {
+    "detail": {
+     "search": {
+      "budget_used": 65,
+      "detail": null,
+      "reason": "complete_poll_no_accepted_candidate"
+     }
+    },
+    "reason": "phase_complete",
+    "stage": "search"
+   },
+   "offset_alone": {
+    "detail": {
+     "candidate": "n5_y2030_p0.25_e1",
+     "failed": [
+      "held-out check: offset 60255.2313131094 > e 43409.25643962409"
+     ]
+    },
+    "reason": "stop_for_review_offset",
+    "stage": "candidate_confirmation"
+   }
+  },
+  "T12": {
+   "declared_real": null,
+   "undeclared_real_refusal": [
+    "collision scan: 2 artefact(s) outside the search's own root and its declared cache roots carry its eval keys: ['/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_ev_v1/phase_spec_de4e947e.json', '/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_ev_v2/phase_spec_18a224d1.json']"
+   ]
+  },
+  "T13": {
+   "ceiling_case": {
+    "carried_h": 9.582194311274126,
+    "codes_a": 6,
+    "codes_b": 26
+   },
+   "mismatch_case": {
+    "codes_n": 28,
+    "term_pred": {
+     "detail": {
+      "mismatches": [
+       {
+        "candidate": "n5_y2030_p0.25_e1",
+        "differing": [
+         "F"
+        ],
+        "exit_run": {
+         "F": 810391144.7460958,
+         "bar": 23949.80281989067,
+         "read_cycle": 111
+        },
+        "exit_view": {
+         "F": 810391144.7460959,
+         "bar": 23949.80281989067,
+         "read_cycle": 111
+        }
+       }
+      ],
+      "rule": "R4 (phase spec v2)"
+     },
+     "reason": "exit_view_mismatch",
+     "stage": "candidate_confirmation"
+    }
+   },
+   "refusals": {
+    "ceiling_without_continuation": [
+     "a raised ceiling and --no-pilot-exit-views are for continuation specs only"
+    ],
+    "completed_predecessor": [
+     "continuation predecessor /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_tests_v3/t8/stub: terminated 'phase_complete' after 31 launches -- a continuation resumes a review stop (exit 5) or a ceiling stop (exit 6) only"
+    ],
+    "incomplete_launch": [
+     "continuation predecessor data/SRP1/Results/P515S56/phase2x_tests_v3/t13/pred_incomplete: launches [1, 2, 3, 4, 5, 6], complete [1, 2, 3, 4, 5] (an incomplete launch: resume or move it aside with the predecessor's own --phase-run first)"
+    ],
+    "no_views_without_continuation": [
+     "a raised ceiling and --no-pilot-exit-views are for continuation specs only"
+    ],
+    "synthetic_oracle": [
+     "a continuation needs a harness oracle (stub_children or harness): its predecessor is a cache root"
+    ],
+    "unlaunched_as_continuation": [
+     "continuation predecessor data/SRP1/Results/P515S56/phase2x_tests_v3/t13/unlaunched_as_continuation has no complete launch: declare it as an un-launched predecessor instead"
+    ],
+    "wrong_sha": [
+     "continuation predecessor data/SRP1/Results/P515S56/phase2x_tests_v3/t13/pred_ceiling: spec sha256 7749dd2308e33a5f..., declared ffffffff"
+    ]
+   }
+  },
+  "T14": {
+   "codes": [
+    2,
+    2,
+    4
+   ]
+  },
+  "T15": {
+   "interrupted": [
+    {
+     "detected_by_pid": 84140,
+     "detected_utc": "2026-11-24T19:51:40.442628+00:00",
+     "hours_killed_lower_bound_total": 0,
+     "incomplete_launches": [
+      5
+     ],
+     "index": 1,
+     "killed_evaluations": [],
+     "moved_aside": [
+      {
+       "from": "launches/launch_005",
+       "to": "interrupted/aside_001/launch_005"
+      }
+     ],
+     "oracle": "synthetic",
+     "rule": "an interrupted launch never counts; nothing deleted; the action re-issues",
+     "schema": "p515_s56_search_interrupted_v1"
+    }
+   ]
+  },
+  "T16": {
+   "check_script": {
+    "guard_false": {
+     "n_fail": 1,
+     "n_pass": 0,
+     "rc": 1,
+     "tail": "l 1.000 h  F 1.0  bar 1.0\n      guards: child_exit_0=True, nothing_blocked=False, solve_profile_identity_holds=True\n      failed: ['all guards true']\noverall: FAIL (1 evaluation(s); manifest ok True)\n"
+    },
+    "missing": {
+     "rc": 2
+    },
+    "no_guards": {
+     "n_fail": 1,
+     "n_pass": 0,
+     "rc": 1,
+     "tail": " wall 0.7-1.6 h\nFAIL  p0  depth exit  status certified  read_cycle 121  wall 1.000 h  F 1.0  bar 1.0\n      guards: \n      failed: ['all guards true']\noverall: FAIL (1 evaluation(s); manifest ok True)\n"
+    },
+    "no_manifest": {
+     "n_fail": 0,
+     "n_pass": 0,
+     "rc": 2,
+     "tail": " such file or directory: '/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_tests_v3/t16/no_manifest/launches/launch_001_manifest_sha256.json'\n"
+    },
+    "pass": {
+     "n_fail": 0,
+     "n_pass": 3,
+     "rc": 0,
+     "tail": "atus certified  read_cycle 121  wall 1.600 h  F 1.0  bar 1.0\n      guards: child_exit_0=True, nothing_blocked=True, solve_profile_identity_holds=True\noverall: PASS (3 evaluation(s); manifest ok True)\n"
+    },
+    "read_cycle_300": {
+     "n_fail": 1,
+     "n_pass": 0,
+     "rc": 1,
+     "tail": "l 1.000 h  F 1.0  bar 1.0\n      guards: child_exit_0=True, nothing_blocked=True, solve_profile_identity_holds=True\n      failed: ['read_cycle < 300']\noverall: FAIL (1 evaluation(s); manifest ok True)\n"
+    },
+    "uncertified": {
+     "n_fail": 1,
+     "n_pass": 1,
+     "rc": 1,
+     "tail": "21  wall 1.000 h  F 1.0  bar 1.0\n      guards: child_exit_0=True, nothing_blocked=True, solve_profile_identity_holds=True\n      failed: ['certified']\noverall: FAIL (2 evaluation(s); manifest ok True)\n"
+    },
+    "wall_long": {
+     "n_fail": 1,
+     "n_pass": 0,
+     "rc": 1,
+     "tail": "all 1.610 h  F 1.0  bar 1.0\n      guards: child_exit_0=True, nothing_blocked=True, solve_profile_identity_holds=True\n      failed: ['wall 0.7-1.6 h']\noverall: FAIL (1 evaluation(s); manifest ok True)\n"
+    },
+    "wall_short": {
+     "n_fail": 1,
+     "n_pass": 0,
+     "rc": 1,
+     "tail": "all 0.690 h  F 1.0  bar 1.0\n      guards: child_exit_0=True, nothing_blocked=True, solve_profile_identity_holds=True\n      failed: ['wall 0.7-1.6 h']\noverall: FAIL (1 evaluation(s); manifest ok True)\n"
+    }
+   },
+   "real_commands": [
+    "cd /repo && caffeinate -i zsh -c 'R=data/SRP1/Results/P515S56/phase2x_ev_v2; n=001; if [ -e \"$R/launch_${n}_stdout.log\" ]; then echo \"launch_${n} logs exist: not re-run\"; else NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s56_search_driver.py --phase-run --root \"$R\" --take-over-stale-lock > \"$R/launch_${n}_stdout.log\" 2> \"$R/launch_${n}_stderr.log\"; rc=$?; echo \"$(date -u +%Y-%m-%dT%H:%M:%SZ) launch $n exit $rc\"; fi'",
+    "cd /repo && caffeinate -i zsh -c 'R=data/SRP1/Results/P515S56/phase2x_ev_v2; i=1; while [ -e \"$R/launch_$(printf %03d $i)_stdout.log\" ]; do i=$((i+1)); done; while true; do n=$(printf %03d $i); NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s56_search_driver.py --phase-run --root \"$R\" --take-over-stale-lock > \"$R/launch_${n}_stdout.log\" 2> \"$R/launch_${n}_stderr.log\"; rc=$?; echo \"$(date -u +%Y-%m-%dT%H:%M:%SZ) launch $n exit $rc\"; if [ $rc -ne 4 ]; then echo \"loop stopped: exit $rc (0 complete, 5 review, 6 ceiling, other fault)\"; break; fi; i=$((i+1)); done'",
+    "cd /repo && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python s56_phase_check.py data/SRP1/Results/P515S56/phase2x_ev_v2 --launch 1"
+   ]
+  },
+  "T2": {
+   "codes": 31,
+   "evaluations": {
+    "candidate_confirmation|settled": 2,
+    "candidate_polls|exit": 35,
+    "ladder|exit": 4,
+    "screen|exit": 17,
+    "search|exit": 61,
+    "search|settled": 4
+   },
+   "n_launches": 31,
+   "reference_state_sha256": "f413f7428e21b2c0fedfc8584d00e854383c620a97e7d02f1539521517c4a737",
+   "root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_tests_v3/t2/exit_move",
+   "stages": [
+    "screen",
+    "ladder",
+    "candidate_confirmation",
+    "candidate_polls",
+    "search"
+   ],
+   "wall_s": 10.249465227127075
+  },
+  "T3": {
+   "efficiency": {
+    "band_measure_information_only": {
+     "band_eur": 17494.04935669899,
+     "branch_the_v1_measure_would_give": "settled_direct",
+     "fraction": [
+      13,
+      22
+     ],
+     "fraction_float": 0.5909090909090909,
+     "n_in_band": 13,
+     "rule": "v1 measure: certified rows with |F_exit(x) - F_exit(x0)| <= e_EV over every row; recorded beside the deciding measure, read by no decision (Planner decision P1)"
+    },
+    "branch": "settled_direct",
+    "class_counts": {
+     "confirm_candidate": 20,
+     "harness_error": 0,
+     "uncertified": 1,
+     "unresolved": 0,
+     "worse": 1
+    },
+    "fraction": [
+     10,
+     11
+    ],
+    "fraction_float": 0.9090909090909091,
+    "measure": "not_worse_against_x0",
+    "n_not_worse": 20,
+    "n_rows": 22,
+    "not_worse_classes": [
+     "confirm_candidate",
+     "unresolved"
+    ],
+    "rule": "fraction of the screen and ladder rows whose class against x0 at exit is NOT worse (confirm_candidate + unresolved; Planner decision P1) (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+    "threshold": [
+     1,
+     2
+    ]
+   },
+   "evaluations": {
+    "candidate_confirmation|settled": 2,
+    "candidate_polls|settled": 44,
+    "ladder|exit": 4,
+    "screen|exit": 17,
+    "search|settled": 75
+   },
+   "n_launches": 31,
+   "root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_tests_v3/t3/direct"
+  },
+  "T4": {
+   "ceiling_check": {
+    "carried_h": 0.0,
+    "ceiling_h": 12.0,
+    "cumulative_h": 9.582194311274126,
+    "cumulative_plus_projected_h": 12.675767534157304,
+    "frozen_projection_h": 3.0935732228831774,
+    "max_measured_same_depth_h": null,
+    "next_block_depth": "settled",
+    "projected_next_block_h": 3.0935732228831774,
+    "rule": "before each block: carried hours (a continuation's predecessors' measured hours, frozen; 0 otherwise) + cumulative measured hours (completed launch walls + interrupted launch walls) + projected wall of the next block (max(frozen projection at its depth, largest measured wall of a completed launch at that depth)) <= ceiling_h; otherwise exit 6 with an hours summary",
+    "stop": true
+   },
+   "n_launches": 5,
+   "root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_tests_v3/t4/ceiling"
+  },
+  "T5": {
+   "exit_view_mismatch_candidate": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "mismatches": [
+       {
+        "candidate": "n5_y2030_p0.25_e1",
+        "differing": [
+         "F"
+        ],
+        "exit_run": {
+         "F": 810391144.7460958,
+         "bar": 23949.80281989067,
+         "read_cycle": 111
+        },
+        "exit_view": {
+         "F": 810391144.7460959,
+         "bar": 23949.80281989067,
+         "read_cycle": 111
+        }
+       }
+      ],
+      "rule": "R4 (phase spec v2)"
+     },
+     "reason": "exit_view_mismatch",
+     "stage": "candidate_confirmation"
+    }
+   },
+   "harness_error_screen": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "labels": [
+       "n5_y2025_p0.25_e1"
+      ],
+      "stage": "screen"
+     },
+     "reason": "harness_error",
+     "stage": "screen"
+    }
+   },
+   "not_settled_trigger": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "review": {
+     "consecutive_not_settled": 3,
+     "n_confirmations": 3,
+     "n_not_settled": 3,
+     "pos": 2,
+     "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+     "rule_consecutive": true,
+     "rule_share": false,
+     "stop": true,
+     "z": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      4
+     ]
+    },
+    "termination": {
+     "detail": {
+      "candidate": "n9_y2035_p0.5_e2",
+      "sub": {
+       "budget_used": 5,
+       "detail": {
+        "consecutive_not_settled": 3,
+        "n_confirmations": 3,
+        "n_not_settled": 3,
+        "pos": 2,
+        "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+        "rule_consecutive": true,
+        "rule_share": false,
+        "stop": true,
+        "z": [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         3,
+         4
+        ]
+       },
+       "reason": "stop_for_review_not_settled"
+      }
+     },
+     "reason": "stop_for_review_not_settled",
+     "stage": "candidate_polls"
+    }
+   },
+   "offset_candidate_confirmation": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "candidate": "n5_y2030_p0.25_e1",
+      "failed": [
+       "held-out check: offset 60255.2313131094 > e 43409.25643962409"
+      ]
+     },
+     "reason": "stop_for_review_offset",
+     "stage": "candidate_confirmation"
+    }
+   },
+   "offset_search_confirmation": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "search": {
+       "budget_used": 11,
+       "detail": {
+        "failed": [
+         "held-out check: offset 58824.09675145149 > e 36224.60132637269"
+        ],
+        "pos": 6,
+        "z": [
+         0,
+         0,
+         2,
+         2,
+         0,
+         0,
+         1,
+         2,
+         1,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         1,
+         2
+        ]
+       },
+       "reason": "stop_for_review_offset"
+      }
+     },
+     "reason": "stop_for_review_offset",
+     "stage": "search"
+    }
+   },
+   "start_not_certified": {
+    "codes_tail": [
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "status": "not_certified",
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     "reason": "start_incumbent_not_certified",
+     "stage": "screen"
+    }
+   }
+  },
+  "T6": {
+   "targets": [
+    {
+     "evaluated": 123,
+     "exit": 0,
+     "interrupted_records": 0,
+     "killed": true,
+     "killed_evaluations": 0,
+     "same_history": true,
+     "stale_lock_taken_over": true,
+     "target": [
+      "after_lock",
+      1
+     ]
+    },
+    {
+     "evaluated": 123,
+     "exit": 0,
+     "interrupted_records": 1,
+     "killed": true,
+     "killed_evaluations": 0,
+     "same_history": true,
+     "stale_lock_taken_over": true,
+     "target": [
+      "after_launch_dir",
+      2
+     ]
+    },
+    {
+     "evaluated": 123,
+     "exit": 0,
+     "interrupted_records": 1,
+     "killed": true,
+     "killed_evaluations": 3,
+     "same_history": true,
+     "stale_lock_taken_over": true,
+     "target": [
+      "during_evaluate",
+      5,
+      0.0
+     ]
+    },
+    {
+     "evaluated": 123,
+     "exit": 0,
+     "interrupted_records": 1,
+     "killed": true,
+     "killed_evaluations": 2,
+     "same_history": true,
+     "stale_lock_taken_over": true,
+     "target": [
+      "after_evaluate",
+      6
+     ]
+    },
+    {
+     "evaluated": 123,
+     "exit": 0,
+     "interrupted_records": 1,
+     "killed": true,
+     "killed_evaluations": 5,
+     "same_history": true,
+     "stale_lock_taken_over": true,
+     "target": [
+      "after_launch_record",
+      7
+     ]
+    },
+    {
+     "evaluated": 123,
+     "exit": 0,
+     "interrupted_records": 0,
+     "killed": true,
+     "killed_evaluations": 0,
+     "same_history": true,
+     "stale_lock_taken_over": true,
+     "target": [
+      "after_manifest",
+      15
+     ]
+    },
+    {
+     "evaluated": 123,
+     "exit": 0,
+     "interrupted_records": 0,
+     "killed": true,
+     "killed_evaluations": 0,
+     "same_history": true,
+     "stale_lock_taken_over": true,
+     "target": [
+      "after_state_view",
+      17
+     ]
+    },
+    {
+     "evaluated": 123,
+     "exit": 0,
+     "interrupted_records": 1,
+     "killed": true,
+     "killed_evaluations": 0,
+     "same_history": true,
+     "stale_lock_taken_over": true,
+     "target": [
+      "after_results",
+      31
+     ]
+    }
+   ]
+  },
+  "T7": {
+   "command_template": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && caffeinate -i zsh -c 'R=data/SRP1/Results/P515S56/phase2x_tests_v3/t7/author_loop; i=1; while [ -e \"$R/launch_$(printf %03d $i)_stdout.log\" ]; do i=$((i+1)); done; while true; do n=$(printf %03d $i); NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s56_search_driver.py --phase-run --root \"$R\" --take-over-stale-lock --lock-path /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_tests_v3/t7/lock > \"$R/launch_${n}_stdout.log\" 2> \"$R/launch_${n}_stderr.log\"; rc=$?; echo \"$(date -u +%Y-%m-%dT%H:%M:%SZ) launch $n exit $rc\"; if [ $rc -ne 4 ]; then echo \"loop stopped: exit $rc (0 complete, 5 review, 6 ceiling, other fault)\"; break; fi; i=$((i+1)); done'",
+   "n_invocations": 31
+  },
+  "T8": {
+   "n_launches": 31,
+   "root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_tests_v3/t8/stub",
+   "wall_s": 197.1793086528778
+  },
+  "T9": {
+   "codes": [
+    2,
+    2,
+    2,
+    2,
+    4,
+    2
+   ]
+  }
+ },
+ "schema": "p515_s56_phase_tests_v2",
+ "script": "p515_s56_phase_tests.py",
+ "solve_claim": "ZERO SOLVES, guard-verified (SolveProfileGuard(permitted=()) installed before any repository import, verify(0)); pickle blocked (0); every driver subprocess arms its own guard and exits non-zero on a failed verify",
+ "started_utc": "2026-11-24T19:37:22.205026+00:00",
+ "tests": [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "10",
+  "11",
+  "12",
+  "13",
+  "14",
+  "15",
+  "16"
+ ],
+ "values_note": "every objective value here is SYNTHETIC (landscape or stub children)",
+ "wall_s": 877.0287890434265
+}

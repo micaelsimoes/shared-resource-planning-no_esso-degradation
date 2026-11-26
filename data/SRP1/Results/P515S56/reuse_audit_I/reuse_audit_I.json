@@ -1,0 +1,1342 @@
+{
+ "schema": "p515_s56_reuse_audit_I_v1",
+ "script": "p515_s56_reuse_audit_I.py",
+ "started_utc": "2026-11-21T15:51:36Z",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "A_lattice_count": {
+  "instance": {
+   "nodes": [
+    5,
+    7,
+    9
+   ],
+   "years": [
+    2025,
+    2030,
+    2035
+   ],
+   "block_widths": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "t_cal_years": 15.0,
+   "max_capacity_mwh": 5.0,
+   "min_energy_to_power_ratio": 2.0,
+   "max_energy_to_power_ratio": 4.0,
+   "budget_eur": 1000000.0,
+   "discount_factor": 0.02,
+   "prob_market": [
+    0.35,
+    0.55,
+    0.1
+   ],
+   "cost_power": {
+    "0": {
+     "2025": 214171.32910223768,
+     "2030": 168720.15012439265,
+     "2035": 153929.27440020515
+    },
+    "1": {
+     "2025": 267528.7212530719,
+     "2030": 224250.2932694956,
+     "2035": 206958.25777164166
+    },
+    "2": {
+     "2025": 342165.6238488894,
+     "2030": 278097.0387178216,
+     "2035": 268576.723404457
+    }
+   },
+   "cost_energy": {
+    "0": {
+     "2025": 212132.83090957787,
+     "2030": 167114.2595388713,
+     "2035": 152464.16443904658
+    },
+    "1": {
+     "2025": 264982.3635447595,
+     "2030": 222115.86276729195,
+     "2035": 204988.41411333327
+    },
+    "2": {
+     "2025": 338908.86670623126,
+     "2030": 275450.090999905,
+     "2035": 266020.3907359085
+    }
+   },
+   "sources": {
+    "case": {
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/SRP1.json",
+     "sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+    },
+    "params_file": {
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/SharedESS/SRP1_ESS_Params.json",
+     "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+     "fields": "budget, max_capacity, min_energy_to_power_factor, max_energy_to_power_factor, ageing.calendar_life_years"
+    },
+    "cost_file": {
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/SharedESS/SRP1_ESS.xlsx",
+     "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+     "sheets": {
+      "scenarios": "Scenarios",
+      "power": "Investment Cost, Power",
+      "energy": "Investment Cost, Energy"
+     },
+     "cells": "Scenarios!B1 = number of market scenarios, Scenarios!C1.. = omega_m; 'Investment Cost, Power'/'Investment Cost, Energy' row 1 (from column B) = years, row 1 + m = scenario m (EUR/MVA, EUR/MWh, undiscounted)"
+    },
+    "num_market_scenarios_case_file": 1,
+    "note": "omega_m is read from the workbook Scenarios sheet, as production does; it is independent of the case file NumMarketScenarios"
+   }
+  },
+  "per_cohort_option_count_incl_zero": 42,
+  "per_node_option_count_cumulative_ok_cost_le_B_plus_1": {
+   "5": 430,
+   "7": 430,
+   "9": 430
+  },
+  "COUNT_ADMISSIBLE_STAGED_INCL_X0": 37042,
+  "count_excluding_x0": 37041,
+  "boundary_ambiguous_triples_rechecked_exactly": 0,
+  "boundary_ambiguous_admissible": 0,
+  "split_by_total_active_cohorts": {
+   "0": 1,
+   "1": 183,
+   "2": 3051,
+   "3": 12393,
+   "4": 15228,
+   "5": 5658,
+   "6": 525,
+   "7": 3
+  },
+  "split_by_number_of_nodes_with_2plus_cohorts": {
+   "0": 6694,
+   "1": 22125,
+   "2": 8028,
+   "3": 195
+  },
+  "split_by_max_cohorts_at_one_node": {
+   "0": 1,
+   "1": 6693,
+   "2": 25926,
+   "3": 4422
+  },
+  "single_cohort_per_node_incl_x0": 6694,
+  "common_year_single_cohort_incl_x0": 1705,
+  "cheapest_over_cap_plan_one_node": {
+   "I_eur": 1108893.2009885178,
+   "node": 5,
+   "pairs_by_year": {
+    "2025": [
+     0,
+     0
+    ],
+    "2030": [
+     0,
+     0
+    ],
+    "2035": [
+     6,
+     11
+    ]
+   },
+   "budget_eur": 1000000.0,
+   "over_budget": true
+  },
+  "sample": {
+   "seed": 20261121,
+   "n": 20000,
+   "n_admissible_by_lattice": 4,
+   "disagreements": [],
+   "n_disagreements": 0
+  },
+  "neighbourhood_x0": {
+   "n_admissible": 18,
+   "n_raw": 18,
+   "size_bound": 18
+  },
+  "a6_single_node_points_checked": 222264,
+  "a6_mismatches": [],
+  "a6_n_mismatches": 0,
+  "a7_margin_eur": 100000.0,
+  "a7_points_checked_by_lattice": 77785,
+  "a7_admissible_by_lattice": 37042,
+  "a7_mismatches": [],
+  "a7_n_mismatches": 0,
+  "wall_s": 0.4205789566040039
+ },
+ "B_esso_structure": {
+  "config": {
+   "years": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "available_energy_soh_point": "end",
+   "ageing_enabled": true,
+   "salvage_enabled": true,
+   "salvage_in_objective": false,
+   "energy_recovery_fraction": 1.0,
+   "recycling_floor_fraction": 0.0,
+   "cost_basis": "EXPECTED_INSTALLATION_ENERGY_COST",
+   "health_basis": "NORMALIZED_ABOVE_MINIMUM_SOH",
+   "calendar_life_basis": "REMAINING_FRACTION_AT_TERMINAL",
+   "params_available_energy_soh_point_declared": null,
+   "slacks": true,
+   "planning_read_s": 11.275422811508179,
+   "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358"
+  },
+  "plans_node5_mva_mwh": {
+   "A_2025": {
+    "2025": [
+     0.5,
+     1.0
+    ],
+    "2030": [
+     0.0,
+     0.0
+    ],
+    "2035": [
+     0.0,
+     0.0
+    ]
+   },
+   "B_2025_2030": {
+    "2025": [
+     0.5,
+     1.0
+    ],
+    "2030": [
+     0.25,
+     0.5
+    ],
+    "2035": [
+     0.0,
+     0.0
+    ]
+   },
+   "C_2025_2030_2035": {
+    "2025": [
+     0.5,
+     1.0
+    ],
+    "2030": [
+     0.25,
+     0.5
+    ],
+    "2035": [
+     0.25,
+     1.0
+    ]
+   }
+  },
+  "cohort0_row_count": 15,
+  "coupling_inventory": {
+   "A_2025": {
+    "rated_s_capacity": 2,
+    "rated_e_capacity": 2
+   },
+   "B_2025_2030": {
+    "rated_s_capacity": 2,
+    "rated_e_capacity": 2,
+    "energy_storage_cohort_pnet_share_h3": 192,
+    "energy_storage_operation_agg": 192
+   },
+   "C_2025_2030_2035": {
+    "rated_s_capacity": 2,
+    "rated_e_capacity": 2,
+    "energy_storage_cohort_pnet_share_h3": 288,
+    "energy_storage_operation_agg": 192
+   }
+  },
+  "h3": {
+   "A_2025": {
+    "2025": {
+     "n_active_cohorts": 1,
+     "active_h3_rows": 0,
+     "expected": 0,
+     "shares": {
+      "0": 0.0,
+      "1": 0.0,
+      "2": 0.0
+     }
+    },
+    "2030": {
+     "n_active_cohorts": 1,
+     "active_h3_rows": 0,
+     "expected": 0,
+     "shares": {
+      "0": 0.0,
+      "1": 0.0,
+      "2": 0.0
+     }
+    },
+    "2035": {
+     "n_active_cohorts": 1,
+     "active_h3_rows": 0,
+     "expected": 0,
+     "shares": {
+      "0": 0.0,
+      "1": 0.0,
+      "2": 0.0
+     }
+    }
+   },
+   "B_2025_2030": {
+    "2025": {
+     "n_active_cohorts": 1,
+     "active_h3_rows": 0,
+     "expected": 0,
+     "shares": {
+      "0": 0.0,
+      "1": 0.0,
+      "2": 0.0
+     }
+    },
+    "2030": {
+     "n_active_cohorts": 2,
+     "active_h3_rows": 96,
+     "expected": 96,
+     "shares": {
+      "0": 0.6666666666666666,
+      "1": 0.3333333333333333,
+      "2": 0.0
+     }
+    },
+    "2035": {
+     "n_active_cohorts": 2,
+     "active_h3_rows": 96,
+     "expected": 96,
+     "shares": {
+      "0": 0.6666666666666666,
+      "1": 0.3333333333333333,
+      "2": 0.0
+     }
+    }
+   },
+   "C_2025_2030_2035": {
+    "2025": {
+     "n_active_cohorts": 1,
+     "active_h3_rows": 0,
+     "expected": 0,
+     "shares": {
+      "0": 0.0,
+      "1": 0.0,
+      "2": 0.0
+     }
+    },
+    "2030": {
+     "n_active_cohorts": 2,
+     "active_h3_rows": 96,
+     "expected": 96,
+     "shares": {
+      "0": 0.6666666666666666,
+      "1": 0.3333333333333333,
+      "2": 0.0
+     }
+    },
+    "2035": {
+     "n_active_cohorts": 3,
+     "active_h3_rows": 192,
+     "expected": 192,
+     "shares": {
+      "0": 0.4,
+      "1": 0.2,
+      "2": 0.4
+     }
+    }
+   }
+  },
+  "soh_chain_start": {
+   "0": {
+    "soh_chain_row_vars": [
+     [
+      "es_D_per_unit[0,0]",
+      "es_soh_per_unit_cumul[0,0]"
+     ]
+    ],
+    "references_earlier_block_soh": false
+   },
+   "1": {
+    "soh_chain_row_vars": [
+     [
+      "es_D_per_unit[1,1]",
+      "es_soh_per_unit_cumul[1,1]"
+     ]
+    ],
+    "references_earlier_block_soh": false
+   },
+   "2": {
+    "soh_chain_row_vars": [
+     [
+      "es_D_per_unit[2,2]",
+      "es_soh_per_unit_cumul[2,2]"
+     ]
+    ],
+    "references_earlier_block_soh": false
+   }
+  },
+  "pre_installation_soh_fixed": {
+   "1,0": [
+    true,
+    1.0
+   ],
+   "2,0": [
+    true,
+    1.0
+   ],
+   "2,1": [
+    true,
+    1.0
+   ]
+  },
+  "salvage": {
+   "terminal_discount_factor": 0.7430147299885189,
+   "terminal_horizon_years": 15.0,
+   "terminal_date": 2040,
+   "cohorts": {
+    "2025": {
+     "age_at_terminal_y": 15.0,
+     "remaining_life_y": 0.0,
+     "rlf": 0.0,
+     "expected_energy_cost_installation_year_eur_per_mwh_undiscounted": 253877.6774385931,
+     "e_mwh": 1.0,
+     "soh_min": 0.7,
+     "phi_cal": 0.985,
+     "t_cal": 15,
+     "calendar_only_terminal_soh": 0.7971562536487744,
+     "salvage_at_calendar_only_soh_eur_pv2025": 0.0,
+     "dS_dTP_eur_per_mwh_at_calendar_only_soh": -0.0,
+     "k_cl_eff": 35851.3609417964,
+     "max_throughput_coef_c": 0.0
+    },
+    "2030": {
+     "age_at_terminal_y": 10.0,
+     "remaining_life_y": 5.0,
+     "rlf": 0.3333333333333333,
+     "expected_energy_cost_installation_year_eur_per_mwh_undiscounted": 208198.72446060603,
+     "e_mwh": 0.5,
+     "soh_min": 0.7,
+     "phi_cal": 0.985,
+     "t_cal": 15,
+     "calendar_only_terminal_soh": 0.859730442259143,
+     "salvage_at_calendar_only_soh_eur_pv2025": 13727.47549292307,
+     "dS_dTP_eur_per_mwh_at_calendar_only_soh": -2.060912918116305,
+     "k_cl_eff": 35851.3609417964,
+     "max_throughput_coef_c": 1148.6399977522267
+    },
+    "2035": {
+     "age_at_terminal_y": 5.0,
+     "remaining_life_y": 10.0,
+     "rlf": 0.6666666666666666,
+     "expected_energy_cost_installation_year_eur_per_mwh_undiscounted": 192708.1243895905,
+     "e_mwh": 1.0,
+     "soh_min": 0.7,
+     "phi_cal": 0.985,
+     "t_cal": 15,
+     "calendar_only_terminal_soh": 0.9272165023656249,
+     "salvage_at_calendar_only_soh_eur_pv2025": 72297.7538068104,
+     "dS_dTP_eur_per_mwh_at_calendar_only_soh": -4.114626745056561,
+     "k_cl_eff": 35851.3609417964,
+     "max_throughput_coef_c": 2126.355578202188
+    }
+   },
+   "objective_coefs": {
+    "es_soh_per_unit_cumul[1,2]": -85941.51057725068,
+    "es_soh_per_unit_cumul[2,2]": -318188.8333553899
+   },
+   "objective_constant": 282891.2407528484,
+   "reporting_value_at_synthetic_point": 86025.22929973346,
+   "objective_value_at_synthetic_point": -86025.22929973346
+  },
+  "kappa_and_slack_safety": {
+   "sigma_fixed": 93635360.0,
+   "esso_al_scale_a": 227210.9966521344,
+   "al_scale_applied": true,
+   "median_block_weight": 412.10751847261173,
+   "kappa": 0.0024265512158241757,
+   "kappa_times_w_med": 0.9999999999999999,
+   "PENALTY_ESSO_SLACK": 1000.0,
+   "bar_1e-3_penalty": 1.0,
+   "salvage_marginal_per_MW_period_by_cohort_at_calendar_only_soh": {
+    "2025": 0.0,
+    "2030": 2.396269733015542,
+    "2035": 4.784168921046508
+   },
+   "peak": 4.784168921046508,
+   "peak_over_bar": 4.784168921046508,
+   "penalty_needed_for_bar": 4784.168921046507,
+   "gcc3_five_block_peak_reference": 5.84,
+   "slack_safety_holds_at_PENALTY_ESSO_SLACK": false
+  }
+ },
+ "C_source_facts": {
+  "facts": {
+   "harness_canonical_candidate_single_year": {
+    "file": "p515_s44_campaign_harness.py",
+    "pattern": "return \\{'investment_year': int\\(investment_year\\),",
+    "hits": [
+     {
+      "line": 554,
+      "text": "return {'investment_year': int(investment_year),"
+     }
+    ],
+    "n_hits": 1
+   },
+   "harness_investment_year_default": {
+    "file": "p515_s44_campaign_harness.py",
+    "pattern": "^INVESTMENT_YEAR = 2025",
+    "hits": [
+     {
+      "line": 420,
+      "text": "INVESTMENT_YEAR = 2025"
+     }
+    ],
+    "n_hits": 1
+   },
+   "harness_ess_params_file_pinned": {
+    "file": "p515_s44_campaign_harness.py",
+    "pattern": "^ESS_PARAMS_FILE_REL = ",
+    "hits": [
+     {
+      "line": 414,
+      "text": "ESS_PARAMS_FILE_REL = os.path.join('data', 'SRP1', 'SharedESS', 'SRP1_ESS_Params.json')"
+     }
+    ],
+    "n_hits": 1
+   },
+   "harness_refuses_one_scenario_derived_instance": {
+    "file": "p515_s44_campaign_harness.py",
+    "pattern": "'planning_has_more_than_one_scenario_combination'",
+    "hits": [
+     {
+      "line": 3320,
+      "text": "'planning_has_more_than_one_scenario_combination': ("
+     }
+    ],
+    "n_hits": 1
+   },
+   "harness_model_variant_keys": {
+    "file": "p515_s44_campaign_harness.py",
+    "pattern": "^MODEL_VARIANT_KEYS = ",
+    "hits": [
+     {
+      "line": 404,
+      "text": "MODEL_VARIANT_KEYS = frozenset({'eol_retention_r', 'calendar_retention_per_year', 'available_energy_soh_point',"
+     }
+    ],
+    "n_hits": 1
+   },
+   "harness_record_certified_cost_is_gross": {
+    "file": "p515_s44_campaign_harness.py",
+    "pattern": "'certified_cost': report.get\\('gross_operational_cost'\\) if certified else None",
+    "hits": [
+     {
+      "line": 2208,
+      "text": "'certified_cost': report.get('gross_operational_cost') if certified else None,"
+     }
+    ],
+    "n_hits": 1
+   },
+   "harness_record_terminal_net_recourse": {
+    "file": "p515_s44_campaign_harness.py",
+    "pattern": "'terminal_net_operational_recourse'",
+    "hits": [
+     {
+      "line": 2210,
+      "text": "'terminal_net_operational_recourse': rc.get('net_operational_recourse'),"
+     }
+    ],
+    "n_hits": 1
+   },
+   "gates_construct_arm_planning_no_staging": {
+    "file": "p515_g_g1_g4_admm_gates.py",
+    "pattern": "Multi-cohort \\(staging\\) candidates are NOT supported here",
+    "hits": [
+     {
+      "line": 1107,
+      "text": "Multi-cohort (staging) candidates are NOT supported here: exactly one cohort"
+     }
+    ],
+    "n_hits": 1
+   },
+   "gates_single_year_write": {
+    "file": "p515_g_g1_g4_admm_gates.py",
+    "pattern": "candidate\\['investment'\\]\\[node_id\\]\\[invest_year\\]\\['s'\\] = s_val",
+    "hits": [
+     {
+      "line": 1175,
+      "text": "candidate['investment'][node_id][invest_year]['s'] = s_val"
+     }
+    ],
+    "n_hits": 1
+   },
+   "pb_lattice_n_vars_7": {
+    "file": "p515_s47_phase_b_record.py",
+    "pattern": "^N_VARS = ",
+    "hits": [
+     {
+      "line": 191,
+      "text": "N_VARS = 2 * len(ACTIVE_NODES) + 1  # 7: (zP, zE) per node + the common year index"
+     }
+    ],
+    "n_hits": 1
+   },
+   "pb_primes_10": {
+    "file": "p515_s47_phase_b_record.py",
+    "pattern": "^PRIMES = ",
+    "hits": [
+     {
+      "line": 197,
+      "text": "PRIMES = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29)"
+     }
+    ],
+    "n_hits": 1
+   },
+   "pb_run_mads_single_year_canonical": {
+    "file": "p515_s47_phase_b_record.py",
+    "pattern": "'canonical': \\{'investment_year': lattice.year_of\\(z\\),",
+    "hits": [
+     {
+      "line": 628,
+      "text": "'canonical': {'investment_year': lattice.year_of(z),"
+     }
+    ],
+    "n_hits": 1
+   },
+   "pb_objective_convention_F_I_plus_gross": {
+    "file": "p515_s47_phase_b_record.py",
+    "pattern": "^OBJECTIVE_CONVENTION = ",
+    "hits": [
+     {
+      "line": 240,
+      "text": "OBJECTIVE_CONVENTION = ('Q(x) = certified_cost = gross_operational_cost (settlement-excluded); F(x) = I(x) + Q(x); '"
+     }
+    ],
+    "n_hits": 1
+   },
+   "lattice_neighbourhood": {
+    "file": "p516_lattice.py",
+    "pattern": "def neighbourhood\\(self, z_inc\\):",
+    "hits": [
+     {
+      "line": 418,
+      "text": "def neighbourhood(self, z_inc):"
+     }
+    ],
+    "n_hits": 1
+   },
+   "lattice_resolution_by_bound": {
+    "file": "p516_lattice.py",
+    "pattern": "^def resolution_by_bound",
+    "hits": [
+     {
+      "line": 477,
+      "text": "def resolution_by_bound(points, f_lb, margin, ub):"
+     }
+    ],
+    "n_hits": 1
+   },
+   "definitions_penalty_esso_slack": {
+    "file": "definitions.py",
+    "pattern": "^PENALTY_ESSO_SLACK = ",
+    "hits": [
+     {
+      "line": 63,
+      "text": "PENALTY_ESSO_SLACK = 1e3"
+     }
+    ],
+    "n_hits": 1
+   },
+   "params_penalty_key_absent": {
+    "file": "shared_energy_storage_parameters.py",
+    "pattern": "(?i)penalty",
+    "hits": [],
+    "n_hits": 0
+   },
+   "params_in_objective_default": {
+    "file": "shared_energy_storage_parameters.py",
+    "pattern": "self.in_objective = False",
+    "hits": [
+     {
+      "line": 24,
+      "text": "self.in_objective = False"
+     }
+    ],
+    "n_hits": 1
+   },
+   "params_soh_point_key": {
+    "file": "shared_energy_storage_parameters.py",
+    "pattern": "params_data.get\\('available_energy_soh_point'\\)",
+    "hits": [
+     {
+      "line": 283,
+      "text": "if params_data.get('available_energy_soh_point') is not None:"
+     }
+    ],
+    "n_hits": 1
+   },
+   "esso_soh_chain_prev": {
+    "file": "shared_energy_storage_data.py",
+    "pattern": "prev_soh = model.es_soh_per_unit_cumul\\[y_inv, y - 1\\]",
+    "hits": [
+     {
+      "line": 628,
+      "text": "prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]"
+     },
+     {
+      "line": 720,
+      "text": "prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]"
+     }
+    ],
+    "n_hits": 2
+   },
+   "esso_soh_floor": {
+    "file": "shared_energy_storage_data.py",
+    "pattern": "model.es_soh_per_unit_cumul\\[y_inv, y\\] >= shared_energy_storage.soh_min\\)",
+    "hits": [
+     {
+      "line": 736,
+      "text": "model.es_soh_per_unit_cumul[y_inv, y] >= shared_energy_storage.soh_min)"
+     }
+    ],
+    "n_hits": 1
+   },
+   "esso_D_row_investment_block_width": {
+    "file": "shared_energy_storage_data.py",
+    "pattern": "num_years = shared_ess_data.years\\[repr_years\\[y_inv\\]\\]$",
+    "hits": [
+     {
+      "line": 613,
+      "text": "num_years = shared_ess_data.years[repr_years[y_inv]]"
+     },
+     {
+      "line": 682,
+      "text": "num_years = shared_ess_data.years[repr_years[y_inv]]"
+     }
+    ],
+    "n_hits": 2
+   },
+   "esso_h3_share_from_investment": {
+    "file": "shared_energy_storage_data.py",
+    "pattern": "share = pe.value\\(model.es_e_investment_fixed\\[y_inv\\]\\) / total_e_rated",
+    "hits": [
+     {
+      "line": 1821,
+      "text": "share = pe.value(model.es_e_investment_fixed[y_inv]) / total_e_rated"
+     }
+    ],
+    "n_hits": 1
+   },
+   "esso_available_capacity_sum": {
+    "file": "shared_energy_storage_data.py",
+    "pattern": "e_available \\+= pe.value\\(model.es_e_available_per_unit\\[y_inv, year_idx\\]\\)",
+    "hits": [
+     {
+      "line": 283,
+      "text": "e_available += pe.value(model.es_e_available_per_unit[y_inv, year_idx])"
+     }
+    ],
+    "n_hits": 1
+   },
+   "esso_objective_switch": {
+    "file": "shared_energy_storage_data.py",
+    "pattern": "if getattr\\(shared_ess_data.params.salvage_value, 'in_objective', False\\):",
+    "hits": [
+     {
+      "line": 855,
+      "text": "if getattr(shared_ess_data.params.salvage_value, 'in_objective', False):"
+     }
+    ],
+    "n_hits": 1
+   },
+   "esso_terminal_discount": {
+    "file": "shared_energy_storage_data.py",
+    "pattern": "^def _get_terminal_discount_factor",
+    "hits": [
+     {
+      "line": 1006,
+      "text": "def _get_terminal_discount_factor(shared_ess_data):"
+     }
+    ],
+    "n_hits": 1
+   },
+   "esso_remaining_life": {
+    "file": "shared_energy_storage_data.py",
+    "pattern": "^def _get_remaining_calendar_life",
+    "hits": [
+     {
+      "line": 1011,
+      "text": "def _get_remaining_calendar_life(shared_ess_data, investment_year_idx, shared_energy_storage):"
+     }
+    ],
+    "n_hits": 1
+   },
+   "esso_expected_energy_cost_undiscounted": {
+    "file": "shared_energy_storage_data.py",
+    "pattern": "^def _get_expected_energy_investment_cost",
+    "hits": [
+     {
+      "line": 1021,
+      "text": "def _get_expected_energy_investment_cost(shared_ess_data, year):"
+     }
+    ],
+    "n_hits": 1
+   },
+   "esso_salvage_sensitivity_power_zero": {
+    "file": "shared_energy_storage_data.py",
+    "pattern": "sensitivities\\['s'\\]\\[year_inv\\]\\[node_id\\] = 0.00",
+    "hits": [
+     {
+      "line": 1042,
+      "text": "sensitivities['s'][year_inv][node_id] = 0.00"
+     }
+    ],
+    "n_hits": 1
+   },
+   "master_budget_row_investment_only": {
+    "file": "shared_energy_storage_data.py",
+    "pattern": "model.energy_storage_investment.add\\(investment_cost_total <= shared_ess_data.params.budget\\)",
+    "hits": [
+     {
+      "line": 382,
+      "text": "model.energy_storage_investment.add(investment_cost_total <= shared_ess_data.params.budget)"
+     }
+    ],
+    "n_hits": 1
+   },
+   "srp_first_stage_budget_check": {
+    "file": "shared_resources_planning.py",
+    "pattern": "if expected_investment_cost > params.budget \\+ tolerance:",
+    "hits": [
+     {
+      "line": 2266,
+      "text": "if expected_investment_cost > params.budget + tolerance:"
+     }
+    ],
+    "n_hits": 1
+   },
+   "srp_net_recourse_gross_minus_salvage": {
+    "file": "shared_resources_planning.py",
+    "pattern": "net_operational_recourse = gross_operational_cost - terminal_salvage_value",
+    "hits": [
+     {
+      "line": 1306,
+      "text": "net_operational_recourse = gross_operational_cost - terminal_salvage_value"
+     }
+    ],
+    "n_hits": 1
+   },
+   "srp_gross_from_networks_only": {
+    "file": "shared_resources_planning.py",
+    "pattern": "gross_operational_cost_including_settlement = planning_problem.transmission_network.get_primal_value",
+    "hits": [
+     {
+      "line": 1237,
+      "text": "gross_operational_cost_including_settlement = planning_problem.transmission_network.get_primal_value(models['tso'])"
+     }
+    ],
+    "n_hits": 1
+   },
+   "srp_kappa_set": {
+    "file": "shared_resources_planning.py",
+    "pattern": "models\\[node_id\\].salvage_objective_kappa.set_value\\(",
+    "hits": [
+     {
+      "line": 5542,
+      "text": "models[node_id].salvage_objective_kappa.set_value("
+     }
+    ],
+    "n_hits": 1
+   },
+   "srp_esso_admm_objective_copies_objective": {
+    "file": "shared_resources_planning.py",
+    "pattern": "obj = copy\\(models\\[node_id\\].objective.expr\\)",
+    "hits": [
+     {
+      "line": 3630,
+      "text": "# `obj = copy(models[node_id].objective.expr)`, no `/effective_scale`"
+     },
+     {
+      "line": 5499,
+      "text": "base objective (`obj = copy(models[node_id].objective.expr)`) is NEVER"
+     },
+     {
+      "line": 5559,
+      "text": "obj = copy(models[node_id].objective.expr)"
+     }
+    ],
+    "n_hits": 3
+   },
+   "srp_salvage_sensitivities_added": {
+    "file": "shared_resources_planning.py",
+    "pattern": "salvage_sensitivities\\[capacity_type\\]\\[year\\]\\[node_id\\]",
+    "hits": [
+     {
+      "line": 1672,
+      "text": "salvage_sensitivities[capacity_type][year][node_id]"
+     }
+    ],
+    "n_hits": 1
+   },
+   "srp_block_weight": {
+    "file": "shared_resources_planning.py",
+    "pattern": "^def _get_admm_block_weight",
+    "hits": [
+     {
+      "line": 3870,
+      "text": "def _get_admm_block_weight(network_data, year, day):"
+     }
+    ],
+    "n_hits": 1
+   },
+   "srp_rebuild_total_capacities": {
+    "file": "shared_resources_planning.py",
+    "pattern": "^def _rebuild_candidate_total_capacities",
+    "hits": [
+     {
+      "line": 2614,
+      "text": "def _rebuild_candidate_total_capacities(planning_problem, candidate_solution):"
+     }
+    ],
+    "n_hits": 1
+   },
+   "srp_esso_data_gets_investment_not_total": {
+    "file": "shared_resources_planning.py",
+    "pattern": "planning_problem.shared_ess_data.update_data_with_candidate_solution\\($",
+    "hits": [
+     {
+      "line": 2653,
+      "text": "planning_problem.shared_ess_data.update_data_with_candidate_solution("
+     }
+    ],
+    "n_hits": 1
+   }
+  },
+  "git": {
+   "head": "ae1de1943852c42d93e8fdc1f76d650853dbf04d",
+   "branch": "feature/derivative-free-planning",
+   "f6c23977_ancestor_of_head": true,
+   "7324aa9c_ancestor_of_head": true,
+   "production_commits_since_p516_start": [
+    "f6c23977 P5.16 convention change C1 + C3 + C4 (switch-controlled; defaults bitwise): salvage term with kappa = al_scale_esso/objective_scale in the ESSO objective, 'mid' baseline, five-block single-scenario instance SRP1_5x3y_1x1 + ESS params; gates G-CC-1 (bitwise identity with HEAD HELD), G-CC-2 HELD, G-CC-5 HELD, G-CC-3 marginals as predicted (0/-1.23/-2.36/-3.59/-4.85 EUR/MWh) but slack safety FAILED as worded (5.84 vs 1.0 per MW-period) -> STOP for the expert (EXPERT_REQUEST_2026-10-31b.md R8); harness, report, gate evidence + manifests + logs; TASKS.md"
+   ],
+   "production_diff_f6c23977_to_head": ""
+  },
+  "sources_sha256": {
+   "p515_s56_reuse_audit_I.py": "f9ef385ad9d2972cd94a04902963957a8ab5995aad54eca0b91e62490cd07af5",
+   "p516_lattice.py": "ff5d63ef897ccd04e5bbaa719b352537108180a31b83c1b8574506612af86e88",
+   "p515_s44_campaign_harness.py": "d9a944f220e791b82147f08d0e606126ad454b8b6b2994024f94e106798fb191",
+   "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+   "p515_s47_phase_b_record.py": "97f573e52fb574836a72dce8c61b3d5c6b8919aa509e0ffbc04a1a6473ed6c62",
+   "shared_energy_storage_data.py": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85",
+   "shared_energy_storage_parameters.py": "f31a2caa83a7c07f8f2375bf2016dd2180ff470ee33c1df0a04ece038d46aff6",
+   "shared_resources_planning.py": "c9336a61a713ef6890fbffcda845395d757e26c41ae2422e82dd88bb881c33e8",
+   "definitions.py": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+   "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+   "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+   "data/SRP1/SRP1.json": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+   "data/SRP1/SRP1_5x3y_1x1.json": "f916e0c6feff4ce1bdf62d843efef386b791e7649442176bacfa16cec3d55b79",
+   "data/SRP1/SharedESS/SRP1_ESS.xlsx": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "data/SRP1/SharedESS/SRP1_ESS_Params.json": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+   "data/SRP1/SharedESS/SRP1_5x3y_ESS_Params.json": "08ade261858aeadd852c9f823c9f273b7490ba426c52a50f229fdbca80a50517"
+  }
+ },
+ "finished_utc": "2026-11-21T15:51:54Z",
+ "errors": {},
+ "checks": [
+  {
+   "id": "A6_per_node_sets_complete_against_GeneralLattice",
+   "pass": true,
+   "detail": {
+    "checked": 222264,
+    "mismatches": 0
+   }
+  },
+  {
+   "id": "A7_count_reproduced_point_by_point_by_GeneralLattice",
+   "pass": true,
+   "detail": {
+    "checked": 77785,
+    "admissible": 37042,
+    "count": 37042,
+    "mismatches": 0
+   }
+  },
+  {
+   "id": "A1_single_cohort_per_node_equals_C5_L1_6694",
+   "pass": true,
+   "detail": {
+    "got": 6694,
+    "C5_L1_incl_x0": 6694,
+    "S55_informational_excl_x0": 6693
+   }
+  },
+  {
+   "id": "A2_common_year_equals_old_domain_1705",
+   "pass": true,
+   "detail": {
+    "got": 1705
+   }
+  },
+  {
+   "id": "A3_sample_agrees_with_GeneralLattice_reasons",
+   "pass": true,
+   "detail": {
+    "n_disagreements": 0
+   }
+  },
+  {
+   "id": "A4_cheapest_over_cap_plan_over_budget_C5_F1",
+   "pass": true,
+   "detail": {
+    "I_eur": 1108893.2009885178
+   }
+  },
+  {
+   "id": "A5_neighbourhood_x0_is_18_on_SRP1_C5",
+   "pass": true,
+   "detail": {
+    "got": 18
+   }
+  },
+  {
+   "id": "B0_srp1_config_end_salvage_reported_only",
+   "pass": true,
+   "detail": {
+    "available_energy_soh_point": "end",
+    "salvage_enabled": true,
+    "salvage_in_objective": false,
+    "years": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    }
+   }
+  },
+  {
+   "id": "B1_cohort0_rows_identical_with_and_without_later_cohorts",
+   "pass": true,
+   "detail": {
+    "n_rows": 15,
+    "n_active": 15
+   }
+  },
+  {
+   "id": "B1b_cohort1_rows_identical_with_and_without_cohort_2035",
+   "pass": true,
+   "detail": {
+    "n_rows": 12
+   }
+  },
+  {
+   "id": "B2_every_cohort_row_references_only_its_own_cohort",
+   "pass": true,
+   "detail": {
+    "n_violations": 0,
+    "sample": []
+   }
+  },
+  {
+   "id": "B3_later_cohorts_soh_chain_starts_at_one_in_installation_block",
+   "pass": true,
+   "detail": {
+    "chain_start_rows": {
+     "0": {
+      "soh_chain_row_vars": [
+       [
+        "es_D_per_unit[0,0]",
+        "es_soh_per_unit_cumul[0,0]"
+       ]
+      ],
+      "references_earlier_block_soh": false
+     },
+     "1": {
+      "soh_chain_row_vars": [
+       [
+        "es_D_per_unit[1,1]",
+        "es_soh_per_unit_cumul[1,1]"
+       ]
+      ],
+      "references_earlier_block_soh": false
+     },
+     "2": {
+      "soh_chain_row_vars": [
+       [
+        "es_D_per_unit[2,2]",
+        "es_soh_per_unit_cumul[2,2]"
+       ]
+      ],
+      "references_earlier_block_soh": false
+     }
+    },
+    "pre_installation_soh_fixed_at_1": {
+     "1,0": [
+      true,
+      1.0
+     ],
+     "2,0": [
+      true,
+      1.0
+     ],
+     "2,1": [
+      true,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "B4_cohort_coupling_only_through_aggregate_rows_and_H3",
+   "pass": true,
+   "detail": {
+    "A_2025": {
+     "rated_s_capacity": 2,
+     "rated_e_capacity": 2
+    },
+    "B_2025_2030": {
+     "rated_s_capacity": 2,
+     "rated_e_capacity": 2,
+     "energy_storage_cohort_pnet_share_h3": 192,
+     "energy_storage_operation_agg": 192
+    },
+    "C_2025_2030_2035": {
+     "rated_s_capacity": 2,
+     "rated_e_capacity": 2,
+     "energy_storage_cohort_pnet_share_h3": 288,
+     "energy_storage_operation_agg": 192
+    }
+   }
+  },
+  {
+   "id": "B5_h3_rows_N_active_minus_1_per_period",
+   "pass": true,
+   "detail": {
+    "A_2025": {
+     "2025": {
+      "n_active_cohorts": 1,
+      "active_h3_rows": 0,
+      "expected": 0,
+      "shares": {
+       "0": 0.0,
+       "1": 0.0,
+       "2": 0.0
+      }
+     },
+     "2030": {
+      "n_active_cohorts": 1,
+      "active_h3_rows": 0,
+      "expected": 0,
+      "shares": {
+       "0": 0.0,
+       "1": 0.0,
+       "2": 0.0
+      }
+     },
+     "2035": {
+      "n_active_cohorts": 1,
+      "active_h3_rows": 0,
+      "expected": 0,
+      "shares": {
+       "0": 0.0,
+       "1": 0.0,
+       "2": 0.0
+      }
+     }
+    },
+    "B_2025_2030": {
+     "2025": {
+      "n_active_cohorts": 1,
+      "active_h3_rows": 0,
+      "expected": 0,
+      "shares": {
+       "0": 0.0,
+       "1": 0.0,
+       "2": 0.0
+      }
+     },
+     "2030": {
+      "n_active_cohorts": 2,
+      "active_h3_rows": 96,
+      "expected": 96,
+      "shares": {
+       "0": 0.6666666666666666,
+       "1": 0.3333333333333333,
+       "2": 0.0
+      }
+     },
+     "2035": {
+      "n_active_cohorts": 2,
+      "active_h3_rows": 96,
+      "expected": 96,
+      "shares": {
+       "0": 0.6666666666666666,
+       "1": 0.3333333333333333,
+       "2": 0.0
+      }
+     }
+    },
+    "C_2025_2030_2035": {
+     "2025": {
+      "n_active_cohorts": 1,
+      "active_h3_rows": 0,
+      "expected": 0,
+      "shares": {
+       "0": 0.0,
+       "1": 0.0,
+       "2": 0.0
+      }
+     },
+     "2030": {
+      "n_active_cohorts": 2,
+      "active_h3_rows": 96,
+      "expected": 96,
+      "shares": {
+       "0": 0.6666666666666666,
+       "1": 0.3333333333333333,
+       "2": 0.0
+      }
+     },
+     "2035": {
+      "n_active_cohorts": 3,
+      "active_h3_rows": 192,
+      "expected": 192,
+      "shares": {
+       "0": 0.4,
+       "1": 0.2,
+       "2": 0.4
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "B6_salvage_objective_coefficients_equal_hand_formula_on_SRP1_end",
+   "pass": true,
+   "detail": {
+    "coefs": {
+     "es_soh_per_unit_cumul[1,2]": -85941.51057725068,
+     "es_soh_per_unit_cumul[2,2]": -318188.8333553899
+    },
+    "hand": {
+     "es_soh_per_unit_cumul[1,2]": -85941.51057725068,
+     "es_soh_per_unit_cumul[2,2]": -318188.8333553899
+    },
+    "constant": 282891.2407528484,
+    "constant_hand": 282891.2407528484,
+    "no_converter_variable": true,
+    "salvage_value_reporting": 86025.22929973346,
+    "salvage_credit_obj": -86025.22929973346
+   }
+  },
+  {
+   "id": "B6b_kappa_param_initialised_zero",
+   "pass": true,
+   "detail": {
+    "kappa_at_build": 0.0
+   }
+  },
+  {
+   "id": "B7_kappa_equals_one_over_median_block_weight",
+   "pass": true,
+   "detail": {
+    "sigma_fixed": 93635360.0,
+    "esso_al_scale_a": 227210.9966521344,
+    "al_scale_applied": true,
+    "median_block_weight": 412.10751847261173,
+    "kappa": 0.0024265512158241757,
+    "kappa_times_w_med": 0.9999999999999999,
+    "PENALTY_ESSO_SLACK": 1000.0,
+    "bar_1e-3_penalty": 1.0,
+    "salvage_marginal_per_MW_period_by_cohort_at_calendar_only_soh": {
+     "2025": 0.0,
+     "2030": 2.396269733015542,
+     "2035": 4.784168921046508
+    },
+    "peak": 4.784168921046508,
+    "peak_over_bar": 4.784168921046508,
+    "penalty_needed_for_bar": 4784.168921046507,
+    "gcc3_five_block_peak_reference": 5.84,
+    "slack_safety_holds_at_PENALTY_ESSO_SLACK": false
+   }
+  },
+  {
+   "id": "B8_no_side_write_outside_output_dir",
+   "pass": true,
+   "detail": {
+    "watched": [
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Diagrams",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/Logs",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results"
+    ],
+    "git_status_unchanged": true
+   }
+  },
+  {
+   "id": "C1_every_positive_fact_located",
+   "pass": true,
+   "detail": {
+    "harness_canonical_candidate_single_year": 1,
+    "harness_investment_year_default": 1,
+    "harness_ess_params_file_pinned": 1,
+    "harness_refuses_one_scenario_derived_instance": 1,
+    "harness_model_variant_keys": 1,
+    "harness_record_certified_cost_is_gross": 1,
+    "harness_record_terminal_net_recourse": 1,
+    "gates_construct_arm_planning_no_staging": 1,
+    "gates_single_year_write": 1,
+    "pb_lattice_n_vars_7": 1,
+    "pb_primes_10": 1,
+    "pb_run_mads_single_year_canonical": 1,
+    "pb_objective_convention_F_I_plus_gross": 1,
+    "lattice_neighbourhood": 1,
+    "lattice_resolution_by_bound": 1,
+    "definitions_penalty_esso_slack": 1,
+    "params_penalty_key_absent": 0,
+    "params_in_objective_default": 1,
+    "params_soh_point_key": 1,
+    "esso_soh_chain_prev": 2,
+    "esso_soh_floor": 1,
+    "esso_D_row_investment_block_width": 2,
+    "esso_h3_share_from_investment": 1,
+    "esso_available_capacity_sum": 1,
+    "esso_objective_switch": 1,
+    "esso_terminal_discount": 1,
+    "esso_remaining_life": 1,
+    "esso_expected_energy_cost_undiscounted": 1,
+    "esso_salvage_sensitivity_power_zero": 1,
+    "master_budget_row_investment_only": 1,
+    "srp_first_stage_budget_check": 1,
+    "srp_net_recourse_gross_minus_salvage": 1,
+    "srp_gross_from_networks_only": 1,
+    "srp_kappa_set": 1,
+    "srp_esso_admm_objective_copies_objective": 3,
+    "srp_salvage_sensitivities_added": 1,
+    "srp_block_weight": 1,
+    "srp_rebuild_total_capacities": 1,
+    "srp_esso_data_gets_investment_not_total": 1
+   }
+  },
+  {
+   "id": "C2_no_penalty_key_in_ess_parameters_reader",
+   "pass": true,
+   "detail": {
+    "file": "shared_energy_storage_parameters.py",
+    "pattern": "(?i)penalty",
+    "hits": [],
+    "n_hits": 0
+   }
+  }
+ ],
+ "failed_checks": [],
+ "guard": {
+  "label": "P5.15 S56 reuse audit I (zero solves)",
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ }
+}

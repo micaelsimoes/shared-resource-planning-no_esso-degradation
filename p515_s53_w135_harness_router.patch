@@ -1,0 +1,14 @@
+diff --git a/p515_s44_campaign_harness.py b/p515_s44_campaign_harness.py
+index 5689ee1..bca7d0b 100644
+--- a/p515_s44_campaign_harness.py
++++ b/p515_s44_campaign_harness.py
+@@ -950,6 +950,9 @@ def resettle_hooks_module(value):
+     import p515_s53_w132_resettle_v3_hooks as W132C
+     if W132C.is_v3_declaration(value):
+         return W132C
++    import p515_s53_w135_resettle_ext_hooks as W135C
++    if W135C.is_w135_declaration(value):
++        return W135C
+     import p515_s53_w118_resettle_hooks as W118C
+     return W118C
+ 

@@ -1,0 +1,51 @@
+% =====================================================================================================================
+% FIX 1 -- Section 2.2.7: the paste of PART 1 also deleted the subsubsection heading, its label and the Q(x) definition.
+% Insert this block back IMMEDIATELY BEFORE the \textcolor{blue}{ \paragraph{Stopping and certification} ... } block
+% (i.e. after the commented-out "In the present formulation, investment-cost uncertainty ..." paragraph).
+% Text verbatim from Overleaf dce05d0 (already audited). Restores \label{subsubsec:certification} (15 references)
+% and \label{eq:recourse_value} (2 references: Subsection 2.3.6 and Appendix A.1). The title must stay as is:
+% the letter (R3.2 block, "Changes" line) cites it by name.
+% =====================================================================================================================
+\subsubsection{\textcolor{blue}{Recourse Evaluation and Certification}}
+\label{subsubsec:certification}
+
+\textcolor{blue}{
+    The recourse value of a plan is the expected discounted operating cost of the coupled system over the horizon, given by:
+}
+
+\textcolor{blue}{
+    \begin{equation}
+        Q(\boldsymbol{x}) =
+        \sum_{y \in Y} \frac{Y_y}{(1+r)^{y-y_0}}
+        \sum_{d \in D} D_d
+        \sum_{m \in \Omega_M} \sum_{o \in \Omega_O} \omega_m \, \omega_o \,
+        C^{\text{Op}}_{y,d,m,o}(\boldsymbol{x})
+        \label{eq:recourse_value}
+    \end{equation}
+}
+
+\noindent
+\textcolor{blue}{
+    where $C^{\text{Op}}_{y,d,m,o}$ is the daily operating cost of representative day $d$ of year $y$ under market scenario $m$ and operation scenario $o$, at the consensus point of the TSO--DSO coordination procedure (\ref{app:admm_updated}): the cost of TN generation, of activated DN flexibility and of load curtailment, and the penalties on the storage closure slack and on the network feasibility slacks; in the multi-scenario instance it also includes the commitment charge and the deviation part of the interface settlement (Subsection~\ref{subsubsec:commitment}).
+    The contracted part of the settlement is a transfer between operators and is excluded, as are the regularisation terms of the storage agent and of the solvers; renewable curtailment carries no cost and is reported as energy.
+    Each representative year stands for a block of $Y_y$ calendar years, and its cost is weighted by $Y_y$ and discounted at the representative year.
+}
+
+% =====================================================================================================================
+% FIX 2 -- Section 3.6 ("Certification (Subsection~\ref{subsubsec:certification}) uses ..."): replace the first clause
+% so that the provenance of V and the freezing of tau, deleted from 2.2.7, are kept.
+% =====================================================================================================================
+    Certification (Subsection~\ref{subsubsec:certification}) uses $\delta_R = 0.07$ on the reference value $\mathcal{V} = 259{,}375.33$~\euro{}, the value of the reference unit in force when the rule was adopted, hence $\tau = 4{,}539.07$~\euro{}, kept frozen thereafter, and $P_{\max} = 30$ cycles;
+% ... the rest of that sentence ("an evaluation continued from an earlier run is capped ...") unchanged.
+
+% =====================================================================================================================
+% FIX 3 -- Section 4.7: insert as the FIRST sentence of the first paragraph, before "Of the 42 single-scenario ...".
+% =====================================================================================================================
+    Every certificate reported in this paper was decided, or re-decided from its committed record, under the rule of Subsection~\ref{subsubsec:certification}, stated in full in \ref{app:admm_updated_certification}, and certifies at the cycle reported; the single-scenario tables carry these certificates.
+
+% =====================================================================================================================
+% FIX 4 -- Section 4.5 (author's paragraph, still a placeholder): this sentence must now be IN that paragraph, since
+% 2.2.7 no longer says it. Also change the placeholder bullet "(Subsection~\ref{subsubsec:certification} says this
+% for the ratio)" to "(say it here; 2.2.7 no longer does)".
+% =====================================================================================================================
+    The multi-scenario instance was evaluated under the production exit of the coordination procedure (ten consecutive passing cycles with every local solve successful), not under the certification rule; its reference evaluation was continued past that exit to measure the remaining movement of the objective, and the ratio is reported as a band that allows for it.

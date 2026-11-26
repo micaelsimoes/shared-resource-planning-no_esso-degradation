@@ -1,0 +1,120 @@
+17:16:06 OK   [1] unit: exit summary from the real record: status not_certified (cap 2 reached), read at the terminal cycle 2
+17:16:06 OK   [1] unit: F = I(x) + recourse(2) exactly, = the cost breakdown total_planning_cost_eur
+17:16:06 OK   [1] unit: recourse = gross - TV on every cycle (exact)
+17:16:06 OK   [1] unit: bar_F = the record's net-recourse step (I constant), rel 1e-12; <= the triangle bound bar_gross + range(TV)
+17:16:06 OK   [1] unit: settled mapping of a record without the pricing capture -> harness_error naming the file
+17:16:06 OK   [1] unit: exit code 1 -> harness_error, no value
+17:16:06 OK   [1] unit: record status error -> harness_error, no value
+17:16:06 OK   [1] unit: no per-cycle file -> harness_error, no value
+17:16:06 OK   [1] unit: no exit_code.txt -> harness_error, no value
+17:16:06 OK   [1] unit: no I(x) in the record -> harness_error
+17:16:06 OK   [1] unit: guards not exact -> not certified (listed, never a value accepted)
+17:16:06 OK   [1] x0: exit summary from the real record: status not_certified (cap 2 reached), read at the terminal cycle 2
+17:16:06 OK   [1] x0: F = I(x) + recourse(2) exactly, = the cost breakdown total_planning_cost_eur
+17:16:06 OK   [1] x0: recourse = gross - TV on every cycle (exact)
+17:16:06 OK   [1] x0: bar_F = the record's net-recourse step (I constant), rel 1e-12; <= the triangle bound bar_gross + range(TV)
+17:16:06 OK   [1] x0: settled mapping of a record without the pricing capture -> harness_error naming the file
+17:16:06 OK   [1] x0: exit code 1 -> harness_error, no value
+17:16:06 OK   [1] x0: record status error -> harness_error, no value
+17:16:06 OK   [1] x0: no per-cycle file -> harness_error, no value
+17:16:06 OK   [1] x0: no exit_code.txt -> harness_error, no value
+17:16:06 OK   [1] x0: no I(x) in the record -> harness_error
+17:16:06 OK   [1] x0: guards not exact -> not certified (listed, never a value accepted)
+17:16:06 OK   [2] settled summary complete on the fixture (real smoke files + synthetic pricing, W = 2 for a 2-cycle record)
+17:16:06 OK   [2] PR = the independent hand computation (rel 1e-12)
+17:16:06 OK   [2] A = the independent hand computation (rel 1e-12)
+17:16:06 OK   [2] G = the independent hand computation (rel 1e-12)
+17:16:06 OK   [2] PR sign: Q - price + dual (Expert ruling 3): PR = -price + dual
+17:16:06 OK   [2] S = range of F over the last W cycles (rel 1e-12)
+17:16:06 OK   [2] all settled conditions hold on the fixture -> status settled
+17:16:06 OK   [2] settled condition: a cycle without the production certification test -> not_settled, the failed condition named
+17:16:06 OK   [2] settled condition: a cycle not at tail depth -> not_settled, the failed condition named
+17:16:06 OK   [2] a record that stopped before its cap K (2 cycles of K = 3) -> harness_error: F(K) and S do not exist (reached_K False recorded)
+17:16:06 OK   [2] a blocked solve -> not_settled (guards) and gates_pass False
+17:16:06 OK   [2] gates on the fixture: dP 0.01 MW <= 12.5 kW; ESSO slack 2e-6 <= 1e-5; closure 3e-6 p.u. <= 1e-5; D1
+17:16:06 OK   [2] gate boundary: dP = 12.5 kW exactly passes
+17:16:06 OK   [2] gate boundary: dP = 12.6 kW fails
+17:16:06 OK   [2] gate boundary: ESSO slack 2e-5 fails
+17:16:06 OK   [2] gate boundary: closure 2e-5 p.u. fails
+17:16:06 OK   [2] gate boundary: unequal efficiencies across active cohorts fail D1
+17:16:06 OK   [2] leak 25.01 EUR > 25: flagged, NOT in gates_pass (reported)
+17:16:06 OK   [2] a closure row without its dual -> harness_error (incomplete G), never a silent 0
+17:16:06 OK   [2] a non-zero settlement deviation part (not one scenario) -> harness_error (the price derivation fails)
+17:16:06 OK   [2] identity_tolerance: the 1e-6 EUR floor on small totals; 64 u sum|s| on large ones
+17:16:06 OK   [2] settlement fixture sanity: production-order and list-order sums differ, beyond the old 1e-9 x max(1, |T|) form and within the identity tolerance
+17:16:06 OK   [2] cancelling blocks summed in another order than production reconcile with the record (not harness_error)
+17:16:06 OK   [2] settlement identity: record offset 2 x tolerance -> blocks_reconcile_with_record False -> harness_error
+17:16:06 OK   [2] settlement identity: contracted offset 2 x tolerance -> contracted_equals_total False -> harness_error
+17:16:06 OK   [2] settlement identity floor 1e-6 EUR on the small fixture: record offset 9e-07 -> reconcile True
+17:16:06 OK   [2] settlement identity floor 1e-6 EUR on the small fixture: record offset 1.1e-06 -> reconcile False
+17:16:06 OK   [2] pilot records (7, real): record interface_settlement_total == production-order sum of the captured blocks bitwise (and the contracted total likewise) -- summation order, not reduced precision
+17:16:06 OK   [2] pilot records (7, real): list-order sum reconciles under the identity tolerance on all 7; the old 1e-9 form failed on all 7
+17:16:06 OK   [2] the policy's confirm() consumes two mapped settled summaries (shape check)
+17:16:08 OK   [3] driver composition == freeze_campaign_spec on S56 staged entries (3 points x 2 depths x caps 2/3/300/500); each entry records the keyed cap
+17:16:08 OK   [3] every (cap, depth, point) has a distinct key (24 keys)
+17:16:08 OK   [3] settled runs at different K have different keys
+17:16:08 OK   [3] the smoke entries recomposed under the new rule at their own cap 2 differ from their recorded keys (the recorded keys predate the cap rule)
+17:16:08 OK   [3] no 2x EV exit / settled key of x0 or the unit at caps 3 / 300 / 500 is a key of the committed smoke spec (the alias is gone)
+17:16:15 OK   [3] the freeze-time collision scan of the 2x EV configuration (74,084 keys) now finds no committed artefact (it named the smoke spec before the cap rule)
+17:16:15 OK   [3] pricing key True refused: no S56 EV-plan key
+17:16:15 OK   [3] pricing key True refused: per-scenario coupling
+17:16:15 OK   [3] pricing key True refused: non-bool
+17:16:15 OK   [3] pricing key True: keyed (a distinct eval key), recorded in the entry; False: recorded, not keyed
+17:16:15 OK   [3] record fields of the pricing key empty when absent
+17:16:15 OK   [4] harness vs acc80a2e: insertions only (328 added, 0 deleted)
+17:16:16 OK   [4] committed specs: candidate keys of every entry reproduce (313 spec files, 7306 entries)
+17:16:16 OK   [4] entries WITHOUT an S56 EV-plan key: full eval key post == pre on every entry
+17:16:16 OK   [4] entries WITHOUT an S56 EV-plan key: post == recorded wherever pre == recorded (same set of historic non-reproducing shapes)
+17:16:16 OK   [4] entries WITH S56 EV-plan keys: every one changes under the cap rule (by design; listed with whether the pre harness reproduces its recorded key)
+17:16:16 OK   [4] freeze_campaign_spec pre == post byte-identical (volatile fields excluded): srp1_plain
+17:16:16 OK   [4] freeze_campaign_spec pre == post byte-identical (volatile fields excluded): srp1_pinned_aa
+17:16:16 OK   [4] freeze_campaign_spec pre == post byte-identical (volatile fields excluded): sp_derived_coupled_calib
+17:16:16 OK   [4] freeze_campaign_spec pre == post byte-identical (volatile fields excluded): sp_derived_plain
+17:16:17 OK   [4] build_evaluation_record pre == post on committed records
+17:16:17 OK   [4] the child record helpers add nothing when the keys are absent
+17:16:17 OK   [5] memory rule: 64 - 16 = 48 GiB available >= 5 x 3 GiB passes; 64 - 50 = 14 < 15 refuses; 15 == 15 passes
+17:16:17 OK   [5] memory rule: an undeclared per-slot figure refuses
+17:16:17 OK   [5] memory rule: a vm_stat without the compressor line refuses
+17:16:17 OK   [5] ruling 1: the mapping parameters are FINAL (provisional empty; tau_cl 1e-5 p.u., ESSO slack gate 1e-5)
+17:16:17 OK   [5] real-launch preflight refuses a provisional mapping (one declared provisional), and names it
+17:16:17 OK   [5] real-launch preflight refuses without NLP_SOLVER_PATH = /usr/local/bin/ipopt (final mapping)
+17:16:17 OK   [5] real-launch preflight never created the launch dir
+17:16:17 OK   [5] real search freeze refused: provisional mapping
+17:16:17 OK   [5] real search freeze refused: no memory_per_slot_gib
+17:16:17 OK   [5] real oracle refused when the settled depth does not declare the pricing capture (mapping capture-path assertion, before any run)
+17:16:17 OK   [5] mapping capture-path assertion passes on the integration harness with the EV configuration
+17:16:17 OK   [5] real pilot freeze refused: no predictions
+17:16:17 OK   [5] real pilot freeze refused: predictions without PP8
+17:16:17 OK   [5] real pilot freeze refused: memory_per_slot_gib 3.0 (ruling 7: 4.0)
+17:16:17 OK   [5] real pilot freeze refused: initialisations other than the ruled
+17:16:17 OK   [5] real pilot spec (in memory, not frozen): rulings 2, 3, 7 -- s_share 500, rho0_scale 1.0 / 0.5 / 2.0 FINAL, the ruled staged plan, 4.0 GiB per slot, mapping final, pilot capture-path checklist all true
+17:16:17 OK   [5] pilot freeze refused: an unknown grid
+17:16:17 OK   [5] pilot freeze refused: a stub pilot not test-only
+17:16:18 OK   [6] cache index: the 3 fixture exit records of this configuration indexed at depth exit; the foreign-key fixture and the smoke copy (pre-cap-rule key) ignored with their reason
+17:16:18 OK   [6] load_cache maps every indexed record through the oracle mapping (exit F = the fixture F)
+17:16:18 OK   [6] best start = the certified pool member with the lowest exit F (plan_2030 here), runner-up margin and e reported
+17:16:18 OK   [6] best start refuses a pool member without a cached exit record (names it)
+17:16:18 OK   [6] a record changed after the freeze refuses the launch
+17:16:19 OK   [7] pilot freeze (stub, test-only, SRP1 grid): 7 entries, blocks of 5 + 2, distinct eval keys, every entry stop-disabled with the pricing capture at K_pilot 300
+17:16:19 OK   [7] x0 and the unit from three initialisations (rho0_scale 1.0 / 0.5 / 2.0, FINAL by ruling 3), one staged plan
+17:16:31 OK   [7] three attached pilot launches: block 1 (5) -> exit 4, block 2 (2) -> exit 0, then done -> exit 0
+17:16:31 OK   [7] launch records: the frozen blocks with their frozen eval keys, hash-chained, every child exit 0
+17:16:31 OK   [7] pilot evaluation with an s_share other than the frozen 500 refuses (ruling 2), writing nothing
+17:16:31 OK   [7] pilot evaluation (SYNTHETIC traces; s_share 500 read from the frozen spec) writes every output: K_EV, e_EV and its terms, 15 pairs, spreads, bars, t_exit, t_set, psi, per-run single offsets and the leak at the settled point
+17:16:31 OK   [7] e_EV re-derived from the reported pairs by the frozen rule
+17:16:31 OK   [7] K_EV satisfies its rule on the reported values (S <= s_share at K_EV, K_EV >= every c*)
+17:16:31 OK   [7] an unreachable s_share -> K_EV None with the failure named (a stop, not a value)
+17:16:31 OK   [7] a run without a would-be certification cycle -> failure named, no e_EV
+17:16:31 OK   [7] pilot freeze on the five-block grid (the grid is a parameter): 7 entries, keys distinct from the SRP1 grid
+17:16:31 OK   [7] --preflight-only on a stub pilot is refused (exit 2), nothing written
+17:16:32 OK   [7] --preflight-only on a test-only harness pilot: record written (pass or every refusal named), nothing launched, no launch dir, the pilot root unchanged, the lock released
+17:16:32 OK   [7] --preflight-only refuses an existing --out (write-once)
+17:16:32 OK   [8] count formula on a worked example: N_search 37, blocks 7, confirmation batches 6
+17:16:32 OK   [8] T = 1.18 (1.2 x 1.5 x 7 + 3.0 x 6) = 36.108 h
+17:16:32 OK   [8] the projection refuses an unmeasured t_exit (the pilot measures it)
+17:16:32 OK   [8] projection_from_state counts blocks and confirmation batches as the synthetic search issued them
+17:16:39 OK   [9] the 2x EV stub search freezes (its collision scan, refused before the cap rule, passes)
+17:17:04 OK   [9] the stub search terminates through attached launches and its final state == the in-process synthetic replay (the launch path after the integration edits)
+17:17:04 OK   [guards] SolveProfileGuard(permitted=()) verify(0) == [] in this parent
+17:17:04 OK   [guards] pickle load/loads 0
+17:17:04 119/119 checks ok; failed: []

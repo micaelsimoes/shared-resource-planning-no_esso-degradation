@@ -1,0 +1,1645 @@
+{
+ "all_checks_ok": true,
+ "checks": [
+  {
+   "check": "classify_settled boundaries (12 cases)",
+   "detail": {
+    "A sum = R/2 exactly -> improver": "improver",
+    "A sum > R/2 -> unresolved": "unresolved",
+    "V_pair = R/4 exactly -> improver": "improver",
+    "V_pair > R/4 -> unresolved": "unresolved",
+    "a gate fails -> unresolved": "unresolved",
+    "dF = +R exactly -> worse": "worse",
+    "dF = -R + 0.01 -> unresolved": "unresolved",
+    "dF = -R exactly -> improver": "improver",
+    "harness_error -> harness_error": "harness_error",
+    "missing V -> harness_error": "harness_error",
+    "not_settled -> not_settled": "not_settled",
+    "unknown status -> harness_error": "harness_error"
+   },
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "classify_settled refuses mixed depth and a non-usable incumbent",
+   "detail": [
+    [
+     "mixed depth",
+     true
+    ],
+    [
+     "incumbent not settled",
+     true
+    ],
+    [
+     "incumbent gate fails",
+     true
+    ]
+   ],
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "efficiency rule: 11/22 (= 1/2) -> exit_then_confirm; 12/22 -> settled_direct; uncertified rows stay in the denominator",
+   "detail": [
+    {
+     "band_eur": 17494.0,
+     "branch": "exit_then_confirm",
+     "fraction": [
+      1,
+      2
+     ],
+     "fraction_float": 0.5,
+     "n_in_band": 11,
+     "n_rows": 22,
+     "rule": "fraction of the screen and ladder rows that are certified with |F_exit(x) - F_exit(x0)| <= e_EV (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+     "threshold": [
+      1,
+      2
+     ]
+    },
+    {
+     "band_eur": 17494.0,
+     "branch": "settled_direct",
+     "fraction": [
+      6,
+      11
+     ],
+     "fraction_float": 0.5454545454545454,
+     "n_in_band": 12,
+     "n_rows": 22,
+     "rule": "fraction of the screen and ladder rows that are certified with |F_exit(x) - F_exit(x0)| <= e_EV (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+     "threshold": [
+      1,
+      2
+     ]
+    },
+    {
+     "band_eur": 17494.0,
+     "branch": "exit_then_confirm",
+     "fraction": [
+      1,
+      2
+     ],
+     "fraction_float": 0.5,
+     "n_in_band": 11,
+     "n_rows": 22,
+     "rule": "fraction of the screen and ladder rows that are certified with |F_exit(x) - F_exit(x0)| <= e_EV (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+     "threshold": [
+      1,
+      2
+     ]
+    }
+   ],
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "table row: |dF_exit| = e_EV in band, e_EV + 0.01 out; class by classify_exit with e = max(e_EV, bar sum)",
+   "detail": [
+    {
+     "F_exit": 800017494.0,
+     "bar": 1000.0,
+     "class": "unresolved",
+     "criterion": "-R + e < dF_exit < R + e",
+     "dF_exit": 17494.0,
+     "duration": "4h",
+     "e": 17494.0,
+     "in_efficiency_band": true,
+     "label": "n5_y2025_p0.25_e1",
+     "node": 5,
+     "reason": null,
+     "served_as": null,
+     "source": "screen",
+     "status": "certified",
+     "year": 2025,
+     "z": [
+      1,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "ze": 2,
+     "zp": 1
+    },
+    {
+     "F_exit": 800017494.01,
+     "bar": 1000.0,
+     "class": "unresolved",
+     "criterion": "-R + e < dF_exit < R + e",
+     "dF_exit": 17494.009999990463,
+     "duration": "4h",
+     "e": 17494.0,
+     "in_efficiency_band": false,
+     "label": "n5_y2025_p0.25_e1",
+     "node": 5,
+     "reason": null,
+     "served_as": null,
+     "source": "screen",
+     "status": "certified",
+     "year": 2025,
+     "z": [
+      1,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "ze": 2,
+     "zp": 1
+    }
+   ],
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "candidates: best, then the next distinct in node AND year (same node and same year passed over); only confirm-candidate rows; fewer logged",
+   "detail": [
+    {
+     "log": [],
+     "n_qualified": 4,
+     "passed_over": [
+      {
+       "label": "r1",
+       "reason": "shares a node or a year with a pick"
+      },
+      {
+       "label": "r2",
+       "reason": "shares a node or a year with a pick"
+      }
+     ],
+     "picked": [
+      "r0",
+      "r4"
+     ],
+     "qualified": [
+      "r0",
+      "r1",
+      "r2",
+      "r4"
+     ],
+     "rule": "rows classed confirm_candidate against x0, by (F_exit, label); greedily the best, then the next whose node AND year both differ from every pick"
+    },
+    {
+     "log": [
+      "1 of 2 candidates: 2 row(s) classed confirm_candidate"
+     ],
+     "n_qualified": 2,
+     "passed_over": [
+      {
+       "label": "r1",
+       "reason": "shares a node or a year with a pick"
+      }
+     ],
+     "picked": [
+      "r0"
+     ],
+     "qualified": [
+      "r0",
+      "r1"
+     ],
+     "rule": "rows classed confirm_candidate against x0, by (F_exit, label); greedily the best, then the next whose node AND year both differ from every pick"
+    }
+   ],
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "ladder: best duration 4 h; node-years (7, 2025), (9, 2030); 1.0 MVA x 4 MWh in 2025 skipped (budget); 3 plans",
+   "detail": {
+    "best_duration": "4h",
+    "log": [
+     "ladder point n7_y2025_p1_e4 skipped: ['budget: I(x) = 1271828.03 > B = 1e+06']"
+    ],
+    "node_years": [
+     [
+      7,
+      2025
+     ],
+     [
+      9,
+      2030
+     ]
+    ],
+    "plans": [
+     {
+      "label": "n7_y2025_p0.5_e2",
+      "node": 7,
+      "year": 2025,
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       2,
+       4,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      "ze": 4,
+      "zp": 2
+     },
+     {
+      "label": "n9_y2030_p0.5_e2",
+      "node": 9,
+      "year": 2030,
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       2,
+       4,
+       0,
+       0
+      ],
+      "ze": 4,
+      "zp": 2
+     },
+     {
+      "label": "n9_y2030_p1_e4",
+      "node": 9,
+      "year": 2030,
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       4,
+       8,
+       0,
+       0
+      ],
+      "ze": 8,
+      "zp": 4
+     }
+    ],
+    "rule": "best duration = duration of the certified screen plan with the lowest F_exit (ties by label); two best node-years = lowest F_exit among certified screen plans at that duration (ties by label); P in ladder_zp at that duration; a ladder point the lattice refuses is skipped",
+    "skipped": [
+     {
+      "label": "n7_y2025_p1_e4",
+      "node": 7,
+      "reasons": [
+       "budget: I(x) = 1271828.03 > B = 1e+06"
+      ],
+      "year": 2025,
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       4,
+       8,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      "ze": 8,
+      "zp": 4
+     }
+    ]
+   },
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "the comparison is not vacuous: the policy at 6b1d98b2 differs from the working-tree policy",
+   "detail": [
+    "a39919ed1620845c2ca2a5fbf1776b38aa3f578e95f30d14a1db30e467d7b71a",
+    "8fdae9f462f23ad86c74fadecb45ea60462227b9ca9068e01d50623c6ce32d9b"
+   ],
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "default search path (no poll_depth / poll_only): state and terminal report byte-identical to the policy at 6b1d98b2 (a39919ed1620) on 6 synthetic searches",
+   "detail": [
+    {
+     "budget": 48,
+     "moves": 5,
+     "rank": "resize",
+     "report_equal": true,
+     "start": "x0",
+     "state_equal": true
+    },
+    {
+     "budget": 48,
+     "moves": 5,
+     "rank": "remove",
+     "report_equal": true,
+     "start": "x0",
+     "state_equal": true
+    },
+    {
+     "budget": 31,
+     "moves": 0,
+     "rank": "resize",
+     "report_equal": true,
+     "start": "reference_unit",
+     "state_equal": true
+    },
+    {
+     "budget": 31,
+     "moves": 0,
+     "rank": "remove",
+     "report_equal": true,
+     "start": "reference_unit",
+     "state_equal": true
+    },
+    {
+     "budget": 14,
+     "moves": 0,
+     "rank": "resize",
+     "report_equal": true,
+     "start": "plan_2030",
+     "state_equal": true
+    },
+    {
+     "budget": 14,
+     "moves": 0,
+     "rank": "remove",
+     "report_equal": true,
+     "start": "plan_2030",
+     "state_equal": true
+    }
+   ],
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "the landscape comparison is not vacuous: the driver at 6b1d98b2 differs from the working tree",
+   "detail": null,
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "the plain synthetic landscape (no knobs) byte-identical to 6b1d98b2's on 382 plans x 2 depths",
+   "detail": null,
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "phase capture-path checklist (rule eleven) holds on the committed harness",
+   "detail": {
+    "best start in the phase state (Q3)": true,
+    "efficiency record in the phase state (Q6)": true,
+    "harness_error from the mapping (Q2)": true,
+    "launch wall in the phase launch record (Q4, ceiling)": true,
+    "local_solve_failures in the record (Q2)": true,
+    "mapping capture paths (F_exit, bar, settled F, V, gates; Q1, Q3)": true,
+    "peak_rss in the record (Q5)": true,
+    "per-cycle trajectory by default (stage template)": true,
+    "termination in the phase state (Q4)": true
+   },
+   "ok": true,
+   "test": "T1"
+  },
+  {
+   "check": "whole phase (exit-then-confirm) through the launch CLI: freeze 0, codes 4...4, 0",
+   "detail": {
+    "codes_tail": [
+     4,
+     4,
+     0
+    ],
+    "n": 31
+   },
+   "ok": true,
+   "test": "T2"
+  },
+  {
+   "check": "final state == results state == the in-process phase (byte-equal)",
+   "detail": null,
+   "ok": true,
+   "test": "T2"
+  },
+  {
+   "check": "every launch is one block of <= 5 evaluations at one depth; stages run in order",
+   "detail": [
+    "screen",
+    "ladder",
+    "candidate_confirmation",
+    "candidate_polls",
+    "search"
+   ],
+   "ok": true,
+   "test": "T2"
+  },
+  {
+   "check": "the phase ran every stage: 18 screen rows + ladder rows in the table, efficiency branch exit_then_confirm, 2 candidates distinct in node and year, both polled completely, best start from the pool, a search with >= 1 move ending complete_poll_no_accepted_candidate",
+   "detail": {
+    "cands": [
+     "n5_y2030_p0.25_e1",
+     "n9_y2035_p0.25_e1"
+    ],
+    "efficiency": {
+     "band_eur": 17494.04935669899,
+     "branch": "exit_then_confirm",
+     "fraction": [
+      1,
+      22
+     ],
+     "fraction_float": 0.045454545454545456,
+     "n_in_band": 1,
+     "n_rows": 22,
+     "rule": "fraction of the screen and ladder rows that are certified with |F_exit(x) - F_exit(x0)| <= e_EV (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+     "threshold": [
+      1,
+      2
+     ]
+    },
+    "pool": "pilot_staged",
+    "search": {
+     "budget_used": 65,
+     "detail": null,
+     "reason": "complete_poll_no_accepted_candidate"
+    },
+    "stages": [
+     "screen",
+     "ladder",
+     "candidate_confirmation",
+     "candidate_polls",
+     "search"
+    ]
+   },
+   "ok": true,
+   "test": "T2"
+  },
+  {
+   "check": "count identities hold in the candidate polls and the search",
+   "detail": null,
+   "ok": true,
+   "test": "T2"
+  },
+  {
+   "check": "the cached pool members (x0, unit, staged: the pilot records in the real phase) are never requested; the unit's screen row is served from the cache",
+   "detail": null,
+   "ok": true,
+   "test": "T2"
+  },
+  {
+   "check": "hours: cumulative = sum of the launch records' accounted walls; every launch passed the ceiling check before it ran",
+   "detail": [
+    60.84382214797618,
+    60.84382214797618
+   ],
+   "ok": true,
+   "test": "T2"
+  },
+  {
+   "check": "settled-direct branch: exit 0; final state byte-equal to in process",
+   "detail": [
+    4,
+    4,
+    0
+   ],
+   "ok": true,
+   "test": "T3"
+  },
+  {
+   "check": "every launch is one block of <= 5 evaluations at one depth; stages run in order",
+   "detail": [
+    "screen",
+    "ladder",
+    "candidate_confirmation",
+    "candidate_polls",
+    "search"
+   ],
+   "ok": true,
+   "test": "T3"
+  },
+  {
+   "check": "efficiency fraction > 1/2 -> settled_direct; every candidate-poll and search evaluation at settled depth; polls classified on settled values; the search moved; count identities hold",
+   "detail": {
+    "efficiency": {
+     "band_eur": 17494.04935669899,
+     "branch": "settled_direct",
+     "fraction": [
+      13,
+      22
+     ],
+     "fraction_float": 0.5909090909090909,
+     "n_in_band": 13,
+     "n_rows": 22,
+     "rule": "fraction of the screen and ladder rows that are certified with |F_exit(x) - F_exit(x0)| <= e_EV (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+     "threshold": [
+      1,
+      2
+     ]
+    },
+    "moves": 2,
+    "search": {
+     "budget_used": 75,
+     "detail": null,
+     "reason": "complete_poll_no_accepted_candidate"
+    }
+   },
+   "ok": true,
+   "test": "T3"
+  },
+  {
+   "check": "the ceiling stops with exit 6 before the first block that would cross it; nothing launched; the record's arithmetic (cumulative = sum of launch walls; projected = max(frozen, measured same depth)); a re-issue stops again (6), no new launch",
+   "detail": {
+    "check": {
+     "ceiling_h": 12.0,
+     "cumulative_h": 9.582194311274126,
+     "cumulative_plus_projected_h": 12.675767534157304,
+     "frozen_projection_h": 3.0935732228831774,
+     "max_measured_same_depth_h": null,
+     "next_block_depth": "settled",
+     "projected_next_block_h": 3.0935732228831774,
+     "rule": "before each block: cumulative measured hours (completed launch walls + interrupted launch walls) + projected wall of the next block (max(frozen projection at its depth, largest measured wall of a completed launch at that depth)) <= ceiling_h; otherwise exit 6 with an hours summary",
+     "stop": true
+    },
+    "cum": 9.582194311274126,
+    "proj": 3.0935732228831774,
+    "rc": 6,
+    "rc2": 6
+   },
+   "ok": true,
+   "test": "T4"
+  },
+  {
+   "check": "harness_error_screen: exit 5, termination harness_error at stage screen; results written; byte-equal to in process",
+   "detail": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "labels": [
+       "n5_y2025_p0.25_e1"
+      ],
+      "stage": "screen"
+     },
+     "reason": "harness_error",
+     "stage": "screen"
+    }
+   },
+   "ok": true,
+   "test": "T5"
+  },
+  {
+   "check": "offset_candidate_confirmation: exit 5, termination stop_for_review_offset at stage candidate_confirmation; results written; byte-equal to in process",
+   "detail": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "candidate": "n5_y2030_p0.25_e1",
+      "failed": [
+       "held-out check: offset 60255.2313131094 > e 43409.25643962409"
+      ]
+     },
+     "reason": "stop_for_review_offset",
+     "stage": "candidate_confirmation"
+    }
+   },
+   "ok": true,
+   "test": "T5"
+  },
+  {
+   "check": "offset_search_confirmation: exit 5, termination stop_for_review_offset at stage search; results written; byte-equal to in process",
+   "detail": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "search": {
+       "budget_used": 11,
+       "detail": {
+        "failed": [
+         "held-out check: offset 58824.09675145149 > e 36224.60132637269"
+        ],
+        "pos": 6,
+        "z": [
+         0,
+         0,
+         2,
+         2,
+         0,
+         0,
+         1,
+         2,
+         1,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         1,
+         2
+        ]
+       },
+       "reason": "stop_for_review_offset"
+      }
+     },
+     "reason": "stop_for_review_offset",
+     "stage": "search"
+    }
+   },
+   "ok": true,
+   "test": "T5"
+  },
+  {
+   "check": "not_settled_trigger: exit 5, termination stop_for_review_not_settled at stage candidate_polls; results written; byte-equal to in process",
+   "detail": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "review": {
+     "consecutive_not_settled": 3,
+     "n_confirmations": 3,
+     "n_not_settled": 3,
+     "pos": 2,
+     "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+     "rule_consecutive": true,
+     "rule_share": false,
+     "stop": true,
+     "z": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      4
+     ]
+    },
+    "termination": {
+     "detail": {
+      "candidate": "n9_y2035_p0.5_e2",
+      "sub": {
+       "budget_used": 5,
+       "detail": {
+        "consecutive_not_settled": 3,
+        "n_confirmations": 3,
+        "n_not_settled": 3,
+        "pos": 2,
+        "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+        "rule_consecutive": true,
+        "rule_share": false,
+        "stop": true,
+        "z": [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         3,
+         4
+        ]
+       },
+       "reason": "stop_for_review_not_settled"
+      }
+     },
+     "reason": "stop_for_review_not_settled",
+     "stage": "candidate_polls"
+    }
+   },
+   "ok": true,
+   "test": "T5"
+  },
+  {
+   "check": "start_not_certified: exit 5, termination start_incumbent_not_certified at stage screen; results written; byte-equal to in process",
+   "detail": {
+    "codes_tail": [
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "status": "not_certified",
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     "reason": "start_incumbent_not_certified",
+     "stage": "screen"
+    }
+   },
+   "ok": true,
+   "test": "T5"
+  },
+  {
+   "check": "kill at after_lock (launch 1, stage screen) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over",
+   "detail": {
+    "evaluated": 123,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed": true,
+    "killed_evaluations": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_lock",
+     1
+    ]
+   },
+   "ok": true,
+   "test": "T6"
+  },
+  {
+   "check": "kill at after_launch_dir (launch 2, stage screen) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over",
+   "detail": {
+    "evaluated": 123,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed": true,
+    "killed_evaluations": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_launch_dir",
+     2
+    ]
+   },
+   "ok": true,
+   "test": "T6"
+  },
+  {
+   "check": "kill at during_evaluate (launch 5, stage ladder) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over",
+   "detail": {
+    "evaluated": 123,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed": true,
+    "killed_evaluations": 3,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "during_evaluate",
+     5,
+     0.0
+    ]
+   },
+   "ok": true,
+   "test": "T6"
+  },
+  {
+   "check": "kill at after_evaluate (launch 6, stage candidate_confirmation) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over",
+   "detail": {
+    "evaluated": 123,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed": true,
+    "killed_evaluations": 2,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_evaluate",
+     6
+    ]
+   },
+   "ok": true,
+   "test": "T6"
+  },
+  {
+   "check": "kill at after_launch_record (launch 7, stage candidate_polls) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over",
+   "detail": {
+    "evaluated": 123,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed": true,
+    "killed_evaluations": 5,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_launch_record",
+     7
+    ]
+   },
+   "ok": true,
+   "test": "T6"
+  },
+  {
+   "check": "kill at after_manifest (launch 15, stage search) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over",
+   "detail": {
+    "evaluated": 123,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed": true,
+    "killed_evaluations": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_manifest",
+     15
+    ]
+   },
+   "ok": true,
+   "test": "T6"
+  },
+  {
+   "check": "kill at after_state_view (launch 17, stage search) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over",
+   "detail": {
+    "evaluated": 123,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed": true,
+    "killed_evaluations": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_state_view",
+     17
+    ]
+   },
+   "ok": true,
+   "test": "T6"
+  },
+  {
+   "check": "kill at after_results (launch 31, stage search) + resume: phase state and results byte-equal to the uninterrupted run; killed evaluations uncounted; stale lock taken over",
+   "detail": {
+    "evaluated": 123,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed": true,
+    "killed_evaluations": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_results",
+     31
+    ]
+   },
+   "ok": true,
+   "test": "T6"
+  },
+  {
+   "check": "the author's command (exact text, scratch --lock-path): prints every exit code, 4...4 then 0, stops; one stdout/stderr log pair per invocation (empty stderr); final state byte-equal to in process",
+   "detail": {
+    "exits": [
+     4,
+     4,
+     0
+    ],
+    "n": 31,
+    "stderr": ""
+   },
+   "ok": true,
+   "test": "T7"
+  },
+  {
+   "check": "the command re-issued on the finished phase: one invocation, exit 0, the next log number",
+   "detail": [
+    "2026-11-24T18:45:32Z launch 032 exit 0"
+   ],
+   "ok": true,
+   "test": "T7"
+  },
+  {
+   "check": "stub children (harness evaluate, stub mode): freeze (collision scan clean) and the whole phase, exit 0; final state byte-equal to the in-process synthetic phase",
+   "detail": {
+    "codes_tail": [
+     4,
+     4,
+     0
+    ],
+    "rc": 0,
+    "rc0": 0
+   },
+   "ok": true,
+   "test": "T8"
+  },
+  {
+   "check": "each stub launch froze one harness spec whose keys recompute (replay verified every launch)",
+   "detail": null,
+   "ok": true,
+   "test": "T8"
+  },
+  {
+   "check": "refused (exit 2): real freeze without predictions; synthetic phase not test-only; --preflight-only on a synthetic phase",
+   "detail": [
+    2,
+    2,
+    2
+   ],
+   "ok": true,
+   "test": "T9"
+  },
+  {
+   "check": "a tampered evaluation record: the replay refuses (exit 2), nothing written; restored -> proceeds (4); re-freezing an existing root refused (write-once)",
+   "detail": [
+    2,
+    4,
+    2,
+    "p515_s56_synthetic_record_v1"
+   ],
+   "ok": true,
+   "test": "T9"
+  },
+  {
+   "check": "SolveProfileGuard(permitted=()) verify(0) == []",
+   "detail": [],
+   "ok": true,
+   "test": "guards"
+  },
+  {
+   "check": "pickle load/loads 0",
+   "detail": {
+    "load": 0,
+    "loads": 0
+   },
+   "ok": true,
+   "test": "guards"
+  }
+ ],
+ "code_files": {
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+  "p515_s44_campaign_harness.py": "05a9838c46f19837398af31252bd85c465a3794aa03e9cfc1a7a30c08c462b29",
+  "p515_s56_neighbourhood.py": "bd95342d2da2b0ecf2d99b9ef3b8a396e3637e18a050f8ce0117ec2ec9590cc0",
+  "p515_s56_phase_tests.py": "1db33c85460ca2a1369f2878e5e1841dd20ece18d2be071840e2cff7473cf09e",
+  "p515_s56_search_driver.py": "6e1670e5a2abc56b83c05235726cd0606d5c8aaca7a07f6e48c87e64bfa20351",
+  "p515_s56_search_policy.py": "8fdae9f462f23ad86c74fadecb45ea60462227b9ca9068e01d50623c6ce32d9b",
+  "p516_lattice.py": "ff5d63ef897ccd04e5bbaa719b352537108180a31b83c1b8574506612af86e88"
+ },
+ "code_files_dirty_vs_head": "",
+ "failed_checks": [],
+ "finished_utc": "2026-11-24T18:48:59.718599+00:00",
+ "git_head": "bd3a053492cea1084c65644414a1eef3e9dd054d",
+ "guards": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "pickle": {
+   "load": 0,
+   "loads": 0
+  },
+  "verify_0": []
+ },
+ "instance": {
+  "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+  "lattice": {
+   "block_widths": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "budget_eur": 1000000.0,
+   "cost_energy": {
+    "0": {
+     "2025": 212132.83090957787,
+     "2030": 167114.2595388713,
+     "2035": 152464.16443904658
+    },
+    "1": {
+     "2025": 264982.3635447595,
+     "2030": 222115.86276729195,
+     "2035": 204988.41411333327
+    },
+    "2": {
+     "2025": 338908.86670623126,
+     "2030": 275450.090999905,
+     "2035": 266020.3907359085
+    }
+   },
+   "cost_power": {
+    "0": {
+     "2025": 214171.32910223768,
+     "2030": 168720.15012439265,
+     "2035": 153929.27440020515
+    },
+    "1": {
+     "2025": 267528.7212530719,
+     "2030": 224250.2932694956,
+     "2035": 206958.25777164166
+    },
+    "2": {
+     "2025": 342165.6238488894,
+     "2030": 278097.0387178216,
+     "2035": 268576.723404457
+    }
+   },
+   "discount_factor": 0.02,
+   "max_capacity_mwh": 5.0,
+   "max_energy_to_power_ratio": 4.0,
+   "min_energy_to_power_ratio": 2.0,
+   "nodes": [
+    5,
+    7,
+    9
+   ],
+   "prob_market": [
+    0.35,
+    0.55,
+    0.1
+   ],
+   "sources": {
+    "case": {
+     "path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+     "sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+    },
+    "cost_file": {
+     "cells": "Scenarios!B1 = number of market scenarios, Scenarios!C1.. = omega_m; 'Investment Cost, Power'/'Investment Cost, Energy' row 1 (from column B) = years, row 1 + m = scenario m (EUR/MVA, EUR/MWh, undiscounted)",
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/SharedESS/SRP1_ESS.xlsx",
+     "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+     "sheets": {
+      "energy": "Investment Cost, Energy",
+      "power": "Investment Cost, Power",
+      "scenarios": "Scenarios"
+     }
+    },
+    "note": "omega_m is read from the workbook Scenarios sheet, as production does; it is independent of the case file NumMarketScenarios",
+    "num_market_scenarios_case_file": 3,
+    "params_file": {
+     "fields": "budget, max_capacity, min_energy_to_power_factor, max_energy_to_power_factor, ageing.calendar_life_years",
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/SharedESS/SRP1_ESS_Params.json",
+     "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+    }
+   },
+   "t_cal_years": 15.0,
+   "years": [
+    2025,
+    2030,
+    2035
+   ]
+  }
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "python": "3.11.11",
+ "results": {
+  "T1": {
+   "default_path_identity": [
+    {
+     "budget": 48,
+     "moves": 5,
+     "rank": "resize",
+     "report_equal": true,
+     "start": "x0",
+     "state_equal": true
+    },
+    {
+     "budget": 48,
+     "moves": 5,
+     "rank": "remove",
+     "report_equal": true,
+     "start": "x0",
+     "state_equal": true
+    },
+    {
+     "budget": 31,
+     "moves": 0,
+     "rank": "resize",
+     "report_equal": true,
+     "start": "reference_unit",
+     "state_equal": true
+    },
+    {
+     "budget": 31,
+     "moves": 0,
+     "rank": "remove",
+     "report_equal": true,
+     "start": "reference_unit",
+     "state_equal": true
+    },
+    {
+     "budget": 14,
+     "moves": 0,
+     "rank": "resize",
+     "report_equal": true,
+     "start": "plan_2030",
+     "state_equal": true
+    },
+    {
+     "budget": 14,
+     "moves": 0,
+     "rank": "remove",
+     "report_equal": true,
+     "start": "plan_2030",
+     "state_equal": true
+    }
+   ],
+   "head_policy_sha256": "a39919ed1620845c2ca2a5fbf1776b38aa3f578e95f30d14a1db30e467d7b71a"
+  },
+  "T2": {
+   "codes": 31,
+   "evaluations": {
+    "candidate_confirmation|settled": 2,
+    "candidate_polls|exit": 35,
+    "ladder|exit": 4,
+    "screen|exit": 17,
+    "search|exit": 61,
+    "search|settled": 4
+   },
+   "n_launches": 31,
+   "reference_state_sha256": "d29e599c69bf896de0fdd6fd7206d159e0391f177852028a05c5ddbfb726ea9c",
+   "root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_tests_v2/t2/exit_move",
+   "stages": [
+    "screen",
+    "ladder",
+    "candidate_confirmation",
+    "candidate_polls",
+    "search"
+   ],
+   "wall_s": 10.094023704528809
+  },
+  "T3": {
+   "efficiency": {
+    "band_eur": 17494.04935669899,
+    "branch": "settled_direct",
+    "fraction": [
+     13,
+     22
+    ],
+    "fraction_float": 0.5909090909090909,
+    "n_in_band": 13,
+    "n_rows": 22,
+    "rule": "fraction of the screen and ladder rows that are certified with |F_exit(x) - F_exit(x0)| <= e_EV (denominator: every screen and ladder row, uncertified ones included); > 1/2 -> every later poll evaluation runs directly to K_EV (settled_direct), else exit_then_confirm",
+    "threshold": [
+     1,
+     2
+    ]
+   },
+   "evaluations": {
+    "candidate_confirmation|settled": 2,
+    "candidate_polls|settled": 44,
+    "ladder|exit": 4,
+    "screen|exit": 17,
+    "search|settled": 75
+   },
+   "n_launches": 31,
+   "root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_tests_v2/t3/direct"
+  },
+  "T4": {
+   "ceiling_check": {
+    "ceiling_h": 12.0,
+    "cumulative_h": 9.582194311274126,
+    "cumulative_plus_projected_h": 12.675767534157304,
+    "frozen_projection_h": 3.0935732228831774,
+    "max_measured_same_depth_h": null,
+    "next_block_depth": "settled",
+    "projected_next_block_h": 3.0935732228831774,
+    "rule": "before each block: cumulative measured hours (completed launch walls + interrupted launch walls) + projected wall of the next block (max(frozen projection at its depth, largest measured wall of a completed launch at that depth)) <= ceiling_h; otherwise exit 6 with an hours summary",
+    "stop": true
+   },
+   "n_launches": 5,
+   "root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_tests_v2/t4/ceiling"
+  },
+  "T5": {
+   "harness_error_screen": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "labels": [
+       "n5_y2025_p0.25_e1"
+      ],
+      "stage": "screen"
+     },
+     "reason": "harness_error",
+     "stage": "screen"
+    }
+   },
+   "not_settled_trigger": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "review": {
+     "consecutive_not_settled": 3,
+     "n_confirmations": 3,
+     "n_not_settled": 3,
+     "pos": 2,
+     "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+     "rule_consecutive": true,
+     "rule_share": false,
+     "stop": true,
+     "z": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      4
+     ]
+    },
+    "termination": {
+     "detail": {
+      "candidate": "n9_y2035_p0.5_e2",
+      "sub": {
+       "budget_used": 5,
+       "detail": {
+        "consecutive_not_settled": 3,
+        "n_confirmations": 3,
+        "n_not_settled": 3,
+        "pos": 2,
+        "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+        "rule_consecutive": true,
+        "rule_share": false,
+        "stop": true,
+        "z": [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         3,
+         4
+        ]
+       },
+       "reason": "stop_for_review_not_settled"
+      }
+     },
+     "reason": "stop_for_review_not_settled",
+     "stage": "candidate_polls"
+    }
+   },
+   "offset_candidate_confirmation": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "candidate": "n5_y2030_p0.25_e1",
+      "failed": [
+       "held-out check: offset 60255.2313131094 > e 43409.25643962409"
+      ]
+     },
+     "reason": "stop_for_review_offset",
+     "stage": "candidate_confirmation"
+    }
+   },
+   "offset_search_confirmation": {
+    "codes_tail": [
+     4,
+     4,
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "search": {
+       "budget_used": 11,
+       "detail": {
+        "failed": [
+         "held-out check: offset 58824.09675145149 > e 36224.60132637269"
+        ],
+        "pos": 6,
+        "z": [
+         0,
+         0,
+         2,
+         2,
+         0,
+         0,
+         1,
+         2,
+         1,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         1,
+         2
+        ]
+       },
+       "reason": "stop_for_review_offset"
+      }
+     },
+     "reason": "stop_for_review_offset",
+     "stage": "search"
+    }
+   },
+   "start_not_certified": {
+    "codes_tail": [
+     5
+    ],
+    "rc": 5,
+    "termination": {
+     "detail": {
+      "status": "not_certified",
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     "reason": "start_incumbent_not_certified",
+     "stage": "screen"
+    }
+   }
+  },
+  "T6": {
+   "targets": [
+    {
+     "evaluated": 123,
+     "exit": 0,
+     "interrupted_records": 0,
+     "killed": true,
+     "killed_evaluations": 0,
+     "same_history": true,
+     "stale_lock_taken_over": true,
+     "target": [
+      "after_lock",
+      1
+     ]
+    },
+    {
+     "evaluated": 123,
+     "exit": 0,
+     "interrupted_records": 1,
+     "killed": true,
+     "killed_evaluations": 0,
+     "same_history": true,
+     "stale_lock_taken_over": true,
+     "target": [
+      "after_launch_dir",
+      2
+     ]
+    },
+    {
+     "evaluated": 123,
+     "exit": 0,
+     "interrupted_records": 1,
+     "killed": true,
+     "killed_evaluations": 3,
+     "same_history": true,
+     "stale_lock_taken_over": true,
+     "target": [
+      "during_evaluate",
+      5,
+      0.0
+     ]
+    },
+    {
+     "evaluated": 123,
+     "exit": 0,
+     "interrupted_records": 1,
+     "killed": true,
+     "killed_evaluations": 2,
+     "same_history": true,
+     "stale_lock_taken_over": true,
+     "target": [
+      "after_evaluate",
+      6
+     ]
+    },
+    {
+     "evaluated": 123,
+     "exit": 0,
+     "interrupted_records": 1,
+     "killed": true,
+     "killed_evaluations": 5,
+     "same_history": true,
+     "stale_lock_taken_over": true,
+     "target": [
+      "after_launch_record",
+      7
+     ]
+    },
+    {
+     "evaluated": 123,
+     "exit": 0,
+     "interrupted_records": 0,
+     "killed": true,
+     "killed_evaluations": 0,
+     "same_history": true,
+     "stale_lock_taken_over": true,
+     "target": [
+      "after_manifest",
+      15
+     ]
+    },
+    {
+     "evaluated": 123,
+     "exit": 0,
+     "interrupted_records": 0,
+     "killed": true,
+     "killed_evaluations": 0,
+     "same_history": true,
+     "stale_lock_taken_over": true,
+     "target": [
+      "after_state_view",
+      17
+     ]
+    },
+    {
+     "evaluated": 123,
+     "exit": 0,
+     "interrupted_records": 1,
+     "killed": true,
+     "killed_evaluations": 0,
+     "same_history": true,
+     "stale_lock_taken_over": true,
+     "target": [
+      "after_results",
+      31
+     ]
+    }
+   ]
+  },
+  "T7": {
+   "command_template": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && caffeinate -i zsh -c 'R=data/SRP1/Results/P515S56/phase2x_tests_v2/t7/author_loop; i=1; while [ -e \"$R/launch_$(printf %03d $i)_stdout.log\" ]; do i=$((i+1)); done; while true; do n=$(printf %03d $i); NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s56_search_driver.py --phase-run --root \"$R\" --take-over-stale-lock --lock-path /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_tests_v2/t7/lock > \"$R/launch_${n}_stdout.log\" 2> \"$R/launch_${n}_stderr.log\"; rc=$?; echo \"$(date -u +%Y-%m-%dT%H:%M:%SZ) launch $n exit $rc\"; if [ $rc -ne 4 ]; then echo \"loop stopped: exit $rc (0 complete, 5 review, 6 ceiling, other fault)\"; break; fi; i=$((i+1)); done'",
+   "n_invocations": 31
+  },
+  "T8": {
+   "n_launches": 31,
+   "root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/phase2x_tests_v2/t8/stub",
+   "wall_s": 197.89990615844727
+  },
+  "T9": {
+   "codes": [
+    2,
+    2,
+    2,
+    2,
+    4,
+    2
+   ]
+  }
+ },
+ "schema": "p515_s56_phase_tests_v1",
+ "script": "p515_s56_phase_tests.py",
+ "solve_claim": "ZERO SOLVES, guard-verified (SolveProfileGuard(permitted=()) installed before any repository import, verify(0)); pickle blocked (0); every driver subprocess arms its own guard and exits non-zero on a failed verify",
+ "started_utc": "2026-11-24T18:43:25.908830+00:00",
+ "tests": [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9"
+ ],
+ "values_note": "every objective value here is SYNTHETIC (landscape or stub children)",
+ "wall_s": 333.8096263408661
+}

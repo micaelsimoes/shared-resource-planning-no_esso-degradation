@@ -18,6 +18,10 @@ class NetworkParameters:
         self.branch_limit_type = BRANCH_LIMIT_CURRENT
         self.ess_model = ESS_MODEL_EXACT
         self.shared_ess_model = ESS_MODEL_EXACT
+        # P5.15 Addendum 83 ruling 3 (iv) (W183c): no reverse flow at the interface (TSO pc_adn >= 0, DSO
+        # pg_adn >= 0, per scenario; `shared_resources_planning.INTERFACE_NO_REVERSE_FLOW_ROW`). Default off; set only
+        # by the params-file key 'no_reverse_flow' (a JSON boolean) or by a declared evaluation option.
+        self.no_reverse_flow = False
         self.slacks = Slacks()
         self.print_to_screen = False
         self.plot_diagram = False
@@ -65,12 +69,22 @@ class SlacksOperation:
 class SlacksFlexibility:
 
     def __init__(self):
-        self.day_balance = False
+        # P5.15-1b (PLANNER_BRIEF_2026-09-13.md, Step 2 Candidate 4): the
+        # flexibility day-balance band `pe.inequality(-SMALL_TOLERANCE,
+        # p_up - p_down, SMALL_TOLERANCE)` is replaced production-wide by the
+        # already-implemented slacked-equality branch in
+        # `flex_energy_balance_p_rule`. This is pinned True in code -- not
+        # read from the case-parameter file (see `read_slacks_parameters`
+        # below) -- because the committed case files under `data/` set
+        # `"flexibility": {"day_balance": false}` and may not be edited.
+        self.day_balance = True
 
     def read_slacks_parameters(self, slacks_data):
-        if 'flexibility' in slacks_data:
-            if 'day_balance' in slacks_data['flexibility']:
-                self.day_balance = slacks_data['flexibility']['day_balance']
+        # Candidate 4 pins `day_balance = True` above, unconditionally. The
+        # case-file value is intentionally NOT read for this field so that
+        # existing `"day_balance": false` entries do not reintroduce the
+        # two-sided band this reformulation retires.
+        pass
 
 
 class SlacksEnergyStorage:
@@ -165,6 +179,12 @@ def _read_network_parameters_from_file(parameters, filename):
         else:
             print('[ERROR] Invalid SharedESS model. Exiting...')
             exit(ERROR_PARAMS_FILE)
+
+    if 'no_reverse_flow' in params_data:  # W183c (Addendum 83 ruling 3 iv): absent -> the default (off)
+        if not isinstance(params_data['no_reverse_flow'], bool):
+            print('[ERROR] Invalid no_reverse_flow (must be true or false). Exiting...')
+            exit(ERROR_PARAMS_FILE)
+        parameters.no_reverse_flow = params_data['no_reverse_flow']
 
     if 'slacks' in params_data:
         parameters.slacks.read_slacks_parameters(params_data['slacks'])

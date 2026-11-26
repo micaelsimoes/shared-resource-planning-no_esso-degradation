@@ -1,0 +1,555 @@
+{
+ "schema": "p515_s44_evaluation_record_v2",
+ "campaign_id": "s56cpl_gf_smoke_r2",
+ "campaign_spec_path": "data/SRP1/Results/P515S56/coupling_option_v1/campaign_s56cpl_gf_smoke_r2/campaign_spec_s56cpl_gf_smoke_r2_a802797e.json",
+ "campaign_spec_sha256": "a802797e0319bd7aa24734cb13985d0df44b6fba1d4f6962d5f7fb4c8e2f7e6b",
+ "candidate_label": "x0",
+ "candidate_canonical": {
+  "investment_year": 2025,
+  "nodes": {
+   "5": [
+    0.0,
+    0.0
+   ],
+   "7": [
+    0.0,
+    0.0
+   ],
+   "9": [
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+ "status": "error",
+ "barrier": true,
+ "barrier_cause": "RuntimeError: S38 PF entry-capture identity FAILED at cycle 1: reconstructed r=27.59582098706081 (production boyd_pf_r=27.78019072685824, rel_err=0.006636734125053284); reconstructed s=9.487103872871836 (production boyd_pf_s=9.507527672498906, rel_err=0.0021481714627185986)",
+ "traceback": "Traceback (most recent call last):\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 6369, in main_child\n    outcome = _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started,\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 6127, in _child_real\n    report, report_path = G.run_admm_arm(\n                          ^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_g_g1_g4_admm_gates.py\", line 1283, in run_admm_arm\n    _c, _results, models, _s, _p, state = planning.run_operational_planning(\n                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/shared_resources_planning.py\", line 94, in run_operational_planning\n    convergence, results, models, sensitivities, primal_evolution, execution_time, state = _run_operational_planning(self, candidate_solution, initial_state=initial_state, debug_flag=debug_flag)\n                                                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/shared_resources_planning.py\", line 3261, in _run_operational_planning\n    boyd_metrics = get_admm_boyd_residual_metrics(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 4631, in w_boyd\n    result = originals['get_admm_boyd_residual_metrics'](planning_problem, tso_model, dso_models, esso_model,\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_g_g1_g4_admm_gates.py\", line 5375, in wrapper3\n    raise RuntimeError(\nRuntimeError: S38 PF entry-capture identity FAILED at cycle 1: reconstructed r=27.59582098706081 (production boyd_pf_r=27.78019072685824, rel_err=0.006636734125053284); reconstructed s=9.487103872871836 (production boyd_pf_s=9.507527672498906, rel_err=0.0021481714627185986)\n",
+ "wall_time_s": {
+  "child_process_s": 708.3125219345093
+ },
+ "anderson_acceleration_effective_in_child": {
+  "enabled": true,
+  "memory": 5,
+  "regularization": 1e-10,
+  "reject_policy": "keep_memory"
+ },
+ "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+ "convergence_depth_tail_checklist_asserted_before_run": {
+  "checks": {
+   "production_default_tail_off": true,
+   "production_tail_helper_present": true,
+   "production_both_returns_carry_the_records": true,
+   "production_both_returns_carry_the_tail_state": true,
+   "production_records_drained_at_initialisation": true,
+   "production_records_drained_every_cycle": true,
+   "network_attempt_appends_a_record_after_the_solve": true,
+   "run_admm_arm_post_run_hook_gets_state": true
+  },
+  "declared": {
+   "enabled": true,
+   "compl_inf_tol": 1e-06
+  },
+  "tail_enabled_for_this_run": true,
+  "compl_inf_tol_tail": 1e-06,
+  "source": "campaign spec configuration.convergence_depth_tail",
+  "production_default": {
+   "enabled": false,
+   "compl_inf_tol": 1e-06
+  },
+  "persisted_files": [
+   "network_ipopt_solve_records.jsonl",
+   "convergence_depth_tail_state.json"
+  ]
+ },
+ "convergence_depth_failure_drain": {
+  "status": "drained",
+  "round_in_flight": 1,
+  "n_records": 48,
+  "reason": "RuntimeError: S38 PF entry-capture identity FAILED at cycle 1: reconstructed r=27.59582098706081 (production boyd_pf_r=27.78019072685824, rel_err=0.006636734125053284); reconstructed s=9.487103872871836 (production boyd_pf_s=9.507527672498906, rel_err=0.0021481714627185986)",
+  "write_errors_during_run": []
+ },
+ "convergence_depth_per_round_append_recovered": {
+  "records_append_path": "data/SRP1/Results/P515S56/coupling_option_v1/campaign_s56cpl_gf_smoke_r2/evals/972942a49f415577_x0/network_ipopt_solve_records_append.jsonl",
+  "records_append_sha256": "f5a783e3188e1e52b9998ddc09b1e2eabc7334ae030804442f31ca05679c3e05",
+  "n_records": 96,
+  "n_unparsable_record_lines": 0,
+  "records_per_round": {
+   "0": 48,
+   "1": 48
+  },
+  "rounds_drained": [
+   0
+  ],
+  "round_drained_at_failure": 1,
+  "floor_status_tally": {
+   "DSO|at": 72,
+   "TSO|above": 8,
+   "TSO|at": 16
+  },
+  "events_path": "data/SRP1/Results/P515S56/coupling_option_v1/campaign_s56cpl_gf_smoke_r2/evals/972942a49f415577_x0/convergence_depth_append_events.jsonl",
+  "n_events": 5,
+  "n_unparsable_event_lines": 0,
+  "sealed": false,
+  "tail_checklist_from_child": {
+   "checks": {
+    "production_default_tail_off": true,
+    "production_tail_helper_present": true,
+    "production_both_returns_carry_the_records": true,
+    "production_both_returns_carry_the_tail_state": true,
+    "production_records_drained_at_initialisation": true,
+    "production_records_drained_every_cycle": true,
+    "network_attempt_appends_a_record_after_the_solve": true,
+    "run_admm_arm_post_run_hook_gets_state": true
+   },
+   "declared": {
+    "enabled": true,
+    "compl_inf_tol": 1e-06
+   },
+   "tail_enabled_for_this_run": true,
+   "compl_inf_tol_tail": 1e-06,
+   "source": "campaign spec configuration.convergence_depth_tail",
+   "production_default": {
+    "enabled": false,
+    "compl_inf_tol": 1e-06
+   },
+   "persisted_files": [
+    "network_ipopt_solve_records.jsonl",
+    "convergence_depth_tail_state.json"
+   ]
+  },
+  "tail_state_rebuilt": {
+   "enabled": true,
+   "compl_inf_tol_tail": 1e-06,
+   "option": "compl_inf_tol",
+   "baseline": {
+    "TSO": {
+     "network": "case9",
+     "options_is_none": false,
+     "has_key": true,
+     "value": 0.0005
+    },
+    "DSO5": {
+     "network": "case33_1",
+     "options_is_none": false,
+     "has_key": false,
+     "value": null
+    },
+    "DSO7": {
+     "network": "case33_2",
+     "options_is_none": false,
+     "has_key": false,
+     "value": null
+    },
+    "DSO9": {
+     "network": "case33_3",
+     "options_is_none": false,
+     "has_key": false,
+     "value": null
+    }
+   },
+   "per_cycle": [
+    {
+     "cycle": 1,
+     "active": false,
+     "acted": false,
+     "holders": {
+      "TSO": {
+       "network": "case9",
+       "before": 0.0005,
+       "after": 0.0005,
+       "wrote": false
+      },
+      "DSO5": {
+       "network": "case33_1",
+       "before": null,
+       "after": null,
+       "wrote": false
+      },
+      "DSO7": {
+       "network": "case33_2",
+       "before": null,
+       "after": null,
+       "wrote": false
+      },
+      "DSO9": {
+       "network": "case33_3",
+       "before": null,
+       "after": null,
+       "wrote": false
+      }
+     }
+    }
+   ],
+   "restore_at_exit": null
+  }
+ },
+ "ess_ageing_baseline": {
+  "calendar_life_years": 15,
+  "calendar_retention_per_year": 0.985,
+  "calibration": {
+   "cycles_n": 10000,
+   "eol_retention_r": 0.8,
+   "reference_dod_d": 0.8,
+   "status": "ACTIVE"
+  },
+  "cycle_life_nominal": 10000,
+  "depth_of_discharge_nominal": 0.8,
+  "minimum_soh": 0.7
+ },
+ "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+ "ess_params_sha256_in_child": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+ "ess_ageing_verified_pre_run": {
+  "declared": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7,
+   "calibration": {
+    "status": "ACTIVE",
+    "cycles_n": 10000,
+    "reference_dod_d": 0.8,
+    "eol_retention_r": 0.8
+   }
+  },
+  "loaded": {
+   "calendar_life_years": 15,
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "status": "ACTIVE",
+    "cycles_n": 10000,
+    "reference_dod_d": 0.8,
+    "eol_retention_r": 0.8
+   }
+  },
+  "file_used_by_production": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+  "file_sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+  "pin": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "k_production": 35851.3609417964,
+  "per_ess": [
+   {
+    "year": "2025",
+    "bus": 5,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2025",
+    "bus": 7,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2025",
+    "bus": 9,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2030",
+    "bus": 5,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2030",
+    "bus": 7,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2030",
+    "bus": 9,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2035",
+    "bus": 5,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2035",
+    "bus": 7,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2035",
+    "bus": 9,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   }
+  ],
+  "checks": {
+   "pin_path_is_ess_params_file": true,
+   "file_used_by_production_is_pinned_file": true,
+   "file_sha256_equals_pin": true,
+   "loaded_equals_declaration_types_included": true,
+   "every_ess_soh_min_is_declared": true,
+   "every_ess_phi_cal_is_declared": true,
+   "every_ess_cl_eff_is_production_k": true
+  },
+  "readback_pre_run": {
+   "expected": {
+    "k": 35851.3609417964,
+    "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.8)",
+    "phi_cal_in_model": 0.985,
+    "floor_row_lower": 0.7,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true,
+    "d_row_form": "D * 2kE == 365 n avg"
+   },
+   "per_node": {
+    "5": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8277224476758176
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    },
+    "7": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8277224476758176
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    },
+    "9": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8277224476758176
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    }
+   },
+   "all_match": true,
+   "method": "numerical read-back from the built rows (model_variant_readback) against the declaration's closed forms; on probe models"
+  },
+  "floor_rows_identical_to_precheck": true
+ },
+ "derived_instance": {
+  "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+  "changes_vs_source": [
+   {
+    "from": 1,
+    "key": "NumMarketScenarios",
+    "to": 3
+   },
+   {
+    "from": 1,
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "to": 3
+   },
+   {
+    "from": 1,
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "to": 3
+   },
+   {
+    "from": 1,
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "to": 3
+   },
+   {
+    "from": 1,
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "to": 3
+   }
+  ],
+  "instance_label": "s56_srp1grid_3x3",
+  "scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+  "source_case_path": "data/SRP1/SRP1.json",
+  "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+ },
+ "interface_deviation_premium": {
+  "alpha": 0.5,
+  "floor": null
+ },
+ "derived_instance_installed_in_child": {
+  "case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "case_sha256_in_child": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+  "scenario_checksum_in_child": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7",
+  "instance_label": "s56_srp1grid_3x3",
+  "checksum_matches_srp1_canonical": false,
+  "planning_dimensions": {
+   "years": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "days": {
+    "Spring": 92,
+    "Summer": 91,
+    "Autumn": 91,
+    "Winter": 91
+   },
+   "num_instants": 24,
+   "random_seed": 2026,
+   "num_market_scenarios": 3,
+   "num_operation_scenarios": {
+    "case9": 3,
+    "case33_1": 3,
+    "case33_2": 3,
+    "case33_3": 3
+   },
+   "active_distribution_network_nodes": [
+    5,
+    7,
+    9
+   ],
+   "scenario_metadata": {
+    "random_seed": 2026,
+    "deterministic_scenarios": true,
+    "market_scenario_checksum": "cd0313b883fb0ca855ff283189b46f57349ff30d2781af5d4edc0ad1940fca28",
+    "operational_scenario_checksum": "e1c36b76d3660ae32f307f47a88d91afc6d3322faa72696ade763c2046736c72",
+    "combined_scenario_checksum": "73d0a230a0d53d24d214e13774206844acce824dfbb84bb2d07e16f8ed6333f7"
+   }
+  },
+  "expected_block_counts": {
+   "tso_blocks": 12,
+   "dso_blocks": 36,
+   "network_blocks": 48,
+   "esso_models": 3,
+   "solves_per_cycle": 51
+  },
+  "planning_read_dir": "data/SRP1/Results/P515S56/coupling_option_v1/campaign_s56cpl_gf_smoke_r2/evals/972942a49f415577_x0/planning_read",
+  "read_wall_s": 11.302142858505249,
+  "reader": "p515_s44_scale_measurement.read_planning_from_derived_case (production SharedResourcesPlanning)"
+ },
+ "interface_deviation_premium_applied_in_child": {
+  "declared": {
+   "alpha": 0.5,
+   "floor": null
+  },
+  "before": {
+   "alpha": 0.0,
+   "floor": null,
+   "source": "default"
+  },
+  "after": {
+   "alpha": 0.5,
+   "floor": null,
+   "source": "campaign spec entry interface_deviation_premium (p515_s44_campaign_harness, W47)"
+  },
+  "took_effect": true
+ },
+ "interface_dual_capture_checklist_asserted_before_run": {
+  "boyd_metrics_call_once_in_run_source": true,
+  "boyd_metrics_call_inside_the_cycle_loop": true,
+  "boyd_metrics_call_before_the_aa_step": true,
+  "boyd_metrics_signature": true,
+  "dual_leaf_is_p_q_period_lists": true,
+  "dual_update_scaled_by_rating_and_s_base": true,
+  "wrapped_names_exist": true,
+  "writer_is_gate_result_io": true
+ },
+ "interface_dual_capture": {
+  "schema": "interface_dual_capture_v1",
+  "file": "interface_duals_per_cycle.jsonl",
+  "boyd_calls_captured": 1,
+  "cycle_lines_written": 1,
+  "header_written": true,
+  "n_blocks": 36,
+  "n_periods": 24,
+  "bytes_written": 87749,
+  "bytes_per_cycle_line_max": 75350,
+  "errors": [],
+  "ok": true
+ }
+}

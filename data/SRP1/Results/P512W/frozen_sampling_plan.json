@@ -1,0 +1,79 @@
+{
+  "stage": "P5.12-W breadth probe",
+  "frozen_utc": "2026-09-12",
+  "authorship": "Planner-executed (Worker session terminated by external API spend limit in P5.12-G)",
+  "perturbation": {"parameter": "warm_start_bound_push", "baseline": 1e-05, "LOW": 1e-06, "HIGH": 0.0001},
+  "known_positive_control": {
+    "fixture_id": "TARGET_cycle21",
+    "identity": "DSO:case33_3|2025|Spring, cycle 21",
+    "evidence": "P5.12-P / Arm A",
+    "baseline": "maxIterations, 3000 iters",
+    "LOW": "Optimal, 89 iters",
+    "HIGH": "Optimal, 151 iters",
+    "rerun": false,
+    "counted_in_breadth_statistics": false
+  },
+  "new_fixtures": [
+    {
+      "fixture_id": "TARGET_cycle20",
+      "identity": "DSO:case33_3|2025|Spring, cycle 20",
+      "selection_rationale_baseline_only": "Same block one cycle earlier; explicitly requested successful control; only fixture with a complete prepared capture, embedded network/params, preserved effective options, preserved baseline NL hash and preserved baseline log/result. Selected on baseline information only.",
+      "difficulty_stratum": "successful, moderate difficulty (115 IPOPT iterations)",
+      "frozen_artifact_pre_setup": "data/SRP1/Results/P512R/cycle20_pre_setup/snapshot.pkl",
+      "frozen_artifact_prepared": "data/SRP1/Results/P512R/cycle20_prepared/snapshot.pkl",
+      "pre_setup_semantic_digest": "393ce242f1665ecb9d1738024476282c1c5d6f43876e0bf363858ad5f813be5c",
+      "prepared_semantic_digest": "58e2a063837cabdc75208ea0188882e88202f598cfdcb3746b08af665186c8e4",
+      "prepared_nl_sha256": "fbe9e6e846f6b5b51febdc26ab345315e150d0033979a818a8a909806817dbda",
+      "baseline_outcome": "Optimal Solution Found.",
+      "baseline_iterations": 115,
+      "baseline_objective_unscaled": 1348.4251823032162,
+      "baseline_dual_infeasibility": 0.0011323057973496387,
+      "baseline_constraint_violation": 7.214950263900732e-07,
+      "baseline_complementarity": 4.541381094227932e-05,
+      "baseline_log": "data/SRP1/Results/P512R/cycle20_target.log",
+      "baseline_result_pkl": "data/SRP1/Results/P512R/cycle20_target_result.pkl",
+      "baseline_rerun_required": false
+    }
+  ],
+  "execution_order": ["TARGET_cycle20/LOW", "TARGET_cycle20/HIGH"],
+  "planned_new_solves": 2,
+  "isolation": "one fresh Python process per solve; fixture reloaded independently from the frozen artifact; no state carry-over",
+  "replayable_but_not_selected_within_budget": [
+    {
+      "fixture_id": "FROZEN_DSO_node7_case33_2_2025_Autumn_cycle7",
+      "artifact": "data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+      "has": "complete pre-solve model, RESCALED objective active, full suffixes (zL_in 7481, zU_in 7310, dual 7829), from_warm_start=True, captured_outcome=optimal",
+      "missing": "network object, params object, baseline NL hash, baseline iteration count in payload",
+      "reason_not_selected": "requires deterministic reconstruction of network/params from fresh_planning plus a BASELINE verification solve (3 solves) to exclude reconstruction artifacts; exceeds the declared 2-solve-per-fixture budget"
+    },
+    {
+      "fixture_id": "FROZEN_TSO_case9_2025_Summer_cycle7",
+      "artifact": "data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+      "has": "complete pre-solve model, RESCALED objective active, full suffixes (zL_in 2142, zU_in 1824, dual 3528), from_warm_start=True, captured_outcome=optimal",
+      "missing": "network object, params object, baseline NL hash, baseline iteration count in payload",
+      "reason_not_selected": "same as above"
+    }
+  ],
+  "not_scientifically_replayable": [
+    {
+      "candidates": "the other 45 network blocks and all other cycles of the cold RESCALED trajectory",
+      "reason": "no pre-solve model state was preserved; only appended per-block IPOPT logs exist (51 files under data/SRP1/Results/P512R/evals/cold/logs/). Replay would require re-deriving fixtures by re-running ADMM coordination updates, which this stage forbids."
+    },
+    {
+      "candidates": "cycle20_checkpoint 51 block models",
+      "reason": "post-solve end-of-cycle-20 states, not pre-solve fixtures; using them as cycle-21 fixtures would require applying production coordination updates (trajectory reconstruction) and would still need a baseline verification solve"
+    },
+    {
+      "candidates": "P511 p511_selfconsistent_t0.pkl, P57 t0_state.pkl",
+      "reason": "whole-trajectory template states, not single-block prepared solver fixtures with a preserved per-block baseline outcome"
+    }
+  ],
+  "predeclared_thresholds": {
+    "validity": "termination_condition optimal vs non-optimal; any change is an OUTCOME FLIP",
+    "objective_equivalence": "relative |d_obj|/max(1,|obj_base|) <= 1e-6 => equivalent; > 1e-3 => materially different; between => report descriptively, no categorical claim",
+    "primal_solution_equivalence": "max_i |x_i - x_base_i| / max(1,|x_base_i|) over the 9166 IPOPT optimization columns; <= 1e-6 equivalent; > 1e-3 materially different; between => descriptive",
+    "branch_regime": "declared only if BOTH primal scaled distance > 1e-3 AND relative objective difference > 1e-3; a moderate state difference alone is NOT a branch flip",
+    "path_only": "material path change if |d_iterations|/base_iterations > 0.5, OR restoration entries appear/disappear, OR safeguard (z) count changes between zero and nonzero",
+    "rationale": "objective/primal thresholds are far tighter than IPOPT tol (1e-5 scaled) and than the project numerical threshold tau_numerical=10 on the planning objective; path threshold chosen as a coarse 50% iteration-count change, declared before any variant result was inspected"
+  }
+}

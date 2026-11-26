@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s53_w111_benchmark_spec_v2.py", line 653, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s53_w111_benchmark_spec_v2.py", line 646, in main
+    return freeze_spec() if args.freeze_spec else run_checks()
+           ^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s53_w111_benchmark_spec_v2.py", line 296, in freeze_spec
+    v2 = build_spec_v2(v1)
+         ^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s53_w111_benchmark_spec_v2.py", line 249, in build_spec_v2
+    raise RuntimeError(f'current code does not rebuild v1 for keys {mismatched}; refusing to freeze')
+RuntimeError: current code does not rebuild v1 for keys ['instance', 'tie_breaker']; refusing to freeze

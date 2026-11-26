@@ -1,0 +1,80 @@
+{
+ "block": [
+  "x0_i1",
+  "unit_i1",
+  "staged_i1",
+  "x0_i2",
+  "unit_i2"
+ ],
+ "launch_index": 1,
+ "lock": {
+  "campaign_id": "s56pilot_ev_v1_l001",
+  "campaign_spec_sha256": "46044c15f1b1c22ef2ae3b0b00d6d605c62c1d3f283481b8895b853fd72dd5a6",
+  "pid": 57056,
+  "search_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/pilot_ev_v1",
+  "started_utc": "2026-11-24T09:32:55.273056+00:00"
+ },
+ "pilot_spec_sha256": "925472791ffd817746dec8556f3cc84b31d0b10ef21b7914a92bf3b11c6f83d1",
+ "previous_launch_manifest_sha256": null,
+ "real_launch_preflight": {
+  "harness_preconditions": [],
+  "memory": {
+   "available_gib": 21.822891235351562,
+   "concurrency": 5,
+   "hw_memsize_gib": 32.0,
+   "page_size": 16384,
+   "pages": {
+    "Anonymous pages": 440322,
+    "Pages occupied by compressor": 72140,
+    "Pages wired down": 154505
+   },
+   "pass": true,
+   "per_slot_gib": 4.0,
+   "required_gib": 20.0,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x the declared per-slot GiB (the rule of p515_s55_e1_launcher.memory_preflight, ~958-979, with the per-slot figure declared in the search / pilot spec instead of the S47 constant)",
+   "utc": "2026-11-24T09:32:55.405541+00:00"
+  },
+  "note": "the campaign lock is held by this driver (O_EXCL) when this runs; the lock-file check of check_campaign_preconditions is pointed at an absent path for that reason",
+  "refusals": [],
+  "utc": "2026-11-24T09:32:55.405567+00:00"
+ },
+ "records": [
+  {
+   "eval_dir": "launches/launch_001/evals/142a02890a1d630f_x0_i1",
+   "eval_key": "142a02890a1d630f97785b9356621b3d99e7260bb9d5baa8e18c841683621382",
+   "exit_code": "0",
+   "label": "x0_i1",
+   "record_sha256": "d135656e548a1a2c7f9dcab972df480421611541e475e014c0d8d5db32dcea6b"
+  },
+  {
+   "eval_dir": "launches/launch_001/evals/fe40736832cfbdba_unit_i1",
+   "eval_key": "fe40736832cfbdbaa15dc7eb4f69135b185c1829f494b082e125b73f860b1625",
+   "exit_code": "0",
+   "label": "unit_i1",
+   "record_sha256": "6627f0e1440898c3f38813be09f295bb912494976632ee8e9e7deb88244f906a"
+  },
+  {
+   "eval_dir": "launches/launch_001/evals/dddc5b8382a39c0a_staged_i1",
+   "eval_key": "dddc5b8382a39c0a70a53254f3d5b520d623c7a7bd4f3bd61bc58842bce49ee0",
+   "exit_code": "0",
+   "label": "staged_i1",
+   "record_sha256": "544371edbf70ddb82a3937ff7201f2356b9ffc6b5252c6c189b9de279bbe7ac2"
+  },
+  {
+   "eval_dir": "launches/launch_001/evals/830a6306e0c27969_x0_i2",
+   "eval_key": "830a6306e0c279698ee196d51294dcbf439ef3154777d16999f28324920c0831",
+   "exit_code": "0",
+   "label": "x0_i2",
+   "record_sha256": "7ca8d64ebda56e3b97a3735603a2b92c6a734da95f1b7ce1d34418a67463a708"
+  },
+  {
+   "eval_dir": "launches/launch_001/evals/6b05f4c326441274_unit_i2",
+   "eval_key": "6b05f4c326441274ec09e9659fb909b1ffb61aa04892fca715261f5227e80d6b",
+   "exit_code": "0",
+   "label": "unit_i2",
+   "record_sha256": "3bba2ab0fa0435e47b28cd34b50f27b07729bf373747a6cb8eb138b62565431f"
+  }
+ ],
+ "schema": "p515_s56_pilot_launch_v1",
+ "wall_s": 9456.206846952438
+}

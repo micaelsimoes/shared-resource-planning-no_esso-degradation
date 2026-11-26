@@ -1,0 +1,338 @@
+{
+ "stage": "P5",
+ "timestamp_utc": "2026-09-06T14:52:56.566178+00:00",
+ "git_head": "f77d829359ffd873367f556882546bc2dcc8ec99",
+ "git_tracked_dirty": [],
+ "command": "SharedResourcesPlanning('data/SRP1', 'SRP1.json').run_planning_problem()",
+ "log_path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P5/p5_console.log",
+ "effective_config": {
+  "years": [
+   "2025",
+   "2030",
+   "2035"
+  ],
+  "days": [
+   "Spring",
+   "Summer",
+   "Autumn",
+   "Winter"
+  ],
+  "num_instants": 24,
+  "random_seed": 2026,
+  "transmission_network": "case9",
+  "distribution_networks": [
+   "5",
+   "7",
+   "9"
+  ]
+ },
+ "outcome": {
+  "completed": true,
+  "exception": null,
+  "system_exit_code": null
+ },
+ "wall_clock_s": 637.4526040554047,
+ "planning": {
+  "outer_iterations": [
+   {
+    "iteration": 1,
+    "candidate_source": "master_solution",
+    "master_estimate": "-1000000000.00",
+    "alpha": "-1000000000.00",
+    "investment_cost": "0.00",
+    "gross_recourse": "848451891.26",
+    "salvage": "-0.00",
+    "net_recourse": "848451891.26",
+    "candidate_total": "848451891.26",
+    "upper_bound": "848451891.26",
+    "gap": "217.86%",
+    "esso_violation": "-0.000031"
+   },
+   {
+    "iteration": 2,
+    "candidate_source": "positive_bootstrap",
+    "master_estimate": "N/A",
+    "alpha": "N/A",
+    "investment_cost": "50000.00",
+    "gross_recourse": "N/A",
+    "salvage": "N/A",
+    "net_recourse": "N/A",
+    "candidate_total": "N/A",
+    "upper_bound": "848451891.26",
+    "gap": "N/A",
+    "esso_violation": "N/A"
+   }
+  ],
+  "n_outer_iterations": 2,
+  "termination_reason": "operational_initialization_failure",
+  "benders_converged_at_iteration": null,
+  "production_execution_time_s": 562.26,
+  "admm_runs_converged": 1,
+  "admm_cycles_per_converged_run": [
+   9
+  ],
+  "admm_max_cycle_marker_seen": 9,
+  "recourse_stationarity": {
+   "ok_count": 1,
+   "failed": [
+    {
+     "change": "140577120.169142",
+     "tolerance": "961146.086928"
+    },
+    {
+     "change": "3943708.392882",
+     "tolerance": "965089.795321"
+    },
+    {
+     "change": "56269910.048742",
+     "tolerance": "965089.795321"
+    },
+    {
+     "change": "35260952.356604",
+     "tolerance": "908819.885272"
+    },
+    {
+     "change": "17274722.403425",
+     "tolerance": "873558.932916"
+    },
+    {
+     "change": "6142095.917606",
+     "tolerance": "856284.210512"
+    },
+    {
+     "change": "1019971.641460",
+     "tolerance": "850142.114595"
+    }
+   ],
+   "unavailable_count": 1
+  },
+  "admm_residual_checks": {
+   "primal_ok_count": 1,
+   "dual_ok_count": 4,
+   "primal_failures": [
+    {
+     "group": "[INFO]\t\t - interface Vmag",
+     "kind": "max",
+     "value": "0.055717",
+     "tolerance": "0.010000"
+    },
+    {
+     "group": "[INFO]\t\t - interface Vmag",
+     "kind": "mean",
+     "value": "0.042557",
+     "tolerance": "0.001000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "kind": "max",
+     "value": "0.391814",
+     "tolerance": "0.010000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "kind": "mean",
+     "value": "0.082449",
+     "tolerance": "0.001000"
+    },
+    {
+     "group": "[INFO]\t\t - interface Vmag",
+     "kind": "max",
+     "value": "0.033839",
+     "tolerance": "0.010000"
+    },
+    {
+     "group": "[INFO]\t\t - interface Vmag",
+     "kind": "mean",
+     "value": "0.023474",
+     "tolerance": "0.001000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "kind": "max",
+     "value": "0.182348",
+     "tolerance": "0.010000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "kind": "mean",
+     "value": "0.042877",
+     "tolerance": "0.001000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "kind": "max",
+     "value": "0.058907",
+     "tolerance": "0.010000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "kind": "mean",
+     "value": "0.018617",
+     "tolerance": "0.001000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "kind": "max",
+     "value": "0.031650",
+     "tolerance": "0.010000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "kind": "mean",
+     "value": "0.005552",
+     "tolerance": "0.001000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "kind": "max",
+     "value": "0.024459",
+     "tolerance": "0.010000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "kind": "mean",
+     "value": "0.002419",
+     "tolerance": "0.001000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "kind": "max",
+     "value": "0.025854",
+     "tolerance": "0.010000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "kind": "mean",
+     "value": "0.001642",
+     "tolerance": "0.001000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "kind": "max",
+     "value": "0.014560",
+     "tolerance": "0.010000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "kind": "mean",
+     "value": "0.001184",
+     "tolerance": "0.001000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "kind": "max",
+     "value": "0.010947",
+     "tolerance": "0.010000"
+    }
+   ],
+   "dual_failures": [
+    {
+     "group": "[INFO]\t\t - interface Vmag",
+     "value": "0.060291",
+     "tolerance": "0.010000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "value": "0.133274",
+     "tolerance": "0.010000"
+    },
+    {
+     "group": "[INFO]\t\t - interface Vmag",
+     "value": "0.015127",
+     "tolerance": "0.010000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "value": "0.077617",
+     "tolerance": "0.010000"
+    },
+    {
+     "group": "[INFO]\t\t - interface Vmag",
+     "value": "0.026866",
+     "tolerance": "0.010000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "value": "0.045777",
+     "tolerance": "0.010000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "value": "0.020157",
+     "tolerance": "0.010000"
+    },
+    {
+     "group": "[INFO]\t\t - interface PF",
+     "value": "0.012042",
+     "tolerance": "0.010000"
+    }
+   ]
+  },
+  "warning_histogram": {
+   "Network solver did not converge for case<num>_<num>, year=<num>, day=Winter: status=warning, termination=maxIterations, message=Ipopt <num>\\x<num>a Maximum Numb": 2,
+   "IPOPT solver log for case<num>_<num>, year=<num>, day=Winter: data/SRP<num>/Results/Logs/optim_log_case<num>_<num>_<num>_Winter.log": 2,
+   "Network solver did not converge for case<num>_<num>, year=<num>, day=Summer: status=warning, termination=maxIterations, message=Ipopt <num>\\x<num>a Maximum Numb": 1,
+   "IPOPT solver log for case<num>_<num>, year=<num>, day=Summer: data/SRP<num>/Results/Logs/optim_log_case<num>_<num>_<num>_Summer.log": 1,
+   "Operational initialization failed because at least one local problem did not solve successfully. ADMM will not be started.": 1,
+   "Operational initialization failed. No ADMM cycle or formal Benders feasibility cut is available; stopping the outer loop.": 1,
+   "Convergence not obtained!": 1
+  }
+ },
+ "local_solve_events": {
+  "n_primary_local_failures": 3,
+  "n_recovery_attempted": 0,
+  "n_recovery_succeeded": 0,
+  "n_recovery_failed_persistent": 0,
+  "n_failed_no_recovery_attempted_persistent": 3,
+  "n_persistent_for_cycle_total": 3,
+  "recovered_contexts": [],
+  "events": [
+   {
+    "context": "case33_1, year=2030, day=Winter",
+    "stage": "primary_failed_no_recovery_attempted",
+    "summary": "status=warning, termination=maxIterations, message=Ipopt 3.14.18\\x3a Maximum Number of Iterations Exceeded.",
+    "warm_start": "False"
+   },
+   {
+    "context": "case33_1, year=2035, day=Winter",
+    "stage": "primary_failed_no_recovery_attempted",
+    "summary": "status=warning, termination=maxIterations, message=Ipopt 3.14.18\\x3a Maximum Number of Iterations Exceeded.",
+    "warm_start": "False"
+   },
+   {
+    "context": "case33_3, year=2025, day=Summer",
+    "stage": "primary_failed_no_recovery_attempted",
+    "summary": "status=warning, termination=maxIterations, message=Ipopt 3.14.18\\x3a Maximum Number of Iterations Exceeded.",
+    "warm_start": "False"
+   }
+  ]
+ },
+ "failure_patterns": {
+  "by_context": {
+   "case33_1, year=2030, day=Winter": {
+    "count": 1,
+    "stages": {
+     "primary_failed_no_recovery_attempted": 1
+    }
+   },
+   "case33_1, year=2035, day=Winter": {
+    "count": 1,
+    "stages": {
+     "primary_failed_no_recovery_attempted": 1
+    }
+   },
+   "case33_3, year=2025, day=Summer": {
+    "count": 1,
+    "stages": {
+     "primary_failed_no_recovery_attempted": 1
+    }
+   }
+  },
+  "flagged_families": {
+   "case33_2_node7_family": 0,
+   "tso_case9_family": 0
+  }
+ },
+ "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+ "scenario_seed": "2026"
+}

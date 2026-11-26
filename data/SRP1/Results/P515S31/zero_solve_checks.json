@@ -1,0 +1,155 @@
+{
+ "stage": "P5.15 Step 3.1 (S31 worker task) Part 2 -- zero-solve verification",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 10",
+  "P5_15_S31_PENALTY_TABLE_DRAFT.md"
+ ],
+ "timestamp_utc": "2026-09-15T09:09:48.635768+00:00",
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "checks": {
+  "eval_id": "p515s31_zero_solve_check",
+  "tso_network": "case9",
+  "dso_network_node0": {
+   "node_id": 5,
+   "name": "case33_1"
+  },
+  "flexibility_cost_excludes_adn": {
+   "method": "identify_variables on the flexibility_cost(...) expression tree; assert no flex_p_down/flex_q_down VarData of an ADN-interface load (mch.load_is_tso_adn_interface) is among the identified variables, and that a non-ADN fl_reg load IS present (expression not trivially empty).",
+   "n_adn_loads": 3,
+   "n_adn_vars_checked": 144,
+   "adn_vars_absent_from_expression": true,
+   "n_non_adn_fl_reg_loads": 0,
+   "non_adn_present_in_expression": false,
+   "pass": true
+  },
+  "res_curtailment_weight_zero": {
+   "tso_penalty_gen_curtailment": 0.0,
+   "dso_penalty_gen_curtailment": 0.0,
+   "pass": true
+  },
+  "ess_usage_penalty_split": {
+   "tso_penalty_shared_ess_usage": 0.0,
+   "tso_penalty_ess_usage_local": 0.1,
+   "dso_penalty_shared_ess_usage": 0.0,
+   "dso_penalty_ess_usage_local": 0.1,
+   "expected_local": 0.1,
+   "pass": true
+  },
+  "no_bilinear_complementarity": {
+   "tso": {
+    "method": "generate_standard_repn(model.objective.expr, quadratic=True); repn.quadratic_vars inspected for any (pch, pdch) pair of the same storage unit (local or shared).",
+    "n_quadratic_terms_in_objective": 0,
+    "n_forbidden_pch_pdch_pairs_checked": 72,
+    "bilinear_complementarity_pairs_found": [],
+    "pass": true
+   },
+   "dso": {
+    "method": "generate_standard_repn(model.objective.expr, quadratic=True); repn.quadratic_vars inspected for any (pch, pdch) pair of the same storage unit (local or shared).",
+    "n_quadratic_terms_in_objective": 0,
+    "n_forbidden_pch_pdch_pairs_checked": 24,
+    "bilinear_complementarity_pairs_found": [],
+    "pass": true
+   }
+  },
+  "orphan_slacks": {
+   "tso": {
+    "variables_present": true,
+    "n_checked_q_pairs": 3,
+    "q_absent_from_objective": true,
+    "q_all_fixed_at_zero": true,
+    "n_checked_adn_p_pairs": 3,
+    "adn_p_absent_from_objective": true,
+    "adn_p_all_fixed_at_zero": true,
+    "n_checked_non_adn_p_pairs": 0,
+    "non_adn_p_present_in_objective_sanity": false,
+    "non_adn_p_not_fixed_sanity": false,
+    "pass": true
+   },
+   "dso": {
+    "variables_present": true,
+    "n_checked_q_pairs": 32,
+    "q_absent_from_objective": true,
+    "q_all_fixed_at_zero": true,
+    "n_checked_adn_p_pairs": 0,
+    "adn_p_absent_from_objective": true,
+    "adn_p_all_fixed_at_zero": true,
+    "n_checked_non_adn_p_pairs": 32,
+    "non_adn_p_present_in_objective_sanity": true,
+    "non_adn_p_not_fixed_sanity": true,
+    "pass": true
+   }
+  },
+  "shared_ess_day_balance_bound": {
+   "method": "configure_shared_ess_operational_state at three capacities (nonzero, zero/inactive, a different nonzero value), reading the Var bounds after each call.",
+   "probes": [
+    {
+     "s_capacity": 1.0,
+     "e_capacity": 2.0,
+     "up_lb": 0.0,
+     "up_ub": 0.10001,
+     "down_lb": 0.0,
+     "down_ub": 0.10001,
+     "expected_ub": 0.10001,
+     "matches": true
+    },
+    {
+     "s_capacity": 0.0,
+     "e_capacity": 0.0,
+     "up_lb": 0.0,
+     "up_ub": 0.0,
+     "down_lb": 0.0,
+     "down_ub": 0.0,
+     "expected_ub": 0.0,
+     "matches": true
+    },
+    {
+     "s_capacity": 1.62,
+     "e_capacity": 3.24,
+     "up_lb": 0.0,
+     "up_ub": 0.16201000000000004,
+     "down_lb": 0.0,
+     "down_ub": 0.16201000000000004,
+     "expected_ub": 0.16201000000000004,
+     "matches": true
+    }
+   ],
+   "pass": true
+  },
+  "get_feasibility_violation_reads_slacks": {
+   "method": "inspect.getsource static check (no PENALTY_ESSO_SLACK division, reads slack_es_pnet_up/down) PLUS a live zero-solve evaluation on freshly-built (unsolved, all slacks at their 0.0 initial value) ESSO subproblem models, compared with a manual direct sum.",
+   "static_source_check_pass": true,
+   "manual_sum": 0.0,
+   "reported_by_get_feasibility_violation": 0.0,
+   "live_match": true,
+   "pass": true
+  },
+  "es_reg_and_local_ess_device_count": {
+   "TSO:case9": {
+    "es_reg": true,
+    "n_local_energy_storages": 0
+   },
+   "DSO:5:case33_1": {
+    "es_reg": true,
+    "n_local_energy_storages": 0
+   },
+   "DSO:7:case33_2": {
+    "es_reg": true,
+    "n_local_energy_storages": 0
+   },
+   "DSO:9:case33_3": {
+    "es_reg": true,
+    "n_local_energy_storages": 0
+   }
+  }
+ },
+ "all_checks_pass": true
+}

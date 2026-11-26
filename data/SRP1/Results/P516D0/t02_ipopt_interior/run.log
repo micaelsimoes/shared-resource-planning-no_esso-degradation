@@ -1,0 +1,38 @@
+# p516_d0_ipopt_interior parent start 2026-10-31T18:05:38+0000 interpreter /opt/anaconda3/envs/opf_env_py311/bin/python
+[write] predictions.json
+[inputs] 12 files hash-checked against the T0.1b / T0.1c manifests: all match; reused p516_d0_t02 sources [('build_ipopt_model', '8a629019'), ('parse_ipopt_log', '682f5b6d')] match the pinned hashes
+[leaf] static check: leaf names ['_STATE', 'items', 'options', 'solve', 'time']; project modules referenced: none; gurobipy 13.0.1 Env started (reader only; optimize blocked); IPOPT /usr/local/bin/ipopt
+[read] x0_2025_Spring_C: LP read 0.47 s; size {"NumVars": 26292, "NumConstrs": 18438, "NumQConstrs": 3933, "NumNZs": 65784, "NumQCNZs": 11322, "NumQNZs": 0}
+[gate pass] LP objective at the certified point == T0.1c group objective (rel) x0_2025_Spring_C: 1.520498e-13 <= 1.000e-08
+[gate pass] Wii lower bound > 0 on every vmag_sqr column (min LB; fails if <= 0) x0_2025_Spring_C: 0.000000e+00 <= 0.000e+00
+[inventory] implied rhs-0 rows 216 {'top.d0_cpl_ess_p_dso_esso': 72, 'top.d0_cpl_ess_q_dso_esso': 72, 'esso.energy_storage_operation_agg': 72}
+[rank] A_eq: 7476 x 26292; rank 7260; deficiency 216 (structural 216); min rel sigma kept 1.246e-03; max rel sigma dropped 0.000e+00; deficient components {'3 rows x 1 cols': 72, '2 rows x 1 cols': 72}; dependent rows (QR choice) {'top.d0_cpl_ess_p_dso_esso': 72, 'top.d0_cpl_ess_p_tso_esso': 72, 'top.d0_cpl_ess_q_dso_esso': 72}; 23.6 s
+[rank] A_eq_without_fixed_columns: 7476 x 25902; rank 7260; deficiency 216 (structural 216); min rel sigma kept 1.242e-03; max rel sigma dropped 0.000e+00; deficient components {'3 rows x 1 cols': 72, '2 rows x 1 cols': 72}; dependent rows (QR choice) {'top.d0_cpl_ess_p_dso_esso': 72, 'top.d0_cpl_ess_p_tso_esso': 72, 'top.d0_cpl_ess_q_dso_esso': 72}; 23.6 s
+[columns] {"n_columns": 26292, "n_fixed_by_bounds": 390, "n_fixed_at_zero": 390, "n_free": 7488, "n_unbounded": 7812, "in_no_row": {"count": 0, "by_family": {}}, "free_in_no_row": {"count": 0, "by_family": {}}, "zero_cost_in_quadratic_rows_only": {"count": 864, "by_family": {"dso.voltage_product_imag": 72, "esso.es_qnet": 792}, "n_free": 864}}
+[quadratic] {"by_pattern_and_family": {"circle dso.branch_flow_limit": 72, "circle dso.branch_flow_limit_ji": 72, "circle dso.sg_capability": 216, "circle tso.sg_capability": 117, "lorentz esso.energy_storage_operation_agg": 864, "rotated dso.d0_cone": 2304, "rotated dso.d0_tr_cone": 72, "rotated tso.d0_cone": 216}, "n_circles": 477, "n_circles_r_eq_0": 0, "n_circles_r_lt_1e-4": 25, "circles_r_lt_1e-4_by_family": {"tso.sg_capability": {"count": 6, "r_min": 1.5830632811195253e-06, "r_max": 4.712460945360397e-06}, "dso.sg_capability": {"count": 19, "r_min": 6.578541291275891e-07, "r_max": 9.290243680767041e-05}}, "min_lb_of_bilinear_factors_by_family": {"tso.vmag_sqr": 0.7224999999999999, "dso.vmag_sqr": 0.7224999999999999, "dso.d0_tr_U": 0.0}, "n_lorentz": 864, "n_lorentz_with_pinned_head": 864}
+[gate pass] rank inventory: A_eq rank + deficiency == rows (0 = consistent) x0_2025_Spring_C: 0.000000e+00 <= 0.000e+00
+[start] clipped 13147 (max 9.999e-09); objective 63996433.971540; max violation 1.915e-05 (eq 1.915e-05, ineq 9.800e-09, quad 1.000e-08); active cones/circles at start 2929
+[gate pass] smooth form: NL header (vars, cons, eqns) == LP dimensions (0 = equal) x0_2025_Spring_C: 0.000000e+00 <= 0.000e+00
+[nlp] build 0.2 s; NL header [26292, 22371, 1, 0, 7476]; LP dims {'vars': 26292, 'rows': 22371, 'eq_rows': 7476}; NL write 0.2 s
+[solve] x0_2025_Spring_C: IPOPT, options {'tol': 1e-09, 'max_iter': 3000, 'mu_strategy': 'adaptive', 'print_level': 5, 'print_timing_statistics': 'yes', 'linear_solver': 'ma97'}
+[write] raw solution vectors x0_2025_Spring_C.raw.npz (loaded True)
+[write] data/SRP1/Results/P516D0/t02_ipopt_interior/vectors/x0_2025_Spring_C.npz
+[gate pass] IPOPT-reported dimensions: variables == LP columns - bound-fixed columns, eq + ineq == LP rows (0 = equal) x0_2025_Spring_C: 0.000000e+00 <= 0.000e+00
+[solve] x0_2025_Spring_C: {"exit": "Optimal Solution Found.", "iterations": 115, "restoration_iterations": 0, "initial_inf_pr": 0.0694, "initial_inf_du": 100.0, "initial_objective_ipopt": 178209140.0, "final_lg_mu": -10.2, "final_inf_pr": 1.34e-13, "final_inf_du": 8.05e-11, "max_inf_pr_over_run": 3.63, "total_seconds_in_ipopt": 1.198, "exit_last_occurrence": "Optimal Solution Found.", "iterations_last_occurrence": 115, "final_summary_last_occurrence": {"objective": {"scaled": 139.10988177089888, "unscaled": 63990545.61461349, "n_occurrences": 1}, "dual_infeasibility": {"scaled": 8.049028110690415e-11, "unscaled": 3.7025529309175915e-05, "n_occurrences": 1}, "constraint_violation": {"scaled": 1.3441439533377566e-13, "unscaled": 1.3441439533377566e-13, "n_occurrences": 1}, "variable_bound_violation": {"scaled": 9.999415432504286e-09, "unscaled": 9.999415432504286e-09, "n_occurrences": 1}, "complementarity": {"scaled": 8.412628366724853e-11, "unscaled": 3.8698090486934326e-05, "n_occurrences": 1}, "overall_nlp_error": {"scaled": 8.412628366724853e-11, "unscaled": 3.8698090486934326e-05, "n_occurrences": 1}}}; termination optimal; wall 1.6 s
+[gate pass] IPOPT exit "Optimal Solution Found." (0 = yes) x0_2025_Spring_C: 0.000000e+00 <= 0.000e+00
+[at x*] objective 63990545.614613; max violation 1.175e-08; active cones/circles 2785 of 3933; min rel slack -0.01520107613802187 (dso_5.sg_capability[4,0,0,5])
+[rank] TSO: max rel rank residual 0.024195244791858122; cycles 1; max cycle angle 0.008669847902770478; OLTC None
+[rank] DSO5: max rel rank residual 0.6666664213897388; cycles None; max cycle angle None; OLTC -6.759927240015409e-09
+[rank] DSO7: max rel rank residual 0.6666664158031946; cycles None; max cycle angle None; OLTC -6.763150767881926e-09
+[rank] DSO9: max rel rank residual 0.6666664266640928; cycles None; max cycle angle None; OLTC -6.77580959501978e-09
+[gap] Q_LB 63990545.614613; Q_cert+ 63996389.504863; gap 5.844 kEUR (9.132e-05 rel) -- the gap is a single-group, single-solver, IPOPT-tolerance value (tol 1e-9 on the scaled NLP error), NOT a certified bound
+[gate pass] G-D0-6 leaf guard exact (failures: Pyomo/IPOPT 1 + 1, Gurobi 0, Clarabel 0) process: 0.000000e+00 <= 0.000e+00
+[gate pass] containment: write-opens in the repository outside OUT_DIR (count) process: 0.000000e+00 <= 0.000e+00
+[write] interior.json
+[summary] gates 8 rows, all pass True; failed []; stops []; guards {'pyomo': {'permitted_solve': 1, 'permitted_exec': 1, 'blocked_solve': 0, 'blocked_exec': 0}, 'gurobi': {'permitted_entry': 0, 'permitted_optimize': 0, 'blocked_optimize': 0}, 'clarabel': {'permitted_entry': 0, 'permitted_solve': 0, 'blocked_solve': 0}}; repo writes outside OUT_DIR 0; wall 51.6 s
+[prediction] I1: HELD {"A_eq": 216, "A_eq_without_fixed_columns": 216}
+[prediction] I2: HELD {"exit": "Optimal Solution Found.", "iterations": 115, "restoration_iterations": 0}
+[prediction] I3: HELD {"Q_LB": 63990545.61461348, "Q_cert_plus": 63996389.50486347, "containment_tol_eur": 63.996389504863465, "containment_margin_eur": -5907.88663949479}
+[prediction] I4: FAILED {"gap_rel": 9.131593665211088e-05, "gap_abs_keur": 5.843890249989927}
+[prediction] I5: HELD 0.024195244791858122
+# child exit code 0; wall 51.8 s

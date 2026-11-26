@@ -1,0 +1,412 @@
+{
+ "schema": "p515_s44_evaluation_record_v2",
+ "campaign_id": "s56s4smoke_A_V1",
+ "campaign_spec_path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/campaign_spec_s56s4smoke_a_v1_f4f948de.json",
+ "campaign_spec_sha256": "f4f948de5215c17472a384f9b57ab572a2d8743fe5dee3781ab0825282bf97cb",
+ "candidate_label": "x0_V1",
+ "candidate_canonical": {
+  "investment_year": 2025,
+  "nodes": {
+   "5": [
+    0.0,
+    0.0
+   ],
+   "7": [
+    0.0,
+    0.0
+   ],
+   "9": [
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+ "status": "error",
+ "barrier": true,
+ "barrier_cause": "AssertionError: RULE ELEVEN (gate detector): capture paths missing -> planning.results_dir not absolute/set: 'data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/evals/a918ba210411acec_x0_v1/results'; shared_ess_data.results_dir not absolute/set: 'data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/evals/a918ba210411acec_x0_v1/results'; transmission_network.results_dir not absolute/set: 'data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/evals/a918ba210411acec_x0_v1/results'; distribution_networks[5].results_dir not absolute/set: 'data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/evals/a918ba210411acec_x0_v1/results'; distribution_networks[7].results_dir not absolute/set: 'data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/evals/a918ba210411acec_x0_v1/results'; distribution_networks[9].results_dir not absolute/set: 'data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/evals/a918ba210411acec_x0_v1/results'",
+ "traceback": "Traceback (most recent call last):\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 6733, in main_child\n    outcome = _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started,\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 6488, in _child_real\n    report, report_path = G.run_admm_arm(\n                          ^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_g_g1_g4_admm_gates.py\", line 1281, in run_admm_arm\n    detector_checklist = assert_g_capture_paths(sed, planning, hook_state)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_g_g1_g4_admm_gates.py\", line 1023, in assert_g_capture_paths\n    raise AssertionError('RULE ELEVEN (gate detector): capture paths missing -> '\nAssertionError: RULE ELEVEN (gate detector): capture paths missing -> planning.results_dir not absolute/set: 'data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/evals/a918ba210411acec_x0_v1/results'; shared_ess_data.results_dir not absolute/set: 'data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/evals/a918ba210411acec_x0_v1/results'; transmission_network.results_dir not absolute/set: 'data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/evals/a918ba210411acec_x0_v1/results'; distribution_networks[5].results_dir not absolute/set: 'data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/evals/a918ba210411acec_x0_v1/results'; distribution_networks[7].results_dir not absolute/set: 'data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/evals/a918ba210411acec_x0_v1/results'; distribution_networks[9].results_dir not absolute/set: 'data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/evals/a918ba210411acec_x0_v1/results'\n",
+ "wall_time_s": {
+  "child_process_s": 10.866368055343628
+ },
+ "anderson_acceleration_effective_in_child": {
+  "enabled": true,
+  "memory": 5,
+  "regularization": 1e-10,
+  "reject_policy": "keep_memory"
+ },
+ "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+ "convergence_depth_tail_checklist_asserted_before_run": {
+  "checks": {
+   "production_default_tail_off": true,
+   "production_tail_helper_present": true,
+   "production_both_returns_carry_the_records": true,
+   "production_both_returns_carry_the_tail_state": true,
+   "production_records_drained_at_initialisation": true,
+   "production_records_drained_every_cycle": true,
+   "network_attempt_appends_a_record_after_the_solve": true,
+   "run_admm_arm_post_run_hook_gets_state": true
+  },
+  "declared": {
+   "enabled": true,
+   "compl_inf_tol": 1e-06
+  },
+  "tail_enabled_for_this_run": true,
+  "compl_inf_tol_tail": 1e-06,
+  "source": "campaign spec configuration.convergence_depth_tail",
+  "production_default": {
+   "enabled": false,
+   "compl_inf_tol": 1e-06
+  },
+  "persisted_files": [
+   "network_ipopt_solve_records.jsonl",
+   "convergence_depth_tail_state.json"
+  ]
+ },
+ "convergence_depth_failure_drain": {
+  "status": "skipped",
+  "why": "production never drained (the failure preceded the ADMM run)"
+ },
+ "convergence_depth_per_round_append_recovered": {
+  "records_append_path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/evals/a918ba210411acec_x0_v1/network_ipopt_solve_records_append.jsonl",
+  "records_append_sha256": null,
+  "n_records": 0,
+  "n_unparsable_record_lines": 0,
+  "records_per_round": {},
+  "rounds_drained": [],
+  "round_drained_at_failure": null,
+  "floor_status_tally": {},
+  "events_path": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/evals/a918ba210411acec_x0_v1/convergence_depth_append_events.jsonl",
+  "n_events": 1,
+  "n_unparsable_event_lines": 0,
+  "sealed": false,
+  "tail_checklist_from_child": {
+   "checks": {
+    "production_default_tail_off": true,
+    "production_tail_helper_present": true,
+    "production_both_returns_carry_the_records": true,
+    "production_both_returns_carry_the_tail_state": true,
+    "production_records_drained_at_initialisation": true,
+    "production_records_drained_every_cycle": true,
+    "network_attempt_appends_a_record_after_the_solve": true,
+    "run_admm_arm_post_run_hook_gets_state": true
+   },
+   "declared": {
+    "enabled": true,
+    "compl_inf_tol": 1e-06
+   },
+   "tail_enabled_for_this_run": true,
+   "compl_inf_tol_tail": 1e-06,
+   "source": "campaign spec configuration.convergence_depth_tail",
+   "production_default": {
+    "enabled": false,
+    "compl_inf_tol": 1e-06
+   },
+   "persisted_files": [
+    "network_ipopt_solve_records.jsonl",
+    "convergence_depth_tail_state.json"
+   ]
+  },
+  "tail_state_rebuilt": {
+   "enabled": false
+  }
+ },
+ "ess_ageing_baseline": {
+  "calendar_life_years": 15,
+  "calendar_retention_per_year": 0.985,
+  "calibration": {
+   "cycles_n": 10000,
+   "eol_retention_r": 0.8,
+   "reference_dod_d": 0.8,
+   "status": "ACTIVE"
+  },
+  "cycle_life_nominal": 10000,
+  "depth_of_discharge_nominal": 0.8,
+  "minimum_soh": 0.7
+ },
+ "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+ "ess_params_sha256_in_child": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+ "ess_ageing_verified_pre_run": {
+  "declared": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7,
+   "calibration": {
+    "status": "ACTIVE",
+    "cycles_n": 10000,
+    "reference_dod_d": 0.8,
+    "eol_retention_r": 0.8
+   }
+  },
+  "loaded": {
+   "calendar_life_years": 15,
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "status": "ACTIVE",
+    "cycles_n": 10000,
+    "reference_dod_d": 0.8,
+    "eol_retention_r": 0.8
+   }
+  },
+  "file_used_by_production": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+  "file_sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+  "pin": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "k_production": 35851.3609417964,
+  "per_ess": [
+   {
+    "year": "2025",
+    "bus": 5,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2025",
+    "bus": 7,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2025",
+    "bus": 9,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   }
+  ],
+  "checks": {
+   "pin_path_is_ess_params_file": true,
+   "file_used_by_production_is_pinned_file": true,
+   "file_sha256_equals_pin": true,
+   "loaded_equals_declaration_types_included": true,
+   "every_ess_soh_min_is_declared": true,
+   "every_ess_phi_cal_is_declared": true,
+   "every_ess_cl_eff_is_production_k": true
+  },
+  "readback_pre_run": {
+   "expected": {
+    "k": 35851.3609417964,
+    "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.8)",
+    "phi_cal_in_model": 0.985,
+    "floor_row_lower": 0.7,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true,
+    "d_row_form": "D * 2kE == 365 n avg"
+   },
+   "per_node": {
+    "5": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 0,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 1.0,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8712867870271764
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    },
+    "7": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 0,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 1.0,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8712867870271764
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    },
+    "9": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 0,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 1.0,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8712867870271764
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    }
+   },
+   "all_match": true,
+   "method": "numerical read-back from the built rows (model_variant_readback) against the declaration's closed forms; on probe models"
+  },
+  "floor_rows_identical_to_precheck": true
+ },
+ "derived_instance": {
+  "case_path": "data/SRP1/Results/P515S56/step4_instances_v1/SRP1__s56_step4_2025_Winter.json",
+  "case_sha256": "92e6283bdb1dafcb328ec951095ebf2173d314754e7f946c0c2210694ca7537e",
+  "changes_vs_source": [
+   {
+    "from": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "key": "Years",
+    "to": {
+     "2025": 5
+    }
+   },
+   {
+    "from": {
+     "Autumn": 91,
+     "Spring": 92,
+     "Summer": 91,
+     "Winter": 91
+    },
+    "key": "Days",
+    "to": {
+     "Winter": 91
+    }
+   }
+  ],
+  "instance_label": "s56_step4_2025_Winter",
+  "scenario_checksum": "58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e",
+  "source_case_path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "source_case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+ },
+ "derived_instance_installed_in_child": {
+  "case_path": "data/SRP1/Results/P515S56/step4_instances_v1/SRP1__s56_step4_2025_Winter.json",
+  "case_sha256_in_child": "92e6283bdb1dafcb328ec951095ebf2173d314754e7f946c0c2210694ca7537e",
+  "scenario_checksum_in_child": "58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e",
+  "instance_label": "s56_step4_2025_Winter",
+  "checksum_matches_srp1_canonical": false,
+  "planning_dimensions": {
+   "years": {
+    "2025": 5
+   },
+   "days": {
+    "Winter": 91
+   },
+   "num_instants": 24,
+   "random_seed": 2026,
+   "num_market_scenarios": 3,
+   "num_operation_scenarios": {
+    "case9": 3,
+    "case33_1": 3,
+    "case33_2": 3,
+    "case33_3": 3
+   },
+   "active_distribution_network_nodes": [
+    5,
+    7,
+    9
+   ],
+   "scenario_metadata": {
+    "random_seed": 2026,
+    "deterministic_scenarios": true,
+    "market_scenario_checksum": "95d80d17d16d21552cdd90286aa52b67309448f34e241bfa14bc504299fb46d8",
+    "operational_scenario_checksum": "20ccd28cedb8588330e7e3e4e7d4a2a418c302740b7acd4345c32131c30c1d9b",
+    "combined_scenario_checksum": "58801929487a64d03c390d0a1cfeaa4a4955b3e6064b6a546f762ad05be2cb4e"
+   }
+  },
+  "expected_block_counts": {
+   "tso_blocks": 1,
+   "dso_blocks": 3,
+   "network_blocks": 4,
+   "esso_models": 3,
+   "solves_per_cycle": 7
+  },
+  "planning_read_dir": "data/SRP1/Results/P515S56/step4_smoke_v1/campaign_s56s4smoke_A_V1/evals/a918ba210411acec_x0_v1/planning_read",
+  "read_wall_s": 7.611253023147583,
+  "reader": "p515_s44_scale_measurement.read_planning_from_derived_case (production SharedResourcesPlanning)"
+ },
+ "interface_deviation_premium_applied_in_child": null,
+ "interface_dual_capture_checklist_asserted_before_run": {
+  "boyd_metrics_call_once_in_run_source": true,
+  "boyd_metrics_call_inside_the_cycle_loop": true,
+  "boyd_metrics_call_before_the_aa_step": true,
+  "boyd_metrics_signature": true,
+  "dual_leaf_is_p_q_period_lists": true,
+  "dual_update_scaled_by_rating_and_s_base": true,
+  "wrapped_names_exist": true,
+  "writer_is_gate_result_io": true
+ },
+ "interface_dual_capture": {
+  "schema": "interface_dual_capture_v1",
+  "file": "interface_duals_per_cycle.jsonl",
+  "boyd_calls_captured": 0,
+  "cycle_lines_written": 0,
+  "header_written": false,
+  "n_blocks": null,
+  "n_periods": null,
+  "bytes_written": 0,
+  "bytes_per_cycle_line_max": null,
+  "errors": [],
+  "ok": true
+ }
+}

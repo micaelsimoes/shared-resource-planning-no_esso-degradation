@@ -1,0 +1,1602 @@
+{
+ "stage": "P5.15 S56 D0 TN realized-exchange re-solve + V0 merged multi-scenario build (frozen spec v1) -- V0",
+ "spec": {
+  "path": "data/SRP1/Results/P515S56/tn_realized_resolve/frozen_tn_realized_spec_v1_5d35b048.json",
+  "sha256": "5d35b04866b7c919165b44bfa44b4a4b1683e2c3a30b856240bb24852de0dfe5"
+ },
+ "script": "p515_s56_central_ms_build.py",
+ "script_sha256": "1492e9c10342b976714127580eb65721e748c55e91b0dfb61c0eb17e786eabb9",
+ "git_head": "d11bea2888bfd9615311bd08372a45aa28c60c62",
+ "utc_start": "2026-11-21T11:50:17.637034+00:00",
+ "trial": false,
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "solve_claim": "ZERO SOLVES, guard-verified (SolveProfileGuard(permitted=()), verify(0)); no unpickling",
+ "modules": {
+  "centralized_coordination.py": {
+   "path": "centralized_coordination.py",
+   "sha256": "04d2b549ff6f15decae30514606dbef2cb504c687fcc37ffc0fab75867c6eba9",
+   "tracked": true,
+   "clean": true
+  },
+  "network.py": {
+   "path": "network.py",
+   "sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+   "tracked": true,
+   "clean": true
+  },
+  "network_data.py": {
+   "path": "network_data.py",
+   "sha256": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+   "tracked": true,
+   "clean": true
+  },
+  "model_construction_helpers.py": {
+   "path": "model_construction_helpers.py",
+   "sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+   "tracked": true,
+   "clean": true
+  },
+  "p515_s44_scale_measurement.py": {
+   "path": "p515_s44_scale_measurement.py",
+   "sha256": "284abb4d12811886f5ee1c28809db34ccc8425ba4bb9eb726abafd9c764a0a3e",
+   "tracked": true,
+   "clean": true
+  },
+  "data/SRP1/SRP1.json": {
+   "path": "data/SRP1/SRP1.json",
+   "sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+   "tracked": true,
+   "clean": true
+  },
+  "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json": {
+   "path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+   "sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+   "tracked": true,
+   "clean": true
+  }
+ },
+ "results": {
+  "srp1": {
+   "label": "SRP1 single scenario",
+   "year": "2025",
+   "day": "Spring",
+   "merge_s_all_blocks": 0.009098957758396864,
+   "build_s": 0.6358332498930395,
+   "peak_rss_mb_after": 451.140625,
+   "vars": 38184,
+   "vars_free": 37992,
+   "constraints": 24207,
+   "rows_by_component": {
+    "voltage_mag_def": 0,
+    "voltage_mag_sqr_def": 2520,
+    "voltage_setpoint_cons": 0,
+    "voltage_magnitude_lower_cons": 2520,
+    "voltage_magnitude_upper_cons": 2520,
+    "voltage_product_real_def": 2520,
+    "voltage_product_imag_def": 2520,
+    "voltage_product_real_nonnegative": 2520,
+    "r_sqr_def": 72,
+    "pij_def": 72,
+    "qij_def": 72,
+    "pji_def": 72,
+    "qji_def": 72,
+    "sg_capability": 333,
+    "gen_pf_upper": 333,
+    "gen_pf_lower": 333,
+    "gen_pf_profile": 0,
+    "flex_energy_balance_p": 96,
+    "ess_pnet_def": 0,
+    "ess_pch_hat_link": 0,
+    "ess_pdch_hat_link": 0,
+    "ess_converter_capability": 0,
+    "ess_active_sum_limit": 0,
+    "ess_phi_lower": 0,
+    "ess_phi_upper": 0,
+    "ess_soc_def": 0,
+    "ess_soc_limits": 0,
+    "ess_soc_final": 0,
+    "ess_comp": 0,
+    "sess_pnet_def": 0,
+    "sess_pch_hat_link": 0,
+    "sess_pdch_hat_link": 0,
+    "sess_converter_capability": 0,
+    "sess_active_sum_limit": 0,
+    "sess_soc_def": 0,
+    "sess_soc_limit_upper": 0,
+    "sess_soc_limit_lower": 0,
+    "sess_soc_final": 0,
+    "sess_comp": 0,
+    "node_balance_p": 2520,
+    "node_balance_q": 2520,
+    "branch_flow_limit": 2520,
+    "branch_flow_limit_ji": 72
+   },
+   "vars_by_component": {
+    "e": 2520,
+    "f": 2520,
+    "slack_v_sqr_down": 2520,
+    "slack_v_sqr_up": 2520,
+    "vmag": 0,
+    "vmag_sqr": 2520,
+    "voltage_product_real": 2520,
+    "voltage_product_imag": 2520,
+    "pg": 504,
+    "qg": 504,
+    "pc": 2304,
+    "qc": 2304,
+    "flex_p_up": 2304,
+    "flex_p_down": 2304,
+    "flex_q_up": 2304,
+    "flex_q_down": 2304,
+    "slack_flex_p_balance_up": 96,
+    "slack_flex_p_balance_down": 96,
+    "slack_flex_q_balance_up": 96,
+    "slack_flex_q_balance_down": 96,
+    "r": 2520,
+    "r_sqr": 2520,
+    "pij": 72,
+    "qij": 72,
+    "pji": 72,
+    "qji": 72,
+    "es_pch": 0,
+    "es_pdch": 0,
+    "es_pch_hat": 0,
+    "es_pdch_hat": 0,
+    "es_pnet": 0,
+    "es_qnet": 0,
+    "es_soc": 0,
+    "slack_es_soc_final_up": 0,
+    "slack_es_soc_final_down": 0,
+    "shared_es_pch": 0,
+    "shared_es_pdch": 0,
+    "shared_es_pch_hat": 0,
+    "shared_es_pdch_hat": 0,
+    "shared_es_pnet": 0,
+    "shared_es_qnet": 0,
+    "shared_es_soc": 0,
+    "slack_shared_es_soc_final_up": 0,
+    "slack_shared_es_soc_final_down": 0,
+    "interface_delta_p": 0,
+    "interface_delta_q": 0
+   },
+   "n_scenarios_market": 1,
+   "n_scenarios_operation": 1,
+   "merged_counts": {
+    "nodes": 105,
+    "branches": 105,
+    "generators": 21,
+    "loads": 96,
+    "shared_energy_storages": 0,
+    "active_distribution_network_nodes": 0,
+    "energy_storages": 0
+   },
+   "components_present_on_built_model": {
+    "row18_deviation_charge": [
+     false,
+     0
+    ],
+    "scenario_voltage_pin": [
+     false,
+     0
+    ],
+    "expected_interface_pf_p": [
+     false,
+     0
+    ],
+    "expected_interface_vmag": [
+     false,
+     0
+    ],
+    "interface_delta_p": [
+     true,
+     0
+    ],
+    "interface_delta_q": [
+     true,
+     0
+    ],
+    "pc_adn": [
+     true,
+     0
+    ],
+    "qc_adn": [
+     true,
+     0
+    ],
+    "pg_adn": [
+     false,
+     0
+    ],
+    "shared_es_pnet": [
+     true,
+     0
+    ],
+    "shared_es_soc": [
+     true,
+     0
+    ]
+   },
+   "interface_settlement_weight": 0.0,
+   "interface_settlement_value_at_build": -0.0,
+   "merged_prob_market": [
+    1.0
+   ],
+   "merged_prob_operation": [
+    1.0
+   ],
+   "dropped": {
+    "shared_energy_storages_in_TN_source": 3,
+    "shared_energy_storages_in_DN_sources": {
+     "5": 1,
+     "7": 1,
+     "9": 1
+    },
+    "dn_reference_buses_dropped": {
+     "5": 1,
+     "7": 1,
+     "9": 1
+    },
+    "dn_reference_generators_dropped": {
+     "5": "1",
+     "7": "1",
+     "9": "1"
+    },
+    "tn_adn_loads_dropped": [
+     "ADN_5",
+     "ADN_7",
+     "ADN_9"
+    ]
+   }
+  },
+  "scenario_structure_3x3": {
+   "2025|Spring": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2025|Summer": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2025|Autumn": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2025|Winter": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2028|Spring": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2028|Summer": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2028|Autumn": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2028|Winter": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2031|Spring": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2031|Summer": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2031|Autumn": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2031|Winter": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2034|Spring": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2034|Summer": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2034|Autumn": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2034|Winter": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2037|Spring": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2037|Summer": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2037|Autumn": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "2037|Winter": {
+    "TN": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "5": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "7": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "9": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   }
+  },
+  "3x3": {
+   "label": "3 x 3",
+   "year": "2025",
+   "day": "Spring",
+   "merge_s_all_blocks": 0.015484834089875221,
+   "build_s": 5.535249916370958,
+   "peak_rss_mb_after": 772.421875,
+   "vars": 343656,
+   "vars_free": 341928,
+   "constraints": 217863,
+   "rows_by_component": {
+    "voltage_mag_def": 0,
+    "voltage_mag_sqr_def": 22680,
+    "voltage_setpoint_cons": 0,
+    "voltage_magnitude_lower_cons": 22680,
+    "voltage_magnitude_upper_cons": 22680,
+    "voltage_product_real_def": 22680,
+    "voltage_product_imag_def": 22680,
+    "voltage_product_real_nonnegative": 22680,
+    "r_sqr_def": 648,
+    "pij_def": 648,
+    "qij_def": 648,
+    "pji_def": 648,
+    "qji_def": 648,
+    "sg_capability": 2997,
+    "gen_pf_upper": 2997,
+    "gen_pf_lower": 2997,
+    "gen_pf_profile": 0,
+    "flex_energy_balance_p": 864,
+    "ess_pnet_def": 0,
+    "ess_pch_hat_link": 0,
+    "ess_pdch_hat_link": 0,
+    "ess_converter_capability": 0,
+    "ess_active_sum_limit": 0,
+    "ess_phi_lower": 0,
+    "ess_phi_upper": 0,
+    "ess_soc_def": 0,
+    "ess_soc_limits": 0,
+    "ess_soc_final": 0,
+    "ess_comp": 0,
+    "sess_pnet_def": 0,
+    "sess_pch_hat_link": 0,
+    "sess_pdch_hat_link": 0,
+    "sess_converter_capability": 0,
+    "sess_active_sum_limit": 0,
+    "sess_soc_def": 0,
+    "sess_soc_limit_upper": 0,
+    "sess_soc_limit_lower": 0,
+    "sess_soc_final": 0,
+    "sess_comp": 0,
+    "node_balance_p": 22680,
+    "node_balance_q": 22680,
+    "branch_flow_limit": 22680,
+    "branch_flow_limit_ji": 648
+   },
+   "vars_by_component": {
+    "e": 22680,
+    "f": 22680,
+    "slack_v_sqr_down": 22680,
+    "slack_v_sqr_up": 22680,
+    "vmag": 0,
+    "vmag_sqr": 22680,
+    "voltage_product_real": 22680,
+    "voltage_product_imag": 22680,
+    "pg": 4536,
+    "qg": 4536,
+    "pc": 20736,
+    "qc": 20736,
+    "flex_p_up": 20736,
+    "flex_p_down": 20736,
+    "flex_q_up": 20736,
+    "flex_q_down": 20736,
+    "slack_flex_p_balance_up": 864,
+    "slack_flex_p_balance_down": 864,
+    "slack_flex_q_balance_up": 864,
+    "slack_flex_q_balance_down": 864,
+    "r": 22680,
+    "r_sqr": 22680,
+    "pij": 648,
+    "qij": 648,
+    "pji": 648,
+    "qji": 648,
+    "es_pch": 0,
+    "es_pdch": 0,
+    "es_pch_hat": 0,
+    "es_pdch_hat": 0,
+    "es_pnet": 0,
+    "es_qnet": 0,
+    "es_soc": 0,
+    "slack_es_soc_final_up": 0,
+    "slack_es_soc_final_down": 0,
+    "shared_es_pch": 0,
+    "shared_es_pdch": 0,
+    "shared_es_pch_hat": 0,
+    "shared_es_pdch_hat": 0,
+    "shared_es_pnet": 0,
+    "shared_es_qnet": 0,
+    "shared_es_soc": 0,
+    "slack_shared_es_soc_final_up": 0,
+    "slack_shared_es_soc_final_down": 0,
+    "interface_delta_p": 0,
+    "interface_delta_q": 0
+   },
+   "n_scenarios_market": 3,
+   "n_scenarios_operation": 3,
+   "merged_counts": {
+    "nodes": 105,
+    "branches": 105,
+    "generators": 21,
+    "loads": 96,
+    "shared_energy_storages": 0,
+    "active_distribution_network_nodes": 0,
+    "energy_storages": 0
+   },
+   "components_present_on_built_model": {
+    "row18_deviation_charge": [
+     false,
+     0
+    ],
+    "scenario_voltage_pin": [
+     false,
+     0
+    ],
+    "expected_interface_pf_p": [
+     false,
+     0
+    ],
+    "expected_interface_vmag": [
+     false,
+     0
+    ],
+    "interface_delta_p": [
+     true,
+     0
+    ],
+    "interface_delta_q": [
+     true,
+     0
+    ],
+    "pc_adn": [
+     true,
+     0
+    ],
+    "qc_adn": [
+     true,
+     0
+    ],
+    "pg_adn": [
+     false,
+     0
+    ],
+    "shared_es_pnet": [
+     true,
+     0
+    ],
+    "shared_es_soc": [
+     true,
+     0
+    ]
+   },
+   "interface_settlement_weight": 0.0,
+   "interface_settlement_value_at_build": -0.0,
+   "merged_prob_market": [
+    0.3333333333333333,
+    0.3333333333333333,
+    0.3333333333333333
+   ],
+   "merged_prob_operation": [
+    0.3333333333333333,
+    0.3333333333333333,
+    0.3333333333333333
+   ],
+   "dropped": {
+    "shared_energy_storages_in_TN_source": 3,
+    "shared_energy_storages_in_DN_sources": {
+     "5": 1,
+     "7": 1,
+     "9": 1
+    },
+    "dn_reference_buses_dropped": {
+     "5": 1,
+     "7": 1,
+     "9": 1
+    },
+    "dn_reference_generators_dropped": {
+     "5": "1",
+     "7": "1",
+     "9": "1"
+    },
+    "tn_adn_loads_dropped": [
+     "ADN_5",
+     "ADN_7",
+     "ADN_9"
+    ]
+   },
+   "dn_data_preserved": {
+    "loads_checked": 96,
+    "generators_checked": 12,
+    "mismatches": []
+   },
+   "vars_ratio_to_srp1": 9.0,
+   "vars_minus_prediction": 0,
+   "vars_rel_dev_from_prediction": 0.0,
+   "components_not_scaling_x9": {}
+  }
+ },
+ "prediction_P5": {
+  "builds": true,
+  "vars_3x3": 343656,
+  "predicted": 343656,
+  "rel_dev": 0.0,
+  "tolerance_rel": 0.01,
+  "srp1_vars": 38184,
+  "srp1_expected": 38184,
+  "held": true
+ },
+ "total_wall_s": 34.24925949983299,
+ "peak_rss_mb": 772.421875,
+ "guard": {
+  "label": "P5.15 S56 V0 merged multi-scenario build (never solves)",
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "pickle": {
+  "load": 0,
+  "loads": 0
+ },
+ "guards_ok": true,
+ "checks": [
+  {
+   "check": "anchor centralized_coordination.py:75 holds the shared-ESS emptying",
+   "ok": true,
+   "detail": "            combined_network.network[year][day].shared_energy_storages = list()"
+  },
+  {
+   "check": "SRP1 combined scenario checksum == canonical",
+   "ok": true,
+   "detail": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358"
+  },
+  {
+   "check": "SRP1 2025 Spring merged model vars == 38184 (Step-1 probe)",
+   "ok": true,
+   "detail": 38184
+  },
+  {
+   "check": "3 x 3 case sha256 == declaration",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "3 x 3 combined scenario checksum == declaration",
+   "ok": true,
+   "detail": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193"
+  },
+  {
+   "check": "3 x 3: scenario sets and probabilities identical across TN and every DN, and TN price arrays == DN, every (year, day)",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "3 x 3: per-scenario DN data preserved in the merged network (every DN load and kept generator)",
+   "ok": true,
+   "detail": {
+    "loads_checked": 96,
+    "generators_checked": 12,
+    "mismatches": []
+   }
+  },
+  {
+   "check": "3 x 3: merged model indexed over 3 market x 3 operation scenarios",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "3 x 3: merged probabilities == TN probabilities",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "check": "3 x 3: no row 18, no voltage pin, no expected-value Vars (absent); interface_delta, pc_adn and shared-ESS components have 0 entries",
+   "ok": true,
+   "detail": {
+    "row18_deviation_charge": [
+     false,
+     0
+    ],
+    "scenario_voltage_pin": [
+     false,
+     0
+    ],
+    "expected_interface_pf_p": [
+     false,
+     0
+    ],
+    "expected_interface_vmag": [
+     false,
+     0
+    ],
+    "interface_delta_p": [
+     true,
+     0
+    ],
+    "interface_delta_q": [
+     true,
+     0
+    ],
+    "pc_adn": [
+     true,
+     0
+    ],
+    "qc_adn": [
+     true,
+     0
+    ],
+    "pg_adn": [
+     false,
+     0
+    ],
+    "shared_es_pnet": [
+     true,
+     0
+    ],
+    "shared_es_soc": [
+     true,
+     0
+    ]
+   }
+  },
+  {
+   "check": "3 x 3: merged shared_energy_storages and ADN node list empty",
+   "ok": true,
+   "detail": {
+    "nodes": 105,
+    "branches": 105,
+    "generators": 21,
+    "loads": 96,
+    "shared_energy_storages": 0,
+    "active_distribution_network_nodes": 0,
+    "energy_storages": 0
+   }
+  }
+ ],
+ "failed_checks": [],
+ "utc_end": "2026-11-21T11:50:51.873346+00:00"
+}

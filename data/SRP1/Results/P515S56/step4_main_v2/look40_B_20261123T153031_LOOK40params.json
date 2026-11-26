@@ -1,0 +1,233 @@
+{
+ "schema": "p515_s56_step4_look40_v1",
+ "utc": "2026-11-23T15:30:31.778268+00:00",
+ "instance": "B",
+ "spec": {
+  "path": "data/SRP1/Results/P515S56/step4_main_v2/frozen_step4_main_spec_v2_7ca210fb.json",
+  "sha256": "7ca210fbcd645cc3f3d46554ce7efbdbf2abcedcd183aa825a8eaf160794ccb0"
+ },
+ "script": "p515_s56_step4_main.py",
+ "script_sha256": "e93c709da862e77bc11551014466a26fd5a2286aba42815d651a183c40efcf78",
+ "definition": {
+  "fit": "ordinary least squares of ln|e_b(k)| = a + k ln r on cycles 21..34; validated on the held-out cycles 35..40: the held-out error is max over those cycles of |ln(|e_hat(k)| / |e_b(k)|)| (recorded with the predicted and observed values); the projection refits on cycles 21..40",
+  "output": "look40_<inst>_<utc>.json in the main directory",
+  "projection": "k_star = 40 + ln(allowance_b / |e_hat(40)|) / ln r when r < 1 and |e_hat(40)| > allowance; k_star = 40 when |e_hat(40)| <= allowance; k_star = infinity when r >= 1",
+  "recorded_beside_not_deciding": "the same fit on e_b(k) - F_b with F_b the D-1 production-depth floor (the cycles of the look are production-depth until the first Boyd pass); the tail-depth classification of cycles 1..40",
+  "stop_rule": "if k_star > 600 on a calibrated block, STOP AND REPORT: the running campaign is terminated through the harness's own interrupt path (SIGINT to the launcher parent; the harness SIGTERMs and reaps its children, records written up to the stop are kept) and nothing further is launched. Otherwise continue",
+  "what": "per calibrated block b of the instance (A: 2025|Winter; B: 2035|Summer), e_b(k) = Q_b(k) - w_b x C_central, Q_b = V-1 capture q_blocks.per_year_day[b].settlement_excluded_in_full",
+  "when": "once V-1 of the instance has written its cycle-40 capture line (or the run ended before 40)",
+  "cycle": 40,
+  "fit_cycles": [
+   21,
+   34
+  ],
+  "heldout_cycles": [
+   35,
+   40
+  ],
+  "projection_fit_cycles": [
+   21,
+   40
+  ],
+  "stop_if_projected_cycles_exceed": 600
+ },
+ "blocks": {
+  "2035|Summer": {
+   "w_b_C_central": 57114972.228546076,
+   "allowance_eur": 187.56,
+   "e_b_by_cycle_measured": {
+    "1": 168936051.47639376,
+    "2": 38498420.118164696,
+    "3": 4380569.752305031,
+    "4": 1597216.211719647,
+    "5": 2748532.8654300645,
+    "6": 2887341.4694957957,
+    "7": 2446275.325623058,
+    "8": 1866155.090092875,
+    "9": 1272856.6515641585,
+    "10": 782290.141172938,
+    "11": 516715.6647800803,
+    "12": 360062.9240883514,
+    "13": 315084.65209633857,
+    "14": 284618.0801618323,
+    "15": 250006.64502061158,
+    "16": 192877.87010349333,
+    "17": 181003.29270638525,
+    "18": 188941.37939496338,
+    "19": 192016.71776535362,
+    "20": 191030.2304282114,
+    "21": 181802.52625427395,
+    "22": 162805.70720171928,
+    "23": 143644.95346286893,
+    "24": 115587.12499208748,
+    "25": 92022.68019172549,
+    "26": 76586.4949156791,
+    "27": 61450.18817144632,
+    "28": 47120.05713327974,
+    "29": 35831.507158748806,
+    "30": 24330.419602282345,
+    "31": 14596.580727726221,
+    "32": 8219.665917955339,
+    "33": 4701.163070641458,
+    "34": 3528.8804617226124,
+    "35": 5477.240693300962,
+    "36": 10265.827029712498,
+    "37": 13586.194576255977,
+    "38": 15455.769801527262,
+    "39": 15813.790821641684,
+    "40": 14997.184687696397
+   },
+   "look": {
+    "fit_cycles": [
+     21,
+     34
+    ],
+    "heldout_cycles": [
+     35,
+     40
+    ],
+    "projection_fit_cycles": [
+     21,
+     40
+    ],
+    "fit": {
+     "a": 19.00698492831787,
+     "ln_r": -0.30695668395170855,
+     "r": 0.735682467074361
+    },
+    "heldout": [
+     {
+      "cycle": 35,
+      "abs_e_observed": 5477.240693300962,
+      "abs_e_predicted": 3879.652978195615,
+      "abs_log_error": 0.3448557400033921
+     },
+     {
+      "cycle": 36,
+      "abs_e_observed": 10265.827029712498,
+      "abs_e_predicted": 2854.1926743913414,
+      "abs_log_error": 1.280031588072586
+     },
+     {
+      "cycle": 37,
+      "abs_e_observed": 13586.194576255977,
+      "abs_e_predicted": 2099.779508201789,
+      "abs_log_error": 1.8672218293647345
+     },
+     {
+      "cycle": 38,
+      "abs_e_observed": 15455.769801527262,
+      "abs_e_predicted": 1544.770968906083,
+      "abs_log_error": 2.3031067243949144
+     },
+     {
+      "cycle": 39,
+      "abs_e_observed": 15813.790821641684,
+      "abs_e_predicted": 1136.4609174696777,
+      "abs_log_error": 2.632963420926046
+     },
+     {
+      "cycle": 40,
+      "abs_e_observed": 14997.184687696397,
+      "abs_e_predicted": 836.074371497684,
+      "abs_log_error": 2.8869002047324126
+     }
+    ],
+    "heldout_max_abs_log_error": 2.8869002047324126,
+    "projection_fit": {
+     "a": 15.545454330327411,
+     "ln_r": -0.17491456679219508,
+     "r": 0.8395287413389215,
+     "abs_e_hat_at_last": 5160.927852257736
+    },
+    "k_star": 58.95081081701043,
+    "status": "evaluated"
+   },
+   "stop_rule_fires": false,
+   "recorded_beside_floor_adjusted": {
+    "F_b_production_depth_eur": 499.03,
+    "look": {
+     "fit_cycles": [
+      21,
+      34
+     ],
+     "heldout_cycles": [
+      35,
+      40
+     ],
+     "projection_fit_cycles": [
+      21,
+      40
+     ],
+     "fit": {
+      "a": 19.216859191789357,
+      "ln_r": -0.31573459050038877,
+      "r": 0.7292529751520282
+     },
+     "heldout": [
+      {
+       "cycle": 35,
+       "abs_e_observed": 4978.210693300963,
+       "abs_e_predicted": 3519.7615480832683,
+       "abs_log_error": 0.34667728264582215
+      },
+      {
+       "cycle": 36,
+       "abs_e_observed": 9766.797029712498,
+       "abs_e_predicted": 2566.796580765432,
+       "abs_log_error": 1.3363299202247407
+      },
+      {
+       "cycle": 37,
+       "abs_e_observed": 13087.164576255976,
+       "abs_e_predicted": 1871.8440431332474,
+       "abs_log_error": 1.9447078822539667
+      },
+      {
+       "cycle": 38,
+       "abs_e_observed": 14956.739801527261,
+       "abs_e_predicted": 1365.0478374755216,
+       "abs_log_error": 2.393972547298794
+      },
+      {
+       "cycle": 39,
+       "abs_e_observed": 15314.760821641683,
+       "abs_e_predicted": 995.4651967038664,
+       "abs_log_error": 2.733362239609331
+      },
+      {
+       "cycle": 40,
+       "abs_e_observed": 14498.154687696397,
+       "abs_e_predicted": 725.9459563565933,
+       "abs_log_error": 2.994301085618757
+      }
+     ],
+     "heldout_max_abs_log_error": 2.994301085618757,
+     "projection_fit": {
+      "a": 15.622171462695928,
+      "ln_r": -0.17861474535363467,
+      "r": 0.836428075135497,
+      "abs_e_hat_at_last": 4805.813685824843
+     },
+     "k_star": 58.15909905930481,
+     "status": "evaluated"
+    }
+   }
+  }
+ },
+ "error": null,
+ "n_capture_lines": 41,
+ "eval_dir": "data/SRP1/Results/P515S56/step4_main_v2/campaign_s56s4main_v2_main_B/evals/917aa06e2a2e1b55_x0_v1_main",
+ "run_ended": false,
+ "tail_depth_cycles_1_40": [],
+ "stop_rule_fires": false,
+ "guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ }
+}

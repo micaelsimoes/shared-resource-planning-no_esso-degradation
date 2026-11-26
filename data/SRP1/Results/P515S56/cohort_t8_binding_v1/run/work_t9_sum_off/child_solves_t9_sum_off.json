@@ -1,0 +1,363 @@
+{
+ "efficiencies": {
+  "2025": [
+   0.97,
+   0.96
+  ],
+  "2030": [
+   0.97,
+   0.96
+  ],
+  "2035": [
+   0.97,
+   0.96
+  ]
+ },
+ "errors": {},
+ "finished_utc": "2026-11-23T19:04:28Z",
+ "guard": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 1,
+   "permitted_solve": 1
+  },
+  "declared": 1,
+  "permitted_sites": {
+   "shared_energy_storage_data.py:_run_solver_attempt": 1
+  },
+  "verify_failures": []
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "modules": {
+  "model_construction_helpers": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/e2b75b66-5876-478c-8406-61146cba3204/scratchpad/dbt8t9/export_4c586e5e_run/model_construction_helpers.py",
+  "p515_s56_cohort_diagnostics": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/e2b75b66-5876-478c-8406-61146cba3204/scratchpad/dbt8t9/export_4c586e5e_run/p515_s56_cohort_diagnostics.py",
+  "shared_energy_storage_data": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/e2b75b66-5876-478c-8406-61146cba3204/scratchpad/dbt8t9/export_4c586e5e_run/shared_energy_storage_data.py",
+  "shared_energy_storage_parameters": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/e2b75b66-5876-478c-8406-61146cba3204/scratchpad/dbt8t9/export_4c586e5e_run/shared_energy_storage_parameters.py",
+  "shared_resources_planning": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/e2b75b66-5876-478c-8406-61146cba3204/scratchpad/dbt8t9/export_4c586e5e_run/shared_resources_planning.py"
+ },
+ "nlp_solver_path_env": "/usr/local/bin/ipopt",
+ "read": {
+  "checksum_matches_spec": true,
+  "parallel_execution_as_read": false,
+  "read_s": 11.585000038146973,
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "shared_ess_initialization": "standalone"
+ },
+ "schema": "p515_s56_cohort_followup_tests_v1_child_solves",
+ "solve_log": [
+  {
+   "complementarity_diagnostics_last": {
+    "complementarity_ratio_argmax": {
+     "d": 0,
+     "p": 0,
+     "pch": 9.128013200994352e-06,
+     "pdch": 9.128013200994352e-06,
+     "s_max": 0.25,
+     "y": 0,
+     "y_inv": 0
+    },
+    "complementarity_ratio_max": 3.651205280397741e-05,
+    "eps_esso_throughput_in_force": 1e-05,
+    "log_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/e2b75b66-5876-478c-8406-61146cba3204/scratchpad/dbt8t9/export_4c586e5e_run/data/SRP1/Results/P515S56/cohort_t8_binding_v1/run/work_t9_sum_off/ipopt_logs/optim_log_esso_node7_cycle001.txt",
+    "mu_final": 9.740665256987228e-12,
+    "n_active_cohort_periods": 480,
+    "node_id": 7,
+    "parse_reason": null,
+    "s_obj": 0.1,
+    "spurious_throughput_bound": 0.004675519323353868,
+    "spurious_throughput_measured": 0.0021517341595026053
+   },
+   "cycle_stamp": 1,
+   "label": "t_ii_b",
+   "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "solves_this_call": 1,
+   "status": "ok",
+   "stdout_tail": "[INFO] \t\t - Running Shared ESS optimization (subproblem)...\n[INFO] \t\t\t - Node 7...\n[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=3.651205e-05 n_periods=480 mu_final=9.740665e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=4.675519e-03 measured=2.151734e-03\n",
+   "succeeded": true,
+   "termination": "optimal",
+   "wall_s": 0.255399227142334
+  }
+ ],
+ "solver_options": {
+  "esso_overrides": {
+   "acceptable_tol": 1e-09,
+   "tol": 1e-10
+  },
+  "solver_params": {
+   "options": {
+    "acceptable_iter": 5,
+    "acceptable_tol": 1e-05,
+    "linear_solver": "ma57",
+    "tol": 1e-06
+   },
+   "recovery_enabled": true,
+   "recovery_options": {
+    "acceptable_iter": 1,
+    "acceptable_tol": 0.0001
+   },
+   "recovery_tier2_enabled": true,
+   "release_solution_bookkeeping": false,
+   "solver": "ipopt",
+   "solver_path": "/usr/local/bin/ipopt",
+   "verbose": false
+  }
+ },
+ "started_utc": "2026-11-23T19:04:16Z",
+ "string_flags_converted_to_bool": [],
+ "tag": "t9_sum_off",
+ "tests": {
+  "t_ii_b": {
+   "at_period": {
+    "agg_net": -0.5,
+    "es_pnet": -0.5,
+    "es_qnet": 0.0,
+    "p_down": -9.999909089668626e-09,
+    "p_up": -9.999909092149523e-09,
+    "per_cohort_net": {
+     "2025": -0.2500000000000026,
+     "2030": -0.2499999999999974
+    },
+    "q_down": -9.999909090909091e-09,
+    "q_up": -9.999909090909091e-09
+   },
+   "delivered_mw": 0.5,
+   "detectors": {
+    "block_day": {
+     "2030|Spring": {
+      "cohorts": [
+       "0",
+       "1"
+      ],
+      "conversion_loss_mwh": 1.4305767712808545e-05,
+      "efficiencies_common": true,
+      "energy_accounting": {
+       "conversion_losses_mwh": 0.03695632897015072,
+       "grid_into_cohorts_mwh": 0.036956328970150644,
+       "residual_mwh": -7.632783294297951e-17,
+       "stored_change_mwh": 0.0
+      },
+      "eta_ch": 0.97,
+      "eta_dch": 0.96,
+      "inter_cohort_gross_transfer_mwh": 0.00019961536343453756,
+      "inter_cohort_transfer_net_of_within_mwh": -5.421010862427522e-20,
+      "n_active": 2,
+      "per_cohort": {
+       "0": {
+        "circle_margin_min_mva": -2.609024107869118e-15,
+        "closure_residual_mwh": 0.0,
+        "e_available_mwh": 0.8568518287367787,
+        "energy_balance_residual_max_mwh": 9.71445146547012e-17,
+        "s_rated_mva": 0.25,
+        "soc_mwh": [
+         0.4458420778179193,
+         0.46269495007639844,
+         0.47911886883537674,
+         0.49522838403530656,
+         0.5111264203143948,
+         0.5269103268273242,
+         0.26649366016161563,
+         0.28064899961547485,
+         0.2935959703678712,
+         0.3055987461325029,
+         0.31684106092754655,
+         0.32745654609063896,
+         0.3375458576086249,
+         0.347186988645357,
+         0.3564418026133872,
+         0.36536034709116,
+         0.3739838024654939,
+         0.38234655722312033,
+         0.3904777057772116,
+         0.3984021534657918,
+         0.4061414476566143,
+         0.413714413726686,
+         0.42113764937710224,
+         0.42842591436838934
+        ],
+        "soc_source": "variable",
+        "throughput_stored_side_mwh": 0.5210412575720639,
+        "window_fraction_max": 0.6149375062945555,
+        "window_fraction_min": 0.3110148700440965,
+        "window_margin_min_mwh": 0.18080847728793775,
+        "within_cohort_simultaneity_max_mw": 4.352877561764618e-06,
+        "within_cohort_simultaneity_mwh": 9.980363458800365e-05
+       },
+       "1": {
+        "circle_margin_min_mva": 2.609024107869118e-15,
+        "closure_residual_mwh": 0.0,
+        "e_available_mwh": 0.4605192037827997,
+        "energy_balance_residual_max_mwh": 3.903127820947816e-17,
+        "s_rated_mva": 0.25,
+        "soc_mwh": [
+         0.25181846373659683,
+         0.2722260367994245,
+         0.2922103067839425,
+         0.3124690118205042,
+         0.3339307791681622,
+         0.35839556235201453,
+         0.09797889568631127,
+         0.11617515313974211,
+         0.1296640447162952,
+         0.14074908533656108,
+         0.15034822818100532,
+         0.15892478117394176,
+         0.16674877108680342,
+         0.17399304905925905,
+         0.18077583319409135,
+         0.18718206895112727,
+         0.1932751831865072,
+         0.19910401997378258,
+         0.204707165243894,
+         0.21011576662269374,
+         0.21535544160700304,
+         0.22044761006310634,
+         0.22541045033403362,
+         0.23025960189139985
+        ],
+        "soc_source": "variable",
+        "throughput_stored_side_mwh": 0.5210412744350917,
+        "window_fraction_max": 0.7782423825284146,
+        "window_fraction_min": 0.21275745914935232,
+        "window_margin_min_mwh": 0.051926975308031295,
+        "within_cohort_simultaneity_max_mw": 4.361838013266073e-06,
+        "within_cohort_simultaneity_mwh": 9.981172884653396e-05
+       }
+      },
+      "transfer_hourly_max_mw": 8.714715575030692e-06
+     }
+    },
+    "degradation": {
+     "2025|2025": {
+      "D_from_own_throughput": 1.1216369418807294e-05,
+      "D_solved": 1.1216369418807348e-05,
+      "abs_diff": 5.421010862427522e-20,
+      "avg_throughput_mwh_per_day": 0.00044068176272897254,
+      "e_available_mwh": 0.9272061024211281,
+      "efc_per_day": 0.00022034088136448627,
+      "soh_cumul": 0.9272061024211281
+     },
+     "2025|2030": {
+      "D_from_own_throughput": 0.0033426761522100407,
+      "D_solved": 0.003342676152210041,
+      "abs_diff": 4.336808689942018e-19,
+      "avg_throughput_mwh_per_day": 0.1313309471171697,
+      "e_available_mwh": 0.8568518287367787,
+      "efc_per_day": 0.06566547355858485,
+      "soh_cumul": 0.8568518287367787
+     },
+     "2025|2035": {
+      "D_from_own_throughput": -4.2405390707398003e-11,
+      "D_solved": -4.24053907079675e-11,
+      "abs_diff": 5.694944646971528e-22,
+      "avg_throughput_mwh_per_day": -1.666072293839808e-09,
+      "e_available_mwh": 0.7944871557205958,
+      "efc_per_day": -8.33036146919904e-10,
+      "soh_cumul": 0.7944871557205958
+     },
+     "2030|2030": {
+      "D_from_own_throughput": 0.006685352520470806,
+      "D_solved": 0.006685352520470811,
+      "abs_diff": 5.204170427930421e-18,
+      "avg_throughput_mwh_per_day": 0.13133095136139572,
+      "e_available_mwh": 0.4605192037827997,
+      "efc_per_day": 0.13133095136139572,
+      "soh_cumul": 0.9210384075655994
+     },
+     "2030|2035": {
+      "D_from_own_throughput": 8.481065738444333e-11,
+      "D_solved": 8.481065738122578e-11,
+      "abs_diff": 3.2175516370722817e-21,
+      "avg_throughput_mwh_per_day": 1.6660698573154567e-09,
+      "e_available_mwh": 0.4270010053674758,
+      "efc_per_day": 1.6660698573154567e-09,
+      "soh_cumul": 0.8540020107349516
+     }
+    },
+    "slacks": {
+     "p": {
+      "max_abs": -9.99990906601939e-09,
+      "max_net_abs": 4.9764987250564285e-17,
+      "n": 288,
+      "sum": -5.759947636361637e-06
+     },
+     "q": {
+      "max_abs": 0.0,
+      "max_net_abs": 0.0,
+      "n": 288,
+      "sum": -3.839965090909107e-06
+     }
+    },
+    "summary_multi_cohort": {
+     "circle_margin_min_mva": -2.609024107869118e-15,
+     "closure_residual_max_abs_mwh": 0.0,
+     "energy_accounting_residual_max_abs_mwh": 7.632783294297951e-17,
+     "energy_balance_residual_max_mwh": 9.71445146547012e-17,
+     "inter_cohort_gross_transfer_max_mwh": 0.00019961536343453756,
+     "n_block_days": 1,
+     "window_margin_min_mwh": 0.051926975308031295,
+     "within_cohort_simultaneity_max_mw": 4.361838013266073e-06,
+     "within_cohort_simultaneity_max_mwh": 9.981172884653396e-05
+    }
+   },
+   "feasibility_penalty": -0.009589521646634723,
+   "objective": -0.009589521646634723,
+   "p_slack_mw": -1.999981818181815e-08,
+   "precharged_cohort_min_rise_needed_mwh": 0.0762089851535468,
+   "precharged_cohort_stored_rise_before_peak_mwh": 0.12813596046061468,
+   "precharged_cohort_window_headroom_mwh": 0.1842076815131199,
+   "rows": {
+    "complementarity_body_max": 1.7341617585072245e-06,
+    "complementarity_rows_active": 384,
+    "complementarity_tolerance": 0.0001,
+    "sum_row_margin_min_mw": null,
+    "sum_rows_active": 0
+   },
+   "solve": {
+    "complementarity_diagnostics_last": {
+     "complementarity_ratio_argmax": {
+      "d": 0,
+      "p": 0,
+      "pch": 9.128013200994352e-06,
+      "pdch": 9.128013200994352e-06,
+      "s_max": 0.25,
+      "y": 0,
+      "y_inv": 0
+     },
+     "complementarity_ratio_max": 3.651205280397741e-05,
+     "eps_esso_throughput_in_force": 1e-05,
+     "log_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/e2b75b66-5876-478c-8406-61146cba3204/scratchpad/dbt8t9/export_4c586e5e_run/data/SRP1/Results/P515S56/cohort_t8_binding_v1/run/work_t9_sum_off/ipopt_logs/optim_log_esso_node7_cycle001.txt",
+     "mu_final": 9.740665256987228e-12,
+     "n_active_cohort_periods": 480,
+     "node_id": 7,
+     "parse_reason": null,
+     "s_obj": 0.1,
+     "spurious_throughput_bound": 0.004675519323353868,
+     "spurious_throughput_measured": 0.0021517341595026053
+    },
+    "cycle_stamp": 1,
+    "label": "t_ii_b",
+    "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+    "solves_this_call": 1,
+    "status": "ok",
+    "stdout_tail": "[INFO] \t\t - Running Shared ESS optimization (subproblem)...\n[INFO] \t\t\t - Node 7...\n[INFO] Shared ESS complementarity diagnostics for ESS node=7: ratio_max=3.651205e-05 n_periods=480 mu_final=9.740665e-12 s_obj=1.000000e-01 eps=1.000000e-05 bound=4.675519e-03 measured=2.151734e-03\n",
+    "succeeded": true,
+    "termination": "optimal",
+    "wall_s": 0.255399227142334
+   },
+   "within": {
+    "2025": {
+     "argmax_block_day": "2030|Spring",
+     "max_mw": 4.352877561764618e-06,
+     "max_mwh_per_day": 9.980363458800365e-05
+    },
+    "2030": {
+     "argmax_block_day": "2030|Spring",
+     "max_mw": 4.361838013266073e-06,
+     "max_mwh_per_day": 9.981172884653396e-05
+    }
+   }
+  }
+ },
+ "tree": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/e2b75b66-5876-478c-8406-61146cba3204/scratchpad/dbt8t9/export_4c586e5e_run"
+}

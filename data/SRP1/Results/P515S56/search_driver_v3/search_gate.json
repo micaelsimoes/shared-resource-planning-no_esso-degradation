@@ -1,0 +1,4065 @@
+{
+ "all_checks_ok": true,
+ "checks": [
+  {
+   "check": "diagnostic-1 table and json hash to their committed manifest, tracked and clean",
+   "detail": {
+    "neighbourhood_sizes.json": {
+     "manifest_sha256": "fb35ab5b8d864a693ee8a09bbb29858da4f05e706ce17b2f80a233fa430d0b19",
+     "sha256": "fb35ab5b8d864a693ee8a09bbb29858da4f05e706ce17b2f80a233fa430d0b19",
+     "tracked_clean": true
+    },
+    "neighbourhood_sizes_table.csv": {
+     "manifest_sha256": "3cc95a7efd370ccf8926188e6bc28005b53e6cea2e5de5f8aababda3771e3726",
+     "sha256": "3cc95a7efd370ccf8926188e6bc28005b53e6cea2e5de5f8aababda3771e3726",
+     "tracked_clean": true
+    }
+   },
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "domain re-enumerated by the lattice rule: 37,042 plans == DOMAIN_SIZE == the committed table",
+   "detail": [
+    37042,
+    37042
+   ],
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "P.order accepts N(x) of every plan (no refusal)",
+   "detail": [],
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "driver |N(x)| == committed table N_size on every plan",
+   "detail": [],
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "max |N(x)| over the 37,042 plans <= 80 (CAP)",
+   "detail": {
+    "max": 75,
+    "median": 39,
+    "min": 3
+   },
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "CAP 60 of p516_lattice ignored: plans with |N| > 60 are ordered",
+   "detail": {
+    "n_plans_N_gt_60": 1655
+   },
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "every diagonal move in N(x) is same-sign (no e_opp point)",
+   "detail": [],
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "an 81-point neighbourhood is refused (CapExceeded)",
+   "detail": null,
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "x0: driver N(x) == s56_neighbourhood == committed diagnostic-1 keys, |N| = 18",
+   "detail": {
+    "N": 18,
+    "committed": 18,
+    "committed_e_opp_listed": 0,
+    "expected": 18,
+    "nb_size": 18
+   },
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "reference_unit: driver N(x) == s56_neighbourhood == committed diagnostic-1 keys, |N| = 22",
+   "detail": {
+    "N": 22,
+    "committed": 22,
+    "committed_e_opp_listed": 0,
+    "expected": 22,
+    "nb_size": 22
+   },
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "plan_2030: driver N(x) == s56_neighbourhood == committed diagnostic-1 keys, |N| = 13",
+   "detail": {
+    "N": 13,
+    "committed": 13,
+    "committed_e_opp_listed": 2,
+    "expected": 13,
+    "nb_size": 13
+   },
+   "item": 1,
+   "ok": true
+  },
+  {
+   "check": "three fresh processes (PYTHONHASHSEED 0 / 4242 / random; shuffled input) exit 0 with guard 0",
+   "detail": {
+    "a": null,
+    "b": null,
+    "c": null
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "order digest over all 37,042 plans x 3 orders byte-identical across the three processes",
+   "detail": {
+    "a": "86de107827ba2c464c52fb45d99a09abbd21e3252ddda83e76b3e1433856329d",
+    "b": "86de107827ba2c464c52fb45d99a09abbd21e3252ddda83e76b3e1433856329d",
+    "c": "86de107827ba2c464c52fb45d99a09abbd21e3252ddda83e76b3e1433856329d"
+   },
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "named-point orders identical across the processes",
+   "detail": null,
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "in-process digest (another shuffle) == the workers",
+   "detail": [
+    "86de107827ba2c464c52fb45d99a09abbd21e3252ddda83e76b3e1433856329d",
+    "86de107827ba2c464c52fb45d99a09abbd21e3252ddda83e76b3e1433856329d"
+   ],
+   "item": 2,
+   "ok": true
+  },
+  {
+   "check": "first-poll order unchanged under perturbed cached values and at 1x vs 2x (43 plans, every neighbour value cached and perturbed)",
+   "detail": [],
+   "item": 3,
+   "ok": true
+  },
+  {
+   "check": "driver launches: the first two actions are identical at 1x, 2x and under a perturbed oracle",
+   "detail": {
+    "ev_1x_a": [
+     [
+      [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      [
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       1,
+       2,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       2,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "ev_2x_a": [
+     [
+      [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      [
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       1,
+       2,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       2,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "ev_2x_perturbed": [
+     [
+      [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      [
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       1,
+       2,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       2,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     ]
+    ]
+   },
+   "item": 3,
+   "ok": true
+  },
+  {
+   "check": "smoke alias ABSENT (control, re-scoped by ruling 6): the 2x EV stub configuration FREEZES, its collision scan (committed smoke spec in scope) finds nothing, and none of the smoke spec's eval keys is among the configuration's 74,084 domain keys",
+   "detail": {
+    "collision_scan": {
+     "collisions": [],
+     "n_excluded_cache_roots": 0,
+     "n_excluded_own_root": 0,
+     "n_files_scanned": 319,
+     "n_keys": 74084,
+     "scope": "git ls-files data/SRP1/Results: campaign_spec_* / search_spec_* / phase_spec_* / launches/launch_*.json"
+    },
+    "freeze_exit": 0,
+    "hits": 0,
+    "log_tail": "18:30:45 [S56-SEARCH] frozen /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/search_driver_v3/item4/control_2x_smoke_alias/search_spec_2821029d.json (2821029d99a973e7dc1d0d9979f1a807151ee907457f03f9376a55515efc1927)\n",
+    "n_domain_keys": 74084,
+    "smoke_keys": 2,
+    "smoke_spec_tracked_and_scanned": true
+   },
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "stub-children searches (concurrency 1 and 5) freeze and terminate through repeated launches",
+   "detail": {
+    "1": [
+     0,
+     0,
+     8
+    ],
+    "5": [
+     0,
+     0,
+     8
+    ]
+   },
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "history: serial stub == 5-way stub == in-process synthetic replay",
+   "detail": {
+    "1": "[{\"how\":\"start\",\"poll\":null,\"z\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}]",
+    "5": "[{\"how\":\"start\",\"poll\":null,\"z\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}]"
+   },
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "evaluated: serial stub == 5-way stub == in-process synthetic replay",
+   "detail": {
+    "1": "[[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],\"exit\"],[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,",
+    "5": "[[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],\"exit\"],[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"
+   },
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "budget: serial stub == 5-way stub == in-process synthetic replay",
+   "detail": {
+    "1": "23",
+    "5": "23"
+   },
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "state: serial stub == 5-way stub == in-process synthetic replay",
+   "detail": {
+    "1": "{\"budget_used\":23,\"config\":{\"R\":10000.0,\"arm\":\"ev_1x\",\"block\":5,\"cap\":80,\"class_",
+    "5": "{\"budget_used\":23,\"config\":{\"R\":10000.0,\"arm\":\"ev_1x\",\"block\":5,\"cap\":80,\"class_"
+   },
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "concurrency observed from the stub records: 1 in the serial run, 5 in the 5-way run",
+   "detail": {
+    "1": 1,
+    "5": 5
+   },
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "stub delays randomised per child (distinct sleeps)",
+   "detail": {
+    "distinct": 21,
+    "n": 23
+   },
+   "item": 4,
+   "ok": true
+  },
+  {
+   "check": "uninterrupted synthetic search terminates (exit 0) through repeated launches",
+   "detail": {
+    "codes": [
+     4,
+     4,
+     0
+    ],
+    "n": 22
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "launch machinery final state == in-process run_to_end (byte-equal)",
+   "detail": null,
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_lock (launch 1) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed_evaluations_uncounted": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_lock",
+     1
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_lock (launch 2) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed_evaluations_uncounted": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_lock",
+     2
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_lock (launch 3) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed_evaluations_uncounted": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_lock",
+     3
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_lock (launch 22) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed_evaluations_uncounted": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_lock",
+     22
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_launch_dir (launch 1) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed_evaluations_uncounted": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_launch_dir",
+     1
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_launch_dir (launch 2) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed_evaluations_uncounted": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_launch_dir",
+     2
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_launch_dir (launch 3) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed_evaluations_uncounted": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_launch_dir",
+     3
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_launch_dir (launch 22) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed_evaluations_uncounted": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_launch_dir",
+     22
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_evaluate (launch 1) + resume: history byte-equal, budget equal, killed evaluations uncounted (1), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed_evaluations_uncounted": 1,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_evaluate",
+     1
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_evaluate (launch 2) + resume: history byte-equal, budget equal, killed evaluations uncounted (5), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed_evaluations_uncounted": 5,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_evaluate",
+     2
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_evaluate (launch 3) + resume: history byte-equal, budget equal, killed evaluations uncounted (2), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed_evaluations_uncounted": 2,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_evaluate",
+     3
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_evaluate (launch 22) + resume: history byte-equal, budget equal, killed evaluations uncounted (5), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed_evaluations_uncounted": 5,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_evaluate",
+     22
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_launch_record (launch 1) + resume: history byte-equal, budget equal, killed evaluations uncounted (1), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed_evaluations_uncounted": 1,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_launch_record",
+     1
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_launch_record (launch 2) + resume: history byte-equal, budget equal, killed evaluations uncounted (5), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed_evaluations_uncounted": 5,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_launch_record",
+     2
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_launch_record (launch 3) + resume: history byte-equal, budget equal, killed evaluations uncounted (2), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed_evaluations_uncounted": 2,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_launch_record",
+     3
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_launch_record (launch 22) + resume: history byte-equal, budget equal, killed evaluations uncounted (5), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed_evaluations_uncounted": 5,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_launch_record",
+     22
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_manifest (launch 1) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed_evaluations_uncounted": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_manifest",
+     1
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_manifest (launch 2) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed_evaluations_uncounted": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_manifest",
+     2
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_manifest (launch 3) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed_evaluations_uncounted": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_manifest",
+     3
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_manifest (launch 22) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed_evaluations_uncounted": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_manifest",
+     22
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_state_view (launch 1) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed_evaluations_uncounted": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_state_view",
+     1
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_state_view (launch 2) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed_evaluations_uncounted": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_state_view",
+     2
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_state_view (launch 3) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed_evaluations_uncounted": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_state_view",
+     3
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_state_view (launch 22) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 0,
+    "killed_evaluations_uncounted": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_state_view",
+     22
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at during_evaluate (launch 2) + resume: history byte-equal, budget equal, killed evaluations uncounted (4), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed_evaluations_uncounted": 4,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "during_evaluate",
+     2,
+     0.0
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at during_evaluate (launch 3) + resume: history byte-equal, budget equal, killed evaluations uncounted (1), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed_evaluations_uncounted": 1,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "during_evaluate",
+     3,
+     0.0
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "kill at after_results (launch 22) + resume: history byte-equal, budget equal, killed evaluations uncounted (0), stale lock taken over",
+   "detail": {
+    "codes_has_kill": true,
+    "exit": 0,
+    "interrupted_records": 1,
+    "killed_evaluations_uncounted": 0,
+    "same_history": true,
+    "stale_lock_taken_over": true,
+    "target": [
+     "after_results",
+     22
+    ]
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "a live lock, a lock naming another search, and a stale lock without --take-over-stale-lock are refused",
+   "detail": [
+    2,
+    2,
+    2
+   ],
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "a tampered evaluation record: the replay refuses (exit 2) and writes nothing",
+   "detail": 2,
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "a state view that does not equal the replayed state: refused (exit 2)",
+   "detail": 2,
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "restored files: the launch proceeds (exit 0 or 4)",
+   "detail": 0,
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "a synthetic-oracle spec without --test-only is refused at freeze",
+   "detail": 2,
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "stub children: kill of the driver and its 5 running children during evaluate (launch 2) + resume: history byte-equal to the uninterrupted 5-way run, killed evaluations uncounted",
+   "detail": {
+    "exit": 0,
+    "killed": 5,
+    "launch": 2,
+    "same": true,
+    "with_record": 0
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "stub children: kill of the driver and its 2 running children during evaluate (launch 3) + resume: history byte-equal to the uninterrupted 5-way run, killed evaluations uncounted",
+   "detail": {
+    "exit": 0,
+    "killed": 2,
+    "launch": 3,
+    "same": true,
+    "with_record": 0
+   },
+   "item": 5,
+   "ok": true
+  },
+  {
+   "check": "37,042 distinct GeneralLattice.key over the domain",
+   "detail": 37042,
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "labels distinct; canonical v2 round trip z -> canonical -> z exact on every plan",
+   "detail": null,
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "synthetic eval keys distinct over {1x, 2x} x {exit, settled} x domain (148,168)",
+   "detail": 148168,
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "collision scan: own root and declared cache root excluded -> no collision, no refusal",
+   "detail": {
+    "collisions": [],
+    "excluded_cache_roots": [
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/search_driver_v3/item6_collision_tree/cache_root/campaign_spec_cache.json"
+    ],
+    "excluded_own_root": [
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/search_driver_v3/item6_collision_tree/own_root/campaign_spec_own.json"
+    ],
+    "n_files_scanned": 1,
+    "refusals": []
+   },
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "collision scan: a foreign artefact carrying a search key is reported, and the refusal names it",
+   "detail": {
+    "collisions": [
+     {
+      "file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/search_driver_v3/item6_collision_tree/other_campaign/campaign_spec_other2.json",
+      "keys16": [
+       "ac901257f14dbe93"
+      ],
+      "n_keys": 1
+     }
+    ],
+    "excluded_cache_roots": [
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/search_driver_v3/item6_collision_tree/cache_root/campaign_spec_cache.json"
+    ],
+    "excluded_own_root": [
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/search_driver_v3/item6_collision_tree/own_root/campaign_spec_own.json"
+    ],
+    "n_files_scanned": 2,
+    "refusals": [
+     "collision scan: 1 artefact(s) outside the search's own root and its declared cache roots carry its eval keys: ['/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/search_driver_v3/item6_collision_tree/other_campaign/campaign_spec_other2.json']"
+    ]
+   },
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "collision scan with the wrong own root (the parent) excludes everything: guard against a vacuous scan is the caller's (recorded: n_files_scanned 0)",
+   "detail": {
+    "collisions": [],
+    "excluded_cache_roots": [],
+    "excluded_own_root": [
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/search_driver_v3/item6_collision_tree/cache_root/campaign_spec_cache.json",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/search_driver_v3/item6_collision_tree/other_campaign/campaign_spec_other.json",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/search_driver_v3/item6_collision_tree/other_campaign/campaign_spec_other2.json",
+     "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/search_driver_v3/item6_collision_tree/own_root/campaign_spec_own.json"
+    ],
+    "n_files_scanned": 0,
+    "refusals": []
+   },
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "committed campaign/search specs and launch records under data/SRP1/Results carry no GeneralLattice key as an eval key",
+   "detail": {
+    "collisions": [],
+    "n_files_scanned": 319
+   },
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "harness vs b0391b80: insertions only (392 lines added, 0 deleted)",
+   "detail": [],
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "the pre-change harness has no settled key (the change is the only source of it)",
+   "detail": null,
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "settled key True refused: no S56 EV-plan key (single-year SRP1 candidate)",
+   "detail": "s56_settled_stop_disabled True refused: the entry declares no S56 EV-plan key",
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "settled key True refused: per-scenario coupling declared",
+   "detail": "s56_settled_stop_disabled True refused: the entry declares the per-scenario coupling (use the calibration key)",
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "settled key True refused: together with the calibration key",
+   "detail": "s56_settled_stop_disabled True refused: the entry also declares s56_certification_stop_disabled",
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "settled key True refused: no enabled convergence-depth tail",
+   "detail": "s56_settled_stop_disabled True refused: the spec declares no enabled convergence-depth tail",
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "settled key True refused: non-bool value",
+   "detail": "s56_settled_stop_disabled must be a bool, got 1",
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "ev: settled key True allowed; RE-SCOPED to the cap-in-key rule: exit = cap(b), settled = cap(sk(b)) != exit (b = the b0391b80 key); candidate key unchanged; absent -> no entry field",
+   "detail": null,
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "ev: settled key False recorded in the entry, not keyed (the W33 default rule)",
+   "detail": null,
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "draw0: settled key True allowed; RE-SCOPED to the cap-in-key rule: exit = cap(b), settled = cap(sk(b)) != exit (b = the b0391b80 key); candidate key unchanged; absent -> no entry field",
+   "detail": null,
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "draw0: settled key False recorded in the entry, not keyed (the W33 default rule)",
+   "detail": null,
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "option-off identity (srp1_single_year): frozen spec byte-identical pre vs post (volatile fields ['frozen_utc', 'harness', 'git_head'] excluded), eval keys equal",
+   "detail": null,
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "option-off identity (s56_ev_staged), RE-SCOPED to the cap-in-key rule: post eval key = cap(pre) on every entry; spec otherwise byte-identical pre vs post (volatile fields ['frozen_utc', 'harness', 'git_head'] and entry fields ['eval_key', 'eval_dir', 'working_dir_ids', 's56_cycle_cap_keyed'] excluded)",
+   "detail": {
+    "entry_fields_differing": [
+     "eval_dir",
+     "eval_key",
+     "s56_cycle_cap_keyed",
+     "working_dir_ids"
+    ]
+   },
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "option-off identity (s56_draw0_staged), RE-SCOPED to the cap-in-key rule: post eval key = cap(pre) on every entry; spec otherwise byte-identical pre vs post (volatile fields ['frozen_utc', 'harness', 'git_head'] and entry fields ['eval_key', 'eval_dir', 'working_dir_ids', 's56_cycle_cap_keyed'] excluded)",
+   "detail": {
+    "entry_fields_differing": [
+     "eval_dir",
+     "eval_key",
+     "s56_cycle_cap_keyed",
+     "working_dir_ids"
+    ]
+   },
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "option-off identity (calibration_key_coupled), RE-SCOPED to the cap-in-key rule: post eval key = cap(pre) on every entry; spec otherwise byte-identical pre vs post (volatile fields ['frozen_utc', 'harness', 'git_head'] and entry fields ['eval_key', 'eval_dir', 'working_dir_ids', 's56_cycle_cap_keyed'] excluded)",
+   "detail": {
+    "entry_fields_differing": [
+     "eval_dir",
+     "eval_key",
+     "s56_cycle_cap_keyed",
+     "working_dir_ids"
+    ]
+   },
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "option-off identity: record fields empty when the key is absent",
+   "detail": null,
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "staged key (harness s56_staged_canonical + candidate_key, case ev_twin) == GeneralLattice.key(z) on all 37,042 plans",
+   "detail": [],
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "staged key (harness s56_staged_canonical + candidate_key, case draw0_srp1) == GeneralLattice.key(z) on all 37,042 plans",
+   "detail": [],
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "37,042 distinct eval keys in each of the 48 configurations",
+   "detail": {},
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "eval keys pairwise distinct across {1x, 2x} x {exit, settled} x {EV, draw-0} x cohort formulation (3) x TV (2): 48 x 37,042 = 1,778,016",
+   "detail": 1778016,
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "the driver key composition == the eval key freeze_campaign_spec freezes (3 named points x 48 configurations)",
+   "detail": [],
+   "item": 6,
+   "ok": true
+  },
+  {
+   "check": "dF = R + e exactly -> worse",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "dF = -R + e exactly -> confirm_candidate",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "dF just below R + e -> unresolved",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "dF just above -R + e -> unresolved",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "e floor 15,000 applies (bars 4,000 + 5,000)",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "e = bar sum above the floor (bars 4,000 + 20,000)",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "missing bar (None) -> harness_error",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "missing bar (absent) -> harness_error",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "non-finite bar (nan) -> harness_error",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "uncertified with a large improvement -> uncertified",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "uncertified with a large loss -> uncertified (never worse)",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "strict status: \"Certified\" is not certified -> harness_error (unknown status)",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "status harness_error -> harness_error",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "mixed depth (candidate settled vs incumbent exit) refused",
+   "detail": "MixedDepthError",
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "mixed depth (incumbent settled) refused",
+   "detail": "MixedDepthError",
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "confirm with an exit record as settled refused",
+   "detail": "MixedDepthError",
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "incumbent without a bar refused",
+   "detail": "PolicyError",
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "improvement exactly R, V_pair exactly R/4, A exactly R/2 -> accepted",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "improvement just below R -> unresolved_after_confirmation",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "V_pair just above R/4 -> unresolved_after_confirmation",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "A sum above R/2 -> unresolved_after_confirmation",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "a gate failed -> unresolved_after_confirmation",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "held-out offset exactly e -> not a stop",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "held-out offset above e -> stop_for_review",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "candidate settled not_settled -> unresolved_after_confirmation, flagged, the candidate named",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "incumbent settled not_settled -> unresolved_after_confirmation, the incumbent named",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "both not_settled -> unresolved_after_confirmation, both named",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "not_settled with an offset far above e -> no held-out stop (no test on a not-settled value)",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "not_settled without V components -> still unresolved_after_confirmation (never accepted, never a stop)",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "not_settled candidate vs incumbent harness_error -> harness_error (stops)",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "unknown settled status \"Settled\" -> harness_error (strict)",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "settled without V components -> harness_error",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "gates_pass not a bool (\"True\") -> harness_error",
+   "detail": null,
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "re-classification at a measured e = 20,000: dF 8,000 unresolved -> confirm_candidate; dF 40,000 stays worse",
+   "detail": [
+    {
+     "dF": 8000.0,
+     "e_new": 20000.0,
+     "new": "confirm_candidate",
+     "old": "unresolved",
+     "poll": 0,
+     "pos": 0,
+     "z": [
+      1
+     ]
+    }
+   ],
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "review trigger: confirmations 'nn' -> stop False (consecutive False, share False)",
+   "detail": {
+    "consecutive_not_settled": 2,
+    "n_confirmations": 2,
+    "n_not_settled": 2,
+    "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+    "rule_consecutive": false,
+    "rule_share": false,
+    "stop": false
+   },
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "review trigger: confirmations 'nnn' -> stop True (consecutive True, share False)",
+   "detail": {
+    "consecutive_not_settled": 3,
+    "n_confirmations": 3,
+    "n_not_settled": 3,
+    "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+    "rule_consecutive": true,
+    "rule_share": false,
+    "stop": true
+   },
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "review trigger: confirmations 'n-u-n' -> stop False (consecutive False, share False)",
+   "detail": {
+    "consecutive_not_settled": 1,
+    "n_confirmations": 3,
+    "n_not_settled": 2,
+    "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+    "rule_consecutive": false,
+    "rule_share": false,
+    "stop": false
+   },
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "review trigger: confirmations 'uunu' -> stop False (consecutive False, share False)",
+   "detail": {
+    "consecutive_not_settled": 0,
+    "n_confirmations": 4,
+    "n_not_settled": 1,
+    "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+    "rule_consecutive": false,
+    "rule_share": false,
+    "stop": false
+   },
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "review trigger: confirmations 'unun' -> stop True (consecutive False, share True)",
+   "detail": {
+    "consecutive_not_settled": 1,
+    "n_confirmations": 4,
+    "n_not_settled": 2,
+    "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+    "rule_consecutive": false,
+    "rule_share": true,
+    "stop": true
+   },
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "review trigger: confirmations 'uuuunuuun' -> stop False (consecutive False, share False)",
+   "detail": {
+    "consecutive_not_settled": 1,
+    "n_confirmations": 9,
+    "n_not_settled": 2,
+    "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+    "rule_consecutive": false,
+    "rule_share": false,
+    "stop": false
+   },
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "review trigger: confirmations 'uuunun' -> stop True (consecutive False, share True)",
+   "detail": {
+    "consecutive_not_settled": 1,
+    "n_confirmations": 6,
+    "n_not_settled": 2,
+    "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+    "rule_consecutive": false,
+    "rule_share": true,
+    "stop": true
+   },
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "review trigger: confirmations 'aannn' -> stop True (consecutive True, share True)",
+   "detail": {
+    "consecutive_not_settled": 3,
+    "n_confirmations": 5,
+    "n_not_settled": 3,
+    "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+    "rule_consecutive": true,
+    "rule_share": true,
+    "stop": true
+   },
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "review trigger: confirmations 'nnxn' -> stop True (consecutive True, share False)",
+   "detail": {
+    "consecutive_not_settled": 3,
+    "n_confirmations": 3,
+    "n_not_settled": 3,
+    "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+    "rule_consecutive": true,
+    "rule_share": false,
+    "stop": true
+   },
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "review trigger: confirmations 'uunn' (2 polls) -> stop True (consecutive False, share True)",
+   "detail": {
+    "consecutive_not_settled": 2,
+    "n_confirmations": 4,
+    "n_not_settled": 2,
+    "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+    "rule_consecutive": false,
+    "rule_share": true,
+    "stop": true
+   },
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "review trigger: confirmations 'nnn' (2 polls) -> stop True (consecutive True, share False)",
+   "detail": {
+    "consecutive_not_settled": 3,
+    "n_confirmations": 3,
+    "n_not_settled": 3,
+    "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+    "rule_consecutive": true,
+    "rule_share": false,
+    "stop": true
+   },
+   "item": 7,
+   "ok": true
+  },
+  {
+   "check": "x0: partition == |N_final|, roles == budget == evaluated set, no evaluation twice",
+   "detail": {
+    "accepted": 0,
+    "confirm_candidate_unconfirmed": 0,
+    "harness_error": 0,
+    "not_reached": 0,
+    "uncertified": 1,
+    "unresolved": 0,
+    "unresolved_after_confirmation": 1,
+    "worse": 11
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "x0: count identity N_search = S_0 + sum(E_j + c_j) + E_f + c_f holds",
+   "detail": {
+    "N_search_counted": 56,
+    "S_0": 1,
+    "budget_used": 56,
+    "holds": true,
+    "per_poll": [
+     {
+      "E_j": 5,
+      "c_j": 2,
+      "closed": "accepted",
+      "exit_requested": 5,
+      "formula_matches": true,
+      "n_j": 18,
+      "p_j": 3,
+      "poll": 0
+     },
+     {
+      "E_j": 10,
+      "c_j": 2,
+      "closed": "accepted",
+      "exit_requested": 10,
+      "formula_matches": true,
+      "n_j": 18,
+      "p_j": 9,
+      "poll": 1
+     },
+     {
+      "E_j": 5,
+      "c_j": 3,
+      "closed": "accepted",
+      "exit_requested": 5,
+      "formula_matches": true,
+      "n_j": 23,
+      "p_j": 2,
+      "poll": 2
+     },
+     {
+      "E_j": 5,
+      "c_j": 1,
+      "closed": "accepted",
+      "exit_requested": 5,
+      "formula_matches": true,
+      "n_j": 22,
+      "p_j": 1,
+      "poll": 3
+     },
+     {
+      "E_j": 5,
+      "c_j": 1,
+      "closed": "accepted",
+      "exit_requested": 5,
+      "formula_matches": true,
+      "n_j": 25,
+      "p_j": 1,
+      "poll": 4
+     },
+     {
+      "E_j": 5,
+      "c_j": 1,
+      "closed": "accepted",
+      "exit_requested": 5,
+      "formula_matches": true,
+      "n_j": 25,
+      "p_j": 1,
+      "poll": 5
+     },
+     {
+      "E_j": 9,
+      "c_j": 1,
+      "closed": "complete_poll_no_accepted_candidate",
+      "exit_requested": 9,
+      "formula_matches": true,
+      "n_j": 9,
+      "p_j": null,
+      "poll": 6
+     }
+    ],
+    "truncated_by_budget": []
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "x0: every N_max in 0..56: arithmetic holds, budget never exceeded, budget_exhausted below 56, identical run at 56",
+   "detail": null,
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "x0: every budget-limited run is a prefix of the unlimited run (last block truncated, never re-ordered)",
+   "detail": null,
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "x0: budget exhaustion mid-poll exercised (mid-poll, truncated block, exhaustion before a block, confirmation not fitting)",
+   "detail": {
+    "block_truncated": 35,
+    "confirmation_does_not_fit": 33,
+    "exhausted_before_block": 22,
+    "mid_poll": 48
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "reference_unit: partition == |N_final|, roles == budget == evaluated set, no evaluation twice",
+   "detail": {
+    "accepted": 0,
+    "confirm_candidate_unconfirmed": 0,
+    "harness_error": 0,
+    "not_reached": 0,
+    "uncertified": 1,
+    "unresolved": 0,
+    "unresolved_after_confirmation": 1,
+    "worse": 11
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "reference_unit: count identity N_search = S_0 + sum(E_j + c_j) + E_f + c_f holds",
+   "detail": {
+    "N_search_counted": 68,
+    "S_0": 1,
+    "budget_used": 68,
+    "holds": true,
+    "per_poll": [
+     {
+      "E_j": 5,
+      "c_j": 2,
+      "closed": "accepted",
+      "exit_requested": 5,
+      "formula_matches": true,
+      "n_j": 22,
+      "p_j": 1,
+      "poll": 0
+     },
+     {
+      "E_j": 5,
+      "c_j": 1,
+      "closed": "accepted",
+      "exit_requested": 5,
+      "formula_matches": true,
+      "n_j": 18,
+      "p_j": 1,
+      "poll": 1
+     },
+     {
+      "E_j": 5,
+      "c_j": 1,
+      "closed": "accepted",
+      "exit_requested": 5,
+      "formula_matches": true,
+      "n_j": 14,
+      "p_j": 3,
+      "poll": 2
+     },
+     {
+      "E_j": 10,
+      "c_j": 2,
+      "closed": "accepted",
+      "exit_requested": 10,
+      "formula_matches": true,
+      "n_j": 17,
+      "p_j": 8,
+      "poll": 3
+     },
+     {
+      "E_j": 5,
+      "c_j": 3,
+      "closed": "accepted",
+      "exit_requested": 5,
+      "formula_matches": true,
+      "n_j": 21,
+      "p_j": 2,
+      "poll": 4
+     },
+     {
+      "E_j": 5,
+      "c_j": 1,
+      "closed": "accepted",
+      "exit_requested": 5,
+      "formula_matches": true,
+      "n_j": 21,
+      "p_j": 1,
+      "poll": 5
+     },
+     {
+      "E_j": 5,
+      "c_j": 1,
+      "closed": "accepted",
+      "exit_requested": 5,
+      "formula_matches": true,
+      "n_j": 25,
+      "p_j": 1,
+      "poll": 6
+     },
+     {
+      "E_j": 5,
+      "c_j": 1,
+      "closed": "accepted",
+      "exit_requested": 5,
+      "formula_matches": true,
+      "n_j": 25,
+      "p_j": 1,
+      "poll": 7
+     },
+     {
+      "E_j": 9,
+      "c_j": 1,
+      "closed": "complete_poll_no_accepted_candidate",
+      "exit_requested": 9,
+      "formula_matches": true,
+      "n_j": 9,
+      "p_j": null,
+      "poll": 8
+     }
+    ],
+    "truncated_by_budget": []
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "reference_unit: every N_max in 0..68: arithmetic holds, budget never exceeded, budget_exhausted below 68, identical run at 68",
+   "detail": null,
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "reference_unit: every budget-limited run is a prefix of the unlimited run (last block truncated, never re-ordered)",
+   "detail": null,
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "reference_unit: budget exhaustion mid-poll exercised (mid-poll, truncated block, exhaustion before a block, confirmation not fitting)",
+   "detail": {
+    "block_truncated": 43,
+    "confirmation_does_not_fit": 44,
+    "exhausted_before_block": 23,
+    "mid_poll": 58
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "plan_2030: partition == |N_final|, roles == budget == evaluated set, no evaluation twice",
+   "detail": {
+    "accepted": 0,
+    "confirm_candidate_unconfirmed": 0,
+    "harness_error": 0,
+    "not_reached": 0,
+    "uncertified": 1,
+    "unresolved": 0,
+    "unresolved_after_confirmation": 1,
+    "worse": 11
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "plan_2030: count identity N_search = S_0 + sum(E_j + c_j) + E_f + c_f holds",
+   "detail": {
+    "N_search_counted": 16,
+    "S_0": 1,
+    "budget_used": 16,
+    "holds": true,
+    "per_poll": [
+     {
+      "E_j": 13,
+      "c_j": 2,
+      "closed": "complete_poll_no_accepted_candidate",
+      "exit_requested": 13,
+      "formula_matches": true,
+      "n_j": 13,
+      "p_j": null,
+      "poll": 0
+     }
+    ],
+    "truncated_by_budget": []
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "plan_2030: every N_max in 0..16: arithmetic holds, budget never exceeded, budget_exhausted below 16, identical run at 16",
+   "detail": null,
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "plan_2030: every budget-limited run is a prefix of the unlimited run (last block truncated, never re-ordered)",
+   "detail": null,
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "plan_2030: budget exhaustion mid-poll exercised (mid-poll, truncated block, exhaustion before a block)",
+   "detail": {
+    "block_truncated": 10,
+    "confirmation_does_not_fit": 4,
+    "exhausted_before_block": 11,
+    "mid_poll": 14
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "harness_error at position 0 stops the search; positions 1-4 of the block become speculative_post_termination",
+   "detail": {
+    "budget_used": 6,
+    "by_role": {
+     "confirmation": 0,
+     "decision_relevant": 1,
+     "incumbent_exit": 1,
+     "speculative_post_acceptance": 0,
+     "speculative_post_termination": 4,
+     "unclassified": 0
+    },
+    "cache_hits_classified": 0,
+    "n_max": 10000
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "an uncertified start incumbent ends the search (start_incumbent_not_certified)",
+   "detail": null,
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "a held-out offset above e at a confirmation stops the search (stop_for_review_offset)",
+   "detail": null,
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "one not_settled confirmation: unresolved_after_confirmation, the search continues past it and terminates normally (arithmetic holds)",
+   "detail": {
+    "n_conf": 9,
+    "termination": "complete_poll_no_accepted_candidate"
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "3 consecutive not_settled confirmations stop the search for review (stop_for_review_not_settled, the consecutive rule)",
+   "detail": {
+    "budget_used": 15,
+    "detail": {
+     "consecutive_not_settled": 3,
+     "n_confirmations": 3,
+     "n_not_settled": 3,
+     "pos": 8,
+     "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+     "rule_consecutive": true,
+     "rule_share": false,
+     "stop": true,
+     "z": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    "reason": "stop_for_review_not_settled"
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "the not_settled stop: terminal arithmetic holds (partition == |N|, roles == budget == evaluated set)",
+   "detail": {
+    "budget_used": 15,
+    "by_role": {
+     "confirmation": 4,
+     "decision_relevant": 9,
+     "incumbent_exit": 1,
+     "speculative_post_acceptance": 0,
+     "speculative_post_termination": 1,
+     "unclassified": 0
+    },
+    "cache_hits_classified": 0,
+    "n_max": 10000
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "not_settled on 2 of 4 confirmations (> 25 %, >= 4) stops the search for review (the share rule)",
+   "detail": {
+    "budget_used": 26,
+    "detail": {
+     "consecutive_not_settled": 1,
+     "n_confirmations": 4,
+     "n_not_settled": 2,
+     "pos": 0,
+     "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+     "rule_consecutive": false,
+     "rule_share": true,
+     "stop": true,
+     "z": [
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      2,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    "reason": "stop_for_review_not_settled"
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "not_settled on 1 confirmation only: never a review stop, however many confirmations follow (1 of >= 4 is <= 25 %)",
+   "detail": {
+    "n_conf": 10,
+    "termination": "complete_poll_no_accepted_candidate"
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "the driver maps stop_for_review_not_settled to exit 5 (review), and it is a policy termination",
+   "detail": null,
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "terminal report: the final poll's not_settled confirmations are listed unresolved_after_confirmation with the flag, and the review record is reported",
+   "detail": {
+    "final_poll_not_settled": 3,
+    "flagged": 3,
+    "review": {
+     "consecutive_not_settled": 3,
+     "n_confirmations": 3,
+     "n_not_settled": 3,
+     "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+     "rule_consecutive": true,
+     "rule_share": false,
+     "stop": true
+    }
+   },
+   "item": 8,
+   "ok": true
+  },
+  {
+   "check": "s47_phase_b_1x: published history replayed (1 incumbent(s)); coverage of N(x) reported",
+   "detail": [
+    [
+     "x0",
+     "6/18"
+    ]
+   ],
+   "item": 9,
+   "ok": true
+  },
+  {
+   "check": "s47_phase_b_1x: I(x) of every published incumbent recomputed on the 3x3 lattice within 0.01 EUR",
+   "detail": [
+    0.0
+   ],
+   "item": 9,
+   "ok": true
+  },
+  {
+   "check": "s51_f2_phase_b_2x: published history replayed (2 incumbent(s)); coverage of N(x) reported",
+   "detail": [
+    [
+     "y2025__n7_p0.75_e3",
+     "4/10"
+    ],
+    [
+     "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+     "5/13"
+    ]
+   ],
+   "item": 9,
+   "ok": true
+  },
+  {
+   "check": "s51_f2_phase_b_2x: I(x) of every published incumbent recomputed on the 3x3 lattice within 0.01 EUR",
+   "detail": [
+    1.1641532182693481e-10,
+    1.1641532182693481e-10
+   ],
+   "item": 9,
+   "ok": true
+  },
+  {
+   "check": "s53_f2_certificate_2x: published history replayed (1 incumbent(s)); coverage of N(x) reported",
+   "detail": [
+    [
+     "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+     "7/13"
+    ]
+   ],
+   "item": 9,
+   "ok": true
+  },
+  {
+   "check": "s53_f2_certificate_2x: I(x) of every published incumbent recomputed on the 3x3 lattice within 0.01 EUR",
+   "detail": [
+    1.1641532182693481e-10
+   ],
+   "item": 9,
+   "ok": true
+  },
+  {
+   "check": "SolveProfileGuard(permitted=()) verify(0) == []",
+   "detail": [],
+   "item": "guards",
+   "ok": true
+  },
+  {
+   "check": "pickle load/loads 0",
+   "detail": {
+    "load": 0,
+    "loads": 0
+   },
+   "item": "guards",
+   "ok": true
+  }
+ ],
+ "code_files": {
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+  "p515_s44_campaign_harness.py": "05a9838c46f19837398af31252bd85c465a3794aa03e9cfc1a7a30c08c462b29",
+  "p515_s56_neighbourhood.py": "bd95342d2da2b0ecf2d99b9ef3b8a396e3637e18a050f8ce0117ec2ec9590cc0",
+  "p515_s56_search_driver.py": "6e1670e5a2abc56b83c05235726cd0606d5c8aaca7a07f6e48c87e64bfa20351",
+  "p515_s56_search_gate.py": "2a2c47c02265c5bc2efe58d210a7878804ff0a49a1024c8869fcde489dc7d880",
+  "p515_s56_search_policy.py": "8fdae9f462f23ad86c74fadecb45ea60462227b9ca9068e01d50623c6ce32d9b",
+  "p516_lattice.py": "ff5d63ef897ccd04e5bbaa719b352537108180a31b83c1b8574506612af86e88"
+ },
+ "code_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation",
+ "data_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation",
+ "export_record": null,
+ "failed_checks": [],
+ "finished_utc": "2026-11-24T18:42:17.524176+00:00",
+ "git_head_data_root": "637090ba966ec3b8c58ececf276145c24456eb45",
+ "guards": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "permitted": [],
+  "pickle_counts": {
+   "load": 0,
+   "loads": 0
+  },
+  "verify_0": []
+ },
+ "instance": {
+  "case": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+  "case_sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1",
+  "lattice": {
+   "block_widths": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "budget_eur": 1000000.0,
+   "cost_energy": {
+    "0": {
+     "2025": 212132.83090957787,
+     "2030": 167114.2595388713,
+     "2035": 152464.16443904658
+    },
+    "1": {
+     "2025": 264982.3635447595,
+     "2030": 222115.86276729195,
+     "2035": 204988.41411333327
+    },
+    "2": {
+     "2025": 338908.86670623126,
+     "2030": 275450.090999905,
+     "2035": 266020.3907359085
+    }
+   },
+   "cost_power": {
+    "0": {
+     "2025": 214171.32910223768,
+     "2030": 168720.15012439265,
+     "2035": 153929.27440020515
+    },
+    "1": {
+     "2025": 267528.7212530719,
+     "2030": 224250.2932694956,
+     "2035": 206958.25777164166
+    },
+    "2": {
+     "2025": 342165.6238488894,
+     "2030": 278097.0387178216,
+     "2035": 268576.723404457
+    }
+   },
+   "discount_factor": 0.02,
+   "max_capacity_mwh": 5.0,
+   "max_energy_to_power_ratio": 4.0,
+   "min_energy_to_power_ratio": 2.0,
+   "nodes": [
+    5,
+    7,
+    9
+   ],
+   "prob_market": [
+    0.35,
+    0.55,
+    0.1
+   ],
+   "sources": {
+    "case": {
+     "path": "data/SRP1/Results/P515S56/instances_v1/SRP1__s56_srp1grid_3x3.json",
+     "sha256": "71d348492a31daa3b203459a52e97209f68fe61ff9d1e2e299f1c576eafc64e1"
+    },
+    "cost_file": {
+     "cells": "Scenarios!B1 = number of market scenarios, Scenarios!C1.. = omega_m; 'Investment Cost, Power'/'Investment Cost, Energy' row 1 (from column B) = years, row 1 + m = scenario m (EUR/MVA, EUR/MWh, undiscounted)",
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/SharedESS/SRP1_ESS.xlsx",
+     "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+     "sheets": {
+      "energy": "Investment Cost, Energy",
+      "power": "Investment Cost, Power",
+      "scenarios": "Scenarios"
+     }
+    },
+    "note": "omega_m is read from the workbook Scenarios sheet, as production does; it is independent of the case file NumMarketScenarios",
+    "num_market_scenarios_case_file": 3,
+    "params_file": {
+     "fields": "budget, max_capacity, min_energy_to_power_factor, max_energy_to_power_factor, ageing.calendar_life_years",
+     "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/SharedESS/SRP1_ESS_Params.json",
+     "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+    }
+   },
+   "t_cal_years": 15.0,
+   "years": [
+    2025,
+    2030,
+    2035
+   ]
+  }
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "items_pending_harness": [],
+ "items_requested": [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9"
+ ],
+ "python": "3.11.11",
+ "results": {
+  "1": {
+   "N_min_median_max": [
+    3,
+    39,
+    75
+   ],
+   "diag1_evidence": {
+    "neighbourhood_sizes.json": {
+     "manifest_sha256": "fb35ab5b8d864a693ee8a09bbb29858da4f05e706ce17b2f80a233fa430d0b19",
+     "sha256": "fb35ab5b8d864a693ee8a09bbb29858da4f05e706ce17b2f80a233fa430d0b19",
+     "tracked_clean": true
+    },
+    "neighbourhood_sizes_table.csv": {
+     "manifest_sha256": "3cc95a7efd370ccf8926188e6bc28005b53e6cea2e5de5f8aababda3771e3726",
+     "sha256": "3cc95a7efd370ccf8926188e6bc28005b53e6cea2e5de5f8aababda3771e3726",
+     "tracked_clean": true
+    }
+   },
+   "domain_size": 37042,
+   "n_plans_N_gt_60": 1655,
+   "named": {
+    "plan_2030": {
+     "N": 13,
+     "committed": 13,
+     "committed_e_opp_listed": 2,
+     "expected": 13,
+     "nb_size": 13
+    },
+    "reference_unit": {
+     "N": 22,
+     "committed": 22,
+     "committed_e_opp_listed": 0,
+     "expected": 22,
+     "nb_size": 22
+    },
+    "x0": {
+     "N": 18,
+     "committed": 18,
+     "committed_e_opp_listed": 0,
+     "expected": 18,
+     "nb_size": 18
+    }
+   },
+   "wall_s": 149.2425971031189
+  },
+  "2": {
+   "digests": {
+    "a": "86de107827ba2c464c52fb45d99a09abbd21e3252ddda83e76b3e1433856329d",
+    "b": "86de107827ba2c464c52fb45d99a09abbd21e3252ddda83e76b3e1433856329d",
+    "c": "86de107827ba2c464c52fb45d99a09abbd21e3252ddda83e76b3e1433856329d"
+   },
+   "in_process": "86de107827ba2c464c52fb45d99a09abbd21e3252ddda83e76b3e1433856329d",
+   "wall_s": 416.0019371509552,
+   "workers": {
+    "a": {
+     "PYTHONHASHSEED": "0",
+     "digest": "86de107827ba2c464c52fb45d99a09abbd21e3252ddda83e76b3e1433856329d",
+     "guard_verify_0": [],
+     "n_plans": 37042,
+     "pickle_counts": {
+      "load": 0,
+      "loads": 0
+     },
+     "pid": 75484,
+     "shuffle_seed": "shuffle-1"
+    },
+    "b": {
+     "PYTHONHASHSEED": "4242",
+     "digest": "86de107827ba2c464c52fb45d99a09abbd21e3252ddda83e76b3e1433856329d",
+     "guard_verify_0": [],
+     "n_plans": 37042,
+     "pickle_counts": {
+      "load": 0,
+      "loads": 0
+     },
+     "pid": 75485,
+     "shuffle_seed": "shuffle-2"
+    },
+    "c": {
+     "PYTHONHASHSEED": "random",
+     "digest": "86de107827ba2c464c52fb45d99a09abbd21e3252ddda83e76b3e1433856329d",
+     "guard_verify_0": [],
+     "n_plans": 37042,
+     "pickle_counts": {
+      "load": 0,
+      "loads": 0
+     },
+     "pid": 75486,
+     "shuffle_seed": "shuffle-3"
+    }
+   }
+  },
+  "3": {
+   "driver": {
+    "actions": {
+     "ev_1x_a": [
+      {
+       "action_index": 0,
+       "depth": "exit",
+       "kind": "evaluate",
+       "poll": null,
+       "purpose": "incumbent_exit",
+       "zs": [
+        [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ]
+       ]
+      },
+      {
+       "action_index": 1,
+       "depth": "exit",
+       "kind": "evaluate",
+       "poll": 0,
+       "purpose": "block",
+       "zs": [
+        [
+         1,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        [
+         1,
+         2,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        [
+         0,
+         0,
+         1,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        [
+         0,
+         0,
+         1,
+         2,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        [
+         0,
+         0,
+         0,
+         0,
+         1,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ]
+       ]
+      }
+     ],
+     "ev_2x_a": [
+      {
+       "action_index": 0,
+       "depth": "exit",
+       "kind": "evaluate",
+       "poll": null,
+       "purpose": "incumbent_exit",
+       "zs": [
+        [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ]
+       ]
+      },
+      {
+       "action_index": 1,
+       "depth": "exit",
+       "kind": "evaluate",
+       "poll": 0,
+       "purpose": "block",
+       "zs": [
+        [
+         1,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        [
+         1,
+         2,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        [
+         0,
+         0,
+         1,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        [
+         0,
+         0,
+         1,
+         2,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        [
+         0,
+         0,
+         0,
+         0,
+         1,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ]
+       ]
+      }
+     ],
+     "ev_2x_perturbed": [
+      {
+       "action_index": 0,
+       "depth": "exit",
+       "kind": "evaluate",
+       "poll": null,
+       "purpose": "incumbent_exit",
+       "zs": [
+        [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ]
+       ]
+      },
+      {
+       "action_index": 1,
+       "depth": "exit",
+       "kind": "evaluate",
+       "poll": 0,
+       "purpose": "block",
+       "zs": [
+        [
+         1,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        [
+         1,
+         2,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        [
+         0,
+         0,
+         1,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        [
+         0,
+         0,
+         1,
+         2,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        [
+         0,
+         0,
+         0,
+         0,
+         1,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ]
+       ]
+      }
+     ]
+    }
+   },
+   "policy": {
+    "n_plans": 43
+   }
+  },
+  "4": {
+   "1": {
+    "budget": 23,
+    "exit": 0,
+    "freeze": 0,
+    "max_overlap": 1,
+    "n_launches": 8,
+    "root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/search_driver_v3/item4/conc1"
+   },
+   "5": {
+    "budget": 23,
+    "exit": 0,
+    "freeze": 0,
+    "max_overlap": 5,
+    "n_launches": 8,
+    "root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S56/search_driver_v3/item4/conc5"
+   }
+  },
+  "5": {
+   "refusals": {
+    "codes": [
+     2,
+     2,
+     2,
+     2,
+     2,
+     0,
+     2
+    ]
+   },
+   "stub_children": [
+    {
+     "exit": 0,
+     "killed": 5,
+     "launch": 2,
+     "same": true,
+     "with_record": 0
+    },
+    {
+     "exit": 0,
+     "killed": 2,
+     "launch": 3,
+     "same": true,
+     "with_record": 0
+    }
+   ],
+   "synthetic": {
+    "kills": [
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 0,
+      "killed_evaluations_uncounted": 0,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_lock",
+       1
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 0,
+      "killed_evaluations_uncounted": 0,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_lock",
+       2
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 0,
+      "killed_evaluations_uncounted": 0,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_lock",
+       3
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 0,
+      "killed_evaluations_uncounted": 0,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_lock",
+       22
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 1,
+      "killed_evaluations_uncounted": 0,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_launch_dir",
+       1
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 1,
+      "killed_evaluations_uncounted": 0,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_launch_dir",
+       2
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 1,
+      "killed_evaluations_uncounted": 0,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_launch_dir",
+       3
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 1,
+      "killed_evaluations_uncounted": 0,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_launch_dir",
+       22
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 1,
+      "killed_evaluations_uncounted": 1,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_evaluate",
+       1
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 1,
+      "killed_evaluations_uncounted": 5,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_evaluate",
+       2
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 1,
+      "killed_evaluations_uncounted": 2,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_evaluate",
+       3
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 1,
+      "killed_evaluations_uncounted": 5,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_evaluate",
+       22
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 1,
+      "killed_evaluations_uncounted": 1,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_launch_record",
+       1
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 1,
+      "killed_evaluations_uncounted": 5,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_launch_record",
+       2
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 1,
+      "killed_evaluations_uncounted": 2,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_launch_record",
+       3
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 1,
+      "killed_evaluations_uncounted": 5,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_launch_record",
+       22
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 0,
+      "killed_evaluations_uncounted": 0,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_manifest",
+       1
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 0,
+      "killed_evaluations_uncounted": 0,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_manifest",
+       2
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 0,
+      "killed_evaluations_uncounted": 0,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_manifest",
+       3
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 0,
+      "killed_evaluations_uncounted": 0,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_manifest",
+       22
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 0,
+      "killed_evaluations_uncounted": 0,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_state_view",
+       1
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 0,
+      "killed_evaluations_uncounted": 0,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_state_view",
+       2
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 0,
+      "killed_evaluations_uncounted": 0,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_state_view",
+       3
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 0,
+      "killed_evaluations_uncounted": 0,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_state_view",
+       22
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 1,
+      "killed_evaluations_uncounted": 4,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "during_evaluate",
+       2,
+       0.0
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 1,
+      "killed_evaluations_uncounted": 1,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "during_evaluate",
+       3,
+       0.0
+      ]
+     },
+     {
+      "codes_has_kill": true,
+      "exit": 0,
+      "interrupted_records": 1,
+      "killed_evaluations_uncounted": 0,
+      "same_history": true,
+      "stale_lock_taken_over": true,
+      "target": [
+       "after_results",
+       22
+      ]
+     }
+    ],
+    "launch_kinds": {
+     "block": 2,
+     "confirmation": 3,
+     "first_block": 1,
+     "last": 22
+    },
+    "reference": {
+     "budget": 59,
+     "n_launches": 22
+    }
+   }
+  },
+  "6": {
+   "harness": {
+    "n_configurations": 48,
+    "n_keys": 1778016,
+    "wall_s": 128.14121007919312
+   },
+   "lattice": {
+    "n_committed_files_scanned": 319,
+    "n_keys": 37042
+   },
+   "settled_key": {
+    "lines_added": 392,
+    "lines_deleted": 0,
+    "pre_rev": "b0391b80"
+   }
+  },
+  "7": {
+   "n_cases": 45,
+   "review_trigger": [
+    {
+     "expected_stop": false,
+     "got": {
+      "consecutive_not_settled": 2,
+      "n_confirmations": 2,
+      "n_not_settled": 2,
+      "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+      "rule_consecutive": false,
+      "rule_share": false,
+      "stop": false
+     },
+     "pattern": "nn",
+     "split": null
+    },
+    {
+     "expected_stop": true,
+     "got": {
+      "consecutive_not_settled": 3,
+      "n_confirmations": 3,
+      "n_not_settled": 3,
+      "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+      "rule_consecutive": true,
+      "rule_share": false,
+      "stop": true
+     },
+     "pattern": "nnn",
+     "split": null
+    },
+    {
+     "expected_stop": false,
+     "got": {
+      "consecutive_not_settled": 1,
+      "n_confirmations": 3,
+      "n_not_settled": 2,
+      "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+      "rule_consecutive": false,
+      "rule_share": false,
+      "stop": false
+     },
+     "pattern": "n-u-n",
+     "split": null
+    },
+    {
+     "expected_stop": false,
+     "got": {
+      "consecutive_not_settled": 0,
+      "n_confirmations": 4,
+      "n_not_settled": 1,
+      "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+      "rule_consecutive": false,
+      "rule_share": false,
+      "stop": false
+     },
+     "pattern": "uunu",
+     "split": null
+    },
+    {
+     "expected_stop": true,
+     "got": {
+      "consecutive_not_settled": 1,
+      "n_confirmations": 4,
+      "n_not_settled": 2,
+      "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+      "rule_consecutive": false,
+      "rule_share": true,
+      "stop": true
+     },
+     "pattern": "unun",
+     "split": null
+    },
+    {
+     "expected_stop": false,
+     "got": {
+      "consecutive_not_settled": 1,
+      "n_confirmations": 9,
+      "n_not_settled": 2,
+      "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+      "rule_consecutive": false,
+      "rule_share": false,
+      "stop": false
+     },
+     "pattern": "uuuunuuun",
+     "split": null
+    },
+    {
+     "expected_stop": true,
+     "got": {
+      "consecutive_not_settled": 1,
+      "n_confirmations": 6,
+      "n_not_settled": 2,
+      "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+      "rule_consecutive": false,
+      "rule_share": true,
+      "stop": true
+     },
+     "pattern": "uuunun",
+     "split": null
+    },
+    {
+     "expected_stop": true,
+     "got": {
+      "consecutive_not_settled": 3,
+      "n_confirmations": 5,
+      "n_not_settled": 3,
+      "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+      "rule_consecutive": true,
+      "rule_share": true,
+      "stop": true
+     },
+     "pattern": "aannn",
+     "split": null
+    },
+    {
+     "expected_stop": true,
+     "got": {
+      "consecutive_not_settled": 3,
+      "n_confirmations": 3,
+      "n_not_settled": 3,
+      "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+      "rule_consecutive": true,
+      "rule_share": false,
+      "stop": true
+     },
+     "pattern": "nnxn",
+     "split": null
+    },
+    {
+     "expected_stop": true,
+     "got": {
+      "consecutive_not_settled": 2,
+      "n_confirmations": 4,
+      "n_not_settled": 2,
+      "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+      "rule_consecutive": false,
+      "rule_share": true,
+      "stop": true
+     },
+     "pattern": "uunn",
+     "split": 2
+    },
+    {
+     "expected_stop": true,
+     "got": {
+      "consecutive_not_settled": 3,
+      "n_confirmations": 3,
+      "n_not_settled": 3,
+      "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+      "rule_consecutive": true,
+      "rule_share": false,
+      "stop": true
+     },
+     "pattern": "nnn",
+     "split": 2
+    }
+   ]
+  },
+  "8": {
+   "not_settled": {
+    "one": {
+     "n_confirmations": 9,
+     "termination": {
+      "budget_used": 54,
+      "detail": null,
+      "reason": "complete_poll_no_accepted_candidate"
+     }
+    },
+    "one_of_many": {
+     "n_confirmations": 10,
+     "termination": {
+      "budget_used": 56,
+      "detail": null,
+      "reason": "complete_poll_no_accepted_candidate"
+     }
+    },
+    "three_consecutive": {
+     "budget_used": 15,
+     "detail": {
+      "consecutive_not_settled": 3,
+      "n_confirmations": 3,
+      "n_not_settled": 3,
+      "pos": 8,
+      "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+      "rule_consecutive": true,
+      "rule_share": false,
+      "stop": true,
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     "reason": "stop_for_review_not_settled"
+    },
+    "two_of_four": {
+     "budget_used": 26,
+     "detail": {
+      "consecutive_not_settled": 1,
+      "n_confirmations": 4,
+      "n_not_settled": 2,
+      "pos": 0,
+      "rule": "3 consecutive not_settled confirmations, or not_settled on more than 25% of >= 4 confirmations (integration ruling 5)",
+      "rule_consecutive": false,
+      "rule_share": true,
+      "stop": true,
+      "z": [
+       0,
+       0,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       2,
+       2,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     "reason": "stop_for_review_not_settled"
+    }
+   },
+   "plan_2030": {
+    "count_identity": {
+     "N_search_counted": 16,
+     "S_0": 1,
+     "budget_used": 16,
+     "holds": true,
+     "per_poll": [
+      {
+       "E_j": 13,
+       "c_j": 2,
+       "closed": "complete_poll_no_accepted_candidate",
+       "exit_requested": 13,
+       "formula_matches": true,
+       "n_j": 13,
+       "p_j": null,
+       "poll": 0
+      }
+     ],
+     "truncated_by_budget": []
+    },
+    "exhaustion_kinds": {
+     "block_truncated": 10,
+     "confirmation_does_not_fit": 4,
+     "exhausted_before_block": 11,
+     "mid_poll": 14
+    },
+    "full_budget": 16,
+    "n_moves": 0,
+    "termination": "complete_poll_no_accepted_candidate"
+   },
+   "reference_unit": {
+    "count_identity": {
+     "N_search_counted": 68,
+     "S_0": 1,
+     "budget_used": 68,
+     "holds": true,
+     "per_poll": [
+      {
+       "E_j": 5,
+       "c_j": 2,
+       "closed": "accepted",
+       "exit_requested": 5,
+       "formula_matches": true,
+       "n_j": 22,
+       "p_j": 1,
+       "poll": 0
+      },
+      {
+       "E_j": 5,
+       "c_j": 1,
+       "closed": "accepted",
+       "exit_requested": 5,
+       "formula_matches": true,
+       "n_j": 18,
+       "p_j": 1,
+       "poll": 1
+      },
+      {
+       "E_j": 5,
+       "c_j": 1,
+       "closed": "accepted",
+       "exit_requested": 5,
+       "formula_matches": true,
+       "n_j": 14,
+       "p_j": 3,
+       "poll": 2
+      },
+      {
+       "E_j": 10,
+       "c_j": 2,
+       "closed": "accepted",
+       "exit_requested": 10,
+       "formula_matches": true,
+       "n_j": 17,
+       "p_j": 8,
+       "poll": 3
+      },
+      {
+       "E_j": 5,
+       "c_j": 3,
+       "closed": "accepted",
+       "exit_requested": 5,
+       "formula_matches": true,
+       "n_j": 21,
+       "p_j": 2,
+       "poll": 4
+      },
+      {
+       "E_j": 5,
+       "c_j": 1,
+       "closed": "accepted",
+       "exit_requested": 5,
+       "formula_matches": true,
+       "n_j": 21,
+       "p_j": 1,
+       "poll": 5
+      },
+      {
+       "E_j": 5,
+       "c_j": 1,
+       "closed": "accepted",
+       "exit_requested": 5,
+       "formula_matches": true,
+       "n_j": 25,
+       "p_j": 1,
+       "poll": 6
+      },
+      {
+       "E_j": 5,
+       "c_j": 1,
+       "closed": "accepted",
+       "exit_requested": 5,
+       "formula_matches": true,
+       "n_j": 25,
+       "p_j": 1,
+       "poll": 7
+      },
+      {
+       "E_j": 9,
+       "c_j": 1,
+       "closed": "complete_poll_no_accepted_candidate",
+       "exit_requested": 9,
+       "formula_matches": true,
+       "n_j": 9,
+       "p_j": null,
+       "poll": 8
+      }
+     ],
+     "truncated_by_budget": []
+    },
+    "exhaustion_kinds": {
+     "block_truncated": 43,
+     "confirmation_does_not_fit": 44,
+     "exhausted_before_block": 23,
+     "mid_poll": 58
+    },
+    "full_budget": 68,
+    "n_moves": 8,
+    "termination": "complete_poll_no_accepted_candidate"
+   },
+   "x0": {
+    "count_identity": {
+     "N_search_counted": 56,
+     "S_0": 1,
+     "budget_used": 56,
+     "holds": true,
+     "per_poll": [
+      {
+       "E_j": 5,
+       "c_j": 2,
+       "closed": "accepted",
+       "exit_requested": 5,
+       "formula_matches": true,
+       "n_j": 18,
+       "p_j": 3,
+       "poll": 0
+      },
+      {
+       "E_j": 10,
+       "c_j": 2,
+       "closed": "accepted",
+       "exit_requested": 10,
+       "formula_matches": true,
+       "n_j": 18,
+       "p_j": 9,
+       "poll": 1
+      },
+      {
+       "E_j": 5,
+       "c_j": 3,
+       "closed": "accepted",
+       "exit_requested": 5,
+       "formula_matches": true,
+       "n_j": 23,
+       "p_j": 2,
+       "poll": 2
+      },
+      {
+       "E_j": 5,
+       "c_j": 1,
+       "closed": "accepted",
+       "exit_requested": 5,
+       "formula_matches": true,
+       "n_j": 22,
+       "p_j": 1,
+       "poll": 3
+      },
+      {
+       "E_j": 5,
+       "c_j": 1,
+       "closed": "accepted",
+       "exit_requested": 5,
+       "formula_matches": true,
+       "n_j": 25,
+       "p_j": 1,
+       "poll": 4
+      },
+      {
+       "E_j": 5,
+       "c_j": 1,
+       "closed": "accepted",
+       "exit_requested": 5,
+       "formula_matches": true,
+       "n_j": 25,
+       "p_j": 1,
+       "poll": 5
+      },
+      {
+       "E_j": 9,
+       "c_j": 1,
+       "closed": "complete_poll_no_accepted_candidate",
+       "exit_requested": 9,
+       "formula_matches": true,
+       "n_j": 9,
+       "p_j": null,
+       "poll": 6
+      }
+     ],
+     "truncated_by_budget": []
+    },
+    "exhaustion_kinds": {
+     "block_truncated": 35,
+     "confirmation_does_not_fit": 33,
+     "exhausted_before_block": 22,
+     "mid_poll": 48
+    },
+    "full_budget": 56,
+    "n_moves": 6,
+    "termination": "complete_poll_no_accepted_candidate"
+   }
+  },
+  "9": {
+   "s47_phase_b_1x": {
+    "incumbents": [
+     {
+      "F_published": 653859461.2279255,
+      "I_abs_diff": 0.0,
+      "I_lattice": 0.0,
+      "I_published": 0.0,
+      "N": 18,
+      "coverage": 0.3333333333333333,
+      "covered": 6,
+      "covered_classes": {
+       "unresolved": 2,
+       "worse": 4
+      },
+      "first_confirm_candidate_among_covered": null,
+      "full_coverage": false,
+      "incumbent": "x0",
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     }
+    ],
+    "n_cache_records": 14,
+    "n_off_lattice": 0,
+    "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_results.json",
+    "sha256": "906f9da353ebe2158c13176c22ea49602d9cdbfab142f7334b7e54e9db1fdb58",
+    "tracked_clean": true
+   },
+   "s51_f2_phase_b_2x": {
+    "incumbents": [
+     {
+      "F_published": 810889875.3127581,
+      "I_abs_diff": 1.1641532182693481e-10,
+      "I_lattice": 953871.0255106756,
+      "I_published": 953871.0255106755,
+      "N": 10,
+      "coverage": 0.4,
+      "covered": 4,
+      "covered_classes": {
+       "confirm_candidate": 1,
+       "worse": 3
+      },
+      "first_confirm_candidate_among_covered": {
+       "dF_exit": -41457.688539624214,
+       "e": 15000.0,
+       "label": "n7_y2030_p0.75_e3",
+       "pos": 2
+      },
+      "full_coverage": false,
+      "incumbent": "y2025__n7_p0.75_e3",
+      "z": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       3,
+       6,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     {
+      "F_published": 810787758.2559508,
+      "I_abs_diff": 1.1641532182693481e-10,
+      "I_lattice": 992268.10828437,
+      "I_published": 992268.1082843702,
+      "N": 13,
+      "coverage": 0.38461538461538464,
+      "covered": 5,
+      "covered_classes": {
+       "unresolved": 2,
+       "worse": 3
+      },
+      "first_confirm_candidate_among_covered": null,
+      "full_coverage": false,
+      "incumbent": "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+      "z": [
+       0,
+       0,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       4,
+       7,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     }
+    ],
+    "n_cache_records": 26,
+    "n_off_lattice": 0,
+    "path": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_results.json",
+    "sha256": "2cdd5d6048919980b6d3d7109709b3441a99b5eb353be3285a09210a9a996eb7",
+    "tracked_clean": true
+   },
+   "s53_f2_certificate_2x": {
+    "incumbents": [
+     {
+      "F_published": 810787758.2559508,
+      "I_abs_diff": 1.1641532182693481e-10,
+      "I_lattice": 992268.10828437,
+      "I_published": 992268.1082843702,
+      "N": 13,
+      "coverage": 0.5384615384615384,
+      "covered": 7,
+      "covered_classes": {
+       "confirm_candidate": 1,
+       "unresolved": 3,
+       "worse": 3
+      },
+      "first_confirm_candidate_among_covered": {
+       "dF_exit": -6571.2879548072815,
+       "e": 15000.0,
+       "label": "n5_y2030_p0.25_e1__n7_y2030_p1_e3",
+       "pos": 5
+      },
+      "full_coverage": false,
+      "incumbent": "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+      "z": [
+       0,
+       0,
+       1,
+       1,
+       0,
+       0,
+       0,
+       0,
+       4,
+       7,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     }
+    ],
+    "n_cache_records": 33,
+    "n_off_lattice": 0,
+    "path": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_results.json",
+    "sha256": "61b9c501a2dc3a957fe06246c0048bfc4c61798626dc3a91783bd463602f4a94",
+    "tracked_clean": true
+   }
+  }
+ },
+ "schema": "p515_s56_search_gate_v1",
+ "script": "p515_s56_search_gate.py",
+ "solve_claim": "ZERO SOLVES, guard-verified (SolveProfileGuard(permitted=()) installed before any repository import, verify(0)); pickle.load/loads blocked (0); driver subprocesses arm their own guard and exit non-zero on a failed verify",
+ "started_utc": "2026-11-24T18:21:11.075245+00:00",
+ "values_note": "every objective value in this gate is SYNTHETIC (landscape or stub), except item 9, which reads the published histories' committed records",
+ "wall_s": 1266.4487721920013
+}
